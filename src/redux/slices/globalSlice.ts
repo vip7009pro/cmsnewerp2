@@ -12,7 +12,7 @@ import {
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
 
-const startCPN: string = "CMS";
+const startCPN: string = "PVN";
 
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")
@@ -32,11 +32,6 @@ const socket = io(
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
-/* socket.on("request_check_online", (data: any) => {
-  console.log('co request check online', data);
-  Swal.fire('Thông báo','Có yêu cầu check online từ server','info');
-  socket.emit("respond_check_online", 'hohoo');       
-}); */
 socket.on("notification", (data) => {
   if (data.command === "logout") {
     console.log(getUserData());

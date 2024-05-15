@@ -26,6 +26,7 @@ import React, {
   startTransition,
   useContext,
   useEffect,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -48,6 +49,7 @@ import {
 } from "../../../api/GlobalInterface";
 
 const KHOTPNEW = () => {
+  const dataGridRef = useRef<any>(null);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [khotpinputdatatable, setKhoTPInputDataTable] = useState<Array<KTP_IN>>(
     [],
@@ -83,6 +85,8 @@ const KHOTPNEW = () => {
   const [selectedRows, setSelectedRows] = useState<KTP_IN>();
   const [buttonselected, setbuttonselected] = useState("GR");
   const [trigger, setTrigger] = useState(false);
+  const [selectedOUTRow, setSelectedOUTRow] = useState<KTP_OUT[]>([]);
+
 
   const ktp_in_fields: any = [
     {
@@ -832,6 +836,13 @@ const KHOTPNEW = () => {
       }),
     );
 
+  const clearSelection = () => {
+    if (dataGridRef.current) {
+      dataGridRef.current.instance.clearSelection();
+      setSelectedOUTRow([]);
+      console.log(dataGridRef.current);
+    }
+  };
   const loadKTP_IN = () => {
     generalQuery("loadKTP_IN", {
       ALLTIME: alltime,
@@ -1095,8 +1106,7 @@ const KHOTPNEW = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-
+  };  
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -1210,6 +1220,7 @@ const KHOTPNEW = () => {
       <div className="datatb">
         <CustomResponsiveContainer>
           <DataGrid
+            ref={dataGridRef}
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
             allowColumnResizing={true}
@@ -1225,6 +1236,7 @@ const KHOTPNEW = () => {
             onRowPrepared={(e) => {}}
             onSelectionChanged={(e) => {
               //setSelectedRows(e.selectedRowsData[0]);
+              setSelectedOUTRow(e.selectedRowsData)
             }}
             onRowClick={(e) => {
               //setSelectedRows(e.data);
@@ -1238,7 +1250,7 @@ const KHOTPNEW = () => {
               showScrollbar="onHover"
               mode="virtual"
             />
-            <Selection mode="single" selectAllMode="allPages" />
+            <Selection mode="multiple" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={true}
@@ -1770,9 +1782,66 @@ const KHOTPNEW = () => {
                     break;
                 }
                 setTrigger(!trigger);
+                clearSelection();
               }}
             >
               Search
+            </button>
+            <button
+              className="tranhatky"
+              onClick={() => {
+                switch (buttonselected) {
+                  case "GR":
+
+                    break;
+                  case "GI":
+                    console.log(selectedOUTRow)                                        
+                    break;
+                  case "STOCKFULL":
+                    
+                    break;
+                  case "STOCKG_CODE":
+                    
+                    break;
+                  case "STOCKG_NAME_KD":
+                    
+                    break;
+                  case "STOCK_YCSX":
+                    
+                    break;
+                }
+                setTrigger(!trigger);
+              }}
+            >
+              Duyệt hủy
+            </button>
+            <button
+              className="tranhatky"
+              onClick={() => {
+                switch (buttonselected) {
+                  case "GR":
+
+                    break;
+                  case "GI":
+                    console.log(selectedOUTRow)                    
+                    break;
+                  case "STOCKFULL":
+                    
+                    break;
+                  case "STOCKG_CODE":
+                    
+                    break;
+                  case "STOCKG_NAME_KD":
+                    
+                    break;
+                  case "STOCK_YCSX":
+                    
+                    break;
+                }
+                setTrigger(!trigger);
+              }}
+            >
+              Cancel hủy
             </button>
           </div>
         </div>
