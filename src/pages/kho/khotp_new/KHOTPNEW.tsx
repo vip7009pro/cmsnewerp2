@@ -34,8 +34,8 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
 import { UserContext } from "../../../api/Context";
-import { generalQuery } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { generalQuery, getUserData } from "../../../api/Api";
+import { CustomResponsiveContainer, SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -1107,6 +1107,60 @@ const KHOTPNEW = () => {
         console.log(error);
       });
   };  
+  const duyetHuy = async ()=> {
+    if(selectedOUTRow.length>0)
+    {
+      for(let i=0;i<selectedOUTRow.length;i++)
+      {
+        //chuyen P -> X, them remark Xuat Huy  O660
+        await generalQuery("updatePheDuyetHuyO660", {
+          AUTO_ID: selectedOUTRow[i].AUTO_ID,
+          AUTO_ID_IN: selectedOUTRow[i].AUTO_ID_IN
+        })
+          .then((response) => {            
+            if (response.data.tk_status !== "NG") {
+              
+            } else {
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); 
+      }   
+      Swal.fire('Thông báo','Duyệt thành công','success');
+    }
+    else {
+      Swal.fire('Thông báo','Chọn ít nhất một dòng để thực hiện','error');
+    }
+  }
+  const cancelHuy = async ()=> {
+    if(selectedOUTRow.length>0)
+    {
+      for(let i=0;i<selectedOUTRow.length;i++)
+      {
+        //chuyen P -> X, them remark Xuat Huy  O660
+        await generalQuery("cancelPheDuyetHuyO660", {
+          AUTO_ID: selectedOUTRow[i].AUTO_ID,
+          AUTO_ID_IN: selectedOUTRow[i].AUTO_ID_IN
+        })
+          .then((response) => {            
+            if (response.data.tk_status !== "NG") {
+              
+            } else {
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); 
+      }   
+      Swal.fire('Thông báo','Hủy xuất thành công','success');         
+    }
+    else {
+      Swal.fire('Thông báo','Chọn ít nhất một dòng để thực hiện');
+    }
+  }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -1621,6 +1675,7 @@ const KHOTPNEW = () => {
                   <option value="N">NORMAL</option>
                   <option value="F">FREE</option>
                   <option value="L">THAY LOT</option>
+                  <option value="D">XUẤT HỦY</option>
                   <option value="O">KHÁC</option>
                 </select>
               </label>
@@ -1795,7 +1850,22 @@ const KHOTPNEW = () => {
 
                     break;
                   case "GI":
-                    console.log(selectedOUTRow)                                        
+                    Swal.fire({
+                      title: "Duyệt hủy hàng",
+                      text: "Chắc chắn muốn phê duyệt hủy hàng ?",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Vẫn duyệt!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        checkBP(getUserData(), ["Korean"], ["ALL"], ["ALL"], () => {
+                          duyetHuy();  
+                        })
+                      }
+                    });                    
+
                     break;
                   case "STOCKFULL":
                     
@@ -1823,7 +1893,22 @@ const KHOTPNEW = () => {
 
                     break;
                   case "GI":
-                    console.log(selectedOUTRow)                    
+                    Swal.fire({
+                      title: "Cancel hủy hàng",
+                      text: "Chắc chắn muốn cancel hủy hàng ?",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Vẫn cancel!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {   
+                        checkBP(getUserData(), ["Korean"], ["ALL"], ["ALL"], () => {
+                          cancelHuy();
+                        }) 
+                      }
+                    }); 
+                    
                     break;
                   case "STOCKFULL":
                     
