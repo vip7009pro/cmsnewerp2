@@ -535,6 +535,19 @@ const QuanLyPhongBanNhanSu = () => {
               if (response.data.tk_status === "OK") {
                 console.log(response.data.data);
                 setEmployeeTable(response.data.data);
+                generalQuery("updateM010", insertData)
+                .then((response) => {
+                  //console.log(response.data.data);
+                  if (response.data.tk_status === "OK") {
+                    
+                  } else {
+                   
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+
               }
             })
             .catch((error) => {
