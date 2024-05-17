@@ -12,7 +12,7 @@ import {
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
 
-const startCPN: string = "PVN";
+const startCPN: string = "CMS";
 
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")
