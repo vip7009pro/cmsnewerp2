@@ -1682,7 +1682,7 @@ const getRowStyle = (params:any)  => {
               floatingFiltersHeight={23} 
               onCellEditingStopped={(params:any)=> {
                 console.log(params)
-              }}
+              }}              
             />
           </div>
           </div>
