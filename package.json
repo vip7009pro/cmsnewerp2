@@ -23,7 +23,7 @@
     "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
     "jquery": "^3.7.1",
-    "material-react-table": "^2.0.6",
+    "material-react-table": "^2.13.0",
     "moment": "^2.29.4",
     "opencv.js": "^1.2.1",
     "qrcode.react": "^3.1.0",
@@ -41,7 +41,7 @@
     "react-to-print": "^2.14.7",
     "react-webcam": "^7.2.0",
     "reactflow": "^11.10.4",
-    "recharts": "^2.8.0",
+    "recharts": "^2.12.7",
     "sass": "^1.53.0",
     "save": "^2.9.0",
     "socket.io-client": "^4.5.3",
@@ -83,11 +83,11 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git",
     "@vitejs/plugin-react": "^4.0.1",
     "devextreme-themebuilder": "^22.2.4",
     "vite": "^4.3.9",
     "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0",
-    "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git"
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

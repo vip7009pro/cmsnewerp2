@@ -25,7 +25,7 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
@@ -40,9 +40,6 @@ import {
 } from "../../../api/GlobalInterface";
 import {
   MRT_ColumnDef,
-  MRT_RowSelectionState,
-  MRT_RowVirtualizer,
-  MRT_SortingState,
   MaterialReactTable,
   createMRTColumnHelper,
   useMaterialReactTable,
@@ -70,7 +67,7 @@ type MATERIAL_TABLE_DATA = {
 
 const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
+  const [material_table_data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
@@ -253,7 +250,7 @@ const QLVL = () => {
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={data}
+            dataSource={material_table_data}
             columnWidth="auto"
             keyExpr="id"
             height={"75vh"}
@@ -412,7 +409,7 @@ const QLVL = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [data],
+    [material_table_data],
   );
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const filterOptions1 = createFilterOptions({
@@ -1067,10 +1064,8 @@ const QLVL = () => {
     store: datasxtable,
   });
 
-  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-/*   const columns = [
+  const columnHelper = createMRTColumnHelper<MATERIAL_TABLE_DATA>();
+ /*  const columns = [
     columnHelper.accessor('M_ID', {
       //TS should provide autocomplete for valid accessorKeys
       header: 'M_ID',
@@ -1137,268 +1132,37 @@ const QLVL = () => {
     }), 
    ] */
 
-  const columns = useMemo<MRT_ColumnDef<MATERIAL_TABLE_DATA>[]>(
+/*   const columns = useMemo<MRT_ColumnDef<MATERIAL_TABLE_DATA>[]>(
     () => [     
-      {        
+      {
+        
         accessorKey: 'M_ID', //id required if you use accessorFn instead of accessorKey
         header: 'M_ID',
-        id:'M_ID',
-        Header: <b style={{ color: 'red', fontSize:'0.6rem' }}>M_ID</b>, //optional custom markup
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()}</span>, //optional custom cell render
+        Header: <i style={{ color: 'red' }}>M_ID</i>, //optional custom markup
+        Cell: ({ cell }) => <i>{cell.getValue<number>().toLocaleString('en-US')}</i>, //optional custom cell render
         size: 50,
         muiTableHeadCellProps: {
-          align: 'left',
+          align: 'center',
         },
         muiTableBodyCellProps: {
-          align: 'left',
+          align: 'center',
         },
         muiTableFooterCellProps: {
-          align: 'left',
+          align: 'center',
         },
       },
       {
         
         accessorKey: 'M_NAME', //id required if you use accessorFn instead of accessorKey
         header: 'M_NAME',
-        Header: <b style={{ color: 'green', fontSize:'0.6rem' }}>M_NAME</b>, //optional custom markup
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>, //optional custom cell render
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'DESCR', //id required if you use accessorFn instead of accessorKey
-        header: 'DESCR',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>DESCR</i>, //optional custom markup
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>, //optional custom cell render
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'CUST_CD',
-        header: 'CUST_CD',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>CUST_CD</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'CUST_NAME_KD',
-        header: 'CUST_NAME_KD',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>CUST_NAME_KD</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'SSPRICE',
-        header: 'SSPRICE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>OPEN_PRICE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'CMSPRICE',
-        header: 'CMSPRICE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>ORIGIN_PRICE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'SLITTING_PRICE',
-        header: 'SLITTING_PRICE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>SLITTING_PRICE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'MASTER_WIDTH',
-        header: 'MASTER_WIDTH',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>MASTER_WIDTH</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'ROLL_LENGTH',
-        header: 'ROLL_LENGTH',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>ROLL_LENGTH</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'USE_YN',
-        header: 'USE_YN',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>USE_YN</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 60,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },      
-      {        
-        accessorKey: 'TDS',
-        header: 'TDS',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>TDS</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
+        Header: <i style={{ color: 'red' }}>M_NAME</i>, //optional custom markup
+        Cell: ({ cell }) => <i>{cell.getValue<string>()}</i>, //optional custom cell render
         size: 50,
         muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
           align: 'center',
         },
-      },
-      {        
-        accessorKey: 'INS_DATE',
-        header: 'INS_DATE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>INS_DATE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{moment(cell.getValue<string>()).format('YYYY-MM-DD HH:mm:ss')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
         muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
           align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'INS_EMPL',
-        header: 'INS_EMPL',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>INS_EMPL</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 80,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'UPD_DATE',
-        header: 'UPD_DATE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>UPD_DATE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{moment(cell.getValue<string>()).format('YYYY-MM-DD HH:mm:ss')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'UPD_EMPL',
-        header: 'UPD_EMPL',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>UPD_EMPL</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 80,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
         },
         muiTableFooterCellProps: {
           align: 'center',
@@ -1406,36 +1170,28 @@ const QLVL = () => {
       },
     ],
     [],
-  );
+  ); */
 
-  const table = useMaterialReactTable({
-    columns,
-    data,
-    initialState: { density: 'compact' },
-    enablePagination: false,    
-    /* enableRowNumbers: true, */
-    enableRowVirtualization: true,
-    enableGlobalFilterModes: true,
-    onSortingChange: setSorting,
-    state: {sorting, rowSelection },
-    rowVirtualizerInstanceRef,
-    rowVirtualizerOptions: { overscan: 5 },
-    enableColumnResizing: true,    
-    enableMultiRowSelection: true,    
-    enableBatchRowSelection: true,
-    enableSelectAll: true,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    
-    /* enableEditing: true, */
-    /* enableRowActions: true, */
-    /* enableBottomToolbar: true */
-  });
+  const columns = useMemo<MRT_ColumnDef<MATERIAL_TABLE_DATA>[]>(
+    () => [
+      {
+        accessorKey: 'M_ID', //access nested data with dot notation
+        header: 'M_ID',
+        size: 150,
+      },
+      {
+        accessorKey: 'M_NAME',
+        header: 'M_NAME',
+        size: 150,
+      },     
+    ],
+    [],
+  );
 
 
   useEffect(() => {
-    //load_material_table();
-    //getcustomerlist();
+    load_material_table();
+    getcustomerlist();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -1616,13 +1372,10 @@ const QLVL = () => {
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
               updateMaterial();
             }}>Update</Button>
-           
           </div>
-       
         </div>
        
         {/* <div className="tracuuYCSXTable"><Example/></div> */}
-        {/* <div className="tracuuYCSXTable"><MaterialReactTable table={table} /></div> */}
         <div className="tracuuYCSXTable">{materialDataTable}</div>
         {showhidePivotTable && (
           <div className="pivottable1">
