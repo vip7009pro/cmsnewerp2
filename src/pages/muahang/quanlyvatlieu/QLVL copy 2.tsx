@@ -25,7 +25,7 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
@@ -48,9 +48,7 @@ import {
   createMRTColumnHelper,
   useMaterialReactTable,
 } from 'material-react-table';
-import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+import Example from "./Example";
 
 
 
@@ -1052,135 +1050,76 @@ const QLVL = () => {
     ],
     store: datasxtable,
   });
-  
+
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  
-
- 
-  const rowStyle = { background: 'black' };
-
-// set background colour on even rows again, this looks bad, should be using CSS classes
-const getRowStyle = (params:any)  => {
-  return { backgroundColor: 'white', fontSize:'0.6rem'};
-    /* if (params.data.M_ID % 2 === 0) {
-        return { backgroundColor: 'white', fontSize:'0.6rem'};
-    }
-    else {
-      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
-
-    } */
-};
-
-  const gridRef = useRef<AgGridReact<MATERIAL_TABLE_DATA>>(null);
-  const defaultColDef = useMemo(() => {
-    return {
-      initialWidth: 100,
-      wrapHeaderText: true,
-      autoHeaderHeight: false,     
-      editable: true
-    };
-  }, []);
-  // Column Definitions: Defines the columns to be displayed.
-  const [colDefs, setColDefs] = useState([
-    { field: 'M_ID',headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true,resizable: true,headerHeight: 200,suppressSizeToFit: true, cellStyle: (params:any) => {     
-      /* if (params.data.M_ID%2==0 ) {
-        return { backgroundColor: '#d4edda', color: '#155724' };
-      } else {
-        return { backgroundColor: '#f8d7da', color: '#721c24' };
-      } */
-    }},
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true, },
-    { field: 'DESCR',headerName: 'DESCR', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true,},
-    { field: 'CUST_CD',headerName: 'CUST_CD', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true, },
-    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true, },
-    { field: 'SSPRICE',headerName: 'SSPRICE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'CMSPRICE',headerName: 'CMSPRICE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'SLITTING_PRICE',headerName: 'SLITTING_PRICE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'MASTER_WIDTH',headerName: 'MASTER_WIDTH', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'ROLL_LENGTH',headerName: 'ROLL_LENGTH', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'USE_YN',headerName: 'USE_YN', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'EXP_DATE',headerName: 'EXP_DATE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'TDS',headerName: 'TDS', resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
-      let href = `/tds2/NVL_${params.data.M_ID}.pdf`;
-      let file: any = null;
-      if (params.data.TDS === 'Y') {
-        return (
-          <a target="_blank" rel="noopener noreferrer" href={href} >LINK</a>
-        )
-      }
-      else {
-        return (
-          <div className="tdsuploadbutton">
-            <button onClick={() => {
-              uploadTDS(params.data.M_ID, file);
-            }}>Upload</button>
-            <input
-              accept='.pdf'
-              type='file'
-              onChange={(e: any) => {
-                file = e.target.files[0];
-              }}
-            />
-          </div>
-        )
-      }
-
-    }, floatingFilter: true, filter: true, },
-    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true, floatingFilter: true, filter: true, },    
-  ]);
-  const onSelectionChanged = useCallback(() => {
-    const selectedRows = gridRef.current!.api.getSelectedRows();
-    console.log(selectedRows);
-  }, []);
-
-  function setIdText(id: string, value: string | number | undefined) {
-    document.getElementById(id)!.textContent =
-      value == undefined ? "undefined" : value + "";
-  }
-  const setPivotOn = useCallback(() => {
-    document.querySelector("#requiresPivot")!.className = "";
-    document.querySelector("#requiresNotPivot")!.className = "hidden";
-    gridRef.current!.api.setGridOption("pivotMode", true);
-    setIdText("pivot", "on");
-  }, []);
-
-  const setPivotOff = useCallback(() => {
-    document.querySelector("#requiresPivot")!.className = "hidden";
-    document.querySelector("#requiresNotPivot")!.className = "";
-    gridRef.current!.api.setGridOption("pivotMode", false);
-    setIdText("pivot", "off");
-  }, []);
-
-  const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
-  }, []);
-
-  const setGroupHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("groupHeaderHeight", value);
-    setIdText("groupHeaderHeight", value);
-  }, []);
-
-  const setFloatingFiltersHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("floatingFiltersHeight", value);
-    setIdText("floatingFiltersHeight", value);
-  }, []);
-
-  const setPivotGroupHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("pivotGroupHeaderHeight", value);
-    setIdText("pivotGroupHeaderHeight", value);
-  }, []);
-
-  const setPivotHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("pivotHeaderHeight", value);
-    setIdText("pivotHeaderHeight", value);
-  }, []);
-
+/*   const columns = [
+    columnHelper.accessor('M_ID', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'M_ID',
+    }),
+    columnHelper.accessor('M_NAME', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'M_NAME',
+    }),
+    columnHelper.accessor('CMSPRICE', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'CMSPRICE',
+    }),
+    columnHelper.accessor('CUST_CD', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'CUST_CD',
+    }),
+    columnHelper.accessor('CUST_NAME_KD', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'CUST_NAME_KD',
+    }),
+    columnHelper.accessor('DESCR', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'DESCR',
+    }),
+    columnHelper.accessor('EXP_DATE', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'EXP_DATE',
+    }),
+    columnHelper.accessor('INS_DATE', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'INS_DATE',
+    }),
+    columnHelper.accessor('INS_EMPL', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'INS_EMPL',
+    }),
+    columnHelper.accessor('MASTER_WIDTH', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'MASTER_WIDTH',
+    }),
+    columnHelper.accessor('ROLL_LENGTH', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'ROLL_LENGTH',
+    }),
+    columnHelper.accessor('SLITTING_PRICE', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'SLITTING_PRICE',
+    }),
+    columnHelper.accessor('SSPRICE', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'SSPRICE',
+    }),
+    columnHelper.accessor('UPD_DATE', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'UPD_DATE',
+    }),
+    columnHelper.accessor('UPD_EMPL', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'UPD_EMPL',
+    }),
+    columnHelper.accessor('USE_YN', {
+      //TS should provide autocomplete for valid accessorKeys
+      header: 'USE_YN',
+    }), 
+   ] */
 
   const columns = useMemo<MRT_ColumnDef<MATERIAL_TABLE_DATA>[]>(
     () => [     
@@ -1475,12 +1414,12 @@ const getRowStyle = (params:any)  => {
     /* enableRowActions: true, */
     /* enableBottomToolbar: true */
   });
+
   useEffect(() => {
-    //load_material_table();
+    load_material_table();
     getcustomerlist();
-    
     //setColumnDefinition(column_inspect_output);
-  }, [defaultColDef]);
+  }, []);
   return (
     <div className="qlvl">
       <div className="tracuuDataInspection">
@@ -1659,50 +1598,14 @@ const getRowStyle = (params:any)  => {
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
               updateMaterial();
             }}>Update</Button>
-            
            
           </div>
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              console.log(data)
-            }}>TEST</Button>
        
         </div>
        
         {/* <div className="tracuuYCSXTable"><Example/></div> */}
         {/* <div className="tracuuYCSXTable"><MaterialReactTable table={table} /></div> */}
-        <div className="tracuuYCSXTable">
-          <div
-            className="ag-theme-quartz" // applying the grid theme
-            style={{ height: '100%' }} // the grid will fill the size of the parent container
-          >
-            <AgGridReact
-              rowData={data}
-              columnDefs={colDefs}
-              defaultColDef={defaultColDef} 
-              ref={gridRef}
-              onGridReady={()=> {
-                setHeaderHeight(35);
-              }}
-              suppressRowHoverHighlight={true}
-              columnHoverHighlight={true}
-              rowStyle={rowStyle}
-              getRowStyle={getRowStyle}
-              getRowId={(params:any)=> params.data.M_ID}
-              rowSelection={"multiple"}
-              rowMultiSelectWithClick={true}    
-              onSelectionChanged={onSelectionChanged}   
-              onRowClicked={(params:any)=> {
-                setSelectedRows(params.data)
-                console.log(params.data)
-              }}  
-              suppressRowClickSelection={true}
-              enterNavigatesVertically={true}
-              enterNavigatesVerticallyAfterEdit={true}
-              stopEditingWhenCellsLoseFocus ={true}              
-            />
-          </div>
-          </div>
-        {/* <div className="tracuuYCSXTable">{materialDataTable}</div> */}
+        <div className="tracuuYCSXTable">{materialDataTable}</div>
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton
