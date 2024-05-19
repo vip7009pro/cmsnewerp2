@@ -1072,7 +1072,7 @@ const getRowStyle = (params:any)  => {
       initialWidth: 100,
       wrapHeaderText: true,
       autoHeaderHeight: false,     
-      editable: false
+      editable: true
     };
   }, []);
   // Column Definitions: Defines the columns to be displayed.
@@ -1088,11 +1088,11 @@ const getRowStyle = (params:any)  => {
     { field: 'DESCR',headerName: 'DESCR', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true,},
     { field: 'CUST_CD',headerName: 'CUST_CD', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, },
     { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, },
-    { field: 'SSPRICE',headerName: 'SSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number", cellDataType: "number"},
-    { field: 'CMSPRICE',headerName: 'CMSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
-    { field: 'SLITTING_PRICE',headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
-    { field: 'MASTER_WIDTH',headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
-    { field: 'ROLL_LENGTH',headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
+    { field: 'SSPRICE',headerName: 'SSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
+    { field: 'CMSPRICE',headerName: 'CMSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
+    { field: 'SLITTING_PRICE',headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
+    { field: 'MASTER_WIDTH',headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
+    { field: 'ROLL_LENGTH',headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
     { field: 'USE_YN',headerName: 'USE_YN', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'EXP_DATE',headerName: 'EXP_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'TDS',headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
@@ -1670,7 +1670,7 @@ const getRowStyle = (params:any)  => {
               onSelectionChanged={onSelectionChanged}   
               onRowClicked={(params:any)=> {
                 setSelectedRows(params.data)
-                console.log(params.data)
+                //console.log(params.data)
               }}  
               suppressRowClickSelection={true}
               enterNavigatesVertically={true}
@@ -1680,6 +1680,9 @@ const getRowStyle = (params:any)  => {
               debounceVerticalScrollbar={false}
               enableRangeSelection={true}      
               floatingFiltersHeight={23} 
+              onCellEditingStopped={(params:any)=> {
+                console.log(params)
+              }}
             />
           </div>
           </div>
