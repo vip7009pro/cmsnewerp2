@@ -129,13 +129,49 @@
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         border-radius: 3px;
 
+        .toolbar {
+          display: flex;
+          background-color: #b2ffa0;
+          
+        }        
+        .ag-theme-quartz input[class^=ag-]:not([type]), .ag-theme-quartz input[class^=ag-][type=text], .ag-theme-quartz input[class^=ag-][type=number], .ag-theme-quartz input[class^=ag-][type=tel], .ag-theme-quartz input[class^=ag-][type=date], .ag-theme-quartz input[class^=ag-][type=datetime-local], .ag-theme-quartz textarea[class^=ag-], .ag-theme-quartz-dark input[class^=ag-]:not([type]), .ag-theme-quartz-dark input[class^=ag-][type=text], .ag-theme-quartz-dark input[class^=ag-][type=number], .ag-theme-quartz-dark input[class^=ag-][type=tel], .ag-theme-quartz-dark input[class^=ag-][type=date], .ag-theme-quartz-dark input[class^=ag-][type=datetime-local], .ag-theme-quartz-dark textarea[class^=ag-], .ag-theme-quartz-auto-dark input[class^=ag-]:not([type]), .ag-theme-quartz-auto-dark input[class^=ag-][type=text], .ag-theme-quartz-auto-dark input[class^=ag-][type=number], .ag-theme-quartz-auto-dark input[class^=ag-][type=tel], .ag-theme-quartz-auto-dark input[class^=ag-][type=date], .ag-theme-quartz-auto-dark input[class^=ag-][type=datetime-local], .ag-theme-quartz-auto-dark textarea[class^=ag-] {
+          min-height: calc(var(--ag-grid-size)* 2.5);
+          border-radius: var(--ag-border-radius);
+      }
         .ag-header-cell {
           /* background-image: linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1)); */
-          background-color: rgb(216, 225, 231);
+          background-color: rgb(230, 236, 241);
           color: rgb(5, 84, 162); /* White text */
           font-weight: bold;
           text-align: center;
-          font-size: 0.7rem;
+          font-size: 0.6rem;
+          border-right: 1px solid #cccccc; /* Light gray border */    
+          padding-left: 2px;
+          padding-right: 2px;
+          .ag-input-field-input, .ag-text-field-input  {           
+            background-color: #d8e2ed;
+            padding: 0;
+            
+          }    
+
+
+        }       
+        
+        /* Add border to the right of each data cell */
+        .ag-cell {
+          border-right: 1px solid #ccc; /* Light gray border */
+        }
+        
+        /* Remove the right border for the last column */
+        .ag-header-cell:last-child,
+        .ag-cell:last-child {
+          border-right: none;
+        }       
+        .ag-floating-filter-input {
+          height: 22px; /* Set your desired height */
+          line-height: 40px; /* Set the line height to match for proper text alignment */
+          padding: 1;
+          
         }
 
         .datatb {

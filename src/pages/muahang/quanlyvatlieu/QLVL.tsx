@@ -88,21 +88,14 @@ const QLVL = () => {
             (element: MATERIAL_TABLE_DATA, index: number) => {
               return {
                 ...element,
-                DESCR: element.DESCR === null ? "" : element.DESCR,
-                SSPRICE: element.SSPRICE === null ? 0 : element.SSPRICE,
-                CMSPRICE: element.CMSPRICE === null ? 0 : element.CMSPRICE,
-                SLITTING_PRICE:
-                  element.SLITTING_PRICE === null ? 0 : element.SLITTING_PRICE,
-                MASTER_WIDTH:
-                  element.MASTER_WIDTH === null ? 0 : element.MASTER_WIDTH,
-                ROLL_LENGTH:
-                  element.ROLL_LENGTH === null ? 0 : element.ROLL_LENGTH,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                UPD_DATE: moment
-                  .utc(element.UPD_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
+                DESCR: element.DESCR ?? "",
+                SSPRICE: element.SSPRICE ?? 0,
+                CMSPRICE: element.CMSPRICE ?? 0,
+                SLITTING_PRICE: element.SLITTING_PRICE ?? 0,
+                MASTER_WIDTH: element.MASTER_WIDTH ?? 0,
+                ROLL_LENGTH: element.ROLL_LENGTH ?? 0,
+                INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+                UPD_DATE: moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
                 EXP_DATE: element.EXP_DATE ?? '-',
                 id: index,
               };
@@ -110,11 +103,11 @@ const QLVL = () => {
           );
           //console.log(loadeddata);
           set_material_table_data(loadeddata);
-          Swal.fire(
+         /*  Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
-          );
+          ); */
         } else {
           set_material_table_data([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -273,7 +266,7 @@ const QLVL = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
+                    SaveExcel(data, "MaterialStatus");
                   }}
                 >
                   <AiFillFileExcel color="green" size={15} />
@@ -1059,7 +1052,7 @@ const QLVL = () => {
   
 
  
-  const rowStyle = { background: 'black' };
+  const rowStyle = { backgroundColor: 'transparent', height:'20px' };
 
 // set background colour on even rows again, this looks bad, should be using CSS classes
 const getRowStyle = (params:any)  => {
@@ -1079,33 +1072,33 @@ const getRowStyle = (params:any)  => {
       initialWidth: 100,
       wrapHeaderText: true,
       autoHeaderHeight: false,     
-      editable: true
+      editable: false
     };
   }, []);
   // Column Definitions: Defines the columns to be displayed.
   const [colDefs, setColDefs] = useState([
-    { field: 'M_ID',headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true,resizable: true,headerHeight: 200,suppressSizeToFit: true, cellStyle: (params:any) => {     
+    { field: 'M_ID',headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true,width: 90, resizable: true,headerHeight: 100, floatingFilter: true, cellStyle: (params:any) => {     
       /* if (params.data.M_ID%2==0 ) {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
         return { backgroundColor: '#f8d7da', color: '#721c24' };
       } */
     }},
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true, },
-    { field: 'DESCR',headerName: 'DESCR', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true,},
-    { field: 'CUST_CD',headerName: 'CUST_CD', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true, },
-    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,headerHeight: 200,suppressSizeToFit: true,floatingFilter: true, filter: true, },
-    { field: 'SSPRICE',headerName: 'SSPRICE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'CMSPRICE',headerName: 'CMSPRICE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'SLITTING_PRICE',headerName: 'SLITTING_PRICE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'MASTER_WIDTH',headerName: 'MASTER_WIDTH', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'ROLL_LENGTH',headerName: 'ROLL_LENGTH', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'USE_YN',headerName: 'USE_YN', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'EXP_DATE',headerName: 'EXP_DATE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'TDS',headerName: 'TDS', resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
-      let href = `/tds2/NVL_${params.data.M_ID}.pdf`;
+    { field: 'M_NAME',headerName: 'M_NAME', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, editable: false},
+    { field: 'DESCR',headerName: 'DESCR', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true,},
+    { field: 'CUST_CD',headerName: 'CUST_CD', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, },
+    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, },
+    { field: 'SSPRICE',headerName: 'SSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number", cellDataType: "number"},
+    { field: 'CMSPRICE',headerName: 'CMSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
+    { field: 'SLITTING_PRICE',headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
+    { field: 'MASTER_WIDTH',headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
+    { field: 'ROLL_LENGTH',headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, type: "number"},
+    { field: 'USE_YN',headerName: 'USE_YN', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'EXP_DATE',headerName: 'EXP_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'TDS',headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
+      let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;
       let file: any = null;
-      if (params.data.TDS === 'Y') {
+      if (params.data?.TDS === 'Y') {
         return (
           <a target="_blank" rel="noopener noreferrer" href={href} >LINK</a>
         )
@@ -1114,7 +1107,7 @@ const getRowStyle = (params:any)  => {
         return (
           <div className="tdsuploadbutton">
             <button onClick={() => {
-              uploadTDS(params.data.M_ID, file);
+              uploadTDS(params.data?.M_ID, file);
             }}>Upload</button>
             <input
               accept='.pdf'
@@ -1128,10 +1121,10 @@ const getRowStyle = (params:any)  => {
       }
 
     }, floatingFilter: true, filter: true, },
-    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true, floatingFilter: true, filter: true, },
-    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true, floatingFilter: true, filter: true, },    
+    { field: 'INS_DATE',headerName: 'INS_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'UPD_DATE',headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },    
   ]);
   const onSelectionChanged = useCallback(() => {
     const selectedRows = gridRef.current!.api.getSelectedRows();
@@ -1142,46 +1135,10 @@ const getRowStyle = (params:any)  => {
     document.getElementById(id)!.textContent =
       value == undefined ? "undefined" : value + "";
   }
-  const setPivotOn = useCallback(() => {
-    document.querySelector("#requiresPivot")!.className = "";
-    document.querySelector("#requiresNotPivot")!.className = "hidden";
-    gridRef.current!.api.setGridOption("pivotMode", true);
-    setIdText("pivot", "on");
-  }, []);
-
-  const setPivotOff = useCallback(() => {
-    document.querySelector("#requiresPivot")!.className = "hidden";
-    document.querySelector("#requiresNotPivot")!.className = "";
-    gridRef.current!.api.setGridOption("pivotMode", false);
-    setIdText("pivot", "off");
-  }, []);
-
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
     setIdText("headerHeight", value);
   }, []);
-
-  const setGroupHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("groupHeaderHeight", value);
-    setIdText("groupHeaderHeight", value);
-  }, []);
-
-  const setFloatingFiltersHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("floatingFiltersHeight", value);
-    setIdText("floatingFiltersHeight", value);
-  }, []);
-
-  const setPivotGroupHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("pivotGroupHeaderHeight", value);
-    setIdText("pivotGroupHeaderHeight", value);
-  }, []);
-
-  const setPivotHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("pivotHeaderHeight", value);
-    setIdText("pivotHeaderHeight", value);
-  }, []);
-
-
   const columns = useMemo<MRT_ColumnDef<MATERIAL_TABLE_DATA>[]>(
     () => [     
       {        
@@ -1528,20 +1485,20 @@ const getRowStyle = (params:any)  => {
                     CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
                   }}
                   value={{
-                    CUST_CD: selectedRows.CUST_CD,
+                    CUST_CD: selectedRows?.CUST_CD,
                     CUST_NAME: customerList.filter(
                       (e: CustomerListData, index: number) =>
-                        e.CUST_CD === selectedRows.CUST_CD,
+                        e.CUST_CD === selectedRows?.CUST_CD,
                     )[0]?.CUST_NAME,
                     CUST_NAME_KD:
                       customerList.filter(
                         (e: CustomerListData, index: number) =>
-                          e.CUST_CD === selectedRows.CUST_CD,
+                          e.CUST_CD === selectedRows?.CUST_CD,
                       )[0]?.CUST_NAME_KD === undefined
                         ? ""
                         : customerList.filter(
                           (e: CustomerListData, index: number) =>
-                            e.CUST_CD === selectedRows.CUST_CD,
+                            e.CUST_CD === selectedRows?.CUST_CD,
                         )[0]?.CUST_NAME_KD,
                   }}
                   onChange={(event: any, newValue: any) => {
@@ -1652,7 +1609,7 @@ const getRowStyle = (params:any)  => {
           <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
               load_material_table();
-            }}>Refesh</Button>
+            }}>Refresh</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
               addMaterial();
             }}>Add</Button>
@@ -1671,6 +1628,26 @@ const getRowStyle = (params:any)  => {
         {/* <div className="tracuuYCSXTable"><Example/></div> */}
         {/* <div className="tracuuYCSXTable"><MaterialReactTable table={table} /></div> */}
         <div className="tracuuYCSXTable">
+          <div className="toolbar">
+          <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(data, "MaterialStatus");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                  Pivot
+                </IconButton>
+          </div>
           <div
             className="ag-theme-quartz" // applying the grid theme
             style={{ height: '100%' }} // the grid will fill the size of the parent container
@@ -1678,12 +1655,12 @@ const getRowStyle = (params:any)  => {
             <AgGridReact
               rowData={data}
               columnDefs={colDefs}
+              rowHeight={25}
               defaultColDef={defaultColDef} 
               ref={gridRef}
               onGridReady={()=> {
-                setHeaderHeight(35);
-              }}
-              suppressRowHoverHighlight={true}
+                setHeaderHeight(20);
+              }}              
               columnHoverHighlight={true}
               rowStyle={rowStyle}
               getRowStyle={getRowStyle}
@@ -1698,7 +1675,11 @@ const getRowStyle = (params:any)  => {
               suppressRowClickSelection={true}
               enterNavigatesVertically={true}
               enterNavigatesVerticallyAfterEdit={true}
-              stopEditingWhenCellsLoseFocus ={true}              
+              stopEditingWhenCellsLoseFocus ={true}   
+              rowBuffer={10}   
+              debounceVerticalScrollbar={false}
+              enableRangeSelection={true}      
+              floatingFiltersHeight={23} 
             />
           </div>
           </div>
