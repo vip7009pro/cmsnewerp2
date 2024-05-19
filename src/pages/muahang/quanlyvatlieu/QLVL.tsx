@@ -37,6 +37,7 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
   CustomerListData,
+  MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
 import {
   MRT_ColumnDef,
@@ -49,24 +50,7 @@ import {
 } from 'material-react-table';
 import Example from "./Example";
 
-type MATERIAL_TABLE_DATA = {
-  M_ID: number;
-  M_NAME: string;
-  DESCR: string;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  SSPRICE: number;
-  CMSPRICE: number;
-  SLITTING_PRICE: number;
-  MASTER_WIDTH: number;
-  ROLL_LENGTH: number;
-  USE_YN: string;
-  INS_DATE: string;
-  INS_EMPL: string;
-  UPD_DATE: string;
-  UPD_EMPL: string;
-  EXP_DATE: string;
-}
+
 
 const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -1407,7 +1391,6 @@ const QLVL = () => {
     ],
     [],
   );
-
   const table = useMaterialReactTable({
     columns,
     data,
@@ -1432,10 +1415,9 @@ const QLVL = () => {
     /* enableBottomToolbar: true */
   });
 
-
   useEffect(() => {
-    //load_material_table();
-    //getcustomerlist();
+    load_material_table();
+    getcustomerlist();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
