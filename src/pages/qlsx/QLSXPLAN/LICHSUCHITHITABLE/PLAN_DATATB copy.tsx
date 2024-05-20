@@ -26,10 +26,8 @@ import {
 import moment from "moment";
 import React, {
   ReactElement,
-  useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
   useTransition,
@@ -76,9 +74,6 @@ import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { setTimeout } from "timers/promises";
 import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
-import "ag-grid-community/styles/ag-theme-quartz.css";
 const PLAN_DATATB = () => {
   const dataGridRef = useRef<any>(null);
   const currentRow = useRef(0);
@@ -100,43 +95,6 @@ const PLAN_DATATB = () => {
   const [showBV, setShowBV] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
-  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
-  const getRowStyle = (params: any) => {
-    //return { backgroundColor: 'white', fontSize: '0.6rem' };
-    if (Number(params.data?.PLAN_EQ.substring(2, 4)) % 2 === 0) {
-      return { backgroundColor: 'white', fontSize: '0.6rem' };
-    }
-    else {
-      return { backgroundColor: '#d3d7cf', fontSize: '0.6rem' };
-    }
-  };
-  const onSelectionChanged = useCallback(() => {
-    const selectedrow = gridRef.current!.api.getSelectedRows();
-    qlsxplandatafilter.current = selectedrow;
-  }, []);
-  function setIdText(id: string, value: string | number | undefined) {
-    document.getElementById(id)!.textContent =
-      value == undefined ? "undefined" : value + "";
-  }
-  const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
-  }, []);
-  const clearSelectedRows = useCallback(() => {
-    gridRef.current!.api.deselectAll();
-    qlsxplandatafilter.current = [];
-  }, []);
-  const gridRef = useRef<AgGridReact<QLSXPLANDATA>>(null);
-  const defaultColDef = useMemo(() => {
-    return {
-      initialWidth: 100,
-      wrapHeaderText: true,
-      autoHeaderHeight: false,
-      editable: false,
-      floatingFilter: true,
-      filter: true,
-    };
-  }, []);
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
@@ -194,654 +152,7 @@ const PLAN_DATATB = () => {
         console.log(error);
       });
   };
-  const column_plandatatable = [
-    {
-      field: "PLAN_FACTORY",
-      headerName: "FACTORY",
-      headerCheckboxSelection: true,
-      checkboxSelection: true,
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PLAN_DATE",
-      headerName: "PLAN_DATE",
-      width: 70,
-      editable: false,
-    },
-    {
-      field: "PLAN_ID",
-      headerName: "PLAN_ID",
-      width: 70,
-      editable: false,
-      resizeable: true,
-    },
-    {
-      field: "G_CODE",
-      headerName: "G_CODE",
-      width: 70,
-      editable: false,
-      resizeable: true,
-    },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 120,
-      editable: false,
-      resizeable: true,
-    },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 100,
-      editable: false,
-      cellRenderer: (params: any) => {
-        if (
-          params.data.FACTORY === null ||
-          params.data.EQ1 === null ||
-          params.data.EQ2 === null ||
-          params.data.Setting1 === null ||
-          params.data.Setting2 === null ||
-          params.data.UPH1 === null ||
-          params.data.UPH2 === null ||
-          params.data.Step1 === null ||
-          params.data.Step1 === null ||
-          params.data.LOSS_SX1 === null ||
-          params.data.LOSS_SX2 === null ||
-          params.data.LOSS_SETTING1 === null ||
-          params.data.LOSS_SETTING2 === null
-        )
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
-      },
-    },
-    {
-      field: "PLAN_EQ", headerName: "PLAN_EQ", width: 50, editable: true, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "bold" }}>
-            {params.data.PLAN_EQ}
-          </span>
-        );
-      }
-    },
-    {
-      field: "PLAN_ORDER", headerName: "STT", width: 40, editable: true, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "purple", fontWeight: "normarl" }}>
-            {params.data.PLAN_ORDER}
-          </span>
-        );
-      }
-    },
-    {
-      field: "PROCESS_NUMBER",
-      headerName: "PR_NUM",
-      width: 50,
-      editable: true,
-      cellRenderer: (params: any) => {
-        if (
-          params.data.PROCESS_NUMBER === null ||
-          params.data.PROCESS_NUMBER === 0
-        ) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>{params.data.PROCESS_NUMBER}</span>
-          );
-        }
-      },
-    },
-    { field: "STEP", headerName: "STEP", width: 45, editable: true, },
-    {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      width: 60,
-      editable: true,
-      cellRenderer: (params: any) => {
-        if (params.data.PLAN_QTY === 0) {
-          return <span style={{ color: "red", fontWeight: "bold" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "gray", fontWeight: "bold" }}>
-              {params.data.PLAN_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "KETQUASX",
-      headerName: "RESULT_QTY",
-      width: 75,
-      cellRenderer: (params: any) => {
-        if (params.data.KETQUASX !== null) {
-          return (
-            <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-              {params.data.KETQUASX?.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    {
-      field: "ACHIVEMENT_RATE",
-      headerName: "ACHIV_RATE",
-      width: 75,
-      cellRenderer: (params: any) => {
-        if (params.data.ACHIVEMENT_RATE !== undefined) {
-          if (params.data.ACHIVEMENT_RATE === 100) {
-            return (
-              <span style={{ color: "green", fontWeight: "bold" }}>
-                {params.data.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-                %
-              </span>
-            );
-          } else {
-            return (
-              <span style={{ color: "red", fontWeight: "bold" }}>
-                {params.data.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-                %
-              </span>
-            );
-          }
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    {
-      field: "EQ_STATUS",
-      headerName: "EQ_STATUS",
-      width: 120,
-      cellRenderer: (params: any) => {
-        if (params.data.EQ_STATUS === "KTST-KSX") {
-          return <span style={{ color: "green" }}>KTST-KSX</span>;
-        } else if (params.data.EQ_STATUS === "Đang setting") {
-          return (
-            <span style={{ color: "orange" }}>
-              Đang Setting{" "}
-              <img
-                alt='running'
-                src='/setting3.gif'
-                width={10}
-                height={10}
-              ></img>
-            </span>
-          );
-        } else if (params.data.EQ_STATUS === "Đang Run") {
-          return (
-            <span style={{ color: "blue" }}>
-              Đang Run{" "}
-              <img
-                alt='running'
-                src='/blink.gif'
-                width={40}
-                height={15}
-              ></img>
-            </span>
-          );
-        } else if (params.data.EQ_STATUS === "Chạy xong") {
-          return (
-            <span style={{ color: "green", fontWeight: "bold" }}>
-              Chạy xong
-            </span>
-          );
-        } else {
-          return <span style={{ color: "red" }}>Chưa chạy</span>;
-        }
-      },
-    },
-    {
-      field: "SETTING_START_TIME", headerName: "SETTING_START", width: 60, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "normarl" }}>
-            {params.data.SETTING_START_TIME}
-          </span>
-        );
-      }
-    },
-    {
-      field: "MASS_START_TIME", headerName: "MASS_START", width: 60, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "normarl" }}>
-            {params.data.MASS_START_TIME}
-          </span>
-        );
-      }
-    },
-    {
-      field: "MASS_END_TIME", headerName: "MASS_END", width: 60, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "normarl" }}>
-            {params.data.MASS_END_TIME}
-          </span>
-        );
-      }
-    },
-    {
-      field: "IS_SETTING", headerName: "IS_SETTING", width: 50, cellRenderer: (params: any) => {
-        if (params.data.IS_SETTING === 'Y')
-          return (
-            <span style={{ color: "blue", fontWeight: "bold" }}>
-              {params.data.IS_SETTING}
-            </span>
-          );
-        return (
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            {params.data.IS_SETTING}
-          </span>
-        );
-      }
-    },
-    {
-      field: "XUATDAOFILM", headerName: "Xuất Dao", width: 80, cellRenderer: (params: any) => {
-        if (params.data.XUATDAOFILM === "V") {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "60px",
-                backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              V
-            </div>
-          );
-        } else {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "50px",
-                backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              N
-            </div>
-          );
-        }
-      }
-    },
-    {
-      field: "DKXL", headerName: "ĐK Xuất liệu", width: 80, cellRenderer: (params: any) => {
-        if (params.data.DKXL === "V") {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "60px",
-                backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                //console.log(params.data);
-                setShowHideM(true);
-              }}
-            >
-              V
-            </div>
-          );
-        } else {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "50px",
-                backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                //console.log(params.data);
-                setShowHideM(true);
-              }}
-            >
-              N
-            </div>
-          );
-        }
-      }
-    },
-    {
-      field: "MAIN_MATERIAL", headerName: "Xuất liệu", width: 80, cellRenderer: (params: any) => {
-        if (params.data.MAIN_MATERIAL === "V") {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "60px",
-                backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              V
-            </div>
-          );
-        } else {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "50px",
-                backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              N
-            </div>
-          );
-        }
-      }
-    },
-    {
-      field: "INT_TEM", headerName: "In Tem", width: 60, cellRenderer: (params: any) => {
-        if (params.data.INT_TEM === "V") {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "60px",
-                backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              V
-            </div>
-          );
-        } else {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "50px",
-                backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              N
-            </div>
-          );
-        }
-      }
-    },
-    {
-      field: "CHOTBC", headerName: "Chốt báo cáo", width: 80, cellRenderer: (params: any) => {
-        if (params.data.CHOTBC === "V") {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "60px",
-                backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              V
-            </div>
-          );
-        } else {
-          return (
-            <div
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                height: "20px",
-                width: "50px",
-                backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              N
-            </div>
-          );
-        }
-      }
-    },
-    {
-      field: "AT_LEADTIME",
-      headerName: "AT_LEADTIME",
-      width: 90,
-      editable: false,
-      hide: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-            {params.data.AT_LEADTIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-          </span>
-        );
-      }
-    },
-    {
-      field: "ACC_TIME",
-      headerName: "ACC_TIME",
-      width: 80,
-      editable: false,
-      hide: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-            {params.data.ACC_TIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-          </span>
-        );
-      }
-    },
-    {
-      field: "KQ_SX_TAM",
-      headerName: "CURRENT_RESULT",
-      width: 120,
-      editable: false,
-      hide: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#3394D8", fontWeight: "bold" }}>
-            {params.data.KQ_SX_TAM?.toLocaleString("en-US")}
-          </span>
-        );
-      }
-    },
-    {
-      field: "REQ_DF",
-      headerName: "REQ DAO FILM",
-      width: 100,
-      editable: false,
-      hide: false,
-      cellRenderer: (params: any) => {
-        if (params.data.REQ_DF === "R") {
-          return (
-            <span style={{ color: "red", fontWeight: "normarl" }}>
-              REQUESTED
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green", fontWeight: "normarl" }}>
-              COMPLETED
-            </span>
-          );
-        }
-      }
-    },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "YCSX NO",
-      width: 80,
-      editable: false,
-      hide: false,
-    },
-    {
-      field: "PROD_REQUEST_DATE",
-      headerName: "YCSX DATE",
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PROD_REQUEST_QTY",
-      headerName: "YCSX QTY",
-      width: 80,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.PROD_REQUEST_QTY.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "CD1",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.CD1.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "CD2",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.CD2.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD3",
-      headerName: "CD3",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.CD3.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD4",
-      headerName: "CD4",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.CD4.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TCD1",
-      width: 55,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            {params.data?.TON_CD1.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TCD2",
-      width: 55,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            {params.data?.TON_CD2.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD3",
-      headerName: "TCD3",
-      width: 55,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            {params.data?.TON_CD3.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD4",
-      headerName: "TCD4",
-      width: 55,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            {params.data?.TON_CD4.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    { field: "EQ1", headerName: "EQ1", width: 40, editable: false },
-    { field: "EQ2", headerName: "EQ2", width: 40, editable: false },
-    { field: "EQ3", headerName: "EQ3", width: 40, editable: false },
-    { field: "EQ4", headerName: "EQ4", width: 40, editable: false },
-  ];
-  const [columns, setColumns] = useState<Array<any>>(column_plandatatable);
+  const [columns, setColumns] = useState<Array<any>>([]);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
@@ -946,6 +257,325 @@ const PLAN_DATATB = () => {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
   };
+  const column_plandatatable = [
+    {
+      field: "PLAN_FACTORY",
+      headerName: "FACTORY",
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "PLAN_DATE",
+      headerName: "PLAN_DATE",
+      width: 110,
+      editable: false,
+    },
+    {
+      field: "PLAN_ID",
+      headerName: "PLAN_ID",
+      width: 90,
+      editable: false,
+      resizeable: true,
+    },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 200,
+      editable: false,
+      resizeable: true,
+    },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 180,
+      editable: false,
+      renderCell: (params: any) => {
+        if (
+          params.row.FACTORY === null ||
+          params.row.EQ1 === null ||
+          params.row.EQ2 === null ||
+          params.row.Setting1 === null ||
+          params.row.Setting2 === null ||
+          params.row.UPH1 === null ||
+          params.row.UPH2 === null ||
+          params.row.Step1 === null ||
+          params.row.Step1 === null ||
+          params.row.LOSS_SX1 === null ||
+          params.row.LOSS_SX2 === null ||
+          params.row.LOSS_SETTING1 === null ||
+          params.row.LOSS_SETTING2 === null
+        )
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
+    {
+      field: "PLAN_QTY",
+      headerName: "PLAN_QTY",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PLAN_QTY === 0) {
+          return <span style={{ color: "red", fontWeight: "bold" }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green", fontWeight: "bold" }}>
+              {params.row.PLAN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "KETQUASX",
+      headerName: "RESULT_QTY",
+      width: 110,
+      renderCell: (params: any) => {
+        if (params.row.KETQUASX !== null) {
+          return (
+            <span style={{ color: "blue", fontWeight: "bold" }}>
+              {params.row.KETQUASX.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return <span>0</span>;
+        }
+      },
+    },
+    {
+      field: "ACHIVEMENT_RATE",
+      headerName: "ACHIVEMENT_RATE",
+      width: 150,
+      renderCell: (params: any) => {
+        if (params.row.ACHIVEMENT_RATE !== undefined) {
+          if (params.row.ACHIVEMENT_RATE === 100) {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {params.row.ACHIVEMENT_RATE.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })}
+                %
+              </span>
+            );
+          } else {
+            return (
+              <span style={{ color: "red", fontWeight: "bold" }}>
+                {params.row.ACHIVEMENT_RATE.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })}
+                %
+              </span>
+            );
+          }
+        } else {
+          return <span>0</span>;
+        }
+      },
+    },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
+    {
+      field: "EQ_STATUS",
+      headerName: "Trạng thái",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.EQ_STATUS === "KTST-KSX") {
+          return <span style={{ color: "green" }}>KTST-KSX</span>;
+        } else if (params.row.EQ_STATUS === "Đang setting") {
+          return <span style={{ color: "yellow" }}>Đang Setting</span>;
+        } else if (params.row.EQ_STATUS === "Đang Run") {
+          return <span style={{ color: "blue" }}>Đang Run</span>;
+        } else if (params.row.EQ_STATUS === "Chạy xong") {
+          return <span style={{ color: "green" }}>Chạy xong</span>;
+        } else {
+          return <span style={{ color: "red" }}>Chưa chạy</span>;
+        }
+      },
+    },
+    { field: "XUATDAOFILM", headerName: "Xuất Dao", width: 80 },
+    { field: "DKXL", headerName: "ĐK Xuất liệu", width: 80 },
+    { field: "MAIN_MATERIAL", headerName: "Xuất liệu", width: 80 },
+    { field: "CHOTBC", headerName: "Chốt báo cáo", width: 80 },
+    {
+      field: "INS_EMPL",
+      headerName: "INS_EMPL",
+      width: 120,
+      editable: false,
+      hide: false,
+    },
+    {
+      field: "INS_DATE",
+      headerName: "INS_DATE",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "UPD_EMPL",
+      headerName: "UPD_EMPL",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "UPD_DATE",
+      headerName: "UPD_DATE",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "PROD_REQUEST_NO",
+      headerName: "YCSX NO",
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "PROD_REQUEST_DATE",
+      headerName: "YCSX DATE",
+      width: 80,
+      editable: false,
+    },
+    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
+    {
+      field: "PROD_REQUEST_QTY",
+      headerName: "YCSX QTY",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.PROD_REQUEST_QTY.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    { field: "EQ1", headerName: "EQ1", width: 30, editable: false },
+    { field: "EQ2", headerName: "EQ2", width: 30, editable: false },
+    { field: "EQ3", headerName: "EQ3", width: 30, editable: false },
+    { field: "EQ4", headerName: "EQ4", width: 30, editable: false },
+    {
+      field: "CD1",
+      headerName: "CD1",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row?.CD1.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "CD2",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row?.CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row?.CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row?.CD4.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD1.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD4.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "PROCESS_NUMBER",
+      headerName: "PROCESS_NUMBER",
+      width: 110,
+      renderCell: (params: any) => {
+        if (
+          params.row.PROCESS_NUMBER === null ||
+          params.row.PROCESS_NUMBER === 0
+        ) {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green" }}>{params.row.PROCESS_NUMBER}</span>
+          );
+        }
+      },
+    },
+    { field: "STEP", headerName: "STEP", width: 60 },
+    { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110 },
+  ];
   const hanlde_SaveChiThi = async () => {
     let err_code: string = "0";
     let total_lieuql_sx: number = 0;
@@ -1530,7 +1160,6 @@ const PLAN_DATATB = () => {
           setReadyRender(true);
           setisLoading(false);
           clearSelection();
-          clearSelectedRows();
           if (!showhideM)
             Swal.fire(
               "Thông báo",
@@ -1646,6 +1275,7 @@ const PLAN_DATATB = () => {
       showConfirmButton: false,
     });
     let selectedPlanTable: QLSXPLANDATA[] = qlsxplandatafilter.current;
+
     let err_code: string = "0";
     for (let i = 0; i < selectedPlanTable.length; i++) {
       if (selectedPlanTable[i].XUATDAOFILM !== "V" && selectedPlanTable[i].MAIN_MATERIAL !== "V" && selectedPlanTable[i].INT_TEM !== "V" && selectedPlanTable[i].CHOTBC !== "V") {
@@ -1656,6 +1286,7 @@ const PLAN_DATATB = () => {
             //console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
             } else {
+
             }
           })
           .catch((error) => {
@@ -1671,6 +1302,9 @@ const PLAN_DATATB = () => {
       Swal.fire("Thông báo", "Xóa PLAN thành công", "success");
       loadQLSXPlan(fromdate);
     }
+
+
+
   }
   const handleGetChiThiTable = async (
     PLAN_ID: string,
@@ -1699,6 +1333,7 @@ const PLAN_DATATB = () => {
           CAVITY_NGANG = response.data.data[0].G_C_R;
           CAVITY_DOC = response.data.data[0].G_C;
           let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
+
           LOSS_SX1 =
             response.data.data[0].LOSS_SX1 === null
               ? 0
@@ -1879,6 +1514,7 @@ const PLAN_DATATB = () => {
             } else if (PROCESS_NUMBER === 4) {
               FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0;
             }
+
             if (PROCESS_NUMBER === 1) {
               FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 2) {
@@ -2351,8 +1987,9 @@ const PLAN_DATATB = () => {
       PLAN_DATE: plan_date
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
+
         } else {
           Swal.fire('Thông báo', 'Update plan order thất bại', 'error');
         }
@@ -2361,6 +1998,7 @@ const PLAN_DATATB = () => {
         console.log(error);
       });
   }
+
   const planDataTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -2434,6 +2072,12 @@ const PLAN_DATATB = () => {
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
+                    /* checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handle_UpdatePlan
+            ); */
                     checkBP(
                       userData,
                       ["QLSX"],
@@ -2441,6 +2085,7 @@ const PLAN_DATATB = () => {
                       ["ALL"],
                       handle_UpdatePlan
                     );
+                    //handle_UpdatePlan();
                   }}
                 >
                   <AiFillSave color='blue' size={20} />
@@ -2663,6 +2308,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
+
             <Column
               dataField='PLAN_EQ'
               caption='PLAN EQ'
@@ -2676,6 +2322,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={true}
             ></Column>
+
             <Column
               dataField='PLAN_ORDER'
               caption='STT'
@@ -2832,11 +2479,13 @@ const PLAN_DATATB = () => {
               caption='MASS_END'
               width={60}
               cellRender={(params: any) => {
+
                 return (
                   <span style={{ color: "blue", fontWeight: "normarl" }}>
                     {params.data.MASS_END_TIME}
                   </span>
                 );
+
               }}
               allowEditing={false}
             ></Column>
@@ -2921,7 +2570,7 @@ const PLAN_DATATB = () => {
                         borderRadius: "5px",
                       }}
                       onClick={() => {
-                        //console.log(params.data);
+                        console.log(params.data);
                         setShowHideM(true);
                       }}
                     >
@@ -2942,7 +2591,7 @@ const PLAN_DATATB = () => {
                         borderRadius: "5px",
                       }}
                       onClick={() => {
-                        //console.log(params.data);
+                        console.log(params.data);
                         setShowHideM(true);
                       }}
                     >
@@ -3806,10 +3455,21 @@ const PLAN_DATATB = () => {
     ),
     [chithidatatable]
   );
+
   useEffect(() => {
     getMachineList();
+    /*  let intervalID = window.setInterval(() => {
+      console.log('current row',currentRow);
+      navigateToRow(currentRow.current);      
+      if(datatbTotalRow.current >0)
+      currentRow.current +=10;
+      if(currentRow.current >= datatbTotalRow.current) currentRow.current=0;
+    }, 2000); */
+
     return () => {
+      /* window.clearInterval(intervalID);       */
     };
+
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -3817,6 +3477,55 @@ const PLAN_DATATB = () => {
       <div className='tracuuDataInspection'>
         <div className='tracuuYCSXTable'>
           <div className='header'>
+            {/* <div className='lossinfo'>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    FACTORY
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    MACHINE
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    TOTAL PLAN
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    TOTAL RESULT
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    ACHIVEMENT RATE
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "bold" }}>
+                    {factory}
+                  </td>
+                  <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                    {machine}
+                  </td>
+                  <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                    {summarydata.PLAN_QTY?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "green", fontWeight: "bold" }}>
+                    {summarydata.KETQUASX?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
+                    {summarydata.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                    %
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> */}
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>
@@ -3909,221 +3618,10 @@ const PLAN_DATATB = () => {
               </div>
             </div>
           </div>
-          <div className="toolbar">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                SaveExcel(plandatatable, "PlanDataTable");
-              }}
-            >
-              <AiFillFileExcel color="green" size={15} />
-              SAVE
-            </IconButton>
-            <IconButton
-              className='buttonIcon'
-              onClick={() => {
-                checkBP(
-                  userData,
-                  ["QLSX"],
-                  ["ALL"],
-                  ["ALL"],
-                  handle_UpdatePlan
-                );
-              }}
-            >
-              <AiFillSave color='blue' size={20} />
-              Lưu PLAN
-            </IconButton>
-            <IconButton
-              className='buttonIcon'
-              onClick={() => {
-                if (qlsxplandatafilter.current.length > 0) {
-                  if (userData?.EMPL_NO !== "NHU1903") {
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_UpdatePlan
-                    );
-                  }
-                  setShowChiThi(true);
-                  setChiThiListRender(
-                    renderChiThi(qlsxplandatafilter.current)
-                  );
-                  //console.log(ycsxdatatablefilter);
-                } else {
-                  setShowChiThi(false);
-                  Swal.fire(
-                    "Thông báo",
-                    "Chọn ít nhất 1 Plan để in",
-                    "error"
-                  );
-                }
-              }}
-            >
-              <AiOutlinePrinter color='#0066ff' size={15} />
-              Print Chỉ Thị
-            </IconButton>
-            <IconButton
-              className='buttonIcon'
-              onClick={() => {
-                let ycsx_number: number = [
-                  ...new Set(
-                    qlsxplandatafilter.current.map(
-                      (e: QLSXPLANDATA, index: number) => {
-                        return e.PROD_REQUEST_NO;
-                      }
-                    )
-                  ),
-                ].length;
-                // console.log("ycsx_number", ycsx_number);
-                if (
-                  qlsxplandatafilter.current !== undefined &&
-                  qlsxplandatafilter.current.length > 0
-                ) {
-                  if (
-                    qlsxplandatafilter.current[0].FACTORY === null ||
-                    qlsxplandatafilter.current[0].EQ1 === null ||
-                    qlsxplandatafilter.current[0].EQ2 === null ||
-                    qlsxplandatafilter.current[0].Setting1 === null ||
-                    qlsxplandatafilter.current[0].Setting2 === null ||
-                    qlsxplandatafilter.current[0].UPH1 === null ||
-                    qlsxplandatafilter.current[0].UPH2 === null ||
-                    qlsxplandatafilter.current[0].Step1 === null ||
-                    qlsxplandatafilter.current[0].Step1 === null ||
-                    qlsxplandatafilter.current[0].LOSS_SX1 === null ||
-                    qlsxplandatafilter.current[0].LOSS_SX2 === null ||
-                    qlsxplandatafilter.current[0].LOSS_SETTING1 === null ||
-                    qlsxplandatafilter.current[0].LOSS_SETTING2 === null
-                  ) {
-                    Swal.fire(
-                      "Thông báo",
-                      "Nhập data định mức trước khi chỉ thị",
-                      "error"
-                    );
-                  } else {
-                    if (ycsx_number === 1) {
-                      let chithimain: QLSXPLANDATA[] =
-                        qlsxplandatafilter.current.filter(
-                          (element: QLSXPLANDATA, index: number) =>
-                            element.STEP === 0
-                        );
-                      if (chithimain.length === 1) {
-                        setShowChiThi2(true);
-                        setChiThiListRender2(
-                          renderChiThi2(qlsxplandatafilter.current)
-                        );
-                      } else if (chithimain.length === 0) {
-                        Swal.fire(
-                          "Thông báo",
-                          "Chưa có chỉ thị chính (B0)",
-                          "error"
-                        );
-                      } else {
-                        Swal.fire(
-                          "Thông báo",
-                          "Chỉ được chọn 1 chỉ thị B0",
-                          "error"
-                        );
-                      }
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Chỉ được chọn các chỉ thị của 1 YCSX",
-                        "error"
-                      );
-                    }
-                  }
-                  //console.log(ycsxdatatablefilter);
-                } else {
-                  setShowChiThi2(false);
-                  Swal.fire(
-                    "Thông báo",
-                    "Chọn ít nhất 1 Plan để in",
-                    "error"
-                  );
-                }
-              }}
-            >
-              <AiOutlinePrinter color='#0066ff' size={15} />
-              Print Chỉ Thị Combo
-            </IconButton>
-            <IconButton
-              className='buttonIcon'
-              onClick={() => {
-                if (qlsxplandatafilter.current.length > 0) {
-                  setShowBV(!showBV);
-                  setYCSXListRender(
-                    renderBanVe2(qlsxplandatafilter.current)
-                  );
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Chọn ít nhất 1 YCSX để in",
-                    "error"
-                  );
-                }
-              }}
-            >
-              <AiOutlinePrinter color='#ff751a' size={15} />
-              Print Bản Vẽ
-            </IconButton>
-          </div>
-          <div
-            className="ag-theme-quartz" // applying the grid theme
-            style={{ height: '100%', }} // the grid will fill the size of the parent container
-          >
-            <AgGridReact
-              rowData={plandatatable}
-              columnDefs={columns}
-              rowHeight={25}
-              defaultColDef={defaultColDef}
-              ref={gridRef}
-              onGridReady={() => {
-                setHeaderHeight(20);
-              }}
-              columnHoverHighlight={true}
-              rowStyle={rowStyle}
-              getRowStyle={getRowStyle}
-              getRowId={(params: any) => params.data.PLAN_ID}
-              rowSelection={"multiple"}
-              rowMultiSelectWithClick={true}
-              suppressRowClickSelection={true}
-              enterNavigatesVertically={true}
-              enterNavigatesVerticallyAfterEdit={true}
-              stopEditingWhenCellsLoseFocus={true}
-              rowBuffer={10}
-              debounceVerticalScrollbar={false}
-              enableRangeSelection={true}
-              floatingFiltersHeight={23}
-              onSelectionChanged={onSelectionChanged}
-              onRowClicked={(params: any) => {
-                //setClickedRows(params.data)
-                //console.log(params.data)
-                clickedRow.current = params.data;
-                setSelectedPlan(params.data);
-                handleGetChiThiTable(
-                  params.data.PLAN_ID,
-                  params.data.G_CODE,
-                  params.data.PLAN_QTY,
-                  params.data.PROCESS_NUMBER,
-                  params.data.IS_SETTING ?? 'Y'
-                );
-              }}
-              onRowDoubleClicked={
-                (params: any) => {
-                  setShowHideM(true);
-                }
-              }
-              onCellEditingStopped={(params: any) => {
-                //console.log(params)
-              }}
-            />
-          </div>
-          {/* {planDataTable} */}
+          {planDataTable}
         </div>
       </div>
+
       {showhideM && (
         <div className='listlieuchithi'>
           <div className='chithiheader'>
@@ -4155,6 +3653,7 @@ const PLAN_DATATB = () => {
               ___PLAN_QTY:
               {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
             </span>
+
           </div>
           {planMaterialTable}
         </div>

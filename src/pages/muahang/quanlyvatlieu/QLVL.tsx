@@ -1052,7 +1052,7 @@ const QLVL = () => {
     };
   }, []);
   // Column Definitions: Defines the columns to be displayed.
-  const [colDefs, setColDefs] = useState([
+  const [colDefs, setColDefs] = useState<Array<any>>([
     {
       field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, headerHeight: 100, floatingFilter: true, /* cellStyle: (params:any) => {     
        if (params.data.M_ID%2==0 ) {

@@ -1154,7 +1154,7 @@ const YCSXManager = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
   ];
-  const [colDefs, setColDefs] = useState(getCompany()==='CMS'? column_ycsxtable2 : column_ycsxtable_pvn2);
+  const [colDefs, setColDefs] = useState<Array<any>>(getCompany()==='CMS'? column_ycsxtable2 : column_ycsxtable_pvn2);
   const column_ycsxtable = [
     {
       field: "G_NAME_KD",

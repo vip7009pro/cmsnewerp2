@@ -1804,7 +1804,7 @@ const CODE_MANAGER = () => {
     { field: "NOTE", headerName: "NOTE", width: 150 },
   ];
   const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);
-  const [columns, setColumns] = useState<GridColumns>(column_codeinfo2);
+  const [columns, setColumns] = useState<Array<any>>(column_codeinfo2);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
     [],
   );
