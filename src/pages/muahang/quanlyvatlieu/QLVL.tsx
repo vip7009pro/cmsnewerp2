@@ -29,7 +29,6 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
-import { UserContext } from "../../../api/Context";
 import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
@@ -39,27 +38,15 @@ import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
-import {
-  MRT_ColumnDef,
-  MRT_RowSelectionState,
-  MRT_RowVirtualizer,
-  MRT_SortingState,
-  MaterialReactTable,
-  createMRTColumnHelper,
-  useMaterialReactTable,
-} from 'material-react-table';
 import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
-
-
-
 const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
+  const [selectedRows, setSelectedRows] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [m_name, setM_Name] = useState("");
-  const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
+  const [clickedRows, setClickedRows] = useState<MATERIAL_TABLE_DATA>({
     M_ID: 0,
     M_NAME: "",
     DESCR: "",
@@ -103,11 +90,11 @@ const QLVL = () => {
           );
           //console.log(loadeddata);
           set_material_table_data(loadeddata);
-         /*  Swal.fire(
+          Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
-          ); */
+          );
         } else {
           set_material_table_data([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -121,16 +108,16 @@ const QLVL = () => {
     console.log(keyname);
     console.log(value);
     let tempCustInfo: MATERIAL_TABLE_DATA = {
-      ...selectedRows,
+      ...clickedRows,
       [keyname]: value,
     };
     //console.log(tempcodefullinfo);
-    setSelectedRows(tempCustInfo);
+    setClickedRows(tempCustInfo);
   };
   const addMaterial = async () => {
     let materialExist: boolean = false;
     await generalQuery("checkMaterialExist", {
-      M_NAME: selectedRows.M_NAME,
+      M_NAME: clickedRows.M_NAME,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -144,7 +131,7 @@ const QLVL = () => {
         console.log(error);
       });
     if (materialExist === false) {
-      await generalQuery("addMaterial", selectedRows)
+      await generalQuery("addMaterial", clickedRows)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -160,7 +147,7 @@ const QLVL = () => {
     }
   };
   const updateMaterial = async () => {
-    generalQuery("updateMaterial", selectedRows)
+    generalQuery("updateMaterial", clickedRows)
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -238,7 +225,7 @@ const QLVL = () => {
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
-              setSelectedRows(e.selectedRowsData[0]);
+              setClickedRows(e.selectedRowsData[0]);
             }}
             onRowClick={(e) => {
               //console.log(e.data);
@@ -1043,94 +1030,85 @@ const QLVL = () => {
         },
       },
     ],
-    store: datasxtable,
+    store: data,
   });
-  
-  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  
-
- 
-  const rowStyle = { backgroundColor: 'transparent', height:'20px' };
-
-// set background colour on even rows again, this looks bad, should be using CSS classes
-const getRowStyle = (params:any)  => {
-  return { backgroundColor: 'white', fontSize:'0.6rem'};
+  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const getRowStyle = (params: any) => {
+    return { backgroundColor: 'white', fontSize: '0.6rem' };
     /* if (params.data.M_ID % 2 === 0) {
         return { backgroundColor: 'white', fontSize:'0.6rem'};
     }
     else {
       return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
-
     } */
-};
-
+  };
   const gridRef = useRef<AgGridReact<MATERIAL_TABLE_DATA>>(null);
   const defaultColDef = useMemo(() => {
     return {
       initialWidth: 100,
       wrapHeaderText: true,
-      autoHeaderHeight: false,     
-      editable: true
+      autoHeaderHeight: false,
+      editable: false
     };
   }, []);
   // Column Definitions: Defines the columns to be displayed.
   const [colDefs, setColDefs] = useState([
-    { field: 'M_ID',headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true,width: 90, resizable: true,headerHeight: 100, floatingFilter: true, cellStyle: (params:any) => {     
-      /* if (params.data.M_ID%2==0 ) {
+    {
+      field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, headerHeight: 100, floatingFilter: true, /* cellStyle: (params:any) => {     
+       if (params.data.M_ID%2==0 ) {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
         return { backgroundColor: '#f8d7da', color: '#721c24' };
-      } */
-    }},
-    { field: 'M_NAME',headerName: 'M_NAME', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, editable: false},
-    { field: 'DESCR',headerName: 'DESCR', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true,},
-    { field: 'CUST_CD',headerName: 'CUST_CD', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, },
-    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', width: 90, resizable: true,headerHeight: 200,floatingFilter: true, filter: true, },
-    { field: 'SSPRICE',headerName: 'SSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
-    { field: 'CMSPRICE',headerName: 'CMSPRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
-    { field: 'SLITTING_PRICE',headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
-    { field: 'MASTER_WIDTH',headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
-    { field: 'ROLL_LENGTH',headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number"},
-    { field: 'USE_YN',headerName: 'USE_YN', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'EXP_DATE',headerName: 'EXP_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'TDS',headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
-      let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;
-      let file: any = null;
-      if (params.data?.TDS === 'Y') {
-        return (
-          <a target="_blank" rel="noopener noreferrer" href={href} >LINK</a>
-        )
-      }
-      else {
-        return (
-          <div className="tdsuploadbutton">
-            <button onClick={() => {
-              uploadTDS(params.data?.M_ID, file);
-            }}>Upload</button>
-            <input
-              accept='.pdf'
-              type='file'
-              onChange={(e: any) => {
-                file = e.target.files[0];
-              }}
-            />
-          </div>
-        )
-      }
-
-    }, floatingFilter: true, filter: true, },
-    { field: 'INS_DATE',headerName: 'INS_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'INS_EMPL',headerName: 'INS_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'UPD_DATE',headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },    
+      } 
+    } */},
+    { field: 'M_NAME', headerName: 'M_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, editable: false },
+    { field: 'DESCR', headerName: 'DESCR', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'CUST_CD', headerName: 'CUST_CD', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'SSPRICE', headerName: 'OPEN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'CMSPRICE', headerName: 'ORIGIN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'SLITTING_PRICE', headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'MASTER_WIDTH', headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'ROLL_LENGTH', headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'USE_YN', headerName: 'USE_YN', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    {
+      field: 'TDS', headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
+        let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;
+        let file: any = null;
+        if (params.data?.TDS === 'Y') {
+          return (
+            <a target="_blank" rel="noopener noreferrer" href={href} >LINK</a>
+          )
+        }
+        else {
+          return (
+            <div className="tdsuploadbutton">
+              <button onClick={() => {
+                uploadTDS(params.data?.M_ID, file);
+              }}>Upload</button>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                }}
+              />
+            </div>
+          )
+        }
+      }, floatingFilter: true, filter: true,
+    },
+    { field: 'INS_DATE', headerName: 'INS_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
   ]);
   const onSelectionChanged = useCallback(() => {
-    const selectedRows = gridRef.current!.api.getSelectedRows();
-    console.log(selectedRows);
+    const selectedrow = gridRef.current!.api.getSelectedRows();
+    setSelectedRows(selectedrow);
+    //console.log(clickedRows);
   }, []);
-
   function setIdText(id: string, value: string | number | undefined) {
     document.getElementById(id)!.textContent =
       value == undefined ? "undefined" : value + "";
@@ -1139,303 +1117,9 @@ const getRowStyle = (params:any)  => {
     gridRef.current!.api.setGridOption("headerHeight", value);
     setIdText("headerHeight", value);
   }, []);
-  const columns = useMemo<MRT_ColumnDef<MATERIAL_TABLE_DATA>[]>(
-    () => [     
-      {        
-        accessorKey: 'M_ID', //id required if you use accessorFn instead of accessorKey
-        header: 'M_ID',
-        id:'M_ID',
-        Header: <b style={{ color: 'red', fontSize:'0.6rem' }}>M_ID</b>, //optional custom markup
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()}</span>, //optional custom cell render
-        size: 50,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'left',
-        },
-      },
-      {
-        
-        accessorKey: 'M_NAME', //id required if you use accessorFn instead of accessorKey
-        header: 'M_NAME',
-        Header: <b style={{ color: 'green', fontSize:'0.6rem' }}>M_NAME</b>, //optional custom markup
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>, //optional custom cell render
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'DESCR', //id required if you use accessorFn instead of accessorKey
-        header: 'DESCR',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>DESCR</i>, //optional custom markup
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>, //optional custom cell render
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'CUST_CD',
-        header: 'CUST_CD',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>CUST_CD</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'CUST_NAME_KD',
-        header: 'CUST_NAME_KD',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>CUST_NAME_KD</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'SSPRICE',
-        header: 'SSPRICE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>OPEN_PRICE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'CMSPRICE',
-        header: 'CMSPRICE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>ORIGIN_PRICE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'SLITTING_PRICE',
-        header: 'SLITTING_PRICE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>SLITTING_PRICE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {
-        
-        accessorKey: 'MASTER_WIDTH',
-        header: 'MASTER_WIDTH',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>MASTER_WIDTH</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'ROLL_LENGTH',
-        header: 'ROLL_LENGTH',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>ROLL_LENGTH</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<number>()?.toLocaleString('en-US')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'USE_YN',
-        header: 'USE_YN',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>USE_YN</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 60,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },      
-      {        
-        accessorKey: 'TDS',
-        header: 'TDS',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>TDS</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 50,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'INS_DATE',
-        header: 'INS_DATE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>INS_DATE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{moment(cell.getValue<string>()).format('YYYY-MM-DD HH:mm:ss')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'INS_EMPL',
-        header: 'INS_EMPL',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>INS_EMPL</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 80,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'UPD_DATE',
-        header: 'UPD_DATE',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>UPD_DATE</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{moment(cell.getValue<string>()).format('YYYY-MM-DD HH:mm:ss')}</span>,
-        size: 100,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-      {        
-        accessorKey: 'UPD_EMPL',
-        header: 'UPD_EMPL',
-        Header: <i style={{ color: 'green', fontSize:'0.6rem' }}>UPD_EMPL</i>,
-        Cell: ({ cell }) => <span style={{ color: 'black', fontSize:'0.6rem' }}>{cell.getValue<string>()}</span>,
-        size: 80,
-        muiTableHeadCellProps: {
-          align: 'left',
-        },
-        muiTableBodyCellProps: {
-          align: 'left',
-        },
-        muiTableFooterCellProps: {
-          align: 'center',
-        },
-      },
-    ],
-    [],
-  );
-  const table = useMaterialReactTable({
-    columns,
-    data,
-    initialState: { density: 'compact' },
-    enablePagination: false,    
-    /* enableRowNumbers: true, */
-    enableRowVirtualization: true,
-    enableGlobalFilterModes: true,
-    onSortingChange: setSorting,
-    state: {sorting, rowSelection },
-    rowVirtualizerInstanceRef,
-    rowVirtualizerOptions: { overscan: 5 },
-    enableColumnResizing: true,    
-    enableMultiRowSelection: true,    
-    enableBatchRowSelection: true,
-    enableSelectAll: true,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    
-    /* enableEditing: true, */
-    /* enableRowActions: true, */
-    /* enableBottomToolbar: true */
-  });
   useEffect(() => {
     //load_material_table();
     getcustomerlist();
-    
     //setColumnDefinition(column_inspect_output);
   }, [defaultColDef]);
   return (
@@ -1449,7 +1133,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Mã Vật Liệu"
-                  value={selectedRows?.M_NAME}
+                  value={clickedRows?.M_NAME}
                   onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
                 ></input>
               </label>
@@ -1485,20 +1169,20 @@ const getRowStyle = (params:any)  => {
                     CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
                   }}
                   value={{
-                    CUST_CD: selectedRows?.CUST_CD,
+                    CUST_CD: clickedRows?.CUST_CD,
                     CUST_NAME: customerList.filter(
                       (e: CustomerListData, index: number) =>
-                        e.CUST_CD === selectedRows?.CUST_CD,
+                        e.CUST_CD === clickedRows?.CUST_CD,
                     )[0]?.CUST_NAME,
                     CUST_NAME_KD:
                       customerList.filter(
                         (e: CustomerListData, index: number) =>
-                          e.CUST_CD === selectedRows?.CUST_CD,
+                          e.CUST_CD === clickedRows?.CUST_CD,
                       )[0]?.CUST_NAME_KD === undefined
                         ? ""
                         : customerList.filter(
                           (e: CustomerListData, index: number) =>
-                            e.CUST_CD === selectedRows?.CUST_CD,
+                            e.CUST_CD === clickedRows?.CUST_CD,
                         )[0]?.CUST_NAME_KD,
                   }}
                   onChange={(event: any, newValue: any) => {
@@ -1517,7 +1201,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Mô tả"
-                  value={selectedRows?.DESCR}
+                  value={clickedRows?.DESCR}
                   onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
                 ></input>
               </label>
@@ -1526,7 +1210,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Mô tả"
-                  value={selectedRows?.SSPRICE}
+                  value={clickedRows?.SSPRICE}
                   onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
                 ></input>
               </label>
@@ -1537,7 +1221,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Mô tả"
-                  value={selectedRows?.CMSPRICE}
+                  value={clickedRows?.CMSPRICE}
                   onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
                 ></input>
               </label>
@@ -1546,7 +1230,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Mô tả"
-                  value={selectedRows?.SLITTING_PRICE}
+                  value={clickedRows?.SLITTING_PRICE}
                   onChange={(e) =>
                     seMaterialInfo("SLITTING_PRICE", e.target.value)
                   }
@@ -1559,7 +1243,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Master width"
-                  value={selectedRows?.MASTER_WIDTH}
+                  value={clickedRows?.MASTER_WIDTH}
                   onChange={(e) =>
                     seMaterialInfo("MASTER_WIDTH", e.target.value)
                   }
@@ -1570,7 +1254,7 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Roll length"
-                  value={selectedRows?.ROLL_LENGTH}
+                  value={clickedRows?.ROLL_LENGTH}
                   onChange={(e) =>
                     seMaterialInfo("ROLL_LENGTH", e.target.value)
                   }
@@ -1583,26 +1267,26 @@ const getRowStyle = (params:any)  => {
                 <input
                   type="text"
                   placeholder="Master width"
-                  value={selectedRows?.EXP_DATE}
+                  value={clickedRows?.EXP_DATE}
                   onChange={(e) => seMaterialInfo("EXP_DATE", e.target.value)}
                 ></input>
               </label>
               <label>
-                <FormControlLabel
-                  label="Mở/Khóa"
-                  control={
-                    <Checkbox
-                      checked={selectedRows?.USE_YN === "Y"}
-                      onChange={(e) => {
-                        seMaterialInfo(
-                          "USE_YN",
-                          e.target.checked === true ? "Y" : "N",
-                        );
-                      }}
-                      inputProps={{ "aria-label": "controlled" }}
-                    />
-                  }
-                />
+                <b>Mở/Khóa:</b>
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type='checkbox'
+                  name='pobalancecheckbox'
+                  defaultChecked={clickedRows?.USE_YN === "Y"}
+                  checked={clickedRows?.USE_YN === "Y"}
+                  onChange={(e) => {
+                    seMaterialInfo(
+                      "USE_YN", e.target.checked === true ? "Y" : "N",
+                    );
+                  }}
+                ></input>
               </label>
             </div>
           </div>
@@ -1616,37 +1300,31 @@ const getRowStyle = (params:any)  => {
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
               updateMaterial();
             }}>Update</Button>
-            
-           
           </div>
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              console.log(data)
-            }}>TEST</Button>
-       
+          {/* <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
+            console.log(selectedRows)
+          }}>TEST</Button> */}
         </div>
-       
-        {/* <div className="tracuuYCSXTable"><Example/></div> */}
-        {/* <div className="tracuuYCSXTable"><MaterialReactTable table={table} /></div> */}
         <div className="tracuuYCSXTable">
           <div className="toolbar">
-          <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(data, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                SaveExcel(data, "MaterialStatus");
+              }}
+            >
+              <AiFillFileExcel color="green" size={15} />
+              SAVE
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(!showhidePivotTable);
+              }}
+            >
+              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+              Pivot
+            </IconButton>
           </div>
           <div
             className="ag-theme-quartz" // applying the grid theme
@@ -1656,36 +1334,36 @@ const getRowStyle = (params:any)  => {
               rowData={data}
               columnDefs={colDefs}
               rowHeight={25}
-              defaultColDef={defaultColDef} 
+              defaultColDef={defaultColDef}
               ref={gridRef}
-              onGridReady={()=> {
+              onGridReady={() => {
                 setHeaderHeight(20);
-              }}              
+              }}
               columnHoverHighlight={true}
               rowStyle={rowStyle}
               getRowStyle={getRowStyle}
-              getRowId={(params:any)=> params.data.M_ID}
+              getRowId={(params: any) => params.data.M_ID}
               rowSelection={"multiple"}
-              rowMultiSelectWithClick={true}    
-              onSelectionChanged={onSelectionChanged}   
-              onRowClicked={(params:any)=> {
-                setSelectedRows(params.data)
-                //console.log(params.data)
-              }}  
+              rowMultiSelectWithClick={true}
               suppressRowClickSelection={true}
               enterNavigatesVertically={true}
               enterNavigatesVerticallyAfterEdit={true}
-              stopEditingWhenCellsLoseFocus ={true}   
-              rowBuffer={10}   
+              stopEditingWhenCellsLoseFocus={true}
+              rowBuffer={10}
               debounceVerticalScrollbar={false}
-              enableRangeSelection={true}      
-              floatingFiltersHeight={23} 
-              onCellEditingStopped={(params:any)=> {
+              enableRangeSelection={true}
+              floatingFiltersHeight={23}
+              onSelectionChanged={onSelectionChanged}
+              onRowClicked={(params: any) => {
+                setClickedRows(params.data)
+                //console.log(params.data)
+              }}
+              onCellEditingStopped={(params: any) => {
                 console.log(params)
-              }}              
+              }}
             />
           </div>
-          </div>
+        </div>
         {/* <div className="tracuuYCSXTable">{materialDataTable}</div> */}
         {showhidePivotTable && (
           <div className="pivottable1">

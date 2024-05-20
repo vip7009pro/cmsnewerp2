@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
-import { generalQuery, getCompany, getSocket, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
 import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
 import LinearProgress, {
@@ -48,6 +48,8 @@ export default function AccountInfo() {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
+  const [currentPW, setCurrentPW] = useState("");
+  const [newPW, setNewPW] = useState("");
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [server_string, setServer_String] = useState('http://14.160.33.94:5013');
   const [webver, setwebver] = useState(0);
@@ -194,6 +196,22 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
+  const handleChangePassWord = () => {
+    if (currentPW === getUserData()?.PASSWORD) {
+      generalQuery("changepassword", {
+        PASSWORD: newPW
+      })
+        .then((response) => {
+          Swal.fire("Thông báo", "Thay đổi mật khẩu thành công", "success");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      Swal.fire("Thông báo", "Mật khẩu hiện tại không đúng", "error");
+    }
+  }
   const [file, setFile] = useState<any>(null);
   //let file:any = null;
   const uploadFile2 = async (e: any) => {
@@ -522,6 +540,29 @@ export default function AccountInfo() {
                 Set Server
               </Button>
             )}
+            Pass hiện tại:
+            <input
+              type='password'
+              value={currentPW}
+              onChange={(e) => {
+                setCurrentPW(e.target.value);
+              }}
+            ></input>
+            Pass mới:
+            <input
+              type='password'
+              value={newPW}
+              onChange={(e) => {
+                setNewPW(e.target.value);
+              }}
+            ></input>
+            <Button
+              onClick={() => {
+                handleChangePassWord();
+              }}
+            >
+              Change Pass
+            </Button>
           </h3>{" "}
           <br></br>
         </div>

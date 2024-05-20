@@ -16,7 +16,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState, useTransition } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
 import {
   AiFillAmazonCircle,
@@ -55,6 +55,9 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../api/GlobalInterface";
+import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css"; 
+import "ag-grid-community/styles/ag-theme-quartz.css"; 
 const YCSXManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -162,6 +165,996 @@ const YCSXManager = () => {
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState("");
   const [AMZ_check_flag, setAMZ_Check_Flag] = useState(false);
+  const [clickedRows, setClickedRows] = useState<YCSXTableData>({
+    BLOCK_TDYCSX: 0,
+    BTP_TDYCSX: 0,
+    CD1: 0,
+    CD2: 0,
+    CD3: 0,
+    CD4: 0,
+    CK_TDYCSX: 0,
+    CUST_CD: '',
+    CUST_NAME_KD: '',
+    DACHITHI: '',
+    DAUPAMZ: '',
+    EMPL_NAME: '',
+    EMPL_NO: '',
+    EQ1: '',
+    EQ2: '',
+    EQ3: '',
+    EQ4: '',
+    FACTORY: '',
+    FCST_TDYCSX: 0,
+    G_CODE: '',
+    G_NAME: '',
+    G_NAME_KD: '',
+    INSPECT_BALANCE: 0,
+    LOAIXH: '',
+    LOSS_SETTING1: 0,
+    LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
+    LOSS_SX1: 0,
+    LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
+    LOT_TOTAL_INPUT_QTY_EA: 0,
+    LOT_TOTAL_OUTPUT_QTY_EA: 0,
+    NOTE: '',
+    PDUYET: 0,
+    PHAN_LOAI: '',
+    PO_TDYCSX: 0,
+    PROD_REQUEST_DATE: '',
+    PROD_REQUEST_NO: '',
+    PROD_REQUEST_QTY: 0,
+    REMARK: '',
+    Setting1: 0,
+    Setting2: 0,
+    Setting3: 0,
+    Setting4: 0,
+    SHORTAGE_YCSX: 0,
+    Step1: 0,
+    Step2: 0,
+    Step3: 0,
+    Step4: 0,
+    TKHO_TDYCSX: 0,
+    TON_CD1: 0,
+    TON_CD2: 0,
+    TON_CD3: 0,
+    TON_CD4: 0,
+    TOTAL_TKHO_TDYCSX: 0,
+    UPH1: 0,
+    UPH2: 0,
+    UPH3: 0,
+    UPH4: 0,
+    W1: 0,
+    W2: 0,
+    W3: 0,
+    W4: 0,
+    W5: 0,
+    W6: 0,
+    W7: 0,
+    W8: 0,
+    YCSX_PENDING: 1,
+    BANVE: '',
+    DELIVERY_DT: '',
+    DESCR: '',
+    G_C: 0,
+    G_C_R: 0,
+    G_LENGTH: 0,
+    G_WIDTH: 0,
+    PDBV: '',
+    PDBV_DATE: '',
+    PDBV_EMPL: '',
+    PL_HANG: '',
+    PO_BALANCE: 0,
+    PROD_MAIN_MATERIAL: '',
+    PROD_PRINT_TIMES: 0,
+    PROD_TYPE: '',
+    SETVL: '',
+  });
+  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const getRowStyle = (params: any) => {
+    return { backgroundColor: 'white', fontSize: '0.6rem' };
+    /* if (params.data.M_ID % 2 === 0) {
+        return { backgroundColor: 'white', fontSize:'0.6rem'};
+    }
+    else {
+      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
+    } */
+  };
+  const onSelectionChanged = useCallback(() => {
+    const selectedrow = gridRef.current!.api.getSelectedRows();
+    setYcsxDataTableFilter(selectedrow);
+    //setSelectedRows(selectedrow);
+  }, []);
+  function setIdText(id: string, value: string | number | undefined) {
+    document.getElementById(id)!.textContent =
+      value == undefined ? "undefined" : value + "";
+  }
+  const setHeaderHeight = useCallback((value?: number) => {
+    gridRef.current!.api.setGridOption("headerHeight", value);
+    setIdText("headerHeight", value);
+  }, []);
+  const gridRef = useRef<AgGridReact<YCSXTableData>>(null);
+  const defaultColDef = useMemo(() => {
+    return {
+      initialWidth: 100,
+      wrapHeaderText: true,
+      autoHeaderHeight: false,
+      editable: true,
+      floatingFilter: true,
+      filter: true,
+      
+    };
+  }, []);
+  const column_ycsxtable2 = [
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 150,
+      headerCheckboxSelection: true, 
+      checkboxSelection: true, 
+      cellRenderer: (params: any) => {
+        if (params.data.SETVL === 'N') {
+          return <span style={{ color: "gray" }}>{params.data.G_NAME_KD}</span>;
+        }
+        else if (params.data.PDBV === "P" || params.data.PDBV === null) {
+          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
+        }
+        else {
+          return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
+        }
+      },
+    },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 250,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      },
+    },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    {
+      field: "PROD_REQUEST_NO",
+      headerName: "SỐ YCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.data.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.data.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "PROD_REQUEST_DATE",
+      headerName: "NGÀY YCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.DAUPAMZ === null) {
+          return (
+            <span style={{ color: "black" }}>
+              <b>{params.data.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.data.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "PROD_REQUEST_QTY",
+      type: "number",
+      headerName: "SL YCSX",
+      width: 80,
+    },
+    {
+      field: "LOT_TOTAL_INPUT_QTY_EA",
+      type: "number",
+      headerName: "NHẬP KIỂM",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_OUTPUT_QTY_EA",
+      type: "number",
+      headerName: "XUẤT KIỂM",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TỒN KIỂM",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "SHORTAGE_YCSX",
+      type: "number",
+      headerName: "TỒN YCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "PL_HANG",
+      type: "number",
+      headerName: "PL_HANG",
+      width: 80,
+    },
+    {
+      field: "PHAN_LOAI",
+      headerName: "PHAN_LOAI",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PHAN_LOAI === "01")
+          return (
+            <span style={{ color: "black" }}>
+              <b>Thông thường</b>
+            </span>
+          );
+        else if (params.data.PHAN_LOAI === "02")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SDI</b>
+            </span>
+          );
+        else if (params.data.PHAN_LOAI === "03")
+          return (
+            <span style={{ color: "black" }}>
+              <b>GC</b>
+            </span>
+          );
+        else if (params.data.PHAN_LOAI === "04")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SAMPLE</b>
+            </span>
+          );
+      },
+    },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
+    {
+      field: "PO_TDYCSX",
+      type: "number",
+      headerName: "PO_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#6600ff" }}>
+            <b>{params.data.PO_TDYCSX.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_TKHO_TDYCSX",
+      type: "number",
+      headerName: "TOTAL_TKHO_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#6600ff" }}>
+            <b>{params.data.TOTAL_TKHO_TDYCSX.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TKHO_TDYCSX",
+      type: "number",
+      headerName: "TKHO_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.TKHO_TDYCSX.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "BTP_TDYCSX",
+      type: "number",
+      headerName: "BTP_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.BTP_TDYCSX.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CK_TDYCSX",
+      type: "number",
+      headerName: "CK_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.CK_TDYCSX.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "BLOCK_TDYCSX",
+      type: "number",
+      headerName: "BLOCK_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.BLOCK_TDYCSX.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "FCST_TDYCSX",
+      type: "number",
+      headerName: "FCST_TDYCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#6600ff" }}>
+            <b>{params.data.FCST_TDYCSX.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "W1",
+      type: "number",
+      headerName: "W1",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W1.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W2",
+      type: "number",
+      headerName: "W2",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W2.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W3",
+      type: "number",
+      headerName: "W3",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W3.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W4",
+      type: "number",
+      headerName: "W4",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W4.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W5",
+      type: "number",
+      headerName: "W5",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W5.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W6",
+      type: "number",
+      headerName: "W6",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W6.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W7",
+      type: "number",
+      headerName: "W7",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W7.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "W8",
+      type: "number",
+      headerName: "W8",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.W8.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "PDUYET",
+      headerName: "PDUYET",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PDUYET === 1)
+          return (
+            <span style={{ color: "green" }}>
+              <b>Đã Duyệt</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "red" }}>
+              <b>Không Duyệt</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "",
+      headerName: "G_NAME",
+      width: 250,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      },
+    },
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 250,
+      cellRenderer: (params: any) => {
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          console.log(file);
+          if (userData?.MAINDEPTNAME === "KD") {
+            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.data.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success"
+                        );
+                        let tempycsxdatatable = ycsxdatatable.map(
+                          (element, index) => {
+                            return element.PROD_REQUEST_NO ===
+                              params.data.PROD_REQUEST_NO
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          }
+                        );
+                        setYcsxDataTable(tempycsxdatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error"
+            );
+          }
+        };
+        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+        if (params.data.BANVE === "Y")
+          return (
+            <span style={{ color: "green" }}>
+              <b>
+                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                  LINK
+                </a>
+              </b>
+            </span>
+          );
+        else
+          return (
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+      },
+    },
+    {
+      field: "PDBV",
+      headerName: "PD BANVE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "green" }}>
+            <b>APPROVED</b>
+          </span>
+        );
+      },
+    },
+
+  ];
+  const column_ycsxtable_pvn2 = [
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      headerCheckboxSelection: true, 
+      checkboxSelection: true, 
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
+      },
+    },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 250,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      },
+    },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    { field: "G_WIDTH", headerName: "WIDTH", width: 60 },
+    { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
+    { field: "G_C", headerName: "CVT_C", width: 60 },
+    { field: "G_C_R", headerName: "CVT_R", width: 60 },
+    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
+    {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
+        if (params.data.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.data.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.data.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
+    {
+      field: "PROD_REQUEST_QTY",
+      type: "number",
+      headerName: "SL YCSX",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#009933" }}>
+            <b>{params.data.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_INPUT_QTY_EA",
+      type: "number",
+      headerName: "NHẬP KIỂM",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_OUTPUT_QTY_EA",
+      type: "number",
+      headerName: "XUẤT KIỂM",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INPUT_QTY",
+      type: "number",
+      headerName: "NHẬP KHO",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.INPUT_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "OUTPUT_QTY",
+      type: "number",
+      headerName: "XUẤT KHO",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.OUTPUT_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "STOCK",
+      type: "number",
+      headerName: "TỒN KHO",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.STOCK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BLOCK_QTY",
+      type: "number",
+      headerName: "BLOCK_QTY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "PL_HANG",
+      type: "number",
+      headerName: "PL_HANG",
+      width: 80,
+    },
+    {
+      field: "PHAN_LOAI",
+      headerName: "PHAN_LOAI",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PHAN_LOAI === "01")
+          return (
+            <span style={{ color: "black" }}>
+              <b>Thông thường</b>
+            </span>
+          );
+        else if (params.data.PHAN_LOAI === "02")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SDI</b>
+            </span>
+          );
+        else if (params.data.PHAN_LOAI === "03")
+          return (
+            <span style={{ color: "black" }}>
+              <b>GC</b>
+            </span>
+          );
+        else if (params.data.PHAN_LOAI === "04")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SAMPLE</b>
+            </span>
+          );
+      },
+    },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
+    { field: "DESCR", headerName: "DESCRIPTION", width: 150 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
+    {
+      field: "PDUYET",
+      headerName: "PDUYET",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PDUYET === 1)
+          return (
+            <span style={{ color: "green" }}>
+              <b>Đã Duyệt</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "red" }}>
+              <b>Không Duyệt</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "",
+      headerName: "G_NAME",
+      width: 250,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      },
+    },
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 250,
+      cellRenderer: (params: any) => {
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          console.log(file);
+          if (userData?.MAINDEPTNAME === "KD") {
+            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.data.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success"
+                        );
+                        let tempycsxdatatable = ycsxdatatable.map(
+                          (element, index) => {
+                            return element.PROD_REQUEST_NO ===
+                              params.data.PROD_REQUEST_NO
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          }
+                        );
+                        setYcsxDataTable(tempycsxdatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error"
+            );
+          }
+        };
+        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+        if (params.data.BANVE === "Y")
+          return (
+            <span style={{ color: "green" }}>
+              <b>
+                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                  LINK
+                </a>
+              </b>
+            </span>
+          );
+        else
+          return (
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+      },
+    },
+    {
+      field: "PDBV",
+      headerName: "PD BANVE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "green" }}>
+            <b>APPROVED</b>
+          </span>
+        );
+      },
+    },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
+  ];
+  const [colDefs, setColDefs] = useState(getCompany()==='CMS'? column_ycsxtable2 : column_ycsxtable_pvn2);
   const column_ycsxtable = [
     {
       field: "G_NAME_KD",
@@ -711,7 +1704,7 @@ const YCSXManager = () => {
     { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
     { field: "G_C", headerName: "CVT_C", width: 60 },
     { field: "G_C_R", headerName: "CVT_R", width: 60 },
-    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },    
+    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
         if (params.row.DACHITHI === null) {
@@ -1021,7 +2014,7 @@ const YCSXManager = () => {
         );
       },
     },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },    
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
   ];
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
@@ -1454,7 +2447,7 @@ const YCSXManager = () => {
               ...element,
               id: index,
               CHECKSTATUS: "Waiting",
-              PHANLOAI: element.PHANLOAI?? "TT",
+              PHANLOAI: element.PHANLOAI ?? "TT",
               PROD_REQUEST_DATE: getCompany() === 'CMS' ? element.PROD_REQUEST_DATE : moment(element.PROD_REQUEST_DATE).format('YYYYMMDD')
             };
           })
@@ -1991,24 +2984,22 @@ const YCSXManager = () => {
           //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             //console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {             
-            } else {              
+            if (response.data.data[0].USE_YN === "Y") {
+            } else {
               err_code = 3;
             }
-          } else {           
+          } else {
             err_code = 4;
           }
         })
         .catch((error) => {
           console.log(error);
         });
-      
-        if(uploadExcelJson[i].CODE_50=== undefined) err_code = 5;
-        if(uploadExcelJson[i].CODE_55=== undefined) err_code = 6;
-        if(customerList.filter((ele: CustomerListData,index: number)=> ele.CUST_CD ===uploadExcelJson[i].CUST_CD).length ===0) err_code= 7;
-        if(codeList.filter((ele: CodeListData,index: number)=> ele.G_CODE ===uploadExcelJson[i].G_CODE).length =0)  err_code= 8;
-        if(uploadExcelJson[i].PHANLOAI=== undefined) err_code = 9;      
-        
+      if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
+      if (uploadExcelJson[i].CODE_55 === undefined) err_code = 6;
+      if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length === 0) err_code = 7;
+      if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
+      if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -2060,15 +3051,13 @@ const YCSXManager = () => {
         })
         .catch((error) => {
           console.log(error);
-      });
-      if(uploadExcelJson[i].CODE_50=== undefined) err_code = 5;
-      if(uploadExcelJson[i].CODE_55=== undefined) err_code = 6;
-      if(customerList.filter((ele: CustomerListData,index: number)=> ele.CUST_CD ===uploadExcelJson[i].CUST_CD).length =0)  err_code= 7;
-      if(codeList.filter((ele: CodeListData,index: number)=> ele.G_CODE ===uploadExcelJson[i].G_CODE).length =0)  err_code= 8;
-      if(uploadExcelJson[i].PHANLOAI=== undefined) err_code = 9;
-      
-
-      if (err_code === 0) {       
+        });
+      if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
+      if (uploadExcelJson[i].CODE_55 === undefined) err_code = 6;
+      if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length = 0) err_code = 7;
+      if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
+      if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
+      if (err_code === 0) {
         let err_code1: number = 0;
         let last_prod_request_no: string = "";
         let next_prod_request_no: string = "";
@@ -3787,7 +4776,7 @@ const YCSXManager = () => {
             </div>
           )}
           <div className='tracuuYCSXTable'>
-            <DataGrid
+            {/* <DataGrid
               sx={{ fontSize: "0.7rem" }}
               components={{
                 Toolbar: CustomToolbarPOTable,
@@ -3809,7 +4798,184 @@ const YCSXManager = () => {
               onSelectionModelChange={(ids) => {
                 handleYCSXSelectionforUpdate(ids);
               }}
-            />
+            /> */}
+            <div className="toolbar">
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHideSearchDiv(!showhidesearchdiv);
+                }}
+              >
+                <TbLogout color='green' size={15} />
+                Show/Hide
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(ycsxdatatable, "YCSX Table");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                SAVE
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setSelection({
+                    ...selection,
+                    trapo: true,
+                    thempohangloat: false,
+                    them1po: !selection.them1po,
+                    them1invoice: false,
+                    themycsx: true,
+                    suaycsx: false,
+                    inserttableycsx: false,
+                  });
+                  clearYCSXform();
+                }}
+              >
+                <AiFillFileAdd color='blue' size={15} />
+                NEW YCSX
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handle_fillsuaform();
+                }}
+              >
+                <AiFillEdit color='orange' size={15} />
+                SỬA YCSX
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handleConfirmDeleteYCSX();
+                }}
+              >
+                <MdOutlineDelete color='red' size={15} />
+                XÓA YCSX
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handleConfirmSetClosedYCSX();
+                }}
+              >
+                <FaArrowRight color='green' size={15} />
+                SET CLOSED
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handleConfirmSetPendingYCSX();
+                }}
+              >
+                <MdOutlinePendingActions color='red' size={15} />
+                SET PENDING
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  if (ycsxdatatablefilter.length > 0) {
+                    setSelection({
+                      ...selection,
+                      renderycsx: ycsxdatatablefilter.length > 0,
+                    });
+                    console.log(ycsxdatatablefilter);
+                    setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+                  } else {
+                    Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                  }
+                }}
+              >
+                <AiOutlinePrinter color='#0066ff' size={15} />
+                Print YCSX
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  if (ycsxdatatablefilter.length > 0) {
+                  } else {
+                    Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
+                  }
+                }}
+              >
+                <AiOutlinePrinter color='#00701a' size={15} />
+                Check Bản Vẽ
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  if (ycsxdatatablefilter.length > 0) {
+                    setSelection({
+                      ...selection,
+                      renderbanve: ycsxdatatablefilter.length > 0,
+                    });
+                    setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+                  } else {
+                    Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                  }
+                }}
+              >
+                <AiOutlinePrinter color='#ff751a' size={15} />
+                Print Bản Vẽ
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handleConfirmPDuyetYCSX();
+                }}
+              >
+                <FcApprove color='red' size={15} />
+                Phê Duyệt
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handleGoToAmazon();
+                }}
+              >
+                <AiFillAmazonCircle color='red' size={15} />
+                Up Amazon
+              </IconButton>
+            </div>
+            <div
+              className="ag-theme-quartz" // applying the grid theme
+              style={{ height: '100%' }} // the grid will fill the size of the parent container
+            >
+              <AgGridReact
+                rowData={ycsxdatatable}
+                columnDefs={colDefs}
+                rowHeight={25}
+                defaultColDef={defaultColDef}
+                ref={gridRef}
+                onGridReady={() => {
+                  setHeaderHeight(20);
+                }}
+                columnHoverHighlight={true}
+                rowStyle={rowStyle}
+                getRowStyle={getRowStyle}
+                getRowId={(params: any) => params.data.PROD_REQUEST_NO}
+                rowSelection={"multiple"}
+                rowMultiSelectWithClick={true}
+                suppressRowClickSelection={true}
+                enterNavigatesVertically={true}
+                enterNavigatesVerticallyAfterEdit={true}
+                stopEditingWhenCellsLoseFocus={true}
+                rowBuffer={10}
+                debounceVerticalScrollbar={false}
+                enableRangeSelection={true}
+                floatingFiltersHeight={23}
+                onSelectionChanged={onSelectionChanged}
+                onRowClicked={(params: any) => {
+                  setClickedRows(params.data)
+                  //console.log(params.data)
+                }}
+                onCellEditingStopped={(params: any) => {
+                  console.log(params)
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

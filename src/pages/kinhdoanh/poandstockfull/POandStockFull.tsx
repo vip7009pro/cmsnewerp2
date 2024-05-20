@@ -9,7 +9,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useContext, useEffect, useState, useTransition } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -22,6 +22,9 @@ import KHOTP from "../../kho/khotp/KHOTP";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
+import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css"; 
+import "ag-grid-community/styles/ag-theme-quartz.css"; 
 const POandStockFull = () => {
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
     PO_BALANCE: 0,
@@ -44,7 +47,7 @@ const POandStockFull = () => {
   const [codeCMS, setCodeCMS] = useState("");
   const [alltime, setAllTime] = useState(true);
   const [pofulldatatable, setPOFULLDataTable] = useState<Array<any>>([]);
-  const column_codeCMS = [
+  /* const column_codeCMS = [
     { field: "id", headerName: "No", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 150 },
@@ -720,9 +723,719 @@ const POandStockFull = () => {
         );
       },
     },
+  ]; */
+  const column_codeERP_PVN2 = [
+    { field: "id", headerName: "No", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 150 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
+    {
+      field: "M_7",
+      type: "number",
+      headerName: "M_7",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_7?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "M_6",
+      type: "number",
+      headerName: "M_6",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_6?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "M_5",
+      type: "number",
+      headerName: "M_5",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_5?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "M_4",
+      type: "number",
+      headerName: "M_4",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_4?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "M_3",
+      type: "number",
+      headerName: "M_3",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_3?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "M_2",
+      type: "number",
+      headerName: "M_2",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_2?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "M_1",
+      type: "number",
+      headerName: "M_1",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            {params.data?.M_1?.toLocaleString("en-US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_QTY",
+      type: "number",
+      headerName: "PO_QTY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_DELIVERED",
+      type: "number",
+      headerName: "TOTAL_DELIVERED",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_BALANCE",
+      type: "number",
+      headerName: "PO_BALANCE",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.data.PO_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_KIEM",
+      type: "number",
+      headerName: "CHO_KIEM",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_KIEM.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_CS_CHECK",
+      type: "number",
+      headerName: "CS",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_KIEM_RMA",
+      type: "number",
+      headerName: "RMA",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TONG_TON_KIEM",
+      type: "number",
+      headerName: "Total TKiem",
+      width: 110,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BTP",
+      type: "number",
+      headerName: "BTP",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.BTP.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_TP",
+      type: "number",
+      headerName: "TON_TP",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TON_TP.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BLOCK_QTY",
+      type: "number",
+      headerName: "BLOCK_QTY",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "GRAND_TOTAL_STOCK",
+      headerName: "GRAND_TOTAL_STOCK",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>{params.data.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "THUA_THIEU",
+      type: "number",
+      headerName: "THUA_THIEU",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.THUA_THIEU.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_BALANCE",
+      type: "number",
+      headerName: "YCSX_BALANCE",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.data.YCSX_BALANCE?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_QTY",
+      type: "number",
+      headerName: "YCSX_QTY",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.data.YCSX_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "KETQUASX",
+      type: "number",
+      headerName: "KETQUASX",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.data.KETQUASX?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "NHAPKHO",
+      type: "number",
+      headerName: "NHAPKHO",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.data.NHAPKHO?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
   ];
-  const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(getCompany()==='CMS'? column_codeCMS : column_codeERP_PVN);
+  const column_codeCMS2 = [
+    { field: "id", headerName: "No", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 150 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
+    {
+      field: "PO_QTY",
+      type: "number",
+      headerName: "PO_QTY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_DELIVERED",
+      type: "number",
+      headerName: "TOTAL_DELIVERED",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_BALANCE",
+      type: "number",
+      headerName: "PO_BALANCE",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.data.PO_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_KIEM",
+      type: "number",
+      headerName: "CHO_KIEM",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_KIEM.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_CS_CHECK",
+      type: "number",
+      headerName: "CS",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_KIEM_RMA",
+      type: "number",
+      headerName: "RMA",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TONG_TON_KIEM",
+      type: "number",
+      headerName: "Total TKiem",
+      width: 110,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BTP",
+      type: "number",
+      headerName: "BTP",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.BTP.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_TP",
+      type: "number",
+      headerName: "TON_TP",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TON_TP.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BLOCK_QTY",
+      type: "number",
+      headerName: "BLOCK_QTY",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "GRAND_TOTAL_STOCK",
+      headerName: "GRAND_TOTAL_STOCK",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>{params.data.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "THUA_THIEU",
+      type: "number",
+      headerName: "THUA_THIEU",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.THUA_THIEU.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_BALANCE",
+      type: "number",
+      headerName: "YCSX_BALANCE",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.data.YCSX_BALANCE?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_QTY",
+      type: "number",
+      headerName: "YCSX_QTY",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.data.YCSX_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "KETQUASX",
+      type: "number",
+      headerName: "KETQUASX",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.data.KETQUASX?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "NHAPKHO",
+      type: "number",
+      headerName: "NHAPKHO",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.data.NHAPKHO?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+  ];
+  const column_codeKD2 = [
+    { field: "id", headerName: "No", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
+    {
+      field: "PO_QTY",
+      type: "number",
+      headerName: "PO_QTY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_DELIVERED",
+      type: "number",
+      headerName: "TOTAL_DELIVERED",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_BALANCE",
+      type: "number",
+      headerName: "PO_BALANCE",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.data.PO_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_KIEM",
+      type: "number",
+      headerName: "CHO_KIEM",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_KIEM.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_CS_CHECK",
+      type: "number",
+      headerName: "CHO_CS_CHECK",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHO_KIEM_RMA",
+      type: "number",
+      headerName: "CHO_KIEM_RMA",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TONG_TON_KIEM",
+      type: "number",
+      headerName: "Total TKiem",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BTP",
+      type: "number",
+      headerName: "BTP",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.BTP.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_TP",
+      type: "number",
+      headerName: "TON_TP",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TON_TP.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BLOCK_QTY",
+      type: "number",
+      headerName: "BLOCK_QTY",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "GRAND_TOTAL_STOCK",
+      type: "number",
+      headerName: "GRAND_TOTAL_STOCK",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>{params.data.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "THUA_THIEU",
+      type: "number",
+      headerName: "THUA_THIEU",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.THUA_THIEU.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+  ];
+  const [columnDefinition, setColumnDefinition] =  useState<Array<any>>(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
+    const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const getRowStyle = (params: any) => {
+    return { backgroundColor: 'white', fontSize: '0.6rem' };
+    /* if (params.data.M_ID % 2 === 0) {
+        return { backgroundColor: 'white', fontSize:'0.6rem'};
+    }
+    else {
+      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
+    } */
+  };
+  const onSelectionChanged = useCallback(() => {
+    const selectedrow = gridRef.current!.api.getSelectedRows();
+    //setCodeDataTableFilter(selectedrow);    
+  }, []);
+  function setIdText(id: string, value: string | number | undefined) {
+    document.getElementById(id)!.textContent =
+      value == undefined ? "undefined" : value + "";
+  }
+  const setHeaderHeight = useCallback((value?: number) => {
+    gridRef.current!.api.setGridOption("headerHeight", value);
+    setIdText("headerHeight", value);
+  }, []);
+  const gridRef = useRef<AgGridReact<any>>(null);
+  const defaultColDef = useMemo(() => {
+    return {
+      initialWidth: 100,
+      wrapHeaderText: true,
+      autoHeaderHeight: false,
+      editable: true,
+      floatingFilter: true,
+      filter: true,
+    };
+  }, []);
+
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -744,7 +1457,7 @@ const POandStockFull = () => {
   }
   const handletraPOFullCMS = () => {
     setisLoading(true);
-    setColumnDefinition(getCompany()==='CMS'? column_codeCMS : column_codeERP_PVN);
+    setColumnDefinition(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
     generalQuery(getCompany() === "CMS" ? "traPOFullCMS" : "traPOFullCMS2", {
       allcode: alltime,
       codeSearch: codeCMS,
@@ -796,7 +1509,7 @@ const POandStockFull = () => {
   };
   const handletraPOFullKD = () => {
     setisLoading(true);
-    setColumnDefinition(column_codeKD);
+    setColumnDefinition(column_codeKD2);
     generalQuery(getCompany() === "CMS" ? "traPOFullKD" : "traPOFullKD2", {
       allcode: alltime,
       codeSearch: codeCMS,
@@ -920,8 +1633,26 @@ const POandStockFull = () => {
       </div>
       {selection.trapo && (
         <div className="tracuuFcst">
-          <div className="tracuuFcstform">
-            <div className="forminput">
+         
+          <div className="tracuuFcstTable">
+           {/*  <DataGrid
+              components={{
+                Toolbar: CustomToolbarPOTable,
+                LoadingOverlay: LinearProgress,
+              }}
+              sx={{ fontSize: "0.7rem" }}
+              loading={isLoading}
+              rowHeight={30}
+              rows={pofulldatatable}
+              columns={columnDefinition}
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+              ]}
+              editMode="row"
+            /> */}
+            <div className="toolbar">
+              <div className="searchdiv">
+              <div className="forminput">
               <div className="forminputcolumn">
                 <label>
                   <b>Code:</b>{" "}
@@ -942,8 +1673,8 @@ const POandStockFull = () => {
                   ></input>
                 </label>
                 <button
-                  className="tranhapkiembutton"
-                  onClick={() => {                    
+                  className="traxuatkiembutton"
+                  onClick={() => {
                     handletraPOFullCMS();
                   }}
                 >
@@ -999,23 +1730,60 @@ const POandStockFull = () => {
                 </table>
               </div>
             </div>
-          </div>
-          <div className="tracuuFcstTable">
-            <DataGrid
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              sx={{ fontSize: "0.7rem" }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={pofulldatatable}
-              columns={columnDefinition}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode="row"
-            />
+
+                </div>
+              <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            SaveExcel(pofulldatatable, "Ton kho full Table");
+          }}
+        >
+          <AiFillFileExcel color="green" size={15} />
+          SAVE
+        </IconButton>
+       
+            
+
+              
+            </div>
+            <div
+              className="ag-theme-quartz" // applying the grid theme
+              style={{ height: '100%' }} // the grid will fill the size of the parent container
+            >
+              <AgGridReact
+                rowData={pofulldatatable}
+                columnDefs={columnDefinition}
+                rowHeight={25}
+                defaultColDef={defaultColDef}
+                ref={gridRef}
+                onGridReady={() => {
+                  setHeaderHeight(20);
+                }}
+                columnHoverHighlight={true}
+                rowStyle={rowStyle}
+                getRowStyle={getRowStyle}
+                getRowId={(params: any) => params.data.id}
+                rowSelection={"multiple"}
+                rowMultiSelectWithClick={true}
+                suppressRowClickSelection={true}
+                enterNavigatesVertically={true}
+                enterNavigatesVerticallyAfterEdit={true}
+                stopEditingWhenCellsLoseFocus={true}
+                rowBuffer={10}
+                debounceVerticalScrollbar={false}
+                enableRangeSelection={true}
+                floatingFiltersHeight={23}
+                onSelectionChanged={onSelectionChanged}
+                onRowClicked={(params: any) => {
+                  //setClickedRows(params.data)
+                  //console.log(params.data)
+                }}
+                onCellEditingStopped={(params: any) => {
+                  //console.log(params)
+                }}                
+              />
+            </div>
+
           </div>
         </div>
       )}
