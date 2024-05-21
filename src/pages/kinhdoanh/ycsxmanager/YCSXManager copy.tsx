@@ -256,7 +256,7 @@ const YCSXManager = () => {
   });
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
-    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
+    return { backgroundColor: 'white', fontSize: '0.6rem' };
     /* if (params.data.M_ID % 2 === 0) {
         return { backgroundColor: 'white', fontSize:'0.6rem'};
     }
@@ -441,7 +441,7 @@ const YCSXManager = () => {
     },
     {
       field: "PL_HANG",
-      cellDataType: "text",
+      cellDataType: "number",
       headerName: "PL_HANG",
       width: 80,
     },
@@ -708,11 +708,7 @@ const YCSXManager = () => {
       headerName: "BANVE",
       width: 250,
       cellRenderer: (params: any) => {
-        //console.log(ycsxdatatable)
-        let file:any = null;
-        useEffect(()=> {         
-        },[ycsxdatatable]);
-        //let file: any = null;
+        let file: any = null;
         const uploadFile2 = async (e: any) => {
           console.log(file);
           if (userData?.MAINDEPTNAME === "KD") {
@@ -724,8 +720,9 @@ const YCSXManager = () => {
                     banvevalue: "Y",
                   })
                     .then((response) => {
-                      if (response.data.tk_status !== "NG") {                   
-                        console.log(ycsxdatatable);                       
+                      if (response.data.tk_status !== "NG") {                        
+                        console.log(ycsxdatatable);
+                       
                         let tempycsxdatatable = ycsxdatatable.map(
                           (element, index) => {
                             return element.PROD_REQUEST_NO ===
@@ -785,19 +782,16 @@ const YCSXManager = () => {
           );
         else
           return (
-            <div className="uploadfile">
-              <IconButton className="buttonIcon" onClick={(e) => {
-                  uploadFile2(e);
-                }}
-              >
-                <AiOutlineCloudUpload color="yellow" size={15} />
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
                 Upload
               </IconButton>
               <input
-                accept=".pdf"
-                type="file"
+                accept='.pdf'
+                type='file'
                 onChange={(e: any) => {
-                  file = e.target.files[0];
+                  file = e.target.files[0];                  
                   console.log(file);
                 }}
               />
@@ -986,7 +980,7 @@ const YCSXManager = () => {
     },
     {
       field: "PL_HANG",
-      cellDataType: "text",
+      cellDataType: "number",
       headerName: "PL_HANG",
       width: 80,
     },
@@ -4958,7 +4952,7 @@ const YCSXManager = () => {
             >
               <AgGridReact
                 rowData={ycsxdatatable}
-                columnDefs={getCompany()==='CMS'? column_ycsxtable2 : column_ycsxtable_pvn2}
+                columnDefs={colDefs}
                 rowHeight={25}
                 defaultColDef={defaultColDef}
                 ref={gridRef}
@@ -4971,7 +4965,7 @@ const YCSXManager = () => {
                 getRowId={(params: any) => params.data.PROD_REQUEST_NO}
                 rowSelection={"multiple"}
                 rowMultiSelectWithClick={true}
-                suppressRowClickSelection={true}                
+                suppressRowClickSelection={true}
                 enterNavigatesVertically={true}
                 enterNavigatesVerticallyAfterEdit={true}
                 stopEditingWhenCellsLoseFocus={true}

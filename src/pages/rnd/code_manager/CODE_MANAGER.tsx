@@ -58,7 +58,7 @@ const CODE_MANAGER = () => {
   );
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
-  const [enableEdit, setEnableEdit] = useState(false);
+  const [enableEdit, setEnableEdit] = useState(true);
   const [isPending, startTransition] = useTransition();
   const handleUploadFile = (ulf: any, newfilename: string) => {
     console.log(ulf);
@@ -174,17 +174,13 @@ const CODE_MANAGER = () => {
                           "Upload bản vẽ thành công",
                           "success",
                         );
-                        console.log("G_CODE AAAA", params.row.G_CODE);
-                        console.log("rows", rows);
                         let tempcodeinfodatatable = rows.map(
-                          (element: CODE_FULL_INFO, index: number) => {
-                            console.log("element G_CODE", element.G_CODE);
+                          (element: CODE_FULL_INFO, index: number) => {                            
                             return element.G_CODE === params.row.G_CODE
                               ? { ...element, BANVE: "Y" }
                               : element;
                           },
                         );
-                        console.log(tempcodeinfodatatable);
                         setRows(tempcodeinfodatatable);
                       } else {
                         Swal.fire(
@@ -263,20 +259,20 @@ const CODE_MANAGER = () => {
                   })
                     .then((response) => {
                       if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload Appsheet thành công",
-                          "success",
-                        );                        
-                        /* let tempcodeinfodatatable = rows.map(
-                          (element: CODE_FULL_INFO, index: number) => {
-                            console.log("element G_CODE", element.G_CODE);
+                        let tempcodeinfodatatable = rows.map(
+                          (element: CODE_FULL_INFO, index: number) => {                            
                             return element.G_CODE === params.row.G_CODE
                               ? { ...element, APPSHEET: "Y" }
                               : element;
                           },
                         );                        
-                        setRows(tempcodeinfodatatable); */
+                        setRows(tempcodeinfodatatable);
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload Appsheet thành công",
+                          "success",
+                        );                        
+                       
                       } else {
                         Swal.fire(
                           "Thông báo",
@@ -1020,6 +1016,9 @@ const CODE_MANAGER = () => {
       width: 260,
       cellRenderer: (params: any) => {
         let file: any = null;
+        useEffect(()=> {         
+        },[rows]);
+
         const uploadFile2: any = async (e: any) => {
           //console.log(file);
           checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
@@ -1085,9 +1084,7 @@ const CODE_MANAGER = () => {
         } else {
           return (
             <div className="uploadfile">
-              <IconButton
-                className="buttonIcon"
-                onClick={(e) => {
+              <IconButton className="buttonIcon" onClick={(e) => {
                   uploadFile2(e);
                 }}
               >
@@ -2386,7 +2383,7 @@ const CODE_MANAGER = () => {
             >
               <AgGridReact
                 rowData={rows}
-                columnDefs={columns}
+                columnDefs={column_codeinfo2}
                 rowHeight={25}
                 defaultColDef={defaultColDef}
                 ref={gridRef}

@@ -3816,6 +3816,9 @@ const PLAN_DATATB = () => {
     <div className='lichsuplanTable'>
       <div className='tracuuDataInspection'>
         <div className='tracuuYCSXTable'>
+          
+          <div className="toolbar">
+
           <div className='header'>
             <div className='forminput'>
               <div className='forminputcolumn'>
@@ -3849,8 +3852,7 @@ const PLAN_DATATB = () => {
                     value={machine}
                     onChange={(e) => {
                       setMachine(e.target.value);
-                    }}
-                    style={{ width: 160, height: 30 }}
+                    }}                   
                   >
                     {machine_list.map((ele: MACHINE_LIST, index: number) => {
                       return (
@@ -3908,8 +3910,6 @@ const PLAN_DATATB = () => {
                 </button>
               </div>
             </div>
-          </div>
-          <div className="toolbar">
             <IconButton
               className="buttonIcon"
               onClick={() => {
@@ -4069,6 +4069,9 @@ const PLAN_DATATB = () => {
               <AiOutlinePrinter color='#ff751a' size={15} />
               Print Bản Vẽ
             </IconButton>
+          </div>
+
+           
           </div>
           <div
             className="ag-theme-quartz" // applying the grid theme

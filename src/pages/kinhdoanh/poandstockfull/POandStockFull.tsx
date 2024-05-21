@@ -23,8 +23,8 @@ import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; 
-import "ag-grid-community/styles/ag-theme-quartz.css"; 
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 const POandStockFull = () => {
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
     PO_BALANCE: 0,
@@ -54,7 +54,7 @@ const POandStockFull = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       renderCell: (params: any) => {
@@ -67,7 +67,7 @@ const POandStockFull = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 80,
       renderCell: (params: any) => {
@@ -80,7 +80,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 90,
       renderCell: (params: any) => {
@@ -93,7 +93,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM",
       width: 90,
       renderCell: (params: any) => {
@@ -106,7 +106,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_CS_CHECK",
-      type: "number",
+      cellDataType: "number",
       headerName: "CS",
       width: 90,
       renderCell: (params: any) => {
@@ -119,7 +119,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM_RMA",
-      type: "number",
+      cellDataType: "number",
       headerName: "RMA",
       width: 90,
       renderCell: (params: any) => {
@@ -132,7 +132,7 @@ const POandStockFull = () => {
     },
     {
       field: "TONG_TON_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "Total TKiem",
       width: 110,
       renderCell: (params: any) => {
@@ -145,7 +145,7 @@ const POandStockFull = () => {
     },
     {
       field: "BTP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BTP",
       width: 90,
       renderCell: (params: any) => {
@@ -158,7 +158,7 @@ const POandStockFull = () => {
     },
     {
       field: "TON_TP",
-      type: "number",
+      cellDataType: "number",
       headerName: "TON_TP",
       width: 90,
       renderCell: (params: any) => {
@@ -171,7 +171,7 @@ const POandStockFull = () => {
     },
     {
       field: "BLOCK_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "BLOCK_QTY",
       width: 90,
       renderCell: (params: any) => {
@@ -196,7 +196,7 @@ const POandStockFull = () => {
     },
     {
       field: "THUA_THIEU",
-      type: "number",
+      cellDataType: "number",
       headerName: "THUA_THIEU",
       width: 120,
       renderCell: (params: any) => {
@@ -209,7 +209,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_BALANCE",
       width: 120,
       renderCell: (params: any) => {
@@ -222,7 +222,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_QTY",
       width: 120,
       renderCell: (params: any) => {
@@ -235,7 +235,7 @@ const POandStockFull = () => {
     },
     {
       field: "KETQUASX",
-      type: "number",
+      cellDataType: "number",
       headerName: "KETQUASX",
       width: 120,
       renderCell: (params: any) => {
@@ -248,7 +248,7 @@ const POandStockFull = () => {
     },
     {
       field: "NHAPKHO",
-      type: "number",
+      cellDataType: "number",
       headerName: "NHAPKHO",
       width: 120,
       renderCell: (params: any) => {
@@ -267,7 +267,7 @@ const POandStockFull = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
     {
       field: "M_7",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_7",
       width: 80,
       renderCell: (params: any) => {
@@ -280,7 +280,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_6",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_6",
       width: 80,
       renderCell: (params: any) => {
@@ -293,7 +293,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_5",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_5",
       width: 80,
       renderCell: (params: any) => {
@@ -306,7 +306,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_4",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_4",
       width: 80,
       renderCell: (params: any) => {
@@ -319,7 +319,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_3",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_3",
       width: 80,
       renderCell: (params: any) => {
@@ -332,7 +332,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_2",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_2",
       width: 80,
       renderCell: (params: any) => {
@@ -345,7 +345,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_1",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_1",
       width: 80,
       renderCell: (params: any) => {
@@ -358,7 +358,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       renderCell: (params: any) => {
@@ -371,7 +371,7 @@ const POandStockFull = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 80,
       renderCell: (params: any) => {
@@ -384,7 +384,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 90,
       renderCell: (params: any) => {
@@ -397,7 +397,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM",
       width: 90,
       renderCell: (params: any) => {
@@ -410,7 +410,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_CS_CHECK",
-      type: "number",
+      cellDataType: "number",
       headerName: "CS",
       width: 90,
       renderCell: (params: any) => {
@@ -423,7 +423,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM_RMA",
-      type: "number",
+      cellDataType: "number",
       headerName: "RMA",
       width: 90,
       renderCell: (params: any) => {
@@ -436,7 +436,7 @@ const POandStockFull = () => {
     },
     {
       field: "TONG_TON_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "Total TKiem",
       width: 110,
       renderCell: (params: any) => {
@@ -449,7 +449,7 @@ const POandStockFull = () => {
     },
     {
       field: "BTP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BTP",
       width: 90,
       renderCell: (params: any) => {
@@ -462,7 +462,7 @@ const POandStockFull = () => {
     },
     {
       field: "TON_TP",
-      type: "number",
+      cellDataType: "number",
       headerName: "TON_TP",
       width: 90,
       renderCell: (params: any) => {
@@ -475,7 +475,7 @@ const POandStockFull = () => {
     },
     {
       field: "BLOCK_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "BLOCK_QTY",
       width: 90,
       renderCell: (params: any) => {
@@ -500,7 +500,7 @@ const POandStockFull = () => {
     },
     {
       field: "THUA_THIEU",
-      type: "number",
+      cellDataType: "number",
       headerName: "THUA_THIEU",
       width: 120,
       renderCell: (params: any) => {
@@ -513,7 +513,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_BALANCE",
       width: 120,
       renderCell: (params: any) => {
@@ -526,7 +526,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_QTY",
       width: 120,
       renderCell: (params: any) => {
@@ -539,7 +539,7 @@ const POandStockFull = () => {
     },
     {
       field: "KETQUASX",
-      type: "number",
+      cellDataType: "number",
       headerName: "KETQUASX",
       width: 120,
       renderCell: (params: any) => {
@@ -552,7 +552,7 @@ const POandStockFull = () => {
     },
     {
       field: "NHAPKHO",
-      type: "number",
+      cellDataType: "number",
       headerName: "NHAPKHO",
       width: 120,
       renderCell: (params: any) => {
@@ -569,7 +569,7 @@ const POandStockFull = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       renderCell: (params: any) => {
@@ -582,7 +582,7 @@ const POandStockFull = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 80,
       renderCell: (params: any) => {
@@ -595,7 +595,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 90,
       renderCell: (params: any) => {
@@ -608,7 +608,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM",
       width: 90,
       renderCell: (params: any) => {
@@ -621,7 +621,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_CS_CHECK",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_CS_CHECK",
       width: 90,
       renderCell: (params: any) => {
@@ -634,7 +634,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM_RMA",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM_RMA",
       width: 90,
       renderCell: (params: any) => {
@@ -647,7 +647,7 @@ const POandStockFull = () => {
     },
     {
       field: "TONG_TON_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "Total TKiem",
       width: 90,
       renderCell: (params: any) => {
@@ -660,7 +660,7 @@ const POandStockFull = () => {
     },
     {
       field: "BTP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BTP",
       width: 90,
       renderCell: (params: any) => {
@@ -673,7 +673,7 @@ const POandStockFull = () => {
     },
     {
       field: "TON_TP",
-      type: "number",
+      cellDataType: "number",
       headerName: "TON_TP",
       width: 90,
       renderCell: (params: any) => {
@@ -686,7 +686,7 @@ const POandStockFull = () => {
     },
     {
       field: "BLOCK_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "BLOCK_QTY",
       width: 90,
       renderCell: (params: any) => {
@@ -699,7 +699,7 @@ const POandStockFull = () => {
     },
     {
       field: "GRAND_TOTAL_STOCK",
-      type: "number",
+      cellDataType: "number",
       headerName: "GRAND_TOTAL_STOCK",
       width: 90,
       renderCell: (params: any) => {
@@ -712,7 +712,7 @@ const POandStockFull = () => {
     },
     {
       field: "THUA_THIEU",
-      type: "number",
+      cellDataType: "number",
       headerName: "THUA_THIEU",
       width: 90,
       renderCell: (params: any) => {
@@ -731,7 +731,7 @@ const POandStockFull = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
     {
       field: "M_7",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_7",
       width: 80,
       cellRenderer: (params: any) => {
@@ -744,7 +744,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_6",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_6",
       width: 80,
       cellRenderer: (params: any) => {
@@ -757,7 +757,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_5",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_5",
       width: 80,
       cellRenderer: (params: any) => {
@@ -770,7 +770,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_4",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_4",
       width: 80,
       cellRenderer: (params: any) => {
@@ -783,7 +783,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_3",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_3",
       width: 80,
       cellRenderer: (params: any) => {
@@ -796,7 +796,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_2",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_2",
       width: 80,
       cellRenderer: (params: any) => {
@@ -809,7 +809,7 @@ const POandStockFull = () => {
     },
     {
       field: "M_1",
-      type: "number",
+      cellDataType: "number",
       headerName: "M_1",
       width: 80,
       cellRenderer: (params: any) => {
@@ -822,7 +822,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       cellRenderer: (params: any) => {
@@ -835,7 +835,7 @@ const POandStockFull = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 80,
       cellRenderer: (params: any) => {
@@ -848,7 +848,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 90,
       cellRenderer: (params: any) => {
@@ -861,7 +861,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM",
       width: 90,
       cellRenderer: (params: any) => {
@@ -874,7 +874,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_CS_CHECK",
-      type: "number",
+      cellDataType: "number",
       headerName: "CS",
       width: 90,
       cellRenderer: (params: any) => {
@@ -887,7 +887,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM_RMA",
-      type: "number",
+      cellDataType: "number",
       headerName: "RMA",
       width: 90,
       cellRenderer: (params: any) => {
@@ -900,7 +900,7 @@ const POandStockFull = () => {
     },
     {
       field: "TONG_TON_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "Total TKiem",
       width: 110,
       cellRenderer: (params: any) => {
@@ -913,7 +913,7 @@ const POandStockFull = () => {
     },
     {
       field: "BTP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BTP",
       width: 90,
       cellRenderer: (params: any) => {
@@ -926,7 +926,7 @@ const POandStockFull = () => {
     },
     {
       field: "TON_TP",
-      type: "number",
+      cellDataType: "number",
       headerName: "TON_TP",
       width: 90,
       cellRenderer: (params: any) => {
@@ -939,7 +939,7 @@ const POandStockFull = () => {
     },
     {
       field: "BLOCK_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "BLOCK_QTY",
       width: 90,
       cellRenderer: (params: any) => {
@@ -964,7 +964,7 @@ const POandStockFull = () => {
     },
     {
       field: "THUA_THIEU",
-      type: "number",
+      cellDataType: "number",
       headerName: "THUA_THIEU",
       width: 120,
       cellRenderer: (params: any) => {
@@ -977,7 +977,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_BALANCE",
       width: 120,
       cellRenderer: (params: any) => {
@@ -990,7 +990,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_QTY",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1003,7 +1003,7 @@ const POandStockFull = () => {
     },
     {
       field: "KETQUASX",
-      type: "number",
+      cellDataType: "number",
       headerName: "KETQUASX",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1016,7 +1016,7 @@ const POandStockFull = () => {
     },
     {
       field: "NHAPKHO",
-      type: "number",
+      cellDataType: "number",
       headerName: "NHAPKHO",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1035,7 +1035,7 @@ const POandStockFull = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1048,7 +1048,7 @@ const POandStockFull = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1061,7 +1061,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1074,7 +1074,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1087,7 +1087,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_CS_CHECK",
-      type: "number",
+      cellDataType: "number",
       headerName: "CS",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1100,7 +1100,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM_RMA",
-      type: "number",
+      cellDataType: "number",
       headerName: "RMA",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1113,7 +1113,7 @@ const POandStockFull = () => {
     },
     {
       field: "TONG_TON_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "Total TKiem",
       width: 110,
       cellRenderer: (params: any) => {
@@ -1126,7 +1126,7 @@ const POandStockFull = () => {
     },
     {
       field: "BTP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BTP",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1139,7 +1139,7 @@ const POandStockFull = () => {
     },
     {
       field: "TON_TP",
-      type: "number",
+      cellDataType: "number",
       headerName: "TON_TP",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1152,7 +1152,7 @@ const POandStockFull = () => {
     },
     {
       field: "BLOCK_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "BLOCK_QTY",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1177,7 +1177,7 @@ const POandStockFull = () => {
     },
     {
       field: "THUA_THIEU",
-      type: "number",
+      cellDataType: "number",
       headerName: "THUA_THIEU",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1190,7 +1190,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_BALANCE",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1203,7 +1203,7 @@ const POandStockFull = () => {
     },
     {
       field: "YCSX_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "YCSX_QTY",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1216,7 +1216,7 @@ const POandStockFull = () => {
     },
     {
       field: "KETQUASX",
-      type: "number",
+      cellDataType: "number",
       headerName: "KETQUASX",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1229,7 +1229,7 @@ const POandStockFull = () => {
     },
     {
       field: "NHAPKHO",
-      type: "number",
+      cellDataType: "number",
       headerName: "NHAPKHO",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1246,7 +1246,7 @@ const POandStockFull = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1259,7 +1259,7 @@ const POandStockFull = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1272,7 +1272,7 @@ const POandStockFull = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1285,7 +1285,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1298,7 +1298,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_CS_CHECK",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_CS_CHECK",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1311,7 +1311,7 @@ const POandStockFull = () => {
     },
     {
       field: "CHO_KIEM_RMA",
-      type: "number",
+      cellDataType: "number",
       headerName: "CHO_KIEM_RMA",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1324,7 +1324,7 @@ const POandStockFull = () => {
     },
     {
       field: "TONG_TON_KIEM",
-      type: "number",
+      cellDataType: "number",
       headerName: "Total TKiem",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1337,7 +1337,7 @@ const POandStockFull = () => {
     },
     {
       field: "BTP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BTP",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1350,7 +1350,7 @@ const POandStockFull = () => {
     },
     {
       field: "TON_TP",
-      type: "number",
+      cellDataType: "number",
       headerName: "TON_TP",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1363,7 +1363,7 @@ const POandStockFull = () => {
     },
     {
       field: "BLOCK_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "BLOCK_QTY",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1376,7 +1376,7 @@ const POandStockFull = () => {
     },
     {
       field: "GRAND_TOTAL_STOCK",
-      type: "number",
+      cellDataType: "number",
       headerName: "GRAND_TOTAL_STOCK",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1389,7 +1389,7 @@ const POandStockFull = () => {
     },
     {
       field: "THUA_THIEU",
-      type: "number",
+      cellDataType: "number",
       headerName: "THUA_THIEU",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1401,8 +1401,8 @@ const POandStockFull = () => {
       },
     },
   ];
-  const [columnDefinition, setColumnDefinition] =  useState<Array<any>>(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
-    const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
+  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
     return { backgroundColor: 'white', fontSize: '0.6rem' };
     /* if (params.data.M_ID % 2 === 0) {
@@ -1435,7 +1435,6 @@ const POandStockFull = () => {
       filter: true,
     };
   }, []);
-
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -1463,7 +1462,7 @@ const POandStockFull = () => {
       codeSearch: codeCMS,
     })
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         let temp_summary: POFullSummary = {
           PO_BALANCE: 0,
           TP: 0,
@@ -1633,9 +1632,8 @@ const POandStockFull = () => {
       </div>
       {selection.trapo && (
         <div className="tracuuFcst">
-         
           <div className="tracuuFcstTable">
-           {/*  <DataGrid
+            {/*  <DataGrid
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -1652,99 +1650,94 @@ const POandStockFull = () => {
             /> */}
             <div className="toolbar">
               <div className="searchdiv">
-              <div className="forminput">
-              <div className="forminputcolumn">
-                <label>
-                  <b>Code:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Nhập code vào đây"
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Chỉ code tồn PO</b>
-                  <input
-                    type="checkbox"
-                    name="alltimecheckbox"
-                    defaultChecked={alltime}
-                    onChange={() => setAllTime(!alltime)}
-                  ></input>
-                </label>
-                <button
-                  className="traxuatkiembutton"
-                  onClick={() => {
-                    handletraPOFullCMS();
-                  }}
-                >
-                  Search(G_CODE)
-                </button>
-                <button
-                  className="traxuatkiembutton"
-                  onClick={() => {
-                    handletraPOFullKD();
-                  }}
-                >
-                  Search(KD)
-                </button>
-              </div>
-              <div className="forminputcolumn">
-                <table>
-                  <thead>
-                    <tr>
-                      <td>PO BALANCE</td>
-                      <td>TP</td>
-                      <td>BTP</td>
-                      <td>CK</td>
-                      <td>BLOCK</td>
-                      <td>TONG TON</td>
-                      <td>THUA THIEU</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td style={{ color: "blue" }}>
-                        {pofullSummary.PO_BALANCE.toLocaleString("en-US")}
-                      </td>
-                      <td style={{ color: "purple" }}>
-                        {pofullSummary.TP.toLocaleString("en-US")}
-                      </td>
-                      <td style={{ color: "purple" }}>
-                        {pofullSummary.BTP.toLocaleString("en-US")}
-                      </td>
-                      <td style={{ color: "purple" }}>
-                        {pofullSummary.CK.toLocaleString("en-US")}
-                      </td>
-                      <td style={{ color: "red" }}>
-                        {pofullSummary.BLOCK.toLocaleString("en-US")}
-                      </td>
-                      <td style={{ color: "blue", fontWeight: "bold" }}>
-                        {pofullSummary.TONG_TON.toLocaleString("en-US")}
-                      </td>
-                      <td style={{ color: "brown", fontWeight: "bold" }}>
-                        {pofullSummary.THUATHIEU.toLocaleString("en-US")}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
+                <div className="forminput">
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Code:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Nhập code vào đây"
+                        value={codeCMS}
+                        onChange={(e) => setCodeCMS(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Chỉ code tồn PO</b>
+                      <input
+                        type="checkbox"
+                        name="alltimecheckbox"
+                        defaultChecked={alltime}
+                        onChange={() => setAllTime(!alltime)}
+                      ></input>
+                    </label>
+                    <button
+                      className="traxuatkiembutton"
+                      onClick={() => {
+                        handletraPOFullCMS();
+                      }}
+                    >
+                      Search(G_CODE)
+                    </button>
+                    <button
+                      className="traxuatkiembutton"
+                      onClick={() => {
+                        handletraPOFullKD();
+                      }}
+                    >
+                      Search(KD)
+                    </button>
+                  </div>
+                  <div className="forminputcolumn">
+                    <table>
+                      <thead>
+                        <tr>
+                          <td>PO BALANCE</td>
+                          <td>TP</td>
+                          <td>BTP</td>
+                          <td>CK</td>
+                          <td>BLOCK</td>
+                          <td>TONG TON</td>
+                          <td>THUA THIEU</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style={{ color: "blue" }}>
+                            {pofullSummary.PO_BALANCE.toLocaleString("en-US")}
+                          </td>
+                          <td style={{ color: "purple" }}>
+                            {pofullSummary.TP.toLocaleString("en-US")}
+                          </td>
+                          <td style={{ color: "purple" }}>
+                            {pofullSummary.BTP.toLocaleString("en-US")}
+                          </td>
+                          <td style={{ color: "purple" }}>
+                            {pofullSummary.CK.toLocaleString("en-US")}
+                          </td>
+                          <td style={{ color: "red" }}>
+                            {pofullSummary.BLOCK.toLocaleString("en-US")}
+                          </td>
+                          <td style={{ color: "blue", fontWeight: "bold" }}>
+                            {pofullSummary.TONG_TON.toLocaleString("en-US")}
+                          </td>
+                          <td style={{ color: "brown", fontWeight: "bold" }}>
+                            {pofullSummary.THUATHIEU.toLocaleString("en-US")}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+              </div>
               <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(pofulldatatable, "Ton kho full Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-       
-            
-
-              
+                className="buttonIcon"
+                onClick={() => {
+                  SaveExcel(pofulldatatable, "Ton kho full Table");
+                }}
+              >
+                <AiFillFileExcel color="green" size={15} />
+                SAVE
+              </IconButton>
             </div>
             <div
               className="ag-theme-quartz" // applying the grid theme
@@ -1780,10 +1773,9 @@ const POandStockFull = () => {
                 }}
                 onCellEditingStopped={(params: any) => {
                   //console.log(params)
-                }}                
+                }}
               />
             </div>
-
           </div>
         </div>
       )}
