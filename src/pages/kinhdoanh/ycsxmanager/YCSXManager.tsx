@@ -60,7 +60,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import AGTable from "../../../components/DataTable/AGTable";
 const YCSXManager = () => {
-  console.log('re-render');
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -3687,9 +3686,10 @@ const YCSXManager = () => {
               data={ycsxdatatable}
               onCellEditingStopped={(params: any) => {
                 //console.log(e.data)
-              }} onRowClick={(params: any) => {
+              }} onCellClick={(params: any) => {
                 //setClickedRows(params.data)
-                //console.log(e.data)
+                
+                //console.log(params)
               }} onSelectionChange={(params: any) => {                
                 setYcsxDataTableFilter(params!.api.getSelectedRows());
                 //console.log(e!.api.getSelectedRows())

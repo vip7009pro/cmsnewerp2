@@ -41,6 +41,7 @@ import {
 import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+import AGTable from "../../../components/DataTable/AGTable";
 const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
@@ -50,8 +51,8 @@ const QLVL = () => {
     M_ID: 0,
     M_NAME: "",
     DESCR: "",
-    CUST_CD: "",
-    CUST_NAME_KD: "",
+    CUST_CD: "0049",
+    CUST_NAME_KD: "SSJ",
     SSPRICE: 0,
     CMSPRICE: 0,
     SLITTING_PRICE: 0,
@@ -63,7 +64,7 @@ const QLVL = () => {
     UPD_DATE: "",
     UPD_EMPL: "",
     EXP_DATE: "-"
-  });
+  }); 
   const load_material_table = () => {
     generalQuery("get_material_table", {
       M_NAME: m_name,
@@ -207,179 +208,6 @@ const QLVL = () => {
       load_material_table();
     }
   };
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={data}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              setClickedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(data, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="M_ID" caption="M_ID" width={100}></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
-            <Column dataField="DESCR" caption="DESCR" width={100}></Column>
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
-            <Column
-              dataField="CUST_NAME_KD"
-              caption="CUST_NAME_KD"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SSPRICE"
-              caption="OPEN_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CMSPRICE"
-              caption="ORIGIN_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SLITTING_PRICE"
-              caption="SLITTING_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="MASTER_WIDTH"
-              caption="MASTER_WIDTH"
-              width={100}
-            ></Column>
-            <Column
-              dataField="ROLL_LENGTH"
-              caption="ROLL_LENGTH"
-              width={100}
-            ></Column>
-            <Column dataField="USE_YN" caption="USE_YN" width={100}></Column>
-            <Column dataField="EXP_DATE" caption="EXP_DATE" width={100}></Column>
-            <Column dataField='TDS' caption='TDS' width={200} cellRender={(ele: any) => {
-              let href = `/tds2/NVL_${ele.data.M_ID}.pdf`;
-              let file: any = null;
-              if (ele.data.TDS === 'Y') {
-                return (
-                  <a target="_blank" rel="noopener noreferrer" href={href} >LINK</a>
-                )
-              }
-              else {
-                return (
-                  <div className="tdsuploadbutton">
-                    <button onClick={() => {
-                      uploadTDS(ele.data.M_ID, file);
-                    }}>Upload</button>
-                    <input
-                      accept='.pdf'
-                      type='file'
-                      onChange={(e: any) => {
-                        file = e.target.files[0];
-                      }}
-                    />
-                  </div>
-                )
-              }
-            }}></Column>
-            <Column
-              dataField="INS_DATE"
-              caption="INS_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="INS_EMPL"
-              caption="INS_EMPL"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPD_DATE"
-              caption="UPD_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPD_EMPL"
-              caption="UPD_EMPL"
-              width={100}
-            ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [data],
-  );
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -1157,16 +985,16 @@ const QLVL = () => {
                     option.CUST_CD === value.CUST_CD
                   }
                   getOptionLabel={(option: any) =>
-                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""
+                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : "SSJ"}${option.CUST_CD !== null ? option.CUST_CD : "0049"
                     }`
                   }
                   renderInput={(params) => (
                     <TextField {...params} style={{ height: "10px" }} />
                   )}
                   defaultValue={{
-                    CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
-                    CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                    CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
+                    CUST_CD: getCompany() === "CMS" ? "0049" : "KH000",
+                    CUST_NAME: getCompany() === "CMS" ? "SSJ" : "PVN",
+                    CUST_NAME_KD: getCompany() === "CMS" ? "SSJ" : "PVN",
                   }}
                   value={{
                     CUST_CD: clickedRows?.CUST_CD,
@@ -1278,8 +1106,7 @@ const QLVL = () => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type='checkbox'
-                  name='pobalancecheckbox'
-                  defaultChecked={clickedRows?.USE_YN === "Y"}
+                  name='pobalancecheckbox'                  
                   checked={clickedRows?.USE_YN === "Y"}
                   onChange={(e) => {
                     seMaterialInfo(
@@ -1305,66 +1132,37 @@ const QLVL = () => {
             console.log(selectedRows)
           }}>TEST</Button> */}
         </div>
-        <div className="tracuuYCSXTable">
-          <div className="toolbar">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                SaveExcel(data, "MaterialStatus");
-              }}
-            >
-              <AiFillFileExcel color="green" size={15} />
-              SAVE
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(!showhidePivotTable);
-              }}
-            >
-              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-              Pivot
-            </IconButton>
-          </div>
-          <div
-            className="ag-theme-quartz" // applying the grid theme
-            style={{ height: '100%' }} // the grid will fill the size of the parent container
-          >
-            <AgGridReact
-              rowData={data}
-              columnDefs={colDefs}
-              rowHeight={25}
-              defaultColDef={defaultColDef}
-              ref={gridRef}
-              onGridReady={() => {
-                setHeaderHeight(20);
-              }}
-              columnHoverHighlight={true}
-              rowStyle={rowStyle}
-              getRowStyle={getRowStyle}
-              getRowId={(params: any) => params.data.M_ID}
-              rowSelection={"multiple"}
-              rowMultiSelectWithClick={true}
-              suppressRowClickSelection={true}
-              enterNavigatesVertically={true}
-              enterNavigatesVerticallyAfterEdit={true}
-              stopEditingWhenCellsLoseFocus={true}
-              rowBuffer={10}
-              debounceVerticalScrollbar={false}
-              enableRangeSelection={true}
-              floatingFiltersHeight={23}
-              onSelectionChanged={onSelectionChanged}
-              onRowClicked={(params: any) => {
-                setClickedRows(params.data)
-                //console.log(params.data)
-              }}
-              onCellEditingStopped={(params: any) => {
-                console.log(params)
-              }}
-            />
-          </div>
-        </div>
-        {/* <div className="tracuuYCSXTable">{materialDataTable}</div> */}
+        <div className="tracuuYCSXTable">         
+          <AGTable
+          showFilter={true}
+          toolbar={
+            <div>              
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                Pivot
+              </IconButton>
+
+            </div>}
+          columns={colDefs}
+          data={data}
+          onCellEditingStopped={(params: any) => {
+           
+          }} 
+          onCellClick={(params: any) => {          
+           if(params.column.colId !=='TDS') {
+             setClickedRows(params.data)
+           }            
+          }} 
+          onSelectionChange={(params: any) => {
+            //console.log(e!.api.getSelectedRows())
+          }} />
+        </div>        
+      
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton

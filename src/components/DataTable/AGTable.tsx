@@ -11,23 +11,18 @@ interface AGInterface {
   columns: Array<any>,
   toolbar?: ReactElement,
   showFilter?: boolean,  
-  onRowClick: (e: any) => void,
+  onRowClick?: (e: any) => void,
+  onCellClick?: (e:any)=> void,
   onRowDoubleClick?: (e: any) => void,
   onSelectionChange: (e: any) => void,
-  onCellEditingStopped: (e: any) => void,
+  onCellEditingStopped?: (e: any) => void,
   getRowStyle?: (e: any)=> any  
 }
 const AGTable = (ag_data: AGInterface) => {
   const [selectedrow,setSelectedrow] = useState(0);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
-    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
-    /* if (params.data.M_ID % 2 === 0) {
-        return { backgroundColor: 'white', fontSize:'0.6rem'};
-    }
-    else {
-      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
-    } */
+    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };    
   };
   const onRowdoubleClick = (params: any)=> {
 
@@ -55,14 +50,18 @@ const AGTable = (ag_data: AGInterface) => {
       filter: true,
     };
   }, []);
+  const onExportClick = () => {
+    gridRef.current!.api.exportDataAsCsv();
+};
   return (
-    <div className='agtable'>
+    <div className='agtable'>      
       {ag_data.toolbar !== undefined && <div className="toolbar">
       {ag_data.toolbar}   
       <IconButton
           className="buttonIcon"
           onClick={() => {
-            SaveExcel(ag_data.data, "Data Table");
+            onExportClick();
+            //SaveExcel(ag_data.data, "Data Table");
           }}
         >
           <AiFillFileExcel color="green" size={15} />
@@ -104,6 +103,7 @@ const AGTable = (ag_data: AGInterface) => {
           onRowClicked={ag_data.onRowClick}
           onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
           onCellEditingStopped={ag_data.onCellEditingStopped}
+          onCellClicked={ag_data.onCellClick}
         />
       </div>
       <div className="bottombar">

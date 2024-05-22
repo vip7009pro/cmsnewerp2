@@ -1790,7 +1790,136 @@ const CODE_MANAGER = () => {
   ];
   const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);
   const [columns, setColumns] = useState<Array<any>>(column_codeinfo2);
-  const [columnDefinition, setColumnDefinition] =useState<Array<any>>(column_codeinfo2);
+  const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
+    [],
+  );
+  const [columnDefinition, setColumnDefinition] =
+    useState<Array<any>>(column_codeinfo2);
+  function CustomToolbarPOTable() {
+    return (
+      <GridToolbarContainer>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            SaveExcel(rows, "Code Info Table");
+          }}
+        >
+          <AiFillFileExcel color="green" size={15} />                  
+        </IconButton>
+        <IconButton
+          className="buttonIcon"          
+          onClick={() => {
+            setNgoaiQuan("N");
+          }}
+        >
+          <AiFillCheckCircle color="blue" size={15}/>
+          SET NGOAI QUAN
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setNgoaiQuan("Y");
+          }}
+        >
+          <FcCancel color="green" size={15} />
+          SET K NGOAI QUAN
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            resetBanVe("N");
+          }}
+        >
+          <BiReset color="green" size={15} />
+          RESET BẢN VẼ
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            pdBanVe("Y");
+          }}
+        >
+          <MdOutlineDraw color="red" size={15} />
+          PDUYET BẢN VẼ
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            handleSaveQLSX();
+          }}
+        >
+          <MdUpdate color="blue" size={15} />
+          Update TT QLSX
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setColumns(
+              columns.map((element, index: number) => {
+                return { ...element, editable: !element.editable };
+              }),
+            );
+            Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+          }}
+        >
+          <AiFillEdit color="yellow" size={15} />
+          Bật tắt sửa
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            handleSaveLossSX();
+          }}
+        >
+          <MdUpdate color="blue" size={15} />
+          Update LOSS SX
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            updateBEP();
+          }}
+        >
+          <MdPriceChange  color="red" size={15} />
+          Update BEP
+        </IconButton>
+      </GridToolbarContainer>
+    );
+  }
+  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const getRowStyle = (params: any) => {
+    return { backgroundColor: 'white', fontSize: '0.6rem' };
+    /* if (params.data.M_ID % 2 === 0) {
+        return { backgroundColor: 'white', fontSize:'0.6rem'};
+    }
+    else {
+      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
+    } */
+  };
+  const onSelectionChanged = useCallback(() => {
+    const selectedrow = gridRef.current!.api.getSelectedRows();
+    setCodeDataTableFilter(selectedrow);    
+  }, []);
+  function setIdText(id: string, value: string | number | undefined) {
+    document.getElementById(id)!.textContent =
+      value == undefined ? "undefined" : value + "";
+  }
+  const setHeaderHeight = useCallback((value?: number) => {
+    gridRef.current!.api.setGridOption("headerHeight", value);
+    setIdText("headerHeight", value);
+  }, []);
+  const gridRef = useRef<AgGridReact<CODE_FULL_INFO>>(null);
+  const defaultColDef = useMemo(() => {
+    return {
+      initialWidth: 100,
+      wrapHeaderText: true,
+      autoHeaderHeight: false,
+      editable: true,
+      floatingFilter: true,
+      filter: true,
+    };
+  }, []);
   const resetBanVe = async (value: string) => {
     if (codedatatablefilter.length >= 1) {
       checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
@@ -1902,6 +2031,48 @@ const CODE_MANAGER = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const setNav = (choose: number) => {
+    if (choose === 1) {
+      setSelection({
+        ...selection,
+        trapo: true,
+        thempohangloat: false,
+        them1po: false,
+        them1invoice: false,
+        testinvoicetable: false,
+      });
+    } else if (choose === 2) {
+      setSelection({
+        ...selection,
+        trapo: false,
+        thempohangloat: true,
+        them1po: false,
+        them1invoice: false,
+        testinvoicetable: false,
+      });
+    } else if (choose === 3) {
+      setSelection({
+        ...selection,
+        trapo: false,
+        thempohangloat: false,
+        them1po: false,
+        them1invoice: false,
+        testinvoicetable: true,
+      });
+    }
+  };
+  const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = rows.filter((element: CODE_FULL_INFO) =>
+      selectedID.has(element.id === undefined ? 0 : element.id),
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setCodeDataTableFilter(datafilter);
+    } else {
+      setCodeDataTableFilter([]);
+    }
   };
   const setNgoaiQuan = async (value: string) => {
     if (codedatatablefilter.length >= 1) {
@@ -2045,7 +2216,43 @@ const CODE_MANAGER = () => {
   return (
     <div className="codemanager"> 
         <div className="tracuuFcst">          
-          <div className="tracuuFcstTable">           
+          <div className="tracuuFcstTable">
+            {/* <DataGrid
+              components={{
+                Toolbar: CustomToolbarPOTable,
+                LoadingOverlay: LinearProgress,
+              }}
+              sx={{ fontSize: "0.7rem" }}
+              loading={isLoading}
+              rowHeight={30}
+              rows={rows}
+              columns={columns}
+              checkboxSelection
+              onSelectionModelChange={(ids) => {
+                handleCODESelectionforUpdate(ids);
+              }}
+              disableSelectionOnClick={true}             
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+              ]}
+              editMode="cell"              
+              onCellEditCommit={(
+                params: GridCellEditCommitParams,
+                event: MuiEvent<MuiBaseEvent>,
+                details: GridCallbackDetails,
+              ) => {                
+                let tempeditrows = editedRows;
+                tempeditrows.push(params);
+                setEditedRows(tempeditrows);               
+                const keyvar = params.field;
+                const newdata = rows.map((p) =>
+                  p.id === params.id ? { ...p, [keyvar]: params.value } : p,
+                );
+                startTransition(() => {
+                  setRows(newdata);
+                });
+              }}
+            /> */}
             <div className="toolbar">
               <div className="searchdiv">
               <label>
@@ -2067,8 +2274,10 @@ const CODE_MANAGER = () => {
                 }}
               >
                 Tìm code
-              </button>
-              </div>               
+              </button>  
+
+              </div>
+               
               <IconButton
                 className="buttonIcon"
                 onClick={() => {
@@ -2155,7 +2364,45 @@ const CODE_MANAGER = () => {
                 <MdPriceChange color="red" size={15} />
                 Update BEP
               </IconButton>
-            </div> 
+            </div>
+            {/* <div
+              className="ag-theme-quartz" // applying the grid theme
+              style={{ height: '100%' }} // the grid will fill the size of the parent container
+            >
+              <AgGridReact
+                rowData={rows}
+                columnDefs={column_codeinfo2}
+                rowHeight={25}
+                defaultColDef={defaultColDef}
+                ref={gridRef}
+                onGridReady={() => {
+                  setHeaderHeight(20);
+                }}
+                columnHoverHighlight={true}
+                rowStyle={rowStyle}
+                getRowStyle={getRowStyle}
+                getRowId={(params: any) => params.data.G_CODE}
+                rowSelection={"multiple"}
+                rowMultiSelectWithClick={true}
+                suppressRowClickSelection={true}
+                enterNavigatesVertically={true}
+                enterNavigatesVerticallyAfterEdit={true}
+                stopEditingWhenCellsLoseFocus={true}
+                rowBuffer={10}
+                debounceVerticalScrollbar={false}
+                enableRangeSelection={true}
+                floatingFiltersHeight={23}
+                onSelectionChanged={onSelectionChanged}
+                onRowClicked={(params: any) => {
+                  //setClickedRows(params.data)
+                  //console.log(params.data)
+                }}
+                onCellEditingStopped={(params: any) => {
+                  //console.log(params)
+                }}
+              />
+            </div> */}
+
             <AGTable
               showFilter={true}             
               columns={column_codeinfo2}
@@ -2168,8 +2415,11 @@ const CODE_MANAGER = () => {
                 setCodeDataTableFilter(params!.api.getSelectedRows());
                 //console.log(e!.api.getSelectedRows())
               }} />
+
+
           </div>
-        </div>      
+        </div>
+      
     </div>
   );
 };
