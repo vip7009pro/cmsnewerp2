@@ -324,6 +324,7 @@ export interface FCSTTDYCSX {
   W8: number;
 }
 export interface YCSXTableData {
+  id?: number;
   DAUPAMZ: string;
   DACHITHI: string;
   DESCR?: string;

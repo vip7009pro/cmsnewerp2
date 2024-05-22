@@ -1,29 +1,17 @@
-import { IconButton, LinearProgress } from "@mui/material";
+import { IconButton } from "@mui/material";
 import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-  GridColumns,
-  GridRowsProp,
-  GridCellEditStopParams,
-  MuiEvent,
-  GridCellEditStopReasons,
-  GridCellEditCommitParams,
-  MuiBaseEvent,
-  GridCallbackDetails,
+
+  GridSelectionModel,  
+  GridToolbarContainer,  
+  GridToolbarQuickFilter,  
+  GridCellEditCommitParams,  
 } from "@mui/x-data-grid";
-import moment from "moment";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { FcCancel, FcSearch } from "react-icons/fc";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { FcCancel, } from "react-icons/fc";
 import {
   AiFillCheckCircle,
   AiFillEdit,
-  AiFillFileExcel,
-  AiOutlineCheck,
+  AiFillFileExcel,  
   AiOutlineCloudUpload,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -36,12 +24,13 @@ import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from "axios";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
-import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
+import { AgGridReact, } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; 
 import "ag-grid-community/styles/ag-theme-quartz.css"; 
+import AGTable from "../../../components/DataTable/AGTable";
 const CODE_MANAGER = () => {
+  console.log('re-render')
   const [uploadfile, setUploadFile] = useState<any>(null);
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_FULL_INFO>
@@ -1806,7 +1795,7 @@ const CODE_MANAGER = () => {
     [],
   );
   const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_codeinfo);
+    useState<Array<any>>(column_codeinfo2);
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -2377,7 +2366,7 @@ const CODE_MANAGER = () => {
                 Update BEP
               </IconButton>
             </div>
-            <div
+            {/* <div
               className="ag-theme-quartz" // applying the grid theme
               style={{ height: '100%' }} // the grid will fill the size of the parent container
             >
@@ -2413,7 +2402,22 @@ const CODE_MANAGER = () => {
                   //console.log(params)
                 }}
               />
-            </div>
+            </div> */}
+
+            <AGTable
+              showFilter={true}             
+              columns={column_codeinfo2}
+              data={rows}
+              onCellEditingStopped={(params: any) => {
+                
+              }} onRowClick={(params: any) => {                
+                //console.log(e.data)
+              }} onSelectionChange={(params: any) => {                
+                setCodeDataTableFilter(params!.api.getSelectedRows());
+                //console.log(e!.api.getSelectedRows())
+              }} />
+
+
           </div>
         </div>
       

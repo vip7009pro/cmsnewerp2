@@ -14,7 +14,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { Profiler, useContext, useEffect, useState, useTransition } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
   AiFillCloseCircle,
   AiFillFileExcel,
@@ -70,10 +70,7 @@ const INSPECTION = () => {
   );
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const column_inspect_input = [
-    {
-      field: "INSPECT_INPUT_ID", headerName: "ID", width: 100, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
+    { field: "INSPECT_INPUT_ID", headerName: "ID", width: 80 },
     { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
     { field: "EMPL_NAME", headerName: "Nhân Viên", width: 150 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -83,10 +80,10 @@ const INSPECTION = () => {
       field: "INPUT_QTY_EA",
       headerName: "SL NHẬP EA",
       width: 100,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.data.INPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.INPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -99,10 +96,10 @@ const INSPECTION = () => {
       field: "PROD_REQUEST_QTY",
       headerName: "SL YC",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -115,10 +112,10 @@ const INSPECTION = () => {
       field: "INPUT_QTY_KG",
       headerName: "SL NHẬP GRAM",
       width: 100,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.data.INPUT_QTY_KG?.toLocaleString("en-US")}</b>
+            <b>{params.row.INPUT_QTY_KG.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -127,10 +124,7 @@ const INSPECTION = () => {
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 80 },
   ];
   const column_inspect_output = [
-    {
-      field: "INSPECT_OUTPUT_ID", headerName: "ID", width: 100, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
+    { field: "INSPECT_OUTPUT_ID", headerName: "ID", width: 80 },
     { field: "CUST_NAME_KD", headerName: "Khách hàng", width: 150 },
     { field: "EMPL_NAME", headerName: "Nhân viên", width: 150 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -140,10 +134,10 @@ const INSPECTION = () => {
       field: "OUTPUT_QTY_EA",
       headerName: "OUTPUT QTY",
       width: 110,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.data.OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -156,10 +150,10 @@ const INSPECTION = () => {
       field: "PROD_REQUEST_QTY",
       headerName: "SL YC",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -174,14 +168,14 @@ const INSPECTION = () => {
       field: "STATUS",
       headerName: "NHẬP KHO",
       width: 120,
-      cellRenderer: (params: any) => {
-        if (params.data.STATUS?.toUpperCase() === "PENDING") {
+      renderCell: (params: any) => {
+        if (params.row.STATUS.toUpperCase() === "PENDING") {
           return (
             <span style={{ color: "red" }}>
-              <b>{params.data.STATUS?.toUpperCase()}</b>
+              <b>{params.row.STATUS.toUpperCase()}</b>
             </span>
           );
-        } else if (params.data.STATUS?.toUpperCase() === "PROGRS") {
+        } else if (params.row.STATUS.toUpperCase() === "PROGRS") {
           return (
             <span style={{ color: "orange" }}>
               <b>ĐANG NHẬP</b>
@@ -190,7 +184,7 @@ const INSPECTION = () => {
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.data.STATUS?.toUpperCase()}</b>
+              <b>{params.row.STATUS.toUpperCase()}</b>
             </span>
           );
         }
@@ -200,10 +194,7 @@ const INSPECTION = () => {
     { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
   ];
   const column_inspect_inoutycsx = [
-    {
-      field: "PIC_KD", headerName: "PIC_KD", width: 150, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
+    { field: "PIC_KD", headerName: "PIC_KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 180 },
@@ -214,10 +205,10 @@ const INSPECTION = () => {
       field: "PROD_REQUEST_QTY",
       headerName: "SL YC",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -226,10 +217,10 @@ const INSPECTION = () => {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       headerName: "Nhập EA",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -238,10 +229,10 @@ const INSPECTION = () => {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       headerName: "Xuất EA",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -250,10 +241,10 @@ const INSPECTION = () => {
       field: "DA_KIEM_TRA",
       headerName: "Đã Kiểm",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.data.DA_KIEM_TRA?.toLocaleString("en-US")}</b>
+            <b>{params.row.DA_KIEM_TRA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -262,10 +253,10 @@ const INSPECTION = () => {
       field: "OK_QTY",
       headerName: "OK_QTY",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.data.OK_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.OK_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -274,10 +265,10 @@ const INSPECTION = () => {
       field: "LOSS_NG_QTY",
       headerName: "Loss và NG",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.LOSS_NG_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOSS_NG_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -286,20 +277,17 @@ const INSPECTION = () => {
       field: "INSPECT_BALANCE",
       headerName: "Tồn kiểm",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "purple" }}>
-            <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
   ];
   const column_inspection_NG = [
-    {
-      field: "INSPECT_ID", headerName: "INSPECT_ID", width: 100, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
+    { field: "INSPECT_ID", headerName: "INSPECT_ID", width: 80 },
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
     { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
     { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
@@ -374,54 +362,48 @@ const INSPECTION = () => {
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
   ];
   const column_inspect_balance = [
-    {
-      field: "G_CODE", headerName: "G_CODE", width: 120, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 130 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
     {
-      field: "INSPECT_BALANCE_QTY", headerName: "TON_KIEM", width: 100, cellRenderer: (params: any) => {
+      field: "INSPECT_BALANCE_QTY", headerName: "TON_KIEM", width: 100, renderCell: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.INSPECT_BALANCE_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.INSPECT_BALANCE_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     {
-      field: "WAIT_CS_QTY", headerName: "CHO_CS", width: 100, cellRenderer: (params: any) => {
+      field: "WAIT_CS_QTY", headerName: "CHO_CS", width: 100, renderCell: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.WAIT_CS_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.WAIT_CS_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     {
-      field: "WAIT_SORTING_RMA", headerName: "RMA_CHO_SORTING", width: 100, cellRenderer: (params: any) => {
+      field: "WAIT_SORTING_RMA", headerName: "RMA_CHO_SORTING", width: 100, renderCell: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.WAIT_SORTING_RMA?.toLocaleString("en-US")}</b>
+            <b>{params.row.WAIT_SORTING_RMA.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     {
-      field: "TOTAL_WAIT", headerName: "TOTAL_WAIT", width: 100, cellRenderer: (params: any) => {
+      field: "TOTAL_WAIT", headerName: "TOTAL_WAIT", width: 100, renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.TOTAL_WAIT?.toLocaleString("en-US")}</b>
+            <b>{params.row.TOTAL_WAIT.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
   ];
   const column_inspect_patrol = [
-    {
-      field: 'INS_PATROL_ID', headerName: 'INS_PATROL_ID', width: 120, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
+    { field: 'INS_PATROL_ID', headerName: 'INS_PATROL_ID', width: 80 },
     { field: 'G_NAME', headerName: 'G_NAME', width: 80 },
     { field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 80 },
     { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 80 },
@@ -2679,7 +2661,7 @@ const INSPECTION = () => {
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
-  return (   
+  return (
     <div className="inspection">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
@@ -2836,7 +2818,7 @@ const INSPECTION = () => {
         <div className="tracuuYCSXTable">
           <AGTable
             toolbar={
-              <div
+              <span
                 style={{
                   fontWeight: "bold",
                   fontSize: "1rem",
@@ -2844,28 +2826,18 @@ const INSPECTION = () => {
                   color: "blue",
                 }}
               >
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
                 {sumaryINSPECT}
-              </div>}
+              </span>}
             columns={columnDefinition}
             data={inspectiondatatable}
             onCellEditingStopped={(e) => {
-              //console.log(e.data)
+              console.log(e)
             }} onRowClick={(e) => {
-              //console.log(e.data)
+              console.log(e)
             }} onSelectionChange={(e) => {
-              //console.log(e!.api.getSelectedRows())
-            }}             
-            />
-          {/* {false && (
+              console.log(e)
+            }} />
+          {false && (
             <DataGrid
               sx={{ fontSize: "0.7rem", flex: 1 }}
               components={{
@@ -2882,7 +2854,7 @@ const INSPECTION = () => {
               ]}
               editMode="row"
             />
-          )} */}
+          )}
         </div>
         {showhidePivotTable && (
           <div className="pivottable1">
@@ -2902,7 +2874,7 @@ const INSPECTION = () => {
           </div>
         )}
       </div>
-    </div>   
+    </div>
   );
 };
 export default INSPECTION;

@@ -79,6 +79,7 @@ import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import AGTable from "../../../../components/DataTable/AGTable";
 const PLAN_DATATB = () => {
   const dataGridRef = useRef<any>(null);
   const currentRow = useRef(0);
@@ -3815,10 +3816,8 @@ const PLAN_DATATB = () => {
   return (
     <div className='lichsuplanTable'>
       <div className='tracuuDataInspection'>
-        <div className='tracuuYCSXTable'>
-          
+        <div className='tracuuYCSXTable'>          
           <div className="toolbar">
-
           <div className='header'>
             <div className='forminput'>
               <div className='forminputcolumn'>
@@ -4070,9 +4069,8 @@ const PLAN_DATATB = () => {
               Print Bản Vẽ
             </IconButton>
           </div>
-
-           
           </div>
+
           <div
             className="ag-theme-quartz" // applying the grid theme
             style={{ height: '100%', }} // the grid will fill the size of the parent container
@@ -4124,7 +4122,42 @@ const PLAN_DATATB = () => {
               }}
             />
           </div>
-          {/* {planDataTable} */}
+          {/* <AGTable            
+            columns={columns}
+            data={plandatatable}
+            getRowStyle={(params:any) => {
+              if (Number(params.data?.PLAN_EQ.substring(2, 4)) % 2 === 0) {
+                return { backgroundColor: 'white', fontSize: '0.6rem' };
+              }
+              else {
+                return { backgroundColor: '#d3d7cf', fontSize: '0.6rem' };
+              }
+
+              //console.log(e.data)
+            }}
+            onCellEditingStopped={(params:any) => {
+              //console.log(e.data)
+            }} 
+            onRowClick={(params:any) => {
+              clickedRow.current = params.data;
+                setSelectedPlan(params.data);
+                handleGetChiThiTable(
+                  params.data.PLAN_ID,
+                  params.data.G_CODE,
+                  params.data.PLAN_QTY,
+                  params.data.PROCESS_NUMBER,
+                  params.data.IS_SETTING ?? 'Y'
+                );
+              //console.log(e.data)
+            }} 
+            onSelectionChange={(params:any) => {
+              //console.log(e!.api.getSelectedRows())
+              qlsxplandatafilter.current = params!.api.getSelectedRows();
+            }} 
+            onRowDoubleClick={(params: any) => {
+              setShowHideM(true);
+            }}            
+            /> */}         
         </div>
       </div>
       {showhideM && (

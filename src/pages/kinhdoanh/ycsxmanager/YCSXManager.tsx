@@ -16,7 +16,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useCallback, useContext, useEffect, useMemo, useState, useTransition } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState, useTransition, Profiler } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
 import {
   AiFillAmazonCircle,
@@ -56,9 +56,11 @@ import {
   YCSXTableData,
 } from "../../../api/GlobalInterface";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; 
-import "ag-grid-community/styles/ag-theme-quartz.css"; 
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
+import AGTable from "../../../components/DataTable/AGTable";
 const YCSXManager = () => {
+  console.log('re-render');
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -86,7 +88,6 @@ const YCSXManager = () => {
       )
     );
   };
-  const [file, setFile] = useState<any>();
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -123,11 +124,10 @@ const YCSXManager = () => {
     PROD_LAST_PRICE: 0,
     USE_YN: "N",
   });
-  const [selectedCust_CD, setSelectedCust_CD] =
-    useState<CustomerListData | null>({
-      CUST_CD: "0000",
-      CUST_NAME_KD: "SEOJIN",
-    });
+  const [selectedCust_CD, setSelectedCust_CD] = useState<CustomerListData | null>({
+    CUST_CD: "0000",
+    CUST_NAME_KD: "SEOJIN",
+  });
   const [selectedPoNo, setSelectedPoNo] = useState<PONOLIST | null>({
     CUST_CD: "",
     G_CODE: "",
@@ -139,7 +139,6 @@ const YCSXManager = () => {
   const [deliverydate, setNewDeliveryDate] = useState(
     moment().format("YYYY-MM-DD")
   );
-  const [pono, setPONO] = useState("");
   const [newycsxqty, setNewYcsxQty] = useState("");
   const [newycsxremark, setNewYcsxRemark] = useState("");
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -151,12 +150,8 @@ const YCSXManager = () => {
   const [loaixh, setLoaiXH] = useState("02");
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
-  const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<
-    Array<YCSXTableData>
-  >([]);
-  const [ycsxdatatablefilterexcel, setYcsxDataTableFilterExcel] = useState<
-    Array<any>
-  >([]);
+  const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<Array<YCSXTableData>>([]);
+  const [ycsxdatatablefilterexcel, setYcsxDataTableFilterExcel] = useState<Array<any>>([]);
   const [selectedID, setSelectedID] = useState<string | null>();
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
@@ -165,7 +160,6 @@ const YCSXManager = () => {
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState("");
   const [AMZ_check_flag, setAMZ_Check_Flag] = useState(false);
-  const [trigger, setTrigger] = useState(true);
   const [clickedRows, setClickedRows] = useState<YCSXTableData>({
     BLOCK_TDYCSX: 0,
     BTP_TDYCSX: 0,
@@ -254,49 +248,13 @@ const YCSXManager = () => {
     PROD_TYPE: '',
     SETVL: '',
   });
-  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
-  const getRowStyle = (params: any) => {
-    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
-    /* if (params.data.M_ID % 2 === 0) {
-        return { backgroundColor: 'white', fontSize:'0.6rem'};
-    }
-    else {
-      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
-    } */
-  };
-  const onSelectionChanged = useCallback(() => {
-    const selectedrow = gridRef.current!.api.getSelectedRows();
-    setYcsxDataTableFilter(selectedrow);
-    //setSelectedRows(selectedrow);
-  }, []);
-  function setIdText(id: string, value: string | number | undefined) {
-    document.getElementById(id)!.textContent =
-      value == undefined ? "undefined" : value + "";
-  }
-  const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
-  }, []);
-  const gridRef = useRef<AgGridReact<YCSXTableData>>(null);
-  const defaultColDef = useMemo(() => {
-    return {
-      initialWidth: 100,
-      wrapHeaderText: true,
-      autoHeaderHeight: false,
-      editable: true,
-      floatingFilter: true,
-      filter: true,
-      
-    };
-  }, []);
-
   const column_ycsxtable2 = [
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
       width: 150,
-      headerCheckboxSelection: true, 
-      checkboxSelection: true, 
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
       cellRenderer: (params: any) => {
         if (params.data.SETVL === 'N') {
           return <span style={{ color: "gray" }}>{params.data.G_NAME_KD}</span>;
@@ -330,13 +288,13 @@ const YCSXManager = () => {
         if (params.data.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
-              {params.data.PROD_REQUEST_NO.toLocaleString("en-US")}
+              {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+              <b>{params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}</b>
             </span>
           );
         }
@@ -350,13 +308,13 @@ const YCSXManager = () => {
         if (params.data.DAUPAMZ === null) {
           return (
             <span style={{ color: "black" }}>
-              <b>{params.data.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
+              <b>{params.data.PROD_REQUEST_DATE?.toLocaleString("en-US")}</b>
             </span>
           );
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
+              <b>{params.data.PROD_REQUEST_DATE?.toLocaleString("en-US")}</b>
             </span>
           );
         }
@@ -376,7 +334,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -389,7 +347,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -402,7 +360,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+            <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -415,7 +373,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
+            <b>{params.data.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -487,7 +445,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#6600ff" }}>
-            <b>{params.data.PO_TDYCSX.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_TDYCSX?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -500,7 +458,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#6600ff" }}>
-            <b>{params.data.TOTAL_TKHO_TDYCSX.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_TKHO_TDYCSX?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -513,7 +471,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TKHO_TDYCSX.toLocaleString("en-US")}
+            {params.data.TKHO_TDYCSX?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -526,7 +484,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.BTP_TDYCSX.toLocaleString("en-US")}
+            {params.data.BTP_TDYCSX?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -539,7 +497,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.CK_TDYCSX.toLocaleString("en-US")}
+            {params.data.CK_TDYCSX?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -552,7 +510,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.BLOCK_TDYCSX.toLocaleString("en-US")}
+            {params.data.BLOCK_TDYCSX?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -565,7 +523,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#6600ff" }}>
-            <b>{params.data.FCST_TDYCSX.toLocaleString("en-US")}</b>
+            <b>{params.data.FCST_TDYCSX?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -578,7 +536,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W1.toLocaleString("en-US")}
+            {params.data.W1?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -591,7 +549,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W2.toLocaleString("en-US")}
+            {params.data.W2?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -604,7 +562,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W3.toLocaleString("en-US")}
+            {params.data.W3?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -617,7 +575,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W4.toLocaleString("en-US")}
+            {params.data.W4?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -630,7 +588,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W5.toLocaleString("en-US")}
+            {params.data.W5?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -643,7 +601,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W6.toLocaleString("en-US")}
+            {params.data.W6?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -656,7 +614,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W7.toLocaleString("en-US")}
+            {params.data.W7?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -669,7 +627,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.W8.toLocaleString("en-US")}
+            {params.data.W8?.toLocaleString("en-US")}
           </span>
         );
       },
@@ -709,9 +667,9 @@ const YCSXManager = () => {
       width: 250,
       cellRenderer: (params: any) => {
         //console.log(ycsxdatatable)
-        let file:any = null;
-        useEffect(()=> {         
-        },[ycsxdatatable]);
+        let file: any = null;
+        useEffect(() => {
+        }, [ycsxdatatable]);
         //let file: any = null;
         const uploadFile2 = async (e: any) => {
           console.log(file);
@@ -724,8 +682,8 @@ const YCSXManager = () => {
                     banvevalue: "Y",
                   })
                     .then((response) => {
-                      if (response.data.tk_status !== "NG") {                   
-                        console.log(ycsxdatatable);                       
+                      if (response.data.tk_status !== "NG") {
+                        console.log(ycsxdatatable);
                         let tempycsxdatatable = ycsxdatatable.map(
                           (element, index) => {
                             return element.PROD_REQUEST_NO ===
@@ -736,7 +694,6 @@ const YCSXManager = () => {
                         );
                         console.log(tempycsxdatatable);
                         setYcsxDataTable(tempycsxdatatable);
-
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thành công",
@@ -787,8 +744,8 @@ const YCSXManager = () => {
           return (
             <div className="uploadfile">
               <IconButton className="buttonIcon" onClick={(e) => {
-                  uploadFile2(e);
-                }}
+                uploadFile2(e);
+              }}
               >
                 <AiOutlineCloudUpload color="yellow" size={15} />
                 Upload
@@ -823,15 +780,14 @@ const YCSXManager = () => {
         );
       },
     },
-
   ];
   const column_ycsxtable_pvn2 = [
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
       width: 100,
-      headerCheckboxSelection: true, 
-      checkboxSelection: true, 
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
       cellRenderer: (params: any) => {
         if (params.data.PDBV === "P" || params.data.PDBV === null)
           return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
@@ -860,13 +816,13 @@ const YCSXManager = () => {
         if (params.data.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
-              {params.data.PROD_REQUEST_NO.toLocaleString("en-US")}
+              {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+              <b>{params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}</b>
             </span>
           );
         }
@@ -882,7 +838,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
-            <b>{params.data.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -895,7 +851,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -908,7 +864,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -921,7 +877,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.INPUT_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.INPUT_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -934,7 +890,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.OUTPUT_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.OUTPUT_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -947,7 +903,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.STOCK.toLocaleString("en-US")}</b>
+            <b>{params.data.STOCK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -960,7 +916,7 @@ const YCSXManager = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1166,869 +1122,7 @@ const YCSXManager = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
   ];
-
-  const [colDefs, setColDefs] = useState<Array<any>>(getCompany()==='CMS'? column_ycsxtable2 : column_ycsxtable_pvn2);
-  const column_ycsxtable = [
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.SETVL === 'N') {
-          return <span style={{ color: "gray" }}>{params.row.G_NAME_KD}</span>;
-        }
-        else if (params.row.PDBV === "P" || params.row.PDBV === null) {
-          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
-        }
-        else {
-          return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
-        }
-      },
-    },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 250,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
-      },
-    },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "SỐ YCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.DACHITHI === null) {
-          return (
-            <span style={{ color: "black" }}>
-              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "PROD_REQUEST_DATE",
-      headerName: "NGÀY YCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.DAUPAMZ === null) {
-          return (
-            <span style={{ color: "black" }}>
-              <b>{params.row.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.row.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "PROD_REQUEST_QTY",
-      type: "number",
-      headerName: "SL YCSX",
-      width: 80,
-    },
-    {
-      field: "LOT_TOTAL_INPUT_QTY_EA",
-      type: "number",
-      headerName: "NHẬP KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      type: "number",
-      headerName: "XUẤT KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      type: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "SHORTAGE_YCSX",
-      type: "number",
-      headerName: "TỒN YCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "PL_HANG",
-      type: "number",
-      headerName: "PL_HANG",
-      width: 80,
-    },
-    {
-      field: "PHAN_LOAI",
-      headerName: "PHAN_LOAI",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PHAN_LOAI === "01")
-          return (
-            <span style={{ color: "black" }}>
-              <b>Thông thường</b>
-            </span>
-          );
-        else if (params.row.PHAN_LOAI === "02")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SDI</b>
-            </span>
-          );
-        else if (params.row.PHAN_LOAI === "03")
-          return (
-            <span style={{ color: "black" }}>
-              <b>GC</b>
-            </span>
-          );
-        else if (params.row.PHAN_LOAI === "04")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SAMPLE</b>
-            </span>
-          );
-      },
-    },
-    { field: "REMARK", headerName: "REMARK", width: 120 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    {
-      field: "PO_TDYCSX",
-      type: "number",
-      headerName: "PO_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#6600ff" }}>
-            <b>{params.row.PO_TDYCSX.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TOTAL_TKHO_TDYCSX",
-      type: "number",
-      headerName: "TOTAL_TKHO_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#6600ff" }}>
-            <b>{params.row.TOTAL_TKHO_TDYCSX.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TKHO_TDYCSX",
-      type: "number",
-      headerName: "TKHO_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.TKHO_TDYCSX.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "BTP_TDYCSX",
-      type: "number",
-      headerName: "BTP_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.BTP_TDYCSX.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CK_TDYCSX",
-      type: "number",
-      headerName: "CK_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.CK_TDYCSX.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "BLOCK_TDYCSX",
-      type: "number",
-      headerName: "BLOCK_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.BLOCK_TDYCSX.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "FCST_TDYCSX",
-      type: "number",
-      headerName: "FCST_TDYCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#6600ff" }}>
-            <b>{params.row.FCST_TDYCSX.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "W1",
-      type: "number",
-      headerName: "W1",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W1.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W2",
-      type: "number",
-      headerName: "W2",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W2.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W3",
-      type: "number",
-      headerName: "W3",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W3.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W4",
-      type: "number",
-      headerName: "W4",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W4.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W5",
-      type: "number",
-      headerName: "W5",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W5.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W6",
-      type: "number",
-      headerName: "W6",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W6.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W7",
-      type: "number",
-      headerName: "W7",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W7.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W8",
-      type: "number",
-      headerName: "W8",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.W8.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "PDUYET",
-      headerName: "PDUYET",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PDUYET === 1)
-          return (
-            <span style={{ color: "green" }}>
-              <b>Đã Duyệt</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "red" }}>
-              <b>Không Duyệt</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "",
-      headerName: "G_NAME",
-      width: 250,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
-      },
-    },
-    {
-      field: "BANVE",
-      headerName: "BANVE",
-      width: 250,
-      renderCell: (params: any) => {
-        let file: any = null;
-        const uploadFile2 = async (e: any) => {
-          console.log(file);
-          if (userData?.MAINDEPTNAME === "KD") {
-            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("update_banve_value", {
-                    G_CODE: params.row.G_CODE,
-                    banvevalue: "Y",
-                  })
-                    .then((response) => {
-                      if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thành công",
-                          "success"
-                        );
-                        let tempycsxdatatable = ycsxdatatable.map(
-                          (element, index) => {
-                            return element.PROD_REQUEST_NO ===
-                              params.row.PROD_REQUEST_NO
-                              ? { ...element, BANVE: "Y" }
-                              : element;
-                          }
-                        );
-                        setYcsxDataTable(tempycsxdatatable);
-                      } else {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thất bại",
-                          "error"
-                        );
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload file thất bại:" + response.data.message,
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error"
-            );
-          }
-        };
-        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE === "Y")
-          return (
-            <span style={{ color: "green" }}>
-              <b>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </b>
-            </span>
-          );
-        else
-          return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile2}>
-                <AiOutlineCloudUpload color='yellow' size={15} />
-                Upload
-              </IconButton>
-              <input
-                accept='.pdf'
-                type='file'
-                onChange={(e: any) => {
-                  file = e.target.files[0];
-                  console.log(file);
-                }}
-              />
-            </div>
-          );
-      },
-    },
-    {
-      field: "PDBV",
-      headerName: "PD BANVE",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "green" }}>
-            <b>APPROVED</b>
-          </span>
-        );
-      },
-    },
-  ];
-  const column_ycsxtable_pvn = [
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
-      },
-    },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 250,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
-      },
-    },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "G_WIDTH", headerName: "WIDTH", width: 60 },
-    { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
-    { field: "G_C", headerName: "CVT_C", width: 60 },
-    { field: "G_C_R", headerName: "CVT_R", width: 60 },
-    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
-    {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
-        if (params.row.DACHITHI === null) {
-          return (
-            <span style={{ color: "black" }}>
-              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
-            </span>
-          );
-        }
-      },
-    },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
-    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
-    {
-      field: "PROD_REQUEST_QTY",
-      type: "number",
-      headerName: "SL YCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#009933" }}>
-            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_INPUT_QTY_EA",
-      type: "number",
-      headerName: "NHẬP KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      type: "number",
-      headerName: "XUẤT KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INPUT_QTY",
-      type: "number",
-      headerName: "NHẬP KHO",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INPUT_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "OUTPUT_QTY",
-      type: "number",
-      headerName: "XUẤT KHO",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.OUTPUT_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "STOCK",
-      type: "number",
-      headerName: "TỒN KHO",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.STOCK.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BLOCK_QTY",
-      type: "number",
-      headerName: "BLOCK_QTY",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.BLOCK_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "PL_HANG",
-      type: "number",
-      headerName: "PL_HANG",
-      width: 80,
-    },
-    {
-      field: "PHAN_LOAI",
-      headerName: "PHAN_LOAI",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PHAN_LOAI === "01")
-          return (
-            <span style={{ color: "black" }}>
-              <b>Thông thường</b>
-            </span>
-          );
-        else if (params.row.PHAN_LOAI === "02")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SDI</b>
-            </span>
-          );
-        else if (params.row.PHAN_LOAI === "03")
-          return (
-            <span style={{ color: "black" }}>
-              <b>GC</b>
-            </span>
-          );
-        else if (params.row.PHAN_LOAI === "04")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SAMPLE</b>
-            </span>
-          );
-      },
-    },
-    { field: "REMARK", headerName: "REMARK", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    { field: "DESCR", headerName: "DESCRIPTION", width: 150 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
-    {
-      field: "PDUYET",
-      headerName: "PDUYET",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PDUYET === 1)
-          return (
-            <span style={{ color: "green" }}>
-              <b>Đã Duyệt</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "red" }}>
-              <b>Không Duyệt</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "",
-      headerName: "G_NAME",
-      width: 250,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
-      },
-    },
-    {
-      field: "BANVE",
-      headerName: "BANVE",
-      width: 250,
-      renderCell: (params: any) => {
-        let file: any = null;
-        const uploadFile2 = async (e: any) => {
-          console.log(file);
-          if (userData?.MAINDEPTNAME === "KD") {
-            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("update_banve_value", {
-                    G_CODE: params.row.G_CODE,
-                    banvevalue: "Y",
-                  })
-                    .then((response) => {
-                      if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thành công",
-                          "success"
-                        );
-                        let tempycsxdatatable = ycsxdatatable.map(
-                          (element, index) => {
-                            return element.PROD_REQUEST_NO ===
-                              params.row.PROD_REQUEST_NO
-                              ? { ...element, BANVE: "Y" }
-                              : element;
-                          }
-                        );
-                        setYcsxDataTable(tempycsxdatatable);
-                      } else {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thất bại",
-                          "error"
-                        );
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload file thất bại:" + response.data.message,
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error"
-            );
-          }
-        };
-        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE === "Y")
-          return (
-            <span style={{ color: "green" }}>
-              <b>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </b>
-            </span>
-          );
-        else
-          return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile2}>
-                <AiOutlineCloudUpload color='yellow' size={15} />
-                Upload
-              </IconButton>
-              <input
-                accept='.pdf'
-                type='file'
-                onChange={(e: any) => {
-                  file = e.target.files[0];
-                  console.log(file);
-                }}
-              />
-            </div>
-          );
-      },
-    },
-    {
-      field: "PDBV",
-      headerName: "PD BANVE",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "green" }}>
-            <b>APPROVED</b>
-          </span>
-        );
-      },
-    },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
-  ];
+  const [colDefs, setColDefs] = useState<Array<any>>(getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2);
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
     { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 120 },
@@ -2043,7 +1137,7 @@ const YCSXManager = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -2154,154 +1248,6 @@ const YCSXManager = () => {
           SaveExcel(uploadExcelJson, "Uploaded Amazon");
         }}>Save Excel</Button>
         <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        {/*  <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />  */}
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setShowHideSearchDiv(!showhidesearchdiv);
-          }}
-        >
-          <TbLogout color='green' size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(ycsxdatatable, "YCSX Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setSelection({
-              ...selection,
-              trapo: true,
-              thempohangloat: false,
-              them1po: !selection.them1po,
-              them1invoice: false,
-              themycsx: true,
-              suaycsx: false,
-              inserttableycsx: false,
-            });
-            clearYCSXform();
-          }}
-        >
-          <AiFillFileAdd color='blue' size={15} />
-          NEW YCSX
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handle_fillsuaform();
-          }}
-        >
-          <AiFillEdit color='orange' size={15} />
-          SỬA YCSX
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleConfirmDeleteYCSX();
-          }}
-        >
-          <MdOutlineDelete color='red' size={15} />
-          XÓA YCSX
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleConfirmSetClosedYCSX();
-          }}
-        >
-          <FaArrowRight color='green' size={15} />
-          SET CLOSED
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleConfirmSetPendingYCSX();
-          }}
-        >
-          <MdOutlinePendingActions color='red' size={15} />
-          SET PENDING
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
-              setSelection({
-                ...selection,
-                renderycsx: ycsxdatatablefilter.length > 0,
-              });
-              console.log(ycsxdatatablefilter);
-              setYCSXListRender(renderYCSX(ycsxdatatablefilter));
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-            }
-          }}
-        >
-          <AiOutlinePrinter color='#0066ff' size={15} />
-          Print YCSX
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
-            }
-          }}
-        >
-          <AiOutlinePrinter color='#00701a' size={15} />
-          Check Bản Vẽ
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
-              setSelection({
-                ...selection,
-                renderbanve: ycsxdatatablefilter.length > 0,
-              });
-              setYCSXListRender(renderBanVe(ycsxdatatablefilter));
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-            }
-          }}
-        >
-          <AiOutlinePrinter color='#ff751a' size={15} />
-          Print Bản Vẽ
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleConfirmPDuyetYCSX();
-          }}
-        >
-          <FcApprove color='red' size={15} />
-          Phê Duyệt
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleGoToAmazon();
-          }}
-        >
-          <AiFillAmazonCircle color='red' size={15} />
-          Up Amazon
-        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -2543,84 +1489,6 @@ const YCSXManager = () => {
       });
     return isDuplicated;
   };
-  const upAmazonData = async () => {
-    let isDuplicated: boolean = false;
-    isDuplicated = await checkDuplicateAMZ();
-    if (!isDuplicated) {
-      let uploadAmazonData = await handleAmazonData(
-        uploadExcelJson,
-        cavityAmazon,
-        codeCMS,
-        prodrequestno,
-        id_congviec
-      );
-      //console.log(uploadAmazonData);
-      let checkIDcongViecTonTai: boolean = false;
-      await generalQuery("checkIDCongViecAMZ", {
-        NO_IN: id_congviec,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            checkIDcongViecTonTai = true;
-          } else {
-            checkIDcongViecTonTai = false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //if (!AMZ_check_flag) {
-      if (false) {
-        Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
-      } else {
-        if (!checkIDcongViecTonTai) {
-          for (let i = 0; i < uploadAmazonData.length; i++) {
-            await generalQuery("insertData_Amazon", {
-              G_CODE: uploadAmazonData[i].G_CODE,
-              PROD_REQUEST_NO: uploadAmazonData[i].PROD_REQUEST_NO,
-              NO_IN: uploadAmazonData[i].NO_IN,
-              ROW_NO: uploadAmazonData[i].ROW_NO,
-              DATA_1:
-                uploadAmazonData[i].DATA1 === undefined
-                  ? ""
-                  : uploadAmazonData[i].DATA1,
-              DATA_2:
-                uploadAmazonData[i].DATA2 === undefined
-                  ? ""
-                  : uploadAmazonData[i].DATA2,
-              DATA_3:
-                uploadAmazonData[i].DATA3 === undefined
-                  ? ""
-                  : uploadAmazonData[i].DATA3,
-              DATA_4:
-                uploadAmazonData[i].DATA4 === undefined
-                  ? ""
-                  : uploadAmazonData[i].DATA4,
-              PRINT_STATUS: "",
-              INLAI_COUNT: 0,
-              REMARK: "0109",
-              INS_EMPL: userData?.EMPL_NO,
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  setProgressValue((i + 1) * 2);
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-          checkDuplicateAMZ();
-          //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
-        } else {
-          Swal.fire("Thông báo", "ID công việc đã tồn tại", "error");
-        }
-      }
-    }
-  };
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
     isDuplicated = await checkDuplicateAMZ();
@@ -2704,103 +1572,6 @@ const YCSXManager = () => {
           Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
         }
       }
-    }
-  };
-  const checkAmazonData = async (
-    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[]
-  ) => {
-    //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
-    let err_code: string = "0";
-    for (let i = 0; i < amazon_data.length; i++) {
-      await generalQuery("check_amazon_data", {
-        DATA: amazon_data[i].DATA,
-      })
-        .then((response) => {
-          setProgressValue(i + 1);
-          if (response.data.tk_status !== "NG") {
-            amazon_data = amazon_data.map((ele, index) => {
-              return ele === amazon_data[i]
-                ? { ...ele, CHECKSTATUS: "NG" }
-                : ele;
-              err_code = "NG";
-            });
-            setUploadExcelJSon(amazon_data);
-          } else {
-            amazon_data = amazon_data.map((ele, index) => {
-              return ele === amazon_data[i]
-                ? { ...ele, CHECKSTATUS: "OK" }
-                : ele;
-            });
-            setUploadExcelJSon(amazon_data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    if (err_code === "0") {
-      setAMZ_Check_Flag(true);
-    } else {
-      setAMZ_Check_Flag(false);
-      Swal.fire("Thông báo", " Có lỗi trùng data", "warning");
-    }
-  };
-  const checkAmazonData2 = async (
-    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[]
-  ) => {
-    //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
-    let segment: number = 100;
-    for (let i = segment; i < amazon_data.length; i += segment + 1) {
-      for (let j = segment; j > 1; j--) {
-        generalQuery("check_amazon_data", {
-          DATA: amazon_data[i - j].DATA,
-        })
-          .then((response) => {
-            setProgressValue(i - j);
-            if (response.data.tk_status !== "NG") {
-              amazon_data = amazon_data.map((ele, index) => {
-                return ele === amazon_data[i - j]
-                  ? { ...ele, CHECKSTATUS: "NG" }
-                  : ele;
-              });
-              setUploadExcelJSon(amazon_data);
-            } else {
-              amazon_data = amazon_data.map((ele, index) => {
-                return ele === amazon_data[i - j]
-                  ? { ...ele, CHECKSTATUS: "OK" }
-                  : ele;
-              });
-              setUploadExcelJSon(amazon_data);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      await generalQuery("check_amazon_data", {
-        DATA: amazon_data[i].DATA,
-      })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            setProgressValue(i);
-            amazon_data = amazon_data.map((ele, index) => {
-              return ele === amazon_data[i]
-                ? { ...ele, CHECKSTATUS: "NG" }
-                : ele;
-            });
-            setUploadExcelJSon(amazon_data);
-          } else {
-            amazon_data = amazon_data.map((ele, index) => {
-              return ele === amazon_data[i]
-                ? { ...ele, CHECKSTATUS: "OK" }
-                : ele;
-            });
-            setUploadExcelJSon(amazon_data);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     }
   };
   const readUploadFileAmazon = (e: any) => {
@@ -2964,6 +1735,7 @@ const YCSXManager = () => {
                     element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
+                id: index
               };
             }
           );
@@ -3797,18 +2569,6 @@ const YCSXManager = () => {
     setLoaiSX("01");
     setLoaiXH("02");
   };
-  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = ycsxdatatable.filter((element: any) =>
-      selectedID.has(element.PROD_REQUEST_NO)
-    );
-    if (datafilter.length > 0) {
-      setYcsxDataTableFilter(datafilter);
-    } else {
-      setYcsxDataTableFilter([]);
-      console.log("xoa filter");
-    }
-  };
   const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
@@ -4242,8 +3002,8 @@ const YCSXManager = () => {
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
-  }, [ycsxdatatable]);
-  return (
+  }, []);
+  return (   
     <div className='ycsxmanager'>
       <div className='mininavbar'>
         <div
@@ -4789,206 +3549,151 @@ const YCSXManager = () => {
             </div>
           )}
           <div className='tracuuYCSXTable'>
-            {/* <DataGrid
-              sx={{ fontSize: "0.7rem" }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={ycsxdatatable}
-              columns={
-                getCompany() === "CMS" ? column_ycsxtable : column_ycsxtable_pvn
-              }
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode='row'
-              getRowId={(row) => row.PROD_REQUEST_NO}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
-                handleYCSXSelectionforUpdate(ids);
-              }}
-            /> */}
-            <div className="toolbar">
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  setShowHideSearchDiv(!showhidesearchdiv);
-                }}
-              >
-                <TbLogout color='green' size={15} />
-                Show/Hide
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(ycsxdatatable, "YCSX Table");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                SAVE
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  setSelection({
-                    ...selection,
-                    trapo: true,
-                    thempohangloat: false,
-                    them1po: !selection.them1po,
-                    them1invoice: false,
-                    themycsx: true,
-                    suaycsx: false,
-                    inserttableycsx: false,
-                  });
-                  clearYCSXform();
-                }}
-              >
-                <AiFillFileAdd color='blue' size={15} />
-                NEW YCSX
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handle_fillsuaform();
-                }}
-              >
-                <AiFillEdit color='orange' size={15} />
-                SỬA YCSX
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handleConfirmDeleteYCSX();
-                }}
-              >
-                <MdOutlineDelete color='red' size={15} />
-                XÓA YCSX
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handleConfirmSetClosedYCSX();
-                }}
-              >
-                <FaArrowRight color='green' size={15} />
-                SET CLOSED
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handleConfirmSetPendingYCSX();
-                }}
-              >
-                <MdOutlinePendingActions color='red' size={15} />
-                SET PENDING
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (ycsxdatatablefilter.length > 0) {
-                    setSelection({
-                      ...selection,
-                      renderycsx: ycsxdatatablefilter.length > 0,
-                    });
-                    console.log(ycsxdatatablefilter);
-                    setYCSXListRender(renderYCSX(ycsxdatatablefilter));
-                  } else {
-                    Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-                  }
-                }}
-              >
-                <AiOutlinePrinter color='#0066ff' size={15} />
-                Print YCSX
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (ycsxdatatablefilter.length > 0) {
-                  } else {
-                    Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
-                  }
-                }}
-              >
-                <AiOutlinePrinter color='#00701a' size={15} />
-                Check Bản Vẽ
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (ycsxdatatablefilter.length > 0) {
-                    setSelection({
-                      ...selection,
-                      renderbanve: ycsxdatatablefilter.length > 0,
-                    });
-                    setYCSXListRender(renderBanVe(ycsxdatatablefilter));
-                  } else {
-                    Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-                  }
-                }}
-              >
-                <AiOutlinePrinter color='#ff751a' size={15} />
-                Print Bản Vẽ
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handleConfirmPDuyetYCSX();
-                }}
-              >
-                <FcApprove color='red' size={15} />
-                Phê Duyệt
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handleGoToAmazon();
-                }}
-              >
-                <AiFillAmazonCircle color='red' size={15} />
-                Up Amazon
-              </IconButton>
-            </div>
-            <div
-              className="ag-theme-quartz" // applying the grid theme
-              style={{ height: '100%' }} // the grid will fill the size of the parent container
-            >
-              <AgGridReact
-                rowData={ycsxdatatable}
-                columnDefs={getCompany()==='CMS'? column_ycsxtable2 : column_ycsxtable_pvn2}
-                rowHeight={25}
-                defaultColDef={defaultColDef}
-                ref={gridRef}
-                onGridReady={() => {
-                  setHeaderHeight(20);
-                }}
-                columnHoverHighlight={true}
-                rowStyle={rowStyle}
-                getRowStyle={getRowStyle}
-                getRowId={(params: any) => params.data.PROD_REQUEST_NO}
-                rowSelection={"multiple"}
-                rowMultiSelectWithClick={true}
-                suppressRowClickSelection={true}                
-                enterNavigatesVertically={true}
-                enterNavigatesVerticallyAfterEdit={true}
-                stopEditingWhenCellsLoseFocus={true}
-                rowBuffer={10}
-                debounceVerticalScrollbar={false}
-                enableRangeSelection={true}
-                floatingFiltersHeight={23}
-                onSelectionChanged={onSelectionChanged}
-                onRowClicked={(params: any) => {
-                  setClickedRows(params.data)
-                  //console.log(params.data)
-                }}
-                onCellEditingStopped={(params: any) => {
-                  console.log(params)
-                }}
-              />
-            </div>
+            <AGTable
+              showFilter={true}
+              toolbar={
+                <div>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      setShowHideSearchDiv(!showhidesearchdiv);
+                    }}
+                  >
+                    <TbLogout color='green' size={15} />
+                    Show/Hide
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      setSelection({
+                        ...selection,
+                        trapo: true,
+                        thempohangloat: false,
+                        them1po: !selection.them1po,
+                        them1invoice: false,
+                        themycsx: true,
+                        suaycsx: false,
+                        inserttableycsx: false,
+                      });
+                      clearYCSXform();
+                    }}
+                  >
+                    <AiFillFileAdd color='blue' size={15} />
+                    NEW YCSX
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handle_fillsuaform();
+                    }}
+                  >
+                    <AiFillEdit color='orange' size={15} />
+                    SỬA YCSX
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handleConfirmDeleteYCSX();
+                    }}
+                  >
+                    <MdOutlineDelete color='red' size={15} />
+                    XÓA YCSX
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handleConfirmSetClosedYCSX();
+                    }}
+                  >
+                    <FaArrowRight color='green' size={15} />
+                    SET CLOSED
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handleConfirmSetPendingYCSX();
+                    }}
+                  >
+                    <MdOutlinePendingActions color='red' size={15} />
+                    SET PENDING
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      if (ycsxdatatablefilter.length > 0) {
+                        setSelection({
+                          ...selection,
+                          renderycsx: ycsxdatatablefilter.length > 0,
+                        });
+                        console.log(ycsxdatatablefilter);
+                        setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+                      } else {
+                        Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                      }
+                    }}
+                  >
+                    <AiOutlinePrinter color='#0066ff' size={15} />
+                    Print YCSX
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      if (ycsxdatatablefilter.length > 0) {
+                      } else {
+                        Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
+                      }
+                    }}
+                  >
+                    <AiOutlinePrinter color='#00701a' size={15} />
+                    Check Bản Vẽ
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      if (ycsxdatatablefilter.length > 0) {
+                        setSelection({
+                          ...selection,
+                          renderbanve: ycsxdatatablefilter.length > 0,
+                        });
+                        setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+                      } else {
+                        Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                      }
+                    }}
+                  >
+                    <AiOutlinePrinter color='#ff751a' size={15} />
+                    Print Bản Vẽ
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handleConfirmPDuyetYCSX();
+                    }}
+                  >
+                    <FcApprove color='red' size={15} />
+                    Phê Duyệt
+                  </IconButton>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handleGoToAmazon();
+                    }}
+                  >
+                    <AiFillAmazonCircle color='red' size={15} />
+                    Up Amazon
+                  </IconButton>
+                </div>}
+              columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
+              data={ycsxdatatable}
+              onCellEditingStopped={(params: any) => {
+                //console.log(e.data)
+              }} onRowClick={(params: any) => {
+                //setClickedRows(params.data)
+                //console.log(e.data)
+              }} onSelectionChange={(params: any) => {                
+                setYcsxDataTableFilter(params!.api.getSelectedRows());
+                //console.log(e!.api.getSelectedRows())
+              }} />
           </div>
         </div>
       )}
@@ -5135,7 +3840,7 @@ const YCSXManager = () => {
           <TraAMZ />
         </div>
       )}
-    </div>
+    </div>   
   );
 };
 export default YCSXManager;
