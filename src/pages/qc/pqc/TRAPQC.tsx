@@ -14,7 +14,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useContext, useEffect, useMemo, useState, useTransition } from "react";
 import {
   AiFillFileExcel,
   AiOutlineCloudUpload,
@@ -32,6 +32,7 @@ import {
   TRA_PQC1_DATA,
 } from "../../../api/GlobalInterface";
 import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
+import AGTable from "../../../components/DataTable/AGTable";
 const TRAPQC = () => {
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
@@ -114,14 +115,14 @@ const TRAPQC = () => {
     { field: "CAVITY", headerName: "CAVITY", width: 80 },
     {
       field: "SETTING_OK_TIME",
-      type: "date",
+      cellDataType: "text",
       headerName: "SETTING_OK_TIME",
       width: 180,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
             {moment
-              .utc(params.row.SETTING_OK_TIME)
+              .utc(params.data.SETTING_OK_TIME)
               .format("YYYY-MM-DD HH:mm:ss")}
           </span>
         );
@@ -134,11 +135,11 @@ const TRAPQC = () => {
       field: "SAMPLE_AMOUNT",
       headerName: "SAMPLE_AMOUNT",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
             <b>
-              {params.row.SAMPLE_AMOUNT?.toLocaleString("en-US", {
+              {params.data.SAMPLE_AMOUNT?.toLocaleString("en-US", {
                 style: "decimal",
                 maximumFractionDigits: 8,
               })}
@@ -156,10 +157,10 @@ const TRAPQC = () => {
       field: "DEFECT_RATE",
       headerName: "DEFECT_RATE",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            {params.row.DEFECT_RATE.toLocaleString("en-US", {
+            {params.data.DEFECT_RATE?.toLocaleString("en-US", {
               maximumFractionDigits: 0,
             })}
             %
@@ -170,26 +171,26 @@ const TRAPQC = () => {
     { field: "DEFECT_PHENOMENON", headerName: "DEFECT_PHENOMENON", width: 150 },
     {
       field: "INS_DATE",
-      type: "date",
+      cellDataType: "text",
       headerName: "INS_DATE",
       width: 180,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {moment.utc(params.row.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}
+            {moment.utc(params.data.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}
           </span>
         );
       },
     },
     {
       field: "UPD_DATE",
-      type: "date",
+      cellDataType: "text",
       headerName: "UPD_DATE",
       width: 180,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {moment.utc(params.row.UPD_DATE).format("YYYY-MM-DD HH:mm:ss")}
+            {moment.utc(params.data.UPD_DATE).format("YYYY-MM-DD HH:mm:ss")}
           </span>
         );
       },
@@ -198,9 +199,9 @@ const TRAPQC = () => {
       field: "IMG_1",
       headerName: "IMG_1",
       width: 100,
-      renderCell: (params: any) => {
-        let href_link = `/lineqc/${params.row.PLAN_ID}_1.jpg`
-        if (params.row.IMG_1 ?? false) {
+      cellRenderer: (params: any) => {
+        let href_link = `/lineqc/${params.data.PLAN_ID}_1.jpg`
+        if (params.data.IMG_1 ?? false) {
           return (
             <span style={{ color: "blue" }}>
               <a target="_blank" rel="noopener noreferrer" href={href_link}>
@@ -222,9 +223,9 @@ const TRAPQC = () => {
       field: "IMG_2",
       headerName: "IMG_2",
       width: 100,
-      renderCell: (params: any) => {
-        let href_link = `/lineqc/${params.row.PLAN_ID}_2.jpg`
-        if (params.row.IMG_2 ?? false) {
+      cellRenderer: (params: any) => {
+        let href_link = `/lineqc/${params.data.PLAN_ID}_2.jpg`
+        if (params.data.IMG_2 ?? false) {
           return (
             <span style={{ color: "blue" }}>
               <a target="_blank" rel="noopener noreferrer" href={href_link}>
@@ -246,9 +247,9 @@ const TRAPQC = () => {
       field: "IMG_3",
       headerName: "IMG_3",
       width: 100,
-      renderCell: (params: any) => {
-        let href_link = `/lineqc/${params.row.PLAN_ID}_3.jpg`
-        if (params.row.IMG_3 ?? false) {
+      cellRenderer: (params: any) => {
+        let href_link = `/lineqc/${params.data.PLAN_ID}_3.jpg`
+        if (params.data.IMG_3 ?? false) {
           return (
             <span style={{ color: "blue" }}>
               <a target="_blank" rel="noopener noreferrer" href={href_link}>
@@ -286,7 +287,7 @@ const TRAPQC = () => {
     { field: "LINE_NO", headerName: "LINE_NO", width: 80 },
     {
       field: "OCCURR_TIME",
-      type: "date",
+      cellDataType: "text",
       headerName: "OCCURR_TIME",
       width: 180,
     },
@@ -304,8 +305,8 @@ const TRAPQC = () => {
       field: "DEFECT_IMAGE_LINK",
       headerName: "IMAGE LINK",
       width: 80,
-      renderCell: (params: any) => {
-        let href_link = "/pqc/PQC3_" + (params.row.PQC3_ID + 1) + ".png";
+      cellRenderer: (params: any) => {
+        let href_link = "/pqc/PQC3_" + (params.data.PQC3_ID + 1) + ".png";
         return (
           <span style={{ color: "blue" }}>
             <a target="_blank" rel="noopener noreferrer" href={href_link}>
@@ -319,13 +320,13 @@ const TRAPQC = () => {
     { field: "WORST5", headerName: "WORST5", width: 80 },
     { field: "WORST5_MONTH", headerName: "WORST5_MONTH", width: 80 },
     {
-      field: "UPDATE_NNDS", headerName: "UPDATE_NNDS", width: 120, renderCell: (params: any) => {
+      field: "UPDATE_NNDS", headerName: "UPDATE_NNDS", width: 120, cellRenderer: (params: any) => {
         return (
           <button onClick={() => {
-            setCurrentDefectRow(params.row);
+            setCurrentDefectRow(params.data);
             setShowHideUpdateNNDS(true)
-            setCurrentDS(params.row.DOI_SACH);
-            setCurrentNN(params.row.NG_NHAN);
+            setCurrentDS(params.data.DOI_SACH);
+            setCurrentNN(params.data.NG_NHAN);
           }
           }>Update NNDS</button>
         );
@@ -341,10 +342,10 @@ const TRAPQC = () => {
       field: "NGAYBANGIAO",
       headerName: "NGAYBANGIAO",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {moment.utc(params.row.NGAYBANGIAO).format("YYYY-MM-DD")}
+            {moment.utc(params.data.NGAYBANGIAO).format("YYYY-MM-DD")}
           </span>
         );
       },
@@ -355,8 +356,8 @@ const TRAPQC = () => {
       field: "LOAIBANGIAO_PDP",
       headerName: "LOAIBANGIAO",
       width: 80,
-      renderCell: (params: any) => {
-        switch (params.row.LOAIBANGIAO_PDP) {
+      cellRenderer: (params: any) => {
+        switch (params.data.LOAIBANGIAO_PDP) {
           case "D":
             return <span style={{ color: "blue" }}>DAO</span>;
             break;
@@ -376,8 +377,8 @@ const TRAPQC = () => {
       field: "LOAIPHATHANH",
       headerName: "LOAIPHATHANH",
       width: 110,
-      renderCell: (params: any) => {
-        switch (params.row.LOAIPHATHANH) {
+      cellRenderer: (params: any) => {
+        switch (params.data.LOAIPHATHANH) {
           case "PH":
             return <span style={{ color: "blue" }}>PHAT HANH</span>;
             break;
@@ -400,7 +401,7 @@ const TRAPQC = () => {
     { field: "REMARK", headerName: "REMARK", width: 150 },
   ];
   const column_cndb_data = [
-    { field: "CNDB_DATE", type: "date", headerName: "CNDB_DATE", width: 120 },
+    { field: "CNDB_DATE", cellDataType: "text", headerName: "CNDB_DATE", width: 120 },
     { field: "CNDB_NO", headerName: "CNDB_NO", width: 80 },
     { field: "CNDB_ENCODE", headerName: "CNDB_ENCODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 150 },
@@ -411,13 +412,13 @@ const TRAPQC = () => {
     { field: "M_NAME2", headerName: "M_NAME2", width: 120 },
     {
       field: "INS_DATE",
-      type: "date",
+      cellDataType: "text",
       headerName: "INS_DATE",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {moment.utc(params.row.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}
+            {moment.utc(params.data.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}
           </span>
         );
       },
@@ -426,8 +427,8 @@ const TRAPQC = () => {
       field: "APPROVAL_STATUS",
       headerName: "APPROVAL_STATUS",
       width: 120,
-      renderCell: (params: any) => {
-        if (params.row.APPROVAL_STATUS === "Y")
+      cellRenderer: (params: any) => {
+        if (params.data.APPROVAL_STATUS === "Y")
           return <span style={{ color: "green" }}>Phê Duyệt</span>;
         return <span style={{ color: "red" }}>Chưa duyệt</span>;
       },
@@ -437,12 +438,12 @@ const TRAPQC = () => {
       field: "APPROVAL_DATE",
       headerName: "APPROVAL_DATE",
       width: 80,
-      renderCell: (params: any) => {
-        if (params.row.APPROVAL_DATE !== null)
+      cellRenderer: (params: any) => {
+        if (params.data.APPROVAL_DATE !== null)
           return (
             <span style={{ color: "blue" }}>
               {moment
-                .utc(params.row.APPROVAL_DATE)
+                .utc(params.data.APPROVAL_DATE)
                 .format("YYYY-MM-DD HH:mm:ss")}
             </span>
           );
@@ -701,6 +702,25 @@ const TRAPQC = () => {
     });
   }
 
+  const pqcDataTableAG = useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={columnDefinition}
+        data={pqcdatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  },[pqcdatatable,columnDefinition])
+  
   useEffect(() => {
     //setColumnDefinition(column_pqc3_data);
   }, []);
@@ -856,7 +876,8 @@ const TRAPQC = () => {
           </div>
         </div>
         <div className="tracuuPQCTable">
-          {readyRender && (
+          {pqcDataTableAG}
+          {/* {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
               components={{
@@ -872,7 +893,7 @@ const TRAPQC = () => {
               ]}
               editMode="row"
             />
-          )}
+          )} */}
         </div>
       </div>
       {showhideupdatennds && <div className="updatenndsform">

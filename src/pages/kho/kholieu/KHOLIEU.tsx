@@ -27,6 +27,7 @@ import {
 } from "../../../api/GlobalInterface";
 import NHAPLIEU from "./nhaplieu/NHAPLIEU";
 import XUATLIEU from "./xuatlieu/XUATLIEU";
+import AGTable from "../../../components/DataTable/AGTable";
 const KHOLIEU = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -57,10 +58,10 @@ const KHOLIEU = () => {
       field: "TON_NM1",
       headerName: "TON_NM1",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.TON_NM1?.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_NM1?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -69,10 +70,10 @@ const KHOLIEU = () => {
       field: "TON_NM2",
       headerName: "TON_NM2",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.TON_NM2?.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_NM2?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -81,10 +82,10 @@ const KHOLIEU = () => {
       field: "HOLDING_NM1",
       headerName: "HOLDING_NM1",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.HOLDING_NM1?.toLocaleString("en-US")}</b>
+            <b>{params.data.HOLDING_NM1?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -93,10 +94,10 @@ const KHOLIEU = () => {
       field: "HOLDING_NM2",
       headerName: "HOLDING_NM2",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.HOLDING_NM2?.toLocaleString("en-US")}</b>
+            <b>{params.data.HOLDING_NM2?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -105,10 +106,10 @@ const KHOLIEU = () => {
       field: "TOTAL_OK",
       headerName: "TOTAL_OK",
       width: 150,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.TOTAL_OK?.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_OK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -117,10 +118,10 @@ const KHOLIEU = () => {
       field: "TOTAL_HOLDING",
       headerName: "TOTAL_HOLDING",
       width: 150,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.TOTAL_HOLDING?.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_HOLDING?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -129,9 +130,9 @@ const KHOLIEU = () => {
       field: "TDS",
       headerName: "TDS",
       width: 150,
-      renderCell: (params: any) => {
-        let hreftlink = "/tds/" + params.row.M_CODE + ".pdf";
-        if (params.row.TDS === "Y") {
+      cellRenderer: (params: any) => {
+        let hreftlink = "/tds/" + params.data.M_CODE + ".pdf";
+        if (params.data.TDS === "Y") {
           return (
             <span style={{ color: "gray" }}>
               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
@@ -159,10 +160,10 @@ const KHOLIEU = () => {
       field: "OUT_CFM_QTY",
       headerName: "UNIT_QTY",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.OUT_CFM_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.data.OUT_CFM_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -172,10 +173,10 @@ const KHOLIEU = () => {
       field: "TOTAL_OUT_QTY",
       headerName: "OUTPUT QTY",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.TOTAL_OUT_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_OUT_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -193,10 +194,10 @@ const KHOLIEU = () => {
       field: "IN_CFM_QTY",
       headerName: "UNIT QTY",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.IN_CFM_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.data.IN_CFM_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -206,10 +207,10 @@ const KHOLIEU = () => {
       field: "TOTAL_IN_QTY",
       headerName: "INPUT QTY",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.TOTAL_IN_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_IN_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -221,67 +222,6 @@ const KHOLIEU = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_XUATLIEUDATA);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(whdatatable, "WareHouse Data Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-        
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            paddingLeft: 20,
-            color: "blue",
-          }}
-        >
-          {sumaryWH}
-        </span>
-      </GridToolbarContainer>
-    );
-  }
-  const bangdata = useMemo(() => {
-    return (
-      <DataGrid
-        sx={{ fontSize: "0.7rem", flex: 1 }}
-        components={{
-          Toolbar: CustomToolbarPOTable,
-          LoadingOverlay: LinearProgress,
-        }}
-        loading={isLoading}
-        rowHeight={30}
-        rows={whdatatable}
-        columns={columnDefinition}
-        disableSelectionOnClick
-        checkboxSelection
-        editMode="cell"
-        rowsPerPageOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 500000]}
-        onSelectionModelChange={(ids) => {
-          handleInputLieuDataSelectionforUpdate(ids);
-        }}
-        onCellEditCommit={(
-          params: GridCellEditCommitParams,
-          event: MuiEvent<MuiBaseEvent>,
-          details: GridCallbackDetails,
-        ) => {
-          const keyvar = params.field;
-          const newdata = whdatatable.map((p) =>
-            p.id === params.id ? { ...p, [keyvar]: params.value } : p,
-          );
-          //setPlanDataTable(newdata);
-          //console.log(plandatatable);
-        }}
-      />
-    );
-  }, [whdatatable]);
   const handletra_inputlieu = () => {
     setSummaryWH("");
     setisLoading(true);
@@ -444,19 +384,25 @@ const KHOLIEU = () => {
       }
     }
   };
-  const handleInputLieuDataSelectionforUpdate = (ids: GridSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = whdatatable.filter((element: any) =>
-      selectedID.has(element.id),
-    );
-    //console.log(datafilter);
-    if (datafilter.length > 0) {
-      setInputLieuFilter(datafilter);
-    } else {
-      setInputLieuFilter([]);
-      //console.log("xoa filter");
-    }
-  };
+  const warehouseDataTableAG = useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div>            
+          </div>}
+        columns={columnDefinition}
+        data={whdatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          //console.log(e.data)
+        }} onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  },[whdatatable,columnDefinition])
+
   useEffect(() => { }, []);
   return (
     <div className="kholieu">
@@ -632,8 +578,8 @@ const KHOLIEU = () => {
           }}>Xuất</Button>
       </div> */}
       </div>
-      <div className="tracuuWHTable">
-        {readyRender && bangdata}
+      <div className="tracuuWHTable">        
+        {warehouseDataTableAG}
       </div>
       {shownhaplieu &&<div className="nhaplieudiv">     
        <div>

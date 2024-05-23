@@ -31,13 +31,13 @@ const AGTable = (ag_data: AGInterface) => {
     const selectedrows = gridRef.current!.api.getSelectedRows().length;
     setSelectedrow(selectedrows); 
   }, []);
-  function setIdText(id: string, value: string | number | undefined) {
+/*   function setIdText(id: string, value: string | number | undefined) {
     document.getElementById(id)!.textContent =
       value == undefined ? "undefined" : value + "";
-  }
+  } */
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
+    //setIdText("headerHeight", value);
   }, []);
   const gridRef = useRef<AgGridReact<any>>(null);
   const defaultColDef = useMemo(() => {
@@ -88,7 +88,7 @@ const AGTable = (ag_data: AGInterface) => {
           getRowId={(params: any) => params.data.id}
           rowSelection={"multiple"}
           rowMultiSelectWithClick={false}
-          suppressRowClickSelection={true}
+          suppressRowClickSelection={false}
           enterNavigatesVertically={true}
           enterNavigatesVerticallyAfterEdit={true}
           stopEditingWhenCellsLoseFocus={true}
@@ -103,7 +103,7 @@ const AGTable = (ag_data: AGInterface) => {
           onRowClicked={ag_data.onRowClick}
           onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
           onCellEditingStopped={ag_data.onCellEditingStopped}
-          onCellClicked={ag_data.onCellClick}
+          onCellClicked={ag_data.onCellClick}          
         />
       </div>
       <div className="bottombar">

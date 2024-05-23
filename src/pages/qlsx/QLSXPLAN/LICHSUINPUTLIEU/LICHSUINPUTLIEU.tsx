@@ -1,44 +1,13 @@
-import {
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import {
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import React, { useContext, useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./LICHSUINPUTLIEU.scss";
 import { LICHSUINPUTLIEU_DATA } from "../../../../api/GlobalInterface";
+import AGTable from "../../../../components/DataTable/AGTable";
 const LICHSUINPUTLIEU = () => {
-  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -47,10 +16,7 @@ const LICHSUINPUTLIEU = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
-  const [id, setID] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
-  );
+  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
   const column_lichsuinputlieusanxuat = [
@@ -60,38 +26,19 @@ const LICHSUINPUTLIEU = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
     { field: "M_CODE", headerName: "M_CODE", width: 80 },
     { field: "M_NAME", headerName: "M_NAME", width: 150 },
-    { field: "WIDTH_CD", headerName: "SIZE", width: 40 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 60 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
     { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "INPUT_QTY", headerName: "INPUT_QTY", width: 120 },
     { field: "USED_QTY", headerName: "USED_QTY", width: 80 },
     { field: "REMAIN_QTY", headerName: "REMAIN_QTY", width: 90 },
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
-    { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
+    { field: "EQUIPMENT_CD", headerName: "MAY", width: 60 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
     column_lichsuinputlieusanxuat
   );
-  function CustomToolbarLICHSUINPUTSX() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(inspectiondatatable, "LICHSU INPUT Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
-          Lịch sử input liệu sản xuất
-        </div>
-      </GridToolbarContainer>
-    );
-  }
   const handle_loadlichsuinputlieu = () => {
     generalQuery("lichsuinputlieusanxuat_full", {
       ALLTIME: alltime,
@@ -128,8 +75,33 @@ const LICHSUINPUTLIEU = () => {
         console.log(error);
       });
   };
+  const lichSuInputLieuDataTableAG = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: "1rem",
+              paddingLeft: 20,
+              color: "black",
+            }}
+          >
+            Lịch sử input liệu sản xuất
+          </div>}
+        columns={columnDefinition}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  }, [inspectiondatatable, columnDefinition])
   useEffect(() => {
-    
   }, []);
   return (
     <div className='lichsuinputlieu'>
@@ -239,23 +211,7 @@ const LICHSUINPUTLIEU = () => {
           </div>
         </div>
         <div className='tracuuYCSXTable'>
-          {readyRender && (
-            <DataGrid
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarLICHSUINPUTSX,
-                LoadingOverlay: LinearProgress,
-              }}
-              getRowId={(row) => row.id}
-              loading={isLoading}
-              rowHeight={30}
-              rows={inspectiondatatable}
-              columns={column_lichsuinputlieusanxuat}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-            />
-          )}
+          {lichSuInputLieuDataTableAG}
         </div>
       </div>
     </div>

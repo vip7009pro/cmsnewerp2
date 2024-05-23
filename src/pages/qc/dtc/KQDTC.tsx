@@ -13,7 +13,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useContext, useEffect, useMemo, useState, useTransition } from "react";
 import {
   AiFillFileExcel,
   AiOutlineCloudUpload,
@@ -25,39 +25,23 @@ import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { DTC_DATA } from "../../../api/GlobalInterface";
 import "./KQDTC.scss";
+import AGTable from "../../../components/DataTable/AGTable";
 
 const KQDTC = () => {
   const [readyRender, setReadyRender] = useState(false);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
-
   const [testname, setTestName] = useState("0");
   const [testtype, setTestType] = useState("0");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
-  );
-  const [sumaryINSPECT, setSummaryInspect] = useState("");
+  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
-
   const column_dtc_data = [
     { field: "DTC_ID", headerName: "DTC_ID", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 80 },
@@ -66,11 +50,11 @@ const KQDTC = () => {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 200,
-      renderCell: (params: any) => {
-        if (params.row.M_CODE !== "B0000035") return <span></span>;
+      cellRenderer: (params: any) => {
+        if (params.data.M_CODE !== "B0000035") return <span></span>;
         return (
           <span>
-            <b>{params.row.G_NAME}</b>
+            <b>{params.data.G_NAME}</b>
           </span>
         );
       },
@@ -79,11 +63,11 @@ const KQDTC = () => {
       field: "M_CODE",
       headerName: "M_CODE",
       width: 80,
-      renderCell: (params: any) => {
-        if (params.row.M_CODE === "B0000035") return <span></span>;
+      cellRenderer: (params: any) => {
+        if (params.data.M_CODE === "B0000035") return <span></span>;
         return (
           <span>
-            <b>{params.row.M_CODE}</b>
+            <b>{params.data.M_CODE}</b>
           </span>
         );
       },
@@ -92,11 +76,11 @@ const KQDTC = () => {
       field: "M_NAME",
       headerName: "TEN LIEU",
       width: 150,
-      renderCell: (params: any) => {
-        if (params.row.M_CODE === "B0000035") return <span></span>;
+      cellRenderer: (params: any) => {
+        if (params.data.M_CODE === "B0000035") return <span></span>;
         return (
           <span>
-            <b>{params.row.M_NAME}</b>
+            <b>{params.data.M_NAME}</b>
           </span>
         );
       },
@@ -107,10 +91,10 @@ const KQDTC = () => {
       field: "CENTER_VALUE",
       headerName: "CENTER_VALUE",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span>
-            <b>{params.row.CENTER_VALUE}</b>
+            <b>{params.data.CENTER_VALUE}</b>
           </span>
         );
       },
@@ -119,10 +103,10 @@ const KQDTC = () => {
       field: "UPPER_TOR",
       headerName: "UPPER_TOR",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span>
-            <b>{params.row.UPPER_TOR}</b>
+            <b>{params.data.UPPER_TOR}</b>
           </span>
         );
       },
@@ -131,10 +115,10 @@ const KQDTC = () => {
       field: "LOWER_TOR",
       headerName: "LOWER_TOR",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span>
-            <b>{params.row.LOWER_TOR}</b>
+            <b>{params.data.LOWER_TOR}</b>
           </span>
         );
       },
@@ -143,12 +127,9 @@ const KQDTC = () => {
     {
       field: "DANHGIA",
       headerName: "DANH_GIA",
-      width: 80,
-      renderCell: (params: any) => {
-        if (
-          params.row.RESULT >= params.row.CENTER_VALUE - params.row.LOWER_TOR &&
-          params.row.RESULT <= params.row.CENTER_VALUE + params.row.UPPER_TOR
-        )
+      width: 80,      
+      cellRenderer: (params: any) => {
+        if (params.data.DANHGIA =='OK')
           return (
             <span style={{ color: "green" }}>
               <b>OK</b>
@@ -179,33 +160,6 @@ const KQDTC = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_dtc_data);
-
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(inspectiondatatable, "Inspection Data Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            paddingLeft: 20,
-            color: "blue",
-          }}
-        >
-          {sumaryINSPECT}
-        </span>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -213,9 +167,7 @@ const KQDTC = () => {
       handletraDTCData();
     }
   };
-
-  const handletraDTCData = () => {
-    setSummaryInspect("");
+  const handletraDTCData = () => {  
     setisLoading(true);
     generalQuery("dtcdata", {
       ALLTIME: alltime,
@@ -243,6 +195,10 @@ const KQDTC = () => {
                 REQUEST_DATETIME: moment
                   .utc(element.REQUEST_DATETIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
+                DANHGIA:  (
+                  element.RESULT >= element.CENTER_VALUE - element.LOWER_TOR &&
+                  element.RESULT <= element.CENTER_VALUE + element.UPPER_TOR
+                ) ? 'OK': 'NG',
                 id: index,
               };
             }
@@ -264,6 +220,24 @@ const KQDTC = () => {
         console.log(error);
       });
   };
+  const kqdtcDataTableAG = useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={columnDefinition}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  },[inspectiondatatable,columnDefinition])
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -444,23 +418,7 @@ const KQDTC = () => {
         </div>
       </div>
       <div className='tracuuYCSXTable'>
-        {readyRender && (
-          <DataGrid
-            sx={{ fontSize: "0.7rem", flex: 1 }}
-            components={{
-              Toolbar: CustomToolbarPOTable,
-              LoadingOverlay: LinearProgress,
-            }}
-            loading={isLoading}
-            rowHeight={30}
-            rows={inspectiondatatable}
-            columns={column_dtc_data}
-            rowsPerPageOptions={[
-              5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-            ]}
-            editMode='row'
-          />
-        )}
+        {kqdtcDataTableAG}        
       </div>
     </div>
   );

@@ -45,7 +45,6 @@ import AGTable from "../../../components/DataTable/AGTable";
 const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
-  const [selectedRows, setSelectedRows] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [m_name, setM_Name] = useState("");
   const [clickedRows, setClickedRows] = useState<MATERIAL_TABLE_DATA>({
     M_ID: 0,
@@ -64,7 +63,7 @@ const QLVL = () => {
     UPD_DATE: "",
     UPD_EMPL: "",
     EXP_DATE: "-"
-  }); 
+  });
   const load_material_table = () => {
     generalQuery("get_material_table", {
       M_NAME: m_name,
@@ -860,17 +859,6 @@ const QLVL = () => {
     ],
     store: data,
   });
-  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
-  const getRowStyle = (params: any) => {
-    return { backgroundColor: 'white', fontSize: '0.6rem' };
-    /* if (params.data.M_ID % 2 === 0) {
-        return { backgroundColor: 'white', fontSize:'0.6rem'};
-    }
-    else {
-      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
-    } */
-  };
-  const gridRef = useRef<AgGridReact<MATERIAL_TABLE_DATA>>(null);
   const defaultColDef = useMemo(() => {
     return {
       initialWidth: 100,
@@ -932,23 +920,38 @@ const QLVL = () => {
     { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'UPD_EMPL', headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
   ]);
-  const onSelectionChanged = useCallback(() => {
-    const selectedrow = gridRef.current!.api.getSelectedRows();
-    setSelectedRows(selectedrow);
-    //console.log(clickedRows);
-  }, []);
-  function setIdText(id: string, value: string | number | undefined) {
-    document.getElementById(id)!.textContent =
-      value == undefined ? "undefined" : value + "";
-  }
-  const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
-  }, []);
+  const material_data_ag_table = useMemo(()=> {
+    return (
+      <AGTable
+            showFilter={true}
+            toolbar={
+              <div>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                  Pivot
+                </IconButton>
+              </div>}
+            columns={colDefs}
+            data={data}
+            onCellEditingStopped={(params: any) => {
+            }}
+            onCellClick={(params: any) => {
+              setClickedRows(params.data)              
+            }}
+            onSelectionChange={(params: any) => {
+              //console.log(e!.api.getSelectedRows())
+            }} />
+    )
+  },[data, colDefs])
   useEffect(() => {
-    //load_material_table();
+    load_material_table();
     getcustomerlist();
-    //setColumnDefinition(column_inspect_output);
+    
   }, [defaultColDef]);
   return (
     <div className="qlvl">
@@ -1106,7 +1109,7 @@ const QLVL = () => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type='checkbox'
-                  name='pobalancecheckbox'                  
+                  name='pobalancecheckbox'
                   checked={clickedRows?.USE_YN === "Y"}
                   onChange={(e) => {
                     seMaterialInfo(
@@ -1126,43 +1129,12 @@ const QLVL = () => {
             }}>Add</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
               updateMaterial();
-            }}>Update</Button>
-          </div>
-          {/* <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-            console.log(selectedRows)
-          }}>TEST</Button> */}
+            }}>Update</Button>           
+          </div>          
         </div>
-        <div className="tracuuYCSXTable">         
-          <AGTable
-          showFilter={true}
-          toolbar={
-            <div>              
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setShowHidePivotTable(!showhidePivotTable);
-                }}
-              >
-                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                Pivot
-              </IconButton>
-
-            </div>}
-          columns={colDefs}
-          data={data}
-          onCellEditingStopped={(params: any) => {
-           
-          }} 
-          onCellClick={(params: any) => {          
-           if(params.column.colId !=='TDS') {
-             setClickedRows(params.data)
-           }            
-          }} 
-          onSelectionChange={(params: any) => {
-            //console.log(e!.api.getSelectedRows())
-          }} />
-        </div>        
-      
+        <div className="tracuuYCSXTable">
+          {material_data_ag_table}
+        </div>
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton

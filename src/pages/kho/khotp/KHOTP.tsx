@@ -1,16 +1,9 @@
-import { Button, IconButton, LinearProgress } from "@mui/material";
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Button,} from "@mui/material";
+
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
 import "./KHOTP.scss";
 import {
   TONKIEMGOP_CMS,
@@ -19,20 +12,9 @@ import {
   WH_IN_OUT,
   XUATPACK_DATA,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const KHOTP = () => {
   const [readyRender, setReadyRender] = useState(false);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -44,6 +26,7 @@ const KHOTP = () => {
   const [justbalancecode, setJustBalanceCode] = useState(true);
   const [whdatatable, setWhDataTable] = useState<Array<any>>([]);
   const [sumaryWH, setSummaryWH] = useState("");
+  const [buttonselected, setbuttonselected] = useState("GR");
   const column_STOCK_TACH = [
     { field: "KHO_NAME", headerName: "KHO_NAME", width: 90 },
     { field: "LC_NAME", headerName: "LC_NAME", width: 90 },
@@ -54,10 +37,10 @@ const KHOTP = () => {
       field: "NHAPKHO",
       headerName: "NHAPKHO",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.NHAPKHO.toLocaleString("en-US")}</b>
+            <b>{params.data.NHAPKHO?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -66,10 +49,10 @@ const KHOTP = () => {
       field: "XUATKHO",
       headerName: "XUATKHO",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.XUATKHO.toLocaleString("en-US")}</b>
+            <b>{params.data.XUATKHO?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -78,10 +61,10 @@ const KHOTP = () => {
       field: "TONKHO",
       headerName: "TONKHO",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TONKHO.toLocaleString("en-US")}</b>
+            <b>{params.data.TONKHO?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -90,10 +73,10 @@ const KHOTP = () => {
       field: "BLOCK_QTY",
       headerName: "BLOCK_QTY",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -102,10 +85,10 @@ const KHOTP = () => {
       field: "GRAND_TOTAL_TP",
       headerName: "GRAND_TOTAL_TP",
       width: 150,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.GRAND_TOTAL_TP.toLocaleString("en-US")}</b>
+            <b>{params.data.GRAND_TOTAL_TP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -119,10 +102,10 @@ const KHOTP = () => {
       field: "CHO_KIEM",
       headerName: "CHO_KIEM",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.CHO_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -131,10 +114,10 @@ const KHOTP = () => {
       field: "CHO_CS_CHECK",
       headerName: "WAIT CS",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -143,10 +126,10 @@ const KHOTP = () => {
       field: "CHO_KIEM_RMA",
       headerName: "WAIT RMA",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -155,10 +138,10 @@ const KHOTP = () => {
       field: "TONG_TON_KIEM",
       headerName: "TONG_TON_KIEM",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -167,10 +150,10 @@ const KHOTP = () => {
       field: "BTP",
       headerName: "BTP",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.BTP.toLocaleString("en-US")}</b>
+            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -179,10 +162,10 @@ const KHOTP = () => {
       field: "TON_TP",
       headerName: "TON_TP",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TON_TP.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -191,10 +174,10 @@ const KHOTP = () => {
       field: "PENDINGXK",
       headerName: "PENDINGXK",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#9031FA" }}>
-            <b>{params.row.PENDINGXK.toLocaleString("en-US")}</b>
+            <b>{params.data.PENDINGXK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -203,10 +186,10 @@ const KHOTP = () => {
       field: "TON_TPTT",
       headerName: "TON_TPTT",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TON_TPTT.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TPTT?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -215,10 +198,10 @@ const KHOTP = () => {
       field: "BLOCK_QTY",
       headerName: "BLOCK_QTY",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -227,10 +210,10 @@ const KHOTP = () => {
       field: "GRAND_TOTAL_STOCK",
       headerName: "GRAND_TOTAL_STOCK",
       width: 150,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -242,10 +225,10 @@ const KHOTP = () => {
       field: "CHO_KIEM",
       headerName: "CHO_KIEM",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.CHO_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -254,10 +237,10 @@ const KHOTP = () => {
       field: "CHO_CS_CHECK",
       headerName: "WAIT CS",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -266,10 +249,10 @@ const KHOTP = () => {
       field: "CHO_KIEM_RMA",
       headerName: "WAIT RMA",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
-            <b>{params.row.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -278,10 +261,10 @@ const KHOTP = () => {
       field: "TONG_TON_KIEM",
       headerName: "TONG_TON_KIEM",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -290,10 +273,10 @@ const KHOTP = () => {
       field: "BTP",
       headerName: "BTP",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.BTP.toLocaleString("en-US")}</b>
+            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -302,10 +285,10 @@ const KHOTP = () => {
       field: "TON_TP",
       headerName: "TON_TP",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TON_TP.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -314,10 +297,10 @@ const KHOTP = () => {
       field: "PENDINGXK",
       headerName: "PENDINGXK",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#9031FA" }}>
-            <b>{params.row.PENDINGXK.toLocaleString("en-US")}</b>
+            <b>{params.data.PENDINGXK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -326,10 +309,10 @@ const KHOTP = () => {
       field: "TON_TPTT",
       headerName: "TON_TPTT",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.TON_TPTT.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TPTT?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -338,10 +321,10 @@ const KHOTP = () => {
       field: "BLOCK_QTY",
       headerName: "BLOCK_QTY",
       width: 100,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -350,10 +333,10 @@ const KHOTP = () => {
       field: "GRAND_TOTAL_STOCK",
       headerName: "GRAND_TOTAL_STOCK",
       width: 150,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -377,8 +360,8 @@ const KHOTP = () => {
       field: "IO_Status",
       headerName: "IO_Status",
       width: 80,
-      renderCell: (params: any) => {
-        if (params.row.IO_Status === "Pending") {
+      cellRenderer: (params: any) => {
+        if (params.data.IO_Status === "Pending") {
           return (
             <span style={{ color: "red" }}>
               <b>Pending</b>
@@ -397,10 +380,10 @@ const KHOTP = () => {
       field: "IO_Qty",
       headerName: "IO_Qty",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.IO_Qty.toLocaleString("en-US")}</b>
+            <b>{params.data.IO_Qty?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -415,30 +398,30 @@ const KHOTP = () => {
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 90 },
     { field: "OutID", headerName: "OutID", width: 90 },
     {
-      field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110, renderCell: (params: any) => {
+      field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#B008B0" }}>
-            <b>{params.row.CUST_NAME_KD}</b>
+            <b>{params.data.CUST_NAME_KD}</b>
           </span>
         );
       }
     },
     { field: "Customer_SortName", headerName: "Customer_SortName", width: 110 },
     {
-      field: "OUT_DATE", headerName: "OUT_DATE", width: 90, renderCell: (params: any) => {
+      field: "OUT_DATE", headerName: "OUT_DATE", width: 90, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.OUT_DATE}</b>
+            <b>{params.data.OUT_DATE}</b>
           </span>
         );
       }
     },
     { field: "OUT_DATETIME", headerName: "OUT_DATETIME", width: 155 },
     {
-      field: "Out_Qty", headerName: "Out_Qty", width: 90, renderCell: (params: any) => {
+      field: "Out_Qty", headerName: "Out_Qty", width: 90, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.row.Out_Qty.toLocaleString("en-US")}</b>
+            <b>{params.data.Out_Qty?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -458,32 +441,6 @@ const KHOTP = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_STOCK_CMS);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(whdatatable, "WareHouse Data Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            paddingLeft: 20,
-            color: "blue",
-          }}
-        >
-          {sumaryWH}
-        </span>
-      </GridToolbarContainer>
-    );
-  }
   const handletraXuatPack = () => {
     let inout_qty: number = 0;
     setSummaryWH("");
@@ -707,6 +664,32 @@ const KHOTP = () => {
         console.log(error);
       });
   };
+  const warehouseDataTableAG = useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: "1rem",
+              paddingLeft: 20,
+              color: "blue",
+            }}
+          >         
+            {sumaryWH}
+          </div>}
+        columns={columnDefinition}
+        data={whdatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  },[whdatatable,columnDefinition])
   useEffect(() => { }, []);
   return (
     <div className="khotp">
@@ -750,7 +733,7 @@ const KHOTP = () => {
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
-            </div>
+            </div>            
             <div className="forminputcolumn">
               <label>
                 <b>Khách:</b>{" "}
@@ -761,6 +744,25 @@ const KHOTP = () => {
                   onChange={(e) => setCustName(e.target.value)}
                 ></input>
               </label>
+              <div className="forminputcolumn">
+              <label>
+                <b>CHỌN:</b>
+                <select
+                  name="chondatakho"
+                  value={buttonselected}
+                  onChange={(e) => {
+                    setbuttonselected(e.target.value);
+                  }}
+                >
+                  <option value="GR">Nhập Kho</option>
+                  <option value="GI">Xuất Kho</option>
+                  <option value="GI_PACK">Xuất Pack</option>                 
+                  <option value="STOCKG_CODE">Tồn theo G_CODE</option>
+                  <option value="STOCKG_NAME_KD">Tồn theo Code KD</option>                  
+                  <option value="STOCKG_TACH">Tồn theo vị trí kho</option>                  
+                </select>
+              </label>              
+            </div>
               <label>
                 <b>All Time:</b>
                 <input
@@ -791,64 +793,44 @@ const KHOTP = () => {
                 ></input>
               </label>
             </div>
+            
           </div>
           <div className="formbutton">
             <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#31ad00' }} onClick={() => {
               setisLoading(true);
-              setReadyRender(false);
-              setColumnDefinition(column_WH_IN_OUT);
-              handletraWHInOut("IN");
-            }}>NHẬP</Button>
-            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ecc61a' }} onClick={() => {
-              setisLoading(true);
-              setReadyRender(false);
-              setColumnDefinition(column_WH_IN_OUT);
-              handletraWHInOut("OUT");
-            }}>XUẤT</Button>
-            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#20bdc9' }} onClick={() => {
-              setisLoading(true);
-              setReadyRender(false);
-              setColumnDefinition(column_STOCK_CMS);
-              handletraWHSTOCKCMS();
-            }}>TỒN(G_CODE)</Button>
-            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#a240cf' }} onClick={() => {
-              setisLoading(true);
-              setReadyRender(false);
-              setColumnDefinition(column_STOCK_KD);
-              handletraWHSTOCKKD();
-            }}>TỒN(KD)</Button>
-            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#c0277b' }} onClick={() => {
-              setisLoading(true);
-              setReadyRender(false);
-              setColumnDefinition(column_STOCK_TACH);
-              handletraWHSTOCKTACH();
-            }}>TỒN(TÁCH KHO)</Button>
-            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#05d86e' }} onClick={() => {
-              setisLoading(true);
-              setReadyRender(false);
-              setColumnDefinition(column_XUATPACK);
-              handletraXuatPack();
-            }}>XUẤT PACK</Button>
+              setReadyRender(false);              
+              switch (buttonselected) {
+                case "GR":
+                  setColumnDefinition(column_WH_IN_OUT);
+                  handletraWHInOut("IN");                  
+                  break;
+                case "GI":
+                  setColumnDefinition(column_WH_IN_OUT);
+                  handletraWHInOut("OUT");
+                  break;               
+                case "GI_PACK":
+                  setColumnDefinition(column_XUATPACK);
+                  handletraXuatPack();
+                  break;               
+                case "STOCKG_CODE":
+                  setColumnDefinition(column_STOCK_CMS);
+                  handletraWHSTOCKCMS();
+                  break;
+                case "STOCKG_NAME_KD":
+                  setColumnDefinition(column_STOCK_KD);
+                  handletraWHSTOCKKD();
+                  break;
+                case "STOCKG_TACH":
+                  setColumnDefinition(column_STOCK_TACH);
+                  handletraWHSTOCKTACH();
+                  break;
+              }
+
+            }}>Load</Button>           
           </div>
         </div>
         <div className="tracuuWHTable">
-          {readyRender && (
-            <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={whdatatable}
-              columns={columnDefinition}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode="row"
-            />
-          )}
+          {warehouseDataTableAG}          
         </div>
       </div>
     </div>

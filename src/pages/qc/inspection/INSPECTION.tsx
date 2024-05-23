@@ -14,7 +14,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { Profiler, useContext, useEffect, useState, useTransition } from "react";
+import React, { Profiler, useContext, useEffect, useMemo, useState, useTransition } from "react";
 import {
   AiFillCloseCircle,
   AiFillFileExcel,
@@ -2676,10 +2676,45 @@ const INSPECTION = () => {
         store: inspectiondatatable,
       }),
     );
+  const inspectionDataTableAG = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: "1rem",
+              paddingLeft: 20,
+              color: "blue",
+            }}
+          >
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(!showhidePivotTable);
+              }}
+            >
+              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+              Pivot
+            </IconButton>
+            {sumaryINSPECT}
+          </div>}
+        columns={columnDefinition}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  }, [inspectiondatatable,columnDefinition])
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
-  return (   
+  return (
     <div className="inspection">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
@@ -2834,37 +2869,7 @@ const INSPECTION = () => {
           </div>
         </div>
         <div className="tracuuYCSXTable">
-          <AGTable
-            toolbar={
-              <div
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  paddingLeft: 20,
-                  color: "blue",
-                }}
-              >
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-                {sumaryINSPECT}
-              </div>}
-            columns={columnDefinition}
-            data={inspectiondatatable}
-            onCellEditingStopped={(e) => {
-              //console.log(e.data)
-            }} onRowClick={(e) => {
-              //console.log(e.data)
-            }} onSelectionChange={(e) => {
-              //console.log(e!.api.getSelectedRows())
-            }}             
-            />
+          {inspectionDataTableAG}
           {/* {false && (
             <DataGrid
               sx={{ fontSize: "0.7rem", flex: 1 }}
@@ -2902,7 +2907,7 @@ const INSPECTION = () => {
           </div>
         )}
       </div>
-    </div>   
+    </div>
   );
 };
 export default INSPECTION;

@@ -149,7 +149,7 @@ const YCSXManager = () => {
   const [loaixh, setLoaiXH] = useState("02");
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
-  const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<Array<YCSXTableData>>([]);
+  const ycsxdatatablefilter = useRef<YCSXTableData[]>([]);
   const [ycsxdatatablefilterexcel, setYcsxDataTableFilterExcel] = useState<Array<any>>([]);
   const [selectedID, setSelectedID] = useState<string | null>();
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
@@ -158,7 +158,6 @@ const YCSXManager = () => {
   const [id_congviec, setID_CongViec] = useState("");
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState("");
-  const [AMZ_check_flag, setAMZ_Check_Flag] = useState(false);
   const [clickedRows, setClickedRows] = useState<YCSXTableData>({
     BLOCK_TDYCSX: 0,
     BTP_TDYCSX: 0,
@@ -1251,16 +1250,16 @@ const YCSXManager = () => {
     );
   }
   const handleGoToAmazon = () => {
-    console.log(ycsxdatatablefilter.length);
-    if (ycsxdatatablefilter.length === 1) {
+    console.log(ycsxdatatablefilter.current.length);
+    if (ycsxdatatablefilter.current.length === 1) {
       setProdRequestNo(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
       );
       handle_findAmazonCodeInfo(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
       );
       setNav(3);
-    } else if (ycsxdatatablefilter.length > 1) {
+    } else if (ycsxdatatablefilter.current.length > 1) {
       Swal.fire("Thông báo", "Chỉ chọn 1 YCSX để qua Amazon", "error");
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để qua Amazon", "error");
@@ -2581,7 +2580,7 @@ const YCSXManager = () => {
     }
   };
   const handle_fillsuaform = () => {
-    if (ycsxdatatablefilter.length === 1) {
+    if (ycsxdatatablefilter.current.length === 1) {
       setSelection({
         ...selection,
         trapo: true,
@@ -2592,35 +2591,35 @@ const YCSXManager = () => {
         inserttableycsx: false,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE: ycsxdatatablefilter[ycsxdatatablefilter.length - 1].G_CODE,
-        G_NAME: ycsxdatatablefilter[ycsxdatatablefilter.length - 1].G_NAME,
+        G_CODE: ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].G_CODE,
+        G_NAME: ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].G_NAME,
         PROD_LAST_PRICE: 0,
         USE_YN: "Y",
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD: ycsxdatatablefilter[ycsxdatatablefilter.length - 1].CUST_CD,
+        CUST_CD: ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].CUST_CD,
         CUST_NAME_KD:
-          ycsxdatatablefilter[ycsxdatatablefilter.length - 1].CUST_NAME_KD,
+          ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].CUST_NAME_KD,
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
       setNewYcsxQty(
-        ycsxdatatablefilter[
-          ycsxdatatablefilter.length - 1
+        ycsxdatatablefilter.current[
+          ycsxdatatablefilter.current.length - 1
         ].PROD_REQUEST_QTY.toString()
       );
       setNewYcsxRemark(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK
       );
       setSelectedID(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
       );
       if (
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK.substring(
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK.substring(
           0,
           2
         ) !== "RB" &&
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK.substring(
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK.substring(
           0,
           2
         ) !== "HQ"
@@ -2628,14 +2627,14 @@ const YCSXManager = () => {
         setNewPhanLoai("TT");
       }
       setNewPhanLoai(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK.substring(
+        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK.substring(
           0,
           2
         )
       );
-      setLoaiSX(ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PHAN_LOAI);
-      setLoaiXH(ycsxdatatablefilter[ycsxdatatablefilter.length - 1].LOAIXH);
-    } else if (ycsxdatatablefilter.length === 0) {
+      setLoaiSX(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PHAN_LOAI);
+      setLoaiXH(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].LOAIXH);
+    } else if (ycsxdatatablefilter.current.length === 0) {
       clearYCSXform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 YCSX để sửa", "error");
     } else {
@@ -2712,13 +2711,13 @@ const YCSXManager = () => {
     }
   };
   const deleteYCSX = async () => {
-    if (ycsxdatatablefilter.length >= 1) {
+    if (ycsxdatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < ycsxdatatablefilter.length; i++) {
-        if (ycsxdatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
+      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
+        if (ycsxdatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           let checkO300: boolean = false;
           await generalQuery("checkYCSXQLSXPLAN", {
-            PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+            PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -2742,7 +2741,7 @@ const YCSXManager = () => {
             );
           } else {
             await generalQuery("delete_ycsx", {
-              PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+              PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
             })
               .then((response) => {
                 console.log(response.data.tk_status);
@@ -2782,11 +2781,11 @@ const YCSXManager = () => {
       userData?.EMPL_NO === "lvt1906" ||
       empl_name === "pd"
     ) {
-      if (ycsxdatatablefilter.length >= 1) {
+      if (ycsxdatatablefilter.current.length >= 1) {
         let err_code: boolean = false;
-        for (let i = 0; i < ycsxdatatablefilter.length; i++) {
+        for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
           await generalQuery("pheduyet_ycsx", {
-            PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+            PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
             PDUYET: pduyet_value,
           })
             .then((response) => {
@@ -2813,11 +2812,11 @@ const YCSXManager = () => {
     }
   };
   const setPendingYCSX = async (pending_value: number) => {
-    if (ycsxdatatablefilter.length >= 1) {
+    if (ycsxdatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < ycsxdatatablefilter.length; i++) {
+      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
         await generalQuery("setpending_ycsx", {
-          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
           YCSX_PENDING: pending_value,
         })
           .then((response) => {
@@ -2998,6 +2997,156 @@ const YCSXManager = () => {
     limit: 100,
   });
   //console.log(userData);
+  const ycsxDataTableAG = useMemo(()=> {
+    return(
+      <AGTable
+      showFilter={true}
+      toolbar={
+        <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHideSearchDiv(!showhidesearchdiv);
+            }}
+          >
+            <TbLogout color='green' size={15} />
+            Show/Hide
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setSelection({
+                ...selection,
+                trapo: true,
+                thempohangloat: false,
+                them1po: !selection.them1po,
+                them1invoice: false,
+                themycsx: true,
+                suaycsx: false,
+                inserttableycsx: false,
+              });
+              clearYCSXform();
+            }}
+          >
+            <AiFillFileAdd color='blue' size={15} />
+            NEW YCSX
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handle_fillsuaform();
+            }}
+          >
+            <AiFillEdit color='orange' size={15} />
+            SỬA YCSX
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handleConfirmDeleteYCSX();
+            }}
+          >
+            <MdOutlineDelete color='red' size={15} />
+            XÓA YCSX
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handleConfirmSetClosedYCSX();
+            }}
+          >
+            <FaArrowRight color='green' size={15} />
+            SET CLOSED
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handleConfirmSetPendingYCSX();
+            }}
+          >
+            <MdOutlinePendingActions color='red' size={15} />
+            SET PENDING
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              if (ycsxdatatablefilter.current.length > 0) {
+                setSelection({
+                  ...selection,
+                  renderycsx: ycsxdatatablefilter.current.length > 0,
+                });
+                //console.log(ycsxdatatablefilter.current);
+                setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
+              } else {
+                Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+              }
+            }}
+          >
+            <AiOutlinePrinter color='#0066ff' size={15} />
+            Print YCSX
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              if (ycsxdatatablefilter.current.length > 0) {
+              } else {
+                Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
+              }
+            }}
+          >
+            <AiOutlinePrinter color='#00701a' size={15} />
+            Check Bản Vẽ
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              if (ycsxdatatablefilter.current.length > 0) {
+                setSelection({
+                  ...selection,
+                  renderbanve: ycsxdatatablefilter.current.length > 0,
+                });
+                setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
+              } else {
+                Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+              }
+            }}
+          >
+            <AiOutlinePrinter color='#ff751a' size={15} />
+            Print Bản Vẽ
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handleConfirmPDuyetYCSX();
+            }}
+          >
+            <FcApprove color='red' size={15} />
+            Phê Duyệt
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handleGoToAmazon();
+            }}
+          >
+            <AiFillAmazonCircle color='red' size={15} />
+            Up Amazon
+          </IconButton>
+        </div>}
+      columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
+      data={ycsxdatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onCellClick={(params: any) => {        
+        setClickedRows(params.data)
+        //console.log(params)
+      }} onSelectionChange={(params: any) => {                
+        //setYcsxDataTableFilter(params!.api.getSelectedRows());
+        ycsxdatatablefilter.current = params!.api.getSelectedRows();
+        //console.log(e!.api.getSelectedRows())
+      }} />
+    )
+  },[ycsxdatatable])
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
@@ -3548,152 +3697,7 @@ const YCSXManager = () => {
             </div>
           )}
           <div className='tracuuYCSXTable'>
-            <AGTable
-              showFilter={true}
-              toolbar={
-                <div>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      setShowHideSearchDiv(!showhidesearchdiv);
-                    }}
-                  >
-                    <TbLogout color='green' size={15} />
-                    Show/Hide
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      setSelection({
-                        ...selection,
-                        trapo: true,
-                        thempohangloat: false,
-                        them1po: !selection.them1po,
-                        them1invoice: false,
-                        themycsx: true,
-                        suaycsx: false,
-                        inserttableycsx: false,
-                      });
-                      clearYCSXform();
-                    }}
-                  >
-                    <AiFillFileAdd color='blue' size={15} />
-                    NEW YCSX
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handle_fillsuaform();
-                    }}
-                  >
-                    <AiFillEdit color='orange' size={15} />
-                    SỬA YCSX
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handleConfirmDeleteYCSX();
-                    }}
-                  >
-                    <MdOutlineDelete color='red' size={15} />
-                    XÓA YCSX
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handleConfirmSetClosedYCSX();
-                    }}
-                  >
-                    <FaArrowRight color='green' size={15} />
-                    SET CLOSED
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handleConfirmSetPendingYCSX();
-                    }}
-                  >
-                    <MdOutlinePendingActions color='red' size={15} />
-                    SET PENDING
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      if (ycsxdatatablefilter.length > 0) {
-                        setSelection({
-                          ...selection,
-                          renderycsx: ycsxdatatablefilter.length > 0,
-                        });
-                        console.log(ycsxdatatablefilter);
-                        setYCSXListRender(renderYCSX(ycsxdatatablefilter));
-                      } else {
-                        Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-                      }
-                    }}
-                  >
-                    <AiOutlinePrinter color='#0066ff' size={15} />
-                    Print YCSX
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      if (ycsxdatatablefilter.length > 0) {
-                      } else {
-                        Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
-                      }
-                    }}
-                  >
-                    <AiOutlinePrinter color='#00701a' size={15} />
-                    Check Bản Vẽ
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      if (ycsxdatatablefilter.length > 0) {
-                        setSelection({
-                          ...selection,
-                          renderbanve: ycsxdatatablefilter.length > 0,
-                        });
-                        setYCSXListRender(renderBanVe(ycsxdatatablefilter));
-                      } else {
-                        Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-                      }
-                    }}
-                  >
-                    <AiOutlinePrinter color='#ff751a' size={15} />
-                    Print Bản Vẽ
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handleConfirmPDuyetYCSX();
-                    }}
-                  >
-                    <FcApprove color='red' size={15} />
-                    Phê Duyệt
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handleGoToAmazon();
-                    }}
-                  >
-                    <AiFillAmazonCircle color='red' size={15} />
-                    Up Amazon
-                  </IconButton>
-                </div>}
-              columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
-              data={ycsxdatatable}
-              onCellEditingStopped={(params: any) => {
-                //console.log(e.data)
-              }} onCellClick={(params: any) => {
-                //setClickedRows(params.data)
-                
-                //console.log(params)
-              }} onSelectionChange={(params: any) => {                
-                setYcsxDataTableFilter(params!.api.getSelectedRows());
-                //console.log(e!.api.getSelectedRows())
-              }} />
+           {ycsxDataTableAG}
           </div>
         </div>
       )}
@@ -3702,7 +3706,7 @@ const YCSXManager = () => {
           <div className='buttongroup'>
             <Button
               onClick={() => {
-                setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+                setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
               }}
             >
               Render YCSX
@@ -3726,7 +3730,7 @@ const YCSXManager = () => {
           <div className='buttongroup'>
             <button
               onClick={() => {
-                setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+                setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
               }}
             >
               Render Bản Vẽ
