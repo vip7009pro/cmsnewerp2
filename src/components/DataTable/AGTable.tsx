@@ -48,6 +48,7 @@ const AGTable = (ag_data: AGInterface) => {
       editable: true,
       floatingFilter: ag_data.showFilter ?? true,
       filter: true,
+      headerCheckboxSelectionFilteredOnly: true,
     };
   }, []);
   const onExportClick = () => {

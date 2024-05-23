@@ -136,6 +136,7 @@ const PLAN_DATATB = () => {
       editable: false,
       floatingFilter: true,
       filter: true,
+      headerCheckboxSelectionFilteredOnly: true,
     };
   }, []);
   const clearSelection = () => {
