@@ -1,33 +1,15 @@
 import { IconButton, Button } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./CUST_MANAGER2.scss";
-import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CUST_INFO } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
+import { zeroPad } from "../../../api/GlobalFunction";
 const CUST_MANAGER = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
@@ -53,6 +35,28 @@ const CUST_MANAGER = () => {
     UPD_DATE: "",
     UPD_EMPL: "",
   });
+  const columns = [
+    { field: 'CUST_TYPE',headerName: 'CUST_TYPE', resizable: true,width: 100,  headerCheckboxSelection: true,
+    checkboxSelection: true},
+    { field: 'CUST_CD',headerName: 'CUST_CD', resizable: true,width: 100 },
+    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,width: 100 },
+    { field: 'CUST_NAME',headerName: 'CUST_NAME', resizable: true,width: 100 },
+    { field: 'CUST_ADDR1',headerName: 'CUST_ADDR1', resizable: true,width: 100 },
+    { field: 'CUST_ADDR2',headerName: 'CUST_ADDR2', resizable: true,width: 100 },
+    { field: 'CUST_ADDR3',headerName: 'CUST_ADDR3', resizable: true,width: 100 },
+    { field: 'TAX_NO',headerName: 'TAX_NO', resizable: true,width: 100 },
+    { field: 'CUST_NUMBER',headerName: 'CUST_NUMBER', resizable: true,width: 100 },
+    { field: 'BOSS_NAME',headerName: 'BOSS_NAME', resizable: true,width: 100 },
+    { field: 'TEL_NO1',headerName: 'TEL_NO1', resizable: true,width: 100 },
+    { field: 'FAX_NO',headerName: 'FAX_NO', resizable: true,width: 100 },
+    { field: 'CUST_POSTAL',headerName: 'CUST_POSTAL', resizable: true,width: 100 },
+    { field: 'EMAIL',headerName: 'EMAIL', resizable: true,width: 100 },
+    { field: 'REMK',headerName: 'REMK', resizable: true,width: 100 },
+    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 100 },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 100 },
+    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 100 },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 100 },
+  ];
   const setCustInfo = (keyname: string, value: any) => {
     let tempCustInfo: CUST_INFO = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
@@ -200,98 +204,27 @@ const CUST_MANAGER = () => {
         console.log(error);
       });
   };
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={custinfodatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(custinfodatatable, "Customer Table");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [custinfodatatable],
-  );
+  const customerDataTableAG = useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={columns}
+        data={custinfodatatable}
+        onCellEditingStopped={(params:any) => {
+          //console.log(e.data)
+        }} onRowClick={(params:any) => {
+          setSelectedRows(params.data);
+          //console.log(e.data) 
+        }} onSelectionChange={(params:any) => {
+          //console.log(params)
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    )
+  },[custinfodatatable])
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1091,9 +1024,14 @@ const CUST_MANAGER = () => {
             </div>
           </div>
           <div className="formbutton">
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#afc016' }} onClick={() => {
+             handleCUSTINFO();
+            }}>Load</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
               createNewCustomer(selectedRows.CUST_TYPE);
             }}>New</Button>
+            </div>
+            <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
               handle_addCustomer();
             }}>Add</Button>
@@ -1102,7 +1040,7 @@ const CUST_MANAGER = () => {
             }}>Update</Button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{customerDataTableAG}</div>
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton
