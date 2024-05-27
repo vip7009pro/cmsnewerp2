@@ -1,33 +1,11 @@
 import {
-  Autocomplete,
   Button,
-  IconButton,
-  LinearProgress,
-  TextField,
+  IconButton, 
 } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-  KeyboardNavigation,
-} from "devextreme-react/data-grid";
 import moment from "moment";
 import React, {
   ReactElement,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -39,15 +17,12 @@ import {
   AiFillSave,
   AiOutlineArrowRight,
   AiOutlineBarcode,
-  AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import {
   checkBP,
-  CustomResponsiveContainer,
   SaveExcel,
   zeroPad,
 } from "../../../../api/GlobalFunction";
@@ -74,7 +49,6 @@ import {
 } from "../Machine/MACHINE";
 import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
-import { setTimeout } from "timers/promises";
 import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
@@ -82,7 +56,6 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import AGTable from "../../../../components/DataTable/AGTable";
 const PLAN_DATATB = () => {
   const dataGridRef = useRef<any>(null);
-  const currentRow = useRef(0);
   const datatbTotalRow = useRef(0);
   const [showQuickPlan, setShowQuickPlan] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -92,15 +65,12 @@ const PLAN_DATATB = () => {
   const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>();
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
-  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true);
   const [showhideM, setShowHideM] = useState(false);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const clickedRow = useRef<any>(null);
   const [showChiThi, setShowChiThi] = useState(false);
   const [showChiThi2, setShowChiThi2] = useState(false);
   const [showBV, setShowBV] = useState(false);
-  const [trigger, setTrigger] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
     //return { backgroundColor: 'white', fontSize: '0.6rem' };
@@ -143,12 +113,6 @@ const PLAN_DATATB = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
       qlsxplandatafilter.current = [];
-      console.log(dataGridRef.current);
-    }
-  };
-  const navigateToRow = (rowKey: any) => {
-    if (dataGridRef.current) {
-      dataGridRef.current.instance.navigateToRow(rowKey);
       console.log(dataGridRef.current);
     }
   };
@@ -843,12 +807,71 @@ const PLAN_DATATB = () => {
     { field: "EQ3", headerName: "EQ3", width: 40, editable: false },
     { field: "EQ4", headerName: "EQ4", width: 40, editable: false },
   ];
+  const column_planmaterialtable = [
+    { field: 'CHITHI_ID',headerName: 'CT_ID', resizable: true,width: 100, editable: false, headerCheckboxSelection: true,
+    checkboxSelection: true,},
+    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 80, editable: false},
+    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80, editable: false },
+    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
+      if (params.data.LIEUQL_SX === 1) {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.M_NAME}
+          </span>
+        );
+      } else {
+        return (
+          <span style={{ color: "black" }}>{params.data.M_NAME}</span>
+        );
+      }
+    } },
+    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80, editable: false },
+    { field: 'M_MET_QTY',headerName: 'M_MET_QTY', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
+      return (
+        <span style={{ color: "green", fontWeight: "bold" }}>
+          {params.data.M_MET_QTY}
+        </span>
+      );
+    }} ,
+    { field: 'M_QTY',headerName: 'M_QTY', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
+      return (
+        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+          {params.data.M_QTY}
+        </span>
+      );
+    }} ,
+    { field: 'LIEUQL_SX',headerName: 'LIEUQL_SX', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
+      return (
+        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+          {params.data.LIEUQL_SX}
+        </span>
+      );
+    }} ,
+    { field: 'M_STOCK',headerName: 'M_STOCK', resizable: true,width: 80, editable: false, cellRenderer:(params: any) => {
+      return (
+        <span style={{ color: "gray", fontWeight: "bold" }}>
+          {params.data.M_STOCK?.toLocaleString("en-US")}
+        </span>
+      );
+    }} ,
+    { field: 'OUT_KHO_SX',headerName: 'OUT_KHO_SX', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
+      return (
+        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+          {params.data.OUT_KHO_SX}
+        </span>
+      );
+    }},
+    { field: 'OUT_CFM_QTY',headerName: 'OUT_CFM_QTY', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
+      return (
+        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+          {params.data.OUT_CFM_QTY}
+        </span>
+      );
+    }},   
+  ]
   const [columns, setColumns] = useState<Array<any>>(column_plandatatable);
-  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -922,9 +945,6 @@ const PLAN_DATATB = () => {
     UPH4: 0,
     OLD_PLAN_QTY: 0,
   });
-  /*   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
-    Array<QLSXPLANDATA>
-  >([]); */
   const [chithilistrender2, setChiThiListRender2] = useState<ReactElement>();
   const [chithilistrender, setChiThiListRender] =
     useState<Array<ReactElement>>();
@@ -1788,7 +1808,14 @@ const PLAN_DATATB = () => {
       .then((response) => {
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
-          setChiThiDataTable(response.data.data);
+          const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
+            (element: QLSXCHITHIDATA, index: number) => { 
+              return {
+                ...element,
+                id: index
+              }
+            });
+          setChiThiDataTable(loaded_data);
         } else {
           M_MET_NEEDED = parseInt(
             ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
@@ -2363,1106 +2390,11 @@ const PLAN_DATATB = () => {
         console.log(error);
       });
   }
-  const planDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            repaintChangesOnly={true}
-            ref={dataGridRef}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={plandatatable}
-            columnWidth='auto'
-            keyExpr='PLAN_ID'
-            height={"90vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              qlsxplandatafilter.current = e.selectedRowsData;
-              //console.log(e.selectedRowKeys);
-              setSelectedRowKeys(e.selectedRowKeys);
-            }}
-            /* selectedRowKeys={selectedRowKeys} */
-            onRowClick={(e) => {
-              //console.log(e.data);             
-              clickedRow.current = e.data;
-              setSelectedPlan(e.data);
-              handleGetChiThiTable(
-                e.data.PLAN_ID,
-                e.data.G_CODE,
-                e.data.PLAN_QTY,
-                e.data.PROCESS_NUMBER,
-                e.data.IS_SETTING ?? 'Y'
-              );
-            }}
-            onRowPrepared={(e: any) => {
-              if (parseInt(e.data?.PLAN_EQ.substring(2, 4)) % 2 === 0)
-                e.rowElement.style.background = "#BEC7C0";
-            }}
-            onRowDblClick={(params: any) => {
-              //console.log(params.data);
-              setShowHideM(true);
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={true}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='cell'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_UpdatePlan
-                    );
-                  }}
-                >
-                  <AiFillSave color='blue' size={20} />
-                  Lưu PLAN
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    if (qlsxplandatafilter.current.length > 0) {
-                      if (userData?.EMPL_NO !== "NHU1903") {
-                        checkBP(
-                          userData,
-                          ["QLSX"],
-                          ["ALL"],
-                          ["ALL"],
-                          handle_UpdatePlan
-                        );
-                      }
-                      setShowChiThi(true);
-                      setChiThiListRender(
-                        renderChiThi(qlsxplandatafilter.current)
-                      );
-                      //console.log(ycsxdatatablefilter);
-                    } else {
-                      setShowChiThi(false);
-                      Swal.fire(
-                        "Thông báo",
-                        "Chọn ít nhất 1 Plan để in",
-                        "error"
-                      );
-                    }
-                  }}
-                >
-                  <AiOutlinePrinter color='#0066ff' size={15} />
-                  Print Chỉ Thị
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    let ycsx_number: number = [
-                      ...new Set(
-                        qlsxplandatafilter.current.map(
-                          (e: QLSXPLANDATA, index: number) => {
-                            return e.PROD_REQUEST_NO;
-                          }
-                        )
-                      ),
-                    ].length;
-                    // console.log("ycsx_number", ycsx_number);
-                    if (
-                      qlsxplandatafilter.current !== undefined &&
-                      qlsxplandatafilter.current.length > 0
-                    ) {
-                      if (
-                        qlsxplandatafilter.current[0].FACTORY === null ||
-                        qlsxplandatafilter.current[0].EQ1 === null ||
-                        qlsxplandatafilter.current[0].EQ2 === null ||
-                        qlsxplandatafilter.current[0].Setting1 === null ||
-                        qlsxplandatafilter.current[0].Setting2 === null ||
-                        qlsxplandatafilter.current[0].UPH1 === null ||
-                        qlsxplandatafilter.current[0].UPH2 === null ||
-                        qlsxplandatafilter.current[0].Step1 === null ||
-                        qlsxplandatafilter.current[0].Step1 === null ||
-                        qlsxplandatafilter.current[0].LOSS_SX1 === null ||
-                        qlsxplandatafilter.current[0].LOSS_SX2 === null ||
-                        qlsxplandatafilter.current[0].LOSS_SETTING1 === null ||
-                        qlsxplandatafilter.current[0].LOSS_SETTING2 === null
-                      ) {
-                        Swal.fire(
-                          "Thông báo",
-                          "Nhập data định mức trước khi chỉ thị",
-                          "error"
-                        );
-                      } else {
-                        if (ycsx_number === 1) {
-                          let chithimain: QLSXPLANDATA[] =
-                            qlsxplandatafilter.current.filter(
-                              (element: QLSXPLANDATA, index: number) =>
-                                element.STEP === 0
-                            );
-                          if (chithimain.length === 1) {
-                            setShowChiThi2(true);
-                            setChiThiListRender2(
-                              renderChiThi2(qlsxplandatafilter.current)
-                            );
-                          } else if (chithimain.length === 0) {
-                            Swal.fire(
-                              "Thông báo",
-                              "Chưa có chỉ thị chính (B0)",
-                              "error"
-                            );
-                          } else {
-                            Swal.fire(
-                              "Thông báo",
-                              "Chỉ được chọn 1 chỉ thị B0",
-                              "error"
-                            );
-                          }
-                        } else {
-                          Swal.fire(
-                            "Thông báo",
-                            "Chỉ được chọn các chỉ thị của 1 YCSX",
-                            "error"
-                          );
-                        }
-                      }
-                      //console.log(ycsxdatatablefilter);
-                    } else {
-                      setShowChiThi2(false);
-                      Swal.fire(
-                        "Thông báo",
-                        "Chọn ít nhất 1 Plan để in",
-                        "error"
-                      );
-                    }
-                  }}
-                >
-                  <AiOutlinePrinter color='#0066ff' size={15} />
-                  Print Chỉ Thị Combo
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    if (qlsxplandatafilter.current.length > 0) {
-                      setShowBV(!showBV);
-                      setYCSXListRender(
-                        renderBanVe2(qlsxplandatafilter.current)
-                      );
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Chọn ít nhất 1 YCSX để in",
-                        "error"
-                      );
-                    }
-                  }}
-                >
-                  <AiOutlinePrinter color='#ff751a' size={15} />
-                  Print Bản Vẽ
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            <Column
-              dataField='PLAN_FACTORY'
-              caption='NM'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_DATE'
-              caption='PLAN_DATE'
-              width={80}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_ID'
-              caption='PLAN_ID'
-              width={80}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='G_CODE'
-              caption='G_CODE'
-              width={80}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='G_NAME'
-              caption='G_NAME'
-              width={120}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='G_NAME_KD'
-              caption='CODE KD'
-              width={100}
-              cellRender={(params: any) => {
-                if (
-                  params.data.FACTORY === null ||
-                  params.data.EQ1 === null ||
-                  params.data.EQ2 === null ||
-                  params.data.Setting1 === null ||
-                  params.data.Setting2 === null ||
-                  params.data.UPH1 === null ||
-                  params.data.UPH2 === null ||
-                  params.data.Step1 === null ||
-                  params.data.Step1 === null ||
-                  params.data.LOSS_SX1 === null ||
-                  params.data.LOSS_SX2 === null ||
-                  params.data.LOSS_SETTING1 === null ||
-                  params.data.LOSS_SETTING2 === null
-                ) {
-                  return (
-                    <span style={{ color: "red" }}>
-                      {params.data.G_NAME_KD}
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span style={{ color: "green" }}>
-                      {params.data.G_NAME_KD}
-                    </span>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_EQ'
-              caption='PLAN EQ'
-              width={70}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {params.data.PLAN_EQ}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='PLAN_ORDER'
-              caption='STT'
-              width={50}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "purple", fontWeight: "normarl" }}>
-                    {params.data.PLAN_ORDER}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='PROCESS_NUMBER'
-              caption='PR_NUM'
-              width={60}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='STEP'
-              caption='STEP'
-              width={50}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='PLAN_QTY'
-              caption='PLAN_QTY'
-              width={70}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "gray", fontWeight: "bold" }}>
-                    {params.data.PLAN_QTY?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='KETQUASX'
-              caption='RESULT_QTY'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-                    {params.data.KETQUASX?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='ACHIVEMENT_RATE'
-              caption='ACHIV_RATE'
-              width={80}
-              cellRender={(params: any) => {
-                if (params.data.ACHIVEMENT_RATE !== undefined) {
-                  if (params.data.ACHIVEMENT_RATE === 100) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        {params.data.ACHIVEMENT_RATE.toLocaleString("en-US", {
-                          maximumFractionDigits: 0,
-                        })}
-                        %
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>
-                        {params.data.ACHIVEMENT_RATE.toLocaleString("en-US", {
-                          maximumFractionDigits: 0,
-                        })}
-                        %
-                      </span>
-                    );
-                  }
-                } else {
-                  return <span>0</span>;
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='EQ_STATUS'
-              caption='EQ_STATUS'
-              width={120}
-              cellRender={(params: any) => {
-                if (params.data.EQ_STATUS === "KTST-KSX") {
-                  return <span style={{ color: "green" }}>KTST-KSX</span>;
-                } else if (params.data.EQ_STATUS === "Đang setting") {
-                  return (
-                    <span style={{ color: "orange" }}>
-                      Đang Setting{" "}
-                      <img
-                        alt='running'
-                        src='/setting3.gif'
-                        width={10}
-                        height={10}
-                      ></img>
-                    </span>
-                  );
-                } else if (params.data.EQ_STATUS === "Đang Run") {
-                  return (
-                    <span style={{ color: "blue" }}>
-                      Đang Run{" "}
-                      <img
-                        alt='running'
-                        src='/blink.gif'
-                        width={40}
-                        height={15}
-                      ></img>
-                    </span>
-                  );
-                } else if (params.data.EQ_STATUS === "Chạy xong") {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      Chạy xong
-                    </span>
-                  );
-                } else {
-                  return <span style={{ color: "red" }}>Chưa chạy</span>;
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='SETTING_START_TIME'
-              caption='SETTING_START'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "blue", fontWeight: "normarl" }}>
-                    {params.data.SETTING_START_TIME}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='MASS_START_TIME'
-              caption='MASS_START'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "blue", fontWeight: "normarl" }}>
-                    {params.data.MASS_START_TIME}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='MASS_END_TIME'
-              caption='MASS_END'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "blue", fontWeight: "normarl" }}>
-                    {params.data.MASS_END_TIME}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='IS_SETTING'
-              caption='IS_SETTING'
-              width={80}
-              cellRender={(params: any) => {
-                if (params.data.IS_SETTING === 'Y')
-                  return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                      {params.data.IS_SETTING}
-                    </span>
-                  );
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    {params.data.IS_SETTING}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='XUATDAOFILM'
-              caption='Xuất Dao'
-              width={80}
-              cellRender={(params: any) => {
-                if (params.data.XUATDAOFILM === "V") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "60px",
-                        backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      V
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "50px",
-                        backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      N
-                    </div>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='DKXL'
-              caption='ĐK Xuất Liệu'
-              width={80}
-              cellRender={(params: any) => {
-                if (params.data.DKXL === "V") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "60px",
-                        backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                      onClick={() => {
-                        //console.log(params.data);
-                        setShowHideM(true);
-                      }}
-                    >
-                      V
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "50px",
-                        backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                      onClick={() => {
-                        //console.log(params.data);
-                        setShowHideM(true);
-                      }}
-                    >
-                      N
-                    </div>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='MAIN_MATERIAL'
-              caption='Xuất liệu'
-              width={60}
-              cellRender={(params: any) => {
-                if (params.data.MAIN_MATERIAL === "V") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "60px",
-                        backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      V
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "50px",
-                        backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      N
-                    </div>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='INT_TEM'
-              caption='In tem'
-              width={60}
-              cellRender={(params: any) => {
-                if (params.data.INT_TEM === "V") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "60px",
-                        backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      V
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "50px",
-                        backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      N
-                    </div>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='CHOTBC'
-              caption='Chốt BC'
-              width={70}
-              cellRender={(params: any) => {
-                if (params.data.CHOTBC === "V") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "60px",
-                        backgroundImage: `linear-gradient(90deg, rgba(9,199,155,1) 0%, rgba(20,233,0,0.9920343137254902) 18%, rgba(79,228,23,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      V
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "50px",
-                        backgroundImage: `linear-gradient(90deg, rgba(199,9,9,1) 0%, rgba(233,0,106,0.9920343137254902) 42%, rgba(246,101,158,1) 100%)`,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      N
-                    </div>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='AT_LEADTIME'
-              caption='AT_LEADTIME'
-              width={90}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.AT_LEADTIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='ACC_TIME'
-              caption='ACC_TIME'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.ACC_TIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='KQ_SX_TAM'
-              caption='CURRENT_RESULT'
-              width={120}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#3394D8", fontWeight: "bold" }}>
-                    {params.data.KQ_SX_TAM?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='REQ_DF'
-              caption='REQ DAO FILM'
-              width={80}
-              cellRender={(params: any) => {
-                if (params.data.REQ_DF === "R") {
-                  return (
-                    <span style={{ color: "red", fontWeight: "normarl" }}>
-                      REQUESTED
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span style={{ color: "green", fontWeight: "normarl" }}>
-                      COMPLETED
-                    </span>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PROD_REQUEST_NO'
-              caption='YCSX NO'
-              width={80}
-              allowEditing={false}
-            ></Column>
-            {/*<Column dataField='PLAN_LEADTIME' caption='PLAN_LEADTIME' width={80} allowEditing={false}  
-            ></Column>
-             <Column dataField='INS_EMPL' caption='INS_EMPL' width={80} allowEditing={false}  
-            ></Column>
-             <Column dataField='PLAN_ORDER' caption='PLAN_ORDER' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='INS_DATE' caption='INS_DATE' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={80} allowEditing={false}  
-            ></Column>
-             <Column dataField='NEXT_PLAN_ID' caption='NEXT_PLAN_ID' width={80} allowEditing={false}  
-            ></Column>
-          <Column dataField='UPD_DATE' caption='UPD_DATE' width={80} allowEditing={false}  
-            ></Column> 
-          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' width={80} allowEditing={false}  
-            ></Column>*/}
-            <Column
-              dataField='PROD_REQUEST_QTY'
-              caption='YCSX QTY'
-              width={70}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#7C59B9", fontWeight: "bold" }}>
-                    {params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='CD1'
-              caption='CD1'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#1D7A9C", fontWeight: "normal" }}>
-                    {params.data.CD1?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='CD2'
-              caption='CD2'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#1D7A9C", fontWeight: "normal" }}>
-                    {params.data.CD2?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='CD3'
-              caption='CD3'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#1D7A9C", fontWeight: "normal" }}>
-                    {params.data.CD3?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='CD4'
-              caption='CD4'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#1D7A9C", fontWeight: "normal" }}>
-                    {params.data.CD4?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='TON_CD1'
-              caption='TCD1'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "red", fontWeight: "normal" }}>
-                    {params.data.TON_CD1?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='TON_CD2'
-              caption='TCD2'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "red", fontWeight: "normal" }}>
-                    {params.data.TON_CD2?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='TON_CD3'
-              caption='TCD3'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "red", fontWeight: "normal" }}>
-                    {params.data.TON_CD3?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='TON_CD4'
-              caption='TCD4'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "red", fontWeight: "normal" }}>
-                    {params.data.TON_CD4?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='FACTORY'
-              caption='NM'
-              width={60}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='EQ1'
-              caption='EQ1'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='EQ2'
-              caption='EQ2'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='EQ3'
-              caption='EQ3'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='EQ4'
-              caption='EQ4'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            {/* <Column dataField='Setting1' caption='Setting1' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Setting2' caption='Setting2' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Setting3' caption='Setting3' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Setting4' caption='Setting4' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='UPH1' caption='UPH1' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='UPH2' caption='UPH2' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='UPH3' caption='UPH3' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='UPH4' caption='UPH4' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Step1' caption='Step1' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Step2' caption='Step2' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Step3' caption='Step3' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='Step4' caption='Step4' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SX1' caption='LOSS_SX1' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SX2' caption='LOSS_SX2' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SX3' caption='LOSS_SX3' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SX4' caption='LOSS_SX4' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SETTING1' caption='LOSS_SETTING1' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SETTING2' caption='LOSS_SETTING2' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SETTING3' caption='LOSS_SETTING3' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='LOSS_SETTING4' caption='LOSS_SETTING4' width={80} allowEditing={false}  
-            ></Column>
-            <Column dataField='NOTE' caption='NOTE' width={80} allowEditing={false}  
-            ></Column>      */}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_QTY'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='TOTAL_DELIVERED'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_BALANCE'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='BALANCE_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [plandatatable, columns, trigger]
-  );
-  const planMaterialTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={false}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={chithidatatable}
-            columnWidth='auto'
-            keyExpr='CHITHI_ID'
-            height={"70vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              qlsxchithidatafilter.current = e.selectedRowsData;
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-              clickedRow.current = e.data;
-            }}
-            onRowPrepared={(e: any) => {
-              /* if (parseInt(e.data?.PLAN_EQ.substring(2, 4)) % 2 === 0)
-                e.rowElement.style.background = "#BEC7C0"; */
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            {/* <Selection mode='single' selectAllMode='allPages' /> */}
-            <Editing
-              allowUpdating={true}
-              allowAdding={true}
-              allowDeleting={true}
-              mode='cell'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton className='buttonIcon' onClick={() => { }}>
-                  <AiFillFileExcel color='green' size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
+  const planMaterialTableAG = useMemo(()=> 
+    <AGTable
+        toolbar={
+          <div>
+            <IconButton
                   className='buttonIcon'
                   onClick={() => {
                     /*   checkBP(
@@ -3620,198 +2552,27 @@ const PLAN_DATATB = () => {
                   <AiOutlineArrowRight color='blue' size={20} />
                   Xuất liệu sample
                 </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            <Column
-              dataField='CHITHI_ID'
-              caption='CT_ID'
-              width={60}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_ID'
-              caption='PLAN_ID'
-              width={80}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='M_CODE'
-              caption='M_CODE'
-              width={80}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='M_NAME'
-              caption='M_NAME'
-              width={120}
-              cellRender={(params: any) => {
-                if (params.data.LIEUQL_SX === 1) {
-                  return (
-                    <span style={{ color: "red", fontWeight: "bold" }}>
-                      {params.data.M_NAME}
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span style={{ color: "black" }}>{params.data.M_NAME}</span>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='WIDTH_CD'
-              caption='SIZE'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='M_MET_QTY'
-              caption='M_MET_QTY'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "green", fontWeight: "bold" }}>
-                    {params.data.M_MET_QTY}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='M_QTY'
-              caption='HE_SO'
-              width={60}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-                    {params.data.M_QTY}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='LIEUQL_SX'
-              caption='LIEUQL_SX'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-                    {params.data.LIEUQL_SX}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='M_STOCK'
-              caption='M_STOCK'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "gray", fontWeight: "bold" }}>
-                    {params.data.M_STOCK?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='OUT_KHO_SX'
-              caption='OUT_KHO_SX'
-              width={100}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-                    {params.data.OUT_KHO_SX}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='OUT_CFM_QTY'
-              caption='OUT_KHO_THAT'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-                    {params.data.OUT_CFM_QTY}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_QTY'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='TOTAL_DELIVERED'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_BALANCE'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='BALANCE_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [chithidatatable]
-  );
+          </div>}
+        columns={column_planmaterialtable}
+        data={chithidatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          clickedRow.current = params.data;
+          //console.log(e.data) 
+        }} onSelectionChange={(params: any) => {
+          //console.log(params)
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+          qlsxchithidatafilter.current = params!.api.getSelectedRows();
+        }}
+      />
+
+  ,[chithidatatable]);
   const planDataTableAG = useMemo(() => {
     return (
-      <div className="ag-theme-quartz" // applying the grid theme
-        style={{ height: '100%', }} // the grid will fill the size of the parent container
+      <div className="ag-theme-quartz"
+        style={{ height: '100%', }}
       >
         <AgGridReact
           rowData={plandatatable}
@@ -4125,42 +2886,6 @@ const PLAN_DATATB = () => {
               </IconButton>
             </div>
           </div>
-          {/* <AGTable            
-            columns={columns}
-            data={plandatatable}
-            getRowStyle={(params:any) => {
-              if (Number(params.data?.PLAN_EQ.substring(2, 4)) % 2 === 0) {
-                return { backgroundColor: 'white', fontSize: '0.6rem' };
-              }
-              else {
-                return { backgroundColor: '#d3d7cf', fontSize: '0.6rem' };
-              }
-              //console.log(e.data)
-            }}
-            onCellEditingStopped={(params:any) => {
-              //console.log(e.data)
-            }} 
-            onRowClick={(params:any) => {
-              clickedRow.current = params.data;
-                setSelectedPlan(params.data);
-                handleGetChiThiTable(
-                  params.data.PLAN_ID,
-                  params.data.G_CODE,
-                  params.data.PLAN_QTY,
-                  params.data.PROCESS_NUMBER,
-                  params.data.IS_SETTING ?? 'Y'
-                );
-              //console.log(e.data)
-            }} 
-            onSelectionChange={(params:any) => {
-              //console.log(e!.api.getSelectedRows())
-              qlsxplandatafilter.current = params!.api.getSelectedRows();
-            }} 
-            onRowDoubleClick={(params: any) => {
-              setShowHideM(true);
-            }}            
-            />
- */}
           {planDataTableAG}
         </div>
       </div>
@@ -4196,7 +2921,7 @@ const PLAN_DATATB = () => {
               {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
             </span>
           </div>
-          {planMaterialTable}
+          {planMaterialTableAG}
         </div>
       )}
       {showkhoao && (

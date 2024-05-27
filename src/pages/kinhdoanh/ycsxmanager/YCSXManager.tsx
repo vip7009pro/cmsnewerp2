@@ -881,9 +881,35 @@ const YCSXManager = () => {
       },
     },
     {
+      field: "OUTPUTNB_QTY",
+      cellDataType: "number",
+      headerName: "XUẤT NB",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.OUTPUTNB_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "OUTPUTKH_QTY",
+      cellDataType: "number",
+      headerName: "XUẤT KH",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.OUTPUTKH_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "OUTPUT_QTY",
       cellDataType: "number",
-      headerName: "XUẤT KHO",
+      headerName: "XUẤT TOTAL",
       width: 80,
       cellRenderer: (params: any) => {
         return (
@@ -1663,76 +1689,22 @@ const YCSXManager = () => {
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
-                PO_TDYCSX:
-                  element.PO_TDYCSX === undefined || element.PO_TDYCSX === null
-                    ? 0
-                    : element.PO_TDYCSX,
-                TOTAL_TKHO_TDYCSX:
-                  element.TOTAL_TKHO_TDYCSX === undefined ||
-                    element.TOTAL_TKHO_TDYCSX === null
-                    ? 0
-                    : element.TOTAL_TKHO_TDYCSX,
-                TKHO_TDYCSX:
-                  element.TKHO_TDYCSX === undefined ||
-                    element.TKHO_TDYCSX === null
-                    ? 0
-                    : element.TKHO_TDYCSX,
-                BTP_TDYCSX:
-                  element.BTP_TDYCSX === undefined ||
-                    element.BTP_TDYCSX === null
-                    ? 0
-                    : element.BTP_TDYCSX,
-                CK_TDYCSX:
-                  element.CK_TDYCSX === undefined || element.CK_TDYCSX === null
-                    ? 0
-                    : element.CK_TDYCSX,
-                BLOCK_TDYCSX:
-                  element.BLOCK_TDYCSX === undefined ||
-                    element.BLOCK_TDYCSX === null
-                    ? 0
-                    : element.BLOCK_TDYCSX,
-                FCST_TDYCSX:
-                  element.FCST_TDYCSX === undefined ||
-                    element.FCST_TDYCSX === null
-                    ? 0
-                    : element.FCST_TDYCSX,
-                W1:
-                  element.W1 === undefined || element.W1 === null
-                    ? 0
-                    : element.W1,
-                W2:
-                  element.W2 === undefined || element.W2 === null
-                    ? 0
-                    : element.W2,
-                W3:
-                  element.W3 === undefined || element.W3 === null
-                    ? 0
-                    : element.W3,
-                W4:
-                  element.W4 === undefined || element.W4 === null
-                    ? 0
-                    : element.W4,
-                W5:
-                  element.W5 === undefined || element.W5 === null
-                    ? 0
-                    : element.W5,
-                W6:
-                  element.W6 === undefined || element.W6 === null
-                    ? 0
-                    : element.W6,
-                W7:
-                  element.W7 === undefined || element.W7 === null
-                    ? 0
-                    : element.W7,
-                W8:
-                  element.W8 === undefined || element.W8 === null
-                    ? 0
-                    : element.W8,
-                PROD_REQUEST_QTY:
-                  element.PROD_REQUEST_QTY === undefined ||
-                    element.PROD_REQUEST_QTY === null
-                    ? 0
-                    : element.PROD_REQUEST_QTY,
+                PO_TDYCSX: element.PO_TDYCSX ?? 0,
+                TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
+                TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
+                BTP_TDYCSX: element.BTP_TDYCSX ?? 0,
+                CK_TDYCSX: element.CK_TDYCSX ?? 0,
+                BLOCK_TDYCSX: element.BLOCK_TDYCSX ?? 0,
+                FCST_TDYCSX: element.FCST_TDYCSX ?? 0,
+                W1: element.W1 ?? 0,
+                W2: element.W2 ?? 0,
+                W3: element.W3 ?? 0,
+                W4: element.W4 ?? 0,
+                W5: element.W5 ?? 0,
+                W6: element.W6 ?? 0,
+                W7: element.W7 ?? 0,
+                W8: element.W8 ?? 0,
+                PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
                 id: index
               };
             }
@@ -2997,161 +2969,161 @@ const YCSXManager = () => {
     limit: 100,
   });
   //console.log(userData);
-  const ycsxDataTableAG = useMemo(()=> {
-    return(
+  const ycsxDataTableAG = useMemo(() => {
+    return (
       <AGTable
-      showFilter={true}
-      toolbar={
-        <div>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              setShowHideSearchDiv(!showhidesearchdiv);
-            }}
-          >
-            <TbLogout color='green' size={15} />
-            Show/Hide
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: !selection.them1po,
-                them1invoice: false,
-                themycsx: true,
-                suaycsx: false,
-                inserttableycsx: false,
-              });
-              clearYCSXform();
-            }}
-          >
-            <AiFillFileAdd color='blue' size={15} />
-            NEW YCSX
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              handle_fillsuaform();
-            }}
-          >
-            <AiFillEdit color='orange' size={15} />
-            SỬA YCSX
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              handleConfirmDeleteYCSX();
-            }}
-          >
-            <MdOutlineDelete color='red' size={15} />
-            XÓA YCSX
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              handleConfirmSetClosedYCSX();
-            }}
-          >
-            <FaArrowRight color='green' size={15} />
-            SET CLOSED
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              handleConfirmSetPendingYCSX();
-            }}
-          >
-            <MdOutlinePendingActions color='red' size={15} />
-            SET PENDING
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              if (ycsxdatatablefilter.current.length > 0) {
+        showFilter={true}
+        toolbar={
+          <div>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                setShowHideSearchDiv(!showhidesearchdiv);
+              }}
+            >
+              <TbLogout color='green' size={15} />
+              Show/Hide
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
                 setSelection({
                   ...selection,
-                  renderycsx: ycsxdatatablefilter.current.length > 0,
+                  trapo: true,
+                  thempohangloat: false,
+                  them1po: !selection.them1po,
+                  them1invoice: false,
+                  themycsx: true,
+                  suaycsx: false,
+                  inserttableycsx: false,
                 });
-                //console.log(ycsxdatatablefilter.current);
-                setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
-              } else {
-                Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-              }
-            }}
-          >
-            <AiOutlinePrinter color='#0066ff' size={15} />
-            Print YCSX
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              if (ycsxdatatablefilter.current.length > 0) {
-              } else {
-                Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
-              }
-            }}
-          >
-            <AiOutlinePrinter color='#00701a' size={15} />
-            Check Bản Vẽ
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              if (ycsxdatatablefilter.current.length > 0) {
-                setSelection({
-                  ...selection,
-                  renderbanve: ycsxdatatablefilter.current.length > 0,
-                });
-                setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
-              } else {
-                Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-              }
-            }}
-          >
-            <AiOutlinePrinter color='#ff751a' size={15} />
-            Print Bản Vẽ
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              handleConfirmPDuyetYCSX();
-            }}
-          >
-            <FcApprove color='red' size={15} />
-            Phê Duyệt
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              handleGoToAmazon();
-            }}
-          >
-            <AiFillAmazonCircle color='red' size={15} />
-            Up Amazon
-          </IconButton>
-        </div>}
-      columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
-      data={ycsxdatatable}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onCellClick={(params: any) => {        
-        setClickedRows(params.data)
-        //console.log(params)
-      }} onSelectionChange={(params: any) => {                
-        //setYcsxDataTableFilter(params!.api.getSelectedRows());
-        ycsxdatatablefilter.current = params!.api.getSelectedRows();
-        //console.log(e!.api.getSelectedRows())
-      }} />
+                clearYCSXform();
+              }}
+            >
+              <AiFillFileAdd color='blue' size={15} />
+              NEW YCSX
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                handle_fillsuaform();
+              }}
+            >
+              <AiFillEdit color='orange' size={15} />
+              SỬA YCSX
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                handleConfirmDeleteYCSX();
+              }}
+            >
+              <MdOutlineDelete color='red' size={15} />
+              XÓA YCSX
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                handleConfirmSetClosedYCSX();
+              }}
+            >
+              <FaArrowRight color='green' size={15} />
+              SET CLOSED
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                handleConfirmSetPendingYCSX();
+              }}
+            >
+              <MdOutlinePendingActions color='red' size={15} />
+              SET PENDING
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                if (ycsxdatatablefilter.current.length > 0) {
+                  setSelection({
+                    ...selection,
+                    renderycsx: ycsxdatatablefilter.current.length > 0,
+                  });
+                  //console.log(ycsxdatatablefilter.current);
+                  setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
+                } else {
+                  Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                }
+              }}
+            >
+              <AiOutlinePrinter color='#0066ff' size={15} />
+              Print YCSX
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                if (ycsxdatatablefilter.current.length > 0) {
+                } else {
+                  Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để check", "error");
+                }
+              }}
+            >
+              <AiOutlinePrinter color='#00701a' size={15} />
+              Check Bản Vẽ
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                if (ycsxdatatablefilter.current.length > 0) {
+                  setSelection({
+                    ...selection,
+                    renderbanve: ycsxdatatablefilter.current.length > 0,
+                  });
+                  setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
+                } else {
+                  Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                }
+              }}
+            >
+              <AiOutlinePrinter color='#ff751a' size={15} />
+              Print Bản Vẽ
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                handleConfirmPDuyetYCSX();
+              }}
+            >
+              <FcApprove color='red' size={15} />
+              Phê Duyệt
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                handleGoToAmazon();
+              }}
+            >
+              <AiFillAmazonCircle color='red' size={15} />
+              Up Amazon
+            </IconButton>
+          </div>}
+        columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
+        data={ycsxdatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onCellClick={(params: any) => {
+          setClickedRows(params.data)
+          //console.log(params)
+        }} onSelectionChange={(params: any) => {
+          //setYcsxDataTableFilter(params!.api.getSelectedRows());
+          ycsxdatatablefilter.current = params!.api.getSelectedRows();
+          //console.log(e!.api.getSelectedRows())
+        }} />
     )
-  },[ycsxdatatable])
+  }, [ycsxdatatable])
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
   }, []);
-  return (   
+  return (
     <div className='ycsxmanager'>
       <div className='mininavbar'>
         <div
@@ -3697,7 +3669,7 @@ const YCSXManager = () => {
             </div>
           )}
           <div className='tracuuYCSXTable'>
-           {ycsxDataTableAG}
+            {ycsxDataTableAG}
           </div>
         </div>
       )}
@@ -3844,7 +3816,7 @@ const YCSXManager = () => {
           <TraAMZ />
         </div>
       )}
-    </div>   
+    </div>
   );
 };
 export default YCSXManager;

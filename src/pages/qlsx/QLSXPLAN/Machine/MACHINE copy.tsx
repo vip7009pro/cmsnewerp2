@@ -3,7 +3,6 @@ import React, {
   ReactElement,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
   useTransition,
@@ -55,7 +54,6 @@ import {
   checkBP,
   PLAN_ID_ARRAY,
   SaveExcel,
-  zeroPad,
 } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
@@ -91,7 +89,6 @@ import {
 } from "../../../../api/GlobalInterface";
 import { trigger } from "devextreme/events";
 import CHECKSHEETSX from "../CHITHI/CHECKSHEETSX";
-import AGTable from "../../../../components/DataTable/AGTable";
 export const checkEQvsPROCESS = (
   EQ1: string,
   EQ2: string,
@@ -167,6 +164,7 @@ const MACHINE = () => {
         console.log(error);
       });
   }
+  const [isPending, startTransition] = useTransition();
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.multiple_chithi_array
   );
@@ -227,6 +225,10 @@ const MACHINE = () => {
   const [lichsunhapkhoaotable, setLichSuNhapKhoAoTable] = useState<
     LICHSUNHAPKHOAO[]
   >([]);
+  const [lichsunhapkhoaodatafilter, setLichSuNhapKhoAoDataFilter] = useState<
+    Array<LICHSUNHAPKHOAO>
+  >([]);
+  /*  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true); */
   const [lichsuxuatkhoaotable, setLichSuXuatKhoAoTable] = useState<
     LICHSUXUATKHOAO[]
   >([]);
@@ -259,9 +261,15 @@ const MACHINE = () => {
   const [phanloai, setPhanLoai] = useState("00");
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
-  const ycsxdatatablefilter = useRef<YCSXTableData[]>([]);
-  const qlsxplandatafilter =  useRef<Array<QLSXPLANDATA>>([]); 
-  const qlsxchithidatafilter = useRef<Array<QLSXCHITHIDATA>>([]);
+  const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<
+    Array<YCSXTableData>
+  >([]);
+  const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
+    Array<QLSXPLANDATA>
+  >([]);
+  const [qlsxchithidatafilter, setQlsxChiThiDataFilter] = useState<
+    Array<QLSXCHITHIDATA>
+  >([]);
   const [tonlieuxuongdatatable, setTonLieuXuongDataTable] = useState<
     Array<TONLIEUXUONG>
   >([]);
@@ -286,6 +294,7 @@ const MACHINE = () => {
   const [showChiThi2, setShowChiThi2] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
+  const [editchithi, seteditchithi] = useState(true);
   const [currentTotalLeadTime, setCurrentTotalLeadTime] = useState(0);
   const [trigger, setTrigger] = useState(true);
   const ycsxprintref = useRef(null);
@@ -328,42 +337,41 @@ const MACHINE = () => {
       });
   };
   const column_ycsxtable = getCompany()==='CMS'? [
-    { field: "G_CODE", headerName: "G_CODE", width: 110, headerCheckboxSelection: true,
-    checkboxSelection: true, },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
       width: 100,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
       },
     },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 250,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
-        if (params.data.DACHITHI === null) {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
-              {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}</b>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
             </span>
           );
         }
@@ -375,23 +383,23 @@ const MACHINE = () => {
       field: "PO_BALANCE",
       headerName: "PO_BALANCE",
       width: 110,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
+            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
           </span>
         );
       },
     },
     {
       field: "PROD_REQUEST_QTY",
-      cellDataType: "number",
+      type: "number",
       headerName: "SL YCSX",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -400,10 +408,10 @@ const MACHINE = () => {
       field: "CD1",
       headerName: "CD1",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD1?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -412,10 +420,10 @@ const MACHINE = () => {
       field: "CD2",
       headerName: "CD2",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD2?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -424,10 +432,10 @@ const MACHINE = () => {
       field: "CD3",
       headerName: "CD3",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD3?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -436,36 +444,36 @@ const MACHINE = () => {
       field: "CD4",
       headerName: "CD4",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD4?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
           </span>
         );
       },
     },
     {
       field: "LOT_TOTAL_INPUT_QTY_EA",
-      cellDataType: "number",
+      type: "number",
       headerName: "NK",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      cellDataType: "number",
+      type: "number",
       headerName: "XK",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -474,10 +482,10 @@ const MACHINE = () => {
       field: "TON_CD1",
       headerName: "TCD1",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD1?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -486,10 +494,10 @@ const MACHINE = () => {
       field: "TON_CD2",
       headerName: "TCD2",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD2?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -498,10 +506,10 @@ const MACHINE = () => {
       field: "TON_CD3",
       headerName: "TCD3",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD3?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -510,23 +518,23 @@ const MACHINE = () => {
       field: "TON_CD4",
       headerName: "TCD4",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD4?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
           </span>
         );
       },
     },
     {
       field: "INSPECT_BALANCE",
-      cellDataType: "number",
+      type: "number",
       headerName: "TỒN KIỂM",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -535,43 +543,43 @@ const MACHINE = () => {
       field: "EQ1",
       headerName: "EQ1",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
       },
     },
     {
       field: "EQ2",
       headerName: "EQ2",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
       },
     },
     {
       field: "EQ3",
       headerName: "EQ3",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
       },
     },
     {
       field: "EQ4",
       headerName: "EQ4",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
       },
     },
     {
       field: "SHORTAGE_YCSX",
-      cellDataType: "number",
+      type: "number",
       headerName: "TỒN YCSX",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
+            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -580,26 +588,26 @@ const MACHINE = () => {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PHAN_LOAI === "01")
+      renderCell: (params: any) => {
+        if (params.row.PHAN_LOAI === "01")
           return (
             <span style={{ color: "black" }}>
               <b>Thông thường</b>
             </span>
           );
-        else if (params.data.PHAN_LOAI === "02")
+        else if (params.row.PHAN_LOAI === "02")
           return (
             <span style={{ color: "black" }}>
               <b>SDI</b>
             </span>
           );
-        else if (params.data.PHAN_LOAI === "03")
+        else if (params.row.PHAN_LOAI === "03")
           return (
             <span style={{ color: "black" }}>
               <b>GC</b>
             </span>
           );
-        else if (params.data.PHAN_LOAI === "04")
+        else if (params.row.PHAN_LOAI === "04")
           return (
             <span style={{ color: "black" }}>
               <b>SAMPLE</b>
@@ -613,8 +621,8 @@ const MACHINE = () => {
       field: "PDUYET",
       headerName: "PDUYET",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDUYET === 1)
+      renderCell: (params: any) => {
+        if (params.row.PDUYET === 1)
           return (
             <span style={{ color: "green" }}>
               <b>Đã Duyệt</b>
@@ -632,16 +640,16 @@ const MACHINE = () => {
       field: "BANVE",
       headerName: "BANVE",
       width: 260,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
           //console.log(file);
           checkBP(userData, ['KD', 'RND'], ['ALL'], ['ALL'], async () => {
-            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   generalQuery("update_banve_value", {
-                    G_CODE: params.data.G_CODE,
+                    G_CODE: params.row.G_CODE,
                     banvevalue: "Y",
                   })
                     .then((response) => {
@@ -653,7 +661,7 @@ const MACHINE = () => {
                         );
                         let tempcodeinfodatatable = ycsxdatatable.map(
                           (element: YCSXTableData, index) => {
-                            return element.G_CODE === params.data.G_CODE
+                            return element.G_CODE === params.row.G_CODE
                               ? { ...element, BANVE: "Y" }
                               : element;
                           }
@@ -683,8 +691,8 @@ const MACHINE = () => {
               });
           })
         };
-        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
-        if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
             <span style={{ color: "gray" }}>
               <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
@@ -716,8 +724,8 @@ const MACHINE = () => {
       field: "PDBV",
       headerName: "PD BANVE",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
           return (
             <span style={{ color: "red" }}>
               <b>PENDING</b>
@@ -734,18 +742,18 @@ const MACHINE = () => {
       field: "",
       headerName: "G_NAME",
       width: 250,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.YCSX_PENDING === 1)
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
           return (
             <span style={{ color: "red" }}>
               <b>PENDING</b>
@@ -760,26 +768,25 @@ const MACHINE = () => {
       },
     },
   ]:[
-    { field: "G_CODE", headerName: "G_CODE", width: 110, headerCheckboxSelection: true,
-    checkboxSelection: true, },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
       width: 100,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
       },
     },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 250,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
     
@@ -790,17 +797,17 @@ const MACHINE = () => {
     { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
-        if (params.data.DACHITHI === null) {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
-              {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}</b>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
             </span>
           );
         }
@@ -812,23 +819,23 @@ const MACHINE = () => {
       field: "PO_BALANCE",
       headerName: "PO_BALANCE",
       width: 110,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
+            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
           </span>
         );
       },
     },
     {
       field: "PROD_REQUEST_QTY",
-      cellDataType: "number",
+      type: "number",
       headerName: "SL YCSX",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -837,10 +844,10 @@ const MACHINE = () => {
       field: "CD1",
       headerName: "CD1",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD1?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -849,10 +856,10 @@ const MACHINE = () => {
       field: "CD2",
       headerName: "CD2",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD2?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -861,10 +868,10 @@ const MACHINE = () => {
       field: "CD3",
       headerName: "CD3",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD3?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -873,36 +880,36 @@ const MACHINE = () => {
       field: "CD4",
       headerName: "CD4",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CD4?.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
           </span>
         );
       },
     },
     {
       field: "LOT_TOTAL_INPUT_QTY_EA",
-      cellDataType: "number",
+      type: "number",
       headerName: "NK",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      cellDataType: "number",
+      type: "number",
       headerName: "XK",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -911,10 +918,10 @@ const MACHINE = () => {
       field: "TON_CD1",
       headerName: "TCD1",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD1?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -923,10 +930,10 @@ const MACHINE = () => {
       field: "TON_CD2",
       headerName: "TCD2",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD2?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -935,10 +942,10 @@ const MACHINE = () => {
       field: "TON_CD3",
       headerName: "TCD3",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD3?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -947,23 +954,23 @@ const MACHINE = () => {
       field: "TON_CD4",
       headerName: "TCD4",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD4?.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
           </span>
         );
       },
     },
     {
       field: "INSPECT_BALANCE",
-      cellDataType: "number",
+      type: "number",
       headerName: "TỒN KIỂM",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -972,43 +979,43 @@ const MACHINE = () => {
       field: "EQ1",
       headerName: "EQ1",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
       },
     },
     {
       field: "EQ2",
       headerName: "EQ2",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
       },
     },
     {
       field: "EQ3",
       headerName: "EQ3",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
       },
     },
     {
       field: "EQ4",
       headerName: "EQ4",
       width: 80,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
       },
     },
     {
       field: "SHORTAGE_YCSX",
-      cellDataType: "number",
+      type: "number",
       headerName: "TỒN YCSX",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
+            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1017,26 +1024,26 @@ const MACHINE = () => {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PHAN_LOAI === "01")
+      renderCell: (params: any) => {
+        if (params.row.PHAN_LOAI === "01")
           return (
             <span style={{ color: "black" }}>
               <b>Thông thường</b>
             </span>
           );
-        else if (params.data.PHAN_LOAI === "02")
+        else if (params.row.PHAN_LOAI === "02")
           return (
             <span style={{ color: "black" }}>
               <b>SDI</b>
             </span>
           );
-        else if (params.data.PHAN_LOAI === "03")
+        else if (params.row.PHAN_LOAI === "03")
           return (
             <span style={{ color: "black" }}>
               <b>GC</b>
             </span>
           );
-        else if (params.data.PHAN_LOAI === "04")
+        else if (params.row.PHAN_LOAI === "04")
           return (
             <span style={{ color: "black" }}>
               <b>SAMPLE</b>
@@ -1050,8 +1057,8 @@ const MACHINE = () => {
       field: "PDUYET",
       headerName: "PDUYET",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDUYET === 1)
+      renderCell: (params: any) => {
+        if (params.row.PDUYET === 1)
           return (
             <span style={{ color: "green" }}>
               <b>Đã Duyệt</b>
@@ -1069,16 +1076,16 @@ const MACHINE = () => {
       field: "BANVE",
       headerName: "BANVE",
       width: 260,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
           //console.log(file);
           checkBP(userData, ['KD', 'RND'], ['ALL'], ['ALL'], async () => {
-            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   generalQuery("update_banve_value", {
-                    G_CODE: params.data.G_CODE,
+                    G_CODE: params.row.G_CODE,
                     banvevalue: "Y",
                   })
                     .then((response) => {
@@ -1090,7 +1097,7 @@ const MACHINE = () => {
                         );
                         let tempcodeinfodatatable = ycsxdatatable.map(
                           (element: YCSXTableData, index) => {
-                            return element.G_CODE === params.data.G_CODE
+                            return element.G_CODE === params.row.G_CODE
                               ? { ...element, BANVE: "Y" }
                               : element;
                           }
@@ -1120,8 +1127,8 @@ const MACHINE = () => {
               });
           })
         };
-        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
-        if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
             <span style={{ color: "gray" }}>
               <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
@@ -1153,8 +1160,8 @@ const MACHINE = () => {
       field: "PDBV",
       headerName: "PD BANVE",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
           return (
             <span style={{ color: "red" }}>
               <b>PENDING</b>
@@ -1171,18 +1178,18 @@ const MACHINE = () => {
       field: "",
       headerName: "G_NAME",
       width: 250,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
       width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.YCSX_PENDING === 1)
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
           return (
             <span style={{ color: "red" }}>
               <b>PENDING</b>
@@ -1202,55 +1209,53 @@ const MACHINE = () => {
     {
       field: "PLAN_ID",
       headerName: "PLAN_ID",
-      width: 120,
-      headerCheckboxSelection: true,
-      checkboxSelection: true, 
+      width: 90,
       editable: false,
       resizeable: true,
-      cellRenderer: (params: any) => {
-        if (params.data.DKXL === null) {
-          return <span style={{ color: "red" }}>{params.data.PLAN_ID}</span>;
+      renderCell: (params: any) => {
+        if (params.row.DKXL === null) {
+          return <span style={{ color: "red" }}>{params.row.PLAN_ID}</span>;
         } else {
-          return <span style={{ color: "green" }}>{params.data.PLAN_ID}</span>;
+          return <span style={{ color: "green" }}>{params.row.PLAN_ID}</span>;
         }
       },
     },
-    { field: "G_CODE", headerName: "G_CODE", width: 90, editable: false },
+    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     { field: "G_NAME", headerName: "G_NAME", width: 150, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
       width: 100,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         if (
-          params.data.FACTORY === null ||
-          params.data.EQ1 === null ||
-          params.data.EQ2 === null ||
-          params.data.Setting1 === null ||
-          params.data.Setting2 === null ||
-          params.data.UPH1 === null ||
-          params.data.UPH2 === null ||
-          params.data.Step1 === null ||
-          params.data.Step1 === null ||
-          params.data.LOSS_SX1 === null ||
-          params.data.LOSS_SX2 === null ||
-          params.data.LOSS_SETTING1 === null ||
-          params.data.LOSS_SETTING2 === null
+          params.row.FACTORY === null ||
+          params.row.EQ1 === null ||
+          params.row.EQ2 === null ||
+          params.row.Setting1 === null ||
+          params.row.Setting2 === null ||
+          params.row.UPH1 === null ||
+          params.row.UPH2 === null ||
+          params.row.Step1 === null ||
+          params.row.Step1 === null ||
+          params.row.LOSS_SX1 === null ||
+          params.row.LOSS_SX2 === null ||
+          params.row.LOSS_SETTING1 === null ||
+          params.row.LOSS_SETTING2 === null
         )
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
       },
     },
     {
       field: "PROD_REQUEST_QTY",
       headerName: "YCSX QTY",
-      width: 70,
+      width: 80,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.PROD_REQUEST_QTY?.toLocaleString("en", "US")}
+            {params.row.PROD_REQUEST_QTY.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1260,10 +1265,10 @@ const MACHINE = () => {
       headerName: "CD1",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.CD1?.toLocaleString("en", "US")}
+            {params.row.CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1273,10 +1278,10 @@ const MACHINE = () => {
       headerName: "CD2",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.CD2?.toLocaleString("en", "US")}
+            {params.row.CD2?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1286,10 +1291,10 @@ const MACHINE = () => {
       headerName: "CD3",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.CD3?.toLocaleString("en", "US")}
+            {params.row.CD3?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1299,10 +1304,10 @@ const MACHINE = () => {
       headerName: "CD4",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.CD4?.toLocaleString("en", "US")}
+            {params.row.CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1312,10 +1317,10 @@ const MACHINE = () => {
       headerName: "TCD1",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD1?.toLocaleString("en", "US")}
+            {params.row.TON_CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1325,10 +1330,10 @@ const MACHINE = () => {
       headerName: "TCD2",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD2?.toLocaleString("en", "US")}
+            {params.row.TON_CD2?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1338,10 +1343,10 @@ const MACHINE = () => {
       headerName: "TCD3",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD3?.toLocaleString("en", "US")}
+            {params.row.TON_CD3?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1351,10 +1356,10 @@ const MACHINE = () => {
       headerName: "TCD4",
       width: 60,
       editable: false,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD4?.toLocaleString("en", "US")}
+            {params.row.TON_CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -1364,13 +1369,13 @@ const MACHINE = () => {
       headerName: "PLAN_QTY",
       width: 80,
       editable: editplan,
-      cellRenderer: (params: any) => {
-        if (params.data.PLAN_QTY === 0) {
+      renderCell: (params: any) => {
+        if (params.row.PLAN_QTY === 0) {
           return <span style={{ color: "red" }}>NG</span>;
         } else {
           return (
             <span style={{ color: "green" }}>
-              {params.data.PLAN_QTY?.toLocaleString("en", "US")}
+              {params.row.PLAN_QTY.toLocaleString("en", "US")}
             </span>
           );
         }
@@ -1378,37 +1383,37 @@ const MACHINE = () => {
     },
     {
       field: "PROCESS_NUMBER",
-      headerName: "PROC",
-      width: 60,
+      headerName: "PROCESS_NUMBER",
+      width: 110,
       editable: editplan,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         if (
-          params.data.PROCESS_NUMBER === null ||
-          params.data.PROCESS_NUMBER === 0
+          params.row.PROCESS_NUMBER === null ||
+          params.row.PROCESS_NUMBER === 0
         ) {
           return <span style={{ color: "red" }}>NG</span>;
         } else {
           return (
-            <span style={{ color: "green" }}>{params.data.PROCESS_NUMBER}</span>
+            <span style={{ color: "green" }}>{params.row.PROCESS_NUMBER}</span>
           );
         }
       },
     },
-    { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
+    { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
     {
       field: "PLAN_ORDER",
-      headerName: "STT",
-      width: 50,
+      headerName: "PLAN_ORDER",
+      width: 110,
       editable: editplan,
     },
     {
       field: "KETQUASX",
       headerName: "KETQUASX",
-      width: 70,
+      width: 110,
       editable: editplan,
-      cellRenderer: (params: any) => {
-        if (params.data.KETQUASX !== null) {
-          return <span>{params.data.KETQUASX?.toLocaleString("en-US")}</span>;
+      renderCell: (params: any) => {
+        if (params.row.KETQUASX !== null) {
+          return <span>{params.row.KETQUASX.toLocaleString("en-US")}</span>;
         } else {
           return <span>0</span>;
         }
@@ -1417,27 +1422,27 @@ const MACHINE = () => {
     {
       field: "KQ_SX_TAM",
       headerName: "KETQUASX_TAM",
-      width: 80,
+      width: 120,
       editable: editplan,
-      cellRenderer: (params: any) => {
-        if (params.data.KQ_SX_TAM !== null) {
-          return <span>{params.data.KQ_SX_TAM?.toLocaleString("en-US")}</span>;
+      renderCell: (params: any) => {
+        if (params.row.KQ_SX_TAM !== null) {
+          return <span>{params.row.KQ_SX_TAM.toLocaleString("en-US")}</span>;
         } else {
           return <span>0</span>;
         }
       },
     },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 70, editable: editplan },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: editplan },
     {
       field: "PLAN_FACTORY",
       headerName: "FACTORY",
-      width: 70,
+      width: 80,
       editable: false,
     },
     {
       field: "PLAN_DATE",
       headerName: "PLAN_DATE",
-      width: 90,
+      width: 110,
       editable: false,
     },
     {
@@ -1454,17 +1459,17 @@ const MACHINE = () => {
     },
     {
       field: "NEXT_PLAN_ID",
-      headerName: "NEXT_PLAN",
-      width: 100,
+      headerName: "NEXT_PLAN_ID",
+      width: 120,
       editable: true,
     },
     {
       field: "AT_LEADTIME",
       headerName: "LEADTIME",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
-          <span>{params.data?.AT_LEADTIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
+          <span>{params.row?.AT_LEADTIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
         )
       },
       editable: false,
@@ -1473,9 +1478,9 @@ const MACHINE = () => {
       field: "ACC_TIME",
       headerName: "ACC_TIME",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
-          <span>{params.data?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
+          <span>{params.row?.ACC_TIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
         )
       },
       editable: false,
@@ -1484,22 +1489,21 @@ const MACHINE = () => {
       field: "IS_SETTING",
       headerName: "IS_SETTING",
       width: 80,
-      cellRenderer: (params: any) => {
+      renderCell: (params: any) => {
         return (
           <input
             type='checkbox'
             name='alltimecheckbox'
-            //defaultChecked={params.data.IS_SETTING === 'Y'}
-            checked={params.data.IS_SETTING === 'Y'}
-            onChange={(e) => {
-              console.log(e.target.checked);
+            defaultChecked={params.row.IS_SETTING === 'Y'}
+            onChange={(value) => {
+              //console.log(value);
               const newdata = plandatatable.map((p) =>
-                p.PLAN_ID === params.data.PLAN_ID
-                  ? { ...p, IS_SETTING: e.target.checked ? 'Y' : 'N' }
+                p.PLAN_ID === params.row.PLAN_ID
+                  ? { ...p, IS_SETTING: params.row.IS_SETTING === 'Y' ? 'N' : 'Y' }
                   : p
               );
-              setPlanDataTable(prev => newdata);
-              qlsxplandatafilter.current = [];
+              setPlanDataTable(newdata);
+              setQlsxPlanDataFilter([]);
             }}
           ></input>
         )
@@ -1535,68 +1539,251 @@ const MACHINE = () => {
       hide: true,
     },
   ];
-    const column_planmaterialtable = [
-    { field: 'CHITHI_ID',headerName: 'CT_ID', resizable: true,width: 100, editable: false, headerCheckboxSelection: true,
-    checkboxSelection: true,},
-    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 80, editable: false},
-    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80, editable: false },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
-      if (params.data.LIEUQL_SX === 1) {
+  const column_chithidatatable = [
+    { field: "CHITHI_ID", headerName: "CHITHI_ID", width: 90, editable: false },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90, editable: false },
+    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
+    {
+      field: "M_NAME",
+      headerName: "M_NAME",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        if (params.row.LIEUQL_SX === 1) {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.row.M_NAME}
+            </span>
+          );
+        } else {
+          return <span style={{ color: "black" }}>{params.row.M_NAME}</span>;
+        }
+      },
+    },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: false },
+    {
+      field: "M_MET_QTY",
+      headerName: "M_MET_QTY",
+      width: 110,
+      editable: editchithi,
+      renderCell: (params: any) => {
+        if (params.row.M_MET_QTY === 0) {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return <span style={{ color: "green" }}>{params.row.M_MET_QTY}</span>;
+        }
+      },
+    },
+    { field: "M_QTY", headerName: "M_QTY", width: 110, editable: editchithi },
+    {
+      field: "LIEUQL_SX",
+      headerName: "LIEUQL_SX",
+      width: 110,
+      editable: editchithi,
+    },
+    {
+      field: "M_STOCK",
+      headerName: "M_STOCK",
+      width: 110,
+      editable: editchithi,
+      renderCell: (params: any) => {
         return (
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            {params.data.M_NAME}
-          </span>
+          <p style={{ color: "gray", fontWeight: "bold" }}>
+            {params.row.M_STOCK !== null
+              ? params.row.M_STOCK.toLocaleString("en", "US")
+              : 0}
+          </p>
         );
-      } else {
+      },
+    },
+    {
+      field: "OUT_KHO_SX",
+      headerName: "OUT_KHO_SX",
+      width: 110,
+      editable: editchithi,
+      renderCell: (params: any) => {
         return (
-          <span style={{ color: "black" }}>{params.data.M_NAME}</span>
+          <p style={{ color: "blue", fontWeight: "bold" }}>
+            {params.row.OUT_KHO_SX !== null
+              ? params.row.OUT_KHO_SX.toLocaleString("en", "US")
+              : 0}
+          </p>
         );
-      }
-    } },
-    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80, editable: false },
-    { field: 'M_MET_QTY',headerName: 'M_MET_QTY', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {params.data.M_MET_QTY}
-        </span>
-      );
-    }} ,
-    { field: 'M_QTY',headerName: 'M_QTY', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.M_QTY}
-        </span>
-      );
-    }} ,
-    { field: 'LIEUQL_SX',headerName: 'LIEUQL_SX', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.LIEUQL_SX}
-        </span>
-      );
-    }} ,
-    { field: 'M_STOCK',headerName: 'M_STOCK', resizable: true,width: 80, editable: false, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "gray", fontWeight: "bold" }}>
-          {params.data.M_STOCK?.toLocaleString("en-US")}
-        </span>
-      );
-    }} ,
-    { field: 'OUT_KHO_SX',headerName: 'OUT_KHO_SX', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.OUT_KHO_SX}
-        </span>
-      );
-    }},
-    { field: 'OUT_CFM_QTY',headerName: 'OUT_CFM_QTY', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.OUT_CFM_QTY}
-        </span>
-      );
-    }},   
-  ]
+      },
+    },
+    {
+      field: "OUT_CFM_QTY",
+      headerName: "OUT_KHO_THAT",
+      width: 110,
+      editable: editchithi,
+    },
+    {
+      field: "INS_EMPL",
+      headerName: "INS_EMPL",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "INS_DATE",
+      headerName: "INS_DATE",
+      width: 120,
+      editable: editchithi,
+      hide: true,
+    },
+    {
+      field: "UPD_EMPL",
+      headerName: "UPD_EMPL",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "UPD_DATE",
+      headerName: "UPD_DATE",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+  ];
+  const column_tonlieuxuongtable = [
+    { field: "FACTORY", headerName: "NM", width: 40, editable: false },
+    {
+      field: "PLAN_ID_INPUT",
+      headerName: "PLAN_ID",
+      width: 80,
+      editable: false,
+    },
+    { field: "PHANLOAI", headerName: "PL", width: 40, editable: false },
+    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
+    {
+      field: "M_NAME",
+      headerName: "M_NAME",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        if (params.row.LIEUQL_SX === 1) {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.row.M_NAME}
+            </span>
+          );
+        } else {
+          return <span style={{ color: "black" }}>{params.row.M_NAME}</span>;
+        }
+      },
+    },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30, editable: false },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false },
+    {
+      field: "ROLL_QTY",
+      headerName: "ROLL_QTY",
+      width: 70,
+      editable: false,
+      renderCell: (params: any) => {
+        if (params.row.PHANLOAI !== "F") {
+          return (
+            <span style={{ color: "green" }}>
+              {params.row.ROLL_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.row.ROLL_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "IN_QTY",
+      headerName: "IN_QTY",
+      width: 70,
+      editable: false,
+      renderCell: (params: any) => {
+        if (params.row.PHANLOAI !== "F") {
+          return (
+            <span style={{ color: "green" }}>
+              {params.row.IN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.row.IN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "TOTAL_IN_QTY",
+      headerName: "TOTAL_IN_QTY",
+      width: 70,
+      editable: false,
+      renderCell: (params: any) => {
+        if (params.row.PHANLOAI !== "F") {
+          return (
+            <span style={{ color: "green" }}>
+              {params.row.TOTAL_IN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.row.TOTAL_IN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },
+  ];
+  const column_lichsunhapkhoaotable = [
+    { field: "FACTORY", headerName: "NM", width: 40 },
+    { field: "PHANLOAI", headerName: "PL", width: 30 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID", width: 80 },
+    { field: "ROLL_QTY", headerName: "ROLLQTY", width: 70 },
+    { field: "IN_QTY", headerName: "IN_QTY", width: 80 },
+    { field: "TOTAL_IN_QTY", headerName: "TOTAL", width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+  ];
+  const column_lichsuxuatkhoaotable = [
+    { field: "FACTORY", headerName: "NM", width: 40 },
+    { field: "PHANLOAI", headerName: "PL", width: 30 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID_IN", width: 90 },
+    { field: "PLAN_ID_OUTPUT", headerName: "PLAN_ID_OUT", width: 90 },
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 80 },
+    { field: "OUT_QTY", headerName: "OUT_QTY", width: 80 },
+    { field: "TOTAL_OUT_QTY", headerName: "TOTAL", width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+  ];
+  const column_lichsuinputlieusanxuat = [
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 40 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "INPUT_QTY", headerName: "INPUT_QTY", width: 120 },
+    { field: "USED_QTY", headerName: "USED_QTY", width: 80 },
+    {
+      field: "REMAIN_QTY",
+      headerName: "REMAIN_QTY",
+      width: 90,
+      editable: true,
+    },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
+    { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+  ];
   const handle_loadEQ_STATUS = () => {
     generalQuery("checkEQ_STATUS", {})
       .then((response) => {
@@ -1627,6 +1814,88 @@ const MACHINE = () => {
         console.log(error);
       });
   };
+  const handle_saveConfirmLieuTon = () => {
+    if (lichsuinputlieudatafilter.length > 0) {
+      let err_code: string = "0";
+      for (let i = 0; i < lichsuinputlieudatafilter.length; i++) {
+        if (
+          lichsuinputlieudatafilter[i].INPUT_QTY >=
+          lichsuinputlieudatafilter[i].REMAIN_QTY
+        ) {
+          generalQuery("confirmlieutonsx", {
+            PLAN_ID: lichsuinputlieudatafilter[i].PLAN_ID,
+            M_CODE: lichsuinputlieudatafilter[i].M_CODE,
+            M_LOT_NO: lichsuinputlieudatafilter[i].M_LOT_NO,
+            EQUIPMENT_CD: lichsuinputlieudatafilter[i].EQUIPMENT_CD,
+            REMAIN_QTY: lichsuinputlieudatafilter[i].REMAIN_QTY,
+          })
+            .then((response) => {
+              console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          err_code +=
+            "| " +
+            "Liệu: " +
+            lichsuinputlieudatafilter[i].M_NAME +
+            ": Confirm Tồn nhiều hơn xuất\n";
+        }
+      }
+      if (err_code !== "0") {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      } else {
+        Swal.fire("Thông báo", "Confirm tồn thành công", "success");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để lưu", "error");
+    }
+  };
+  const handle_nhaplaivaokhoao = () => {
+    if (lichsuinputlieudatafilter.length > 0) {
+      let err_code: string = "0";
+      for (let i = 0; i < lichsuinputlieudatafilter.length; i++) {
+        if (
+          lichsuinputlieudatafilter[i].INPUT_QTY >=
+          lichsuinputlieudatafilter[i].REMAIN_QTY
+        ) {
+          generalQuery("confirmlieutonsx", {
+            PLAN_ID: lichsuinputlieudatafilter[i].PLAN_ID,
+            M_CODE: lichsuinputlieudatafilter[i].M_CODE,
+            M_LOT_NO: lichsuinputlieudatafilter[i].M_LOT_NO,
+            EQUIPMENT_CD: lichsuinputlieudatafilter[i].EQUIPMENT_CD,
+            REMAIN_QTY: lichsuinputlieudatafilter[i].REMAIN_QTY,
+          })
+            .then((response) => {
+              console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          err_code +=
+            "| " +
+            "Liệu: " +
+            lichsuinputlieudatafilter[i].M_NAME +
+            ": Confirm Tồn nhiều hơn xuất\n";
+        }
+      }
+      if (err_code !== "0") {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      } else {
+        Swal.fire("Thông báo", "Confirm tồn thành công", "success");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để lưu", "error");
+    }
+  };
   const handle_loadlichsuinputlieu = (PLAN_ID: string) => {
     generalQuery("lichsuinputlieusanxuat", {
       PLAN_ID: PLAN_ID,
@@ -1652,6 +1921,63 @@ const MACHINE = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const handle_huyxuatkhoao = async () => {
+    if (lichsuxuatkhoaodatafilter.length > 0) {
+      let err_code: string = "0";
+      let current_plan_id: string =
+        selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID;
+      for (let i = 0; i < lichsuxuatkhoaodatafilter.length; i++) {
+        await generalQuery("deleteXuatKhoAo", {
+          CURRENT_PLAN_ID: current_plan_id,
+          PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
+          PLAN_ID_OUTPUT: lichsuxuatkhoaodatafilter[0].PLAN_ID_OUTPUT,
+          M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
+          M_LOT_NO: lichsuxuatkhoaodatafilter[i].M_LOT_NO,
+          INS_DATE: lichsuxuatkhoaodatafilter[i].INS_DATE,
+          TOTAL_OUT_QTY: lichsuxuatkhoaodatafilter[i].TOTAL_OUT_QTY,
+          PHANLOAI: lichsuxuatkhoaodatafilter[i].PHANLOAI,
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              generalQuery("setUSE_YN_KHO_AO_INPUT", {
+                FACTORY: lichsuxuatkhoaodatafilter[i].FACTORY,
+                PHANLOAI: lichsuxuatkhoaodatafilter[i].PHANLOAI,
+                PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
+                M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
+                M_LOT_NO: lichsuxuatkhoaodatafilter[i].M_LOT_NO,
+                TOTAL_IN_QTY: lichsuxuatkhoaodatafilter[i].TOTAL_OUT_QTY,
+                USE_YN: "Y",
+              })
+                .then((response) => {
+                  console.log(response.data);
+                  if (response.data.tk_status !== "NG") {
+                  } else {
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            } else {
+              err_code += "| " + response.data.message;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code !== "0") {
+        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+      }
+      handle_loadKhoAo();
+      handle_loadlichsunhapkhoao();
+      handle_loadlichsuxuatkhoao();
+      handle_loadlichsuinputlieu(
+        selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
+      );
+      setSelectionModel_XUATKHOAO([]);
+    }
   };
   const handle_loadlichsunhapkhoao = () => {
     generalQuery("lichsunhapkhoao", {})
@@ -1702,6 +2028,93 @@ const MACHINE = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const handle_xuatKhoAo = async () => {
+    if (selectedPlan !== undefined) {
+      if (tonlieuxuongdatafilter.length > 0) {
+        let err_code: string = "0";
+        for (let i = 0; i < tonlieuxuongdatafilter.length; i++) {
+          let checklieuchithi: boolean = true;
+          await generalQuery("checkM_CODE_CHITHI", {
+            PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
+            M_CODE: tonlieuxuongdatafilter[i].M_CODE,
+          })
+            .then((response) => {
+              console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                checklieuchithi = true;
+              } else {
+                checklieuchithi = false;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          if (checklieuchithi === true) {
+            await generalQuery("xuatkhoao", {
+              FACTORY: tonlieuxuongdatafilter[i].FACTORY,
+              PHANLOAI: "N",
+              PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
+              PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
+              M_CODE: tonlieuxuongdatafilter[i].M_CODE,
+              M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,
+              ROLL_QTY: tonlieuxuongdatafilter[i].ROLL_QTY,
+              OUT_QTY: tonlieuxuongdatafilter[i].IN_QTY,
+              TOTAL_OUT_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,
+              USE_YN: "O",
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  console.log("set yes no");
+                  generalQuery("setUSE_YN_KHO_AO_INPUT", {
+                    FACTORY: tonlieuxuongdatafilter[i].FACTORY,
+                    PHANLOAI: tonlieuxuongdatafilter[i].PHANLOAI,
+                    PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
+                    PLAN_ID_SUDUNG: selectedPlan?.PLAN_ID,
+                    M_CODE: tonlieuxuongdatafilter[i].M_CODE,
+                    M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,
+                    TOTAL_IN_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,
+                    USE_YN: "O",
+                  })
+                    .then((response) => {
+                      console.log(response.data);
+                      if (response.data.tk_status !== "NG") {
+                      } else {
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  err_code += "| " + response.data.message;
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            err_code +=
+              "| " +
+              "Liệu: " +
+              tonlieuxuongdatafilter[i].M_NAME +
+              " chưa được đăng ký xuất liệu \n Đã xuất các liệu hợp lệ";
+          }
+        }
+        if (err_code !== "0") {
+          Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+        }
+        setTonLieuXuongDataFilter([]);
+        handle_loadKhoAo();
+        handle_loadlichsuxuatkhoao();
+        handle_loadlichsuinputlieu(
+          selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
+        );
+        setSelectionModel([]);
+      } else {
+        Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
+      }
+    }
   };
   const handle_loadKhoAo = () => {
     generalQuery("checktonlieutrongxuong", {})
@@ -1811,7 +2224,7 @@ const MACHINE = () => {
       PLAN_DATE: plan_date
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
         } else {
           Swal.fire('Thông báo', 'Update plan order thất bại', 'error');
@@ -1906,14 +2319,7 @@ const MACHINE = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
-            (element: QLSXCHITHIDATA, index: number) => {
-              return {
-                ...element,
-                id: index
-              }
-        });
-          setChiThiDataTable(loaded_data);
+          setChiThiDataTable(response.data.data);
         } else {
           M_MET_NEEDED = parseInt(
             ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
@@ -2096,23 +2502,76 @@ const MACHINE = () => {
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
-                PO_TDYCSX: element.PO_TDYCSX ?? 0,
-                TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
-                TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
-                BTP_TDYCSX: element.BTP_TDYCSX ?? 0,
-                CK_TDYCSX: element.CK_TDYCSX ?? 0,
-                BLOCK_TDYCSX: element.BLOCK_TDYCSX ?? 0,
-                FCST_TDYCSX: element.FCST_TDYCSX ?? 0,
-                W1: element.W1 ?? 0,
-                W2: element.W2 ?? 0,
-                W3: element.W3 ?? 0,
-                W4: element.W4 ?? 0,
-                W5: element.W5 ?? 0,
-                W6: element.W6 ?? 0,
-                W7: element.W7 ?? 0,
-                W8: element.W8 ?? 0,
-                PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
-                id: index
+                PO_TDYCSX:
+                  element.PO_TDYCSX === undefined || element.PO_TDYCSX === null
+                    ? 0
+                    : element.PO_TDYCSX,
+                TOTAL_TKHO_TDYCSX:
+                  element.TOTAL_TKHO_TDYCSX === undefined ||
+                    element.TOTAL_TKHO_TDYCSX === null
+                    ? 0
+                    : element.TOTAL_TKHO_TDYCSX,
+                TKHO_TDYCSX:
+                  element.TKHO_TDYCSX === undefined ||
+                    element.TKHO_TDYCSX === null
+                    ? 0
+                    : element.TKHO_TDYCSX,
+                BTP_TDYCSX:
+                  element.BTP_TDYCSX === undefined ||
+                    element.BTP_TDYCSX === null
+                    ? 0
+                    : element.BTP_TDYCSX,
+                CK_TDYCSX:
+                  element.CK_TDYCSX === undefined || element.CK_TDYCSX === null
+                    ? 0
+                    : element.CK_TDYCSX,
+                BLOCK_TDYCSX:
+                  element.BLOCK_TDYCSX === undefined ||
+                    element.BLOCK_TDYCSX === null
+                    ? 0
+                    : element.BLOCK_TDYCSX,
+                FCST_TDYCSX:
+                  element.FCST_TDYCSX === undefined ||
+                    element.FCST_TDYCSX === null
+                    ? 0
+                    : element.FCST_TDYCSX,
+                W1:
+                  element.W1 === undefined || element.W1 === null
+                    ? 0
+                    : element.W1,
+                W2:
+                  element.W2 === undefined || element.W2 === null
+                    ? 0
+                    : element.W2,
+                W3:
+                  element.W3 === undefined || element.W3 === null
+                    ? 0
+                    : element.W3,
+                W4:
+                  element.W4 === undefined || element.W4 === null
+                    ? 0
+                    : element.W4,
+                W5:
+                  element.W5 === undefined || element.W5 === null
+                    ? 0
+                    : element.W5,
+                W6:
+                  element.W6 === undefined || element.W6 === null
+                    ? 0
+                    : element.W6,
+                W7:
+                  element.W7 === undefined || element.W7 === null
+                    ? 0
+                    : element.W7,
+                W8:
+                  element.W8 === undefined || element.W8 === null
+                    ? 0
+                    : element.W8,
+                PROD_REQUEST_QTY:
+                  element.PROD_REQUEST_QTY === undefined ||
+                    element.PROD_REQUEST_QTY === null
+                    ? 0
+                    : element.PROD_REQUEST_QTY,
               };
             }
           );
@@ -2157,11 +2616,11 @@ const MACHINE = () => {
     }
   };
   const setPendingYCSX = async (pending_value: number) => {
-    if (ycsxdatatablefilter.current.length >= 1) {
+    if (ycsxdatatablefilter.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
+      for (let i = 0; i < ycsxdatatablefilter.length; i++) {
         await generalQuery("setpending_ycsx", {
-          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
           YCSX_PENDING: pending_value,
         })
           .then((response) => {
@@ -2323,21 +2782,21 @@ const MACHINE = () => {
     });
   };
   const handle_DeleteLinePLAN = async () => {
-    if (qlsxplandatafilter.current.length > 0) {
+    if (qlsxplandatafilter.length > 0) {
       let datafilter = [...plandatatable];
-      for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
+      for (let i = 0; i < qlsxplandatafilter.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
-          if (qlsxplandatafilter.current[i].id === datafilter[j].id) {
+          if (qlsxplandatafilter[i].id === datafilter[j].id) {
             await generalQuery("checkPLANID_O302", {
-              PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+              PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
             })
               .then((response) => {
                 //console.log(response.data);
                 if (response.data.tk_status !== "NG") {
                 } else {
-                  if (qlsxplandatafilter.current[i].CHOTBC === null) {
+                  if (qlsxplandatafilter[i].CHOTBC === null) {
                     generalQuery("deletePlanQLSX", {
-                      PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+                      PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
                     })
                       .then((response) => {
                         //console.log(response.data);
@@ -2359,13 +2818,13 @@ const MACHINE = () => {
                     Swal.fire(
                       "Thông báo",
                       "Chỉ thị + " +
-                      qlsxplandatafilter.current[i].PLAN_ID +
+                      qlsxplandatafilter[i].PLAN_ID +
                       ":  +đã chốt báo cáo, ko xóa được chỉ thị",
                       "error"
                     );
                   }
                 }
-                /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID })
+                /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
             .then((response) => {
               //console.log(response.data);
               if (response.data.tk_status !== "NG") {
@@ -2390,11 +2849,11 @@ const MACHINE = () => {
     }
   };
   const handle_DeleteLineCHITHI = () => {
-    if (qlsxchithidatafilter.current.length > 0) {
+    if (qlsxchithidatafilter.length > 0) {
       let datafilter = [...chithidatatable];
-      for (let i = 0; i < qlsxchithidatafilter.current.length; i++) {
+      for (let i = 0; i < qlsxchithidatafilter.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
-          if (qlsxchithidatafilter.current[i].CHITHI_ID === datafilter[j].CHITHI_ID) {
+          if (qlsxchithidatafilter[i].CHITHI_ID === datafilter[j].CHITHI_ID) {
             datafilter.splice(j, 1);
           }
         }
@@ -2469,12 +2928,12 @@ const MACHINE = () => {
     //console.log(next_plan_id);
     return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
   };
-  const handle_AddPlan = async () => {    
-    if (ycsxdatatablefilter.current.length >= 1) {
-      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
+  const handle_AddPlan = async () => {
+    if (ycsxdatatablefilter.length >= 1) {
+      for (let i = 0; i < ycsxdatatablefilter.length; i++) {
         let check_ycsx_hethongcu: boolean = false;
         await generalQuery("checkProd_request_no_Exist_O302", {
-          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
         })
           .then((response) => {
             //console.log(response.data.tk_status);
@@ -2493,7 +2952,7 @@ const MACHINE = () => {
           });
         //check_ycsx_hethongcu = false;
         let nextPlan = await getNextPLAN_ID(
-          ycsxdatatablefilter.current[i].PROD_REQUEST_NO
+          ycsxdatatablefilter[i].PROD_REQUEST_NO
         );
         let NextPlanID = nextPlan.NEXT_PLAN_ID;
         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -2502,7 +2961,7 @@ const MACHINE = () => {
           await generalQuery("addPlanQLSX", {
             PLAN_ID: NextPlanID,
             PLAN_DATE: selectedPlanDate,
-            PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+            PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
             PLAN_QTY: 0,
             PLAN_EQ: selectedMachine,
             PLAN_FACTORY: selectedFactory,
@@ -2510,12 +2969,12 @@ const MACHINE = () => {
             STEP: 0,
             PLAN_ORDER: NextPlanOrder,
             PROCESS_NUMBER:
-              selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ1
+              selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ1
                 ? 1
-                : selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ2
+                : selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ2
                   ? 2
                   : 0,
-            G_CODE: ycsxdatatablefilter.current[i].G_CODE,
+            G_CODE: ycsxdatatablefilter[i].G_CODE,
             NEXT_PLAN_ID: "X",
             IS_SETTING: "Y"
           })
@@ -2733,7 +3192,7 @@ const MACHINE = () => {
       check_lieu_qlsx_khac1 === 0
     ) {
       await generalQuery("deleteMCODEExistIN_O302", {
-        //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
+        //PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
         PLAN_ID: selectedPlan?.PLAN_ID,
       })
         .then((response) => {
@@ -2747,7 +3206,7 @@ const MACHINE = () => {
         });
       for (let i = 0; i < chithidatatable.length; i++) {
         await generalQuery("updateLIEUQL_SX_M140", {
-          //G_CODE: qlsxplandatafilter.current[0].G_CODE,
+          //G_CODE: qlsxplandatafilter[0].G_CODE,
           G_CODE: selectedPlan?.G_CODE,
           M_CODE: chithidatatable[i].M_CODE,
           LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
@@ -2764,7 +3223,7 @@ const MACHINE = () => {
         if (chithidatatable[i].M_MET_QTY > 0) {
           let checktontaiM_CODE: boolean = false;
           await generalQuery("checkM_CODE_PLAN_ID_Exist", {
-            //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
+            //PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
             PLAN_ID: selectedPlan?.PLAN_ID,
             M_CODE: chithidatatable[i].M_CODE,
           })
@@ -2800,7 +3259,7 @@ const MACHINE = () => {
               });
           } else {
             await generalQuery("insertChiThi", {
-              //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
+              //PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
               PLAN_ID: selectedPlan?.PLAN_ID,
               M_CODE: chithidatatable[i].M_CODE,
               M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
@@ -2844,18 +3303,106 @@ const MACHINE = () => {
         ? 1
         : selectedPlan?.PROCESS_NUMBER
     );
-  }; 
-  function PlanTableAGToolbar() {
+  };
+  function CustomToolbarPOTable() {
     return (
-      <div>
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            //showHideRef.current = !showHideRef.current;
-            //setShowYCSX(!showHideRef.current);
-            setShowYCSX(prev => {
-              return !prev
-            });
+            SaveExcel(ycsxdatatable, "YCSX Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleConfirmSetClosedYCSX();
+          }}
+        >
+          <FaArrowRight color='green' size={15} />
+          SET CLOSED
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleConfirmSetPendingYCSX();
+          }}
+        >
+          <MdOutlinePendingActions color='red' size={15} />
+          SET PENDING
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (ycsxdatatablefilter.length > 0) {
+              setSelection({
+                ...selection,
+                tabycsx: ycsxdatatablefilter.length > 0,
+              });
+              console.log(ycsxdatatablefilter);
+              setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+            } else {
+              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+            }
+          }}
+        >
+          <AiOutlinePrinter color='#0066ff' size={15} />
+          Print YCSX
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (ycsxdatatablefilter.length > 0) {
+              setSelection({
+                ...selection,
+                tabbanve: ycsxdatatablefilter.length > 0,
+              });
+              setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+            } else {
+              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+            }
+          }}
+        >
+          <AiOutlinePrinter color='#ff751a' size={15} />
+          Print Bản Vẽ
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (ycsxdatatablefilter.length > 0) {
+              handle_AddPlan();
+            } else {
+              Swal.fire(
+                "Thông báo",
+                "Chọn ít nhất 1 YCSX để thêm PLAN",
+                "error"
+              );
+            }
+          }}
+        >
+          <AiFillFolderAdd color='#69f542' size={15} />
+          Add to PLAN
+        </IconButton>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarPLANTABLE() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowYCSX(!showYCSX);
           }}
         >
           <TbLogout color='red' size={20} />
@@ -2864,7 +3411,17 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (qlsxplandatafilter.current.length > 0) {
+            SaveExcel(plandatatable, "Plan Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (qlsxplandatafilter.length > 0) {
               if (userData?.EMPL_NO !== "NHU1903") {
                 checkBP(
                   userData,
@@ -2875,8 +3432,8 @@ const MACHINE = () => {
                 );
               }
               setShowChiThi(true);
-              setChiThiListRender(renderChiThi(qlsxplandatafilter.current));
-              //console.log(ycsxdatatablefilter.current);
+              setChiThiListRender(renderChiThi(qlsxplandatafilter));
+              //console.log(ycsxdatatablefilter);
             } else {
               setShowChiThi(false);
               Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
@@ -2886,7 +3443,7 @@ const MACHINE = () => {
           <AiOutlinePrinter color='#0066ff' size={15} />
           Print Chỉ Thị
         </IconButton>
-       {/*  <IconButton
+        <IconButton
           className='buttonIcon'
           onClick={() => {
             if (chithiarray !== undefined && chithiarray.length > 0) {
@@ -2921,7 +3478,7 @@ const MACHINE = () => {
                   Swal.fire("Thông báo", "Chưa có chỉ thị chính (B0)", "error");
                 }
               }
-              //console.log(ycsxdatatablefilter.current);
+              //console.log(ycsxdatatablefilter);
             } else {
               setShowChiThi2(false);
               Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
@@ -2930,14 +3487,14 @@ const MACHINE = () => {
         >
           <AiOutlinePrinter color='#0066ff' size={15} />
           Print Chỉ Thị Combo
-        </IconButton> */}
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (qlsxplandatafilter.current.length > 0) {
+            if (qlsxplandatafilter.length > 0) {
               setShowYCKT(true);
-              setYCKTListRender(renderYCKT(qlsxplandatafilter.current));
-              //console.log(ycsxdatatablefilter.current);
+              setYCKTListRender(renderYCKT(qlsxplandatafilter));
+              //console.log(ycsxdatatablefilter);
             } else {
               setShowYCKT(false);
               Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
@@ -3009,8 +3566,52 @@ const MACHINE = () => {
         >
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
-        </IconButton>            
-        <span style={{fontSize:'0.7rem'}}>Total time: {plandatatable.filter(
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            dispatch(addChithiArray(qlsxplandatafilter[0]));
+          }}
+        >
+          <AiFillFolderAdd color='#69f542' size={20} />
+          Add to Print Combo
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            dispatch(resetChithiArray(""));
+          }}
+        >
+          <BiRefresh color='red' size={20} />
+          Reset Print Combo
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            let temp_combo: string = "";
+            if (chithiarray !== undefined) {
+              for (let i = 0; i < chithiarray?.length; i++) {
+                temp_combo +=
+                  i +
+                  1 +
+                  "_PLAN_ID: " +
+                  chithiarray[i].PLAN_ID +
+                  "_CODE: " +
+                  chithiarray[i].G_NAME_KD +
+                  "_STEP: " +
+                  chithiarray[i].STEP +
+                  "*******";
+              }
+              Swal.fire("Thong bao", temp_combo, "info");
+            } else {
+              Swal.fire("Thong bao", "Chưa có chỉ thị trong combo", "info");
+            }
+          }}
+        >
+          <BiRefresh color='red' size={20} />
+          Show Combo
+        </IconButton>
+        <span>Total time: {plandatatable.filter(
           (element: QLSXPLANDATA, index: number) => {
             return (
               element.PLAN_EQ === selectedMachine &&
@@ -3024,9 +3625,213 @@ const MACHINE = () => {
               element.PLAN_FACTORY === selectedFactory
             );
           }
-        ).length - 1]?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} min</span>       
-      </div>
-    )
+        ).length - 1]?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} min</span>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarCHITHITABLE() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton className='buttonIcon' onClick={() => { }}>
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /*   checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmDKXL
+            ); */
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleConfirmDKXL);
+          }}
+        >
+          <AiOutlineBarcode color='green' size={20} />
+          Lưu CT + ĐKXK
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /* checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmDeleteLieu
+            ); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmDeleteLieu
+            );
+            //handleConfirmDeleteLieu();
+          }}
+        >
+          <FcDeleteRow color='yellow' size={20} />
+          Xóa Liệu
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /* checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmRESETLIEU
+            ); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmRESETLIEU
+            );
+            //handleConfirmRESETLIEU();
+          }}
+        >
+          <BiReset color='red' size={20} />
+          RESET Liệu
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (selectedPlan !== undefined) {
+              /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
+                setShowKhoAo(!showkhoao);
+                handle_loadKhoAo();
+                handle_loadlichsuxuatkhoao();
+                handle_loadlichsunhapkhoao();
+                handle_loadlichsuinputlieu(
+                  selectedPlan?.PLAN_ID === undefined
+                    ? "xxx"
+                    : selectedPlan?.PLAN_ID
+                );
+              }); */
+              checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
+                setShowKhoAo(!showkhoao);
+                handle_loadKhoAo();
+                handle_loadlichsuxuatkhoao();
+                handle_loadlichsunhapkhoao();
+                handle_loadlichsuinputlieu(
+                  selectedPlan?.PLAN_ID === undefined
+                    ? "xxx"
+                    : selectedPlan?.PLAN_ID
+                );
+              });
+            } else {
+              Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
+            }
+          }}
+        >
+          <FaWarehouse color='blue' size={20} />
+          KHO ẢO
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleGetChiThiTable(
+              selectedPlan?.PLAN_ID === undefined
+                ? "xxx"
+                : selectedPlan?.PLAN_ID,
+              selectedPlan?.G_CODE === undefined ? "xxx" : selectedPlan?.G_CODE,
+              selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
+              selectedPlan?.PROCESS_NUMBER === undefined
+                ? 0
+                : selectedPlan?.PROCESS_NUMBER
+            );
+          }}
+        >
+          <BiRefresh color='yellow' size={20} />
+          Refresh chỉ thị
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /* checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handle_xuatdao_sample
+            ); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handle_xuatdao_sample
+            );
+            //handle_xuatdao_sample();
+          }}
+        >
+          <GiCurvyKnife color='red' size={20} />
+          Xuất dao sample
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /*  checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handle_xuatlieu_sample
+            ); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handle_xuatlieu_sample
+            );
+            //handle_xuatlieu_sample();
+          }}
+        >
+          <AiOutlineArrowRight color='blue' size={20} />
+          Xuất liệu sample
+        </IconButton>
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
+          {selectedPlan?.PLAN_ID}
+        </span>{" "}
+        ___
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}>
+          {selectedPlan?.G_NAME}
+        </span>
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
+          ___PD:
+          {currentPlanPD}
+        </span>
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
+          ___CAVITY:
+          {currentPlanCAVITY}
+        </span>
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
+          ___PLAN_QTY:
+          {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
+        </span>
+        {/*  Có setting hay không?
+        <input
+          type='checkbox'
+          name='alltimecheckbox'
+          defaultChecked={selectedPlan?.IS_SETTING==='Y'}
+          onChange={() => {
+            const newdata = plandatatable.map((p) =>
+            p.PLAN_ID === selectedPlan?.PLAN_ID
+              ? { ...p, IS_SETTING: selectedPlan?.IS_SETTING==='Y'? 'N': 'Y' }
+              : p
+          );
+          setPlanDataTable(newdata);
+          setQlsxPlanDataFilter([]);
+            //setCalc_Loss_Setting(!calc_loss_setting)
+          }}
+        ></input> */}
+      </GridToolbarContainer>
+    );
   }
   const handle_xuatlieu_sample = async () => {
     if (selectedPlan !== undefined) {
@@ -3233,6 +4038,257 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Hãy chọn ít nhất 1 chỉ thị", "error");
     }
   };
+  function CustomToolbarKHOAO() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(tonlieuxuongdatatable, "Ton kho ao Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+          Tồn kho ảo
+        </div>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handle_xuatKhoAo();
+          }}
+        >
+          <AiOutlineCaretRight color='blue' size={20} />
+          Xuất kho
+        </IconButton>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarLICHSUINPUTSX() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(lichsuinputlieutable, "Lich Su Input Lieu Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+          Lịch sử input liệu sản xuất
+        </div>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            Swal.fire("Thông báo", "Bên sản xuất sẽ confirm", "info");
+            //handle_saveConfirmLieuTon();
+          }}
+        >
+          <AiFillSave color='yellow' size={20} />
+          Lưu tồn liệu
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            Swal.fire("Thông báo", "Bên sản xuất sẽ confirm", "info");
+          }}
+        >
+          <AiOutlineRollback color='yellow' size={20} />
+          Nhập lại vào kho ảo
+        </IconButton>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarNHAPKHOAO() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(lichsunhapkhoaotable, "Lich Su Nhap Kho Ao Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+          Lịch sử nhập kho ảo
+        </div>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarXUATKHOAO() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(lichsuxuatkhoaotable, "Xuat kho ao Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+          Lịch sử xuất kho ảo
+        </div>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            Swal.fire("Thông báo", "Không được phép", "error");
+            //handle_huyxuatkhoao();
+          }}
+        >
+          <FcCancel color='white' size={20} />
+          Hủy Xuất
+        </IconButton>
+      </GridToolbarContainer>
+    );
+  }
+  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = ycsxdatatable.filter((element: any) =>
+      selectedID.has(element.PROD_REQUEST_NO)
+    );
+    if (datafilter.length > 0) {
+      setYcsxDataTableFilter(datafilter);
+    } else {
+      setYcsxDataTableFilter([]);
+      console.log("xoa filter");
+    }
+  };
+  const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = plandatatable.filter((element: any) =>
+      selectedID.has(element.PLAN_ID)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setQlsxPlanDataFilter(datafilter);
+      /* setDataDinhMuc({
+        ...datadinhmuc,
+        FACTORY: datafilter[0].FACTORY === null ? "" : datafilter[0].FACTORY,
+        EQ1:
+          datafilter[0].EQ1 === null
+            ? "NA"
+            : datafilter[0].EQ1 === ""
+            ? "NO"
+            : datafilter[0].EQ1,
+        EQ2:
+          datafilter[0].EQ2 === null
+            ? "NA"
+            : datafilter[0].EQ2 === ""
+            ? "NO"
+            : datafilter[0].EQ2,
+        Setting1: datafilter[0].Setting1 === null ? 0 : datafilter[0].Setting1,
+        Setting2: datafilter[0].Setting2 === null ? 0 : datafilter[0].Setting2,
+        UPH1: datafilter[0].UPH1 === null ? 0 : datafilter[0].UPH1,
+        UPH2: datafilter[0].UPH2 === null ? 0 : datafilter[0].UPH2,
+        Step1: datafilter[0].Step1 === null ? 0 : datafilter[0].Step1,
+        Step2: datafilter[0].Step2 === null ? 0 : datafilter[0].Step2,
+        LOSS_SX1: datafilter[0].LOSS_SX1 === null ? 0 : datafilter[0].LOSS_SX1,
+        LOSS_SX2: datafilter[0].LOSS_SX2 === null ? 0 : datafilter[0].LOSS_SX2,
+        LOSS_SETTING1:
+          datafilter[0].LOSS_SETTING1 === null
+            ? 0
+            : datafilter[0].LOSS_SETTING1,
+        LOSS_SETTING2:
+          datafilter[0].LOSS_SETTING2 === null
+            ? 0
+            : datafilter[0].LOSS_SETTING2,
+        NOTE: datafilter[0].NOTE === null ? "" : datafilter[0].NOTE,
+      });
+      handleGetChiThiTable(
+        datafilter[0].PLAN_ID,
+        datafilter[0].G_CODE,
+        datafilter[0].PLAN_QTY,
+        datafilter[0].PROCESS_NUMBER
+      ); */
+    } else {
+      setQlsxPlanDataFilter([]);
+      //setChiThiDataTable([]);
+      //console.log("xoa filter");
+    }
+  };
+  const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = chithidatatable.filter((element: any) =>
+      selectedID.has(element.CHITHI_ID)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setQlsxChiThiDataFilter(datafilter);
+    } else {
+      setQlsxChiThiDataFilter([]);
+      //console.log("xoa filter");
+    }
+  };
+  const handleTonLieuXuongDataSelectionforUpdate = (
+    ids: GridSelectionModel
+  ) => {
+    const selectedID = new Set(ids);
+    let datafilter = tonlieuxuongdatatable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setTonLieuXuongDataFilter(datafilter);
+    } else {
+      setTonLieuXuongDataFilter([]);
+      //console.log("xoa filter");
+    }
+  };
+  const handleLichSuXuatKhoAoDataSelectionforUpdate = (
+    ids: GridSelectionModel
+  ) => {
+    const selectedID = new Set(ids);
+    let datafilter = lichsuxuatkhoaotable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setLichSuXuatKhoAoDataFilter(datafilter);
+    } else {
+      setLichSuXuatKhoAoDataFilter([]);
+      //console.log("xoa filter");
+    }
+  };
+  const handleLichSuInputSXDataSelectionforUpdate = (
+    ids: GridSelectionModel
+  ) => {
+    const selectedID = new Set(ids);
+    let datafilter = lichsuinputlieutable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setLichSuInputLieuDataFilter(datafilter);
+    } else {
+      setLichSuInputLieuDataFilter([]);
+      //console.log("xoa filter");
+    }
+  };
+  const zeroPad = (num: number, places: number) =>
+    String(num).padStart(places, "0");
   const updateDKXLPLAN = (PLAN_ID: string) => {
     generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID })
       .then((response) => {
@@ -3475,6 +4531,54 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Cần đăng ký ít nhất 1 met lòng");
     }
   };
+  const handleEvent: GridEventListener<"rowClick"> = (
+    params, // GridRowParams
+    event, // MuiEvent<React.MouseEvent<HTMLElement>>
+    details // GridCallbackDetails
+  ) => {
+    let rowData: QLSXPLANDATA = params.row;
+    //console.log(rowData);
+    setSelectedPlan(rowData);
+    setDataDinhMuc({
+      ...datadinhmuc,
+      FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
+      EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
+      EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
+      EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,
+      EQ4: rowData.EQ4 === "" ? "NA" : rowData.EQ4,
+      Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
+      Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
+      Setting3: rowData.Setting3 === null ? 0 : rowData.Setting3,
+      Setting4: rowData.Setting4 === null ? 0 : rowData.Setting4,
+      UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
+      UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
+      UPH3: rowData.UPH3 === null ? 0 : rowData.UPH3,
+      UPH4: rowData.UPH4 === null ? 0 : rowData.UPH4,
+      Step1: rowData.Step1 === null ? 0 : rowData.Step1,
+      Step2: rowData.Step2 === null ? 0 : rowData.Step2,
+      Step3: rowData.Step3 === null ? 0 : rowData.Step3,
+      Step4: rowData.Step4 === null ? 0 : rowData.Step4,
+      LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
+      LOSS_SX3: rowData.LOSS_SX3 === null ? 0 : rowData.LOSS_SX3,
+      LOSS_SX4: rowData.LOSS_SX4 === null ? 0 : rowData.LOSS_SX4,
+      LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
+      LOSS_SETTING3: rowData.LOSS_SETTING3 === null ? 0 : rowData.LOSS_SETTING3,
+      LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
+      NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
+    });
+    handleGetChiThiTable(
+      rowData.PLAN_ID,
+      rowData.G_CODE,
+      rowData.PLAN_QTY,
+      rowData.PROCESS_NUMBER
+    );
+    if (rowData.G_CODE !== "")
+      console.log('da click row roi');
+    getRecentDM(rowData.G_CODE);
+    //console.log(params.row);
+  };
   let temp_key: string = "";
   let machine_array: string[] = [
     "F1",
@@ -3647,340 +4751,6 @@ const MACHINE = () => {
       });
     }
   };
-  const ycsxDataTableAG = useMemo(() => {
-    return (
-      <AGTable
-        showFilter={true}
-        toolbar={
-        <div>
-          <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleConfirmSetClosedYCSX();
-          }}
-        >
-          <FaArrowRight color='green' size={15} />
-          SET CLOSED
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            handleConfirmSetPendingYCSX();
-          }}
-        >
-          <MdOutlinePendingActions color='red' size={15} />
-          SET PENDING
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.current.length > 0) {
-              setSelection({
-                ...selection,
-                tabycsx: ycsxdatatablefilter.current.length > 0,
-              });
-              console.log(ycsxdatatablefilter.current);
-              setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-            }
-          }}
-        >
-          <AiOutlinePrinter color='#0066ff' size={15} />
-          Print YCSX
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.current.length > 0) {
-              setSelection({
-                ...selection,
-                tabbanve: ycsxdatatablefilter.current.length > 0,
-              });
-              setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-            }
-          }}
-        >
-          <AiOutlinePrinter color='#ff751a' size={15} />
-          Print Bản Vẽ
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.current.length > 0) {
-              handle_AddPlan();
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Chọn ít nhất 1 YCSX để thêm PLAN",
-                "error"
-              );
-            }
-          }}
-        >
-          <AiFillFolderAdd color='#69f542' size={15} />
-          Add to PLAN
-        </IconButton>
-
-        </div>  
-        }
-        columns={column_ycsxtable}
-        data={ycsxdatatable}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onCellClick={(params: any) => {
-          //setClickedRows(params.data)
-          //console.log(params)
-        }} onSelectionChange={(params: any) => { 
-          console.log(params!.api.getSelectedRows())
-          ycsxdatatablefilter.current = params!.api.getSelectedRows();
-        }} />
-    )
-  }, [ycsxdatatable])
-  const planDataTableAG = useMemo(() => {
-    return (
-      <AGTable
-        showFilter={false}
-        toolbar={PlanTableAGToolbar()}
-        columns={column_plandatatable}
-        data={plandatatable.filter(
-          (element: QLSXPLANDATA, index: number) => {
-            return (
-              element.PLAN_EQ === selectedMachine &&
-              element.PLAN_FACTORY === selectedFactory
-            );
-          }
-        )}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }}
-        onCellClick={(params: any) => {          
-          let rowData: QLSXPLANDATA = params.data;          
-          setSelectedPlan(rowData);
-          setDataDinhMuc({
-            ...datadinhmuc,
-            FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
-            EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
-            EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
-            EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,
-            EQ4: rowData.EQ4 === "" ? "NA" : rowData.EQ4,
-            Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
-            Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
-            Setting3: rowData.Setting3 === null ? 0 : rowData.Setting3,
-            Setting4: rowData.Setting4 === null ? 0 : rowData.Setting4,
-            UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
-            UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
-            UPH3: rowData.UPH3 === null ? 0 : rowData.UPH3,
-            UPH4: rowData.UPH4 === null ? 0 : rowData.UPH4,
-            Step1: rowData.Step1 === null ? 0 : rowData.Step1,
-            Step2: rowData.Step2 === null ? 0 : rowData.Step2,
-            Step3: rowData.Step3 === null ? 0 : rowData.Step3,
-            Step4: rowData.Step4 === null ? 0 : rowData.Step4,
-            LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
-            LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
-            LOSS_SX3: rowData.LOSS_SX3 === null ? 0 : rowData.LOSS_SX3,
-            LOSS_SX4: rowData.LOSS_SX4 === null ? 0 : rowData.LOSS_SX4,
-            LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
-            LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
-            LOSS_SETTING3: rowData.LOSS_SETTING3 === null ? 0 : rowData.LOSS_SETTING3,
-            LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
-            NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
-          });
-          handleGetChiThiTable(
-            rowData.PLAN_ID,
-            rowData.G_CODE,
-            rowData.PLAN_QTY,
-            rowData.PROCESS_NUMBER
-          );       
-          getRecentDM(rowData.G_CODE);
-        }} 
-        onSelectionChange={(params: any) => {
-          console.log(params!.api.getSelectedRows())
-          qlsxplandatafilter.current = params!.api.getSelectedRows()
-        }} />
-    )
-  }, [plandatatable,selectedMachine,selectedFactory])
-  const planMaterialTableAG = useMemo(()=> 
-    <AGTable
-    showFilter={false}
-        toolbar={
-          <div>
-            <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /*   checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmDKXL
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmDKXL
-                    );
-                  }}
-                >
-                  <AiOutlineBarcode color='green' size={20} />
-                  Lưu CT + ĐKXK
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmDeleteLieu
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmDeleteLieu
-                    );
-                    //handleConfirmDeleteLieu();
-                  }}
-                >
-                  <FcDeleteRow color='yellow' size={20} />
-                  Xóa Liệu
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmRESETLIEU
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmRESETLIEU
-                    );
-                    //handleConfirmRESETLIEU();
-                  }}
-                >
-                  <BiReset color='red' size={20} />
-                  RESET Liệu
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    if (selectedPlan !== undefined) {
-                      /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
-                setShowKhoAo(!showkhoao);
-                handle_loadKhoAo();
-                handle_loadlichsuxuatkhoao();
-                handle_loadlichsunhapkhoao();
-                handle_loadlichsuinputlieu(
-                  selectedPlan?.PLAN_ID === undefined
-                    ? "xxx"
-                    : selectedPlan?.PLAN_ID
-                );
-              }); */
-                      checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
-                        setShowKhoAo(!showkhoao);
-                      });
-                    } else {
-                      Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
-                    }
-                  }}
-                >
-                  <FaWarehouse color='blue' size={20} />
-                  KHO ẢO
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    handleGetChiThiTable(
-                      selectedPlan?.PLAN_ID === undefined
-                        ? "xxx"
-                        : selectedPlan?.PLAN_ID,
-                      selectedPlan?.G_CODE === undefined
-                        ? "xxx"
-                        : selectedPlan?.G_CODE,
-                      selectedPlan?.PLAN_QTY === undefined
-                        ? 0
-                        : selectedPlan?.PLAN_QTY,
-                      selectedPlan?.PROCESS_NUMBER === undefined
-                        ? 0
-                        : selectedPlan?.PROCESS_NUMBER,                      
-                    );
-                  }}
-                >
-                  <BiRefresh color='yellow' size={20} />
-                  Refresh chỉ thị
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handle_xuatdao_sample
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_xuatdao_sample
-                    );
-                    //handle_xuatdao_sample();
-                  }}
-                >
-                  <GiCurvyKnife color='red' size={20} />
-                  Xuất dao sample
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handle_xuatlieu_sample
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_xuatlieu_sample
-                    );
-                    //handle_xuatlieu_sample();
-                  }}
-                >
-                  <AiOutlineArrowRight color='blue' size={20} />
-                  Xuất liệu sample
-                </IconButton>
-          </div>}
-        columns={column_planmaterialtable}
-        data={chithidatatable}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onRowClick={(params: any) => {
-          //clickedRow.current = params.data;
-          //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {
-          //console.log(params)
-          //setSelectedRows(params!.api.getSelectedRows()[0]);
-          //console.log(e!.api.getSelectedRows())
-          qlsxchithidatafilter.current = params!.api.getSelectedRows();
-        }}
-      />
-
-  ,[chithidatatable]);
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
@@ -4497,7 +5267,8 @@ const MACHINE = () => {
                           ></input>
                         </label>
                       </div>
-                      <div className="forminputcolumn">
+                    </div>
+                    <div className='formbutton'>
                       <label>
                         <b>All Time:</b>
                         <input
@@ -4513,18 +5284,31 @@ const MACHINE = () => {
                           handletraYCSX();
                         }}
                       >
-                        <FcSearch color='green' size={15} />
+                        <FcSearch color='green' size={30} />
                         Search
                       </IconButton>
-
-                      </div>
-                    </div>
-                    <div className='formbutton'>
-                      
                     </div>
                   </div>
                   <div className='tracuuYCSXTable'>
-                    {ycsxDataTableAG}
+                    <DataGrid
+                      sx={{ fontSize: 12, flex: 1 }}
+                      components={{
+                        Toolbar: CustomToolbarPOTable,
+                        LoadingOverlay: LinearProgress,
+                      }}
+                      loading={isLoading}
+                      rowHeight={30}
+                      rows={ycsxdatatable}
+                      columns={column_ycsxtable}
+                      rowsPerPageOptions={[
+                        5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                      ]}
+                      editMode='row'
+                      getRowId={(row) => row.PROD_REQUEST_NO}
+                      onSelectionModelChange={(ids) => {
+                        handleYCSXSelectionforUpdate(ids);
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -4532,7 +5316,50 @@ const MACHINE = () => {
             <div className='chithidiv'>
               <div className='listchithi'>
                 <div className='planlist'>
-                  {planDataTableAG}
+                  <DataGrid
+                    sx={{ fontSize: 12, flex: 1 }}
+                    components={{
+                      Toolbar: CustomToolbarPLANTABLE,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={plandatatable.filter(
+                      (element: QLSXPLANDATA, index: number) => {
+                        return (
+                          element.PLAN_EQ === selectedMachine &&
+                          element.PLAN_FACTORY === selectedFactory
+                        );
+                      }
+                    )}
+                    columns={column_plandatatable}
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                    ]}
+                    editMode='cell'
+                    getRowId={(row) => row.PLAN_ID}
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleQLSXPlanDataSelectionforUpdate(ids);
+                    }}
+                    disableSelectionOnClick
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      const keyvar = params.field;
+                      const newdata = plandatatable.map((p) =>
+                        p.PLAN_ID === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      setPlanDataTable(newdata);
+                      setQlsxPlanDataFilter([]);
+                      //console.log(plandatatable);
+                    }}
+                    onRowClick={handleEvent}
+                  />
                 </div>
               </div>
               <div className='datadinhmucto'>
@@ -4679,7 +5506,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
+                      <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 1'
@@ -4693,7 +5520,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
+                      <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 2'
@@ -4709,7 +5536,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS ST1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
+                      <b>LOSS ST1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 1'
@@ -4723,7 +5550,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS ST2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
+                      <b>LOSS ST2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 2'
@@ -4905,7 +5732,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
+                      <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 3'
@@ -4919,7 +5746,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
+                      <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 4'
@@ -4935,7 +5762,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS ST3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
+                      <b>LOSS ST3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 3'
@@ -4949,7 +5776,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS ST4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
+                      <b>LOSS ST4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 4'
@@ -4982,26 +5809,41 @@ const MACHINE = () => {
                 </div>
               </div>
               <div className='listlieuchithi'>
-                <div className="title">
-                  <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
-                    {selectedPlan?.PLAN_ID}
-                  </span>                 
-                  <span style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}>
-                    {selectedPlan?.G_NAME}
-                  </span>
-                  <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
-                   PD:{currentPlanPD}
-                  </span>
-                  <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
-                    CAVITY:{currentPlanCAVITY}
-                  </span>
-                  <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
-                    PLAN_QTY:{selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
-                  </span>
-
-                </div>
                 <div className='chithitable'>
-                  {planMaterialTableAG}
+                  <DataGrid
+                    sx={{ fontSize: 12, flex: 1 }}
+                    components={{
+                      Toolbar: CustomToolbarCHITHITABLE,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    getRowId={(row) => row.CHITHI_ID}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={chithidatatable}
+                    columns={column_chithidatatable}
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                    ]}
+                    editMode='cell'
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleQLSXCHITHIDataSelectionforUpdate(ids);
+                    }}
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      const keyvar = params.field;
+                      const newdata = chithidatatable.map((p) =>
+                        p.CHITHI_ID === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      //console.log(newdata);
+                      setChiThiDataTable(newdata);
+                    }}
+                  />
                 </div>
               </div>
               {selection.tabycsx && (
@@ -5009,7 +5851,7 @@ const MACHINE = () => {
                   <div className='buttongroup'>
                     <Button
                       onClick={() => {
-                        setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
+                        setYCSXListRender(renderYCSX(ycsxdatatablefilter));
                       }}
                     >
                       Render YCSX
@@ -5033,7 +5875,7 @@ const MACHINE = () => {
                   <div className='buttongroup'>
                     <Button
                       onClick={() => {
-                        setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
+                        setYCSXListRender(renderBanVe(ycsxdatatablefilter));
                       }}
                     >
                       Render Bản Vẽ
@@ -5063,7 +5905,202 @@ const MACHINE = () => {
                   </Button>
                   <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID} />
                 </div>
-              )}             
+              )}
+              {false && (
+                <div className='khoaodiv'>
+                  <div
+                    className='khoaotieude'
+                    style={{ fontSize: 25, fontWeight: "bold" }}
+                  >
+                    KHO ẢO
+                    <Button
+                      onClick={() => {
+                        setShowKhoAo(!showkhoao);
+                      }}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        handle_loadKhoAo();
+                        handle_loadlichsunhapkhoao();
+                        handle_loadlichsuxuatkhoao();
+                        handle_loadlichsuinputlieu(
+                          selectedPlan?.PLAN_ID === undefined
+                            ? "xxx"
+                            : selectedPlan?.PLAN_ID
+                        );
+                      }}
+                    >
+                      Refresh
+                    </Button>
+                  </div>
+                  <div className='khoaodivtable'>
+                    <div
+                      className='tablekhoao'
+                      style={{ height: "100%", width: "50%" }}
+                    >
+                      <div className='tabletonkhoao'>
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={tonlieuxuongdatatable}
+                          columns={column_tonlieuxuongtable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          checkboxSelection
+                          selectionModel={selectionModel}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel(ids);
+                            handleTonLieuXuongDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = tonlieuxuongdatatable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setTonLieuXuongDataFilter(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                      <div className='lichsuinputsanxuat'>
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarLICHSUINPUTSX,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsuinputlieutable}
+                          columns={column_lichsuinputlieusanxuat}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          checkboxSelection
+                          selectionModel={selectionModel_INPUTSX}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel_INPUTSX(ids);
+                            handleLichSuInputSXDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsuinputlieutable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setLichSuInputLieuTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className='nhapxuatkhoao'
+                      style={{ height: "100%", width: "50%" }}
+                    >
+                      <div
+                        className='nhapkhoao'
+                        style={{ height: "100%", width: "100%" }}
+                      >
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarNHAPKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsunhapkhoaotable}
+                          columns={column_lichsunhapkhoaotable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          /*  checkboxSelection */
+                          onSelectionModelChange={(ids) => {
+                            handleTonLieuXuongDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsunhapkhoaotable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setLichSuNhapKhoAoTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                      <div
+                        className='xuatkhoao'
+                        style={{ height: "100%", width: "100%" }}
+                      >
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarXUATKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsuxuatkhoaotable}
+                          columns={column_lichsuxuatkhoaotable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          checkboxSelection
+                          selectionModel={selectionModel_XUATKHOAO}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel_XUATKHOAO(ids);
+                            handleLichSuXuatKhoAoDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsuxuatkhoaotable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setLichSuXuatKhoAoTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               {showChiThi && (
                 <div className='printycsxpage'>
                   <div className='buttongroup'>
@@ -5088,7 +6125,7 @@ const MACHINE = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setChiThiListRender(renderChiThi(qlsxplandatafilter.current));
+                        setChiThiListRender(renderChiThi(qlsxplandatafilter));
                       }}
                     >
                       Render Chỉ Thị
@@ -5159,7 +6196,7 @@ const MACHINE = () => {
                   <div className='buttongroup'>
                     <button
                       onClick={() => {
-                        setYCKTListRender(renderYCKT(qlsxplandatafilter.current));
+                        setYCKTListRender(renderYCKT(qlsxplandatafilter));
                       }}
                     >
                       Render YCKT

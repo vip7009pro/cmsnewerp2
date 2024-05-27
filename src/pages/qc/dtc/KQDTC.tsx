@@ -142,6 +142,7 @@ const KQDTC = () => {
         );
       },
     },
+    { field: "REMARK", headerName: "REMARK", width: 80 },
     { field: "BARCODE_CONTENT", headerName: "BARCODE_CONTENT", width: 120 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "TEST_FINISH_TIME", headerName: "TEST_FINISH_TIME", width: 145 },

@@ -859,18 +859,9 @@ const QLVL = () => {
     ],
     store: data,
   });
-  const defaultColDef = useMemo(() => {
-    return {
-      initialWidth: 100,
-      wrapHeaderText: true,
-      autoHeaderHeight: false,
-      editable: false
-    };
-  }, []);
-  // Column Definitions: Defines the columns to be displayed.
   const [colDefs, setColDefs] = useState<Array<any>>([
     {
-      field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, headerHeight: 100, floatingFilter: true, /* cellStyle: (params:any) => {     
+      field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, floatingFilter: true, /* cellStyle: (params:any) => {     
        if (params.data.M_ID%2==0 ) {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
@@ -920,39 +911,38 @@ const QLVL = () => {
     { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'UPD_EMPL', headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
   ]);
-  const material_data_ag_table = useMemo(()=> {
+  const material_data_ag_table = useMemo(() => {
     return (
       <AGTable
-            showFilter={true}
-            toolbar={
-              <div>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </div>}
-            columns={colDefs}
-            data={data}
-            onCellEditingStopped={(params: any) => {
-            }}
-            onCellClick={(params: any) => {
-              setClickedRows(params.data)              
-            }}
-            onSelectionChange={(params: any) => {
-              //console.log(e!.api.getSelectedRows())
-            }} />
+        showFilter={true}
+        toolbar={
+          <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(!showhidePivotTable);
+              }}
+            >
+              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+              Pivot
+            </IconButton>
+          </div>}
+        columns={colDefs}
+        data={data}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={(params: any) => {
+          setClickedRows(params.data)
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+        }} />
     )
-  },[data, colDefs])
+  }, [data, colDefs])
   useEffect(() => {
     load_material_table();
     getcustomerlist();
-    
-  }, [defaultColDef]);
+  }, []);
   return (
     <div className="qlvl">
       <div className="tracuuDataInspection">
@@ -1129,8 +1119,8 @@ const QLVL = () => {
             }}>Add</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
               updateMaterial();
-            }}>Update</Button>           
-          </div>          
+            }}>Update</Button>
+          </div>
         </div>
         <div className="tracuuYCSXTable">
           {material_data_ag_table}
