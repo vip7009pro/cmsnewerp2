@@ -41,18 +41,6 @@ import AGTable from "../../../components/DataTable/AGTable";
 const INSPECTION = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
-  const [selection, setSelection] = useState<any>({
-    tab1: true,
-    tab2: false,
-    tab3: false,
-    tab4: false,
-    tab5: false,
-    tab6: false,
-    tab7: false,
-    tab8: false,
-    tab9: false,
-    tab10: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -447,43 +435,17 @@ const INSPECTION = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_inspect_input);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(inspectiondatatable, "Inspection Data Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: "1rem",
-            paddingLeft: 20,
-            color: "blue",
-          }}
-        >
-          {sumaryINSPECT}
-        </span>
-        <GridToolbarQuickFilter />
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          Pivot
-        </IconButton>
-      </GridToolbarContainer>
-    );
-  }
   const handletraInspectionInput = () => {
-    setisLoading(true);
+    setisLoading(true);   
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     let summaryInput: number = 0;
     generalQuery("get_inspection", {
       OPTIONS: "Nhập Kiểm (LOT)",
@@ -543,6 +505,15 @@ const INSPECTION = () => {
       });
   };
   const handletraInspectionOutput = () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     let summaryOutput: number = 0;
     setisLoading(true);
     generalQuery("get_inspection", {
@@ -604,6 +575,15 @@ const INSPECTION = () => {
       });
   };
   const handletraInspectionNG = () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setSummaryInspect("");
     setisLoading(true);
     generalQuery("get_inspection", {
@@ -663,6 +643,15 @@ const INSPECTION = () => {
       });
   };
   const handletraInspectionInOut = () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setSummaryInspect("");
     setisLoading(true);
     generalQuery("get_inspection", {
@@ -713,6 +702,15 @@ const INSPECTION = () => {
       });
   };
   const handleLoadChoKiem = () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setSummaryInspect("");
     setisLoading(true);
     generalQuery("loadChoKiemGop", {
@@ -763,6 +761,15 @@ const INSPECTION = () => {
       });
   };
   const handleGetInspectionPatrol = () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setSummaryInspect("");
     setisLoading(true);
     generalQuery("loadInspectionPatrol", {
