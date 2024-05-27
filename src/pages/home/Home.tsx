@@ -25,7 +25,8 @@ import FallBackComponent from "../../components/Fallback/FallBackComponent";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-import CHAT from "../chat/CHAT";
+import { Draggable } from "devextreme-react";
+const CHAT = lazy(() => import("../chat/CHAT"));
 const QCReport = lazy(() => import("../qc/qcreport/QCReport"));
 const SettingPage = lazy(() => import("../setting/SettingPage"));
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
@@ -730,7 +731,7 @@ function Home() {
             {tabModeSwap &&
               tabs.map((ele: ELE_ARRAY, index: number) => {
                 if (ele.ELE_CODE !== "-1")
-                  return (
+                  return ( 
                     <div
                       key={index}
                       className='component_element'
@@ -738,9 +739,9 @@ function Home() {
                         visibility: index === tabIndex ? "visible" : "hidden",
                         width: sidebarStatus ? "100%" : "100%",
                       }}
-                    >
+                    >                      
                       {menulist.filter((menu: MENU_LIST_DATA, index: number) => menu.MENU_CODE === ele.ELE_CODE)[0].MENU_ITEM}
-                    </div>
+                    </div>                    
                   );
               })}
             {current_ver >= checkVerWeb ? (
