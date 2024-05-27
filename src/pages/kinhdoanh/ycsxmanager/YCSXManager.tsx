@@ -2978,7 +2978,7 @@ const YCSXManager = () => {
             <IconButton
               className='buttonIcon'
               onClick={() => {
-                setShowHideSearchDiv(!showhidesearchdiv);
+                setShowHideSearchDiv(prev=> !prev);
               }}
             >
               <TbLogout color='green' size={15} />

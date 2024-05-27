@@ -1,17 +1,10 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import "./QLSXPLAN.scss";
-const DATASX2 = lazy(() => import("./DATASX/DATASX2"));
-const MACHINE = lazy(() => import("./Machine/MACHINE"));
-const LICHSUINPUTLIEU = lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
-const QUICKPLAN = lazy(() => import("./QUICKPLAN/QUICKPLAN"));
-const PLAN_DATATB = lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB"));
-const PLAN_STATUS = lazy(() => import("./PLAN_STATUS/PLAN_STATUS"));
-const EQ_STATUS = lazy(() => import("./EQ_STATUS/EQ_STATUS"));
-const KHOAO = lazy(() => import("./KHOAO/KHOAO"));
-const EQ_STATUS2 = lazy(() => import("./EQ_STATUS/EQ_STATUS2"));
-const ACHIVEMENTTB = lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
+import "./QCReport.scss";
+import PQC_REPORT from "../pqc/PQC_REPORT";
+import INSPECT_REPORT from "../inspection/INSPECT_REPORT";
+import CSREPORT from "../cs/CSREPORT";
 
-const QLSXPLAN = () => {
+const QCReport = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -164,7 +157,7 @@ const QLSXPLAN = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="qlsxplan">
+    <div className="qcreport">
       <Suspense fallback={<div> Loading...</div>}>
         <div className="mininavbar">
           <div
@@ -175,14 +168,29 @@ const QLSXPLAN = () => {
               color: selection.tab1 === true ? "yellow" : "yellow",
             }}
           >
-            <span className="mininavtext">PLAN VISUAL</span>
-          </div>
-          {/*  <div className='mininavitem'  onClick={() => setNav(9)} style={{backgroundColor:selection.tab9 === true ? '#02c712':'#abc9ae', color: selection.tab9 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-            KH-CT
-          </span>
-        </div>   */}
+            <span className="mininavtext">PQC REPORT</span>
+          </div>   
           <div
+            className="mininavitem"
+            onClick={() => setNav(2)}
+            style={{
+              backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab2 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">INSPECTION REPORT</span>
+          </div>  
+          <div
+            className="mininavitem"
+            onClick={() => setNav(3)}
+            style={{
+              backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab3 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">CS REPORT</span>
+          </div>  
+          {/* <div
             className="mininavitem"
             onClick={() => setNav(4)}
             style={{
@@ -191,12 +199,7 @@ const QLSXPLAN = () => {
             }}
           >
             <span className="mininavtext">QUICK PLAN</span>
-          </div>
-          {/*  <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#02c712':'#abc9ae', color: selection.tab2 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-            PLAN YCSX
-          </span>
-        </div>   */}
+          </div>         
           <div
             className="mininavitem"
             onClick={() => setNav(5)}
@@ -207,16 +210,7 @@ const QLSXPLAN = () => {
           >
             <span className="mininavtext">PLAN TABLE</span>
           </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(3)}
-            style={{
-              backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab3 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">LỊCH SỬ</span>
-          </div>
+         
           <div
             className="mininavitem"
             onClick={() => setNav(6)}
@@ -266,70 +260,61 @@ const QLSXPLAN = () => {
             }}
           >
             <span className="mininavtext">KHO ẢO</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(2)}
-            style={{
-              backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab2 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN_RESULT</span>
-          </div>
+          </div> */}
+          
         </div>
         {selection.tab1 && (
           <div className="traiqc">
-            <MACHINE />
+            <PQC_REPORT/>            
           </div>
         )}
         {selection.tab2 && (
           <div className="datadtc">
-            <ACHIVEMENTTB />
+            <INSPECT_REPORT/>            
           </div>
         )}
         {selection.tab3 && (
           <div className="datadtc">
-            <LICHSUINPUTLIEU />
+            <CSREPORT/>            
           </div>
         )}
         {selection.tab4 && (
           <div className="datadtc">
-            <QUICKPLAN />
+            
           </div>
         )}
         {selection.tab5 && (
           <div className="datadtc">
-            <PLAN_DATATB />
+            
           </div>
         )}
         {selection.tab6 && (
           <div className="datadtc">
-            <DATASX2 />
+            
           </div>
         )}
         {selection.tab7 && (
           <div className="datadtc">
-            <PLAN_STATUS />
+            
           </div>
         )}
         {selection.tab8 && (
           <div className="datadtc">
-            <EQ_STATUS />
+            
           </div>
         )}
         {selection.tab9 && (
           <div className="datadtc">
-            <EQ_STATUS2 />
+            
           </div>
         )}       
         {selection.tab10 && (
           <div className="datadtc">
-            <KHOAO />
+            
           </div>
         )}
       </Suspense>
     </div>
   );
 };
-export default QLSXPLAN;
+export default QCReport;

@@ -18,7 +18,7 @@ import {
   MuiEvent,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
 import {
   AiFillFileExcel,
   AiOutlineCloudUpload,
@@ -38,7 +38,7 @@ import {
   TONLIEUXUONG,
   UserData,
 } from "../../../../api/GlobalInterface";
-
+import AGTable from "../../../../components/DataTable/AGTable";
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission] = useState(true);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
@@ -57,9 +57,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
     Array<QLSXPLANDATA>
   >([]);
-  const [tonkhoaodatafilter, setTonKhoAoDataFilter] = useState<
-    Array<TONLIEUXUONG>
-  >([]);
+  const tonkhoaodatafilter = useRef<Array<TONLIEUXUONG>>([]);
   const [nextPlan, setNextPlan] = useState(
     NEXT_PLAN === undefined ? "" : NEXT_PLAN,
   );
@@ -73,7 +71,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [tableTitle, setTableTitle] = useState("");
   const column_nhapkhoaotable = [
     { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100 },
-    { field: "FACTORY", headerName: "FACTORY", width: 80 },
+    { field: "FACTORY", headerName: "FACTORY", width: 100 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     { field: "M_CODE", headerName: "M_CODE", width: 80 },
     { field: "M_NAME", headerName: "M_NAME", width: 150 },
@@ -104,8 +102,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const column_tonkhoaotable = [
-    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100 },
-    { field: "FACTORY", headerName: "NM", width: 40, editable: false },
+    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true, 
+    checkboxSelection: true, },
+    { field: "FACTORY", headerName: "NM", width: 60, editable: false },
     {
       field: "PLAN_ID_INPUT",
       headerName: "PLAN_ID",
@@ -119,36 +118,36 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       headerName: "M_NAME",
       width: 120,
       editable: false,
-      renderCell: (params: any) => {
-        if (params.row.LIEUQL_SX === 1) {
+      cellRenderer: (params: any) => {
+        if (params.data.LIEUQL_SX === 1) {
           return (
             <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.row.M_NAME}
+              {params.data.M_NAME}
             </span>
           );
         } else {
-          return <span style={{ color: "black" }}>{params.row.M_NAME}</span>;
+          return <span style={{ color: "black" }}>{params.data.M_NAME}</span>;
         }
       },
     },
-    { field: "WIDTH_CD", headerName: "SIZE", width: 30, editable: false },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 50, editable: false },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false },
     {
       field: "ROLL_QTY",
       headerName: "ROLL_QTY",
       width: 70,
       editable: false,
-      renderCell: (params: any) => {
-        if (params.row.PHANLOAI !== "F") {
+      cellRenderer: (params: any) => {
+        if (params.data.PHANLOAI !== "F") {
           return (
             <span style={{ color: "blue" }}>
-              {params.row.ROLL_QTY.toLocaleString("en", "US")}
+              {params.data.ROLL_QTY?.toLocaleString("en", "US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.row.ROLL_QTY.toLocaleString("en", "US")}
+              {params.data.ROLL_QTY?.toLocaleString("en", "US")}
             </span>
           );
         }
@@ -159,17 +158,17 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       headerName: "IN_QTY",
       width: 70,
       editable: false,
-      renderCell: (params: any) => {
-        if (params.row.PHANLOAI !== "F") {
+      cellRenderer: (params: any) => {
+        if (params.data.PHANLOAI !== "F") {
           return (
             <span style={{ color: "blue" }}>
-              {params.row.IN_QTY.toLocaleString("en", "US")}
+              {params.data.IN_QTY?.toLocaleString("en", "US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.row.IN_QTY.toLocaleString("en", "US")}
+              {params.data.IN_QTY?.toLocaleString("en", "US")}
             </span>
           );
         }
@@ -180,17 +179,17 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       headerName: "TOTAL_IN_QTY",
       width: 120,
       editable: false,
-      renderCell: (params: any) => {
-        if (params.row.PHANLOAI !== "F") {
+      cellRenderer: (params: any) => {
+        if (params.data.PHANLOAI !== "F") {
           return (
             <span style={{ color: "green", fontWeight: "bold" }}>
-              {params.row.TOTAL_IN_QTY.toLocaleString("en", "US")}
+              {params.data.TOTAL_IN_QTY?.toLocaleString("en", "US")}
             </span>
           );
         } else {
           return (
             <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.row.TOTAL_IN_QTY.toLocaleString("en", "US")}
+              {params.data.TOTAL_IN_QTY?.toLocaleString("en", "US")}
             </span>
           );
         }
@@ -201,8 +200,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       headerName: "FSC",
       width: 120,
       editable: false,
-      renderCell: (params: any) => {
-        if (params.row.PHANLOAI === "Y") {
+      cellRenderer: (params: any) => {
+        if (params.data.PHANLOAI === "Y") {
           return (
             <span style={{ color: "green", fontWeight: "bold" }}>YES</span>
           );
@@ -212,28 +211,6 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       },
     },
   ];
-  function CustomToolbarLICHSUINPUTSX() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(datatable, "Kho AO DATA Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
-          {tableTitle}
-        </div>
-        <div className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
-          _|_Liệu xuất next sẽ vào chỉ thị: {nextPlan}
-        </div>
-      </GridToolbarContainer>
-    );
-  }
   const load_nhapkhoao = () => {
     generalQuery("lichsunhapkhoao", {
       FROM_DATE: fromdate,
@@ -333,12 +310,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           setReadyRender(true);
           setisLoading(false);
           setTableTitle("TỒN KHO ẢO");
-          if(shownotification)
-          Swal.fire(
-            "Thông báo",
-            "Đã load: " + response.data.data.length + " dòng",
-            "success",
-          );
+          if (shownotification)
+            Swal.fire(
+              "Thông báo",
+              "Đã load: " + response.data.data.length + " dòng",
+              "success",
+            );
         } else {
           setDataTable([]);
         }
@@ -383,7 +360,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return checkFSC;
   };
-  const checkNhapKhoTPDuHayChua = async(NEXT_PLAN: string)=> {
+  const checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
     let checkNhapKho: string = "N";
     await generalQuery("checkYcsxStatus", {
       PLAN_ID: NEXT_PLAN,
@@ -403,15 +380,15 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
-      if (tonkhoaodatafilter.length > 0) {
+      if (tonkhoaodatafilter.current.length > 0) {
         let err_code: string = "0";
-        for (let i = 0; i < tonkhoaodatafilter.length; i++) {
+        for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
           let checkYCSX_USE_YN: string = await checkNhapKhoTPDuHayChua(nextPlan);
-          let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan,tonkhoaodatafilter[i].M_LOT_NO);         
+          let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
           let checklieuchithi: boolean = true;
           await generalQuery("checkM_CODE_CHITHI", {
             PLAN_ID_OUTPUT: nextPlan,
-            M_CODE: tonkhoaodatafilter[i].M_CODE,
+            M_CODE: tonkhoaodatafilter.current[i].M_CODE,
           })
             .then((response) => {
               console.log(response.data.data);
@@ -427,36 +404,36 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           let checkFSC: string = await checkNextPlanFSC(nextPlan);
           if (
             checklieuchithi === true &&
-            nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT &&
-            checkFSC === tonkhoaodatafilter[i].FSC && 
-            checktontaikhoao && 
-            checkYCSX_USE_YN ==='Y'
+            nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
+            checkFSC === tonkhoaodatafilter.current[i].FSC &&
+            checktontaikhoao &&
+            checkYCSX_USE_YN === 'Y'
           ) {
             await generalQuery("xuatkhoao", {
-              FACTORY: tonkhoaodatafilter[i].FACTORY,
+              FACTORY: tonkhoaodatafilter.current[i].FACTORY,
               PHANLOAI: "N",
-              PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
+              PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
               PLAN_ID_OUTPUT: nextPlan,
-              M_CODE: tonkhoaodatafilter[i].M_CODE,
-              M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
-              ROLL_QTY: tonkhoaodatafilter[i].ROLL_QTY,
-              OUT_QTY: tonkhoaodatafilter[i].IN_QTY,
-              TOTAL_OUT_QTY: tonkhoaodatafilter[i].TOTAL_IN_QTY,
+              M_CODE: tonkhoaodatafilter.current[i].M_CODE,
+              M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
+              ROLL_QTY: tonkhoaodatafilter.current[i].ROLL_QTY,
+              OUT_QTY: tonkhoaodatafilter.current[i].IN_QTY,
+              TOTAL_OUT_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
               USE_YN: "O",
             })
               .then((response) => {
                 console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
                   generalQuery("setUSE_YN_KHO_AO_INPUT", {
-                    FACTORY: tonkhoaodatafilter[i].FACTORY,
-                    PHANLOAI: tonkhoaodatafilter[i].PHANLOAI,
-                    PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
+                    FACTORY: tonkhoaodatafilter.current[i].FACTORY,
+                    PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
+                    PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
                     PLAN_ID_SUDUNG: nextPlan,
-                    M_CODE: tonkhoaodatafilter[i].M_CODE,
-                    M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
-                    TOTAL_IN_QTY: tonkhoaodatafilter[i].TOTAL_IN_QTY,
+                    M_CODE: tonkhoaodatafilter.current[i].M_CODE,
+                    M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
+                    TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
                     USE_YN: "O",
-                    IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID,
+                    IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
                   })
                     .then((response) => {
                       console.log(response.data);
@@ -474,32 +451,31 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               .catch((error) => {
                 console.log(error);
               });
-          } else {    
-            if(!checklieuchithi) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} chưa được đăng ký xuất liệu`;            
+          } else {
+            if (!checklieuchithi) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} chưa được đăng ký xuất liệu`;
             }
-            else if(nextPlan === tonkhoaodatafilter[i].PLAN_ID_INPUT) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} không thể xuất lại vào chỉ thị đã từng dùng nó`;      
+            else if (nextPlan === tonkhoaodatafilter.current[i].PLAN_ID_INPUT) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} không thể xuất lại vào chỉ thị đã từng dùng nó`;
             }
-            else if(checkFSC !== tonkhoaodatafilter[i].FSC) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} không cùng trạng thái liệu FSC với code được chỉ thị vào`;      
+            else if (checkFSC !== tonkhoaodatafilter.current[i].FSC) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} không cùng trạng thái liệu FSC với code được chỉ thị vào`;
             }
-            else if(!checktontaikhoao) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} liệu này đã được xuát vào chỉ thị  ${nextPlan} rồi, không xuất lại được nữa`;      
-            }            
-            else if(checkYCSX_USE_YN !=='Y') {
-              err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;      
-            }            
+            else if (!checktontaikhoao) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} liệu này đã được xuát vào chỉ thị  ${nextPlan} rồi, không xuất lại được nữa`;
+            }
+            else if (checkYCSX_USE_YN !== 'Y') {
+              err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;
+            }
           }
         }
-        if (err_code !== "0") {         
-          Swal.fire("Thông báo", "Có lỗi: " + err_code, "error"); 
+        if (err_code !== "0") {
+          Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
           handle_loadKhoAo(false);
-         
         } else {
           handle_loadKhoAo(true);
-          setTonKhoAoDataFilter([]);          
-        }        
+          tonkhoaodatafilter.current = []
+        }
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }
@@ -507,7 +483,6 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       Swal.fire("Thông báo", "Chưa nhập next PLAN", "error");
     }
   };
-
   const handle_nhappassword_xoarac = async () => {
     const { value: pass1 } = await Swal.fire({
       title: "Xác nhận xóa rác",
@@ -556,7 +531,6 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       );
     }
   };
-
   const handleConfirmXoaRac = () => {
     Swal.fire({
       title: "Chắc chắn muốn Xóa liệu đã chọn ?",
@@ -568,7 +542,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       confirmButtonText: "Vẫn Xóa!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Xóa", "Đang xóa hàng loạt", "success");       
+        Swal.fire("Tiến hành Xóa", "Đang xóa hàng loạt", "success");
         checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_xoa_rac);
       }
     });
@@ -584,19 +558,19 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       confirmButtonText: "Vẫn Ẩn!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Ẩn", "Đang Ẩn hàng loạt", "success");        
+        Swal.fire("Tiến hành Ẩn", "Đang Ẩn hàng loạt", "success");
         checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_an_rac);
       }
     });
   };
   const handle_xoa_rac = async () => {
-    if (tonkhoaodatafilter.length > 0) {
+    if (tonkhoaodatafilter.current.length > 0) {
       let err_code: string = "0";
-      for (let i = 0; i < tonkhoaodatafilter.length; i++) {
+      for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
         let check_2_m_code_in_kho_ao: boolean = false;
         let check_m_lot_exist_p500: boolean = false;
         await generalQuery("check_2_m_code_in_kho_ao", {
-          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
+          PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -612,8 +586,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             console.log(error);
           });
         await generalQuery("check_m_lot_exist_p500", {
-          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
-          M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
+          PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
+          M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -633,7 +607,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           console.log("check_m_lot_exist_p500", check_m_lot_exist_p500);
           Swal.fire("Thông báo", "Xóa kho ảo thành công", "success");
           await generalQuery("delete_in_kho_ao", {
-            IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID,
+            IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
           })
             .then((response) => {
               //console.log(response.data.data);
@@ -648,8 +622,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               console.log(error);
             });
           await generalQuery("delete_out_kho_ao", {
-            PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
-            M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
+            PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
+            M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
           })
             .then((response) => {
               //console.log(response.data.data);
@@ -667,27 +641,26 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           //console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
           //console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
           if (!check_2_m_code_in_kho_ao) {
-            err_code += ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
+            err_code += ` | ${tonkhoaodatafilter.current[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
           } else if (check_m_lot_exist_p500) {
-            err_code += ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu đã input sx ko xóa được`;
+            err_code += ` | ${tonkhoaodatafilter.current[i].M_LOT_NO}: Liệu đã input sx ko xóa được`;
           }
         }
       }
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
       }
-      //setTonKhoAoDataFilter([]);
       //handle_loadKhoAo();
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xóa", "error");
     }
   };
   const handle_an_rac = async () => {
-    if (tonkhoaodatafilter.length > 0) {
+    if (tonkhoaodatafilter.current.length > 0) {
       let err_code: string = "0";
-      for (let i = 0; i < tonkhoaodatafilter.length; i++) {
+      for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
         await generalQuery("an_lieu_kho_ao", {
-          IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID,
+          IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -702,23 +675,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
       }
-      //setTonKhoAoDataFilter([]);
       //handle_loadKhoAo();
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để ẩn", "error");
-    }
-  };
-  const handleTonKhoAoDataSelectionforUpdate = (ids: GridSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = datatable.filter((element: any) =>
-      selectedID.has(element.id),
-    );
-    console.log(datafilter);
-    if (datafilter.length > 0) {
-      setTonKhoAoDataFilter(datafilter);
-    } else {
-      setTonKhoAoDataFilter([]);
-      //console.log("xoa filter");
     }
   };
   useEffect(() => {
@@ -827,7 +786,6 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                       "error",
                     );
                   }
-
                   //handle_xuatKhoAo();
                 }}
               >
@@ -869,29 +827,26 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           <div className="formbutton"></div>
         </div>
         <div className="tracuuYCSXTable">
-          {readyRender && (
-            <DataGrid
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarLICHSUINPUTSX,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={datatable}
-              columns={current_Column}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              checkboxSelection
-              disableSelectionOnClick
-              editMode="cell"
-              getRowId={(row) => row.id}
-              onSelectionModelChange={(ids) => {
-                handleTonKhoAoDataSelectionforUpdate(ids);
-              }}
-            />
-          )}
+          <AGTable
+            toolbar={
+              <div>
+                <span className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
+                  {tableTitle}
+                </span>
+                <span className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
+                  _|_Liệu xuất next sẽ vào chỉ thị: {nextPlan}
+                </span>
+              </div>
+            }
+            showFilter={true}
+            columns={current_Column}
+            data={datatable}
+            onCellEditingStopped={(params: any) => {
+            }} onRowClick={(params: any) => {
+              //console.log(e.data)
+            }} onSelectionChange={(params: any) => {
+              tonkhoaodatafilter.current = params!.api.getSelectedRows();          
+            }} />
         </div>
       </div>
     </div>

@@ -3,18 +3,12 @@ import { Link } from "react-router-dom";
 import "./Submenu.scss";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-  toggleSidebar,
-  setTabModeSwap,
-} from "../../redux/slices/globalSlice";
 import { addTab, settabIndex, resetTab } from "../../redux/slices/globalSlice";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 import Swal from "sweetalert2";
 import { LangConText, UserContext } from "../../api/Context";
 import { getlang } from "../String/String";
-
+const QCReport = React.lazy(() => import("../../pages/qc/qcreport/QCReport"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
 const QUICKPLAN = lazy(() => import("../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN"));
 const PLAN_STATUS = lazy(() => import("../../pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS"));
@@ -67,58 +61,6 @@ const PRODUCT_BARCODE_MANAGER = lazy(() => import("../../pages/rnd/product_barco
 const KHOTPNEW = lazy(() => import("../../pages/kho/khotp_new/KHOTPNEW"));
 const KHOTP = lazy(() => import("../../pages/kho/khotp/KHOTP"));
 const EQ_STATUS2 = lazy(() => import("../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2"));
-/* import MACHINE from "../../pages/qlsx/QLSXPLAN/Machine/MACHINE";
-import QUICKPLAN from "../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
-import PLAN_STATUS from "../../pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
-import QuanLyPhongBanNhanSu from "../../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
-import DiemDanhNhom from "../../pages/nhansu/DiemDanhNhom/DiemDanhNhom";
-import DieuChuyenTeam from "../../pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
-import TabDangKy from "../../pages/nhansu/DangKy/TabDangKy";
-import PheDuyetNghi from "../../pages/nhansu/PheDuyetNghi/PheDuyetNghi";
-import LichSu from "../../pages/nhansu/LichSu/LichSu";
-import QuanLyCapCao from "../../pages/nhansu/QuanLyCapCao/QuanLyCapCao";
-import BaoCaoNhanSu from "../../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import PoManager from "../../pages/kinhdoanh/pomanager/PoManager";
-import InvoiceManager from "../../pages/kinhdoanh/invoicemanager/InvoiceManager";
-import PlanManager from "../../pages/kinhdoanh/planmanager/PlanManager";
-import ShortageKD from "../../pages/kinhdoanh/shortageKD/ShortageKD";
-import FCSTManager from "../../pages/kinhdoanh/fcstmanager/FCSTManager";
-import YCSXManager from "../../pages/kinhdoanh/ycsxmanager/YCSXManager";
-import POandStockFull from "../../pages/kinhdoanh/poandstockfull/POandStockFull";
-import CODE_MANAGER from "../../pages/rnd/code_manager/CODE_MANAGER";
-import BOM_MANAGER from "../../pages/rnd/bom_manager/BOM_MANAGER";
-import CUST_MANAGER from "../../pages/kinhdoanh/custManager/CUST_MANAGER";
-import EQ_STATUS from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
-import INSPECT_STATUS from "../../pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
-import KinhDoanhReport from "../../pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
-import KIEMTRA from "../../pages/qc/inspection/KIEMTRA";
-import DTC from "../../pages/qc/dtc/DTC";
-import ISO from "../../pages/qc/iso/ISO";
-import QC from "../../pages/qc/QC";
-import IQC from "../../pages/qc/iqc/IQC";
-import PQC from "../../pages/qc/pqc/PQC";
-import OQC from "../../pages/qc/oqc/OQC";
-import BOM_AMAZON from "../../pages/rnd/bom_amazon/BOM_AMAZON";
-import DESIGN_AMAZON from "../../pages/rnd/design_amazon/DESIGN_AMAZON";
-import QLSXPLAN from "../../pages/qlsx/QLSXPLAN/QLSXPLAN";
-import DATASX2 from "../../pages/qlsx/QLSXPLAN/DATASX/DATASX2";
-import TRANGTHAICHITHI from "../../pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
-import KHOLIEU from "../../pages/kho/kholieu/KHOLIEU";
-import KHOAO from "../../pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
-import LICHSUINPUTLIEU from "../../pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import TINHHINHCUONLIEU from "../../pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
-import CSTOTAL from "../../pages/qc/cs/CSTOTAL";
-import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-import PLAN_DATATB from "../../pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB";
-import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
-import PLANRESULT from "../../pages/sx/PLANRESULT/PLANRESULT";
-import BANGCHAMCONG from "../../pages/nhansu/BangChamCong/BangChamCong";
-import QuotationTotal from "../../pages/kinhdoanh/quotationmanager/QuotationTotal";
-import QLVL from "../../pages/muahang/quanlyvatlieu/QLVL";
-import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
-import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
-import KHOTP from "../../pages/kho/khotp/KHOTP";
-import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2"; */
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -310,7 +252,7 @@ const SubMenu = ({ item }: { item: any }) => {
     {
       MENU_CODE: "QC10",
       MENU_NAME: getlang("baocaoqc", lang),
-      MENU_ITEM: <QC />,
+      MENU_ITEM: <QCReport />,
     },
     {
       MENU_CODE: "RD1",

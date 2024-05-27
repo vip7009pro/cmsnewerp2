@@ -26,6 +26,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import CHAT from "../chat/CHAT";
+const QCReport = lazy(() => import("../qc/qcreport/QCReport"));
 const SettingPage = lazy(() => import("../setting/SettingPage"));
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
@@ -302,7 +303,7 @@ function Home() {
     {
       MENU_CODE: "QC10",
       MENU_NAME: getlang("baocaoqc", lang),
-      MENU_ITEM: <QC />,
+      MENU_ITEM: <QCReport/>,
     },
     {
       MENU_CODE: "RD1",

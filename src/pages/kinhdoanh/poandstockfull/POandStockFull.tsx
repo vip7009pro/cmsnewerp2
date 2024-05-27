@@ -1735,8 +1735,7 @@ const POandStockFull = () => {
                 enterNavigatesVerticallyAfterEdit={true}
                 stopEditingWhenCellsLoseFocus={true}
                 rowBuffer={10}
-                debounceVerticalScrollbar={false}
-                enableRangeSelection={true}
+                debounceVerticalScrollbar={false}               
                 floatingFiltersHeight={23}
                 onSelectionChanged={onSelectionChanged}
                 onRowClicked={(params: any) => {

@@ -2365,44 +2365,6 @@ const CODE_MANAGER = () => {
                 Update BEP
               </IconButton>
             </div>
-            {/* <div
-              className="ag-theme-quartz" // applying the grid theme
-              style={{ height: '100%' }} // the grid will fill the size of the parent container
-            >
-              <AgGridReact
-                rowData={rows}
-                columnDefs={column_codeinfo2}
-                rowHeight={25}
-                defaultColDef={defaultColDef}
-                ref={gridRef}
-                onGridReady={() => {
-                  setHeaderHeight(20);
-                }}
-                columnHoverHighlight={true}
-                rowStyle={rowStyle}
-                getRowStyle={getRowStyle}
-                getRowId={(params: any) => params.data.G_CODE}
-                rowSelection={"multiple"}
-                rowMultiSelectWithClick={true}
-                suppressRowClickSelection={true}
-                enterNavigatesVertically={true}
-                enterNavigatesVerticallyAfterEdit={true}
-                stopEditingWhenCellsLoseFocus={true}
-                rowBuffer={10}
-                debounceVerticalScrollbar={false}
-                enableRangeSelection={true}
-                floatingFiltersHeight={23}
-                onSelectionChanged={onSelectionChanged}
-                onRowClicked={(params: any) => {
-                  //setClickedRows(params.data)
-                  //console.log(params.data)
-                }}
-                onCellEditingStopped={(params: any) => {
-                  //console.log(params)
-                }}
-              />
-            </div> */}
-
             <AGTable
               showFilter={true}             
               columns={column_codeinfo2}

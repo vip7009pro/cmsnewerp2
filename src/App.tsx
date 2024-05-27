@@ -32,6 +32,8 @@ import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
 import KHOTABS from "./pages/kho/KHOTABS";
+
+const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
 const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
@@ -106,9 +108,6 @@ const TRANGTHAICHITHI = lazy(
 );
 const CAPASX = lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX"));
 const KHOAO = lazy(() => import("./pages/qlsx/QLSXPLAN/KHOAO/KHOAO"));
-const TINHINHCUONLIEU = lazy(
-  () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU")
-);
 const QLSXPLAN = lazy(() => import("./pages/qlsx/QLSXPLAN/QLSXPLAN"));
 const BOM_MANAGER = lazy(() => import("./pages/rnd/bom_manager/BOM_MANAGER"));
 const BOM_AMAZON = lazy(() => import("./pages/rnd/bom_amazon/BOM_AMAZON"));
@@ -388,32 +387,6 @@ function App() {
     (state: RootState) => state.totalSlice.loginState
   );
   const dispatch = useDispatch();
-  const checkERPLicense = async () => {
-    //if (getSever() !== 'http://192.168.1.192:5013') {
-    console.log(loginState)
-    if (true) {
-      console.log("Vao check license")
-      generalQuery("checkLicense", {
-        COMPANY: getCompany()
-      })
-        .then((response) => {
-          console.log('hohoho', response.data.message);
-          if (response.data.tk_status !== "NG") {
-            console.log(response.data.message);
-          } else {
-            if (userData.EMPL_NO.toUpperCase() === 'NHU1903') {
-              console.log(response.data.message);
-              Swal.fire('Thông báo', 'Please check your network', 'error');
-              LGOUTF();
-              /*  dispatch(logout(true));    */
-            }
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }
   //console.log(userData.JOB_NAME);
   useEffect(() => {
     console.log("check login");
@@ -933,7 +906,7 @@ function App() {
                               maindeptname='all'
                               jobname='Leader'
                             >
-                              <QC />
+                              <QCReport />
                             </ProtectedRoute>
                           }
                         />

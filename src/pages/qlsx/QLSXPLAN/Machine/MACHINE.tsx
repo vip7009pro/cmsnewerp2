@@ -3843,7 +3843,7 @@ const MACHINE = () => {
         }}
         onCellClick={(params: any) => {
           let rowData: QLSXPLANDATA = params.data;
-          setSelectedPlan(rowData);
+          setSelectedPlan(prev => rowData);
           setDataDinhMuc({
             ...datadinhmuc,
             FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
@@ -3887,7 +3887,7 @@ const MACHINE = () => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()
         }} />
     )
-  }, [plandatatable, selectedMachine, selectedFactory])
+  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
   const planMaterialTableAG = useMemo(() =>
     <AGTable
       showFilter={false}

@@ -547,35 +547,7 @@ const NavMenu = () => {
           icon: <FaWarehouse color="#fc00ff" size={20} />,
           MENU_CODE: "SX8",
           cName: "sub-nav",
-        },
-        /*   {
-              title: getlang("lichsuxuatlieuthat", lang),
-              path: "sx/lichsuxuatlieu",
-              icon: <FcDataProtection color="#cc00ff" size={20} />,
-              MENU_CODE: "SX9",
-              cName: "sub-nav",
-          },
-          {
-              title: getlang("lichsutemlotsx", lang),
-              path: "sx/lichsutemlotsx",
-              icon: <GiPostStamp  color="#cea70e" size={20} />,
-              MENU_CODE: "SX14",
-              cName: "sub-nav",
-          },
-          {
-              title: getlang("materiallotstatus", lang),
-              path: "sx/materiallotstatus",
-              icon: <FaScroll color="black" size={20} />,
-              MENU_CODE: "SX10",
-              cName: "sub-nav",
-          },
-          {
-              title: getlang("sxrolldata", lang),
-              path: "sx/rolldata",
-              icon: <FaPaintRoller color="#04a29d" size={20} />,
-              MENU_CODE: "SX13",
-              cName: "sub-nav",
-          }, */
+        },        
         {
           title: getlang("quanlycapa", lang),
           path: "sx/capamanager",
