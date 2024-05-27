@@ -11,7 +11,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
   const stoptopcolor: string = "white";
   const stopbotcolor: string = "black";
   //console.log(`${machine_data.machine_name}`,moment.utc(machine_data.upd_time).format('YYYY-MM-DD HH:mm:ss'));
-  var date1 = moment.utc();
+  var date1 = moment(moment.utc().format("YYYY-MM-DD HH:mm:ss")).utc();
   var date2 = moment.utc(machine_data.upd_time).format("YYYY-MM-DD HH:mm:ss");
   var diff: number = date1.diff(date2, "minutes");
 

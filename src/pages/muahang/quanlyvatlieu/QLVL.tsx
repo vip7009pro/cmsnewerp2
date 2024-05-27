@@ -1,36 +1,16 @@
 import {
   Button,
   Autocomplete,
-  Checkbox,
-  FormControlLabel,
   IconButton,
   TextField,
   createFilterOptions,
 } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
 import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -38,7 +18,7 @@ import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
-import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
+import {CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";

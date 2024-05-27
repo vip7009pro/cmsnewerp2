@@ -25,6 +25,7 @@ const AGTable = (ag_data: AGInterface) => {
   };
   const onRowdoubleClick = (params: any) => {
   }
+  const gridRef = useRef<AgGridReact<any>>(null);
   const tableSelectionChange = useCallback(() => {
     const selectedrows = gridRef.current!.api.getSelectedRows().length;
     setSelectedrow(selectedrows);
@@ -37,7 +38,6 @@ const AGTable = (ag_data: AGInterface) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
     //setIdText("headerHeight", value);
   }, []);
-  const gridRef = useRef<AgGridReact<any>>(null);
   const defaultColDef = useMemo(() => {
     return {
       initialWidth: 100,
