@@ -391,7 +391,7 @@ const PLAN_DATATB = () => {
       }
     },
     {
-      field: "IS_SETTING", headerName: "IS_SETTING", width: 50, cellRenderer: (params: any) => {
+      field: "IS_SETTING", headerName: "IS_SETTING", width: 50, editable: true,  cellRenderer: (params: any) => {
         if (params.data.IS_SETTING === 'Y')
           return (
             <span style={{ color: "blue", fontWeight: "bold" }}>
