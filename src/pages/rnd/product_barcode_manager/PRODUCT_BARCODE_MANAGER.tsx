@@ -47,7 +47,6 @@ import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
-
 const PRODUCT_BARCODE_MANAGER = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<
@@ -136,7 +135,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
         console.log(error);
       });
     console.log("barcodeExist", barcodeExist);
-
     if (barcodeExist === false) {
       await generalQuery("addBarcode", selectedRows)
         .then((response) => {
