@@ -1,31 +1,20 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import Sidebar from "../../components/Sidebar/Sidebar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
-import { ReactElement, Suspense, useEffect, useRef, useState, lazy, useContext } from "react";
-import { generalQuery, getSever, getUserData, logout } from "../../api/Api";
+import { Suspense, useEffect, useRef, useState, useContext } from "react";
+import { generalQuery, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
-import {
-  Box,
-  Button,
-  IconButton,
-  Tab,
-  TabProps,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
+import { closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
-import FallBackComponent from "../../components/Fallback/FallBackComponent";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-import { Draggable } from "devextreme-react";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import QuanLyPhongBanNhanSu from "../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
 import DiemDanhNhom from "../nhansu/DiemDanhNhom/DiemDanhNhom";

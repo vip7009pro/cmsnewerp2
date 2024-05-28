@@ -1,16 +1,4 @@
-import React, {
-  ChangeEvent,
-  Component,
-  ReactElement,
-  Suspense,
-  lazy,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import SearchIcon from "@mui/icons-material/Search";
+import { useContext, useEffect, useRef, useState } from "react";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -19,7 +7,6 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
-import { UserContext } from "../../api/Context";
 import { FcList } from "react-icons/fc";
 import {
   toggleSidebar,
