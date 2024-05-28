@@ -29,19 +29,78 @@ import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
-import { current_ver } from "./pages/home/Home";
+import Home, { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
 import KHOTABS from "./pages/kho/KHOTABS";
 import KHOTP from "./pages/kho/khotp/KHOTP";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
-const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
+import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
+import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
+import KinhDoanh from "./pages/kinhdoanh/KinhDoanh";
+import KinhDoanhReport from "./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
+import PoManager from "./pages/kinhdoanh/pomanager/PoManager";
+import InvoiceManager from "./pages/kinhdoanh/invoicemanager/InvoiceManager";
+import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
+import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
+import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
+import Login from "./pages/login/Login";
+import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
+import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
+import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
+import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
+import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
+import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
+import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
+import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
+import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
+import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
+import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
+import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
+import QLSX from "./pages/qlsx/QLSX";
+import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
+import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
+import TINHLIEU from "./pages/muahang/tinhlieu/TINHLIEU";
+import MUAHANG from "./pages/muahang/MUAHANG";
+import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
+import KHOTOTAL from "./pages/kho/KHOTOTAL";
+import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
+import KHOLIEU from "./pages/kho/kholieu/KHOLIEU";
+import SettingPage from "./pages/setting/SettingPage";
+import DTC from "./pages/qc/dtc/DTC";
+import QC from "./pages/qc/QC";
+import IQC from "./pages/qc/iqc/IQC";
+import PQC from "./pages/qc/pqc/PQC";
+import OQC from "./pages/qc/oqc/OQC";
+import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
+import CSTOTAL from "./pages/qc/cs/CSTOTAL";
+import ISO from "./pages/qc/iso/ISO";
+import QCReport from "./pages/qc/qcreport/QCReport";
+import BAOCAOSXALL from "./pages/sx/BAOCAOSXALL";
+import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
+import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
+import LICHSUTEMLOTSX from "./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
+import TINHHINHCUONLIEU from "./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import BAOCAOTHEOROLL from "./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
+import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
+import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
+import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
+import NhanSu from "./pages/nhansu/NhanSu";
+import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
+import DieuChuyenTeam from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
+import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
+import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
+import LichSu from "./pages/nhansu/LichSu/LichSu";
+import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
+import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
+import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
+/* const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
 const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
-const Login = React.lazy(() => import("./pages/login/Login"));
-const BAOCAOTHEOROLL = lazy(
+const Login = React.lazy(() => import("./pages/login/Login")); */
+/* const BAOCAOTHEOROLL = lazy(
   () => import("./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL")
 );
 const TINHLIEU = lazy(
@@ -76,9 +135,6 @@ const CSTOTAL = lazy(() => import("./pages/qc/cs/CSTOTAL"));
 const QuotationManager = lazy(
   () => import("./pages/kinhdoanh/quotationmanager/QuotationManager")
 );
-/* const BulletinBoard = lazy(
-  () => import("./components/BulletinBoard/BulletinBoard")
-); */
 const QLSX = lazy(() => import("./pages/qlsx/QLSX"));
 const QC = lazy(() => import("./pages/qc/QC"));
 const NhanSu = lazy(() => import("./pages/nhansu/NhanSu"));
@@ -158,7 +214,7 @@ const POandStockFull = lazy(
 );
 const TINHHINHCUONLIEU = lazy(
   () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU")
-);
+); */
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
