@@ -51,8 +51,8 @@ import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
-import "ag-grid-community/styles/ag-theme-quartz.css";
+/* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
+import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 const PLAN_DATATB = () => {
   const dataGridRef = useRef<any>(null);
@@ -85,13 +85,13 @@ const PLAN_DATATB = () => {
     const selectedrow = gridRef.current!.api.getSelectedRows();
     qlsxplandatafilter.current = selectedrow;
   }, []);
-  function setIdText(id: string, value: string | number | undefined) {
+ /*  function setIdText(id: string, value: string | number | undefined) {
     document.getElementById(id)!.textContent =
       value == undefined ? "undefined" : value + "";
-  }
+  } */
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
+    //setIdText("headerHeight", value);
   }, []);
   const clearSelectedRows = useCallback(() => {
     gridRef.current!.api.deselectAll();
@@ -180,21 +180,21 @@ const PLAN_DATATB = () => {
       headerName: "PLAN_ID",
       width: 70,
       editable: false,
-      resizeable: true,
+      resizable: true,
     },
     {
       field: "G_CODE",
       headerName: "G_CODE",
       width: 70,
       editable: false,
-      resizeable: true,
+      resizable: true,
     },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 120,
       editable: false,
-      resizeable: true,
+      resizable: true,
     },
     {
       field: "G_NAME_KD",

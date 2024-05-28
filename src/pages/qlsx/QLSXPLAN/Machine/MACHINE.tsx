@@ -1333,7 +1333,7 @@ const MACHINE = () => {
       headerCheckboxSelection: true,
       checkboxSelection: true,
       editable: false,
-      resizeable: true,
+      resizable: true,
       cellRenderer: (params: any) => {
         if (params.data.DKXL === null) {
           return <span style={{ color: "red" }}>{params.data.PLAN_ID}</span>;

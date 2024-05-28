@@ -55,9 +55,9 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../api/GlobalInterface";
-import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
+/* import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../components/DataTable/AGTable";
 const YCSXManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);

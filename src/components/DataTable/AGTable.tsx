@@ -1,8 +1,6 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
 import { IconButton } from '@mui/material';
 import { AiFillFileExcel } from 'react-icons/ai';
 interface AGInterface {
@@ -52,6 +50,9 @@ const AGTable = (ag_data: AGInterface) => {
   const onExportClick = () => {
     gridRef.current!.api.exportDataAsCsv();
   };
+  useEffect(()=> {
+    
+  },[])
   return (
     <div className='agtable'>
       {ag_data.toolbar !== undefined && <div className="toolbar">
@@ -64,7 +65,17 @@ const AGTable = (ag_data: AGInterface) => {
           }}
         >
           <AiFillFileExcel color="green" size={15} />
-          SAVE
+          CSV
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            //onExportClick();
+            //SaveExcel(ag_data.data, "Data Table");
+          }}
+        >
+          <AiFillFileExcel color="green" size={15} />
+          EXCEL
         </IconButton>
       </div>}
       

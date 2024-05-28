@@ -204,8 +204,7 @@ const BOM_MANAGER = () => {
     FSC: "N",
     PROD_DVT: "01",
     QL_HSD: "Y",
-    EXP_DATE:'0',    
-
+    EXP_DATE: '0',
   });
   const [file, setFile] = useState<any>(null);
   const [file2, setFile2] = useState<any>(null);
@@ -1784,33 +1783,64 @@ const BOM_MANAGER = () => {
       handleinsertCodeTBG(newGCODE);
     }
   };
-  const handleUpdateCode = async () => {
-    if ((getCompany() === 'CMS') && await handleCheckCodeInfo2() || getCompany() !== 'CMS') {
-      let tempInfo = codefullinfo;
-      if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
-        tempInfo = { ...codefullinfo, PD_HSD: 'P' }
+  const checkMAINVLMatching = (): boolean=> {
+    let checkM: boolean = false;
+    if(bomsxtable.length > 0) {
+      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number)=> ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";
+      console.log(mainM);
+      console.log(selectedMasterMaterial.M_NAME);
+      if(mainM === 'NG') {
+        checkM = false;
+        Swal.fire('Thông báo','Bom VL chưa set liệu chính','error')
       }
       else {
-        tempInfo = { ...codefullinfo, PD_HSD: 'N' }
-      }
-      await generalQuery("updateM100", tempInfo)
-        .then((response) => {
-          ////console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire(
-              "Thông báo",
-              "Update thành công: " + codefullinfo.G_CODE,
-              "success",
-            );
-          } else {
-            Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          //console.log(error);
-        });
-      confirmUpdateM100TBG();
+        if(mainM === selectedMasterMaterial.M_NAME) {
+          checkM = true;
+        }
+        else {
+          checkM = false;
+          Swal.fire('Thông báo','Liệu chính được chọn không khớp liệu chính trong BOM VL','error')
+        }
+      }      
     }
+    else {
+      checkM = true;
+    }
+    
+
+    return checkM;
+  }
+  const handleUpdateCode = async () => {
+    if(checkMAINVLMatching()) {
+      if ((getCompany() === 'CMS') && await handleCheckCodeInfo2() || getCompany() !== 'CMS') {
+        let tempInfo = codefullinfo;
+        if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
+          tempInfo = { ...codefullinfo, PD_HSD: 'P' }
+        }
+        else {
+          tempInfo = { ...codefullinfo, PD_HSD: 'N' }
+        }
+        await generalQuery("updateM100", tempInfo)
+          .then((response) => {
+            ////console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              Swal.fire(
+                "Thông báo",
+                "Update thành công: " + codefullinfo.G_CODE,
+                "success",
+              );
+            } else {
+              Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            //console.log(error);
+          });
+        confirmUpdateM100TBG();
+      }
+
+    }
+  
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -1861,159 +1891,162 @@ const BOM_MANAGER = () => {
   };
   const handleInsertBOMSX = async () => {
     if (bomgiatable.length > 0) {
-      if (bomsxtable.length > 0) {
-        //delete old bom from M140
-        let err_code: string = "0";
-        let total_lieuql_sx: number = 0;
-        let check_lieuql_sx_sot: number = 0;
-        let check_num_lieuql_sx: number = 1;
-        let check_lieu_qlsx_khac1: number = 0;
-        let m_list: string = "";
-        ////console.log(chithidatatable);
-        for (let i = 0; i < bomsxtable.length; i++) {
-          total_lieuql_sx += bomsxtable[i].LIEUQL_SX;
-          if (bomsxtable[i].LIEUQL_SX > 1) check_lieu_qlsx_khac1 += 1;
-        }
-        for (let i = 0; i < bomsxtable.length; i++) {
-          ////console.log(bomsxtable[i].LIEUQL_SX);
-          if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
-            for (let j = 0; j < bomsxtable.length; j++) {
-              if (
-                bomsxtable[j].M_NAME === bomsxtable[i].M_NAME &&
-                parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 0
-              ) {
-                check_lieuql_sx_sot += 1;
-              }
-            }
+      if(checkMAINVLMatching()) {
+        if (bomsxtable.length > 0) {
+          //delete old bom from M140
+          let err_code: string = "0";
+          let total_lieuql_sx: number = 0;
+          let check_lieuql_sx_sot: number = 0;
+          let check_num_lieuql_sx: number = 1;
+          let check_lieu_qlsx_khac1: number = 0;
+          let m_list: string = "";
+          ////console.log(chithidatatable);
+          for (let i = 0; i < bomsxtable.length; i++) {
+            total_lieuql_sx += bomsxtable[i].LIEUQL_SX;
+            if (bomsxtable[i].LIEUQL_SX > 1) check_lieu_qlsx_khac1 += 1;
           }
-        }
-        ////console.log('bang chi thi', bomsxtable);
-        for (let i = 0; i < bomsxtable.length; i++) {
-          if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
-            for (let j = 0; j < bomsxtable.length; j++) {
-              if (parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 1) {
-                ////console.log('i', bomsxtable[i].M_NAME);
-                ////console.log('j', bomsxtable[j].M_NAME);
-                if (bomsxtable[i].M_NAME !== bomsxtable[j].M_NAME) {
-                  check_num_lieuql_sx = 2;
+          for (let i = 0; i < bomsxtable.length; i++) {
+            ////console.log(bomsxtable[i].LIEUQL_SX);
+            if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
+              for (let j = 0; j < bomsxtable.length; j++) {
+                if (
+                  bomsxtable[j].M_NAME === bomsxtable[i].M_NAME &&
+                  parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 0
+                ) {
+                  check_lieuql_sx_sot += 1;
                 }
               }
             }
           }
-        }
-        ////console.log('num lieu qlsx: ' + check_num_lieuql_sx);
-        ////console.log('tong lieu qly: '+ total_lieuql_sx);
-        for (let i = 0; i < bomsxtable.length - 1; i++) {
-          m_list += `'${bomsxtable[i].M_CODE}',`;
-        }
-        m_list += `'${bomsxtable[bomsxtable.length - 1].M_CODE}'`;
-        //console.log("m_list", m_list);
-        if (
-          total_lieuql_sx > 0 &&
-          check_lieuql_sx_sot === 0 &&
-          check_num_lieuql_sx === 1 &&
-          check_lieu_qlsx_khac1 === 0
-        ) {
-        } else {
-          err_code += " | Check lại liệu quản lý (liệu chính)";
-        }
-        if (err_code === "0") {
-          await generalQuery("deleteM140_2", {
-            G_CODE: codefullinfo.G_CODE,
-            M_LIST: m_list,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                ////console.log(response.data.data);
-              } else {
-              }
-            })
-            .catch((error) => {
-              //console.log(error);
-            });
-          let max_g_seq: string = "001";
-          await generalQuery("checkGSEQ_M140", {
-            G_CODE: codefullinfo.G_CODE,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                ////console.log(response.data.data);
-                max_g_seq = response.data.data[0].MAX_G_SEQ;
-              } else {
-                max_g_seq = "001";
-              }
-            })
-            .catch((error) => {
-              //console.log(error);
-            });
+          ////console.log('bang chi thi', bomsxtable);
           for (let i = 0; i < bomsxtable.length; i++) {
-            let check_M_CODE: boolean = false;
-            await generalQuery("check_m_code_m140", {
+            if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
+              for (let j = 0; j < bomsxtable.length; j++) {
+                if (parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 1) {
+                  ////console.log('i', bomsxtable[i].M_NAME);
+                  ////console.log('j', bomsxtable[j].M_NAME);
+                  if (bomsxtable[i].M_NAME !== bomsxtable[j].M_NAME) {
+                    check_num_lieuql_sx = 2;
+                  }
+                }
+              }
+            }
+          }
+          ////console.log('num lieu qlsx: ' + check_num_lieuql_sx);
+          ////console.log('tong lieu qly: '+ total_lieuql_sx);
+          for (let i = 0; i < bomsxtable.length - 1; i++) {
+            m_list += `'${bomsxtable[i].M_CODE}',`;
+          }
+          m_list += `'${bomsxtable[bomsxtable.length - 1].M_CODE}'`;
+          //console.log("m_list", m_list);
+          if (
+            total_lieuql_sx > 0 &&
+            check_lieuql_sx_sot === 0 &&
+            check_num_lieuql_sx === 1 &&
+            check_lieu_qlsx_khac1 === 0
+          ) {
+          } else {
+            err_code += " | Check lại liệu quản lý (liệu chính)";
+          }
+          if (err_code === "0") {
+            await generalQuery("deleteM140_2", {
               G_CODE: codefullinfo.G_CODE,
-              M_CODE: bomsxtable[i].M_CODE,
+              M_LIST: m_list,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   ////console.log(response.data.data);
-                  check_M_CODE = true;
                 } else {
-                  check_M_CODE = false;
                 }
               })
               .catch((error) => {
                 //console.log(error);
               });
-            if (check_M_CODE) {
-              await generalQuery("update_M140", {
+            let max_g_seq: string = "001";
+            await generalQuery("checkGSEQ_M140", {
+              G_CODE: codefullinfo.G_CODE,
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  ////console.log(response.data.data);
+                  max_g_seq = response.data.data[0].MAX_G_SEQ;
+                } else {
+                  max_g_seq = "001";
+                }
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
+            for (let i = 0; i < bomsxtable.length; i++) {
+              let check_M_CODE: boolean = false;
+              await generalQuery("check_m_code_m140", {
                 G_CODE: codefullinfo.G_CODE,
                 M_CODE: bomsxtable[i].M_CODE,
-                M_QTY: bomsxtable[i].M_QTY,
-                MAIN_M:
-                  bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
-                LIEUQL_SX:
-                  bomsxtable[i].LIEUQL_SX === null
-                    ? "0"
-                    : bomsxtable[i].LIEUQL_SX,
               })
                 .then((response) => {
                   if (response.data.tk_status !== "NG") {
                     ////console.log(response.data.data);
+                    check_M_CODE = true;
                   } else {
+                    check_M_CODE = false;
                   }
                 })
                 .catch((error) => {
                   //console.log(error);
                 });
-            } else {
-              await generalQuery("insertM140", {
-                G_CODE: codefullinfo.G_CODE,
-                G_SEQ: zeroPad(parseInt(max_g_seq) + i + 1, 3),
-                M_CODE: bomsxtable[i].M_CODE,
-                M_QTY: bomsxtable[i].M_QTY,
-                MAIN_M:
-                  bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
-                LIEUQL_SX:
-                  bomsxtable[i].LIEUQL_SX === null
-                    ? "0"
-                    : bomsxtable[i].LIEUQL_SX,
-              })
-                .then((response) => {
-                  if (response.data.tk_status !== "NG") {
-                    ////console.log(response.data.data);
-                  } else {
-                  }
+              if (check_M_CODE) {
+                await generalQuery("update_M140", {
+                  G_CODE: codefullinfo.G_CODE,
+                  M_CODE: bomsxtable[i].M_CODE,
+                  M_QTY: bomsxtable[i].M_QTY,
+                  MAIN_M:
+                    bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
+                  LIEUQL_SX:
+                    bomsxtable[i].LIEUQL_SX === null
+                      ? "0"
+                      : bomsxtable[i].LIEUQL_SX,
                 })
-                .catch((error) => {
-                  //console.log(error);
-                });
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      ////console.log(response.data.data);
+                    } else {
+                    }
+                  })
+                  .catch((error) => {
+                    //console.log(error);
+                  });
+              } else {
+                await generalQuery("insertM140", {
+                  G_CODE: codefullinfo.G_CODE,
+                  G_SEQ: zeroPad(parseInt(max_g_seq) + i + 1, 3),
+                  M_CODE: bomsxtable[i].M_CODE,
+                  M_QTY: bomsxtable[i].M_QTY,
+                  MAIN_M:
+                    bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
+                  LIEUQL_SX:
+                    bomsxtable[i].LIEUQL_SX === null
+                      ? "0"
+                      : bomsxtable[i].LIEUQL_SX,
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      ////console.log(response.data.data);
+                    } else {
+                    }
+                  })
+                  .catch((error) => {
+                    //console.log(error);
+                  });
+              }
             }
+          } else {
+            Swal.fire("Thông báo", "" + err_code, "error");
           }
         } else {
-          Swal.fire("Thông báo", "" + err_code, "error");
+          Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
         }
-      } else {
-        Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
       }
+      
     } else {
       Swal.fire(
         "Thông báo",
@@ -2805,29 +2838,14 @@ const BOM_MANAGER = () => {
                   DEPRECATION_UNIT: 0,
                   GMANAGEMENT_UNIT: 0,
                   M_LOSS_UNIT: 0,
-                  G_WIDTH:
-                    codefullinfo?.G_WIDTH !== undefined
-                      ? codefullinfo.G_WIDTH
-                      : 0,
-                  G_LENGTH:
-                    codefullinfo?.G_LENGTH !== undefined
-                      ? codefullinfo.G_LENGTH
-                      : 0,
-                  G_C: codefullinfo?.G_C !== undefined ? codefullinfo.G_C : 0,
-                  G_C_R:
-                    codefullinfo?.G_C_R !== undefined ? codefullinfo.G_C_R : 0,
-                  G_LG:
-                    codefullinfo?.G_LG !== undefined ? codefullinfo.G_LG : 0,
-                  G_CG:
-                    codefullinfo?.G_CG !== undefined ? codefullinfo.G_CG : 0,
-                  G_SG_L:
-                    codefullinfo?.G_SG_L !== undefined
-                      ? codefullinfo.G_SG_L
-                      : 0,
-                  G_SG_R:
-                    codefullinfo?.G_SG_R !== undefined
-                      ? codefullinfo.G_SG_R
-                      : 0,
+                  G_WIDTH: codefullinfo?.G_WIDTH ?? 0,
+                  G_LENGTH: codefullinfo?.G_LENGTH??0,
+                  G_C: codefullinfo?.G_C ?? 0,
+                  G_C_R: codefullinfo?.G_C_R ?? 0,
+                  G_LG: codefullinfo?.G_LG ?? 0,
+                  G_CG: codefullinfo?.G_CG ?? 0,
+                  G_SG_L:codefullinfo?.G_SG_L ?? 0,
+                  G_SG_R: codefullinfo?.G_SG_R ?? 0,
                   PROD_PRINT_TIMES: 0,
                   KNIFE_COST: 0,
                   FILM_COST: 0,
@@ -3628,7 +3646,7 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                    {getCompany()==='CMS' &&<label>
+                    {getCompany() === 'CMS' && <label>
                       QL_HSD:
                       <select
                         disabled={enableform}
@@ -3646,7 +3664,7 @@ const BOM_MANAGER = () => {
                         <option value="N">NO</option>
                       </select>
                     </label>}
-                    {getCompany()==='CMS' && <label>
+                    {getCompany() === 'CMS' && <label>
                       HSD
                       <select
                         disabled={enableform}
@@ -3677,7 +3695,7 @@ const BOM_MANAGER = () => {
                         </a>
                       </span>
                       __
-                      {getCompany()==='CMS' && <span style={{ color: "gray" }}>
+                      {getCompany() === 'CMS' && <span style={{ color: "gray" }}>
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
@@ -3712,7 +3730,7 @@ const BOM_MANAGER = () => {
                       </div>
                     </label>
                     <label>
-                      {getCompany()==='CMS' && <div className="updiv">
+                      {getCompany() === 'CMS' && <div className="updiv">
                         Up appsheet
                         <div className="uploadfile">
                           <IconButton

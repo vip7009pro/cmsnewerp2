@@ -32,7 +32,9 @@ import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
 import KHOTABS from "./pages/kho/KHOTABS";
-
+import KHOTP from "./pages/kho/khotp/KHOTP";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
 const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
@@ -760,7 +762,7 @@ function App() {
                       >
                         <Route index element={<KHOTABS />} />
                         <Route path='khotabs' element={<KHOTABS />} />
-                        <Route path='nhapxuattontp' element={<KHOTPNEW />} />
+                        <Route path='nhapxuattontp' element={getCompany() !== 'CMS' ? <KHOTPNEW /> : <KHOTP />} />
                         <Route path='nhapxuattonlieu' element={<KHOLIEU />} />
                       </Route>
                       <Route

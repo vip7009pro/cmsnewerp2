@@ -462,108 +462,110 @@ export default function AccountInfo() {
             {getsentence(37, lang)} {thuongphat.count_thuong} , {/* Kỷ luật */}
             {getsentence(38, lang)}: {thuongphat.count_phat}
           </h3>{" "}
-          <h3 className='h3h3' style={{ color: "black" }}>
-            {userdata?.EMPL_NO === "NHU1903" && (
+          <form>
+            <h3 className='h3h3' style={{ color: "black" }}>
+              {userdata?.EMPL_NO === "NHU1903" && (
+                <input
+                  type='text'
+                  value={logoutID}
+                  onChange={(e) => {
+                    setLogOutID(e.target.value);
+                  }}
+                ></input>
+              )}
+              {userdata?.EMPL_NO === "NHU1903" && (
+                <Button
+                  onClick={() => {
+                    dispatch(
+                      update_socket({
+                        event: "notification",
+                        data: {
+                          command: "logout",
+                          EMPL_NO: logoutID,
+                        },
+                      })
+                    );
+                  }}
+                >
+                  X
+                </Button>
+              )}
+              {userdata?.EMPL_NO === "NHU1903" && (
+                <input
+                  type='text'
+                  value={webver}
+                  onChange={(e) => {
+                    setwebver(Number(e.target.value));
+                  }}
+                ></input>
+              )}
+              {userdata?.EMPL_NO === "NHU1903" && (
+                <Button
+                  onClick={() => {
+                    if (webver !== 0) {
+                      setWebVer(webver);
+                    } else {
+                      Swal.fire("Thông báo", "Không setver =0 ", "warning");
+                    }
+                  }}
+                >
+                  Upver
+                </Button>
+              )}
+              {
+                userdata?.EMPL_NO === 'NHU1903' && (
+                  <label>
+                    Chọn Server:
+                    <select
+                      name="select_server"
+                      value={server_string}
+                      onChange={(e) => {
+                        setServer_String(e.target.value);
+                      }}
+                    >
+                      <option value={"http://14.160.33.94:" + 5013}>MAIN_SERVER</option>
+                      <option value={"http://14.160.33.94:" + 3007}>SUB_SERVER</option>
+                      <option value={"http://192.168.1.192:" + 5013}>LAN_SERVER</option>
+                      <option value={"http://cms.ddns.net:" + 5013}>NET_SERVER</option>
+                      <option value={"http://cms.ddns.net:" + 3007}>SUBNET_SERVER</option>
+                    </select>
+                  </label>
+                )
+              }
+              {userdata?.EMPL_NO === "NHU1903" && (
+                <Button
+                  onClick={() => {
+                    getSocket().emit("changeServer", { server: server_string, empl_no: logoutID });
+                  }}
+                >
+                  Set Server
+                </Button>
+              )}
+              Pass hiện tại:
               <input
-                type='text'
-                value={logoutID}
+                type='password'
+                value={currentPW}
                 onChange={(e) => {
-                  setLogOutID(e.target.value);
+                  setCurrentPW(e.target.value);
                 }}
               ></input>
-            )}
-            {userdata?.EMPL_NO === "NHU1903" && (
-              <Button
-                onClick={() => {
-                  dispatch(
-                    update_socket({
-                      event: "notification",
-                      data: {
-                        command: "logout",
-                        EMPL_NO: logoutID,
-                      },
-                    })
-                  );
-                }}
-              >
-                X
-              </Button>
-            )}
-            {userdata?.EMPL_NO === "NHU1903" && (
+              Pass mới:
               <input
-                type='text'
-                value={webver}
+                type='password'
+                value={newPW}
                 onChange={(e) => {
-                  setwebver(Number(e.target.value));
+                  setNewPW(e.target.value);
                 }}
               ></input>
-            )}
-            {userdata?.EMPL_NO === "NHU1903" && (
               <Button
                 onClick={() => {
-                  if (webver !== 0) {
-                    setWebVer(webver);
-                  } else {
-                    Swal.fire("Thông báo", "Không setver =0 ", "warning");
-                  }
+                  handleChangePassWord();
                 }}
               >
-                Upver
+                Change Pass
               </Button>
-            )}
-            {
-              userdata?.EMPL_NO === 'NHU1903' && (
-                <label>
-                  Chọn Server:
-                  <select
-                    name="select_server"
-                    value={server_string}
-                    onChange={(e) => {
-                      setServer_String(e.target.value);
-                    }}
-                  >
-                    <option value={"http://14.160.33.94:" + 5013}>MAIN_SERVER</option>
-                    <option value={"http://14.160.33.94:" + 3007}>SUB_SERVER</option>
-                    <option value={"http://192.168.1.192:" + 5013}>LAN_SERVER</option>
-                    <option value={"http://cms.ddns.net:" + 5013}>NET_SERVER</option>
-                    <option value={"http://cms.ddns.net:" + 3007}>SUBNET_SERVER</option>
-                  </select>
-                </label>
-              )
-            }
-            {userdata?.EMPL_NO === "NHU1903" && (
-              <Button
-                onClick={() => {
-                  getSocket().emit("changeServer", { server: server_string, empl_no: logoutID });
-                }}
-              >
-                Set Server
-              </Button>
-            )}
-            Pass hiện tại:
-            <input
-              type='password'
-              value={currentPW}
-              onChange={(e) => {
-                setCurrentPW(e.target.value);
-              }}
-            ></input>
-            Pass mới:
-            <input
-              type='password'
-              value={newPW}
-              onChange={(e) => {
-                setNewPW(e.target.value);
-              }}
-            ></input>
-            <Button
-              onClick={() => {
-                handleChangePassWord();
-              }}
-            >
-              Change Pass
-            </Button>
-          </h3>{" "}
+            </h3>{" "}
+          </form>
           <br></br>
         </div>
       </div>

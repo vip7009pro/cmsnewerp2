@@ -1,17 +1,16 @@
 import { IconButton } from "@mui/material";
 import {
-
-  GridSelectionModel,  
-  GridToolbarContainer,  
-  GridToolbarQuickFilter,  
-  GridCellEditCommitParams,  
+  GridSelectionModel,
+  GridToolbarContainer,
+  GridToolbarQuickFilter,
+  GridCellEditCommitParams,
 } from "@mui/x-data-grid";
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FcCancel, } from "react-icons/fc";
 import {
   AiFillCheckCircle,
   AiFillEdit,
-  AiFillFileExcel,  
+  AiFillFileExcel,
   AiOutlineCloudUpload,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -25,11 +24,8 @@ import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
-import { AgGridReact, } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; 
-import "ag-grid-community/styles/ag-theme-quartz.css"; 
 import AGTable from "../../../components/DataTable/AGTable";
-const CODE_MANAGER = () => {  
+const CODE_MANAGER = () => {
   const [uploadfile, setUploadFile] = useState<any>(null);
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_FULL_INFO>
@@ -163,7 +159,7 @@ const CODE_MANAGER = () => {
                           "success",
                         );
                         let tempcodeinfodatatable = rows.map(
-                          (element: CODE_FULL_INFO, index: number) => {                            
+                          (element: CODE_FULL_INFO, index: number) => {
                             return element.G_CODE === params.row.G_CODE
                               ? { ...element, BANVE: "Y" }
                               : element;
@@ -248,19 +244,18 @@ const CODE_MANAGER = () => {
                     .then((response) => {
                       if (response.data.tk_status !== "NG") {
                         let tempcodeinfodatatable = rows.map(
-                          (element: CODE_FULL_INFO, index: number) => {                            
+                          (element: CODE_FULL_INFO, index: number) => {
                             return element.G_CODE === params.row.G_CODE
                               ? { ...element, APPSHEET: "Y" }
                               : element;
                           },
-                        );                        
+                        );
                         setRows(tempcodeinfodatatable);
                         Swal.fire(
                           "Thông báo",
                           "Upload Appsheet thành công",
                           "success",
-                        );                        
-                       
+                        );
                       } else {
                         Swal.fire(
                           "Thông báo",
@@ -364,8 +359,8 @@ const CODE_MANAGER = () => {
         );
       },
     },
-    {field: "QL_HSD",headerName: "QL_HSD",width: 80,},
-    {field: "EXP_DATE",headerName: "EXP_DATE",width: 80,},
+    { field: "QL_HSD", headerName: "QL_HSD", width: 80, },
+    { field: "EXP_DATE", headerName: "EXP_DATE", width: 80, },
     {
       field: "TENCODE",
       headerName: "TENCODE",
@@ -383,7 +378,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.PROD_DIECUT_STEP === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -403,7 +398,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.PROD_PRINT_TIMES === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -423,7 +418,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.FACTORY === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -441,7 +436,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.EQ1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -457,7 +452,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.EQ2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -473,7 +468,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.EQ3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -489,7 +484,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.EQ4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -505,7 +500,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Setting1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -523,7 +518,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Setting2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -541,7 +536,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Setting3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -559,7 +554,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Setting4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -577,7 +572,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.UPH1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -593,7 +588,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.UPH2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -609,7 +604,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.UPH3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -625,7 +620,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.UPH4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -641,7 +636,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Step1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -657,7 +652,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Step2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -673,7 +668,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Step3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -689,7 +684,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.Step4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -705,7 +700,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SX1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -723,7 +718,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SX2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -741,7 +736,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SX3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -759,7 +754,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SX4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -777,7 +772,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SETTING1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -797,7 +792,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SETTING2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -817,7 +812,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SETTING3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -837,7 +832,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_SETTING4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -857,7 +852,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_ST_SX1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -875,7 +870,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_ST_SX2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -893,7 +888,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_ST_SX3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -911,7 +906,7 @@ const CODE_MANAGER = () => {
       renderCell: (params: any) => {
         if (params.row.LOSS_ST_SX4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -925,8 +920,10 @@ const CODE_MANAGER = () => {
     { field: "NOTE", headerName: "NOTE", width: 150 },
   ];
   let column_codeinfo2 = [
-    { field: "id", headerName: "ID", width: 70, editable: enableEdit, headerCheckboxSelection: true, 
-    checkboxSelection: true,  },
+    {
+      field: "id", headerName: "ID", width: 70, editable: enableEdit, headerCheckboxSelection: true,
+      checkboxSelection: true,
+    },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
     {
       field: "G_NAME",
@@ -1004,9 +1001,8 @@ const CODE_MANAGER = () => {
       width: 260,
       cellRenderer: (params: any) => {
         let file: any = null;
-        useEffect(()=> {         
-        },[rows]);
-
+        useEffect(() => {
+        }, [rows]);
         const uploadFile2: any = async (e: any) => {
           //console.log(file);
           checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
@@ -1073,8 +1069,8 @@ const CODE_MANAGER = () => {
           return (
             <div className="uploadfile">
               <IconButton className="buttonIcon" onClick={(e) => {
-                  uploadFile2(e);
-                }}
+                uploadFile2(e);
+              }}
               >
                 <AiOutlineCloudUpload color="yellow" size={15} />
                 Upload
@@ -1115,7 +1111,7 @@ const CODE_MANAGER = () => {
                           "Thông báo",
                           "Upload Appsheet thành công",
                           "success",
-                        );                        
+                        );
                         /* let tempcodeinfodatatable = rows.map(
                           (element: CODE_FULL_INFO, index: number) => {
                             console.log("element G_CODE", element.G_CODE);
@@ -1228,8 +1224,8 @@ const CODE_MANAGER = () => {
         );
       },
     },
-    {field: "QL_HSD",headerName: "QL_HSD",width: 80,},
-    {field: "EXP_DATE",headerName: "EXP_DATE",width: 80,},
+    { field: "QL_HSD", headerName: "QL_HSD", width: 80, },
+    { field: "EXP_DATE", headerName: "EXP_DATE", width: 80, },
     {
       field: "TENCODE",
       headerName: "TENCODE",
@@ -1247,7 +1243,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.PROD_DIECUT_STEP === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1267,7 +1263,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.PROD_PRINT_TIMES === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1287,7 +1283,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.FACTORY === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1305,7 +1301,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.EQ1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1321,7 +1317,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.EQ2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1337,7 +1333,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.EQ3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1353,7 +1349,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.EQ4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1369,7 +1365,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Setting1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1387,7 +1383,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Setting2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1405,7 +1401,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Setting3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1423,7 +1419,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Setting4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1441,7 +1437,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.UPH1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1457,7 +1453,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.UPH2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1473,7 +1469,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.UPH3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1489,7 +1485,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.UPH4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1505,7 +1501,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Step1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1521,7 +1517,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Step2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1537,7 +1533,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Step3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1553,7 +1549,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.Step4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1569,7 +1565,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SX1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1587,7 +1583,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SX2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1605,7 +1601,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SX3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1623,7 +1619,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SX4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1641,7 +1637,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SETTING1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1661,7 +1657,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SETTING2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1681,7 +1677,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SETTING3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1701,7 +1697,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_SETTING4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1721,7 +1717,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_ST_SX1 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1739,7 +1735,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_ST_SX2 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1757,7 +1753,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_ST_SX3 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1775,7 +1771,7 @@ const CODE_MANAGER = () => {
       cellRenderer: (params: any) => {
         if (params.data.LOSS_ST_SX4 === null) {
           return (
-            <span style={{ backgroundColor: "red", fontWeight: "bold", color:'white' }}>
+            <span style={{ backgroundColor: "red", fontWeight: "bold", color: 'white' }}>
               NG
             </span>
           );
@@ -1790,7 +1786,7 @@ const CODE_MANAGER = () => {
   ];
   const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);
   const [columns, setColumns] = useState<Array<any>>(column_codeinfo2);
-  const [columnDefinition, setColumnDefinition] =useState<Array<any>>(column_codeinfo2);
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_codeinfo2);
   const resetBanVe = async (value: string) => {
     if (codedatatablefilter.length >= 1) {
       checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
@@ -2041,13 +2037,13 @@ const CODE_MANAGER = () => {
       handleCODEINFO();
     }
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
-    <div className="codemanager"> 
-        <div className="tracuuFcst">          
-          <div className="tracuuFcstTable">           
-            <div className="toolbar">
-              <div className="searchdiv">
+    <div className="codemanager">
+      <div className="tracuuFcst">
+        <div className="tracuuFcstTable">
+          <div className="toolbar">
+            <div className="searchdiv">
               <label>
                 <b>Code:</b>{" "}
                 <input
@@ -2068,108 +2064,107 @@ const CODE_MANAGER = () => {
               >
                 Tìm code
               </button>
-              </div>               
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(rows, "Code Info Table");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setNgoaiQuan("N");
-                }}
-              >
-                <AiFillCheckCircle color="blue" size={15} />
-                SET NGOAI QUAN
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setNgoaiQuan("Y");
-                }}
-              >
-                <FcCancel color="green" size={15} />
-                SET K NGOAI QUAN
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  resetBanVe("N");
-                }}
-              >
-                <BiReset color="green" size={15} />
-                RESET BẢN VẼ
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  pdBanVe("Y");
-                }}
-              >
-                <MdOutlineDraw color="red" size={15} />
-                PDUYET BẢN VẼ
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  handleSaveQLSX();
-                }}
-              >
-                <MdUpdate color="blue" size={15} />
-                Update TT QLSX
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setColumns(
-                    columns.map((element, index: number) => {
-                      return { ...element, editable: !element.editable };
-                    }),
-                  );
-                  Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-                }}
-              >
-                <AiFillEdit color="yellow" size={15} />
-                Bật tắt sửa
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  handleSaveLossSX();
-                }}
-              >
-                <MdUpdate color="blue" size={15} />
-                Update LOSS SX
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  updateBEP();
-                }}
-              >
-                <MdPriceChange color="red" size={15} />
-                Update BEP
-              </IconButton>
-            </div> 
-            <AGTable
-              showFilter={true}             
-              columns={column_codeinfo2}
-              data={rows}
-              onCellEditingStopped={(params: any) => {
-                
-              }} onRowClick={(params: any) => {                
-                //console.log(e.data)
-              }} onSelectionChange={(params: any) => {                
-                setCodeDataTableFilter(params!.api.getSelectedRows());
-                //console.log(e!.api.getSelectedRows())
-              }} />
+            </div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                SaveExcel(rows, "Code Info Table");
+              }}
+            >
+              <AiFillFileExcel color="green" size={15} />
+              SAVE
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setNgoaiQuan("N");
+              }}
+            >
+              <AiFillCheckCircle color="blue" size={15} />
+              SET NGOAI QUAN
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setNgoaiQuan("Y");
+              }}
+            >
+              <FcCancel color="green" size={15} />
+              SET K NGOAI QUAN
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                resetBanVe("N");
+              }}
+            >
+              <BiReset color="green" size={15} />
+              RESET BẢN VẼ
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                pdBanVe("Y");
+              }}
+            >
+              <MdOutlineDraw color="red" size={15} />
+              PDUYET BẢN VẼ
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleSaveQLSX();
+              }}
+            >
+              <MdUpdate color="blue" size={15} />
+              Update TT QLSX
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setColumns(
+                  columns.map((element, index: number) => {
+                    return { ...element, editable: !element.editable };
+                  }),
+                );
+                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              }}
+            >
+              <AiFillEdit color="yellow" size={15} />
+              Bật tắt sửa
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleSaveLossSX();
+              }}
+            >
+              <MdUpdate color="blue" size={15} />
+              Update LOSS SX
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                updateBEP();
+              }}
+            >
+              <MdPriceChange color="red" size={15} />
+              Update BEP
+            </IconButton>
           </div>
-        </div>      
+          <AGTable
+            showFilter={true}
+            columns={column_codeinfo2}
+            data={rows}
+            onCellEditingStopped={(params: any) => {
+            }} onRowClick={(params: any) => {
+              //console.log(e.data)
+            }} onSelectionChange={(params: any) => {
+              setCodeDataTableFilter(params!.api.getSelectedRows());
+              //console.log(e!.api.getSelectedRows())
+            }} />
+        </div>
+      </div>
     </div>
   );
 };

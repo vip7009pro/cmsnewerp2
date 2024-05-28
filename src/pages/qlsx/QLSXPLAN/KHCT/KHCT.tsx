@@ -636,7 +636,7 @@ const KHCT = () => {
       headerName: "PLAN_ID",
       width: 90,
       editable: false,
-      resizeable: true,
+      resizable: true,
     },
     {
       field: "PROD_REQUEST_NO",

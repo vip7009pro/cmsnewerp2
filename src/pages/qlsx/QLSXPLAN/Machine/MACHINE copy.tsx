@@ -1211,7 +1211,7 @@ const MACHINE = () => {
       headerName: "PLAN_ID",
       width: 90,
       editable: false,
-      resizeable: true,
+      resizable: true,
       renderCell: (params: any) => {
         if (params.row.DKXL === null) {
           return <span style={{ color: "red" }}>{params.row.PLAN_ID}</span>;

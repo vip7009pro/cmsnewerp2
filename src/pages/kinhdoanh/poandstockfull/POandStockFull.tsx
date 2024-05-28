@@ -14,8 +14,8 @@ import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+/* import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css"; */
 const POandStockFull = () => {
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
     PO_BALANCE: 0,
@@ -1407,13 +1407,13 @@ const POandStockFull = () => {
     const selectedrow = gridRef.current!.api.getSelectedRows();
     //setCodeDataTableFilter(selectedrow);    
   }, []);
-  function setIdText(id: string, value: string | number | undefined) {
+ /*  function setIdText(id: string, value: string | number | undefined) {
     document.getElementById(id)!.textContent =
       value == undefined ? "undefined" : value + "";
-  }
+  } */
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
-    setIdText("headerHeight", value);
+    //setIdText("headerHeight", value);
   }, []);
   const gridRef = useRef<AgGridReact<any>>(null);
   const defaultColDef = useMemo(() => {

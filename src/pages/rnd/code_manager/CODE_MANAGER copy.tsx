@@ -25,9 +25,6 @@ import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
-import { AgGridReact, } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; 
-import "ag-grid-community/styles/ag-theme-quartz.css"; 
 import AGTable from "../../../components/DataTable/AGTable";
 const CODE_MANAGER = () => {  
   const [uploadfile, setUploadFile] = useState<any>(null);
