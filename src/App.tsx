@@ -35,6 +35,7 @@ import KHOTABS from "./pages/kho/KHOTABS";
 import KHOTP from "./pages/kho/khotp/KHOTP";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
 const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
 const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
@@ -75,9 +76,9 @@ const CSTOTAL = lazy(() => import("./pages/qc/cs/CSTOTAL"));
 const QuotationManager = lazy(
   () => import("./pages/kinhdoanh/quotationmanager/QuotationManager")
 );
-const BulletinBoard = lazy(
+/* const BulletinBoard = lazy(
   () => import("./components/BulletinBoard/BulletinBoard")
-);
+); */
 const QLSX = lazy(() => import("./pages/qlsx/QLSX"));
 const QC = lazy(() => import("./pages/qc/QC"));
 const NhanSu = lazy(() => import("./pages/nhansu/NhanSu"));

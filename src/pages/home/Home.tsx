@@ -26,7 +26,63 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import { Draggable } from "devextreme-react";
-const CHAT = lazy(() => import("../chat/CHAT"));
+import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
+import QuanLyPhongBanNhanSu from "../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
+import DiemDanhNhom from "../nhansu/DiemDanhNhom/DiemDanhNhom";
+import DieuChuyenTeam from "../nhansu/DieuChuyenTeam/DieuChuyenTeam";
+import TabDangKy from "../nhansu/DangKy/TabDangKy";
+import PheDuyetNghi from "../nhansu/PheDuyetNghi/PheDuyetNghi";
+import LichSu from "../nhansu/LichSu/LichSu";
+import QuanLyCapCao from "../nhansu/QuanLyCapCao/QuanLyCapCao";
+import BaoCaoNhanSu from "../nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
+import BANGCHAMCONG from "../nhansu/BangChamCong/BangChamCong";
+import PoManager from "../kinhdoanh/pomanager/PoManager";
+import InvoiceManager from "../kinhdoanh/invoicemanager/InvoiceManager";
+import PlanManager from "../kinhdoanh/planmanager/PlanManager";
+import ShortageKD from "../kinhdoanh/shortageKD/ShortageKD";
+import FCSTManager from "../kinhdoanh/fcstmanager/FCSTManager";
+import YCSXManager from "../kinhdoanh/ycsxmanager/YCSXManager";
+import POandStockFull from "../kinhdoanh/poandstockfull/POandStockFull";
+import CODE_MANAGER from "../rnd/code_manager/CODE_MANAGER";
+import BOM_MANAGER from "../rnd/bom_manager/BOM_MANAGER";
+import CUST_MANAGER from "../kinhdoanh/custManager/CUST_MANAGER";
+import EQ_STATUS2 from "../qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
+import INSPECT_STATUS from "../qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
+import KinhDoanhReport from "../kinhdoanh/kinhdoanhreport/KinhDoanhReport";
+import QuotationTotal from "../kinhdoanh/quotationmanager/QuotationTotal";
+import QLVL from "../muahang/quanlyvatlieu/QLVL";
+import TINHLIEU from "../muahang/tinhlieu/TINHLIEU";
+import IQC from "../qc/iqc/IQC";
+import PQC from "../qc/pqc/PQC";
+import OQC from "../qc/oqc/OQC";
+import KIEMTRA from "../qc/inspection/KIEMTRA";
+import CSTOTAL from "../qc/cs/CSTOTAL";
+import DTC from "../qc/dtc/DTC";
+import ISO from "../qc/iso/ISO";
+import QCReport from "../qc/qcreport/QCReport";
+import BOM_AMAZON from "../rnd/bom_amazon/BOM_AMAZON";
+import DESIGN_AMAZON from "../rnd/design_amazon/DESIGN_AMAZON";
+import PRODUCT_BARCODE_MANAGER from "../rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
+import QLSXPLAN from "../qlsx/QLSXPLAN/QLSXPLAN";
+import CAPA_MANAGER from "../qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
+import MACHINE from "../qlsx/QLSXPLAN/Machine/MACHINE";
+import QUICKPLAN from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
+import PLAN_DATATB from "../qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB";
+import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
+import PLAN_STATUS from "../qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
+import EQ_STATUS from "../qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
+import BAOCAOSXALL from "../sx/BAOCAOSXALL";
+import TRANGTHAICHITHI from "../sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
+import KHOLIEU from "../kho/kholieu/KHOLIEU";
+import KHOAO from "../qlsx/QLSXPLAN/KHOAO/KHOAO";
+import TINHHINHCUONLIEU from "../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import BAOCAOTHEOROLL from "../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
+import LICHSUTEMLOTSX from "../sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
+import PLANRESULT from "../sx/PLANRESULT/PLANRESULT";
+import KHOTP from "../kho/khotp/KHOTP";
+import KHOTPNEW from "../kho/khotp_new/KHOTPNEW";
+import SettingPage from "../setting/SettingPage";
+/* const CHAT = lazy(() => import("../chat/CHAT"));
 const QCReport = lazy(() => import("../qc/qcreport/QCReport"));
 const SettingPage = lazy(() => import("../setting/SettingPage"));
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
@@ -83,7 +139,7 @@ const EQ_STATUS2 = lazy(() => import("../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STA
 const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
-const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
+const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL")); */
 export const current_ver: number = 382;
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -254,7 +310,7 @@ function Home() {
     {
       MENU_CODE: "PU2",
       MENU_NAME: getlang("quanlymrp", lang),
-      MENU_ITEM: <TINHLIEU />,
+      MENU_ITEM: <TINHLIEU/>,
     },
     {
       MENU_CODE: "QC1",
@@ -535,34 +591,7 @@ function Home() {
       .catch((error) => {
         console.log(error);
       });
-  }
-  /*  const checkERPLicense = async () => {
-     //console.log(getSever());
-     //if (getSever() !== 'http://192.168.1.192:5013') {
-     if (true) {
-       generalQuery("checkLicense", {
-         COMPANY: company
-       })
-         .then((response) => {
-           if (response.data.tk_status !== "NG") {
-             console.log(response.data.message);
-             failCount.current = 0;
-           } else {
-             console.log(response.data.message);
-             console.log('licenseFailCount', failCount.current);
-             failCount.current++;
-             if (failCount.current > 1) {
-               Swal.fire('Thông báo', 'Please check your network', 'error');
-               failCount.current = 0;
-               logout();
-             }
-           }
-         })
-         .catch((error) => {
-           console.log(error);
-         });
-     }
-   } */
+  }  
   const checkERPLicense = async () => {
     //console.log(getSever());
     //if (getSever() !== 'http://192.168.1.192:5013') {

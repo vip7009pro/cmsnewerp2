@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;  
+  height: 100%;
   .toolbar {
     display: flex;
     height: auto;
@@ -10,34 +10,32 @@
     background-color: #b2ffa0;
     height: fit-content;
   }
-
-    .ag-theme-quartz input[class^=ag-]:not([type]),
-    .ag-theme-quartz input[class^=ag-][type=text],
-    .ag-theme-quartz input[class^=ag-][type=number],
-    .ag-theme-quartz input[class^=ag-][type=tel],
-    .ag-theme-quartz input[class^=ag-][type=date],
-    .ag-theme-quartz input[class^=ag-][type=datetime-local],
-    .ag-theme-quartz textarea[class^=ag-],
-    .ag-theme-quartz-dark input[class^=ag-]:not([type]),
-    .ag-theme-quartz-dark input[class^=ag-][type=text],
-    .ag-theme-quartz-dark input[class^=ag-][type=number],
-    .ag-theme-quartz-dark input[class^=ag-][type=tel],
-    .ag-theme-quartz-dark input[class^=ag-][type=date],
-    .ag-theme-quartz-dark input[class^=ag-][type=datetime-local],
-    .ag-theme-quartz-dark textarea[class^=ag-],
-    .ag-theme-quartz-auto-dark input[class^=ag-]:not([type]),
-    .ag-theme-quartz-auto-dark input[class^=ag-][type=text],
-    .ag-theme-quartz-auto-dark input[class^=ag-][type=number],
-    .ag-theme-quartz-auto-dark input[class^=ag-][type=tel],
-    .ag-theme-quartz-auto-dark input[class^=ag-][type=date],
-    .ag-theme-quartz-auto-dark input[class^=ag-][type=datetime-local],
-    .ag-theme-quartz-auto-dark textarea[class^=ag-] {
-      min-height: calc(var(--ag-grid-size)* 2.5);
-      border-radius: var(--ag-border-radius);
-    }
-
-  .ag-theme-quartz {   
-    flex: 1; 
+  .ag-theme-quartz input[class^=ag-]:not([type]),
+  .ag-theme-quartz input[class^=ag-][type=text],
+  .ag-theme-quartz input[class^=ag-][type=number],
+  .ag-theme-quartz input[class^=ag-][type=tel],
+  .ag-theme-quartz input[class^=ag-][type=date],
+  .ag-theme-quartz input[class^=ag-][type=datetime-local],
+  .ag-theme-quartz textarea[class^=ag-],
+  .ag-theme-quartz-dark input[class^=ag-]:not([type]),
+  .ag-theme-quartz-dark input[class^=ag-][type=text],
+  .ag-theme-quartz-dark input[class^=ag-][type=number],
+  .ag-theme-quartz-dark input[class^=ag-][type=tel],
+  .ag-theme-quartz-dark input[class^=ag-][type=date],
+  .ag-theme-quartz-dark input[class^=ag-][type=datetime-local],
+  .ag-theme-quartz-dark textarea[class^=ag-],
+  .ag-theme-quartz-auto-dark input[class^=ag-]:not([type]),
+  .ag-theme-quartz-auto-dark input[class^=ag-][type=text],
+  .ag-theme-quartz-auto-dark input[class^=ag-][type=number],
+  .ag-theme-quartz-auto-dark input[class^=ag-][type=tel],
+  .ag-theme-quartz-auto-dark input[class^=ag-][type=date],
+  .ag-theme-quartz-auto-dark input[class^=ag-][type=datetime-local],
+  .ag-theme-quartz-auto-dark textarea[class^=ag-] {
+    min-height: calc(var(--ag-grid-size)* 2.5);
+    border-radius: var(--ag-border-radius);
+  }
+  .ag-theme-quartz {
+    flex: 1;
     .ag-row-even .ag-row .ag-row-level-0 .ag-row-position-absolute .ag-row-not-inline-editing .ag-row-focus .ag-row-selected {
       background-color: #b2ffa0;
     }

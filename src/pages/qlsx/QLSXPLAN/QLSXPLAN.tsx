@@ -1,6 +1,16 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import "./QLSXPLAN.scss";
-const DATASX2 = lazy(() => import("./DATASX/DATASX2"));
+import MACHINE from "./Machine/MACHINE";
+import ACHIVEMENTTB from "./ACHIVEMENTTB/ACHIVEMENTTB";
+import LICHSUINPUTLIEU from "./LICHSUINPUTLIEU/LICHSUINPUTLIEU";
+import QUICKPLAN from "./QUICKPLAN/QUICKPLAN";
+import PLAN_DATATB from "./LICHSUCHITHITABLE/PLAN_DATATB";
+import DATASX2 from "./DATASX/DATASX2";
+import PLAN_STATUS from "./PLAN_STATUS/PLAN_STATUS";
+import EQ_STATUS from "./EQ_STATUS/EQ_STATUS";
+import EQ_STATUS2 from "./EQ_STATUS/EQ_STATUS2";
+import KHOAO from "./KHOAO/KHOAO";
+/* const DATASX2 = lazy(() => import("./DATASX/DATASX2"));
 const MACHINE = lazy(() => import("./Machine/MACHINE"));
 const LICHSUINPUTLIEU = lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
 const QUICKPLAN = lazy(() => import("./QUICKPLAN/QUICKPLAN"));
@@ -9,7 +19,7 @@ const PLAN_STATUS = lazy(() => import("./PLAN_STATUS/PLAN_STATUS"));
 const EQ_STATUS = lazy(() => import("./EQ_STATUS/EQ_STATUS"));
 const KHOAO = lazy(() => import("./KHOAO/KHOAO"));
 const EQ_STATUS2 = lazy(() => import("./EQ_STATUS/EQ_STATUS2"));
-const ACHIVEMENTTB = lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
+const ACHIVEMENTTB = lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB")); */
 
 const QLSXPLAN = () => {
   const [selection, setSelection] = useState<any>({

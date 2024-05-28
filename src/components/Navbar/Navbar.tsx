@@ -45,7 +45,8 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ELE_ARRAY, MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import useOutsideClick from "../../api/customHooks";
 import { MdOutlineSettings } from "react-icons/md";
-const NavMenu = lazy(() => import("../NavMenu/NavMenu"));
+import NavMenu from "../NavMenu/NavMenu";
+/* const NavMenu = lazy(() => import("../NavMenu/NavMenu")); */
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
