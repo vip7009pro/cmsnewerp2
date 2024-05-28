@@ -100,7 +100,8 @@ const AGTable = (ag_data: AGInterface) => {
           enterNavigatesVerticallyAfterEdit={true}
           stopEditingWhenCellsLoseFocus={true}
           rowBuffer={10}
-          debounceVerticalScrollbar={false}         
+          debounceVerticalScrollbar={false}      
+          enableCellTextSelection={true}   
           floatingFiltersHeight={23}
           onSelectionChanged={(params: any) => {
             ag_data.onSelectionChange(params);
