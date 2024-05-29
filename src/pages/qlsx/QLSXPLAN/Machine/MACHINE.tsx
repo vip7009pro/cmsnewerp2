@@ -3819,7 +3819,7 @@ const MACHINE = () => {
           //setClickedRows(params.data)
           //console.log(params)
         }} onSelectionChange={(params: any) => {
-          console.log(params!.api.getSelectedRows())
+          //console.log(params!.api.getSelectedRows())
           ycsxdatatablefilter.current = params!.api.getSelectedRows();
         }} />
     )
@@ -3883,7 +3883,7 @@ const MACHINE = () => {
           getRecentDM(rowData.G_CODE);
         }}
         onSelectionChange={(params: any) => {
-          console.log(params!.api.getSelectedRows())
+          //console.log(params!.api.getSelectedRows())
           qlsxplandatafilter.current = params!.api.getSelectedRows()
         }} />
     )

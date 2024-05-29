@@ -143,7 +143,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             response.data.data[0].EQ3,
             response.data.data[0].EQ4,
           );
-          console.log("max", checkpr);
+          //console.log("max", checkpr);
           setEQ_Process_check(DATA.PROCESS_NUMBER > checkpr ? false : true);
         } else {
           setRequest_CodeInfo([
@@ -280,7 +280,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const checkMaxLieu = () => {
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
-      console.log("temp max lieu : ", temp_maxLieu);
+      //console.log("temp max lieu : ", temp_maxLieu);
       setMaxLieu(temp_maxLieu);
     } else {
       localStorage.setItem("maxLieu", "12");

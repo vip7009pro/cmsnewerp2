@@ -1803,7 +1803,7 @@ const PoManager = () => {
             dataSource={podatatable}
             columnWidth='auto'
             keyExpr='PO_ID'
-            height={"75vh"}
+            
             showBorders={true}
             onSelectionChanged={(e) => {
               podatatablefilter.current = e.selectedRowsData;

@@ -5,10 +5,9 @@
 
 @media only screen and (max-width: 5000px) {
   .planmanager {
-    width: 100%;
-    height: 500px;
     display: flex;
     flex-direction: column;
+    width: 100%;   
 
     .mininavbar {
       display: flex;
@@ -114,14 +113,16 @@
     }
 
     .tracuuPlan {
-      display: flex;
       width: 100%;
+      height: 88vh;
+      display: flex;
       gap: 10px;
       .tracuuPlanform {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 260px;
+        height: 100%;
         background-image: linear-gradient(0deg, #afd3d1, #eaf897);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -178,7 +179,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 85vh;
+        height: 100%;
         background-image: linear-gradient(0deg, #afd3d1, #93f5b4);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -243,7 +244,7 @@
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
-
+      
       .batchnewplan {
         display: flex;
         flex-direction: column;

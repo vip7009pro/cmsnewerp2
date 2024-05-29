@@ -5,10 +5,9 @@
 
 @media only screen and (max-width: 5000px) {
   .invoicemanager {
-    width: 100%;
-    height: 500px;
     display: flex;
     flex-direction: column;
+    width: 100%;   
 
     .mininavbar {
       display: flex;
@@ -187,13 +186,15 @@
     }
 
     .tracuuInvoice {
-      display: flex;
       width: 100%;
+      height: 88vh;
+      display: flex;
       gap: 10px;
       .tracuuInvoiceform {
         display: flex;
         flex-direction: column;
         width: 260px;
+        height: 100%;
         align-items: center;
         font-size: 0.7rem;
         background-image: linear-gradient(0deg, #afd3d1, #c663da);
@@ -277,7 +278,7 @@
       }
       .tracuuInvoiceTable {
         display: flex;
-        height: 85vh;
+        height: 100%;
         width: 100%;
         background-image: linear-gradient(0deg, #afd3d1, #b99dee);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
