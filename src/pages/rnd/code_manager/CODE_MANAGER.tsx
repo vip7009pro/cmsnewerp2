@@ -1,11 +1,5 @@
 import { IconButton } from "@mui/material";
-import {
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-  GridCellEditCommitParams,
-} from "@mui/x-data-grid";
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { FcCancel, } from "react-icons/fc";
 import {
   AiFillCheckCircle,
@@ -14,8 +8,7 @@ import {
   AiOutlineCloudUpload,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
+import { generalQuery, uploadQuery } from "../../../api/Api";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
@@ -26,42 +19,11 @@ import { RootState } from "../../../redux/store";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const CODE_MANAGER = () => {
-  const [uploadfile, setUploadFile] = useState<any>(null);
-  const [codedatatablefilter, setCodeDataTableFilter] = useState<
-    Array<CODE_FULL_INFO>
-  >([]);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    testinvoicetable: false,
-  });
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_FULL_INFO>>([]);
+  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData,);
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(true);
-  const [isPending, startTransition] = useTransition();
-  const handleUploadFile = (ulf: any, newfilename: string) => {
-    console.log(ulf);
-    uploadQuery(uploadfile, newfilename, "banve")
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Upload file thành công", "success");
-        } else {
-          Swal.fire(
-            "Thông báo",
-            "Upload file thất bại:" + response.data.message,
-            "error",
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   let column_codeinfo = [
     { field: "id", headerName: "ID", width: 70, editable: enableEdit },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
