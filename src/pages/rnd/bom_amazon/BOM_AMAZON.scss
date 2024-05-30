@@ -27,14 +27,16 @@
     }
     .bom_manager_wrapper {
       display: flex;
+      height: 100%;
 
       .left {
         display: flex;
         flex-direction: column;
         flex: 1;
+        height: 100%;
         .codemanager {
           width: 100%;
-          height: fit-content;
+          height: 100%;
           display: flex;
           flex-direction: column;
           flex: 8;
@@ -43,14 +45,13 @@
               display: flex;
               flex-direction: column;
               align-items: center;
-
+              height: fit-content;
               background-image: linear-gradient(0deg, #afd3d1, #86cfff);
               -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               border-radius: 3px;
               padding: 5px;
               font-size: 0.8rem;
-
               span {
                 padding: 10px;
                 font-size: 20px;
@@ -148,7 +149,7 @@
             .codeinfotable {
               display: flex;
               margin-top: 5px;
-              height: 70vh;
+              height: 80vh;
               background-image: linear-gradient(0deg, #afd3d1, #86cfff);
               -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -192,12 +193,12 @@
         display: flex;
         flex-direction: column;
         flex: 4;
-        gap: 15px;
+        gap: 5px;
 
         .codeinfobig {
           display: flex;
           gap: 20px;
-          padding: 20px;
+          padding: 5px;
           background-image: linear-gradient(0deg, #7ae2f5, #5565f2);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
@@ -222,7 +223,7 @@
         .up {
           display: flex;
           width: 100%;
-          height: 77vh;
+          height: 87vh;
           .bomsx {
             display: flex;
             flex-direction: column;
@@ -293,15 +294,13 @@
             display: flex;
             flex-direction: column;
             flex: 2;
-
             background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            height: fit-content;
+            height: 87vh;
             margin-left: 5px;
             margin-right: 5px;
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
             border-radius: 5px;
-
             align-items: center;
             justify-content: flex-start;
             justify-items: center;
