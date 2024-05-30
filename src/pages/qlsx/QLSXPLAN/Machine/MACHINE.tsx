@@ -1,77 +1,33 @@
 /* eslint-disable no-loop-func */
-import React, {
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import React, { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
-import { UserContext } from "../../../../api/Context";
+import { Button, IconButton } from "@mui/material";
 import {
-  DataGrid,
-  GridAddIcon,
-  GridCallbackDetails,
-  GridCellEditCommitParams,
-  GridEventListener,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-  MuiBaseEvent,
-  MuiEvent,
-} from "@mui/x-data-grid";
-import {
-  Alert,
-  Button,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  AiFillAmazonCircle,
-  AiFillEdit,
-  AiFillFileAdd,
-  AiFillFileExcel,
   AiFillFolderAdd,
   AiFillSave,
   AiOutlineArrowRight,
   AiOutlineBarcode,
-  AiOutlineCaretRight,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
-  AiOutlineRollback,
-  AiOutlineSave,
 } from "react-icons/ai";
-import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
+import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
-import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-import {
-  checkBP,
-  PLAN_ID_ARRAY,
-  SaveExcel,
-  zeroPad,
-} from "../../../../api/GlobalFunction";
+import { FcDeleteRow, FcSearch } from "react-icons/fc";
+import { checkBP, PLAN_ID_ARRAY, zeroPad } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
-// @ts-ignore
-import { setInterval } from "timers/promises";
 import { GiCurvyKnife } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import {
-  addChithiArray,
-  resetChithiArray,
-} from "../../../../redux/slices/globalSlice";
+import { resetChithiArray } from "../../../../redux/slices/globalSlice";
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import KHOAO from "../KHOAO/KHOAO";
 import { TbLogout } from "react-icons/tb";
@@ -89,19 +45,8 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
-import { trigger } from "devextreme/events";
-import CHECKSHEETSX from "../CHITHI/CHECKSHEETSX";
 import AGTable from "../../../../components/DataTable/AGTable";
-export const checkEQvsPROCESS = (
-  EQ1: string,
-  EQ2: string,
-  EQ3: string,
-  EQ4: string
-) => {
-  console.log(EQ1);
-  console.log(EQ2);
-  console.log(EQ3);
-  console.log(EQ4);
+export const checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string) => {
   let maxprocess: number = 0;
   if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
   if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
@@ -343,34 +288,11 @@ const MACHINE = () => {
     LOSS_SETTING4: 0,
     NOTE: "",
   });
-  const [selectionModel, setSelectionModel] = useState<any>([]);
-  const [selectionModel_XUATKHOAO, setSelectionModel_XUATKHOAO] = useState<any>(
-    []
-  );
-  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
-  const [lichsunhapkhoaotable, setLichSuNhapKhoAoTable] = useState<
-    LICHSUNHAPKHOAO[]
-  >([]);
-  const [lichsuxuatkhoaotable, setLichSuXuatKhoAoTable] = useState<
-    LICHSUXUATKHOAO[]
-  >([]);
-  const [lichsuxuatkhoaodatafilter, setLichSuXuatKhoAoDataFilter] = useState<
-    Array<LICHSUXUATKHOAO>
-  >([]);
-  const [lichsuinputlieutable, setLichSuInputLieuTable] = useState<
-    LICHSUINPUTLIEUSX[]
-  >([]);
-  const [lichsuinputlieudatafilter, setLichSuInputLieuDataFilter] = useState<
-    Array<LICHSUINPUTLIEUSX>
-  >([]);
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const [isLoading, setisLoading] = useState(false);
+  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -386,31 +308,20 @@ const MACHINE = () => {
   const ycsxdatatablefilter = useRef<YCSXTableData[]>([]);
   const qlsxplandatafilter = useRef<Array<QLSXPLANDATA>>([]);
   const qlsxchithidatafilter = useRef<Array<QLSXCHITHIDATA>>([]);
-  const [tonlieuxuongdatatable, setTonLieuXuongDataTable] = useState<
-    Array<TONLIEUXUONG>
-  >([]);
-  const [tonlieuxuongdatafilter, setTonLieuXuongDataFilter] = useState<
-    Array<TONLIEUXUONG>
-  >([]);
   const [showYCSX, setShowYCSX] = useState(true);
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
-  const [chithilistrender, setChiThiListRender] =
-    useState<Array<ReactElement>>();
+  const [chithilistrender, setChiThiListRender] = useState<Array<ReactElement>>();
   const [chithilistrender2, setChiThiListRender2] = useState<ReactElement>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedMachine, setSelectedMachine] = useState("FR1");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
-  const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
+  const [selectedPlanDate, setSelectedPlanDate] = useState(moment().format("YYYY-MM-DD"));
   const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>();
   const [showChiThi, setShowChiThi] = useState(false);
   const [showChiThi2, setShowChiThi2] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
-  const [editplan, seteditplan] = useState(true);
-  const [currentTotalLeadTime, setCurrentTotalLeadTime] = useState(0);
   const [trigger, setTrigger] = useState(true);
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -421,7 +332,7 @@ const MACHINE = () => {
   const checkMaxLieu = () => {
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
-      console.log("temp max lieu: ", temp_maxLieu);
+      //console.log("temp max lieu: ", temp_maxLieu);
       setMaxLieu(temp_maxLieu);
     } else {
       localStorage.setItem("maxLieu", "12");
@@ -1490,7 +1401,7 @@ const MACHINE = () => {
       field: "PLAN_QTY",
       headerName: "PLAN_QTY",
       width: 80,
-      editable: editplan,
+      editable: true,
       cellRenderer: (params: any) => {
         if (params.data.PLAN_QTY === 0) {
           return <span style={{ color: "red" }}>NG</span>;
@@ -1507,7 +1418,7 @@ const MACHINE = () => {
       field: "PROCESS_NUMBER",
       headerName: "PROC",
       width: 60,
-      editable: editplan,
+      editable: true,
       cellRenderer: (params: any) => {
         if (
           params.data.PROCESS_NUMBER === null ||
@@ -1521,18 +1432,18 @@ const MACHINE = () => {
         }
       },
     },
-    { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
+    { field: "STEP", headerName: "STEP", width: 50, editable: true },
     {
       field: "PLAN_ORDER",
       headerName: "STT",
       width: 50,
-      editable: editplan,
+      editable: true,
     },
     {
       field: "KETQUASX",
       headerName: "KETQUASX",
       width: 70,
-      editable: editplan,
+      editable: true,
       cellRenderer: (params: any) => {
         if (params.data.KETQUASX !== null) {
           return <span>{params.data.KETQUASX?.toLocaleString("en-US")}</span>;
@@ -1545,7 +1456,7 @@ const MACHINE = () => {
       field: "KQ_SX_TAM",
       headerName: "KETQUASX_TAM",
       width: 80,
-      editable: editplan,
+      editable: true,
       cellRenderer: (params: any) => {
         if (params.data.KQ_SX_TAM !== null) {
           return <span>{params.data.KQ_SX_TAM?.toLocaleString("en-US")}</span>;
@@ -1554,7 +1465,7 @@ const MACHINE = () => {
         }
       },
     },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 70, editable: editplan },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 70, editable: true },
     {
       field: "PLAN_FACTORY",
       headerName: "FACTORY",
@@ -1770,104 +1681,6 @@ const MACHINE = () => {
         console.log(error);
       });
   };
-  const handle_loadlichsuinputlieu = (PLAN_ID: string) => {
-    generalQuery("lichsuinputlieusanxuat", {
-      PLAN_ID: PLAN_ID,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: LICHSUINPUTLIEUSX[] = response.data.data.map(
-            (element: LICHSUINPUTLIEUSX, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment(element.INS_DATE)
-                  .utc()
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            }
-          );
-          setLichSuInputLieuTable(loaded_data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_loadlichsunhapkhoao = () => {
-    generalQuery("lichsunhapkhoao", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: LICHSUNHAPKHOAO[] = response.data.data.map(
-            (element: LICHSUNHAPKHOAO, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment(element.INS_DATE)
-                  .utc()
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            }
-          );
-          setLichSuNhapKhoAoTable(loaded_data);
-        } else {
-          setLichSuNhapKhoAoTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_loadlichsuxuatkhoao = () => {
-    generalQuery("lichsuxuatkhoao", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: LICHSUXUATKHOAO[] = response.data.data.map(
-            (element: LICHSUXUATKHOAO, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment(element.INS_DATE)
-                  .utc()
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            }
-          );
-          setLichSuXuatKhoAoTable(loaded_data);
-        } else {
-          setLichSuXuatKhoAoTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_loadKhoAo = () => {
-    generalQuery("checktonlieutrongxuong", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: TONLIEUXUONG[] = response.data.data.map(
-            (element: TONLIEUXUONG, index: number) => {
-              return {
-                ...element,
-                id: index,
-              };
-            }
-          );
-          setTonLieuXuongDataTable(loaded_data);
-        } else {
-          setTonLieuXuongDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const handleSaveQLSX = async () => {
     if (selectedPlan !== undefined) {
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
@@ -2055,9 +1868,7 @@ const MACHINE = () => {
             });
           setChiThiDataTable(loaded_data);
         } else {
-          M_MET_NEEDED = parseInt(
-            ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
-          );
+          M_MET_NEEDED = (PLAN_QTY * PD * 1.0) / (CAVITY_DOC * CAVITY_NGANG * 1.0) / 1000;
           generalQuery("getbomsx", {
             G_CODE: G_CODE,
           })
@@ -2152,10 +1963,8 @@ const MACHINE = () => {
         });
       setCurrentPlanPD(PD);
       setCurrentPlanCAVITY(CAVITY_NGANG * CAVITY_DOC);
-      M_MET_NEEDED = parseInt(
-        ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
-      );
-      //console.log(M_MET_NEEDED);
+      M_MET_NEEDED = (PLAN_QTY * PD * 1.0) / (CAVITY_DOC * CAVITY_NGANG * 1.0) / 1000;
+      console.log(M_MET_NEEDED);
       await generalQuery("getbomsx", {
         G_CODE: selectedPlan?.G_CODE,
       })
@@ -2204,7 +2013,6 @@ const MACHINE = () => {
     }
   };
   const handletraYCSX = () => {
-    setisLoading(true);
     generalQuery("traYCSXDataFull_QLSX", {
       alltime: alltime,
       start_date: fromdate,
@@ -2249,7 +2057,6 @@ const MACHINE = () => {
             }
           );
           setYcsxDataTable(loadeddata);
-          setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -2257,30 +2064,12 @@ const MACHINE = () => {
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-  const getCurrentTotalLeadtime = (): number => {
-    let machinePlanList: QLSXPLANDATA[] = plandatatable.filter(
-      (element: QLSXPLANDATA, index: number) => {
-        return (
-          element.PLAN_EQ === selectedMachine &&
-          element.PLAN_FACTORY === selectedFactory
-        );
-      }
-    );
-    //console.log('machinePlanList',machinePlanList);
-    let sum: number = 0;
-    for (let i = 0; i < machinePlanList.length; i++) {
-      sum += machinePlanList[i].AT_LEADTIME ?? 9990;
-    }
-    console.log('sum', sum)
-    return sum;
-  }
+  };  
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -3846,32 +3635,32 @@ const MACHINE = () => {
           setSelectedPlan(prev => rowData);
           setDataDinhMuc({
             ...datadinhmuc,
-            FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
-            EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
-            EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
-            EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,
-            EQ4: rowData.EQ4 === "" ? "NA" : rowData.EQ4,
-            Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
-            Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
-            Setting3: rowData.Setting3 === null ? 0 : rowData.Setting3,
-            Setting4: rowData.Setting4 === null ? 0 : rowData.Setting4,
-            UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
-            UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
-            UPH3: rowData.UPH3 === null ? 0 : rowData.UPH3,
-            UPH4: rowData.UPH4 === null ? 0 : rowData.UPH4,
-            Step1: rowData.Step1 === null ? 0 : rowData.Step1,
-            Step2: rowData.Step2 === null ? 0 : rowData.Step2,
-            Step3: rowData.Step3 === null ? 0 : rowData.Step3,
-            Step4: rowData.Step4 === null ? 0 : rowData.Step4,
-            LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
-            LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
-            LOSS_SX3: rowData.LOSS_SX3 === null ? 0 : rowData.LOSS_SX3,
-            LOSS_SX4: rowData.LOSS_SX4 === null ? 0 : rowData.LOSS_SX4,
-            LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
-            LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
-            LOSS_SETTING3: rowData.LOSS_SETTING3 === null ? 0 : rowData.LOSS_SETTING3,
-            LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
-            NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
+            FACTORY: rowData.FACTORY ?? "NA",
+            EQ1: rowData.EQ1 ?? "NA",
+            EQ2: rowData.EQ2 ?? "NA",
+            EQ3: rowData.EQ3 ?? "NA",
+            EQ4: rowData.EQ4 ?? "NA",
+            Setting1: rowData.Setting1 ?? 0,
+            Setting2: rowData.Setting2 ?? 0,
+            Setting3: rowData.Setting3 ?? 0,
+            Setting4: rowData.Setting4 ?? 0,
+            UPH1: rowData.UPH1 ?? 0,
+            UPH2: rowData.UPH2 ?? 0,
+            UPH3: rowData.UPH3 ?? 0,
+            UPH4: rowData.UPH4 ?? 0,
+            Step1: rowData.Step1 ?? 0,
+            Step2: rowData.Step2 ?? 0,
+            Step3: rowData.Step3 ?? 0,
+            Step4: rowData.Step4 ?? 0,
+            LOSS_SX1: rowData.LOSS_SX1 ?? 0,
+            LOSS_SX2: rowData.LOSS_SX2 ?? 0,
+            LOSS_SX3: rowData.LOSS_SX3 ?? 0,
+            LOSS_SX4: rowData.LOSS_SX4 ?? 0,
+            LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
+            LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
+            LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
+            LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
+            NOTE: rowData.NOTE ?? "",
           });
           handleGetChiThiTable(
             rowData.PLAN_ID,
@@ -3883,7 +3672,6 @@ const MACHINE = () => {
           getRecentDM(rowData.G_CODE);
         }}
         onSelectionChange={(params: any) => {
-          //console.log(params!.api.getSelectedRows())
           qlsxplandatafilter.current = params!.api.getSelectedRows()
         }} />
     )
@@ -4002,12 +3790,6 @@ const MACHINE = () => {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              /* checkBP(
-        userData?.EMPL_NO,
-        userData?.MAINDEPTNAME,
-        ["QLSX"],
-        handle_xuatdao_sample
-      ); */
               checkBP(
                 userData,
                 ["QLSX"],
@@ -4015,7 +3797,6 @@ const MACHINE = () => {
                 ["ALL"],
                 handle_xuatdao_sample
               );
-              //handle_xuatdao_sample();
             }}
           >
             <GiCurvyKnife color='red' size={20} />
@@ -4024,12 +3805,6 @@ const MACHINE = () => {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              /*  checkBP(
-        userData?.EMPL_NO,
-        userData?.MAINDEPTNAME,
-        ["QLSX"],
-        handle_xuatlieu_sample
-      ); */
               checkBP(
                 userData,
                 ["QLSX"],
@@ -4132,7 +3907,6 @@ const MACHINE = () => {
                             setShowPlanWindow(true);
                             setSelectedFactory(element.FACTORY);
                             setSelectedMachine(element.EQ_NAME);
-                            setCurrentTotalLeadTime(getCurrentTotalLeadtime());
                             setTrigger(!trigger);
                             setSelectedPlan(undefined);
                             setChiThiDataTable([]);
@@ -4292,7 +4066,6 @@ const MACHINE = () => {
                             setSelectedFactory(element.FACTORY);
                             setSelectedMachine(element.EQ_NAME);
                             setSelectedPlan(undefined);
-                            setCurrentTotalLeadTime(getCurrentTotalLeadtime());
                             setTrigger(!trigger);
                             setChiThiDataTable([]);
                           }}

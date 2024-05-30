@@ -50,9 +50,8 @@ const AGTable = (ag_data: AGInterface) => {
   const onExportClick = () => {
     gridRef.current!.api.exportDataAsCsv();
   };
-  useEffect(()=> {
-    
-  },[])
+  useEffect(() => {
+  }, [])
   return (
     <div className='agtable'>
       {ag_data.toolbar !== undefined && <div className="toolbar">
@@ -78,7 +77,6 @@ const AGTable = (ag_data: AGInterface) => {
           EXCEL
         </IconButton>
       </div>}
-      
       <div className="ag-theme-quartz">
         <AgGridReact
           rowData={ag_data.data}
@@ -100,8 +98,8 @@ const AGTable = (ag_data: AGInterface) => {
           enterNavigatesVerticallyAfterEdit={true}
           stopEditingWhenCellsLoseFocus={true}
           rowBuffer={10}
-          debounceVerticalScrollbar={false}      
-          enableCellTextSelection={true}   
+          debounceVerticalScrollbar={false}
+          enableCellTextSelection={true}
           floatingFiltersHeight={23}
           onSelectionChanged={(params: any) => {
             ag_data.onSelectionChange(params);
@@ -113,9 +111,6 @@ const AGTable = (ag_data: AGInterface) => {
           onCellClicked={ag_data.onCellClick}
         />
       </div>
-
-      
-     
       <div className="bottombar">
         <div className="selected">
           {selectedrow !== 0 && <span>

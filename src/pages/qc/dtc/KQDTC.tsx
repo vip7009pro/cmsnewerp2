@@ -1,28 +1,8 @@
-import {
-  Button,
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Button } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useMemo, useState, useTransition } from "react";
-import {
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
 import { DTC_DATA } from "../../../api/GlobalInterface";
 import "./KQDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";

@@ -79,16 +79,6 @@ interface ELE_ARRAY {
 }
 function Home() {
   const [lang, setLang] = useContext(LangConText);
-  const [componentArrayy, setComponentArrayy] = useState<Array<any>>([]);
-  const AddComponentToArray = (Component: React.LazyExoticComponent<() => JSX.Element>) => {
-    // Dynamically add lazy-loaded component to the array
-    setComponentArrayy((prevArray) => [
-      ...prevArray,
-      <Suspense key={prevArray.length} fallback={<div>Loading...</div>}>
-        <Component />
-      </Suspense>
-    ]);
-  };
   const cookies = new Cookies();
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
@@ -99,9 +89,6 @@ function Home() {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const tabs: ELE_ARRAY[] = useSelector(
     (state: RootState) => state.totalSlice.tabs
-  );
-  const componentArray: Array<any> = useSelector(
-    (state: RootState) => state.totalSlice.componentArray
   );
   const tabIndex: number = useSelector(
     (state: RootState) => state.totalSlice.tabIndex
@@ -241,7 +228,7 @@ function Home() {
     {
       MENU_CODE: "PU2",
       MENU_NAME: getlang("quanlymrp", lang),
-      MENU_ITEM: <TINHLIEU/>,
+      MENU_ITEM: <TINHLIEU />,
     },
     {
       MENU_CODE: "QC1",
@@ -291,7 +278,7 @@ function Home() {
     {
       MENU_CODE: "QC10",
       MENU_NAME: getlang("baocaoqc", lang),
-      MENU_ITEM: <QCReport/>,
+      MENU_ITEM: <QCReport />,
     },
     {
       MENU_CODE: "RD1",
@@ -522,7 +509,7 @@ function Home() {
       .catch((error) => {
         console.log(error);
       });
-  }  
+  }
   const checkERPLicense = async () => {
     //console.log(getSever());
     //if (getSever() !== 'http://192.168.1.192:5013') {
@@ -691,7 +678,7 @@ function Home() {
             {tabModeSwap &&
               tabs.map((ele: ELE_ARRAY, index: number) => {
                 if (ele.ELE_CODE !== "-1")
-                  return ( 
+                  return (
                     <div
                       key={index}
                       className='component_element'
@@ -699,9 +686,9 @@ function Home() {
                         visibility: index === tabIndex ? "visible" : "hidden",
                         width: sidebarStatus ? "100%" : "100%",
                       }}
-                    >                      
+                    >
                       {menulist.filter((menu: MENU_LIST_DATA, index: number) => menu.MENU_CODE === ele.ELE_CODE)[0].MENU_ITEM}
-                    </div>                    
+                    </div>
                   );
               })}
             {current_ver >= checkVerWeb ? (
