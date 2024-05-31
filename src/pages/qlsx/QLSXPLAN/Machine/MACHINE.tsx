@@ -1823,27 +1823,28 @@ const MACHINE = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data)
-          PD = response.data.data[0].PD;
-          CAVITY_NGANG = response.data.data[0].G_C_R;
-          CAVITY_DOC = response.data.data[0].G_C;
+          const rowdata = response.data.data[0];
+          PD = rowdata.PD;
+          CAVITY_NGANG = rowdata.G_C_R;
+          CAVITY_DOC = rowdata.G_C;
           let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX1 ?? 0;
+            FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0;
+            FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
+            FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0;
+            FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0);
           }
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
+            FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
+            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
+            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
+            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
           }
         } else {
         }
@@ -1933,27 +1934,28 @@ const MACHINE = () => {
         .then((response) => {
           if (response.data.tk_status !== "NG") {
             //console.log(response.data.data)
-            PD = response.data.data[0].PD;
-            CAVITY_NGANG = response.data.data[0].G_C_R;
-            CAVITY_DOC = response.data.data[0].G_C;
+            const rowdata = response.data.data[0];
+            PD = rowdata.PD;
+            CAVITY_NGANG = rowdata.G_C_R;
+            CAVITY_DOC = rowdata.G_C;
             let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX1 ?? 0;
+              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0;
+              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
+              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0;
+              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0);
             }
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
+              FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
             }
           } else {
           }

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../../../api/Api";
 import moment from "moment";
 import {
   Chart,
@@ -24,13 +24,14 @@ import {
   DELIVERY_PLAN_CAPA,
   EQ_STT,
   MACHINE_COUNTING,
+  WEB_SETTING_DATA,
   YCSX_BALANCE_CAPA_DATA,
 } from "../../../../api/GlobalInterface";
 import { CustomResponsiveContainer } from "../../../../api/GlobalFunction";
 
 const CAPASX = () => {
-  const dailytime: number = 900;
-  const dailytime2: number = 900;
+  const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
+  const dailytime2: number = dailytime;
   const [trigger, setTrigger] = useState(true);
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedMachine, setSelectedMachine] = useState("FR");

@@ -3,6 +3,7 @@ import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
 import { AiFillFileExcel } from 'react-icons/ai';
+import { SaveExcel } from '../../api/GlobalFunction';
 interface AGInterface {
   data: Array<any>,
   columns: Array<any>,
@@ -70,7 +71,7 @@ const AGTable = (ag_data: AGInterface) => {
           className="buttonIcon"
           onClick={() => {
             //onExportClick();
-            //SaveExcel(ag_data.data, "Data Table");
+            SaveExcel(ag_data.data, "Data Table");
           }}
         >
           <AiFillFileExcel color="green" size={15} />

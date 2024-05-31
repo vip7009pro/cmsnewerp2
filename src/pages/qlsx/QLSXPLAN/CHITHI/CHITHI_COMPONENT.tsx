@@ -309,6 +309,34 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       return true;
     }
   }
+  const lossSXByProcessNumber = ()=> {
+    let FINAL_LOSS_SX: number = 0,  FINAL_LOSS_SETTING: number = 0; 
+     if (DATA.PROCESS_NUMBER === 1) {
+            FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX2 ?? 0) + (request_codeinfo[0]?.LOSS_SX3 ?? 0) + (request_codeinfo[0]?.LOSS_SX4 ?? 0);
+      } else if (DATA.PROCESS_NUMBER === 2) {
+        FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX3 ?? 0) + (request_codeinfo[0]?.LOSS_SX4 ?? 0);
+      } else if (DATA.PROCESS_NUMBER === 3) {
+        FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX4 ?? 0);
+      } else if (DATA.PROCESS_NUMBER === 4) {
+        FINAL_LOSS_SX = 0;
+      }
+      if (DATA.PROCESS_NUMBER === 1) {
+        FINAL_LOSS_SETTING = (request_codeinfo[0]?.LOSS_SETTING2 ?? 0)+ (request_codeinfo[0]?.LOSS_SETTING3 ?? 0)+ (request_codeinfo[0]?.LOSS_SETTING4 ?? 0);
+      } else if (DATA.PROCESS_NUMBER === 2) {
+        FINAL_LOSS_SETTING = (request_codeinfo[0]?.LOSS_SETTING3 ?? 0)+ (request_codeinfo[0]?.LOSS_SETTING4 ?? 0);
+      } else if (DATA.PROCESS_NUMBER === 3) {
+        FINAL_LOSS_SETTING = (request_codeinfo[0]?.LOSS_SETTING4 ?? 0);
+      } else if (DATA.PROCESS_NUMBER === 4) {
+        FINAL_LOSS_SETTING = 0;
+      }
+      FINAL_LOSS_SETTING = FINAL_LOSS_SETTING / (request_codeinfo[0]?.PD ?? 0) * ((request_codeinfo[0]?.G_C ?? 0) * (request_codeinfo[0]?.G_C_R ?? 0));
+
+      return {
+        FN_LOSS_SX: FINAL_LOSS_SX,
+        FN_LOSS_ST: FINAL_LOSS_SETTING
+      }
+
+  }
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
@@ -475,14 +503,13 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                     <td>{DATA.PLAN_QTY?.toLocaleString("en-US")} EA</td>
                   </tr>
                   <tr>
-                    <td>P/D</td>
-                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}</td>
+                    <td>Số lượng cần sản xuất</td>
+                    <td>{request_codeinfo[0]?.NOTE} {(DATA.PLAN_QTY * (1 + lossSXByProcessNumber().FN_LOSS_SX/ 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', {maximumFractionDigits:0, minimumFractionDigits:0})} EA</td>
                   </tr>
                   <tr>
-                    <td>Cavity (Hàng * Cột)</td>
-                    <td>
-                      {request_codeinfo[0]?.G_C_R} * {request_codeinfo[0]?.G_C}{" "}
-                      = {request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}
+                    <td>P/D - Cavity</td>
+                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}/
+                      ({request_codeinfo[0]?.G_C_R} * {request_codeinfo[0]?.G_C})= {request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}
                     </td>
                   </tr>
                 </tbody>
@@ -518,7 +545,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                   </tr>
                   <tr>
                     <td>Chú ý (QLSX)</td>
-                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1 + (DATA.PROCESS_NUMBER === 1 ? request_codeinfo[0]?.LOSS_SX1 : DATA.PROCESS_NUMBER === 2 ? request_codeinfo[0]?.LOSS_SX2 : DATA.PROCESS_NUMBER === 3 ? request_codeinfo[0]?.LOSS_SX3 : request_codeinfo[0]?.LOSS_SX4) / 100)).toLocaleString('en-US')} EA Cả loss)</td>
+                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1 + lossSXByProcessNumber().FN_LOSS_SX/ 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', {maximumFractionDigits:0, minimumFractionDigits:0})} EA Cả loss)</td>
                   </tr>
                 </tbody>
               </table>

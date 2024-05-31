@@ -8,7 +8,7 @@ import React, {
 import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
 import "./QUICKPLAN.scss";
 import Swal from "sweetalert2";
-import { generalQuery, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getGlobalSetting, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
@@ -68,10 +68,12 @@ import {
   QLSXPLANDATA,
   RecentDM,
   UserData,
+  WEB_SETTING_DATA,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";           
 const QUICKPLAN = () => {           
-  const qtyFactor: number = 10;
+  const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840')/2/60;
+  console.log(qtyFactor)
   const [recentDMData, setRecentDMData]= useState<RecentDM[]>([]);
                                                   
   const [currentPlanPD, setCurrentPlanPD] = useState(0);

@@ -1,27 +1,10 @@
-import {
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { IconButton, LinearProgress } from "@mui/material";
+import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import {
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import { useEffect, useState } from "react";
+import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
 import { MACHINE_LIST } from "../../../../api/GlobalInterface";
