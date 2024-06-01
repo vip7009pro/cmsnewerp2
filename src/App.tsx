@@ -25,7 +25,7 @@ import {
   changeServer,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
-import "./App.css";
+import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";

@@ -650,13 +650,13 @@ function Home() {
                           <CustomTab
                             key={index}
                             label={
-                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center' }}>
-                                <CustomTabLabel style={{ fontSize: "0.8rem" }}>
+                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', }}>
+                                <CustomTabLabel style={{ fontSize: "0.7rem" }}>
                                   {index + 1}.{ele.ELE_NAME}
                                   <IconButton onClick={() => {
                                     dispatch(closeTab(index));
                                   }}>
-                                    <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={20} />
+                                    <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={15} />
                                   </IconButton>
                                 </CustomTabLabel>
                               </div>
@@ -666,7 +666,7 @@ function Home() {
                               minHeight: "2px",
                               height: "5px",
                               boxSizing: "border-box",
-                              borderRadius: "5px",
+                              borderRadius: "3px",
                             }}
                           ></CustomTab>
                         );

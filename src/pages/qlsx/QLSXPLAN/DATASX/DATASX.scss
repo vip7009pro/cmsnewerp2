@@ -5,16 +5,19 @@
   height: 100%;
 
   .tracuuDataInspection {
+    display: flex;
+    flex-direction: column;
     .tracuuDataInspectionform {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
       align-items: center;
       background-image: linear-gradient(0deg, #afd3d1, #86cfff);
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
       padding: 5px;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
 
       span {
         padding: 10px;
@@ -27,10 +30,9 @@
         gap: 5px;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: space-around;
-        padding: 2px;
-        width: 100%;
-        font-size: 0.7rem;
+        justify-content: flex-start;
+        padding: 2px;       
+        font-size: 0.6rem;
 
         .forminputcolumn {
           display: flex;
@@ -41,25 +43,25 @@
           flex-wrap: wrap;
 
           input {
-            width: 150px;
-            height: 20px;
+            width: 80px;
+            height: 10px;
             font-size: 0.7rem;
             outline: none;
             border-radius: 5px;
             border: none;
-            padding: 5px;
+            padding: 2px;
             margin-left: 5px;
             background-image: linear-gradient(0deg, #ececec, #9dee95);
           }
 
           select {
-            width: 160px;
-            height: 30px;
+            width: 80px !important;
+            height: 15px !important;
             font-size: 0.7rem;
             outline: none;
             border-radius: 5px;
             border: none;
-            padding: 5px;
+            padding: 0px;
             margin-left: 5px;
             background-image: linear-gradient(0deg, #ececec, #9dee95);
           }
@@ -70,8 +72,8 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
-        gap: 20px;
-        font-size: 0.7rem;
+        gap: 10px;
+        font-size: 0.6rem;
 
         .tranhapkiembutton {
           font-weight: bold;
@@ -140,51 +142,21 @@
           font-weight: bold;
           padding-left: 5px;
           padding-right: 5px;
-          height: 30px;
-          background-color: #ccff14;
+          height: 20px;
+          background-color: #14ff33;
           outline: none;
           border: none;
           border-radius: 5px;
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          margin-bottom: 5px;
-          margin-top: 5px;
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);          
           font-size: 0.7rem;
-
           &:hover {
             cursor: pointer;
-            background-color: #bd4dc7;
+            background-color: #eef10c;
           }
         }
       }
-
-      .formsummary {
-        display: flex;
-        flex-direction: row;
-        background-image: linear-gradient(0deg, #ececec, #99f86d);
-        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        gap: 20px;
-        border-radius: 5px;
-        margin-top: 5px;
-
-        .summarygroup {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          justify-items: flex-start;
-          gap: 10px;
-
-          .summaryvalue {
-            display: flex;
-            font-size: 16px;
-            justify-self: flex-end;
-            align-self: flex-end;
-            padding: 5px;
-            color: rgb(83, 36, 255);
-          }
-        }
-      }
+  
     }
 
     .losstable {
@@ -222,7 +194,7 @@
     .tracuuYCSXTable {
       display: flex;
       flex-direction: row;
-      margin-top: 10px;
+      margin-top: 2px;
       height: fit-content;
       background-image: linear-gradient(0deg, #afd3d1, #86cfff);
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -247,7 +219,7 @@
         }
 
         .dx-toolbar .dx-toolbar-items-container {
-          height: 25px;
+          height: 20px;
           overflow: visible;
           background-color: #b5f398;
         }

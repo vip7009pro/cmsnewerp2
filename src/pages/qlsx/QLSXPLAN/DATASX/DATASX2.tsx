@@ -111,6 +111,7 @@ const DATASX2 = () => {
   const [alltime, setAllTime] = useState(false);
   const [truSample, setTruSample] = useState(true);
   const [onlyClose, setOnlyClose] = useState(true);
+  const [fullSummary, setFullSummary] = useState(false);
   const [id, setID] = useState("");
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
@@ -1539,7 +1540,7 @@ const DATASX2 = () => {
           dataSource={datasxtable}
           columnWidth="auto"
           keyExpr="id"
-          height={"70vh"}
+          height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -2207,7 +2208,7 @@ const DATASX2 = () => {
           dataSource={datasxtable}
           columnWidth="auto"
           keyExpr="id"
-          height={"70vh"}
+          height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -2846,7 +2847,7 @@ const DATASX2 = () => {
           dataSource={inputlieudatatable}
           columnWidth="auto"
           keyExpr="id"
-          height={"70vh"}
+          height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -3461,6 +3462,15 @@ const DATASX2 = () => {
                 onChange={() => setOnlyClose(prev => !prev)}
               ></input>
             </label>
+            <label>
+              <b>Full Summary:</b>
+              <input
+                type="checkbox"
+                name="alltimecheckbox"
+                checked={fullSummary}
+                onChange={() => setFullSummary(prev => !prev)}
+              ></input>
+            </label>
             <button
               className="tranhatky"
               onClick={() => {
@@ -3492,38 +3502,37 @@ const DATASX2 = () => {
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
                     3.USED_MET
-                  </th>
-                  
+                  </th>                  
                   <th style={{ color: "black", fontWeight: "bold" }}>
                     4.USED_EA
                   </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     5_1.ST1
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     5_2.NG1
-                  </th>
+                  </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>5.CD1</th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     6_1.ST2
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     6_2.NG2
-                  </th>
+                  </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>6.CD2</th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     7_1.ST3
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     7_2.NG3
-                  </th>
+                  </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>7.CD3</th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     8_1.ST4
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     8_2.NG4
-                  </th>
+                  </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>8.CD4</th>
                   <th style={{ color: "blue", fontWeight: "bold" }}>
                     9.SX_RESULT
@@ -3531,30 +3540,30 @@ const DATASX2 = () => {
                   <th style={{ color: "blue", fontWeight: "bold" }}>
                     10.INS_INPUT
                   </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_1.INS_TT_QTY
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_2.INS_QTY
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_3.MARKING
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_4.INS_OK
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_5.INS_M_NG
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_6.INS_P_NG
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_7.INSP_LOSS
-                  </th>
-                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                  </th>}
+                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_8.THEM_TUI
-                  </th>
+                  </th>}
                   <th style={{ color: "blue", fontWeight: "bold" }}>
                     11.INS_OUTPUT
                   </th>
@@ -3580,39 +3589,39 @@ const DATASX2 = () => {
                   <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_EA.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
                   </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING1.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
-                  <td style={{ color: "red", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG1.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
+                  </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}
                   </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING2.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
-                  <td style={{ color: "red", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG2.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
+                  </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}
                   </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING3.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
-                  <td style={{ color: "red", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG3.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
+                  </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS3_RESULT.toLocaleString("en-US")}
                   </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING4.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
-                  <td style={{ color: "red", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG4.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
-                  </td>
+                  </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS4_RESULT.toLocaleString("en-US")}
                   </td>
@@ -3622,30 +3631,30 @@ const DATASX2 = () => {
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.INSPECTION_INPUT.toLocaleString("en-US")}
                   </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_TOTAL_QTY.toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {(losstableinfo.INSPECT_TOTAL_QTY-losstableinfo.SX_MARKING_QTY).toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SX_MARKING_QTY.toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_OK_QTY.toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "red", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_MATERIAL_NG.toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "red", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_PROCESS_NG.toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_LOSS_QTY.toLocaleString("en-US")}
-                  </td>
-                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                  </td>}
+                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.LOSS_THEM_TUI.toLocaleString("en-US")}
-                  </td>
+                  </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US")}
                   </td>

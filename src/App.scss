@@ -1,0 +1,38 @@
+
+.buttonIcon {
+  font-size: 0.7rem !important;
+  color: rgb(59, 45, 182) !important;
+}
+
+.mininavbar {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 2px !important;
+  margin-top: 2px !important;
+  gap: 2px !important;
+
+  .mininavitem {
+    padding: 3px !important; 
+    margin-left: 5px !important;
+    border-radius: 2px !important;
+    font-size: 0.6rem !important;   
+    color: white !important;
+    -webkit-box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.27) !important;
+    box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27) !important;
+  
+  }
+}
+
+@media only screen and (max-width: 5000px) {
+  .App {
+    margin-left: 0px;
+    margin-right: 0px;   
+  }
+}
+@media only screen and (max-width: 768px) {
+  .App {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
