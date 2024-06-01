@@ -1535,7 +1535,10 @@ export interface SX_DATA {
   CAVITY: number;
   SETTING_MET_TC: number;
   SETTING_DM_SX: number;
+  NG_MET: number;
   SETTING_MET: number;
+  NG_EA: number;
+  SETTING_EA: number;
   WAREHOUSE_ESTIMATED_QTY: number;
   ESTIMATED_QTY_ST: number;
   ESTIMATED_QTY: number;
@@ -1571,9 +1574,6 @@ export interface SX_DATA {
   CHUYEN_CODE: number;
   KHAC: number;
   REMARK: string;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INSPECT_NG_QTY: number;
   MACHINE_NAME: string;
   KQ_SX_TAM: number;
   id: number;
@@ -1581,6 +1581,14 @@ export interface SX_DATA {
   DKXL: string;
   XUATLIEU: string;
   CHOTBC: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  LOSS_THEM_TUI: number;
+  INSPECT_LOSS_QTY: number;
+  INSPECT_TOTAL_NG: number;
+  INSPECT_MATERIAL_NG: number;
+  INSPECT_PROCESS_NG: number;
+  SX_MARKING_QTY: number;
 }
 export interface TRA_PQC1_DATA {
   PQC1_ID: string;
@@ -2003,6 +2011,14 @@ export interface YCSX_SX_DATA {
   CD2: number;
   CD3: number;
   CD4: number;
+  ST1: number;
+  ST2: number;
+  ST3: number;
+  ST4: number;
+  NG1: number;
+  NG2: number;
+  NG3: number;
+  NG4: number;
   INS_INPUT: number;
   INSPECT_TOTAL_QTY: number;
   INSPECT_OK_QTY: number;
@@ -2018,18 +2034,36 @@ export interface YCSX_SX_DATA {
   LOSS_INSPECT: number;
   TOTAL_LOSS: number;
   TOTAL_LOSS2: number;
+  LOSS_THEM_TUI: number;
+  SX_MARKING_QTY: number;
 }
 export interface LOSS_TABLE_DATA {
   XUATKHO_MET: number;
   XUATKHO_EA: number;
   SCANNED_MET: number;
   SCANNED_EA: number;
+  SETTING1: number;
+  NG1: number;
   PROCESS1_RESULT: number;
+  SETTING2: number;
+  NG2: number;
   PROCESS2_RESULT: number;
+  SETTING3: number;
+  NG3: number;
   PROCESS3_RESULT: number;
+  SETTING4: number;
+  NG4: number;
   PROCESS4_RESULT: number;
   SX_RESULT: number;
   INSPECTION_INPUT: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  LOSS_THEM_TUI: number;
+  INSPECT_LOSS_QTY: number;
+  INSPECT_TOTAL_NG: number;
+  INSPECT_MATERIAL_NG: number;
+  INSPECT_PROCESS_NG: number;
+  SX_MARKING_QTY: number;
   INSPECTION_OUTPUT: number;
   LOSS_INS_OUT_VS_SCANNED_EA: number;
   LOSS_INS_OUT_VS_XUATKHO_EA: number;

@@ -16,16 +16,10 @@ import DataGrid, {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import {
-  AiFillCloseCircle,
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -38,10 +32,9 @@ import {
   SX_DATA,
   YCSX_SX_DATA,
 } from "../../../../api/GlobalInterface";
-
+import { checkEQvsPROCESS } from "../Machine/MACHINE";
 const DATASX2 = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
@@ -59,7 +52,7 @@ const DATASX2 = () => {
             { EQ_NAME: "NO" },
             { EQ_NAME: "NA" },
           );
-          console.log(loadeddata);
+          //console.log(loadeddata);
           setMachine_List(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -86,9 +79,25 @@ const DATASX2 = () => {
     PROCESS4_RESULT: 0,
     SX_RESULT: 0,
     INSPECTION_INPUT: 0,
+    INSPECT_LOSS_QTY:0,
+    INSPECT_MATERIAL_NG:0,
+    INSPECT_OK_QTY:0,
+    INSPECT_PROCESS_NG:0,
+    INSPECT_TOTAL_NG:0,
+    INSPECT_TOTAL_QTY:0,
+    LOSS_THEM_TUI:0,
+    SX_MARKING_QTY:0,
     INSPECTION_OUTPUT: 0,
     LOSS_INS_OUT_VS_SCANNED_EA: 0,
     LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+    NG1:0,
+    NG2:0,
+    NG3:0,
+    NG4:0,
+    SETTING1:0,
+    SETTING2:0,
+    SETTING3:0,
+    SETTING4:0
   });
   const [selectbutton, setSelectButton] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -101,6 +110,7 @@ const DATASX2 = () => {
   const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [truSample, setTruSample] = useState(true);
+  const [onlyClose, setOnlyClose] = useState(true);
   const [id, setID] = useState("");
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
@@ -111,7 +121,6 @@ const DATASX2 = () => {
   const [selectedRowsDataYCSX, setSelectedRowsDataYCSX] = useState<
     Array<YCSX_SX_DATA>
   >([]);
-
   const fields_datasx_chithi: any = [
     {
       caption: "PHAN_LOAI",
@@ -553,9 +562,9 @@ const DATASX2 = () => {
       area: "data",
     },
     {
-      caption: "INSPECT_NG_QTY",
+      caption: "INSPECT_TOTAL_NG",
       width: 80,
-      dataField: "INSPECT_NG_QTY",
+      dataField: "INSPECT_TOTAL_NG",
       allowSorting: true,
       allowFiltering: true,
       dataType: "number",
@@ -1508,7 +1517,6 @@ const DATASX2 = () => {
       },
     },
   ];
-
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
       new PivotGridDataSource({
@@ -1516,7 +1524,6 @@ const DATASX2 = () => {
         store: datasxtable,
       }),
     );
-
   const datasx_chithi = React.useMemo(
     () => (
       <div className="datatb">
@@ -1559,7 +1566,7 @@ const DATASX2 = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={false}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -1755,6 +1762,20 @@ const DATASX2 = () => {
             }}
           ></Column>
           <Column
+            dataField="NG_MET"
+            caption="NG_MET"
+            width={120}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
+                  {e.data.NG_MET?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
             dataField="WAREHOUSE_ESTIMATED_QTY"
             caption="WAREHOUSE_ESTIMATED_QTY"
             minWidth={100}
@@ -1764,6 +1785,20 @@ const DATASX2 = () => {
               return (
                 <span style={{ color: "#DF6709", fontWeight: "bold" }}>
                   {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField="ESTIMATED_QTY"
+            caption="ESTIMATED_QTY"
+            minWidth={100}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
                 </span>
               );
             }}
@@ -1783,19 +1818,34 @@ const DATASX2 = () => {
             }}
           ></Column>
           <Column
-            dataField="ESTIMATED_QTY"
-            caption="ESTIMATED_QTY"
+            dataField="SETTING_EA"
+            caption="SETTING_EA"
             minWidth={100}
             dataType="number"
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
+                  {e.data.SETTING_EA?.toLocaleString("en-US")}
                 </span>
               );
             }}
           ></Column>
+          <Column
+            dataField="NG_EA"
+            caption="NG_EA"
+            minWidth={100}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.NG_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          
           <Column
             dataField="KETQUASX"
             caption="KETQUASX"
@@ -1835,10 +1885,10 @@ const DATASX2 = () => {
                 <span style={{ color: "green", fontWeight: "bold" }}>
                   {
                     e.data.LOSS_SX_ST?.toLocaleString("en-US", {
-                      style:'percent',
+                      style: 'percent',
                       maximumFractionDigits: 1,
                       minimumFractionDigits: 1,
-                    })}{" "}                  
+                    })}{" "}
                 </span>
               );
             }}
@@ -1853,10 +1903,10 @@ const DATASX2 = () => {
               return (
                 <span style={{ color: "green", fontWeight: "bold" }}>
                   {e.data.LOSS_SX?.toLocaleString("en-US", {
-                      style:'percent',
-                      maximumFractionDigits: 1,
-                      minimumFractionDigits: 1,
-                    })}
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
                 </span>
               );
             }}
@@ -1904,15 +1954,15 @@ const DATASX2 = () => {
             }}
           ></Column>
           <Column
-            dataField="INSPECT_NG_QTY"
-            caption="INSPECT_NG_QTY"
+            dataField="INSPECT_TOTAL_NG"
+            caption="INSPECT_TOTAL_NG"
             minWidth={100}
             dataType="number"
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INSPECT_NG_QTY?.toLocaleString("en-US")}
+                  {e.data.INSPECT_TOTAL_NG?.toLocaleString("en-US")}
                 </span>
               );
             }}
@@ -1925,13 +1975,12 @@ const DATASX2 = () => {
             format={"percent"}
             cellRender={(e: any) => {
               return (
-                
-                <span style={{ color: "green", fontWeight: "bold" }}>                 
-                    {e.data.LOSS_SX_KT?.toLocaleString("en-US", {
-                      style:'percent',
-                      maximumFractionDigits: 1,
-                      minimumFractionDigits: 1,
-                    })}
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.LOSS_SX_KT?.toLocaleString("en-US", {
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
                 </span>
               );
             }}
@@ -1946,9 +1995,9 @@ const DATASX2 = () => {
               return (
                 <span style={{ color: "#DF6709", fontWeight: "bold" }}>
                   {e.data.INS_OUTPUT?.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                      minimumFractionDigits: 0,
-                    })}
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
                 </span>
               );
             }}
@@ -1961,12 +2010,12 @@ const DATASX2 = () => {
             format={"percent"}
             cellRender={(e: any) => {
               return (
-                <span style={{ color: "green", fontWeight: "bold" }}>                  
-                     {e.data.LOSS_KT?.toLocaleString("en-US", {
-                      style:'percent',
-                      maximumFractionDigits: 1,
-                      minimumFractionDigits: 1,
-                    })}
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.LOSS_KT?.toLocaleString("en-US", {
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
                 </span>
               );
             }}
@@ -2182,7 +2231,7 @@ const DATASX2 = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={false}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -2443,7 +2492,6 @@ const DATASX2 = () => {
               );
             }}
           ></Column>
-
           <Column
             dataField="INSPECT_TOTAL_QTY"
             caption="INSPECT_TOTAL_QTY"
@@ -2528,7 +2576,6 @@ const DATASX2 = () => {
               );
             }}
           ></Column>
-
           <Column
             dataField="INS_OUTPUT"
             caption="INS_OUTPUT"
@@ -2816,14 +2863,13 @@ const DATASX2 = () => {
             showScrollbar="onHover"
             mode="virtual"
           />
-
           <Editing
             allowUpdating={false}
             allowAdding={false}
             allowDeleting={false}
             mode="cell"
             confirmDelete={false}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -2935,7 +2981,6 @@ const DATASX2 = () => {
             caption="INS_DATE"
             minWidth={100}
           ></Column>
-
           <Summary>
             <TotalItem
               alignment="right"
@@ -3034,14 +3079,14 @@ const DATASX2 = () => {
               return {
                 ...element,
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                SETTING_START_TIME: element.SETTING_START_TIME === null? "": moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
-                MASS_START_TIME: element.MASS_START_TIME === null? "": moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
-                MASS_END_TIME: element.MASS_END_TIME === null? "": moment.utc(element.MASS_END_TIME).format("YYYY-MM-DD HH:mm:ss"),
-                SX_DATE: element.SX_DATE === null? "": moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-                LOSS_SX_ST: (element.ESTIMATED_QTY_ST??0) !== 0 ? 1 - (element.KETQUASX ?? 0)*1.0 / (element.ESTIMATED_QTY_ST ??0): 0,
-                LOSS_SX: (element.ESTIMATED_QTY??0) !== 0 ? 1 - (element.KETQUASX ?? 0)*1.0 / (element.ESTIMATED_QTY ??0): 0,                 
-                LOSS_SX_KT: (element.KETQUASX??0) !== 0 ? 1 - (element.INS_INPUT ?? 0)*1.0 / (element.KETQUASX ??0): 0,
-                LOSS_KT:(element.INS_INPUT??0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0)*1.0 / (element.INS_INPUT ??0): 0,
+                SETTING_START_TIME: element.SETTING_START_TIME === null ? "" : moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
+                MASS_START_TIME: element.MASS_START_TIME === null ? "" : moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
+                MASS_END_TIME: element.MASS_END_TIME === null ? "" : moment.utc(element.MASS_END_TIME).format("YYYY-MM-DD HH:mm:ss"),
+                SX_DATE: element.SX_DATE === null ? "" : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+                LOSS_SX_ST: (element.ESTIMATED_QTY_ST ?? 0) !== 0 ? 1 - (element.KETQUASX ?? 0) * 1.0 / (element.ESTIMATED_QTY_ST ?? 0) : 0,
+                LOSS_SX: (element.ESTIMATED_QTY ?? 0) !== 0 ? 1 - (element.KETQUASX ?? 0) * 1.0 / (element.ESTIMATED_QTY ?? 0) : 0,
+                LOSS_SX_KT: (element.KETQUASX ?? 0) !== 0 ? 1 - (element.INS_INPUT ?? 0) * 1.0 / (element.KETQUASX ?? 0) : 0,
+                LOSS_KT: (element.INS_INPUT ?? 0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0) * 1.0 / (element.INS_INPUT ?? 0) : 0,
                 id: index,
               };
             },
@@ -3058,39 +3103,60 @@ const DATASX2 = () => {
             PROCESS4_RESULT: 0,
             SX_RESULT: 0,
             INSPECTION_INPUT: 0,
+            INSPECT_LOSS_QTY:0,
+            INSPECT_MATERIAL_NG:0,
+            INSPECT_OK_QTY:0,
+            INSPECT_PROCESS_NG:0,
+            INSPECT_TOTAL_NG:0,
+            INSPECT_TOTAL_QTY:0,
+            LOSS_THEM_TUI:0,
+            SX_MARKING_QTY:0,
             INSPECTION_OUTPUT: 0,
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
             LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+            NG1:0,
+            NG2:0,
+            NG3:0,
+            NG4:0,
+            SETTING1:0,
+            SETTING2:0,
+            SETTING3:0,
+            SETTING4:0
           };
           for (let i = 0; i < loaded_data.length; i++) {
             temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
             temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
             temp_loss_info.SCANNED_MET += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].USED_QTY : 0;
-            temp_loss_info.SCANNED_EA += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].ESTIMATED_QTY :0;
-            temp_loss_info.PROCESS1_RESULT +=
-              loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0
-                ? loaded_data[i].KETQUASX
-                : 0;
-            temp_loss_info.PROCESS2_RESULT +=
-              loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0
-                ? loaded_data[i].KETQUASX
-                : 0;
-            temp_loss_info.PROCESS3_RESULT +=
-              loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0
-                ? loaded_data[i].KETQUASX
-                : 0;
-            temp_loss_info.PROCESS4_RESULT +=
-              loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0
-                ? loaded_data[i].KETQUASX
-                : 0;
-            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
+            temp_loss_info.SCANNED_EA += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].ESTIMATED_QTY : 0;
+            temp_loss_info.PROCESS1_RESULT += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
+            temp_loss_info.PROCESS2_RESULT += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
+            temp_loss_info.PROCESS3_RESULT += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
+            temp_loss_info.PROCESS4_RESULT += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
+
+            temp_loss_info.NG1 += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
+            temp_loss_info.NG2 += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
+            temp_loss_info.NG3 += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
+            temp_loss_info.NG4 += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
+
+            temp_loss_info.SETTING1 += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
+            temp_loss_info.SETTING2 += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
+            temp_loss_info.SETTING3 += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
+            temp_loss_info.SETTING4 += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
+
+            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;            
+            temp_loss_info.INSPECT_TOTAL_QTY+=loaded_data[i].INSPECT_TOTAL_QTY
+            temp_loss_info.INSPECT_OK_QTY+=loaded_data[i].INSPECT_OK_QTY
+            temp_loss_info.LOSS_THEM_TUI+=loaded_data[i].LOSS_THEM_TUI
+            temp_loss_info.INSPECT_LOSS_QTY+=loaded_data[i].INSPECT_LOSS_QTY
+            temp_loss_info.INSPECT_TOTAL_NG+=loaded_data[i].INSPECT_TOTAL_NG
+            temp_loss_info.INSPECT_MATERIAL_NG+=loaded_data[i].INSPECT_MATERIAL_NG
+            temp_loss_info.INSPECT_PROCESS_NG+=loaded_data[i].INSPECT_PROCESS_NG
+            temp_loss_info.SX_MARKING_QTY+=loaded_data[i].SX_MARKING_QTY           
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
-            temp_loss_info.SX_RESULT += loaded_data[i].KETQUASX_TP?? 0;
+            temp_loss_info.SX_RESULT += loaded_data[i].KETQUASX_TP ?? 0;
           }
-          temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA =
-            1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
-          temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA =
-            1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
+          temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
+          temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
           setLossTableInfo(temp_loss_info);
           setDataSXTable(loaded_data);
           setSelectedDataSource(
@@ -3135,7 +3201,8 @@ const DATASX2 = () => {
       G_CODE: codeCMS,
       FACTORY: factory,
       PLAN_EQ: machine,
-      TRUSAMPLE: truSample
+      TRUSAMPLE: truSample,
+      ONLYCLOSE: onlyClose
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -3162,11 +3229,29 @@ const DATASX2 = () => {
             PROCESS4_RESULT: 0,
             SX_RESULT: 0,
             INSPECTION_INPUT: 0,
+            INSPECT_LOSS_QTY:0,
+            INSPECT_MATERIAL_NG:0,
+            INSPECT_OK_QTY:0,
+            INSPECT_PROCESS_NG:0,
+            INSPECT_TOTAL_NG:0,
+            INSPECT_TOTAL_QTY:0,
+            LOSS_THEM_TUI:0,
+            SX_MARKING_QTY:0,
             INSPECTION_OUTPUT: 0,
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
             LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+            NG1:0,
+            NG2:0,
+            NG3:0,
+            NG4:0,
+            SETTING1:0,
+            SETTING2:0,
+            SETTING3:0,
+            SETTING4:0
           };
+          let maxprocess:number =1;
           for (let i = 0; i < loaded_data.length; i++) {
+            maxprocess = checkEQvsPROCESS(loaded_data[i].EQ1,loaded_data[i].EQ2,loaded_data[i].EQ3,loaded_data[i].EQ4);
             temp_loss_info.XUATKHO_MET += loaded_data[i].M_OUTPUT;
             temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
             temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;
@@ -3175,18 +3260,31 @@ const DATASX2 = () => {
             temp_loss_info.PROCESS2_RESULT += loaded_data[i].CD2;
             temp_loss_info.PROCESS3_RESULT += loaded_data[i].CD3;
             temp_loss_info.PROCESS4_RESULT += loaded_data[i].CD4;
-            temp_loss_info.SX_RESULT +=
-              loaded_data[i].EQ2 === "NO" ||
-              loaded_data[i].EQ2 === "NA" ||
-              loaded_data[i].EQ2 === null
-                ? loaded_data[i].CD1
-                : loaded_data[i].CD2;
-            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
+
+            
+            temp_loss_info.NG1 += loaded_data[i].NG1;
+            temp_loss_info.NG2 += loaded_data[i].NG2;
+            temp_loss_info.NG3 += loaded_data[i].NG3;
+            temp_loss_info.NG4 += loaded_data[i].NG4;
+
+            temp_loss_info.SETTING1 += loaded_data[i].ST1;
+            temp_loss_info.SETTING2 += loaded_data[i].ST2;
+            temp_loss_info.SETTING3 += loaded_data[i].ST3;
+            temp_loss_info.SETTING4 += loaded_data[i].ST4;
+
+            temp_loss_info.SX_RESULT += maxprocess==1 ? loaded_data[i].CD1: maxprocess==2 ? loaded_data[i].CD2 :maxprocess==3 ? loaded_data[i].CD3 : loaded_data[i].CD4,
+            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;         
+            temp_loss_info.INSPECT_TOTAL_QTY+=loaded_data[i].INSPECT_TOTAL_QTY
+            temp_loss_info.INSPECT_OK_QTY+=loaded_data[i].INSPECT_OK_QTY
+            temp_loss_info.LOSS_THEM_TUI+=loaded_data[i].LOSS_THEM_TUI
+            temp_loss_info.INSPECT_LOSS_QTY+=loaded_data[i].INSPECT_LOSS_QTY
+            temp_loss_info.INSPECT_TOTAL_NG+=loaded_data[i].INSPECT_TOTAL_NG
+            temp_loss_info.INSPECT_MATERIAL_NG+=loaded_data[i].INSPECT_MATERIAL_NG
+            temp_loss_info.INSPECT_PROCESS_NG+=loaded_data[i].INSPECT_PROCESS_NG
+            temp_loss_info.SX_MARKING_QTY+=loaded_data[i].SX_MARKING_QTY   
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
-            temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA =
-              1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
-            temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA =
-              1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
+            temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
+            temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
           }
           setLossTableInfo(temp_loss_info);
           setShowLoss(true);
@@ -3341,8 +3439,8 @@ const DATASX2 = () => {
               <input
                 type="checkbox"
                 name="alltimecheckbox"
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
+                checked={alltime}
+                onChange={() => setAllTime(prev => !prev)}
               ></input>
             </label>
             <label>
@@ -3350,8 +3448,17 @@ const DATASX2 = () => {
               <input
                 type="checkbox"
                 name="alltimecheckbox"
-                defaultChecked={truSample}
-                onChange={() => setTruSample(!truSample)}
+                checked={truSample}
+                onChange={() => setTruSample(prev => !prev)}
+              ></input>
+            </label>
+            <label>
+              <b>Only Closed:</b>
+              <input
+                type="checkbox"
+                name="alltimecheckbox"
+                checked={onlyClose}
+                onChange={() => setOnlyClose(prev => !prev)}
               ></input>
             </label>
             <button
@@ -3378,60 +3485,133 @@ const DATASX2 = () => {
               <thead>
                 <tr>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    1.XUAT KHO MET
+                    1.WH_MET
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    2.XUAT KHO EA
+                    2.WH_EA
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    3.USED MET
+                    3.USED_MET
                   </th>
+                  
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    4.USED EA
+                    4.USED_EA
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    5_1.ST1
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    5_2.NG1
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>5.CD1</th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    6_1.ST2
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    6_2.NG2
+                  </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>6.CD2</th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    7_1.ST3
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    7_2.NG3
+                  </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>7.CD3</th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    8_1.ST4
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    8_2.NG4
+                  </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>8.CD4</th>
-                  <th style={{ color: "black", fontWeight: "bold" }}>
-                    9.SX RESULT
+                  <th style={{ color: "blue", fontWeight: "bold" }}>
+                    9.SX_RESULT
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "bold" }}>
+                    10.INS_INPUT
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_1.INS_TT_QTY
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_2.INS_QTY
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_3.MARKING
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_4.INS_OK
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_5.INS_M_NG
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_6.INS_P_NG
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_7.INSP_LOSS
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "normal" }}>
+                    10_8.THEM_TUI
+                  </th>
+                  <th style={{ color: "blue", fontWeight: "bold" }}>
+                    11.INS_OUTPUT
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    10.INSPECTION INPUT
+                    12.LOSS (11 vs 4) %
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    11.INSPECTION OUTPUT
-                  </th>
-                  <th style={{ color: "black", fontWeight: "bold" }}>
-                    12.TOTAL_LOSS (11 vs 4) %
-                  </th>
-                  <th style={{ color: "black", fontWeight: "bold" }}>
-                    13.TOTAL_LOSS2 (11) vs2) %
+                    13.LOSS2 (11 vs2) %
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr style={{fontSize:'0.6rem'}}>
                   <td style={{ color: "blue", fontWeight: "bold" }}>
                     {losstableinfo.XUATKHO_MET.toLocaleString("en-US")}
                   </td>
                   <td style={{ color: "blue", fontWeight: "bold" }}>
-                    {losstableinfo.XUATKHO_EA.toLocaleString("en-US")}
+                    {losstableinfo.XUATKHO_EA.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
                   </td>
                   <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_MET.toLocaleString("en-US")}
                   </td>
                   <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
-                    {losstableinfo.SCANNED_EA.toLocaleString("en-US")}
+                    {losstableinfo.SCANNED_EA.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.SETTING1.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {losstableinfo.NG1.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
                   </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}
                   </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.SETTING2.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {losstableinfo.NG2.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}
                   </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.SETTING3.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {losstableinfo.NG3.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS3_RESULT.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.SETTING4.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {losstableinfo.NG4.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
                   </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS4_RESULT.toLocaleString("en-US")}
@@ -3441,6 +3621,30 @@ const DATASX2 = () => {
                   </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.INSPECTION_INPUT.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.INSPECT_TOTAL_QTY.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {(losstableinfo.INSPECT_TOTAL_QTY-losstableinfo.SX_MARKING_QTY).toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.SX_MARKING_QTY.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.INSPECT_OK_QTY.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {losstableinfo.INSPECT_MATERIAL_NG.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {losstableinfo.INSPECT_PROCESS_NG.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.INSPECT_LOSS_QTY.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "gray", fontWeight: "normal" }}>
+                    {losstableinfo.LOSS_THEM_TUI.toLocaleString("en-US")}
                   </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US")}
