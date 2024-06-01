@@ -71,7 +71,7 @@ import PLANRESULT from "../sx/PLANRESULT/PLANRESULT";
 import KHOTP from "../kho/khotp/KHOTP";
 import KHOTPNEW from "../kho/khotp_new/KHOTPNEW";
 import SettingPage from "../setting/SettingPage";
-export const current_ver: number = 383;
+export const current_ver: number = 384;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
