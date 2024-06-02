@@ -471,7 +471,7 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
     }    
   }
 
-  const editBoxValueChanged = useCallback(({ component }: {component: MENU_LIST_DATA}) => {
+  const editBoxValueChanged = useCallback(({ component }: {component: any}) => {
     let selected: MENU_LIST_DATA = component.option('selectedItem');
     console.log(selected);
 
