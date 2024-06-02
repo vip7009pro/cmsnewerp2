@@ -110,7 +110,7 @@ const DATASX2 = () => {
   const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [truSample, setTruSample] = useState(true);
-  const [onlyClose, setOnlyClose] = useState(false);
+  const [onlyClose, setOnlyClose] = useState(true);
   const [fullSummary, setFullSummary] = useState(false);
   const [id, setID] = useState("");
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);

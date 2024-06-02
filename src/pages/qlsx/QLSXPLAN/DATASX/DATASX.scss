@@ -3,7 +3,6 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-
   .tracuuDataInspection {
     display: flex;
     flex-direction: column;
@@ -18,22 +17,19 @@
       border-radius: 3px;
       padding: 5px;
       font-size: 0.7rem;
-
       span {
         padding: 10px;
         font-size: 20px;
         margin: auto;
       }
-
       .forminput {
         display: flex;
         gap: 5px;
         flex-wrap: wrap;
         align-items: center;
         justify-content: flex-start;
-        padding: 2px;       
+        padding: 2px;
         font-size: 0.6rem;
-
         .forminputcolumn {
           display: flex;
           flex-direction: column;
@@ -41,7 +37,6 @@
           align-items: flex-end;
           justify-content: center;
           flex-wrap: wrap;
-
           input {
             width: 80px;
             height: 10px;
@@ -53,7 +48,6 @@
             margin-left: 5px;
             background-image: linear-gradient(0deg, #ececec, #9dee95);
           }
-
           select {
             width: 80px !important;
             height: 15px !important;
@@ -67,14 +61,12 @@
           }
         }
       }
-
       .formbutton {
         display: flex;
         align-items: center;
         justify-content: space-around;
         gap: 10px;
         font-size: 0.6rem;
-
         .tranhapkiembutton {
           font-weight: bold;
           padding-left: 5px;
@@ -89,13 +81,11 @@
           margin-bottom: 5px;
           margin-top: 5px;
           font-size: 0.7rem;
-
           &:hover {
             cursor: pointer;
             background-color: #67c73a;
           }
         }
-
         .traxuatkiembutton {
           font-weight: bold;
           padding-left: 5px;
@@ -110,13 +100,11 @@
           margin-bottom: 5px;
           margin-top: 5px;
           font-size: 0.7rem;
-
           &:hover {
             cursor: pointer;
             background-color: #3f9eca;
           }
         }
-
         .tranhapxuatkiembutton {
           font-weight: bold;
           padding-left: 5px;
@@ -131,13 +119,11 @@
           margin-bottom: 5px;
           margin-top: 5px;
           font-size: 0.7rem;
-
           &:hover {
             cursor: pointer;
             background-color: #bd4dc7;
           }
         }
-
         .tranhatky {
           font-weight: bold;
           padding-left: 5px;
@@ -148,7 +134,7 @@
           border: none;
           border-radius: 5px;
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);          
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           font-size: 0.7rem;
           &:hover {
             cursor: pointer;
@@ -156,9 +142,7 @@
           }
         }
       }
-  
     }
-
     .losstable {
       display: flex;
       flex-direction: row;
@@ -171,26 +155,22 @@
       margin-top: 5px;
       padding: 10px;
       font-size: 0.7rem;
-
       table {
         border: 2px solid gray;
         width: 100%;
         text-align: center;
       }
-
       table thead tr td {
         font-weight: bold;
         border: 1px solid gray;
         padding-left: 10px;
         padding-right: 10px;
       }
-
       table tbody tr td {
         border: 1px solid gray;
         text-align: center;
       }
     }
-
     .tracuuYCSXTable {
       display: flex;
       flex-direction: row;
@@ -206,48 +186,36 @@
         flex: 1;
         padding: 5px;
         height: fit-content;
-        .dx-datagrid-rowsview
-          .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
-          > td {
+        .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
           background-color: orange;
           color: unset;
         }
-
-        .dx-datagrid-borders > .dx-datagrid-header-panel {
+        .dx-datagrid-borders>.dx-datagrid-header-panel {
           border-bottom: 0;
           background-color: #b5f398;
         }
-
         .dx-toolbar .dx-toolbar-items-container {
           height: 20px;
           overflow: visible;
           background-color: #b5f398;
         }
-
         //toan bo bang
-        .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+        .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
           display: -ms-flexbox;
           display: flex;
           background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
           font-size: 0.7rem;
         }
-
-        .dx-datagrid-borders > .dx-datagrid-filter-panel,
-        .dx-datagrid-borders > .dx-datagrid-headers {
+        .dx-datagrid-borders>.dx-datagrid-filter-panel,
+        .dx-datagrid-borders>.dx-datagrid-headers {
           border-top: 1px solid #ddd;
           background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
           color: black;
           font-size: 0.7rem;
         }
         //filter row input
-        .dx-datagrid-filter-row
-          .dx-editor-cell
-          .dx-editor-with-menu
-          .dx-placeholder::before,
-        .dx-datagrid-filter-row
-          .dx-editor-cell
-          .dx-editor-with-menu
-          .dx-texteditor-input {
+        .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+        .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
           padding-left: 32px;
           background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
           color: black;
@@ -257,20 +225,17 @@
         .dx-editor-cell .dx-texteditor .dx-texteditor-input {
           background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
         }
-
         .dx-searchbox .dx-placeholder::before,
         .dx-searchbox .dx-texteditor-input {
           padding-left: 34px;
           background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
         }
-
         .dx-button-mode-contained {
           background-color: #a0f87e;
           border-color: #cacafa;
           color: #430fff;
         }
-
-        .dx-datagrid-total-footer > .dx-datagrid-content {
+        .dx-datagrid-total-footer>.dx-datagrid-content {
           padding-top: 0px;
           padding-bottom: 0px;
         }
@@ -281,42 +246,32 @@
         flex: 1;
         padding: 5px;
         height: fit-content;
-
-        .dx-datagrid-borders > .dx-datagrid-header-panel {
+        .dx-datagrid-borders>.dx-datagrid-header-panel {
           border-bottom: 0;
           background-color: #b5f398;
         }
-
         .dx-toolbar .dx-toolbar-items-container {
           height: 25px;
           overflow: visible;
           background-color: #b5f398;
         }
-
         //toan bo bang
-        .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+        .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
           display: -ms-flexbox;
           display: flex;
           background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
           font-size: 0.7rem;
         }
-
-        .dx-datagrid-borders > .dx-datagrid-filter-panel,
-        .dx-datagrid-borders > .dx-datagrid-headers {
+        .dx-datagrid-borders>.dx-datagrid-filter-panel,
+        .dx-datagrid-borders>.dx-datagrid-headers {
           border-top: 1px solid #ddd;
           background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
           color: black;
           font-size: 0.7rem;
         }
         //filter row input
-        .dx-datagrid-filter-row
-          .dx-editor-cell
-          .dx-editor-with-menu
-          .dx-placeholder::before,
-        .dx-datagrid-filter-row
-          .dx-editor-cell
-          .dx-editor-with-menu
-          .dx-texteditor-input {
+        .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+        .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
           padding-left: 32px;
           background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
           color: black;
@@ -326,19 +281,17 @@
         .dx-editor-cell .dx-texteditor .dx-texteditor-input {
           background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
         }
-
         .dx-searchbox .dx-placeholder::before,
         .dx-searchbox .dx-texteditor-input {
           padding-left: 34px;
           background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
         }
-
         .dx-button-mode-contained {
           background-color: #a0f87e;
           border-color: #cacafa;
           color: #430fff;
         }
-        .dx-datagrid-total-footer > .dx-datagrid-content {
+        .dx-datagrid-total-footer>.dx-datagrid-content {
           padding-top: 0px;
           padding-bottom: 0px;
         }

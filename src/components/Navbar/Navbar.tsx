@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -33,14 +33,34 @@ import { ELE_ARRAY, MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import useOutsideClick from "../../api/customHooks";
 import { MdOutlineSettings } from "react-icons/md";
 import NavMenu from "../NavMenu/NavMenu";
+import { SelectBox } from "devextreme-react";
+import { SimplifiedSearchMode } from "devextreme/common";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
 }
+export const minimumSearchLengthLabel = { 'aria-label': 'Minumum Search length' };
+export const searchTimeoutLabel = { 'aria-label': 'Search Timeout' };
+export const searchExpressionLabel = { 'aria-label': 'Search Expression' };
+export const searchModeLabel = { 'aria-label': 'Search Mode' };
+export const productLabel = { 'aria-label': 'Product' };
+export const simpleProductLabel = { 'aria-label': 'Simple Product' };
+
+
+
+
 export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
+
+const [searchModeOption, setSearchModeOption] = useState<SimplifiedSearchMode>('contains');
+const [searchExprOption, setSearchExprOption] = useState('MENU_NAME');
+const [searchTimeoutOption, setSearchTimeoutOption] = useState(200);
+const [minSearchLengthOption, setMinSearchLengthOption] = useState(0);
+const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(false);
+
+
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
   const userData: UserData | undefined = useSelector(
@@ -443,6 +463,60 @@ export default function Navbar() {
     (state: RootState) => state.totalSlice.tabs,
   );
   const dispatch = useDispatch();
+
+  const customItemCreating = (args: any) => {
+    if (!args.text) {
+      args.customItem = null;
+      return;
+    }    
+  }
+
+  const editBoxValueChanged = useCallback(({ component }: {component: MENU_LIST_DATA}) => {
+    let selected: MENU_LIST_DATA = component.option('selectedItem');
+    console.log(selected);
+
+    if (selected !== null) {
+      setSelectedTab(selected);
+      if (
+        userData?.JOB_NAME === "ADMIN" ||
+        userData?.JOB_NAME === "Leader" ||
+        userData?.JOB_NAME === "Sub Leader" ||
+        userData?.JOB_NAME === "Dept Staff"
+      ) {                      
+        if (tabModeSwap) {
+          let ele_code_array: string[] = tabs.map(
+            (ele: ELE_ARRAY, index: number) => {
+              return ele.ELE_CODE;
+            },
+          );
+          let tab_index: number = ele_code_array.indexOf(
+            selected.MENU_CODE,
+          );
+          //console.log(tab_index);
+          if (tab_index !== -1) {
+            //console.log('co tab roi');
+            dispatch(settabIndex(tab_index));
+          } else {
+            //console.log('chua co tab');
+            dispatch(
+              addTab({
+                ELE_NAME: selected.MENU_NAME,
+                ELE_CODE: selected.MENU_CODE,
+                REACT_ELE: "",
+              }),
+            );
+            dispatch(settabIndex(tabs.length));
+          }
+        }
+      } else {
+        Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+      }
+    }
+
+
+  }, []);
+
+    
   useEffect(() => {
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
@@ -521,7 +595,7 @@ export default function Navbar() {
             onClick={() => {
               dispatch(toggleSidebar("2"));
             }}
-            size={20}
+            size={15}
           />
           {sidebarStatus && <NavMenu />}
         </div>
@@ -560,16 +634,42 @@ export default function Navbar() {
         </div>
         <div className="navright">
           <div className="search">
+          <SelectBox
+                dataSource={menulist.map((ele: MENU_LIST_DATA, index: number)=>  {
+                  return {
+                    ...ele,
+                    MENU_NAME: ele.MENU_CODE+"_"+ele.MENU_NAME
+                  }
+                })}
+                displayExpr={(item: MENU_LIST_DATA)=> `${item.MENU_CODE}_${item.MENU_NAME}`}
+                valueExpr="MENU_CODE"
+                inputAttr={productLabel}
+                acceptCustomValue={true}
+                defaultValue={menulist[0].MENU_CODE}
+                onCustomItemCreating={customItemCreating}
+                onValueChanged={editBoxValueChanged}
+                style={{height:'20px', backgroundColor:'transparent', fontSize:'0.8rem',}}
+                searchEnabled={true}                
+                searchMode={searchModeOption}
+                searchExpr={searchExprOption}
+                searchTimeout={searchTimeoutOption}
+                minSearchLength={minSearchLengthOption}
+                showDataBeforeSearch={showDataBeforeSearchOption}
+
+              />
+          </div>
+          {/* <div className="search">
             {tabModeSwap && (
               <Autocomplete
                 autoComplete={false}
                 autoFocus={true}
                 sx={{
-                  height: 10,
+                  height: 0,
                   margin: "1px",
-                  position: "initial",
-                  width: "280px",
-                  marginBottom: "35px",
+                  position: "-moz-initial",
+                  width: "250px",
+                  marginBottom: "30px",
+                  fontSize: "0.6rem"
                 }}
                 size="small"
                 disablePortal
@@ -642,7 +742,7 @@ export default function Navbar() {
                 }}
               />
             )}
-          </div>
+          </div> */}
           <div className="items">
             <div className="item" onClick={showhideLangMenu}>
               <LanguageIcon className="icon" />
@@ -697,8 +797,8 @@ export default function Navbar() {
                   userData?.FIRST_NAME?.slice(0, 1)}
                 {userData?.EMPL_IMAGE === "Y" && (
                   <img
-                    width={35}
-                    height={35}
+                    width={25}
+                    height={25}
                     src={"/Picture_NS/NS_" + userData?.EMPL_NO + ".jpg"}
                     alt={userData?.EMPL_NO}
                   ></img>
