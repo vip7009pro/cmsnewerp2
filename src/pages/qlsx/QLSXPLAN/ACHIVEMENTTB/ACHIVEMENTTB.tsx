@@ -202,7 +202,7 @@ const ACHIVEMENTTB = () => {
             dataSource={plandatatable}
             columnWidth='auto'
             keyExpr='id'
-            height={"90vh"}
+            height={"93vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
               qlsxplandatafilter.current = e.selectedRowsData;

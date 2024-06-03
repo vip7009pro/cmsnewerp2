@@ -943,7 +943,7 @@ export const PivotTableDiv = styled.div`
 export const DataDiv = styled.div`  
   @media ${device.desktop} {
     width: 100%;
-    height: 88vh;
+    height: 92vh;
     display: flex;
     gap: 5px;
   }
