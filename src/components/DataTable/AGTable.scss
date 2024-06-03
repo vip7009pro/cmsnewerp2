@@ -7,8 +7,7 @@
     display: flex;
     height: auto;
     align-items: center;
-    background-color: #b2ffa0;
-    height: fit-content;
+    background-color: #b2ffa0;   
   }
   .ag-theme-quartz input[class^=ag-]:not([type]),
   .ag-theme-quartz input[class^=ag-][type=text],
@@ -67,6 +66,7 @@
     /* Add border to the right of each data cell */
     .ag-cell {
       border-right: 1px solid #ccc !important;
+      padding: 0;
       /* Light gray border */
     }
     /* Remove the right border for the last column */

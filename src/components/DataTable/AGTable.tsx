@@ -64,7 +64,7 @@ const AGTable = (ag_data: AGInterface) => {
             //SaveExcel(ag_data.data, "Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={15} />
+          <AiFillFileExcel color="green" size={10} />
           CSV
         </IconButton>
         <IconButton
@@ -74,7 +74,7 @@ const AGTable = (ag_data: AGInterface) => {
             SaveExcel(ag_data.data, "Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={15} />
+          <AiFillFileExcel color="green" size={10} />
           EXCEL
         </IconButton>
       </div>}

@@ -175,11 +175,26 @@
       display: flex;
       flex-direction: row;
       margin-top: 2px;
-      height: fit-content;
+      height: 78vh;
       background-image: linear-gradient(0deg, #afd3d1, #86cfff);
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-      border-radius: 5px;
+      border-radius: 5px;    
+      gap: 1px;  
+      .chithi {
+        display: flex;
+        width: 80%;
+
+      }
+      .lichsuxuatlieu {
+        display: flex;
+        width: 20%;
+
+      }
+      .ycsx {
+        display: flex;
+        width: 100%;
+      }
       .datatb {
         justify-items: center;
         width: 70%;
