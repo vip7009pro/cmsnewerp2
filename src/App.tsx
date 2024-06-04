@@ -95,6 +95,7 @@ import LichSu from "./pages/nhansu/LichSu/LichSu";
 import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
 import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
 import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
+import RND_REPORT from "./pages/rnd/rnd_report/RND_REPORT";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -640,15 +641,10 @@ function App() {
                         <Route path='ycsxmanager' element={<YCSXManager />} />
                         <Route path='dtc' element={<DTC />} />
                         <Route path='thembomamazon' element={<BOM_AMAZON />} />
-                        <Route
-                          path='designamazon'
-                          element={<DESIGN_AMAZON />}
-                        />
-                        <Route
-                          path='productbarcodemanager'
-                          element={<PRODUCT_BARCODE_MANAGER />}
-                        />
+                        <Route path='designamazon' element={<DESIGN_AMAZON />}/>
+                        <Route path='productbarcodemanager' element={<PRODUCT_BARCODE_MANAGER />}/>
                         <Route path='quanlygiaonhan' element={<QLGN />} />
+                        <Route path='baocaornd' element={<RND_REPORT />} />
                       </Route>
                       <Route
                         path='qlsx'

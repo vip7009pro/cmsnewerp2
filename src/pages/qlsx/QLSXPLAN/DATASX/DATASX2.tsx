@@ -2620,8 +2620,8 @@ const DATASX2 = () => {
                 setShowHidePivotTable(!showhidePivotTable);
               }}
             >
-              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-              Pivot
+              <MdOutlinePivotTableChart color="#ff33bb" size={15}/>
+              PIVOT              
             </IconButton>         
           </div>}
         columns={column_datasx_chithi}

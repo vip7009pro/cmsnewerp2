@@ -8,6 +8,10 @@
     height: auto;
     align-items: center;
     background-color: #b2ffa0;   
+    .css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+      padding: 0px;
+      padding-right: 10px;      
+    }
   }
   .ag-theme-quartz input[class^=ag-]:not([type]),
   .ag-theme-quartz input[class^=ag-][type=text],

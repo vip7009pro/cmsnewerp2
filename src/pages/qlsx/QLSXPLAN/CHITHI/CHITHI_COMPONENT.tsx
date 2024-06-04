@@ -329,7 +329,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
     } else if (DATA.PROCESS_NUMBER === 4) {
       FINAL_LOSS_SETTING = 0;
     }
-    FINAL_LOSS_SETTING = FINAL_LOSS_SETTING / (request_codeinfo[0]?.PD ?? 0) * ((request_codeinfo[0]?.G_C ?? 0) * (request_codeinfo[0]?.G_C_R ?? 0));
+    FINAL_LOSS_SETTING = FINAL_LOSS_SETTING / (request_codeinfo[0]?.PD ?? 0) * ((request_codeinfo[0]?.G_C ?? 0) * (request_codeinfo[0]?.G_C_R ?? 0)) * 1000;
     return {
       FN_LOSS_SX: FINAL_LOSS_SX,
       FN_LOSS_ST: FINAL_LOSS_SETTING

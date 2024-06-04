@@ -60,21 +60,19 @@ const AGTable = (ag_data: AGInterface) => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            onExportClick();
-            //SaveExcel(ag_data.data, "Data Table");
+            onExportClick();            
           }}
         >
-          <AiFillFileExcel color="green" size={10} />
+          <AiFillFileExcel color="green" size={15} />
           CSV
         </IconButton>
         <IconButton
           className="buttonIcon"
-          onClick={() => {
-            //onExportClick();
+          onClick={() => {           
             SaveExcel(ag_data.data, "Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={10} />
+          <AiFillFileExcel color="green" size={15} />
           EXCEL
         </IconButton>
       </div>}

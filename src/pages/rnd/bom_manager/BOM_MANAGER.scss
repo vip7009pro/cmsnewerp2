@@ -34,6 +34,7 @@
         display: flex;
         flex-direction: column;
         flex: 1.2;
+        height: 92vh;
         .codemanager {
           width: 100%;
           height: fit-content;
@@ -196,8 +197,8 @@
         display: flex;
         flex-direction: column;
         flex: 4;
-        gap: 5px;
-
+        gap: 5px;  
+        height: 92vh;
         .codeinfobig {
           display: flex;
           gap: 10px;
@@ -226,7 +227,7 @@
         .up {
           display: flex;
           width: 100%;
-          height: 45vh;
+          height: 55vh;
           .bomsx {
             display: flex;
             flex-direction: column;
