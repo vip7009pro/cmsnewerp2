@@ -1539,6 +1539,7 @@ const DATASX2 = () => {
     { field: 'PLAN_FACTORY',headerName: 'PLAN_FACTORY', resizable: true,width: 80 },
     { field: 'PROCESS_NUMBER',headerName: 'PROCESS_NUMBER', resizable: true,width: 80 },
     { field: 'STEP',headerName: 'STEP', resizable: true,width: 80 },
+    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
     { field: 'WAREHOUSE_OUTPUT_QTY',headerName: 'WAREHOUSE_OUTPUT_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
       return (
         <span style={{ color: "black", fontWeight: "bold" }}>
