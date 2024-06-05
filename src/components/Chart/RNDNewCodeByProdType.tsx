@@ -1,38 +1,18 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  PieChart,
-  Pie,
-} from "recharts";
-
-import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../api/Api";
+import { useEffect } from "react";
+import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
+import { getGlobalSetting } from "../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
-import { CUSTOMER_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
-
-const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => { 
-    const formatCash = (n: number) => {  
-     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
-   };
+import { RND_NEWCODE_BY_CUSTOMER, RND_NEWCODE_BY_PRODTYPE, WEB_SETTING_DATA } from "../../api/GlobalInterface";
+const RNDNewCodeByProdType = ({ data }: { data: RND_NEWCODE_BY_PRODTYPE[] }) => {
+  const formatCash = (n: number) => {
+    return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
+  };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
       notation: "compact",
       compactDisplay: "short",
     }).format(value);
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -45,16 +25,12 @@ const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => {
     if (active && payload && payload.length) {
       return (
         <div className='custom-tooltip'>
-          <p className='label'>{`${payload[0].value.toLocaleString("en-US", {
-            style: "currency",
-            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-          })}`}</p>
+          <p className='label'>{`${payload[0].value.toLocaleString("en-US")}`}</p>
         </div>
       );
     }
     return null;
   };
-
   const CustomLabel = ({
     cx,
     cy,
@@ -80,25 +56,18 @@ const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => {
       <text
         x={x}
         y={y}
-        fill='#8884d8'
+        fill='#d84911'
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline='central'
         fontSize={'0.9rem'}
       >
-        {data[index].CUST_NAME_KD} : (
-        {value.toLocaleString("en-US", {
-          style: "currency",
-          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-        })}
+        {data[index].PROD_TYPE} : (
+        {value.toLocaleString("en-US",)} codes
         )
       </text>
     );
   };
-
-
-  
   useEffect(() => {
-    
   }, []);
   const COLORS = [
     "#cc0000",
@@ -131,26 +100,26 @@ const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => {
     <CustomResponsiveContainer>
       <PieChart width={900} height={900}>
         <Tooltip content={<CustomTooltip />} />
-        <Legend 
-        verticalAlign="top"
-        align="center"
-        iconSize={15}
-        iconType="diamond"
-        formatter={(value, entry) => (
-          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-        )}
-        height={10}
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+          )}
+          height={10}
         />
         <Pie
-          dataKey='DELIVERY_AMOUNT'
-          nameKey='CUST_NAME_KD'
+          dataKey='NEWCODE'
+          nameKey='PROD_TYPE'
           isAnimationActive={false}
           data={data}
           cx='50%'
           cy='50%'
-          outerRadius={110}
+          outerRadius={200}
           fill='#8884d8'
-          label={CustomLabel}          
+          label={CustomLabel}
         >
           {data?.map((entry, index) => (
             <Cell
@@ -163,4 +132,4 @@ const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => {
     </CustomResponsiveContainer>
   );
 };
-export default ChartCustomerRevenue;
+export default RNDNewCodeByProdType;

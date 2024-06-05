@@ -3695,3 +3695,21 @@ export interface MASTER_MATERIAL_HSD {
   M_NAME: string,
   EXP_DATE: number,
 }
+
+export interface RND_NEWCODE_TREND_DATA {
+  CREATED_DATE?: string, 
+  CREATED_YW?: string,
+  CREATED_YM?: string,
+  CREATED_YEAR?: string,
+  NEWCODE: number,
+  ECN: number,
+  TOTAL: number,
+}
+export interface RND_NEWCODE_BY_CUSTOMER {
+  CUST_NAME_KD: string,
+  NEWCODE: number,
+}
+export interface RND_NEWCODE_BY_PRODTYPE {
+  PROD_TYPE: string,
+  NEWCODE: number,
+}

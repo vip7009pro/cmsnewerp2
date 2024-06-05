@@ -25,6 +25,7 @@ import {
   FaPeopleArrows,
   FaBarcode,
   FaLongArrowAltRight,
+  FaReact,
 } from "react-icons/fa";
 import { BiCart, BiSortAZ, BiTrendingUp } from "react-icons/bi";
 import {
@@ -68,7 +69,6 @@ import { getCompany } from "../../api/Api";
 import { addTab, settabIndex } from "../../redux/slices/globalSlice";
 import Swal from "sweetalert2";
 import { ELE_ARRAY, } from "../../api/GlobalInterface";
-
 const NavMenu = () => {
   const [lang, setLang] = useContext(LangConText);
   const userData: UserData | undefined = useSelector(
@@ -410,6 +410,12 @@ const NavMenu = () => {
           icon: <FaBarcode color="#098705" size={15} />,
           MENU_CODE: "RD6",
         },
+        {
+          title: getlang("baocaornd", lang),
+          path: "/rnd/baocaornd",
+          icon: <FaReact color="#b50acc" size={15} />,
+          MENU_CODE: "RD7",
+        },
       ],
     },
     {
@@ -521,7 +527,7 @@ const NavMenu = () => {
           icon: <FaWarehouse color="#fc00ff" size={15} />,
           MENU_CODE: "SX8",
           cName: "sub-nav",
-        },        
+        },
         {
           title: getlang("quanlycapa", lang),
           path: "sx/capamanager",
@@ -559,7 +565,7 @@ const NavMenu = () => {
         },
       ],
     },
-  ]; 
+  ];
   return (
     <div className='navmenu'>
       <nav>
@@ -602,7 +608,7 @@ const NavMenu = () => {
                                         addTab({
                                           ELE_NAME: subnav_element.title,
                                           ELE_CODE: subnav_element.MENU_CODE,
-                                          REACT_ELE: ""                                 
+                                          REACT_ELE: ""
                                         }),
                                       );
                                       dispatch(settabIndex(tabs.length));
