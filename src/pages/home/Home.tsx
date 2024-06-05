@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
-import { Suspense, useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { generalQuery, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
@@ -631,8 +631,7 @@ function Home() {
                     onChange={(
                       event: React.SyntheticEvent,
                       newValue: number
-                    ) => {
-                      //console.log(newValue);
+                    ) => {                      
                       dispatch(settabIndex(newValue));
                     }}
                     variant='scrollable'
@@ -656,8 +655,8 @@ function Home() {
                           <CustomTab
                             key={index}
                             label={
-                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', }}>
-                                <CustomTabLabel style={{ fontSize: "0.7rem" }}>
+                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0 }}>
+                                <CustomTabLabel style={{ fontSize: "0.7rem", }}>
                                   {index + 1}.{ele.ELE_NAME}
                                   <IconButton onClick={() => {
                                     dispatch(closeTab(index));

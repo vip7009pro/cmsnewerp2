@@ -45,22 +45,15 @@ export const searchExpressionLabel = { 'aria-label': 'Search Expression' };
 export const searchModeLabel = { 'aria-label': 'Search Mode' };
 export const productLabel = { 'aria-label': 'Product' };
 export const simpleProductLabel = { 'aria-label': 'Simple Product' };
-
-
-
-
 export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
-
 const [searchModeOption, setSearchModeOption] = useState<SimplifiedSearchMode>('contains');
 const [searchExprOption, setSearchExprOption] = useState('MENU_NAME');
 const [searchTimeoutOption, setSearchTimeoutOption] = useState(200);
 const [minSearchLengthOption, setMinSearchLengthOption] = useState(0);
 const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(false);
-
-
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
   const userData: UserData | undefined = useSelector(
@@ -463,18 +456,15 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
     (state: RootState) => state.totalSlice.tabs,
   );
   const dispatch = useDispatch();
-
   const customItemCreating = (args: any) => {
     if (!args.text) {
       args.customItem = null;
       return;
     }    
   }
-
   const editBoxValueChanged = useCallback(({ component }: {component: any}) => {
     let selected: MENU_LIST_DATA = component.option('selectedItem');
     console.log(selected);
-
     if (selected !== null) {
       setSelectedTab(selected);
       if (
@@ -512,11 +502,7 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
         Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
       }
     }
-
-
   }, []);
-
-    
   useEffect(() => {
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
@@ -655,7 +641,6 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
                 searchTimeout={searchTimeoutOption}
                 minSearchLength={minSearchLengthOption}
                 showDataBeforeSearch={showDataBeforeSearchOption}
-
               />
           </div>
           {/* <div className="search">

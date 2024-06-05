@@ -16,11 +16,11 @@
         width: 30%;
         .listcode {
           display: flex;
-          height: 72vh;
+          height: 90vh;
           .datatb {
             justify-items: center;
             width: 99%;
-            height: 83vh;
+            height: 89vh;
             padding: 5px;
 
             .losstable {
@@ -135,10 +135,10 @@
         flex-direction: column;
         flex: 7;
         align-content: center;
-        justify-content: center;
+        justify-content: flex-start;
         .up {
           display: flex;
-          height: 33vh;
+          height: 36vh;
           background-image: linear-gradient(0deg, #ac62fb, #1b78eb);
           .bomnvl {
             display: flex;
