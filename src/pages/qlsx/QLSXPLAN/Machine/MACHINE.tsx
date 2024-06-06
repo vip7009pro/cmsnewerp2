@@ -1829,13 +1829,13 @@ const MACHINE = () => {
           CAVITY_DOC = rowdata.G_C;
           let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
           }
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
@@ -1940,13 +1940,13 @@ const MACHINE = () => {
             CAVITY_DOC = rowdata.G_C;
             let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
             }
             if (PROCESS_NUMBER === 1) {
               FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
@@ -4847,6 +4847,11 @@ const MACHINE = () => {
                     <span style={{ fontSize: '1rem', fontWeight: "bold", color: "green" }}>
                       CAVITY:{currentPlanCAVITY}
                     </span>
+                  </div>
+                  <div className="losskt">
+                  <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
+                    LOSS KT Tích lũy:{selectedPlan?.LOSS_KT?.toLocaleString('en-US',)}%
+                    </span>                   
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>
                     PLAN_QTY:{selectedPlan?.PLAN_QTY?.toLocaleString("en-US")}

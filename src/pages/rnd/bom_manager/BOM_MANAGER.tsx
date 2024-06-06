@@ -1815,10 +1815,10 @@ const BOM_MANAGER = () => {
       if ((getCompany() === 'CMS') && await handleCheckCodeInfo2() || getCompany() !== 'CMS') {
         let tempInfo = codefullinfo;
         if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
-          tempInfo = { ...codefullinfo, PD_HSD: 'P' }
+          tempInfo = { ...codefullinfo, PD_HSD: 'P', UPD_COUNT: (codefullinfo?.UPD_COUNT??0) +1  }
         }
         else {
-          tempInfo = { ...codefullinfo, PD_HSD: 'N' }
+          tempInfo = { ...codefullinfo, PD_HSD: 'N', UPD_COUNT: (codefullinfo?.UPD_COUNT??0) +1  }
         }
         await generalQuery("updateM100", tempInfo)
           .then((response) => {
@@ -2885,7 +2885,9 @@ const BOM_MANAGER = () => {
                 {" "}
                 {codedatatablefilter[0]?.G_CODE}:{" "}
               </div>
-              <div className="biginfokd"> {codedatatablefilter[0]?.G_NAME}</div>
+              <div className="biginfokd"> 
+              {codedatatablefilter[0]?.G_NAME}
+              </div>                         
             </div>
             <div
               className="down"
@@ -3840,6 +3842,9 @@ const BOM_MANAGER = () => {
                 </div>
               </div>
             </div>
+            <div className="updatehistory">
+                Update {codefullinfo.UPD_COUNT ?? 0} lần / Người update cuối {codefullinfo.UPD_EMPL ?? ''} / Thời điểm update cuối {moment.utc(codefullinfo.UPD_DATE ?? '').format("YYYY-MM-DD HH:mm:ss")}
+              </div>  
             <div className="materiallist">
               <Autocomplete
                 disabled={column_bomsx[0].editable || column_bomgia[0].editable}

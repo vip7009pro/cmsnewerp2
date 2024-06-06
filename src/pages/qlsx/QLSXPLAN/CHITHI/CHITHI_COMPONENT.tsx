@@ -312,13 +312,13 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const lossSXByProcessNumber = () => {
     let FINAL_LOSS_SX: number = 0, FINAL_LOSS_SETTING: number = 0;
     if (DATA.PROCESS_NUMBER === 1) {
-      FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX2 ?? 0) + (request_codeinfo[0]?.LOSS_SX3 ?? 0) + (request_codeinfo[0]?.LOSS_SX4 ?? 0);
+      FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX2 ?? 0) + (request_codeinfo[0]?.LOSS_SX3 ?? 0) + (request_codeinfo[0]?.LOSS_SX4 ?? 0) + (DATA?.LOSS_KT ?? 0);
     } else if (DATA.PROCESS_NUMBER === 2) {
-      FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX3 ?? 0) + (request_codeinfo[0]?.LOSS_SX4 ?? 0);
+      FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX3 ?? 0) + (request_codeinfo[0]?.LOSS_SX4 ?? 0) + (DATA.LOSS_KT ?? 0);
     } else if (DATA.PROCESS_NUMBER === 3) {
-      FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX4 ?? 0);
+      FINAL_LOSS_SX = (request_codeinfo[0]?.LOSS_SX4 ?? 0) + (DATA.LOSS_KT ?? 0);
     } else if (DATA.PROCESS_NUMBER === 4) {
-      FINAL_LOSS_SX = 0;
+      FINAL_LOSS_SX = (DATA.LOSS_KT ?? 0);
     }
     if (DATA.PROCESS_NUMBER === 1) {
       FINAL_LOSS_SETTING = (request_codeinfo[0]?.LOSS_SETTING2 ?? 0) + (request_codeinfo[0]?.LOSS_SETTING3 ?? 0) + (request_codeinfo[0]?.LOSS_SETTING4 ?? 0);

@@ -1859,6 +1859,7 @@ export interface QLSXPLANDATA {
   IS_SETTING?: string;
   PDBV_EMPL?: string;
   PDBV_DATE?: string;
+  LOSS_KT?: number;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -2363,6 +2364,9 @@ export interface CODE_FULL_INFO {
   EXP_DATE?: string;
   APPSHEET?: string;
   PD_HSD?: string;
+  UPD_COUNT?: number;
+  UPD_DATE?: string;
+  UPD_EMPL?: string;
 }
 export interface LIST_BOM_AMAZON {
   id: string;
