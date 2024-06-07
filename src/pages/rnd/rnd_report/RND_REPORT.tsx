@@ -28,8 +28,7 @@ const RND_REPORT = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
-  const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
-  const [df, setDF] = useState(true);
+   const [df, setDF] = useState(true);
   const [newcodebycustomer, setNewCodeByCustomer] = useState<RND_NEWCODE_BY_CUSTOMER[]>([]);
   const [newcodebyprodtype, setNewCodeByProdType] = useState<RND_NEWCODE_BY_PRODTYPE[]>([]);
   const handle_getDailyNewCodeData = async (FACTORY: string, listCode: string[]) => {
