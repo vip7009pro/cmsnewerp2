@@ -631,7 +631,7 @@ function Home() {
                     onChange={(
                       event: React.SyntheticEvent,
                       newValue: number
-                    ) => {                      
+                    ) => {
                       dispatch(settabIndex(newValue));
                     }}
                     variant='scrollable'

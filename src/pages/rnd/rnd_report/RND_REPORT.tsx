@@ -3,16 +3,13 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./RND_REPORT.scss";
-import { CodeListData, DEFECT_TRENDING_DATA, PQC3_DATA, PQCSummary, RND_NEWCODE_BY_CUSTOMER, RND_NEWCODE_BY_PRODTYPE, RND_NEWCODE_TREND_DATA } from "../../../api/GlobalInterface";
 import {
-  Autocomplete,
-  Checkbox,
-  IconButton,
-  TextField,
-  Typography,
-  createFilterOptions,
-} from "@mui/material";
-import PQCDailyDefectTrending from "../../../components/Chart/PQCDailyDefectTrending";
+  PQC3_DATA,
+  RND_NEWCODE_BY_CUSTOMER,
+  RND_NEWCODE_BY_PRODTYPE,
+  RND_NEWCODE_TREND_DATA,
+} from "../../../api/GlobalInterface";
+import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import WidgetRND from "../../../components/Widget/WidgetRND";
@@ -35,7 +32,6 @@ const RND_REPORT = () => {
   const [df, setDF] = useState(true);
   const [newcodebycustomer, setNewCodeByCustomer] = useState<RND_NEWCODE_BY_CUSTOMER[]>([]);
   const [newcodebyprodtype, setNewCodeByProdType] = useState<RND_NEWCODE_BY_PRODTYPE[]>([]);
-
   const handle_getDailyNewCodeData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
@@ -196,26 +192,26 @@ const RND_REPORT = () => {
       codeArray: listCode,
       CUST_NAME_KD: cust_name
     })
-    .then((response) => {
-      // console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: RND_NEWCODE_BY_PRODTYPE[] = response.data.data.map(
-          (element: RND_NEWCODE_BY_PRODTYPE, index: number) => {
-            return {
-              ...element,
-              id: index
-            };
-          },
-        );
-        //console.log(loadeddata);
-        setNewCodeByProdType(loadeddata);
-      } else {
-        setNewCodeByProdType([]);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        // console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: RND_NEWCODE_BY_PRODTYPE[] = response.data.data.map(
+            (element: RND_NEWCODE_BY_PRODTYPE, index: number) => {
+              return {
+                ...element,
+                id: index
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setNewCodeByProdType(loadeddata);
+        } else {
+          setNewCodeByProdType([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const initFunction = async () => {
     Swal.fire({
@@ -254,7 +250,7 @@ const RND_REPORT = () => {
               type="date"
               value={fromdate.slice(0, 10)}
               onChange={(e) => {
-                setFromDate(e.target.value);                
+                setFromDate(e.target.value);
               }}
             ></input>
           </label>
@@ -264,10 +260,10 @@ const RND_REPORT = () => {
               type="date"
               value={todate.slice(0, 10)}
               onChange={(e) => {
-                setToDate(e.target.value)                
+                setToDate(e.target.value)
               }}
             ></input>
-          </label>         
+          </label>
           <label>
             <b>Customer:</b>{" "}
             <input
@@ -282,7 +278,7 @@ const RND_REPORT = () => {
             <b>Default:</b>{" "}
             <Checkbox
               checked={df}
-              onChange={(e) => {               
+              onChange={(e) => {
                 setDF(e.target.checked);
                 if (!df)
                   setSearchCodeArray([]);
@@ -438,7 +434,7 @@ const RND_REPORT = () => {
               <RNDNewCodeByCustomer data={[...newcodebycustomer].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
-            <span className="subsection">New Code By Product Type <IconButton
+              <span className="subsection">New Code By Product Type <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   SaveExcel(newcodebyprodtype, "Newcode by Prod Type");
@@ -451,7 +447,6 @@ const RND_REPORT = () => {
               <RNDNewCodeByProdType data={[...newcodebyprodtype].reverse()} />
             </div>
           </div>
-                 
         </div>
       </div>
     </div>
