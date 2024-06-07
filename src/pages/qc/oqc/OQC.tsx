@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import KHOTP from "../../kho/khotp/KHOTP";
 import "./OQC.scss";
 import OQC_DATA from "./OQC_DATA";
+import OQC_REPORT from "./OQC_REPORT";
 const OQC = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -43,6 +44,16 @@ const OQC = () => {
         >
           <span className="mininavtext">Data OQC</span>
         </div>
+        <div
+          className="mininavitem"
+          onClick={() => setNav(3)}
+          style={{
+            backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab3 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">Báo Cáo</span>
+        </div>
       </div>
       {selection.tab1 && (
         <div className="trainspection">
@@ -52,6 +63,11 @@ const OQC = () => {
       {selection.tab2 && (
         <div className="trainspection">
           <OQC_DATA />
+        </div>
+      )}
+      {selection.tab3 && (
+        <div className="trainspection">
+          <OQC_REPORT />
         </div>
       )}
     </div> 

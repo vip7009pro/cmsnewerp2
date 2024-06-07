@@ -545,6 +545,21 @@
       display: flex;
       width: 100%;
     }
+    .design_panel {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      width: 90%;
+      height: 90vh;
+      left: 5%;
+      background-image: linear-gradient(0deg, #aff5a1, #7bb3e7);
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18); 
+      border-radius: 2px;
+      padding: 5px;
+      z-index: 99;
+    }
   }
 }
 @media only screen and (max-width: 768px) {

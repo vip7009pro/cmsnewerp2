@@ -3530,6 +3530,16 @@ export interface PQC_PPM_DATA {
   INSPECT_AMOUNT: number,
   NG_RATE: number,
 }
+export interface OQC_TREND_DATA {
+  DELIVERY_DATE?: string,
+  DELIVERY_YEAR?: string,
+  DELIVERY_YM?: string,
+  DELIVERY_YW?: string,
+  TOTAL_LOT: number,
+  OK_LOT: number,
+  NG_LOT: number,  
+  NG_RATE: number,
+}
 export interface PQCSummary {
   TOTAL_LOT: number,
   NG_LOT: number,
@@ -3713,7 +3723,15 @@ export interface RND_NEWCODE_BY_CUSTOMER {
   CUST_NAME_KD: string,
   NEWCODE: number,
 }
+export interface OQC_NG_BY_CUSTOMER {
+  CUST_NAME_KD: string,
+  NG_LOT: number,
+}
 export interface RND_NEWCODE_BY_PRODTYPE {
   PROD_TYPE: string,
   NEWCODE: number,
+}
+export interface OQC_NG_BY_PRODTYPE{
+  PROD_TYPE: string,
+  NG_LOT: number,
 }

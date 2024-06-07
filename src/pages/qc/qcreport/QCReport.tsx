@@ -3,12 +3,14 @@ import "./QCReport.scss";
 import PQC_REPORT from "../pqc/PQC_REPORT";
 import INSPECT_REPORT from "../inspection/INSPECT_REPORT";
 import CSREPORT from "../cs/CSREPORT";
+import OQC_REPORT from "../oqc/OQC_REPORT";
 
 const QCReport = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
     tab3: false,
+    tab4: false,
   });
 
   const setNav = (choose: number) => {
@@ -182,6 +184,16 @@ const QCReport = () => {
           </div>  
           <div
             className="mininavitem"
+            onClick={() => setNav(4)}
+            style={{
+              backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab4 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">OQC REPORT</span>
+          </div>  
+          <div
+            className="mininavitem"
             onClick={() => setNav(3)}
             style={{
               backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
@@ -190,77 +202,8 @@ const QCReport = () => {
           >
             <span className="mininavtext">CS REPORT</span>
           </div>  
-          {/* <div
-            className="mininavitem"
-            onClick={() => setNav(4)}
-            style={{
-              backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab4 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">QUICK PLAN</span>
-          </div>         
-          <div
-            className="mininavitem"
-            onClick={() => setNav(5)}
-            style={{
-              backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab5 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN TABLE</span>
-          </div>
          
-          <div
-            className="mininavitem"
-            onClick={() => setNav(6)}
-            style={{
-              backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab6 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">DATA SX</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(7)}
-            style={{
-              backgroundColor: selection.tab7 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab7 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN STATUS</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(8)}
-            style={{
-              backgroundColor: selection.tab8 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab8 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">TV SHOW</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(9)}
-            style={{
-              backgroundColor: selection.tab9 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab9 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">EQ STATUS</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(10)}
-            style={{
-              backgroundColor: selection.tab10 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab10 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">KHO ẢO</span>
-          </div> */}
+          
           
         </div>
         {selection.tab1 && (
@@ -280,7 +223,7 @@ const QCReport = () => {
         )}
         {selection.tab4 && (
           <div className="datadtc">
-            
+            <OQC_REPORT/>            
           </div>
         )}
         {selection.tab5 && (

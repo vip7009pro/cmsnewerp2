@@ -37,7 +37,7 @@ import {
   useState,
   useTransition,
 } from "react";
-import { FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
+import { FcAdvertising, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   AiFillCheckCircle,
   AiFillDelete,
@@ -46,6 +46,7 @@ import {
   AiFillFileExcel,
   AiFillSave,
   AiOutlineCheck,
+  AiOutlineClose,
   AiOutlineCloudUpload,
   AiOutlinePushpin,
 } from "react-icons/ai";
@@ -80,8 +81,11 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
+import BOM_DESIGN from "./BOM_DESIGN";
+import { TbFlagCancel } from "react-icons/tb";
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
+  const [showHideDesignBom, setShowHideDesignBOM] = useState(false);
   const handlePrint = useReactToPrint({
     content: () => labelprintref.current,
   });
@@ -754,6 +758,15 @@ const BOM_MANAGER = () => {
           <FaRegClone color="red" size={20} />
           Clone BOMSX
         </IconButton>
+        {/* <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setShowHideDesignBOM(prev=> !prev)
+          }}
+        >
+          <FcAdvertising color="red" size={20} />
+          DESIGN BOM
+        </IconButton> */}
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
@@ -3984,6 +3997,22 @@ const BOM_MANAGER = () => {
           </div>
         </div>
       )}
+      {showHideDesignBom && 
+      <div className="design_panel">
+        <div className="closediv">
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setShowHideDesignBOM(prev => !prev)
+          }}
+        >
+          <AiOutlineClose color="red" size={20} />
+          Close
+        </IconButton>
+        </div>
+        <BOM_DESIGN/>
+      </div>
+      }
       {selection.thempohangloat && (
         <div className="uphangloat">
           <UpHangLoat />
