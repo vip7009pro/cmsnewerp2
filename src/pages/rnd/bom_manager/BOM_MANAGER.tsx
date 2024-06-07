@@ -6,7 +6,6 @@ import {
   createFilterOptions,
   FormControlLabel,
   IconButton,
-  keyframes,
   LinearProgress,
   TextField,
   Typography,
@@ -14,54 +13,35 @@ import {
 import {
   DataGrid,
   GridSelectionModel,
-  GridToolbarColumnsButton,
   GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
   GridToolbarQuickFilter,
-  GridColumns,
-  GridRowsProp,
-  GridCellEditStopParams,
   MuiEvent,
-  GridCellEditStopReasons,
   GridCellEditCommitParams,
   MuiBaseEvent,
   GridCallbackDetails,
 } from "@mui/x-data-grid";
 import moment from "moment";
+import { useEffect, useRef, useState } from "react";
+import { FcDeleteRow } from "react-icons/fc";
 import {
-  useContext,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { FcAdvertising, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-import {
-  AiFillCheckCircle,
   AiFillDelete,
   AiFillEdit,
   AiFillFileAdd,
   AiFillFileExcel,
   AiFillSave,
-  AiOutlineCheck,
   AiOutlineClose,
   AiOutlineCloudUpload,
   AiOutlinePushpin,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
-import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
+import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
 import { FaRegClone } from "react-icons/fa";
-import MATERIAL_MANAGER from "../material_manager/MATERIAL_MANAGER";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from "axios";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
 import { renderElement } from "../design_amazon/DESIGN_AMAZON";
 import { useReactToPrint } from "react-to-print";
@@ -73,7 +53,6 @@ import {
   COMPONENT_DATA,
   CustomerListData,
   DEFAULT_DM,
-  M_NAME_LIST,
   MACHINE_LIST,
   MASTER_MATERIAL_HSD,
   MATERIAL_INFO,
@@ -82,7 +61,6 @@ import {
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
 import BOM_DESIGN from "./BOM_DESIGN";
-import { TbFlagCancel } from "react-icons/tb";
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
   const [showHideDesignBom, setShowHideDesignBOM] = useState(false);
@@ -1694,7 +1672,7 @@ const BOM_MANAGER = () => {
     ////console.log(handleCheckCodeInfo());
     let checkg_name_kd: boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD);
     //console.log('checkg_name_kd',checkg_name_kd);
-    if ((getCompany() === 'CMS') && await handleCheckCodeInfo() || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
+    if ((getCompany() === 'CMS') && (await handleCheckCodeInfo()) || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1744,7 +1722,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleAddNewVer = async () => {
-    if ((getCompany() === 'CMS') && await handleCheckCodeInfo() || getCompany() !== 'CMS') {
+    if ((getCompany() === 'CMS') && (await handleCheckCodeInfo()) || getCompany() !== 'CMS') {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1825,7 +1803,7 @@ const BOM_MANAGER = () => {
   }
   const handleUpdateCode = async () => {
     if(checkMAINVLMatching()) {
-      if ((getCompany() === 'CMS') && await handleCheckCodeInfo2() || getCompany() !== 'CMS') {
+      if ((getCompany() === 'CMS') && (await handleCheckCodeInfo2()) || getCompany() !== 'CMS') {
         let tempInfo = codefullinfo;
         if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
           tempInfo = { ...codefullinfo, PD_HSD: 'P', UPD_COUNT: (codefullinfo?.UPD_COUNT??0) +1  }
