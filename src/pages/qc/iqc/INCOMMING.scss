@@ -14,16 +14,15 @@
       align-items: flex-start;
       justify-items: flex-start;
       justify-content: flex-start;
-
       .maintable {
         display: flex;
         flex-direction: row;
         gap: 5px;
         height: 100%;
-
+        width: 100%;
         .tracuuDataInspectionform {
           display: flex;
-          width: 250px;
+          width: 180px;
           gap: 10px;
           flex-direction: column;
           align-items: center;
@@ -33,7 +32,7 @@
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
           padding: 5px;
-          height: 83vh;
+          height: 89vh;
           font-size: 0.8rem;
 
           span {
@@ -41,7 +40,6 @@
             font-size: 20px;
             margin: auto;
           }
-
           .forminput {
             display: flex;
             gap: 5px;
@@ -63,7 +61,7 @@
               font-size: 0.8rem;
 
               input {
-                width: 235px;
+                width: 150px;
                 height: 15px;
                 font-size: 0.6rem;
                 outline: none;
@@ -87,94 +85,12 @@
               }
             }
           }
-
           .formbutton {
             display: flex;
-            align-items: center;
-            justify-content: space-around;
-            gap: 20px;
-
-            .tranhapkiembutton {
-              font-weight: bold;
-              padding-left: 5px;
-              padding-right: 5px;
-              height: 30px;
-              background-color: #99f86d;
-              outline: none;
-              border: none;
-              border-radius: 5px;
-              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              margin-bottom: 5px;
-              margin-top: 5px;
-
-              &:hover {
-                cursor: pointer;
-                background-color: #67c73a;
-              }
-            }
-
-            .traxuatkiembutton {
-              font-weight: bold;
-              padding-left: 5px;
-              padding-right: 5px;
-              height: 30px;
-              background-color: #3ebdf8;
-              outline: none;
-              border: none;
-              border-radius: 5px;
-              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              margin-bottom: 5px;
-              margin-top: 5px;
-
-              &:hover {
-                cursor: pointer;
-                background-color: #3f9eca;
-              }
-            }
-
-            .tranhapxuatkiembutton {
-              font-weight: bold;
-              padding-left: 5px;
-              padding-right: 5px;
-              height: 30px;
-              background-color: #f04dff;
-              outline: none;
-              border: none;
-              border-radius: 5px;
-              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              margin-bottom: 5px;
-              margin-top: 5px;
-
-              &:hover {
-                cursor: pointer;
-                background-color: #bd4dc7;
-              }
-            }
-
-            .tranhatky {
-              font-weight: bold;
-              padding-left: 5px;
-              padding-right: 5px;
-              height: 30px;
-              background-color: #ccff14;
-              outline: none;
-              border: none;
-              border-radius: 5px;
-              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-              margin-bottom: 5px;
-              margin-top: 5px;
-
-              &:hover {
-                cursor: pointer;
-                background-color: #bd4dc7;
-              }
-            }
+            align-items: center;      
+            flex-direction: column;     
+            gap: 2px;
           }
-
           .formsummary {
             display: flex;
             flex-direction: row;
@@ -203,16 +119,15 @@
             }
           }
         }
-
         .tracuuYCSXTable {
           display: flex;
           flex-direction: column;
-          width: 68vw;
+          flex:4;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
-          height: 84vh;
+          height: 89vh;
 
          
 
@@ -302,25 +217,17 @@
           }
 
         }
-
         .tracuuDataInspectionform2 {
           display: flex;
-          width: 15vw;
-          gap: 10px;
+          flex: 1;          
           flex-direction: column;
           align-items: center;
           justify-items: flex-start;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          border-radius: 3px;
-          padding: 10px;
-          height: 82vh;
-
-          span {
-            padding: 10px;
-            margin: auto;
-          }
+          border-radius: 3px;          
+          height: 89vh;          
         }
       }
     }

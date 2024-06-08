@@ -16,26 +16,22 @@
         .tracuuDataInspectionform {
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-end;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
           padding: 1px;
-          font-size: 0.8rem;
-          width: 20%;
-          height: 83vh;
-          span {
-            padding: 10px;
-            font-size: 20px;
-            margin: auto;
-          }
+          font-size: 0.7rem;
+          width: 8.5%;
+          height: 89vh;
+          
           .forminput {
             display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-around;
+            flex-direction: column;
+            gap: 5px;            
+            align-items: flex-end;
+            justify-content: flex-end;
             padding: 2px;
             width: 100%;
 
@@ -70,16 +66,22 @@
               }
             }
           }
+          .formbutton {
+            display: flex;
+            align-items: center;     
+            flex-wrap: wrap;       
+           
+          }
         }
         .tracuuYCSXTable {
           display: flex;
           margin-top: 2px;
-          height: 70vh;
+          height: 89vh;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
-          width: 70%;
+          flex: 1;
           .datatb {
             justify-items: center;
             width: 100%;
@@ -163,15 +165,15 @@
         .tracuuDataInspectionform2 {
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-end;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
           padding: 1px;
-          font-size: 0.8rem;
-          width: 15%;
-          height: 83vh;
+          font-size: 0.7rem;
+          width: 11%;
+          height: 89vh;
           span {
             padding: 10px;
             font-size: 20px;

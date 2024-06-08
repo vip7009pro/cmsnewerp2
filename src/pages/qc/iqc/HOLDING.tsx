@@ -1,41 +1,18 @@
-import { IconButton, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./HOLDING.scss";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Summary,
-  Toolbar,
-  TotalItem,
-} from "devextreme-react/data-grid";
-import { GrStatusGood } from "react-icons/gr";
-import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { HOLDING_DATA, UserData } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 
 const HOLDING = () => {
-  const [selectedRowsData, setSelectedRowsData] = useState<Array<HOLDING_DATA>>(
-    [],
-  );
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+
+  const selectedRowsData = useRef<Array<HOLDING_DATA>>([],);
+  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData,);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -47,9 +24,36 @@ const HOLDING = () => {
   const [mLotNo, setMLotNo] = useState("");
   const [mStatus, setMStatus] = useState("ALL");
 
+  const column_holding_table = [
+    { field: 'HOLD_ID',headerName: 'HOLD_ID', headerCheckboxSelection: true, checkboxSelection: true, resizable: true,width: 100 },
+    { field: 'HOLDING_MONTH',headerName: 'HOLDING_MONTH', resizable: true,width: 100 },
+    { field: 'FACTORY',headerName: 'FACTORY', resizable: true,width: 100 },
+    { field: 'WAHS_CD',headerName: 'WAHS_CD', resizable: true,width: 100 },
+    { field: 'LOC_CD',headerName: 'LOC_CD', resizable: true,width: 100 },
+    { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 100 },
+    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 100 },
+    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 100 },
+    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 100 },
+    { field: 'HOLDING_ROLL_QTY',headerName: 'HOLDING_ROLL_QTY', resizable: true,width: 100 },
+    { field: 'HOLDING_QTY',headerName: 'HOLDING_QTY', resizable: true,width: 100 },
+    { field: 'HOLDING_TOTAL_QTY',headerName: 'HOLDING_TOTAL_QTY', resizable: true,width: 100 },
+    { field: 'REASON',headerName: 'REASON', resizable: true,width: 100 },
+    { field: 'HOLDING_IN_DATE',headerName: 'HOLDING_IN_DATE', resizable: true,width: 100 },
+    { field: 'HOLDING_OUT_DATE',headerName: 'HOLDING_OUT_DATE', resizable: true,width: 100 },
+    { field: 'VENDOR_LOT',headerName: 'VENDOR_LOT', resizable: true,width: 100 },
+    { field: 'USE_YN',headerName: 'USE_YN', resizable: true,width: 100 },
+    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 100 },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 100 },
+    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 100 },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 100 },
+    { field: 'QC_PASS',headerName: 'QC_PASS', resizable: true,width: 100 },
+    { field: 'QC_PASS_DATE',headerName: 'QC_PASS_DATE', resizable: true,width: 100 },
+    { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 100 },
+   
+  ];
   const setQCPASS = async (value: string) => {
-    //console.log(selectedRowsData);
-    if (selectedRowsData.length > 0) {
+    //console.log(selectedRowsData.current);
+    if (selectedRowsData.current.length > 0) {
       Swal.fire({
         title: "SET/REST PASS",
         text: "Đang SET/RESET PASS liệu",
@@ -60,10 +64,10 @@ const HOLDING = () => {
         showConfirmButton: false,
       });
       let err_code: string = "";
-      for (let i = 0; i < selectedRowsData.length; i++) {
+      for (let i = 0; i < selectedRowsData.current.length; i++) {
         await generalQuery("updateQCPASS_HOLDING", {
-          M_LOT_NO: selectedRowsData[i].M_LOT_NO,
-          ID: selectedRowsData[i].ID,
+          M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
+          ID: selectedRowsData.current[i].ID,
           VALUE: value,
         })
           // eslint-disable-next-line no-loop-func
@@ -88,8 +92,8 @@ const HOLDING = () => {
     }
   };
   const updateReason = async () => {
-    console.log(selectedRowsData);
-    if (selectedRowsData.length > 0) {
+    console.log(selectedRowsData.current);
+    if (selectedRowsData.current.length > 0) {
       Swal.fire({
         title: "Update hiện tượng lỗi",
         text: "Đang update thông tin lỗi",
@@ -100,10 +104,10 @@ const HOLDING = () => {
         showConfirmButton: false,
       });
       let err_code: string = "";
-      for (let i = 0; i < selectedRowsData.length; i++) {
+      for (let i = 0; i < selectedRowsData.current.length; i++) {
         await generalQuery("updateMaterialHoldingReason", {
-          HOLD_ID: selectedRowsData[i].HOLD_ID,
-          REASON: selectedRowsData[i].REASON,
+          HOLD_ID: selectedRowsData.current[i].HOLD_ID,
+          REASON: selectedRowsData.current[0].REASON,
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {
@@ -126,259 +130,27 @@ const HOLDING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={holdingdatatable}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"76vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //setSelectedRows(e.selectedRowsData.length);
-            console.log(e.selectedRowsData);
-            setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Selection mode="multiple" selectAllMode="allPages" />
-          <Editing
-            allowUpdating={true}
-            allowAdding={false}
-            allowDeleting={false}
-            mode="cell"
-            confirmDelete={true}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(holdingdatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooser" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Column
-            dataField="HOLD_ID"
-            caption="HOLD_ID"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="ID"
-            caption="ID"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="HOLDING_MONTH"
-            caption="HOLDING_MONTH"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="FACTORY"
-            caption="FACTORY"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="WAHS_CD"
-            caption="WAHS_CD"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="LOC_CD"
-            caption="LOC_CD"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="M_LOT_NO"
-            caption="M_LOT_NO"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="M_CODE"
-            caption="M_CODE"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="M_NAME"
-            caption="M_NAME"
-            width={150}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="WIDTH_CD"
-            caption="WIDTH_CD"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="HOLDING_ROLL_QTY"
-            caption="HOLDING_ROLL_QTY"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="HOLDING_QTY"
-            caption="HOLDING_QTY"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="HOLDING_TOTAL_QTY"
-            caption="HOLDING_TOTAL_QTY"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="REASON"
-            caption="REASON"
-            width={150}
-            allowEditing={true}
-          ></Column>
-          <Column
-            dataField="HOLDING_IN_DATE"
-            caption="HOLDING_IN_DATE"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="HOLDING_OUT_DATE"
-            caption="HOLDING_OUT_DATE"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="VENDOR_LOT"
-            caption="VENDOR_LOT"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="USE_YN"
-            caption="USE_YN"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="INS_DATE"
-            caption="INS_DATE"
-            width={150}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="INS_EMPL"
-            caption="INS_EMPL"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="UPD_DATE"
-            caption="UPD_DATE"
-            width={150}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="UPD_EMPL"
-            caption="UPD_EMPL"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="QC_PASS"
-            caption="QC_PASS"
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="QC_PASS_DATE"
-            caption="QC_PASS_DATE"
-            width={150}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField="QC_PASS_EMPL"
-            caption="QC_PASS_EMPL"
-            width={100}
-            allowEditing={false}
-          ></Column>
-
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="M_CODE"
-              summaryType="count"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="HOLDING_ROLL_QTY"
-              summaryType="sum"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="HOLDING_QTY"
-              summaryType="sum"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="HOLDING_TOTAL_QTY"
-              summaryType="sum"
-              valueFormat={"decimal"}
-            />
-          </Summary>
-        </DataGrid>
-      </div>
-    ),
-    [holdingdatatable],
-  );
+  const holdingDataAGTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+            
+          </div>}
+        columns={column_holding_table}
+        data={holdingdatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+          
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+          selectedRowsData.current = e!.api.getSelectedRows();             
+        }}
+      />
+    )
+  }, [holdingdatatable]);
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -533,16 +305,16 @@ const HOLDING = () => {
               </label>
             </div>
             <div className="forminputcolumn">
-              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fa1717' }} onClick={() => {
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#fa1717' }} onClick={() => {
                 handletraHoldingData();
               }}>Tra Holding</Button>
-              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fffc5b', color: 'black' }} onClick={() => {
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#fffc5b', color: 'black' }} onClick={() => {
                 updateReason();
               }}>Update Reason</Button>
 
             </div>
             <div className="forminputcolumn">
-              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#07cc00' }} onClick={() => {
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#07cc00' }} onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("Y");
                 } else {
@@ -553,7 +325,7 @@ const HOLDING = () => {
                   );
                 }
               }}>SET PASS</Button>
-              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("N");
                 } else {
@@ -584,7 +356,7 @@ const HOLDING = () => {
             </div>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{holdingDataAGTable}</div>
       </div>
     </div>
   );

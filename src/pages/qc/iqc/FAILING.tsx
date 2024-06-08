@@ -11,6 +11,7 @@ import moment from "moment";
 import React, {
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useTransition,
@@ -47,6 +48,7 @@ import {
   QC_FAIL_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -59,7 +61,7 @@ const FAILING = () => {
   const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
-  const [selectedRowsDataA, setSelectedRowsData] = useState<Array<QC_FAIL_DATA>>([]);
+  const selectedRowsDataA = useRef<Array<QC_FAIL_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
@@ -78,6 +80,44 @@ const FAILING = () => {
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
   const [cust_cd, setCust_Cd] = useState("6969");
+  const column_failing_table=[
+    { field: 'FAIL_ID',headerName: 'FAIL_ID', resizable: true,width: 80 },
+    { field: 'FACTORY',headerName: 'FACTORY', resizable: true,width: 80 },
+    { field: 'PLAN_ID_SUDUNG',headerName: 'PLAN_ID_SUDUNG', resizable: true,width: 80 },
+    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 80 },
+    { field: 'LIEUQL_SX',headerName: 'LIEUQL_SX', resizable: true,width: 80 },
+    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80 },
+    { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
+    { field: 'VENDOR_LOT',headerName: 'VENDOR_LOT', resizable: true,width: 80 },
+    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
+    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80 },
+    { field: 'ROLL_QTY',headerName: 'ROLL_QTY', resizable: true,width: 80 },
+    { field: 'TOTAL_IN_QTY',headerName: 'TOTAL_IN_QTY', resizable: true,width: 80 },
+    { field: 'USE_YN',headerName: 'USE_YN', resizable: true,width: 80 },
+    { field: 'PQC3_ID',headerName: 'PQC3_ID', resizable: true,width: 80 },
+    { field: 'DEFECT_PHENOMENON',headerName: 'DEFECT_PHENOMENON', resizable: true,width: 80 },
+    { field: 'OUT_DATE',headerName: 'OUT_DATE', resizable: true,width: 80 },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 80 },
+    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 80 },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 80 },
+    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 80 },
+    { field: 'PHANLOAI',headerName: 'PHANLOAI', resizable: true,width: 80 },
+    { field: 'QC_PASS',headerName: 'QC_PASS', resizable: true,width: 80 },
+    { field: 'QC_PASS_DATE',headerName: 'QC_PASS_DATE', resizable: true,width: 80 },
+    { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 80 },
+    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 80 },
+    { field: 'IN1_EMPL',headerName: 'IN1_EMPL', resizable: true,width: 80 },
+    { field: 'IN2_EMPL',headerName: 'IN2_EMPL', resizable: true,width: 80 },
+    { field: 'OUT1_EMPL',headerName: 'OUT1_EMPL', resizable: true,width: 80 },
+    { field: 'OUT2_EMPL',headerName: 'OUT2_EMPL', resizable: true,width: 80 },
+    { field: 'IN_CUST_CD',headerName: 'IN_CUST_CD', resizable: true,width: 80 },
+    { field: 'OUT_CUST_CD',headerName: 'OUT_CUST_CD', resizable: true,width: 80 },
+    { field: 'IN_CUST_NAME',headerName: 'IN_CUST_NAME', resizable: true,width: 80 },
+    { field: 'OUT_CUST_NAME',headerName: 'OUT_CUST_NAME', resizable: true,width: 80 },
+    { field: 'OUT_PLAN_ID',headerName: 'OUT_PLAN_ID', resizable: true,width: 80 },
+    { field: 'REMARK_OUT',headerName: 'REMARK_OUT', resizable: true,width: 80 },
+   
+  ];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       // console.log('press enter')
@@ -115,8 +155,8 @@ const FAILING = () => {
     }
   };
   const setQCPASS = async (value: string) => {
-    console.log(selectedRowsDataA);
-    if (selectedRowsDataA.length > 0) {
+    console.log(selectedRowsDataA.current);
+    if (selectedRowsDataA.current.length > 0) {
       Swal.fire({
         title: "Tra cứu vật liệu Holding",
         text: "Đang tải dữ liệu, hãy chờ chút",
@@ -127,10 +167,10 @@ const FAILING = () => {
         showConfirmButton: false,
       });
       let err_code: string = "";
-      for (let i = 0; i < selectedRowsDataA.length; i++) {
+      for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         await generalQuery("updateQCPASS_FAILING", {
-          M_LOT_NO: selectedRowsDataA[i].M_LOT_NO,
-          PLAN_ID_SUDUNG: selectedRowsDataA[i].PLAN_ID_SUDUNG,
+          M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
+          PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID_SUDUNG,
           VALUE: value,
         })
           // eslint-disable-next-line no-loop-func
@@ -153,10 +193,6 @@ const FAILING = () => {
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
-  };
-  const setselecterowfunction = (e: any) => {
-    console.log(e);
-    setSelectedRowsData(e);
   };
   const materialDataTable = React.useMemo(
     () => (
@@ -181,7 +217,7 @@ const FAILING = () => {
           height={"79vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
-            setSelectedRowsData(e.selectedRowsData);
+            //setSelectedRowsData(e.selectedRowsData);
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -474,6 +510,27 @@ const FAILING = () => {
     ),
     [inspectiondatatable],
   );
+  const failingDataAGTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+            
+          </div>}
+        columns={column_failing_table}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+          
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+          selectedRowsDataA.current = e!.api.getSelectedRows();             
+        }}
+      />
+    )
+  }, [inspectiondatatable]);
   const handletraFailingData = () => {
     generalQuery("loadQCFailData", {})
       .then((response) => {
@@ -747,16 +804,16 @@ const FAILING = () => {
       });
   };
   const updateQCFailTable = async () => {
-    if (selectedRowsDataA.length > 0) {
+    if (selectedRowsDataA.current.length > 0) {
       let err_code: string = "";
-      for (let i = 0; i < selectedRowsDataA.length; i++) {
+      for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         await generalQuery("updateQCFailTableData", {
           OUT1_EMPL: request_empl,
           OUT2_EMPL: request_empl2,
           OUT_CUST_CD: cust_cd,
           OUT_PLAN_ID: planId,
           REMARK_OUT: remark,
-          FAIL_ID: selectedRowsDataA[i].FAIL_ID,
+          FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {
@@ -954,8 +1011,34 @@ const FAILING = () => {
                   ></input>
                 </label>
               </div>
+             
               <div className="forminputcolumn">
-                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#33ac15' }} onClick={() => {
+                <label>
+                  <b>CMSV</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={cmsvcheck}
+                    onChange={(e) => {
+                      if (cmsvcheck === false) setCust_Cd("6969");
+                      setCMSVCheck(!cmsvcheck);
+                    }}
+                  ></input>
+                </label>
+                <div className="btdiv" style={{display:'flex', gap: '10px'}}>
+               
+                </div>
+                
+              </div>
+            </div>
+            <div className="formbutton">
+            <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#01aa01', color: 'white' }} onClick={() => {
+                  setInspectionDataTable([]);
+                }}>New</Button>
+                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
+                  handletraFailingData();
+                }}>Tra Data</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={() => {
                   if (checkInput()) {
                     let lotArray = inspectiondatatable.map(
                       (element: QC_FAIL_DATA, index: number) => {
@@ -987,37 +1070,15 @@ const FAILING = () => {
                     );
                   }
                 }}>Add</Button>
-                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
+                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
                   saveFailingData();
                 }}>Save</Button>
-              </div>
-              <div className="forminputcolumn">
-                <label>
-                  <b>CMSV</b>
-                  <input
-                    type="checkbox"
-                    name="alltimecheckbox"
-                    defaultChecked={cmsvcheck}
-                    onChange={(e) => {
-                      if (cmsvcheck === false) setCust_Cd("6969");
-                      setCMSVCheck(!cmsvcheck);
-                    }}
-                  ></input>
-                </label>
-                <div className="btdiv" style={{display:'flex', gap: '10px'}}>
-                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#01aa01', color: 'white' }} onClick={() => {
-                  setInspectionDataTable([]);
-                }}>New</Button>
-                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
-                  handletraFailingData();
-                }}>Tra Data</Button>
-                </div>
                 
-              </div>
+
             </div>
           </div>
           <div className="tracuuYCSXTable">
-            {materialDataTable}
+            {failingDataAGTable}
           </div>
           <div className="tracuuDataInspectionform2">
             <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
@@ -1156,7 +1217,7 @@ const FAILING = () => {
                 className="buttonIcon"
                 onClick={() => {
                   if (userData?.SUBDEPTNAME === "IQC") {
-                    //console.log(selectedRowsDataA);
+                    //console.log(selectedRowsDataA.current);
                     setQCPASS("Y");
                   } else {
                     Swal.fire(

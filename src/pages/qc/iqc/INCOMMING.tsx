@@ -1,45 +1,10 @@
-import {
-  Autocomplete,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
-import {
-  DataGrid as Datagrid2,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Button, IconButton } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./INCOMMING.scss";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Summary,
-  Toolbar,
-  TotalItem,
-} from "devextreme-react/data-grid";
-import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
@@ -49,24 +14,9 @@ import {
   IQC_INCOMMING_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const INCOMMING = () => {
   const [isNewRegister, setNewRegister] = useState(true);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(inspectiondatatable, "Inspection Data Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
     { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
@@ -74,10 +24,10 @@ const INCOMMING = () => {
       field: "DANHGIA",
       headerName: "DANH_GIA",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         if (
-          params.row.RESULT >= params.row.CENTER_VALUE - params.row.LOWER_TOR &&
-          params.row.RESULT <= params.row.CENTER_VALUE + params.row.UPPER_TOR
+          params.data.RESULT >= params.data.CENTER_VALUE - params.data.LOWER_TOR &&
+          params.data.RESULT <= params.data.CENTER_VALUE + params.data.UPPER_TOR
         )
           return (
             <span style={{ color: "green" }}>
@@ -95,10 +45,10 @@ const INCOMMING = () => {
       field: "CENTER_VALUE",
       headerName: "CENTER_VALUE",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span>
-            <b>{params.row.CENTER_VALUE}</b>
+            <b>{params.data.CENTER_VALUE}</b>
           </span>
         );
       },
@@ -107,10 +57,10 @@ const INCOMMING = () => {
       field: "UPPER_TOR",
       headerName: "UPPER_TOR",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span>
-            <b>{params.row.UPPER_TOR}</b>
+            <b>{params.data.UPPER_TOR}</b>
           </span>
         );
       },
@@ -119,10 +69,10 @@ const INCOMMING = () => {
       field: "LOWER_TOR",
       headerName: "LOWER_TOR",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span>
-            <b>{params.row.LOWER_TOR}</b>
+            <b>{params.data.LOWER_TOR}</b>
           </span>
         );
       },
@@ -135,11 +85,11 @@ const INCOMMING = () => {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 200,
-      renderCell: (params: any) => {
-        if (params.row.M_CODE !== "B0000035") return <span></span>;
+      cellRenderer: (params: any) => {
+        if (params.data.M_CODE !== "B0000035") return <span></span>;
         return (
           <span>
-            <b>{params.row.G_NAME}</b>
+            <b>{params.data.G_NAME}</b>
           </span>
         );
       },
@@ -148,11 +98,11 @@ const INCOMMING = () => {
       field: "M_CODE",
       headerName: "M_CODE",
       width: 80,
-      renderCell: (params: any) => {
-        if (params.row.M_CODE === "B0000035") return <span></span>;
+      cellRenderer: (params: any) => {
+        if (params.data.M_CODE === "B0000035") return <span></span>;
         return (
           <span>
-            <b>{params.row.M_CODE}</b>
+            <b>{params.data.M_CODE}</b>
           </span>
         );
       },
@@ -161,11 +111,11 @@ const INCOMMING = () => {
       field: "M_NAME",
       headerName: "TEN LIEU",
       width: 150,
-      renderCell: (params: any) => {
-        if (params.row.M_CODE === "B0000035") return <span></span>;
+      cellRenderer: (params: any) => {
+        if (params.data.M_CODE === "B0000035") return <span></span>;
         return (
           <span>
-            <b>{params.row.M_NAME}</b>
+            <b>{params.data.M_NAME}</b>
           </span>
         );
       },
@@ -229,20 +179,14 @@ const INCOMMING = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
-  const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
-  const [checkNVL, setCheckNVL] = useState(
-    userData?.SUBDEPTNAME === "IQC" ? true : false,
-  );
   const [request_empl, setrequest_empl] = useState("");
   const [remark, setReMark] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<
     Array<IQC_INCOMMING_DATA>
   >([]);
   const [dtcDataTable, setDtcDataTable] = useState<Array<DTC_DATA>>([]);
-  const [selectedRowsData, setSelectedRowsData] = useState<
-    Array<IQC_INCOMMING_DATA>
-  >([]);
+  const selectedRowsData= useRef<Array<IQC_INCOMMING_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [reqDeptCode, setReqDeptCode] = useState("");
   const [m_name, setM_Name] = useState("");
@@ -259,8 +203,8 @@ const INCOMMING = () => {
   const [total_roll, setTotal_ROLL] = useState(0);
   const [nq_qty, setNQ_QTY] = useState(0);
   const setQCPASS = async (value: string) => {
-    console.log(selectedRowsData);
-    if (selectedRowsData.length > 0) {
+    console.log(selectedRowsData.current);
+    if (selectedRowsData.current.length > 0) {
       Swal.fire({
         title: "Set QC Pass",
         text: "Đang set pass, hãy chờ chút",
@@ -271,10 +215,10 @@ const INCOMMING = () => {
         showConfirmButton: false,
       });
       let err_code: string = "";
-      for (let i = 0; i < selectedRowsData.length; i++) {
+      for (let i = 0; i < selectedRowsData.current.length; i++) {
         await generalQuery("updateQCPASSI222", {
-          M_CODE: selectedRowsData[i].M_CODE,
-          LOT_CMS: selectedRowsData[i].LOT_CMS,
+          M_CODE: selectedRowsData.current[i].M_CODE,
+          LOT_CMS: selectedRowsData.current[i].LOT_CMS,
           VALUE: value,
         })
           // eslint-disable-next-line no-loop-func
@@ -289,11 +233,11 @@ const INCOMMING = () => {
             console.log(error);
           });
         await generalQuery("updateIQC1Table", {
-          M_CODE: selectedRowsData[i].M_CODE,
-          LOT_CMS: selectedRowsData[i].LOT_CMS,
+          M_CODE: selectedRowsData.current[i].M_CODE,
+          LOT_CMS: selectedRowsData.current[i].LOT_CMS,
           VALUE: value === "Y" ? "OK" : "NG",
-          IQC1_ID: selectedRowsData[i].IQC1_ID,
-          REMARK: selectedRowsData[i].REMARK,
+          IQC1_ID: selectedRowsData.current[i].IQC1_ID,
+          REMARK: selectedRowsData.current[i].REMARK,
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {
@@ -317,11 +261,159 @@ const INCOMMING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
-  const materialDataTable = React.useMemo(
-    () => (
-      <CustomResponsiveContainer>
-        <div className="datatb">
-          <div className="menubar">
+  const renderOKNGCell = (data: any, key: string) => {
+    if (data[key] === 1) {
+      return (
+        <span style={{ color: "green", fontWeight: "bold" }}>
+          OK
+        </span>
+      );
+    } else if (data[key] === 0) {
+      return (
+        <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
+      );
+    } else if (data[key] === 2) {
+      return (
+        <span style={{ color: "#1848FC", fontWeight: "bold" }}>
+          PENDING
+        </span>
+      );
+    } else {
+      return (
+        <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
+          N/A
+        </span>
+      );
+    }
+  }
+  const column_iqcdatatable = [
+    { field: 'IQC1_ID',headerName: 'IQC1_ID', headerCheckboxSelection: true, checkboxSelection: true,resizable: true,width: 80 },
+    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80 },
+    { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
+    { field: 'LOT_CMS',headerName: 'LOT_CMS', resizable: true,width: 80 },
+    { field: 'LOT_VENDOR',headerName: 'LOT_VENDOR', resizable: true,width: 80 },
+    { field: 'CUST_CD',headerName: 'CUST_CD', resizable: true,width: 80 },
+    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,width: 80 },
+    { field: 'EXP_DATE',headerName: 'EXP_DATE', resizable: true,width: 80 },
+    { field: 'INPUT_LENGTH',headerName: 'INPUT_LENGTH', resizable: true,width: 80 },
+    { field: 'TOTAL_ROLL',headerName: 'TOTAL_ROLL', resizable: true,width: 80 },
+    { field: 'NQ_CHECK_ROLL',headerName: 'NQ_CHECK_ROLL', resizable: true,width: 80 },
+    { field: 'DTC_ID',headerName: 'DTC_ID', resizable: true,width: 80 },
+    { field: 'TEST_EMPL',headerName: 'TEST_EMPL', resizable: true,width: 80 },
+    { field: 'TOTAL_RESULT',headerName: 'TOTAL_RESULT', resizable: true,width: 80, cellRenderer: (params: any) => {
+      if (params.data.TOTAL_RESULT === "OK") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "bold",
+              backgroundColor: "#01E33F",
+              textAlign: "center",
+            }}
+          >
+            OK
+          </div>
+        );
+      } else if (params.data.TOTAL_RESULT === "NG") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "bold",
+              backgroundColor: "red",
+              textAlign: "center",
+            }}
+          >
+            NG
+          </div>
+        );
+      } else {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "bold",
+              backgroundColor: "#CCCFCC",
+              textAlign: "center",
+            }}
+          >
+            N/A
+          </div>
+        );
+      }
+    } },
+    { field: 'AUTO_JUDGEMENT',headerName: 'AUTO_JUDGEMENT', resizable: true,width: 80, cellRenderer:(params: any) => {
+      if (params.data.AUTO_JUDGEMENT === "OK") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "normal",
+              backgroundColor: "#01E33F",
+              textAlign: "center",
+            }}
+          >
+            OK
+          </div>
+        );
+      } else if (params.data.AUTO_JUDGEMENT === "NG") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "normal",
+              backgroundColor: "red",
+              textAlign: "center",
+            }}
+          >
+            NG
+          </div>
+        );
+      } else if (params.data.AUTO_JUDGEMENT === "PENDING") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "normal",
+              backgroundColor: "blue",
+              textAlign: "center",
+            }}
+          >
+            PENDING
+          </div>
+        );
+      }
+    } },
+    { field: 'NGOAIQUAN',headerName: 'NGOAIQUAN', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'NGOAIQUAN') },
+    { field: 'KICHTHUOC',headerName: 'KICHTHUOC', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'KICHTHUOC')  },
+    { field: 'THICKNESS',headerName: 'THICKNESS', resizable: true,width: 80 , cellRenderer: (params: any)=> renderOKNGCell(params.data,'THICKNESS') },
+    { field: 'DIENTRO',headerName: 'DIENTRO', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'DIENTRO')  },
+    { field: 'CANNANG',headerName: 'CANNANG', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'CANNANG')  },
+    { field: 'KEOKEO',headerName: 'KEOKEO', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'KEOKEO')  },
+    { field: 'KEOKEO2',headerName: 'KEOKEO2', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'KEOKEO2')  },
+    { field: 'FTIR',headerName: 'FTIR', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'FTIR')  },
+    { field: 'MAIMON',headerName: 'MAIMON', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'MAIMON')  },
+    { field: 'XRF',headerName: 'XRF', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'XRF')  },
+    { field: 'SCANBARCODE',headerName: 'SCANBARCODE', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'SCANBARCODE')  },
+    { field: 'PHTHALATE',headerName: 'PHTHALATE', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'PHTHALATE')  },
+    { field: 'MAUSAC',headerName: 'MAUSAC', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'MAUSAC')  },
+    { field: 'SHOCKNHIET',headerName: 'SHOCKNHIET', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'SHOCKNHIET')  },
+    { field: 'TINHDIEN',headerName: 'TINHDIEN', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'TINHDIEN')  },
+    { field: 'NHIETAM',headerName: 'NHIETAM', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'NHIETAM')  },
+    { field: 'TVOC',headerName: 'TVOC', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'TVOC')  },
+    { field: 'DOBONG',headerName: 'DOBONG', resizable: true,width: 80, cellRenderer: (params: any)=> renderOKNGCell(params.data,'DOBONG')  },
+    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 80  },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 80  },
+    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 80  },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 80  },
+    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 80  },
+  ];
+
+  const iqcDataTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
             <IconButton
               className="buttonIcon"
               onClick={() => {
@@ -333,7 +425,7 @@ const INCOMMING = () => {
             </IconButton>
             <IconButton
               className="buttonIcon"
-              onClick={() => {
+              onClick={() => {                
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("Y");
                 } else {
@@ -343,9 +435,6 @@ const INCOMMING = () => {
                     "error",
                   );
                 }
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
-                //setQCPASS('Y');
               }}
             >
               <GrStatusGood color="green" size={15} />
@@ -363,855 +452,49 @@ const INCOMMING = () => {
                     "error",
                   );
                 }
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                //setQCPASS('N');
               }}
             >
               <FcCancel color="red" size={15} />
               RESET PASS
             </IconButton>
-          </div>
-          <div className="datatable">
-            <DataGrid
-              style={{ fontSize: "0.7rem" }}
-              autoNavigateToFocusedRow={true}
-              allowColumnReordering={true}
-              allowColumnResizing={true}
-              columnAutoWidth={false}
-              cellHintEnabled={true}
-              columnResizingMode={"widget"}
-              showColumnLines={true}
-              dataSource={inspectiondatatable}
-              columnWidth="auto"
-              keyExpr="id"
-              showBorders={false}
-              height={'78vh'}
-              onSelectionChanged={(e) => {
-                ///console.log(e.selectedRowsData);
-                //setSelectedRowsData(e.selectedRowsData);
-                setSelectedRowsData(e.selectedRowsData);
-              }}
-              onRowClick={(e: any) => {
-                //console.log(e.data);
-                handletraDTCData(e.data.DTC_ID);
-              }}
-            >
-              <Scrolling
-                useNative={true}
-                scrollByContent={true}
-                scrollByThumb={true}
-                showScrollbar="onHover"
-                mode="virtual"
-              />
-              <Selection mode="multiple" selectAllMode="allPages" />
-              <Editing
-                allowUpdating={true}
-                allowAdding={false}
-                allowDeleting={false}
-                mode="cell"
-                confirmDelete={true}
-                onChangesChange={(e) => { }}
-              />
-              <Export enabled={true} />
-              <Toolbar disabled={false}>
-                <Item location="before">
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      SaveExcel(inspectiondatatable, "SPEC DTC");
-                    }}
-                  >
-                    <AiFillFileExcel color="green" size={15} />
-                    SAVE
-                  </IconButton>
-                </Item>
-                <Item name="searchPanel" />
-                <Item name="exportButton" />
-                <Item name="columnChooserButton" />
-                <Item name="addRowButton" />
-                <Item name="saveButton" />
-                <Item name="revertButton" />
-              </Toolbar>
-              <FilterRow visible={true} />
-              <SearchPanel visible={true} />
-              <ColumnChooser enabled={true} />
-              <Paging defaultPageSize={15} />
-              <Pager
-                showPageSizeSelector={true}
-                allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-                showNavigationButtons={true}
-                showInfo={true}
-                infoText="Page #{0}. Total: {1} ({2} items)"
-                displayMode="compact"
-              />
-              <Column
-                dataField="IQC1_ID"
-                caption="ID"
-                width={40}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="M_CODE"
-                caption="M_CODE"
-                width={70}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="M_LOT_NO"
-                caption="M_LOT_NO"
-                width={90}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="LOT_CMS"
-                caption="LOT_CMS"
-                width={80}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="LOT_VENDOR"
-                caption="LOT_NCC"
-                width={80}
-              ></Column>
-              <Column
-                dataField="CUST_CD"
-                caption="CUST_CD"
-                width={80}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="CUST_NAME_KD"
-                caption="VDR NAME"
-                width={90}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="EXP_DATE"
-                caption="EXP_DATE"
-                width={90}
-              ></Column>
-              <Column
-                dataField="INPUT_LENGTH"
-                caption="INP_LEN"
-                width={80}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="TOTAL_ROLL"
-                caption="TT_ROLL"
-                width={80}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="NQ_CHECK_ROLL"
-                caption="NQ_ROLL"
-                width={80}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="DTC_ID"
-                caption="DTC_ID"
-                width={70}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="TEST_EMPL"
-                caption="TEST_EMPL"
-                width={100}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="TOTAL_RESULT"
-                caption="TOTAL_RESULT"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.TOTAL_RESULT === "OK") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          backgroundColor: "#01E33F",
-                          textAlign: "center",
-                        }}
-                      >
-                        OK
-                      </div>
-                    );
-                  } else if (e.data.TOTAL_RESULT === "NG") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          backgroundColor: "red",
-                          textAlign: "center",
-                        }}
-                      >
-                        NG
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          backgroundColor: "#CCCFCC",
-                          textAlign: "center",
-                        }}
-                      >
-                        N/A
-                      </div>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="AUTO_JUDGEMENT"
-                caption="AUTO_JUDGEMENT"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.AUTO_JUDGEMENT === "OK") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          backgroundColor: "#01E33F",
-                          textAlign: "center",
-                        }}
-                      >
-                        OK
-                      </div>
-                    );
-                  } else if (e.data.AUTO_JUDGEMENT === "NG") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          backgroundColor: "red",
-                          textAlign: "center",
-                        }}
-                      >
-                        NG
-                      </div>
-                    );
-                  } else if (e.data.AUTO_JUDGEMENT === "PENDING") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          backgroundColor: "blue",
-                          textAlign: "center",
-                        }}
-                      >
-                        PENDING
-                      </div>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="NGOAIQUAN"
-                caption="NGOAIQUAN"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.NGOAIQUAN === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.NGOAIQUAN === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.NGOAIQUAN === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="KICHTHUOC"
-                caption="KICHTHUOC"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.KICHTHUOC === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.KICHTHUOC === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.KICHTHUOC === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="THICKNESS"
-                caption="THICKNESS"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.THICKNESS === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.THICKNESS === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.THICKNESS === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="DIENTRO"
-                caption="DIENTRO"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.DIENTRO === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.DIENTRO === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.DIENTRO === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="CANNANG"
-                caption="CANNANG"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.CANNANG === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.CANNANG === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.CANNANG === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="KEOKEO"
-                caption="KEOKEO"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.KEOKEO === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.KEOKEO === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.KEOKEO === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="KEOKEO2"
-                caption="KEOKEO2"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.KEOKEO2 === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.KEOKEO2 === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.KEOKEO2 === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="FTIR"
-                caption="FTIR"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.FTIR === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.FTIR === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.FTIR === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="MAIMON"
-                caption="MAIMON"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.MAIMON === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.MAIMON === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.MAIMON === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="XRF"
-                caption="XRF"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.XRF === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.XRF === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.XRF === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="SCANBARCODE"
-                caption="SCANBARCODE"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.SCANBARCODE === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.SCANBARCODE === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.SCANBARCODE === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="PHTHALATE"
-                caption="PHTHALATE"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.PHTHALATE === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.PHTHALATE === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.PHTHALATE === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="MAUSAC"
-                caption="MAUSAC"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.MAUSAC === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.MAUSAC === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.MAUSAC === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="SHOCKNHIET"
-                caption="SHOCKNHIET"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.SHOCKNHIET === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.SHOCKNHIET === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.SHOCKNHIET === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="TINHDIEN"
-                caption="TINHDIEN"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.TINHDIEN === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.TINHDIEN === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.TINHDIEN === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="NHIETAM"
-                caption="NHIETAM"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.NHIETAM === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.NHIETAM === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.NHIETAM === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="TVOC"
-                caption="TVOC"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.TVOC === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.TVOC === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.TVOC === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="DOBONG"
-                caption="DOBONG"
-                width={100}
-                cellRender={(e: any) => {
-                  if (e.data.DOBONG === 1) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        OK
-                      </span>
-                    );
-                  } else if (e.data.DOBONG === 0) {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>NG</span>
-                    );
-                  } else if (e.data.DOBONG === 2) {
-                    return (
-                      <span style={{ color: "#1848FC", fontWeight: "bold" }}>
-                        PENDING
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "#C1C7C3", fontWeight: "bold" }}>
-                        N/A
-                      </span>
-                    );
-                  }
-                }}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="INS_DATE"
-                caption="INS_DATE"
-                width={100}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="INS_EMPL"
-                caption="INS_EMPL"
-                width={100}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="UPD_DATE"
-                caption="UPD_DATE"
-                width={100}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="UPD_EMPL"
-                caption="UPD_EMPL"
-                width={100}
-                allowEditing={false}
-              ></Column>
-              <Column
-                dataField="REMARK"
-                caption="REMARK"
-                width={150}
-                allowEditing={true}
-              ></Column>
-            </DataGrid>
-          </div>
-        </div>
-      </CustomResponsiveContainer>
-    ),
-    [inspectiondatatable],
-  );
+          </div>}
+        columns={column_iqcdatatable}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+          handletraDTCData(e.data.DTC_ID);
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+          selectedRowsData.current = e!.api.getSelectedRows();         
+        }}
+      />
+    )
+  }, [inspectiondatatable]);
+
+  const dtc_data_table = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+            
+          </div>}
+        columns={column_dtc_data}
+        data={dtcDataTable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+          
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+             
+        }}
+      />
+    )
+  }, [dtcDataTable]);
+
   const handletraIQC1Data = () => {
     generalQuery("loadIQC1table", {})
       .then((response) => {
@@ -1221,24 +504,9 @@ const INCOMMING = () => {
             (element: IQC_INCOMMING_DATA, index: number) => {
               return {
                 ...element,
-                INS_DATE:
-                  element.INS_DATE === null
-                    ? ""
-                    : moment(element.INS_DATE)
-                      .utc()
-                      .format("YYYY-MM-DD HH:mm:ss"),
-                UPD_DATE:
-                  element.UPD_DATE === null
-                    ? ""
-                    : moment(element.UPD_DATE)
-                      .utc()
-                      .format("YYYY-MM-DD HH:mm:ss"),
-                EXP_DATE:
-                  element.EXP_DATE === null
-                    ? ""
-                    : moment(element.EXP_DATE)
-                      .utc()
-                      .format("YYYY-MM-DD"),
+                INS_DATE: element.INS_DATE === null ? "" : moment(element.INS_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
+                UPD_DATE: element.UPD_DATE === null ? "" : moment(element.UPD_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
+                EXP_DATE: element.EXP_DATE === null ? "" : moment(element.EXP_DATE).utc().format("YYYY-MM-DD"),
                 id: index,
               };
             },
@@ -1536,11 +804,11 @@ const INCOMMING = () => {
               </div>
             </div>
             <div className="formbutton">
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#4959e7', color: 'white' }} onClick={() => {
+              <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#4959e7', color: 'white' }} onClick={() => {
                 setInspectionDataTable([]);
                 setNewRegister(true);
               }}>NEW</Button>
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f735', color: 'black' }} onClick={() => {
+              <Button fullWidth={true}  color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f735', color: 'black' }} onClick={() => {
                 if (checkInput()) {
                   if(isNewRegister)
                   {
@@ -1557,7 +825,7 @@ const INCOMMING = () => {
                   );
                 }
               }}>Add</Button>
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
+              <Button fullWidth={true}  color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
                 if(isNewRegister)
                 {
                   insertIQC1Table();
@@ -1568,22 +836,10 @@ const INCOMMING = () => {
               }}>Save</Button>
             </div>
           </div>
-          <div className="tracuuYCSXTable">{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{iqcDataTable}</div>
           <div className="tracuuDataInspectionform2">
             <b style={{ color: "blue" }}>Kết quả ĐTC</b>
-            <Datagrid2
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-              }}
-              rowHeight={30}
-              rows={dtcDataTable}
-              columns={column_dtc_data}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode="row"
-            />
+            {dtc_data_table}
           </div>
         </div>
       </div>
