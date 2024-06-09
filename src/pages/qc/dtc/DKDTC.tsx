@@ -80,6 +80,8 @@ const DKDTC = () => {
   );
   const [empl_name, setEmplName] = useState("");
   const [reqDeptCode, setReqDeptCode] = useState("");
+  const [showdkbs, setShowDKBS] = useState(false);
+  const [oldDTC_ID, setOldDTC_ID] = useState(-1);
   const [g_name, setGName] = useState("");
   const [g_code, setGCode] = useState("");
   const [m_name, setM_Name] = useState("");
@@ -362,7 +364,7 @@ const DKDTC = () => {
     for (let i = 0; i < testList.length; i++) {
       if (testList[i].SELECTED) {
         let data = {
-          DTC_ID: nextDTC_ID,
+          DTC_ID: showdkbs? oldDTC_ID: nextDTC_ID,
           TEST_CODE: testList[i].TEST_CODE,
           TEST_TYPE_CODE: testtype,
           REQUEST_DEPT_CODE: reqDeptCode,
@@ -389,9 +391,10 @@ const DKDTC = () => {
       }
     }
     if (err_code === "") {
+      let final_ID: number = showdkbs? oldDTC_ID : nextDTC_ID;
       Swal.fire(
         "Thông báo",
-        "Đăng ký ĐTC thành công, ID test là: " + nextDTC_ID,
+        "Đăng ký ĐTC thành công, ID test là: " + final_ID,
         "success",
       );
       setGCode("");
@@ -399,6 +402,7 @@ const DKDTC = () => {
       setrequest_empl("");
       handletraDTCData();
     } else {
+      
       Swal.fire("Thông báo", "Đăng ký ĐTC thất bại: " + err_code, "error");
     }
   };
@@ -590,6 +594,30 @@ const DKDTC = () => {
                     })}
                   </div>
                 </label>
+              </div>
+              <div className="forminputcolumn">
+                {showdkbs && <label>
+                  <b>ID Test đã có</b>
+                  <input
+                    type="text"
+                    placeholder={"Ghi chú"}
+                    value={oldDTC_ID}
+                    onChange={(e) => {
+                      setOldDTC_ID(Number(e.target.value));
+                    }}
+                  ></input>
+                </label>}
+                <label>
+                <b>Đăng ký bổ sung</b>
+                <input
+                  type="checkbox"
+                  name="alltimecheckbox"
+                  checked={showdkbs}
+                  onChange={() => {
+                    setShowDKBS(!showdkbs);
+                  }}
+                ></input>
+              </label>
               </div>
               <div className="forminputcolumn">
                 <label>

@@ -141,7 +141,7 @@ const DTCRESULT = () => {
                   <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
-                <span style={{ fontSize: 20, fontWeight: "bold" }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: "bold" }}>
                   Bảng nhập kết quả độ tin cậy
                 </span>
               </Item>
@@ -320,10 +320,8 @@ const DTCRESULT = () => {
       <div className="tracuuDataInspection">
         <div className="maintable">
           <div className="tracuuDataInspectionform">
-            <b style={{ color: "blue" }}>NHẬP KẾT QUẢ ĐỘ TIN CẬY</b>
             <div className="forminput">
               <div className="forminputcolumn">
-
                 <label>
                   <b>ID:</b>
                   <input
@@ -344,7 +342,6 @@ const DTCRESULT = () => {
               </div>
               <div className="forminputcolumn">
                 <label>
-                  <b>Hạng mục test</b><br></br>
                   <div className="checkboxarray" style={{ display: "flex" }}>
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
