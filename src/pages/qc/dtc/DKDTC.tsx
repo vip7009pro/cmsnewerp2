@@ -75,9 +75,6 @@ const DKDTC = () => {
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     [],
   );
-  const [selectedRowsData, setSelectedRowsData] = useState<Array<DTC_REG_DATA>>(
-    [],
-  );
   const [empl_name, setEmplName] = useState("");
   const [reqDeptCode, setReqDeptCode] = useState("");
   const [showdkbs, setShowDKBS] = useState(false);
