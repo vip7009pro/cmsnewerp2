@@ -1522,8 +1522,9 @@ const DATASX2 = () => {
   const column_datasx_chithi = [
     { field: 'PHAN_LOAI',headerName: 'PHAN_LOAI', resizable: true,width: 80,},
     { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 80 },
+    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 60 },
     { field: 'PLAN_DATE',headerName: 'PLAN_DATE', resizable: true,width: 80 },
-    { field: 'PROD_REQUEST_NO',headerName: 'PROD_REQUEST_NO', resizable: true,width: 80 },
+    { field: 'PROD_REQUEST_NO',headerName: 'PROD_REQUEST_NO', resizable: true,width: 60 },
     { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 80 },
     { field: 'G_NAME_KD',headerName: 'G_NAME_KD', resizable: true,width: 80 },
     { field: 'PLAN_QTY',headerName: 'PLAN_QTY', resizable: true,width: 80,  cellRenderer:(e: any) => {
@@ -1533,12 +1534,12 @@ const DATASX2 = () => {
         </span>
       );
     } },
-    { field: 'EQ1',headerName: 'EQ1', resizable: true,width: 80 },
-    { field: 'EQ2',headerName: 'EQ2', resizable: true,width: 80 },
-    { field: 'PLAN_EQ',headerName: 'PLAN_EQ', resizable: true,width: 80 },
-    { field: 'PLAN_FACTORY',headerName: 'PLAN_FACTORY', resizable: true,width: 80 },
-    { field: 'PROCESS_NUMBER',headerName: 'PROCESS_NUMBER', resizable: true,width: 80 },
-    { field: 'STEP',headerName: 'STEP', resizable: true,width: 80 },
+    { field: 'EQ1',headerName: 'EQ1', resizable: true,width: 50 },
+    { field: 'EQ2',headerName: 'EQ2', resizable: true,width: 50 },
+    { field: 'PLAN_EQ',headerName: 'PLAN_EQ', resizable: true,width: 50 },
+    { field: 'PLAN_FACTORY',headerName: 'PLAN_FACTORY', resizable: true,width: 50 },
+    { field: 'PROCESS_NUMBER',headerName: 'PROCESS_NUMBER', resizable: true,width: 50 },
+    { field: 'STEP',headerName: 'STEP', resizable: true,width: 50 },
     { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
     { field: 'WAREHOUSE_OUTPUT_QTY',headerName: 'WAREHOUSE_OUTPUT_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
       return (
@@ -1568,8 +1569,8 @@ const DATASX2 = () => {
         </span>
       );
     } },
-    { field: 'PD',headerName: 'PD', resizable: true,width: 80 },
-    { field: 'CAVITY',headerName: 'CAVITY', resizable: true,width: 80 },
+    { field: 'PD',headerName: 'PD', resizable: true,width: 50 },
+    { field: 'CAVITY',headerName: 'CAVITY', resizable: true,width: 50 },
     { field: 'SETTING_MET_TC',headerName: 'SETTING_MET_TC', resizable: true,width: 80 },
     { field: 'SETTING_DM_SX',headerName: 'SETTING_DM_SX', resizable: true,width: 80 },
     { field: 'SETTING_MET',headerName: 'SETTING_MET', resizable: true,width: 80 },

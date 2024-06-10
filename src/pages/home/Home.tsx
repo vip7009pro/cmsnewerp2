@@ -72,7 +72,7 @@ import KHOTP from "../kho/khotp/KHOTP";
 import KHOTPNEW from "../kho/khotp_new/KHOTPNEW";
 import SettingPage from "../setting/SettingPage";
 import RND_REPORT from "../rnd/rnd_report/RND_REPORT";
-export const current_ver: number = 388 ;
+export const current_ver: number = 388;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
