@@ -40,7 +40,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
 import {
   autoGetProdPrice,
   checkBP,
@@ -358,6 +358,8 @@ const PoManager = () => {
                 ...element,
                 PO_DATE: element.PO_DATE.slice(0, 10),
                 RD_DATE: element.RD_DATE.slice(0, 10),
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
               };
             }
           );

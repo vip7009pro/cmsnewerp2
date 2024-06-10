@@ -19,7 +19,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -3568,6 +3568,8 @@ const DATASX2 = () => {
             (element: SX_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 SETTING_START_TIME: element.SETTING_START_TIME === null ? "" : moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME: element.MASS_START_TIME === null ? "" : moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
@@ -3701,6 +3703,8 @@ const DATASX2 = () => {
             (element: YCSX_SX_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PROD_REQUEST_DATE: moment
                   .utc(element.PROD_REQUEST_DATE)
                   .format("YYYY-MM-DD"),

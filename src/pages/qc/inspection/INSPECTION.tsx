@@ -22,7 +22,7 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INSPECTION.scss";
@@ -468,6 +468,9 @@ const INSPECTION = () => {
               summaryInput += element.INPUT_QTY_EA;
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 PROD_DATETIME: moment
                   .utc(element.PROD_DATETIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
@@ -537,6 +540,9 @@ const INSPECTION = () => {
               summaryOutput += element.OUTPUT_QTY_EA;
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 PROD_DATETIME: moment
                   .utc(element.PROD_DATETIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
@@ -606,6 +612,9 @@ const INSPECTION = () => {
             (element: INSPECT_NG_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 INSPECT_DATETIME: moment.utc(element.INSPECT_DATETIME).format(
                   "YYYY-MM-DD HH:mm:ss",
                 ),
@@ -674,6 +683,9 @@ const INSPECTION = () => {
             (element: INSPECT_INOUT_YCSX, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 id: index,
               };
             },
@@ -732,6 +744,9 @@ const INSPECTION = () => {
             (element: CHO_KIEM_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 id: index,
               };
             },
@@ -791,6 +806,9 @@ const INSPECTION = () => {
             (element: INSPECT_PATROL, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 id: index,
               };
             },

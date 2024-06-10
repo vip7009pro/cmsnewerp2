@@ -8,7 +8,7 @@ import {
   AiOutlineCloudUpload,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode, uploadQuery } from "../../../api/Api";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
@@ -1840,6 +1840,8 @@ const CODE_MANAGER = () => {
             (element: CODE_FULL_INFO, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },

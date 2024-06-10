@@ -21,7 +21,7 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getUserData } from "../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./TRAPQC.scss";
@@ -455,32 +455,6 @@ const TRAPQC = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_TRA_PQC1_DATA);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(pqcdatatable, "Inspection Data Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            paddingLeft: 20,
-            color: "blue",
-          }}
-        >
-          {sumaryINSPECT}
-        </span>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const handletraInspectionInput = () => {
     setisLoading(true);
     let summaryInput: number = 0;
@@ -506,6 +480,9 @@ const TRAPQC = () => {
               //summaryInput += element.INPUT_QTY_EA;
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 PROD_DATETIME: moment
                   .utc(element.INS_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
@@ -571,6 +548,9 @@ const TRAPQC = () => {
               //summaryOutput += element.OUTPUT_QTY_EA;
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+
                 OCCURR_TIME: moment
                   .utc(element.OCCURR_TIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
@@ -618,6 +598,7 @@ const TRAPQC = () => {
             (element: CNDB_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
                 CNDB_DATE: moment.utc(element.CNDB_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -658,6 +639,7 @@ const TRAPQC = () => {
             (element: DAO_FILM_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
                 id: index,
               };
             },

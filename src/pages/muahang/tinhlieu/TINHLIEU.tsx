@@ -26,7 +26,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./TINHLIEU.scss";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -65,7 +65,8 @@ const TINHLIEU = () => {
             let loadeddata = response.data.data.map(
               (element: MaterialPOData, index: number) => {
                 return {
-                  ...element,
+                  ...element,           
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                   NEED_M_QTY: Number(element.NEED_M_QTY),
                   id: index,
                 };

@@ -1101,11 +1101,11 @@ export interface DTC_REG_DATA {
   TEST_FINISH_TIME: string;
   TEST_EMPL_NO: string;
   G_CODE: string;
-  PROD_REQUEST_NO: number;
-  G_NAME: number;
-  TEST_NAME: number;
-  TEST_TYPE_NAME: number;
-  WORK_POSITION_NAME: number;
+  PROD_REQUEST_NO: string;
+  G_NAME: string;
+  TEST_NAME: string;
+  TEST_TYPE_NAME: string;
+  WORK_POSITION_NAME: string;
   REQUEST_DATETIME: string;
   REQUEST_EMPL_NO: string;
   M_NAME: string;

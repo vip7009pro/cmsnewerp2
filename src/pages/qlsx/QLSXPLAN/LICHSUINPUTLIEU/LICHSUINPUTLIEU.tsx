@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./LICHSUINPUTLIEU.scss";
 import { LICHSUINPUTLIEU_DATA } from "../../../../api/GlobalInterface";
@@ -58,6 +58,8 @@ const LICHSUINPUTLIEU = () => {
             (element: LICHSUINPUTLIEU_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 INS_DATE: moment(element.INS_DATE)
                   .utc()
                   .format("YYYY-MM-DD HH:mm:ss"),

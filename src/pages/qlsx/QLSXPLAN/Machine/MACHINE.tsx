@@ -3,7 +3,7 @@ import React, { ReactElement, useEffect, useMemo, useRef, useState } from "react
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { Button, IconButton } from "@mui/material";
 import {
@@ -1787,6 +1787,8 @@ const MACHINE = () => {
             (element: QLSXPLANDATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -2038,6 +2040,8 @@ const MACHINE = () => {
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PO_TDYCSX: element.PO_TDYCSX ?? 0,
                 TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
                 TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,

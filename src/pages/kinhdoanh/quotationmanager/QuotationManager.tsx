@@ -47,7 +47,7 @@ import {
   MdOutlinePivotTableChart,
 } from "react-icons/md";
 import { CustomResponsiveContainer, SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
-import { generalQuery, getCompany, getSever } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, getSever } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -2289,6 +2289,8 @@ const QuotationManager = () => {
             (element: BANGGIA_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PRICE_DATE1:
                   element.PRICE_DATE1 !== null
                     ? moment.utc(element.PRICE_DATE1).format("YYYY-MM-DD")
@@ -2408,6 +2410,8 @@ const QuotationManager = () => {
             (element: BANGGIA_DATA2, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PRICE_DATE:
                   element.PRICE_DATE !== null
                     ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
@@ -2545,6 +2549,8 @@ const QuotationManager = () => {
             (element: BANGGIA_DATA2, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PRICE_DATE:
                   element.PRICE_DATE !== null
                     ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")

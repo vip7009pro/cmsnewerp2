@@ -3,7 +3,7 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./INCOMMING.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
@@ -156,6 +156,7 @@ const INCOMMING = () => {
             (element: DTC_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
                 TEST_FINISH_TIME: moment
                   .utc(element.TEST_FINISH_TIME)
                   .format("YYYY-MM-DD HH:mm:ss"),

@@ -28,7 +28,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
@@ -1689,6 +1689,8 @@ const YCSXManager = () => {
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PO_TDYCSX: element.PO_TDYCSX ?? 0,
                 TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
                 TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,

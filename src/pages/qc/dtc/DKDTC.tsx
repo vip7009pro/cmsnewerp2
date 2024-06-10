@@ -11,7 +11,7 @@ import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./DKDTC.scss";
@@ -231,6 +231,7 @@ const DKDTC = () => {
             (element: DTC_REG_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
                 TEST_FINISH_TIME:
                   element.TEST_FINISH_TIME === "1900-01-01T00:00:00.000Z" ||
                     element.TEST_FINISH_TIME === null

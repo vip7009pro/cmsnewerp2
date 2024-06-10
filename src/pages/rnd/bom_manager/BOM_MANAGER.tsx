@@ -34,7 +34,7 @@ import {
   AiOutlinePushpin,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../api/Api";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
@@ -1001,6 +1001,8 @@ const BOM_MANAGER = () => {
             (element: CODE_INFO, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -1088,7 +1090,7 @@ const BOM_MANAGER = () => {
           let loaded_data: CODE_FULL_INFO[] = response.data.data.map(
             (element: CODE_FULL_INFO, index: number) => {
               return {
-                ...element,
+                ...element,            
                 CUST_CD:
                   element.CUST_CD === null || element.CUST_CD === ""
                     ? "0000"

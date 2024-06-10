@@ -34,7 +34,7 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
 import { UserContext } from "../../../api/Context";
-import { generalQuery, getUserData } from "../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -1005,6 +1005,8 @@ const KHOTPNEW = () => {
             (element: STOCK_G_CODE, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -1045,7 +1047,8 @@ const KHOTPNEW = () => {
           let loadeddata = response.data.data.map(
             (element: STOCK_G_NAME_KD, index: number) => {
               return {
-                ...element,
+                ...element,          
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -1087,6 +1090,8 @@ const KHOTPNEW = () => {
             (element: STOCK_PROD_REQUEST_NO, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },

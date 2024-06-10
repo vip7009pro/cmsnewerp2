@@ -67,6 +67,7 @@ const XUATLIEU = () => {
     INS_EMPL: "",
     UPD_DATE: "",
     UPD_EMPL: "",
+    EXP_DATE: "",
   });
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [materialList, setMaterialList] = useState<MaterialListData[]>([

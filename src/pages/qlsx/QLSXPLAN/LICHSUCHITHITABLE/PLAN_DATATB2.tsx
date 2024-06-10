@@ -24,7 +24,7 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
@@ -519,6 +519,8 @@ const PLAN_DATATB2 = () => {
 
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 EQ_STATUS:
                   element.EQ_STATUS === "B"

@@ -10,7 +10,7 @@ import {
 } from "../redux/slices/globalSlice";
 /* import axios from 'axios'; */
 import axios from "axios";
-import { UserData } from "./GlobalInterface";
+import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 export function getSever(): string {
@@ -39,6 +39,10 @@ export function getGlobalLang() {
 export function getGlobalSetting() {
   const state = store.getState();
   return state.totalSlice.globalSetting;
+}
+export function getAuditMode() {
+  const auditMode: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'AUDIT_MODE')[0]?.CURRENT_VALUE ?? '0');  
+  return auditMode;
 }
 console.log("company", getCompany());
 let API_URL = getSever() + "/api";

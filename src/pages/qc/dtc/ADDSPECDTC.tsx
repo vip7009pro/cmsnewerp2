@@ -15,7 +15,7 @@ import React, {
 } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
@@ -350,6 +350,7 @@ const ADDSPECTDTC = () => {
             (element: DTC_ADD_SPEC_DATA, index: number) => {
               return {
                 ...element,
+                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
                 id: index,
               };
             },
