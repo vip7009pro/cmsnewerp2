@@ -125,7 +125,7 @@ const QLGN = () => {
             (element: HANDOVER_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 NGAYBANGIAO: moment
                   .utc(element.NGAYBANGIAO)
                   .format("YYYY-MM-DD"),
@@ -383,9 +383,9 @@ const QLGN = () => {
       }
     });
   }
-  const addBanGiao = ()=> {
+  const addBanGiao = () => {
     generalQuery("addbangiaodaofilmtailieu", {
-      FACTORY: getUserData()?.FACTORY_CODE === 1? 'NM1':'NM2',
+      FACTORY: getUserData()?.FACTORY_CODE === 1 ? 'NM1' : 'NM2',
       NGAYBANGIAO: moment(fromdate).format("YYYY-MM-DD"),
       G_CODE: selectedCode?.G_CODE,
       LOAIBANGIAO_PDP: pltl,
@@ -405,9 +405,9 @@ const QLGN = () => {
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo','Thêm thành công','success');
+          Swal.fire('Thông báo', 'Thêm thành công', 'success');
         } else {
-          Swal.fire('Thông báo','Thất bại','error');
+          Swal.fire('Thông báo', 'Thất bại', 'error');
         }
       })
       .catch((error) => {
@@ -425,32 +425,32 @@ const QLGN = () => {
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
-          <div className="forminputcolumn">
-            <label>
-            <Autocomplete
-                sx={{ fontSize: 10, width: "150px" }}
-                size="small"
-                disablePortal
-                options={customerList}
-                className="autocomplete1"
-                filterOptions={filterOptions1}
-                isOptionEqualToValue={(option: any, value: any) =>
-                  option.CUST_CD === value.CUST_CD
-                }
-                getOptionLabel={(option: CustomerListData | any) =>
-                  `${option.CUST_CD}: ${option.CUST_NAME_KD}`
-                }
-                renderInput={(params) => (
-                  <TextField {...params} label="Select customer" />
-                )}
-                value={selectedCust_CD}
-                onChange={(event: any, newValue: CustomerListData | any) => {
-                  console.log(newValue);
-                  setSelectedCust_CD(newValue);
-                }}
-              />
-            </label>
-          </div>
+            <div className="forminputcolumn">
+              <label>
+                <Autocomplete
+                  sx={{ fontSize: 10, width: "150px" }}
+                  size="small"
+                  disablePortal
+                  options={customerList}
+                  className="autocomplete1"
+                  filterOptions={filterOptions1}
+                  isOptionEqualToValue={(option: any, value: any) =>
+                    option.CUST_CD === value.CUST_CD
+                  }
+                  getOptionLabel={(option: CustomerListData | any) =>
+                    `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select customer" />
+                  )}
+                  value={selectedCust_CD}
+                  onChange={(event: any, newValue: CustomerListData | any) => {
+                    console.log(newValue);
+                    setSelectedCust_CD(newValue);
+                  }}
+                />
+              </label>
+            </div>
             <div className="forminputcolumn">
               <label>
                 <Autocomplete
@@ -592,7 +592,7 @@ const QLGN = () => {
                   <option value="PINACLE">PINACLE</option>
                 </select>
               </label>}
-              {pltl === 'F' &&  <label>
+              {pltl === 'F' && <label>
                 <b>Phân loại film:</b>{" "}
                 <select
                   name="vendor"
@@ -616,7 +616,7 @@ const QLGN = () => {
                   onChange={(e) => setOHPFilmQTy(Number(e.target.value))}
                 ></input>
               </label>}
-              {(pltl === 'D' || pltl === 'F') &&  <label>
+              {(pltl === 'D' || pltl === 'F') && <label>
                 <b>Mã Dao/Film</b>{" "}
                 <input
                   type="text"
@@ -625,7 +625,7 @@ const QLGN = () => {
                   onChange={(e) => setMaDaoFilm(e.target.value)}
                 ></input>
               </label>}
-              {(pltl === 'T') &&<label>
+              {(pltl === 'T') && <label>
                 <b>Vị trí tài liệu</b>{" "}
                 <input
                   type="text"
@@ -683,10 +683,10 @@ const QLGN = () => {
               }}
             >
               Thêm Bàn Giao
-            </button>            
+            </button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{HandoverDataTable}</div>      
+        <div className="tracuuYCSXTable">{HandoverDataTable}</div>
       </div>
     </div>
   );
