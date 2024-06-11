@@ -72,6 +72,7 @@ import KHOTP from "../kho/khotp/KHOTP";
 import KHOTPNEW from "../kho/khotp_new/KHOTPNEW";
 import SettingPage from "../setting/SettingPage";
 import RND_REPORT from "../rnd/rnd_report/RND_REPORT";
+import Blank from "../../components/Blank/Blank";
 export const current_ver: number = 388;
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -101,6 +102,11 @@ function Home() {
     (state: RootState) => state.totalSlice.sidebarmenu
   );
   const menulist: MENU_LIST_DATA[] = [
+    {
+      MENU_CODE: "BL1",
+      MENU_NAME: "XXX",
+      MENU_ITEM: <Blank />,
+    },
     {
       MENU_CODE: "NS0",
       MENU_NAME: "Account Info",
