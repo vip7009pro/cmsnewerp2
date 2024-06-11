@@ -3568,8 +3568,8 @@ const DATASX2 = () => {
             (element: SX_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 SETTING_START_TIME: element.SETTING_START_TIME === null ? "" : moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME: element.MASS_START_TIME === null ? "" : moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
@@ -3703,8 +3703,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
             (element: YCSX_SX_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PROD_REQUEST_DATE: moment
                   .utc(element.PROD_REQUEST_DATE)
                   .format("YYYY-MM-DD"),

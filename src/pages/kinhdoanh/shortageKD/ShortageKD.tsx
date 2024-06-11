@@ -755,7 +755,7 @@ const ShortageKD = () => {
             (element: ShortageData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               };
             },

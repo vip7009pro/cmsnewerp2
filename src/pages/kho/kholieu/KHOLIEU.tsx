@@ -279,7 +279,7 @@ const KHOLIEU = () => {
             (element: XUATLIEUDATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 id: index,
                 INS_DATE: moment
                   .utc(element.INS_DATE)

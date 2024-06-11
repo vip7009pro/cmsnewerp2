@@ -480,8 +480,8 @@ const TRAPQC = () => {
               //summaryInput += element.INPUT_QTY_EA;
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
 
                 PROD_DATETIME: moment
                   .utc(element.INS_DATE)
@@ -548,8 +548,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
               //summaryOutput += element.OUTPUT_QTY_EA;
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
 
                 OCCURR_TIME: moment
                   .utc(element.OCCURR_TIME)
@@ -598,7 +598,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
             (element: CNDB_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 CNDB_DATE: moment.utc(element.CNDB_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -639,7 +639,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
             (element: DAO_FILM_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 id: index,
               };
             },

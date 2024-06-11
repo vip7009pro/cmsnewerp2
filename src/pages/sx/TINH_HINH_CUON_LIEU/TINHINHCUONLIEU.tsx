@@ -129,7 +129,7 @@ const TINHHINHCUONLIEU = () => {
               return {
                 ID: index,
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 INS_DATE:
                   element.INS_DATE === null
                     ? ""

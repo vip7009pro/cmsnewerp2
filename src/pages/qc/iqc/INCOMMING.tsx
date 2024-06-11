@@ -156,7 +156,7 @@ const INCOMMING = () => {
             (element: DTC_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 TEST_FINISH_TIME: moment
                   .utc(element.TEST_FINISH_TIME)
                   .format("YYYY-MM-DD HH:mm:ss"),

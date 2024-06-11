@@ -496,8 +496,8 @@ const InvoiceManager2 = () => {
             (element: InvoiceTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
             },

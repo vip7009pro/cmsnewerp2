@@ -1689,8 +1689,8 @@ const YCSXManager = () => {
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PO_TDYCSX: element.PO_TDYCSX ?? 0,
                 TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
                 TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,

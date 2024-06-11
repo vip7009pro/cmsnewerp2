@@ -465,8 +465,8 @@ const KHOTP = () => {
               return {
                 ...element,
                 id: index,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 OUT_DATE: moment.utc(element.OUT_DATE).format("YYYY-MM-DD"),
                 OUT_DATETIME: moment.utc(element.OUT_DATETIME.slice(0, element.OUT_DATETIME.length - 2)).format("YYYY-MM-DD HH:mm:ss"),
                 SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
@@ -518,8 +518,8 @@ const KHOTP = () => {
               return {
                 ...element,
                 id: index,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 IO_Date: moment.utc(element.IO_Date).format("YYYY-MM-DD"),
                 INPUT_DATETIME: moment
                   .utc(element.INPUT_DATETIME)
@@ -566,8 +566,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
             (element: TONKIEMGOP_CMS, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -608,7 +608,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
             (element: TONKIEMGOP_KD, index: number) => {
               return {
                 ...element,                
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -649,8 +649,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB'
             (element: TONKIEMTACH, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 KHO_NAME: element.KHO_NAME === 'NM1' ? 'SK1' : element.KHO_NAME === 'NM3' ? 'SK3' : element.KHO_NAME,
                 id: index,
               };
