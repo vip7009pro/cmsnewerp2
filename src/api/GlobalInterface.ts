@@ -2043,6 +2043,12 @@ export interface LOSS_TABLE_DATA {
   XUATKHO_EA: number;
   SCANNED_MET: number;
   SCANNED_EA: number;
+  SCANNED_MET2: number;
+  SCANNED_EA2: number;
+  SCANNED_MET3: number;
+  SCANNED_EA3: number;
+  SCANNED_MET4: number;
+  SCANNED_EA4: number;
   SETTING1: number;
   NG1: number;
   PROCESS1_RESULT: number;
@@ -2068,6 +2074,7 @@ export interface LOSS_TABLE_DATA {
   INSPECTION_OUTPUT: number;
   LOSS_INS_OUT_VS_SCANNED_EA: number;
   LOSS_INS_OUT_VS_XUATKHO_EA: number;
+
 }
 export interface LICHSUINPUTLIEU_DATA {
   id: string;

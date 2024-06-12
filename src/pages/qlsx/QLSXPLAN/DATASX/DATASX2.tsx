@@ -80,25 +80,31 @@ const DATASX2 = () => {
     PROCESS4_RESULT: 0,
     SX_RESULT: 0,
     INSPECTION_INPUT: 0,
-    INSPECT_LOSS_QTY:0,
-    INSPECT_MATERIAL_NG:0,
-    INSPECT_OK_QTY:0,
-    INSPECT_PROCESS_NG:0,
-    INSPECT_TOTAL_NG:0,
-    INSPECT_TOTAL_QTY:0,
-    LOSS_THEM_TUI:0,
-    SX_MARKING_QTY:0,
+    INSPECT_LOSS_QTY: 0,
+    INSPECT_MATERIAL_NG: 0,
+    INSPECT_OK_QTY: 0,
+    INSPECT_PROCESS_NG: 0,
+    INSPECT_TOTAL_NG: 0,
+    INSPECT_TOTAL_QTY: 0,
+    LOSS_THEM_TUI: 0,
+    SX_MARKING_QTY: 0,
     INSPECTION_OUTPUT: 0,
     LOSS_INS_OUT_VS_SCANNED_EA: 0,
     LOSS_INS_OUT_VS_XUATKHO_EA: 0,
-    NG1:0,
-    NG2:0,
-    NG3:0,
-    NG4:0,
-    SETTING1:0,
-    SETTING2:0,
-    SETTING3:0,
-    SETTING4:0
+    NG1: 0,
+    NG2: 0,
+    NG3: 0,
+    NG4: 0,
+    SETTING1: 0,
+    SETTING2: 0,
+    SETTING3: 0,
+    SETTING4: 0,
+    SCANNED_EA2:0,
+    SCANNED_EA3:0,
+    SCANNED_EA4:0,
+    SCANNED_MET2:0,
+    SCANNED_MET3:0,
+    SCANNED_MET4:0,
   });
   const [selectbutton, setSelectButton] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -117,12 +123,6 @@ const DATASX2 = () => {
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
-  const [selectedRowsDataCHITHI, setSelectedRowsDataCHITHI] = useState<
-    Array<SX_DATA>
-  >([]);
-  const [selectedRowsDataYCSX, setSelectedRowsDataYCSX] = useState<
-    Array<YCSX_SX_DATA>
-  >([]);
   const fields_datasx_chithi: any = [
     {
       caption: "PHAN_LOAI",
@@ -1520,421 +1520,526 @@ const DATASX2 = () => {
     },
   ];
   const column_datasx_chithi = [
-    { field: 'PHAN_LOAI',headerName: 'PHAN_LOAI', resizable: true,width: 80,},
-    { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 80 },
-    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 60 },
-    { field: 'PLAN_DATE',headerName: 'PLAN_DATE', resizable: true,width: 80 },
-    { field: 'PROD_REQUEST_NO',headerName: 'PROD_REQUEST_NO', resizable: true,width: 60 },
-    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 80 },
-    { field: 'G_NAME_KD',headerName: 'G_NAME_KD', resizable: true,width: 80 },
-    { field: 'PLAN_QTY',headerName: 'PLAN_QTY', resizable: true,width: 80,  cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.PLAN_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'EQ1',headerName: 'EQ1', resizable: true,width: 50 },
-    { field: 'EQ2',headerName: 'EQ2', resizable: true,width: 50 },
-    { field: 'PLAN_EQ',headerName: 'PLAN_EQ', resizable: true,width: 50 },
-    { field: 'PLAN_FACTORY',headerName: 'PLAN_FACTORY', resizable: true,width: 50 },
-    { field: 'PROCESS_NUMBER',headerName: 'PROCESS_NUMBER', resizable: true,width: 50 },
-    { field: 'STEP',headerName: 'STEP', resizable: true,width: 50 },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
-    { field: 'WAREHOUSE_OUTPUT_QTY',headerName: 'WAREHOUSE_OUTPUT_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "black", fontWeight: "bold" }}>
-          {e.data.WAREHOUSE_OUTPUT_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }},
-    { field: 'TOTAL_OUT_QTY',headerName: 'TOTAL_OUT_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "bold" }}>
-          {e.data.TOTAL_OUT_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'USED_QTY',headerName: 'USED_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.USED_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'REMAIN_QTY',headerName: 'REMAIN_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.REMAIN_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'PD',headerName: 'PD', resizable: true,width: 50 },
-    { field: 'CAVITY',headerName: 'CAVITY', resizable: true,width: 50 },
-    { field: 'SETTING_MET_TC',headerName: 'SETTING_MET_TC', resizable: true,width: 80 },
-    { field: 'SETTING_DM_SX',headerName: 'SETTING_DM_SX', resizable: true,width: 80 },
-    { field: 'SETTING_MET',headerName: 'SETTING_MET', resizable: true,width: 80 },
-    { field: 'NG_MET',headerName: 'NG_MET', resizable: true,width: 80 },
-    { field: 'WAREHOUSE_ESTIMATED_QTY',headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "#1170dd", fontWeight: "bold" }}>
-          {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US",{maximumFractionDigits: 0,
-              minimumFractionDigits: 0,})}
-        </span>
-      );
-    } },
-    { field: 'ESTIMATED_QTY',headerName: 'ESTIMATED_QTY', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "#1170dd", fontWeight: "bold" }}>
-          {e.data.ESTIMATED_QTY?.toLocaleString("en-US",{maximumFractionDigits: 0,
-              minimumFractionDigits: 0,})}
-        </span>
-      );
-    } },
-    { field: 'ESTIMATED_QTY_ST',headerName: 'ESTIMATED_QTY_ST', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "#1170dd", fontWeight: "bold" }}>
-          {e.data.ESTIMATED_QTY_ST?.toLocaleString("en-US",{maximumFractionDigits: 0,
-              minimumFractionDigits: 0,})}
-        </span>
-      );
-    } },
-    { field: 'SETTING_EA',headerName: 'SETTING_EA', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "gray", fontWeight: "bold" }}>
-          {e.data.SETTING_EA?.toLocaleString("en-US",{maximumFractionDigits: 0,
-              minimumFractionDigits: 0,})}
-        </span>
-      );
-    } },
-    { field: 'NG_EA',headerName: 'NG_EA', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.NG_EA?.toLocaleString("en-US",{maximumFractionDigits: 0,
-              minimumFractionDigits: 0,})}
-        </span>
-      );
-    } },
-    { field: 'KETQUASX',headerName: 'KETQUASX', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.KETQUASX?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'KETQUASX_TP',headerName: 'KETQUASX_TP', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "purple", fontWeight: "bold" }}>
-          {e.data.KETQUASX_TP?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'LOSS_SX_ST',headerName: 'LOSS_SX_ST', resizable: true,width: 80,  cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {
-            e.data.LOSS_SX_ST?.toLocaleString("en-US", {
-              style: 'percent',
-              maximumFractionDigits: 1,
-              minimumFractionDigits: 1,
-            })}{" "}
-        </span>
-      );
-    } },
-    { field: 'LOSS_SX',headerName: 'LOSS_SX', resizable: true,width: 80,  cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {
-            e.data.LOSS_SX?.toLocaleString("en-US", {
-              style: 'percent',
-              maximumFractionDigits: 1,
-              minimumFractionDigits: 1,
-            })}{" "}
-        </span>
-      );
-    }  },
-    { field: 'INS_INPUT',headerName: 'INS_INPUT', resizable: true,width: 80 },
-    { field: 'INSPECT_TOTAL_QTY',headerName: 'INSPECT_TOTAL_QTY', resizable: true,width: 80 },
-    { field: 'INSPECT_OK_QTY',headerName: 'INSPECT_OK_QTY', resizable: true,width: 80 },
-    { field: 'INSPECT_TOTAL_NG',headerName: 'INSPECT_TOTAL_NG', resizable: true,width: 80 },
-    { field: 'LOSS_SX_KT',headerName: 'LOSS_SX_KT', resizable: true,width: 80 ,  cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {
-            e.data.LOSS_SX_KT?.toLocaleString("en-US", {
-              style: 'percent',
-              maximumFractionDigits: 1,
-              minimumFractionDigits: 1,
-            })}{" "}
-        </span>
-      );
-    }  },
-    { field: 'INS_OUTPUT',headerName: 'INS_OUTPUT', resizable: true,width: 80 },
-    { field: 'LOSS_KT',headerName: 'LOSS_KT', resizable: true,width: 80,  cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {
-            e.data.LOSS_KT?.toLocaleString("en-US", {
-              style: 'percent',
-              maximumFractionDigits: 1,
-              minimumFractionDigits: 1,
-            })}{" "}
-        </span>
-      );
-    } },
-    { field: 'SETTING_START_TIME',headerName: 'SETTING_START_TIME', resizable: true,width: 80 },
-    { field: 'MASS_START_TIME',headerName: 'MASS_START_TIME', resizable: true,width: 80 },
-    { field: 'MASS_END_TIME',headerName: 'MASS_END_TIME', resizable: true,width: 80 },
-    { field: 'EQ_NAME_TT',headerName: 'EQ_NAME_TT', resizable: true,width: 80 },
-    { field: 'MACHINE_NAME',headerName: 'MACHINE_NAME', resizable: true,width: 80 },
-    { field: 'WORK_SHIFT',headerName: 'WORK_SHIFT', resizable: true,width: 80 },
-    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 80 },
-    { field: 'FACTORY',headerName: 'FACTORY', resizable: true,width: 80 },
-    { field: 'BOC_KIEM',headerName: 'BOC_KIEM', resizable: true,width: 80 },
-    { field: 'LAY_DO',headerName: 'LAY_DO', resizable: true,width: 80 },
-    { field: 'MAY_HONG',headerName: 'MAY_HONG', resizable: true,width: 80 },
-    { field: 'DAO_NG',headerName: 'DAO_NG', resizable: true,width: 80 },
-    { field: 'CHO_LIEU',headerName: 'CHO_LIEU', resizable: true,width: 80 },
-    { field: 'CHO_BTP',headerName: 'CHO_BTP', resizable: true,width: 80 },
-    { field: 'HET_LIEU',headerName: 'HET_LIEU', resizable: true,width: 80 },
-    { field: 'LIEU_NG',headerName: 'LIEU_NG', resizable: true,width: 80 },
-    { field: 'HOP_FL',headerName: 'HOP_FL', resizable: true,width: 80 },
-    { field: 'CHOT_BAOCAO',headerName: 'CHOT_BAOCAO', resizable: true,width: 80 },
-    { field: 'CHUYEN_CODE',headerName: 'CHUYEN_CODE', resizable: true,width: 80 },
-    { field: 'KHAC',headerName: 'KHAC', resizable: true,width: 80 },
-    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 80 },
-   
-  ];
-  const column_datasx_ycsx=[
-    { field: 'YCSX_PENDING',headerName: 'YCSX_PENDING', resizable: true,width: 80, cellRenderer:(e: any) => {
-      if (e.data.YCSX_PENDING === "CLOSED") {
+    { field: 'PHAN_LOAI', headerName: 'PHAN_LOAI', resizable: true, width: 80, },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 80 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 60 },
+    { field: 'PLAN_DATE', headerName: 'PLAN_DATE', resizable: true, width: 80 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 60 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    {
+      field: 'PLAN_QTY', headerName: 'PLAN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>
-            CLOSED
-          </span>
-        );
-      } else {
-        return (
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            PENDING
+            {e.data.PLAN_QTY?.toLocaleString("en-US")}
           </span>
         );
       }
-    } },
-    { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 80 },
-    { field: 'PHAN_LOAI',headerName: 'PHAN_LOAI', resizable: true,width: 80 },
-    { field: 'PROD_REQUEST_NO',headerName: 'PROD_REQUEST_NO', resizable: true,width: 80 },
-    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 80 },
-    { field: 'G_NAME_KD',headerName: 'G_NAME_KD', resizable: true,width: 80 },
-    { field: 'FACTORY',headerName: 'FACTORY', resizable: true,width: 60 },
-   
-    { field: 'PROD_REQUEST_DATE',headerName: 'YCSX DATE', resizable: true,width: 80 },
-    { field: 'PROD_REQUEST_QTY',headerName: 'YCSX QTY', resizable: true,width: 70 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "bold" }}>
-          {e.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }  },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
-    { field: 'M_OUTPUT',headerName: 'M_OUTPUT', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "bold" }}>
-          {e.data.M_OUTPUT?.toLocaleString("en-US")}
-        </span>
-      );
-    } },
-    { field: 'SCANNED_QTY',headerName: 'SCANNED_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.SCANNED_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }  },
-    { field: 'REMAIN_QTY',headerName: 'REMAIN_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.REMAIN_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'USED_QTY',headerName: 'USED_QTY', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "bold" }}>
-          {e.data.USED_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }  },
-    { field: 'PD',headerName: 'PD', resizable: true,width: 80 },
-    { field: 'CAVITY',headerName: 'CAVITY', resizable: true,width: 80 },
-    { field: 'WAREHOUSE_ESTIMATED_QTY',headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }  },
-    { field: 'ESTIMATED_QTY',headerName: 'ESTIMATED_QTY', resizable: true,width: 80, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'CD1',headerName: 'CD1', resizable: true,width: 60 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "purple", fontWeight: "bold" }}>
-          {e.data.CD1?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'CD2',headerName: 'CD2', resizable: true,width: 60 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "purple", fontWeight: "bold" }}>
-          {e.data.CD2?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'CD3',headerName: 'CD3', resizable: true,width: 60 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "purple", fontWeight: "bold" }}>
-          {e.data.CD3?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'CD4',headerName: 'CD4', resizable: true,width: 60 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "purple", fontWeight: "bold" }}>
-          {e.data.CD4?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INS_INPUT',headerName: 'INS_INPUT', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.INS_INPUT?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INSPECT_TOTAL_QTY',headerName: 'INSPECT_TOTAL_QTY', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "bold" }}>
-          {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INSPECT_OK_QTY',headerName: 'INSPECT_OK_QTY', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INSPECT_LOSS_QTY',headerName: 'INSPECT_LOSS_QTY', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.INSPECT_LOSS_QTY?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INSPECT_TOTAL_NG',headerName: 'INSPECT_TOTAL_NG', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.INSPECT_TOTAL_NG?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INSPECT_MATERIAL_NG',headerName: 'INSPECT_MATERIAL_NG', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.INS_INPUT?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INSPECT_PROCESS_NG',headerName: 'INSPECT_PROCESS_NG', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.INSPECT_PROCESS_NG?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'INS_OUTPUT',headerName: 'INS_OUTPUT', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {e.data.INS_OUTPUT?.toLocaleString("en-US")}
-        </span>
-      );
-    }   },
-    { field: 'LOSS_SX1',headerName: 'LOSS_SX1', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "normal" }}>
-          {e.data.LOSS_SX1?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'LOSS_SX2',headerName: 'LOSS_SX2', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "normal" }}>
-          {e.data.LOSS_SX2?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'LOSS_SX3',headerName: 'LOSS_SX3', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "normal" }}>
-          {e.data.LOSS_SX3?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'LOSS_SX4',headerName: 'LOSS_SX4', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "normal" }}>
-          {e.data.LOSS_SX4?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'LOSS_INSPECT',headerName: 'LOSS_INSPECT', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "normal" }}>
-          {e.data.LOSS_INSPECT?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'TOTAL_LOSS',headerName: 'TOTAL_LOSS', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.TOTAL_LOSS?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'TOTAL_LOSS2',headerName: 'TOTAL_LOSS2', resizable: true,width: 80 , cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {e.data.TOTAL_LOSS2?.toLocaleString("en-US",{style:'percent',  maximumFractionDigits: 1, minimumFractionDigits: 1 })}
-        </span>
-      );
-    }   },
-    { field: 'EQ1',headerName: 'EQ1', resizable: true,width: 40 },
-    { field: 'EQ2',headerName: 'EQ2', resizable: true,width: 40 },
-    { field: 'EQ3',headerName: 'EQ3', resizable: true,width: 40 },
-    { field: 'EQ4',headerName: 'EQ4', resizable: true,width: 40 },
-   
+    },
+    { field: 'EQ1', headerName: 'EQ1', resizable: true, width: 50 },
+    { field: 'EQ2', headerName: 'EQ2', resizable: true, width: 50 },
+    { field: 'PLAN_EQ', headerName: 'PLAN_EQ', resizable: true, width: 50 },
+    { field: 'PLAN_FACTORY', headerName: 'PLAN_FACTORY', resizable: true, width: 50 },
+    { field: 'PROCESS_NUMBER', headerName: 'PROCESS_NUMBER', resizable: true, width: 50 },
+    { field: 'STEP', headerName: 'STEP', resizable: true, width: 50 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
+    {
+      field: 'WAREHOUSE_OUTPUT_QTY', headerName: 'WAREHOUSE_OUTPUT_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "black", fontWeight: "bold" }}>
+            {e.data.WAREHOUSE_OUTPUT_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'TOTAL_OUT_QTY', headerName: 'TOTAL_OUT_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.TOTAL_OUT_QTY?.toLocaleString("en-US",{
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'USED_QTY', headerName: 'USED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.USED_QTY?.toLocaleString("en-US",{
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'REMAIN_QTY', headerName: 'REMAIN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.REMAIN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    { field: 'PD', headerName: 'PD', resizable: true, width: 50 },
+    { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 50 },
+    { field: 'SETTING_MET_TC', headerName: 'SETTING_MET_TC', resizable: true, width: 80 },
+    { field: 'SETTING_DM_SX', headerName: 'SETTING_DM_SX', resizable: true, width: 80 },
+    { field: 'SETTING_MET', headerName: 'SETTING_MET', resizable: true, width: 80 },
+    { field: 'NG_MET', headerName: 'NG_MET', resizable: true, width: 80 },
+    {
+      field: 'WAREHOUSE_ESTIMATED_QTY', headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#1170dd", fontWeight: "bold" }}>
+            {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'ESTIMATED_QTY', headerName: 'ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#1170dd", fontWeight: "bold" }}>
+            {e.data.ESTIMATED_QTY?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'ESTIMATED_QTY_ST', headerName: 'ESTIMATED_QTY_ST', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#1170dd", fontWeight: "bold" }}>
+            {e.data.ESTIMATED_QTY_ST?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'SETTING_EA', headerName: 'SETTING_EA', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {e.data.SETTING_EA?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'NG_EA', headerName: 'NG_EA', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.NG_EA?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'KETQUASX', headerName: 'KETQUASX', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.KETQUASX?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'KETQUASX_TP', headerName: 'KETQUASX_TP', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "purple", fontWeight: "bold" }}>
+            {e.data.KETQUASX_TP?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SX_ST', headerName: 'LOSS_SX_ST', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {
+              e.data.LOSS_SX_ST?.toLocaleString("en-US", {
+                style: 'percent',
+                maximumFractionDigits: 1,
+                minimumFractionDigits: 1,
+              })}{" "}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SX', headerName: 'LOSS_SX', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {
+              e.data.LOSS_SX?.toLocaleString("en-US", {
+                style: 'percent',
+                maximumFractionDigits: 1,
+                minimumFractionDigits: 1,
+              })}{" "}
+          </span>
+        );
+      }
+    },
+    { field: 'INS_INPUT', headerName: 'INS_INPUT', resizable: true, width: 80 },
+    { field: 'INSPECT_TOTAL_QTY', headerName: 'INSPECT_TOTAL_QTY', resizable: true, width: 80 },
+    { field: 'INSPECT_OK_QTY', headerName: 'INSPECT_OK_QTY', resizable: true, width: 80 },
+    { field: 'INSPECT_TOTAL_NG', headerName: 'INSPECT_TOTAL_NG', resizable: true, width: 80 },
+    {
+      field: 'LOSS_SX_KT', headerName: 'LOSS_SX_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {
+              e.data.LOSS_SX_KT?.toLocaleString("en-US", {
+                style: 'percent',
+                maximumFractionDigits: 1,
+                minimumFractionDigits: 1,
+              })}{" "}
+          </span>
+        );
+      }
+    },
+    { field: 'INS_OUTPUT', headerName: 'INS_OUTPUT', resizable: true, width: 80 },
+    {
+      field: 'LOSS_KT', headerName: 'LOSS_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {
+              e.data.LOSS_KT?.toLocaleString("en-US", {
+                style: 'percent',
+                maximumFractionDigits: 1,
+                minimumFractionDigits: 1,
+              })}{" "}
+          </span>
+        );
+      }
+    },
+    { field: 'SETTING_START_TIME', headerName: 'SETTING_START_TIME', resizable: true, width: 80 },
+    { field: 'MASS_START_TIME', headerName: 'MASS_START_TIME', resizable: true, width: 80 },
+    { field: 'MASS_END_TIME', headerName: 'MASS_END_TIME', resizable: true, width: 80 },
+    { field: 'EQ_NAME_TT', headerName: 'EQ_NAME_TT', resizable: true, width: 80 },
+    { field: 'MACHINE_NAME', headerName: 'MACHINE_NAME', resizable: true, width: 80 },
+    { field: 'WORK_SHIFT', headerName: 'WORK_SHIFT', resizable: true, width: 80 },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 80 },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
+    { field: 'BOC_KIEM', headerName: 'BOC_KIEM', resizable: true, width: 80 },
+    { field: 'LAY_DO', headerName: 'LAY_DO', resizable: true, width: 80 },
+    { field: 'MAY_HONG', headerName: 'MAY_HONG', resizable: true, width: 80 },
+    { field: 'DAO_NG', headerName: 'DAO_NG', resizable: true, width: 80 },
+    { field: 'CHO_LIEU', headerName: 'CHO_LIEU', resizable: true, width: 80 },
+    { field: 'CHO_BTP', headerName: 'CHO_BTP', resizable: true, width: 80 },
+    { field: 'HET_LIEU', headerName: 'HET_LIEU', resizable: true, width: 80 },
+    { field: 'LIEU_NG', headerName: 'LIEU_NG', resizable: true, width: 80 },
+    { field: 'HOP_FL', headerName: 'HOP_FL', resizable: true, width: 80 },
+    { field: 'CHOT_BAOCAO', headerName: 'CHOT_BAOCAO', resizable: true, width: 80 },
+    { field: 'CHUYEN_CODE', headerName: 'CHUYEN_CODE', resizable: true, width: 80 },
+    { field: 'KHAC', headerName: 'KHAC', resizable: true, width: 80 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 80 },
+  ];
+  const column_datasx_ycsx = [
+    {
+      field: 'YCSX_PENDING', headerName: 'YCSX_PENDING', resizable: true, width: 80, cellRenderer: (e: any) => {
+        if (e.data.YCSX_PENDING === "CLOSED") {
+          return (
+            <span style={{ color: "green", fontWeight: "bold" }}>
+              CLOSED
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              PENDING
+            </span>
+          );
+        }
+      }
+    },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 80 },
+    { field: 'PHAN_LOAI', headerName: 'PHAN_LOAI', resizable: true, width: 80 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 60 },
+    { field: 'PROD_REQUEST_DATE', headerName: 'YCSX DATE', resizable: true, width: 80 },
+    {
+      field: 'PROD_REQUEST_QTY', headerName: 'YCSX QTY', resizable: true, width: 70, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
+    {
+      field: 'M_OUTPUT', headerName: 'M_OUTPUT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.M_OUTPUT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'SCANNED_QTY', headerName: 'SCANNED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.SCANNED_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'REMAIN_QTY', headerName: 'REMAIN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.REMAIN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'USED_QTY', headerName: 'USED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.USED_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    { field: 'PD', headerName: 'PD', resizable: true, width: 80 },
+    { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 80 },
+    {
+      field: 'WAREHOUSE_ESTIMATED_QTY', headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+              })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'ESTIMATED_QTY', headerName: 'ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.ESTIMATED_QTY?.toLocaleString("en-US",{
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'CD1', headerName: 'CD1', resizable: true, width: 60, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "purple", fontWeight: "bold" }}>
+            {e.data.CD1?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'CD2', headerName: 'CD2', resizable: true, width: 60, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "purple", fontWeight: "bold" }}>
+            {e.data.CD2?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'CD3', headerName: 'CD3', resizable: true, width: 60, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "purple", fontWeight: "bold" }}>
+            {e.data.CD3?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'CD4', headerName: 'CD4', resizable: true, width: 60, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "purple", fontWeight: "bold" }}>
+            {e.data.CD4?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INS_INPUT', headerName: 'INS_INPUT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.INS_INPUT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_TOTAL_QTY', headerName: 'INSPECT_TOTAL_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_OK_QTY', headerName: 'INSPECT_OK_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_LOSS_QTY', headerName: 'INSPECT_LOSS_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.INSPECT_LOSS_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_TOTAL_NG', headerName: 'INSPECT_TOTAL_NG', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.INSPECT_TOTAL_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_MATERIAL_NG', headerName: 'INSPECT_MATERIAL_NG', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.INS_INPUT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_PROCESS_NG', headerName: 'INSPECT_PROCESS_NG', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.INSPECT_PROCESS_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INS_OUTPUT', headerName: 'INS_OUTPUT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.INS_OUTPUT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    /* {
+      field: 'LOSS_SX1', headerName: 'LOSS_SX1', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.LOSS_SX1?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SX2', headerName: 'LOSS_SX2', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.LOSS_SX2?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SX3', headerName: 'LOSS_SX3', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.LOSS_SX3?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SX4', headerName: 'LOSS_SX4', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.LOSS_SX4?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_INSPECT', headerName: 'LOSS_INSPECT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.LOSS_INSPECT?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'TOTAL_LOSS', headerName: 'TOTAL_LOSS', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.TOTAL_LOSS?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'TOTAL_LOSS2', headerName: 'TOTAL_LOSS2', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.TOTAL_LOSS2?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    }, */
+    { field: 'EQ1', headerName: 'EQ1', resizable: true, width: 40 },
+    { field: 'EQ2', headerName: 'EQ2', resizable: true, width: 40 },
+    { field: 'EQ3', headerName: 'EQ3', resizable: true, width: 40 },
+    { field: 'EQ4', headerName: 'EQ4', resizable: true, width: 40 },
   ];
   const column_inputlieudatatable = [
-    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 80 },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
-    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80 },
-    { field: 'INPUT_QTY',headerName: 'INPUT_QTY', resizable: true,width: 80 },
-    { field: 'USED_QTY',headerName: 'USED_QTY', resizable: true,width: 80 },
-    { field: 'REMAIN_QTY',headerName: 'REMAIN_QTY', resizable: true,width: 80 },
-    { field: 'PROD_REQUEST_NO',headerName: 'PROD_REQUEST_NO', resizable: true,width: 80 },
-    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 80 },
-    { field: 'G_NAME_KD',headerName: 'G_NAME_KD', resizable: true,width: 80 },
-    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80 },
-    { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
-    { field: 'EMPL_NO',headerName: 'EMPL_NO', resizable: true,width: 80 },
-    { field: 'EQUIPMENT_CD',headerName: 'EQUIPMENT_CD', resizable: true,width: 80 },
-    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 80 },   
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 80 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80 },
+    { field: 'INPUT_QTY', headerName: 'INPUT_QTY', resizable: true, width: 80 },
+    { field: 'USED_QTY', headerName: 'USED_QTY', resizable: true, width: 80 },
+    { field: 'REMAIN_QTY', headerName: 'REMAIN_QTY', resizable: true, width: 80 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 80 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
+    { field: 'EMPL_NO', headerName: 'EMPL_NO', resizable: true, width: 80 },
+    { field: 'EQUIPMENT_CD', headerName: 'EQUIPMENT_CD', resizable: true, width: 80 },
+    { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 80 },
   ];
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
@@ -1943,674 +2048,6 @@ const DATASX2 = () => {
         store: datasxtable,
       }),
     );
-  const datasx_chithi = React.useMemo(
-    () => (
-      <div className="datatb">
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={datasxtable}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"75vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            setSelectedRowsDataCHITHI(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-            if (e.data.PLAN_ID !== undefined) {
-              handle_loadlichsuinputlieu(e.data.PLAN_ID);
-            }
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Selection mode="multiple" selectAllMode="allPages" />
-          <Editing
-            allowUpdating={false}
-            allowAdding={false}
-            allowDeleting={false}
-            mode="cell"
-            confirmDelete={false}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(datasxtable, "SXDATATABLE");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setShowHidePivotTable(!showhidePivotTable);
-                }}
-              >
-                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                Pivot
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooserButton" />
-            <Item name="addRowButton" />
-            <Item name="saveButton" />
-            <Item name="revertButton" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Column
-            dataField="PHAN_LOAI"
-            caption="PHAN_LOAI"
-            minWidth={100}
-          ></Column>
-          <Column dataField="G_CODE" caption="G_CODE" minWidth={100}></Column>
-          <Column dataField="PLAN_ID" caption="PLAN_ID" minWidth={100}></Column>
-          <Column
-            dataField="PLAN_DATE"
-            caption="PLAN_DATE"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="PROD_REQUEST_NO"
-            caption="PROD_REQUEST_NO"
-            minWidth={100}
-          ></Column>
-          <Column dataField="G_NAME" caption="G_NAME" width={150}></Column>
-          <Column
-            dataField="G_NAME_KD"
-            caption="G_NAME_KD"
-            width={120}
-          ></Column>
-          <Column
-            dataField="PLAN_QTY"
-            caption="PLAN_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.PLAN_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column dataField="EQ1" caption="EQ1" minWidth={100}></Column>
-          <Column dataField="EQ2" caption="EQ2" minWidth={100}></Column>
-          <Column dataField="PLAN_EQ" caption="PLAN_EQ" minWidth={100}></Column>
-          <Column
-            dataField="PLAN_FACTORY"
-            caption="PLAN_FACTORY"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="PROCESS_NUMBER"
-            caption="PROCESS_NUMBER"
-            minWidth={100}
-          ></Column>
-          <Column dataField="STEP" caption="STEP" minWidth={100}></Column>
-          <Column dataField="M_NAME" caption="M_NAME" minWidth={100}></Column>
-          <Column
-            dataField="WAREHOUSE_OUTPUT_QTY"
-            caption="WAREHOUSE_OUTPUT_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.WAREHOUSE_OUTPUT_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="TOTAL_OUT_QTY"
-            caption="TOTAL_OUT_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.TOTAL_OUT_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="USED_QTY"
-            caption="USED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.USED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="REMAIN_QTY"
-            caption="REMAIN_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {e.data.REMAIN_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column dataField="PD" caption="PD" minWidth={100}></Column>
-          <Column dataField="CAVITY" caption="CAVITY" minWidth={100}></Column>
-          <Column
-            dataField="SETTING_MET_TC"
-            caption="SETTING_MET_TC"
-            width={150}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
-                  {e.data.SETTING_MET_TC?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="SETTING_DM_SX"
-            caption="SETTING_DM_SX"
-            width={150}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
-                  {e.data.SETTING_DM_SX?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="SETTING_MET"
-            caption="SETTING_MET"
-            width={120}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
-                  {e.data.SETTING_MET?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="NG_MET"
-            caption="NG_MET"
-            width={120}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
-                  {e.data.NG_MET?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="WAREHOUSE_ESTIMATED_QTY"
-            caption="WAREHOUSE_ESTIMATED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="ESTIMATED_QTY"
-            caption="ESTIMATED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="ESTIMATED_QTY_ST"
-            caption="ESTIMATED_QTY_ST"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.ESTIMATED_QTY_ST?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="SETTING_EA"
-            caption="SETTING_EA"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.SETTING_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="NG_EA"
-            caption="NG_EA"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.NG_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          
-          <Column
-            dataField="KETQUASX"
-            caption="KETQUASX"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.KETQUASX?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="KETQUASX_TP"
-            caption="KETQUASX_TP"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.KETQUASX_TP?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX_ST"
-            caption="LOSS_SX_ST"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {
-                    e.data.LOSS_SX_ST?.toLocaleString("en-US", {
-                      style: 'percent',
-                      maximumFractionDigits: 1,
-                      minimumFractionDigits: 1,
-                    })}{" "}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX"
-            caption="LOSS_SX"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.LOSS_SX?.toLocaleString("en-US", {
-                    style: 'percent',
-                    maximumFractionDigits: 1,
-                    minimumFractionDigits: 1,
-                  })}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INS_INPUT"
-            caption="INS_INPUT"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INS_INPUT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_TOTAL_QTY"
-            caption="INSPECT_TOTAL_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_OK_QTY"
-            caption="INSPECT_OK_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_TOTAL_NG"
-            caption="INSPECT_TOTAL_NG"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INSPECT_TOTAL_NG?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX_KT"
-            caption="LOSS_SX_KT"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.LOSS_SX_KT?.toLocaleString("en-US", {
-                    style: 'percent',
-                    maximumFractionDigits: 1,
-                    minimumFractionDigits: 1,
-                  })}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INS_OUTPUT"
-            caption="INS_OUTPUT"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INS_OUTPUT?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                    minimumFractionDigits: 0,
-                  })}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_KT"
-            caption="LOSS_KT"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.LOSS_KT?.toLocaleString("en-US", {
-                    style: 'percent',
-                    maximumFractionDigits: 1,
-                    minimumFractionDigits: 1,
-                  })}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="SETTING_START_TIME"
-            caption="SETTING_START_TIME"
-            width={150}
-          ></Column>
-          <Column
-            dataField="MASS_START_TIME"
-            caption="MASS_START_TIME"
-            width={150}
-          ></Column>
-          <Column
-            dataField="MASS_END_TIME"
-            caption="MASS_END_TIME"
-            width={150}
-          ></Column>
-          <Column dataField="RPM" caption="RPM" minWidth={100}></Column>
-          <Column
-            dataField="EQ_NAME_TT"
-            caption="EQ_NAME_TT"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="MACHINE_NAME"
-            caption="MACHINE_NAME"
-            minWidth={100}
-          ></Column>
-          <Column dataField="SX_DATE" caption="SX_DATE" minWidth={100}></Column>
-          <Column
-            dataField="WORK_SHIFT"
-            caption="WORK_SHIFT"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="INS_EMPL"
-            caption="INS_EMPL"
-            minWidth={100}
-          ></Column>
-          <Column dataField="FACTORY" caption="FACTORY" minWidth={100}></Column>
-          <Column
-            dataField="BOC_KIEM"
-            caption="BOC_KIEM"
-            minWidth={100}
-          ></Column>
-          <Column dataField="LAY_DO" caption="LAY_DO" minWidth={100}></Column>
-          <Column
-            dataField="MAY_HONG"
-            caption="MAY_HONG"
-            minWidth={100}
-          ></Column>
-          <Column dataField="DAO_NG" caption="DAO_NG" minWidth={100}></Column>
-          <Column
-            dataField="CHO_LIEU"
-            caption="CHO_LIEU"
-            minWidth={100}
-          ></Column>
-          <Column dataField="CHO_BTP" caption="CHO_BTP" minWidth={100}></Column>
-          <Column
-            dataField="HET_LIEU"
-            caption="HET_LIEU"
-            minWidth={100}
-          ></Column>
-          <Column dataField="LIEU_NG" caption="LIEU_NG" minWidth={100}></Column>
-          <Column
-            dataField="CAN_HANG"
-            caption="CAN_HANG"
-            minWidth={100}
-          ></Column>
-          <Column dataField="HOP_FL" caption="HOP_FL" minWidth={100}></Column>
-          <Column dataField="CHO_QC" caption="CHO_QC" minWidth={100}></Column>
-          <Column
-            dataField="CHOT_BAOCAO"
-            caption="CHOT_BAOCAO"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="CHUYEN_CODE"
-            caption="CHUYEN_CODE"
-            minWidth={100}
-          ></Column>
-          <Column dataField="KHAC" caption="KHAC" minWidth={100}></Column>
-          <Column dataField="REMARK" caption="REMARK" minWidth={100}></Column>
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="PHAN_LOAI"
-              summaryType="count"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="WAREHOUSE_OUTPUT_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="TOTAL_OUT_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="USED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="REMAIN_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="SETTING_MET_TC"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="SETTING_DM_SX"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="SETTING_MET"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="WAREHOUSE_ESTIMATED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="ESTIMATED_QTY_ST"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="ESTIMATED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="KETQUASX"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INS_INPUT"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INS_OUTPUT"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-          </Summary>
-        </DataGrid>
-      </div>
-    ),
-    [datasxtable],
-  );
   const datasx_chithi2 = React.useMemo(
     () => (
       <AGTable
@@ -2622,9 +2059,9 @@ const DATASX2 = () => {
                 setShowHidePivotTable(!showhidePivotTable);
               }}
             >
-              <MdOutlinePivotTableChart color="#ff33bb" size={15}/>
-              PIVOT              
-            </IconButton>         
+              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+              PIVOT
+            </IconButton>
           </div>}
         columns={column_datasx_chithi}
         data={datasxtable}
@@ -2642,863 +2079,41 @@ const DATASX2 = () => {
     ),
     [datasxtable],
   );
-  const datasx_ycsx = React.useMemo(
-    () => (
-      <div className="datatb">
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={datasxtable}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"75vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            setSelectedRowsDataYCSX(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Selection mode="multiple" selectAllMode="allPages" />
-          <Editing
-            allowUpdating={false}
-            allowAdding={false}
-            allowDeleting={false}
-            mode="cell"
-            confirmDelete={false}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(datasxtable, "SXDATATABLE");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setShowHidePivotTable(!showhidePivotTable);
-                }}
-              >
-                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                Pivot
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooserButton" />
-            <Item name="addRowButton" />
-            <Item name="saveButton" />
-            <Item name="revertButton" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Column
-            dataField="YCSX_PENDING"
-            caption="YCSX_STATUS"
-            minWidth={100}
-            cellRender={(e: any) => {
-              if (e.data.YCSX_PENDING === "CLOSED") {
-                return (
-                  <span style={{ color: "green", fontWeight: "bold" }}>
-                    CLOSED
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    PENDING
-                  </span>
-                );
-              }
-            }}
-          ></Column>
-          <Column dataField="G_CODE" caption="G_CODE" minWidth={100}></Column>
-          <Column
-            dataField="PHAN_LOAI"
-            caption="PHAN_LOAI"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="PROD_REQUEST_NO"
-            caption="PROD_REQUEST_NO"
-            minWidth={100}
-          ></Column>
-          <Column dataField="G_NAME" caption="G_NAME" minWidth={100}></Column>
-          <Column
-            dataField="G_NAME_KD"
-            caption="G_NAME_KD"
-            minWidth={100}
-          ></Column>
-          <Column dataField="FACTORY" caption="FACTORY" minWidth={100}></Column>
-          <Column dataField="EQ1" caption="EQ1" minWidth={100}></Column>
-          <Column dataField="EQ2" caption="EQ2" minWidth={100}></Column>
-          <Column dataField="EQ3" caption="EQ3" minWidth={100}></Column>
-          <Column dataField="EQ4" caption="EQ4" minWidth={100}></Column>
-          <Column
-            dataField="PROD_REQUEST_DATE"
-            caption="PROD_REQUEST_DATE"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="PROD_REQUEST_QTY"
-            caption="PROD_REQUEST_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column dataField="M_NAME" caption="M_NAME" minWidth={100}></Column>
-          <Column
-            dataField="M_OUTPUT"
-            caption="M_OUTPUT"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.M_OUTPUT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="SCANNED_QTY"
-            caption="SCANNED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.SCANNED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="REMAIN_QTY"
-            caption="REMAIN_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {e.data.REMAIN_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="USED_QTY"
-            caption="USED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.USED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column dataField="PD" caption="PD" minWidth={100}></Column>
-          <Column dataField="CAVITY" caption="CAVITY" minWidth={100}></Column>
-          <Column
-            dataField="WAREHOUSE_ESTIMATED_QTY"
-            caption="WAREHOUSE_ESTIMATED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="ESTIMATED_QTY"
-            caption="ESTIMATED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="CD1"
-            caption="CD1"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
-                  {e.data.CD1?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="CD2"
-            caption="CD2"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
-                  {e.data.CD2?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="CD3"
-            caption="CD3"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
-                  {e.data.CD3?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="CD4"
-            caption="CD4"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
-                  {e.data.CD4?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INS_INPUT"
-            caption="INS_INPUT"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.INS_INPUT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_TOTAL_QTY"
-            caption="INSPECT_TOTAL_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_OK_QTY"
-            caption="INSPECT_OK_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_LOSS_QTY"
-            caption="INSPECT_LOSS_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.INSPECT_LOSS_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_TOTAL_NG"
-            caption="INSPECT_TOTAL_NG"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.INSPECT_TOTAL_NG?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_MATERIAL_NG"
-            caption="INSPECT_MATERIAL_NG"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.INSPECT_MATERIAL_NG?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INSPECT_PROCESS_NG"
-            caption="INSPECT_PROCESS_NG"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "black", fontWeight: "bold" }}>
-                  {e.data.INSPECT_PROCESS_NG?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="INS_OUTPUT"
-            caption="INS_OUTPUT"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.INS_OUTPUT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX1"
-            caption="LOSS_SX1"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {parseInt((e.data.LOSS_SX1 * 100).toString())?.toLocaleString(
-                    "en-US",
-                    { maximumFractionDigits: 0, minimumFractionDigits: 0 },
-                  )}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX2"
-            caption="LOSS_SX2"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {parseInt((e.data.LOSS_SX2 * 100).toString())?.toLocaleString(
-                    "en-US",
-                    { maximumFractionDigits: 0, minimumFractionDigits: 0 },
-                  )}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX3"
-            caption="LOSS_SX3"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {parseInt((e.data.LOSS_SX3 * 100).toString())?.toLocaleString(
-                    "en-US",
-                    { maximumFractionDigits: 0, minimumFractionDigits: 0 },
-                  )}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_SX4"
-            caption="LOSS_SX4"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {parseInt((e.data.LOSS_SX4 * 100).toString())?.toLocaleString(
-                    "en-US",
-                    { maximumFractionDigits: 0, minimumFractionDigits: 0 },
-                  )}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="LOSS_INSPECT"
-            caption="LOSS_INSPECT"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {parseInt(
-                    (e.data.LOSS_INSPECT * 100).toString(),
-                  )?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                    minimumFractionDigits: 0,
-                  })}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="TOTAL_LOSS"
-            caption="TOTAL_LOSS"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#0027EA", fontWeight: "bold" }}>
-                  {parseInt(
-                    (e.data.TOTAL_LOSS * 100).toString(),
-                  )?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                    minimumFractionDigits: 0,
-                  })}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="TOTAL_LOSS2"
-            caption="TOTAL_LOSS2"
-            minWidth={100}
-            dataType="number"
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "#0027EA", fontWeight: "bold" }}>
-                  {parseInt(
-                    (e.data.TOTAL_LOSS2 * 100).toString(),
-                  )?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                    minimumFractionDigits: 0,
-                  })}{" "}
-                  %
-                </span>
-              );
-            }}
-          ></Column>
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="PHAN_LOAI"
-              summaryType="count"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="M_OUTPUT"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="SCANNED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="REMAIN_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="USED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="WAREHOUSE_ESTIMATED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="ESTIMATED_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="CD1"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="CD2"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INS_INPUT"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INS_OUTPUT"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INSPECT_TOTAL_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INSPECT_OK_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INSPECT_LOSS_QTY"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INSPECT_TOTAL_NG"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INSPECT_MATERIAL_NG"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INSPECT_PROCESS_NG"
-              summaryType="sum"
-              valueFormat={"thousands"}
-            />
-          </Summary>
-        </DataGrid>
-      </div>
-    ),
-    [datasxtable],
-  );
   const datasx_ycsx2 = React.useMemo(
     () => (
       <AGTable
-      toolbar={
-        <div>               
-        </div>}
-      columns={column_datasx_ycsx}
-      data={datasxtable}
-      onCellEditingStopped={(e) => {
-        //console.log(e.data)
-      }} onRowClick={(e) => {
-        
-        //console.log(e.data)
-      }} onSelectionChange={(e) => {
-        //console.log(e!.api.getSelectedRows())
-      }}
-    />
+        toolbar={
+          <div>
+          </div>}
+        columns={column_datasx_ycsx}
+        data={datasxtable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
     ),
     [datasxtable],
   );
-  const datasx_lichsuxuatlieu = React.useMemo(
-    () => (
-      <div className="datatb2">
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inputlieudatatable}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"75vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setSelectedRowsDataYCSX(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Editing
-            allowUpdating={false}
-            allowAdding={false}
-            allowDeleting={false}
-            mode="cell"
-            confirmDelete={false}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(inputlieudatatable, "LICHSUINPUTLIEU");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooserButton" />
-            <Item name="addRowButton" />
-            <Item name="saveButton" />
-            <Item name="revertButton" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Column dataField="PLAN_ID" caption="PLAN_ID" minWidth={100}></Column>
-          <Column dataField="M_NAME" caption="M_NAME" width={150}></Column>
-          <Column
-            dataField="WIDTH_CD"
-            caption="WIDTH_CD"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="INPUT_QTY"
-            caption="INPUT_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.INPUT_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="USED_QTY"
-            caption="USED_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.USED_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="REMAIN_QTY"
-            caption="REMAIN_QTY"
-            minWidth={100}
-            dataType="number"
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {e.data.REMAIN_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField="PROD_REQUEST_NO"
-            caption="PROD_REQUEST_NO"
-            minWidth={100}
-          ></Column>
-          <Column dataField="G_NAME" caption="G_NAME" minWidth={100}></Column>
-          <Column dataField="G_CODE" caption="G_CODE" minWidth={100}></Column>
-          <Column
-            dataField="G_NAME_KD"
-            caption="G_NAME_KD"
-            minWidth={100}
-          ></Column>
-          <Column dataField="M_CODE" caption="M_CODE" minWidth={100}></Column>
-          <Column
-            dataField="M_LOT_NO"
-            caption="M_LOT_NO"
-            minWidth={100}
-          ></Column>
-          <Column dataField="EMPL_NO" caption="EMPL_NO" minWidth={100}></Column>
-          <Column
-            dataField="EQUIPMENT_CD"
-            caption="EQUIPMENT_CD"
-            minWidth={100}
-          ></Column>
-          <Column
-            dataField="INS_DATE"
-            caption="INS_DATE"
-            minWidth={100}
-          ></Column>
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="PLAN_ID"
-              summaryType="count"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="INPUT_QTY"
-              summaryType="sum"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="USED_QTY"
-              summaryType="sum"
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment="right"
-              column="REMAIN_QTY"
-              summaryType="sum"
-              valueFormat={"decimal"}
-            />
-          </Summary>
-        </DataGrid>
-      </div>
-    ),
-    [inputlieudatatable],
-  );
-  const datasx_lichsuxuatlieu2 =  React.useMemo(
+  const datasx_lichsuxuatlieu2 = React.useMemo(
     () => (
       <AGTable
-      toolbar={
-        <div>               
-        </div>}
-      columns={column_inputlieudatatable}
-      data={inputlieudatatable}
-      onCellEditingStopped={(e) => {
-        //console.log(e.data)
-      }} onRowClick={(e) => {
-        
-        //console.log(e.data)
-      }} onSelectionChange={(e) => {
-        //console.log(e!.api.getSelectedRows())
-      }}
-    />
+        toolbar={
+          <div>
+          </div>}
+        columns={column_inputlieudatatable}
+        data={inputlieudatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
     ),
     [inputlieudatatable],
   );
@@ -3568,8 +2183,8 @@ const DATASX2 = () => {
             (element: SX_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 SETTING_START_TIME: element.SETTING_START_TIME === null ? "" : moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME: element.MASS_START_TIME === null ? "" : moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
@@ -3595,55 +2210,65 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             PROCESS4_RESULT: 0,
             SX_RESULT: 0,
             INSPECTION_INPUT: 0,
-            INSPECT_LOSS_QTY:0,
-            INSPECT_MATERIAL_NG:0,
-            INSPECT_OK_QTY:0,
-            INSPECT_PROCESS_NG:0,
-            INSPECT_TOTAL_NG:0,
-            INSPECT_TOTAL_QTY:0,
-            LOSS_THEM_TUI:0,
-            SX_MARKING_QTY:0,
+            INSPECT_LOSS_QTY: 0,
+            INSPECT_MATERIAL_NG: 0,
+            INSPECT_OK_QTY: 0,
+            INSPECT_PROCESS_NG: 0,
+            INSPECT_TOTAL_NG: 0,
+            INSPECT_TOTAL_QTY: 0,
+            LOSS_THEM_TUI: 0,
+            SX_MARKING_QTY: 0,
             INSPECTION_OUTPUT: 0,
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
             LOSS_INS_OUT_VS_XUATKHO_EA: 0,
-            NG1:0,
-            NG2:0,
-            NG3:0,
-            NG4:0,
-            SETTING1:0,
-            SETTING2:0,
-            SETTING3:0,
-            SETTING4:0
+            NG1: 0,
+            NG2: 0,
+            NG3: 0,
+            NG4: 0,
+            SETTING1: 0,
+            SETTING2: 0,
+            SETTING3: 0,
+            SETTING4: 0,
+            SCANNED_EA2:0,
+            SCANNED_EA3:0,
+            SCANNED_EA4:0,
+            SCANNED_MET2:0,
+            SCANNED_MET3:0,
+            SCANNED_MET4:0,
           };
           for (let i = 0; i < loaded_data.length; i++) {
             temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
             temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
             temp_loss_info.SCANNED_MET += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].USED_QTY : 0;
             temp_loss_info.SCANNED_EA += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].ESTIMATED_QTY : 0;
+            temp_loss_info.SCANNED_MET2 += loaded_data[i].PROCESS_NUMBER === 2 ? loaded_data[i].USED_QTY : 0;
+            temp_loss_info.SCANNED_EA2 += loaded_data[i].PROCESS_NUMBER === 2 ? loaded_data[i].ESTIMATED_QTY : 0;
+            temp_loss_info.SCANNED_MET3 += loaded_data[i].PROCESS_NUMBER === 3 ? loaded_data[i].USED_QTY : 0;
+            temp_loss_info.SCANNED_EA3 += loaded_data[i].PROCESS_NUMBER === 3 ? loaded_data[i].ESTIMATED_QTY : 0;
+            temp_loss_info.SCANNED_MET4 += loaded_data[i].PROCESS_NUMBER === 4 ? loaded_data[i].USED_QTY : 0;
+            temp_loss_info.SCANNED_EA4 += loaded_data[i].PROCESS_NUMBER === 4 ? loaded_data[i].ESTIMATED_QTY : 0;
+
             temp_loss_info.PROCESS1_RESULT += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
             temp_loss_info.PROCESS2_RESULT += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
             temp_loss_info.PROCESS3_RESULT += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
             temp_loss_info.PROCESS4_RESULT += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
-
             temp_loss_info.NG1 += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
             temp_loss_info.NG2 += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
             temp_loss_info.NG3 += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
             temp_loss_info.NG4 += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
-
             temp_loss_info.SETTING1 += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
             temp_loss_info.SETTING2 += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
             temp_loss_info.SETTING3 += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
             temp_loss_info.SETTING4 += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
-
-            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;            
-            temp_loss_info.INSPECT_TOTAL_QTY+=loaded_data[i].INSPECT_TOTAL_QTY
-            temp_loss_info.INSPECT_OK_QTY+=loaded_data[i].INSPECT_OK_QTY
-            temp_loss_info.LOSS_THEM_TUI+=loaded_data[i].LOSS_THEM_TUI
-            temp_loss_info.INSPECT_LOSS_QTY+=loaded_data[i].INSPECT_LOSS_QTY
-            temp_loss_info.INSPECT_TOTAL_NG+=loaded_data[i].INSPECT_TOTAL_NG
-            temp_loss_info.INSPECT_MATERIAL_NG+=loaded_data[i].INSPECT_MATERIAL_NG
-            temp_loss_info.INSPECT_PROCESS_NG+=loaded_data[i].INSPECT_PROCESS_NG
-            temp_loss_info.SX_MARKING_QTY+=loaded_data[i].SX_MARKING_QTY           
+            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
+            temp_loss_info.INSPECT_TOTAL_QTY += loaded_data[i].INSPECT_TOTAL_QTY
+            temp_loss_info.INSPECT_OK_QTY += loaded_data[i].INSPECT_OK_QTY
+            temp_loss_info.LOSS_THEM_TUI += loaded_data[i].LOSS_THEM_TUI
+            temp_loss_info.INSPECT_LOSS_QTY += loaded_data[i].INSPECT_LOSS_QTY
+            temp_loss_info.INSPECT_TOTAL_NG += loaded_data[i].INSPECT_TOTAL_NG
+            temp_loss_info.INSPECT_MATERIAL_NG += loaded_data[i].INSPECT_MATERIAL_NG
+            temp_loss_info.INSPECT_PROCESS_NG += loaded_data[i].INSPECT_PROCESS_NG
+            temp_loss_info.SX_MARKING_QTY += loaded_data[i].SX_MARKING_QTY
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
             temp_loss_info.SX_RESULT += loaded_data[i].KETQUASX_TP ?? 0;
           }
@@ -3703,8 +2328,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             (element: YCSX_SX_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PROD_REQUEST_DATE: moment
                   .utc(element.PROD_REQUEST_DATE)
                   .format("YYYY-MM-DD"),
@@ -3723,29 +2348,35 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             PROCESS4_RESULT: 0,
             SX_RESULT: 0,
             INSPECTION_INPUT: 0,
-            INSPECT_LOSS_QTY:0,
-            INSPECT_MATERIAL_NG:0,
-            INSPECT_OK_QTY:0,
-            INSPECT_PROCESS_NG:0,
-            INSPECT_TOTAL_NG:0,
-            INSPECT_TOTAL_QTY:0,
-            LOSS_THEM_TUI:0,
-            SX_MARKING_QTY:0,
+            INSPECT_LOSS_QTY: 0,
+            INSPECT_MATERIAL_NG: 0,
+            INSPECT_OK_QTY: 0,
+            INSPECT_PROCESS_NG: 0,
+            INSPECT_TOTAL_NG: 0,
+            INSPECT_TOTAL_QTY: 0,
+            LOSS_THEM_TUI: 0,
+            SX_MARKING_QTY: 0,
             INSPECTION_OUTPUT: 0,
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
             LOSS_INS_OUT_VS_XUATKHO_EA: 0,
-            NG1:0,
-            NG2:0,
-            NG3:0,
-            NG4:0,
-            SETTING1:0,
-            SETTING2:0,
-            SETTING3:0,
-            SETTING4:0
+            NG1: 0,
+            NG2: 0,
+            NG3: 0,
+            NG4: 0,
+            SETTING1: 0,
+            SETTING2: 0,
+            SETTING3: 0,
+            SETTING4: 0,
+            SCANNED_EA2:0,
+            SCANNED_EA3:0,
+            SCANNED_EA4:0,
+            SCANNED_MET2:0,
+            SCANNED_MET3:0,
+            SCANNED_MET4:0,
           };
-          let maxprocess:number =1;
+          let maxprocess: number = 1;
           for (let i = 0; i < loaded_data.length; i++) {
-            maxprocess = checkEQvsPROCESS(loaded_data[i].EQ1,loaded_data[i].EQ2,loaded_data[i].EQ3,loaded_data[i].EQ4);
+            maxprocess = checkEQvsPROCESS(loaded_data[i].EQ1, loaded_data[i].EQ2, loaded_data[i].EQ3, loaded_data[i].EQ4);
             temp_loss_info.XUATKHO_MET += loaded_data[i].M_OUTPUT;
             temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
             temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;
@@ -3754,28 +2385,24 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             temp_loss_info.PROCESS2_RESULT += loaded_data[i].CD2;
             temp_loss_info.PROCESS3_RESULT += loaded_data[i].CD3;
             temp_loss_info.PROCESS4_RESULT += loaded_data[i].CD4;
-
-            
             temp_loss_info.NG1 += loaded_data[i].NG1;
             temp_loss_info.NG2 += loaded_data[i].NG2;
             temp_loss_info.NG3 += loaded_data[i].NG3;
             temp_loss_info.NG4 += loaded_data[i].NG4;
-
             temp_loss_info.SETTING1 += loaded_data[i].ST1;
             temp_loss_info.SETTING2 += loaded_data[i].ST2;
             temp_loss_info.SETTING3 += loaded_data[i].ST3;
             temp_loss_info.SETTING4 += loaded_data[i].ST4;
-
-            temp_loss_info.SX_RESULT += maxprocess==1 ? loaded_data[i].CD1: maxprocess==2 ? loaded_data[i].CD2 :maxprocess==3 ? loaded_data[i].CD3 : loaded_data[i].CD4,
-            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;         
-            temp_loss_info.INSPECT_TOTAL_QTY+=loaded_data[i].INSPECT_TOTAL_QTY
-            temp_loss_info.INSPECT_OK_QTY+=loaded_data[i].INSPECT_OK_QTY
-            temp_loss_info.LOSS_THEM_TUI+=loaded_data[i].LOSS_THEM_TUI
-            temp_loss_info.INSPECT_LOSS_QTY+=loaded_data[i].INSPECT_LOSS_QTY
-            temp_loss_info.INSPECT_TOTAL_NG+=loaded_data[i].INSPECT_TOTAL_NG
-            temp_loss_info.INSPECT_MATERIAL_NG+=loaded_data[i].INSPECT_MATERIAL_NG
-            temp_loss_info.INSPECT_PROCESS_NG+=loaded_data[i].INSPECT_PROCESS_NG
-            temp_loss_info.SX_MARKING_QTY+=loaded_data[i].SX_MARKING_QTY   
+            temp_loss_info.SX_RESULT += maxprocess == 1 ? loaded_data[i].CD1 : maxprocess == 2 ? loaded_data[i].CD2 : maxprocess == 3 ? loaded_data[i].CD3 : loaded_data[i].CD4,
+              temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
+            temp_loss_info.INSPECT_TOTAL_QTY += loaded_data[i].INSPECT_TOTAL_QTY
+            temp_loss_info.INSPECT_OK_QTY += loaded_data[i].INSPECT_OK_QTY
+            temp_loss_info.LOSS_THEM_TUI += loaded_data[i].LOSS_THEM_TUI
+            temp_loss_info.INSPECT_LOSS_QTY += loaded_data[i].INSPECT_LOSS_QTY
+            temp_loss_info.INSPECT_TOTAL_NG += loaded_data[i].INSPECT_TOTAL_NG
+            temp_loss_info.INSPECT_MATERIAL_NG += loaded_data[i].INSPECT_MATERIAL_NG
+            temp_loss_info.INSPECT_PROCESS_NG += loaded_data[i].INSPECT_PROCESS_NG
+            temp_loss_info.SX_MARKING_QTY += loaded_data[i].SX_MARKING_QTY
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
             temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
             temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
@@ -3806,7 +2433,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   };
   useEffect(() => {
     getMachineList();
-    //setColumnDefinition(column_inspect_output);
   }, []);
   return (
     <div className="datasx">
@@ -3994,10 +2620,10 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     2.WH_EA
                   </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    3.USED_MET
-                  </th>                  
+                    3.IP1_MET
+                  </th>
                   <th style={{ color: "black", fontWeight: "bold" }}>
-                    4.USED_EA
+                    4.IP1_EA
                   </th>
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
                     5_1.ST1
@@ -4007,24 +2633,42 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>5.CD1</th>
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
-                    6_1.ST2
+                    6_1.IP2_MET
                   </th>}
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
-                    6_2.NG2
+                    6_2.IP2_EA
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                    6_3.ST2
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                    6_4.NG2
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>6.CD2</th>
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
-                    7_1.ST3
+                    7_1.IP3_MET
                   </th>}
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
-                    7_2.NG3
+                    7_2.IP3_EA
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                    7_3.ST3
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                    7_4.NG3
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>7.CD3</th>
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
-                    8_1.ST4
+                    8_1.IP4_MET
                   </th>}
                   {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
-                    8_2.NG4
+                    8_2.IP4_EA
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                    8_3.ST4
+                  </th>}
+                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                    8_4.NG4
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>8.CD4</th>
                   <th style={{ color: "blue", fontWeight: "bold" }}>
@@ -4069,51 +2713,69 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 </tr>
               </thead>
               <tbody>
-                <tr style={{fontSize:'0.6rem'}}>
+                <tr style={{ fontSize: '0.6rem' }}>
                   <td style={{ color: "blue", fontWeight: "bold" }}>
                     {losstableinfo.XUATKHO_MET.toLocaleString("en-US")}
                   </td>
                   <td style={{ color: "blue", fontWeight: "bold" }}>
-                    {losstableinfo.XUATKHO_EA.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.XUATKHO_EA.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>
                   <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_MET.toLocaleString("en-US")}
                   </td>
                   <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
-                    {losstableinfo.SCANNED_EA.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.SCANNED_EA.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>
                   {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
-                    {losstableinfo.SETTING1.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.SETTING1.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
-                    {losstableinfo.NG1.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.NG1.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}
                   </td>
+                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.SCANNED_MET2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </td>}
+                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.SCANNED_EA2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </td>}
                   {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
-                    {losstableinfo.SETTING2.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.SETTING2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
-                    {losstableinfo.NG2.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.NG2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}
                   </td>
+                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.SCANNED_MET3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </td>}
+                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.SCANNED_EA3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </td>}
                   {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
-                    {losstableinfo.SETTING3.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.SETTING3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
-                    {losstableinfo.NG3.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.NG3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS3_RESULT.toLocaleString("en-US")}
                   </td>
+                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.SCANNED_MET4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </td>}
+                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.SCANNED_EA4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </td>}
                   {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
-                    {losstableinfo.SETTING4.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.SETTING4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
-                    {losstableinfo.NG4.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0})}
+                    {losstableinfo.NG4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS4_RESULT.toLocaleString("en-US")}
@@ -4128,7 +2790,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     {losstableinfo.INSPECT_TOTAL_QTY.toLocaleString("en-US")}
                   </td>}
                   {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
-                    {(losstableinfo.INSPECT_TOTAL_QTY-losstableinfo.SX_MARKING_QTY).toLocaleString("en-US")}
+                    {(losstableinfo.INSPECT_TOTAL_QTY - losstableinfo.SX_MARKING_QTY).toLocaleString("en-US")}
                   </td>}
                   {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SX_MARKING_QTY.toLocaleString("en-US")}
@@ -4167,18 +2829,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>
         }
         <div className="tracuuYCSXTable">
-          {selectbutton &&<div className="chithi">
-          {datasx_chithi2}
+          {selectbutton && <div className="chithi">
+            {datasx_chithi2}
           </div>}
           {selectbutton && <div className="lichsuxuatlieu">
-          {datasx_lichsuxuatlieu2}
+            {datasx_lichsuxuatlieu2}
           </div>}
-          {!selectbutton &&<div className="ycsx">
-          {datasx_ycsx2}
+          {!selectbutton && <div className="ycsx">
+            {datasx_ycsx2}
           </div>}
-          
-          
-          
         </div>
         {showhidePivotTable && (
           <div className="pivottable1">
