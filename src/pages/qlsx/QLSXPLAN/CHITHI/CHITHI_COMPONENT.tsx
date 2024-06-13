@@ -934,7 +934,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         <div>PROCESS_NUMBER phải đặt 1,2,3 hoặc 4</div>
       )}
       {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
-      {request_codeinfo[0].PL_HANG !== 'TT' && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc</div>}
+      {request_codeinfo[0].PL_HANG !== 'TT' && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc, báo lại kinh doanh</div>}
     </div>
   );
 };
