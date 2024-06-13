@@ -32,6 +32,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
+  const [m_code_ycsx, setM_CODE_YCSX] = useState('XXX');
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
       REMK: "20220617",
@@ -108,6 +109,24 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [maxLieu, setMaxLieu] = useState(12);
   const [po_balance, setPoBalance] = useState(0);
+  const handle_getMcodeOfYcsx=()=> {
+    generalQuery("checkP500M_CODE", {
+      PROD_REQUEST_NO: PLAN_LIST[0].PROD_REQUEST_NO,
+    })
+      .then((response) => {
+        //console.log('Data request full ycsx :');
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          setM_CODE_YCSX(response.data.data[0].M_NAME);
+        } else {
+          setM_CODE_YCSX('XXX');        
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }  
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: main_plan.PLAN_ID,
@@ -273,7 +292,9 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
       FN_LOSS_ST: FINAL_LOSS_SETTING
     }
   }
+  const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number)=> ele.LIEUQL_SX === 1)?.M_NAME
   useEffect(() => {
+    handle_getMcodeOfYcsx();
     checkMaxLieu();
     initCTSX();
     handleGetChiThiTable();
@@ -357,6 +378,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
         </div>
       </div>
       {request_codeinfo[0].PL_HANG === 'TT' &&
+      (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX') &&
         <div className="thongtinycsx">
           <div className="text1">
             1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
@@ -825,6 +847,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
         </div>}
       {request_codeinfo[0].PL_HANG !== 'TT' &&
         <div>Không chỉ thị hàng nguyên chiếc, báo lại kinh doanh</div>}
+      {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );
 };

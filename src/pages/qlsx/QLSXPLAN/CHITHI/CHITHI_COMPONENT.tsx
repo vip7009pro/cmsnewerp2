@@ -103,6 +103,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const [po_balance, setPoBalance] = useState(0);
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_process_check, setEQ_Process_check] = useState(false);
+  const [m_code_ycsx, setM_CODE_YCSX] = useState('XXX');
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: DATA.PLAN_ID,
@@ -119,6 +120,24 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       });
   };
   const max_lieu: number = 17;
+  const handle_getMcodeOfYcsx=()=> {
+    generalQuery("checkP500M_CODE", {
+      PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
+    })
+      .then((response) => {
+        //console.log('Data request full ycsx :');
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          setM_CODE_YCSX(response.data.data[0].M_NAME);
+        } else {
+          setM_CODE_YCSX('XXX');        
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }  
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
@@ -335,10 +354,14 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       FN_LOSS_ST: FINAL_LOSS_SETTING
     }
   }  
+  const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number)=> ele.LIEUQL_SX === 1)?.M_NAME
+  /* console.log('M_CODEtrongBOM',M_CODEtrongBOM)
+  console.log('m_code_ycsx',m_code_ycsx) */
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
     initCTSX();
+    handle_getMcodeOfYcsx()
     handleGetChiThiTable();
     checkPOBalance();
   }, [DATA.PLAN_ID]);
@@ -440,7 +463,8 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         eq_process_check &&
         DATA.CHOTBC !== 'V' &&
         checkApprove() && 
-        request_codeinfo[0].PL_HANG==='TT'
+        request_codeinfo[0].PL_HANG==='TT' && 
+        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX')
         &&
         (
           <div className="thongtinycsx">
@@ -935,6 +959,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       )}
       {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
       {request_codeinfo[0].PL_HANG !== 'TT' && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc, báo lại kinh doanh</div>}
+      {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );
 };
