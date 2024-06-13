@@ -334,7 +334,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       FN_LOSS_SX: FINAL_LOSS_SX,
       FN_LOSS_ST: FINAL_LOSS_SETTING
     }
-  }
+  }  
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
@@ -439,7 +439,8 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         DATA.PROCESS_NUMBER !== 0 &&
         eq_process_check &&
         DATA.CHOTBC !== 'V' &&
-        checkApprove()
+        checkApprove() && 
+        request_codeinfo[0].PL_HANG==='TT'
         &&
         (
           <div className="thongtinycsx">
@@ -933,6 +934,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         <div>PROCESS_NUMBER phải đặt 1,2,3 hoặc 4</div>
       )}
       {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
+      {request_codeinfo[0].PL_HANG !== 'TT' && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc</div>}
     </div>
   );
 };
