@@ -1861,6 +1861,7 @@ export interface QLSXPLANDATA {
   PDBV_EMPL?: string;
   PDBV_DATE?: string;
   LOSS_KT?: number;
+  ORG_LOSS_KT?: number;
 }
 export interface QLSXCHITHIDATA {
   id: string;

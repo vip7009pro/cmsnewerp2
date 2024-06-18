@@ -1790,6 +1790,8 @@ const MACHINE = () => {
                 G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
 G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+                ORG_LOSS_KT: element.LOSS_KT,
+                LOSS_KT: element?.LOSS_KT??0 > 5 ? 5 : element.LOSS_KT??0,
                 id: index,
               };
             }
@@ -1819,106 +1821,108 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       FINAL_LOSS_SX: number = 0,
       FINAL_LOSS_SETTING: number = 0,
       M_MET_NEEDED: number = 0;
-    await generalQuery("getcodefullinfo", {
-      G_CODE: G_CODE,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data)
-          const rowdata = response.data.data[0];
-          PD = rowdata.PD;
-          CAVITY_NGANG = rowdata.G_C_R;
-          CAVITY_DOC = rowdata.G_C;
-          let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
-          if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
-          } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
-          } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
-          } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
-          }
-          if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
-          } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
-          } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
-          } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
-          }
-        } else {
-        }
+    if (selectedPlan !== undefined) {
+      await generalQuery("getcodefullinfo", {
+        G_CODE: G_CODE,
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    setCurrentPlanPD(PD);
-    setCurrentPlanCAVITY(CAVITY_NGANG * CAVITY_DOC);
-    generalQuery("getchithidatatable", {
-      PLAN_ID: PLAN_ID,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
-            (element: QLSXCHITHIDATA, index: number) => {
-              return {
-                ...element,
-                id: index
-              }
-            });
-          setChiThiDataTable(loaded_data);
-        } else {
-          M_MET_NEEDED = (PLAN_QTY * PD * 1.0) / (CAVITY_DOC * CAVITY_NGANG * 1.0) / 1000;
-          generalQuery("getbomsx", {
-            G_CODE: G_CODE,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
-                  (element: QLSXCHITHIDATA, index: number) => {
-                    return {
-                      CHITHI_ID: "NEW" + index,
-                      PLAN_ID: PLAN_ID,
-                      M_CODE: element.M_CODE,
-                      M_NAME: element.M_NAME,
-                      WIDTH_CD: element.WIDTH_CD,
-                      M_ROLL_QTY: 0,
-                      M_MET_QTY: parseInt(
-                        "" +
-                        (M_MET_NEEDED +
-                          (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                          FINAL_LOSS_SETTING)
-                      ),
-                      M_QTY: element.M_QTY,
-                      LIEUQL_SX: element.LIEUQL_SX,
-                      MAIN_M: element.MAIN_M,
-                      OUT_KHO_SX: 0,
-                      OUT_KHO_THAT: 0,
-                      INS_EMPL: "",
-                      INS_DATE: "",
-                      UPD_EMPL: "",
-                      UPD_DATE: "",
-                      M_STOCK: element.M_STOCK,
-                      id: index,
-                    };
-                  }
-                );
-                setChiThiDataTable(loaded_data);
-              } else {
-                setChiThiDataTable([]);
-              }
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data)
+            const rowdata = response.data.data[0];
+            PD = rowdata.PD;
+            CAVITY_NGANG = rowdata.G_C_R;
+            CAVITY_DOC = rowdata.G_C;
+            let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
+            if (PROCESS_NUMBER === 1) {
+              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);
+            } else if (PROCESS_NUMBER === 2) {
+              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);
+            } else if (PROCESS_NUMBER === 3) {
+              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);
+            } else if (PROCESS_NUMBER === 4) {
+              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);
+            }
+            if (PROCESS_NUMBER === 1) {
+              FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
+            } else if (PROCESS_NUMBER === 2) {
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
+            } else if (PROCESS_NUMBER === 3) {
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
+            } else if (PROCESS_NUMBER === 4) {
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
+            }
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      setCurrentPlanPD(PD);
+      setCurrentPlanCAVITY(CAVITY_NGANG * CAVITY_DOC);
+      generalQuery("getchithidatatable", {
+        PLAN_ID: PLAN_ID,
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
+              (element: QLSXCHITHIDATA, index: number) => {
+                return {
+                  ...element,
+                  id: index
+                }
+              });
+            setChiThiDataTable(loaded_data);
+          } else {
+            M_MET_NEEDED = (PLAN_QTY * PD * 1.0) / (CAVITY_DOC * CAVITY_NGANG * 1.0) / 1000;
+            generalQuery("getbomsx", {
+              G_CODE: G_CODE,
             })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
+                    (element: QLSXCHITHIDATA, index: number) => {
+                      return {
+                        CHITHI_ID: "NEW" + index,
+                        PLAN_ID: PLAN_ID,
+                        M_CODE: element.M_CODE,
+                        M_NAME: element.M_NAME,
+                        WIDTH_CD: element.WIDTH_CD,
+                        M_ROLL_QTY: 0,
+                        M_MET_QTY: parseInt(
+                          "" +
+                          (M_MET_NEEDED +
+                            (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
+                            FINAL_LOSS_SETTING)
+                        ),
+                        M_QTY: element.M_QTY,
+                        LIEUQL_SX: element.LIEUQL_SX,
+                        MAIN_M: element.MAIN_M,
+                        OUT_KHO_SX: 0,
+                        OUT_KHO_THAT: 0,
+                        INS_EMPL: "",
+                        INS_DATE: "",
+                        UPD_EMPL: "",
+                        UPD_DATE: "",
+                        M_STOCK: element.M_STOCK,
+                        id: index,
+                      };
+                    }
+                  );
+                  setChiThiDataTable(loaded_data);
+                } else {
+                  setChiThiDataTable([]);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   const handleResetChiThiTable = async () => {
     if (selectedPlan !== undefined) {
@@ -1929,7 +1933,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         PROCESS_NUMBER: number = selectedPlan?.PROCESS_NUMBER ?? 0,
         FINAL_LOSS_SX: number = 0,
         FINAL_LOSS_SETTING: number = 0,
-        M_MET_NEEDED: number = 0;
+        M_MET_NEEDED: number = 0;        
       await generalQuery("getcodefullinfo", {
         G_CODE: selectedPlan?.G_CODE,
       })
@@ -1942,13 +1946,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             CAVITY_DOC = rowdata.G_C;
             let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan.LOSS_KT ?? 0);
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan.LOSS_KT ?? 0);
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan.LOSS_KT ?? 0);
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (rowdata.LOSS_KT ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan.LOSS_KT ?? 0);
             }
             if (PROCESS_NUMBER === 1) {
               FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
@@ -4854,7 +4858,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   </div>
                   <div className="losskt">
                   <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
-                    LOSS KT Tích lũy:{selectedPlan?.LOSS_KT?.toLocaleString('en-US',)}%
+                    LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
                     </span>                   
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>

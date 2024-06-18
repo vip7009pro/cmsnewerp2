@@ -1423,6 +1423,8 @@ const PLAN_DATATB = () => {
               }
               return {
                 ...element,
+                ORG_LOSS_KT: element.LOSS_KT,
+                LOSS_KT: element?.LOSS_KT??0 > 5 ? 5 : element.LOSS_KT??0,
                 G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
 G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
@@ -1457,11 +1459,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   element.MASS_END_TIME === null
                     ? "X"
                     : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
+
                 /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
                   TON_CD2: element.TON_CD2 === null ? 0: element.TON_CD2,
                   TON_CD3: element.TON_CD3 === null ? 0: element.TON_CD3,
                   TON_CD4: element.TON_CD4 === null ? 0: element.TON_CD4, */
                 id: index,
+
               };
             }
           );
@@ -1721,13 +1725,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           CAVITY_DOC = rowdata.G_C;
           let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0);
+            FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
           }
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
@@ -1840,13 +1844,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             CAVITY_DOC = rowdata.G_C;
             let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX1 ?? 0) + (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX2 ?? 0) + (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX3 ?? 0) + (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0);
+              FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
             }
             if (PROCESS_NUMBER === 1) {
               FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
