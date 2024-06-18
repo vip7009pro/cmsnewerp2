@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
+import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
@@ -17,7 +17,8 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
-const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
+const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
+
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
@@ -354,9 +355,15 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       FN_LOSS_ST: FINAL_LOSS_SETTING
     }
   }  
+  useImperativeHandle(ref, () => ({
+    handleInternalClick,
+  }));
+
+  const handleInternalClick = () => {
+    console.log("so chi thi:"+ DATA.PLAN_ID)
+  };
   const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number)=> ele.LIEUQL_SX === 1)?.M_NAME
-  /* console.log('M_CODEtrongBOM',M_CODEtrongBOM)
-  console.log('m_code_ycsx',m_code_ycsx) */
+
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
@@ -962,5 +969,5 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
       {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );
-};
+});
 export default CHITHI_COMPONENT;

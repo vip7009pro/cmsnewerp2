@@ -54,18 +54,18 @@ export const checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: str
   if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
   return maxprocess;
 };
-export const renderChiThi = (planlist: QLSXPLANDATA[]) => {
+export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
   return planlist.map((element, index) => (
-    <CHITHI_COMPONENT key={index} DATA={element} />
+    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />
     /*  <>
      <CHITHI_COMPONENT key={index} DATA={element} />
      <CHECKSHEETSX key={index+'A'} DATA={element}/>
      </> */
   ));
 };
-export const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {
+export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
   //console.log(planlist);
-  return <CHITHI_COMPONENT2 PLAN_LIST={planlist} />;
+  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} />;
 };
 export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
   return ycsxlist.map((element, index) => (
@@ -213,6 +213,7 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
   }
 }
 const MACHINE = () => {
+  const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
   const getRecentDM = (G_CODE: string) => {
     generalQuery("loadRecentDM", { G_CODE: G_CODE })
@@ -1787,11 +1788,11 @@ const MACHINE = () => {
             (element: QLSXPLANDATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 ORG_LOSS_KT: element.LOSS_KT,
-                LOSS_KT: element?.LOSS_KT??0 > 5 ? 5 : element.LOSS_KT??0,
+                LOSS_KT: element?.LOSS_KT ?? 0 > 5 ? 5 : element.LOSS_KT ?? 0,
                 id: index,
               };
             }
@@ -1933,7 +1934,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         PROCESS_NUMBER: number = selectedPlan?.PROCESS_NUMBER ?? 0,
         FINAL_LOSS_SX: number = 0,
         FINAL_LOSS_SETTING: number = 0,
-        M_MET_NEEDED: number = 0;        
+        M_MET_NEEDED: number = 0;
       await generalQuery("getcodefullinfo", {
         G_CODE: selectedPlan?.G_CODE,
       })
@@ -1955,11 +1956,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan.LOSS_KT ?? 0);
             }
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+              FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 4) {
               FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
             }
@@ -2044,8 +2045,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PO_TDYCSX: element.PO_TDYCSX ?? 0,
                 TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
                 TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
@@ -2079,7 +2080,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       .catch((error) => {
         console.log(error);
       });
-  };  
+  };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -2805,7 +2806,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 );
               }
               setShowChiThi(true);
-              setChiThiListRender(renderChiThi(qlsxplandatafilter.current));
+              setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
               //console.log(ycsxdatatablefilter.current);
             } else {
               setShowChiThi(false);
@@ -3530,6 +3531,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         LOSS_SETTING4: 0,
         NOTE: "",
       });
+    }
+  };
+  const handleClick = () => {
+    if (myComponentRef.current) {
+      myComponentRef.current?.handleInternalClick();
     }
   };
   const ycsxDataTableAG = useMemo(() => {
@@ -4857,9 +4863,9 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     </span>
                   </div>
                   <div className="losskt">
-                  <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
-                    LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
-                    </span>                   
+                    <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
+                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
+                    </span>
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>
                     PLAN_QTY:{selectedPlan?.PLAN_QTY?.toLocaleString("en-US")}
@@ -5092,12 +5098,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     </button>
                     <button
                       onClick={() => {
-                        setChiThiListRender(renderChiThi(qlsxplandatafilter.current));
+                        setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
                       }}
                     >
                       Render Chỉ Thị
                     </button>
-                    <button onClick={handlePrint}>Print Chỉ Thị</button>
+                    <button onClick={() => {
+                      handleClick();
+                      handlePrint();
+                    }}>Print Chỉ Thị</button>
                     <button
                       onClick={() => {
                         setShowChiThi(!showChiThi);
@@ -5137,7 +5146,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                       onClick={() => {
                         setChiThiListRender2(
                           renderChiThi2(
-                            chithiarray !== undefined ? chithiarray : []
+                            chithiarray !== undefined ? chithiarray : [], myComponentRef
                           )
                         );
                       }}

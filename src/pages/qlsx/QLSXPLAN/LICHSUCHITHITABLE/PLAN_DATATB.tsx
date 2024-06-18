@@ -55,6 +55,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 const PLAN_DATATB = () => {
+  const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
   const [showQuickPlan, setShowQuickPlan] = useState(false);
@@ -2334,6 +2335,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   }
+  const handleClick = () => {
+    if (myComponentRef.current) {
+      myComponentRef.current?.handleInternalClick();
+    }
+  };
   const planMaterialTableAG = useMemo(()=> 
     <AGTable
         toolbar={
@@ -2708,7 +2714,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     }
                     setShowChiThi(true);
                     setChiThiListRender(
-                      renderChiThi(qlsxplandatafilter.current)
+                      renderChiThi(qlsxplandatafilter.current,myComponentRef)
                     );
                     //console.log(ycsxdatatablefilter);
                   } else {
@@ -2771,7 +2777,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                         if (chithimain.length === 1) {
                           setShowChiThi2(true);
                           setChiThiListRender2(
-                            renderChiThi2(qlsxplandatafilter.current)
+                            renderChiThi2(qlsxplandatafilter.current, myComponentRef)
                           );
                         } else if (chithimain.length === 0) {
                           Swal.fire(
@@ -2900,12 +2906,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             </button>
             <button
               onClick={() => {
-                setChiThiListRender(renderChiThi(qlsxplandatafilter.current));
+                setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
               }}
             >
               Render Chỉ Thị
             </button>
-            <button onClick={handlePrint}>Print Chỉ Thị</button>
+            <button onClick={()=> {
+                      handleClick();
+                      handlePrint();
+                      }}>Print Chỉ Thị</button>
             <button
               onClick={() => {
                 setShowChiThi(!showChiThi);
@@ -2939,12 +2948,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             </button>
             <button
               onClick={() => {
-                setChiThiListRender2(renderChiThi2(qlsxplandatafilter.current));
+                setChiThiListRender2(renderChiThi2(qlsxplandatafilter.current, myComponentRef));
               }}
             >
               Render Chỉ Thị 2
             </button>
-            <button onClick={handlePrint}>Print Chỉ Thị</button>
+            <button onClick={()=> {
+                      handleClick();
+                      handlePrint();
+                      }}>Print Chỉ Thị</button>
             <button
               onClick={() => {
                 setShowChiThi2(!showChiThi2);
