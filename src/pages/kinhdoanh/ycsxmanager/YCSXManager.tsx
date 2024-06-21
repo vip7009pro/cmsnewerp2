@@ -1689,8 +1689,8 @@ const YCSXManager = () => {
             (element: YCSXTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PO_TDYCSX: element.PO_TDYCSX ?? 0,
                 TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
                 TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
@@ -2721,39 +2721,33 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
                   //Swal.fire("Thông báo", "Delete YCSX thành công", "success");
-                  if(ycsxdatatablefilter.current[i].PL_HANG != 'TT') {
+                  if (ycsxdatatablefilter.current[i].PL_HANG != 'TT') {
                     generalQuery("delete_P500_YCSX", {
-                      PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,                     
+                      PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
                       INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
                     })
                       .then((response) => {
                         console.log(response.data.tk_status);
                         if (response.data.tk_status !== "NG") {
-                         
                         } else {
-                         
                         }
                       })
                       .catch((error) => {
                         console.log(error);
                       });
-
-                      generalQuery("delete_P501_YCSX", {
-                        PLAN_ID: ycsxdatatablefilter.current[i].PROD_REQUEST_NO+'A',                     
-                        INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
+                    generalQuery("delete_P501_YCSX", {
+                      PLAN_ID: ycsxdatatablefilter.current[i].PROD_REQUEST_NO + 'A',
+                      INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
+                    })
+                      .then((response) => {
+                        console.log(response.data.tk_status);
+                        if (response.data.tk_status !== "NG") {
+                        } else {
+                        }
                       })
-                        .then((response) => {
-                          console.log(response.data.tk_status);
-                          if (response.data.tk_status !== "NG") {
-                           
-                          } else {
-                           
-                          }
-                        })
-                        .catch((error) => {
-                          console.log(error);
-                        });
-
+                      .catch((error) => {
+                        console.log(error);
+                      });
                   }
                 } else {
                   //Swal.fire("Thông báo", "Update YCSX thất bại: " +response.data.message , "error");
@@ -3014,7 +3008,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             <IconButton
               className='buttonIcon'
               onClick={() => {
-                setShowHideSearchDiv(prev=> !prev);
+                setShowHideSearchDiv(prev => !prev);
               }}
             >
               <TbLogout color='green' size={15} />
