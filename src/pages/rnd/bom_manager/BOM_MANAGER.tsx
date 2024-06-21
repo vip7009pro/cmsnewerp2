@@ -34,7 +34,7 @@ import {
   AiOutlinePushpin,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
@@ -1417,7 +1417,8 @@ const BOM_MANAGER = () => {
           k !== "LOSS_SETTING4" &&
           k !== "NOTE" &&
           k !== "PD_HSD" &&
-          k !== "UPDATE_REASON"
+          k !== "UPDATE_REASON" &&
+          k !== "PDBV"
         ) {
           Swal.fire("Thông báo", "Không được để trống: " + k, "error");
           result = false;
@@ -1461,7 +1462,8 @@ const BOM_MANAGER = () => {
           k !== "LOSS_SETTING4" &&
           k !== "NOTE" &&
           k !== "PD_HSD" &&
-          k !== "UPDATE_REASON"
+          k !== "UPDATE_REASON" &&
+          k !== "PDBV"
         ) {
           Swal.fire("Thông báo", "Không được để trống: " + k, "error");
           result = false;
@@ -1763,6 +1765,7 @@ const BOM_MANAGER = () => {
   }
   const handleUpdateCode = async () => {
     let tempUpdateReason: string = codefullinfo?.UPDATE_REASON ?? '-';
+    let currentReason: string = '';
 
     if((codefullinfo.PDBV ?? 'N') ==='Y')
     {
@@ -1773,10 +1776,11 @@ const BOM_MANAGER = () => {
         inputValue: "",
         inputPlaceholder: "Bạn update cái gì ?",
         showCancelButton: true,
-      });      
-      tempUpdateReason = pass1 ?? '';
+      });   
+      currentReason = pass1;   
+      tempUpdateReason +=  (pass1 !== undefined && pass1 !=='')? moment().format("YYYY-MM-DD HH:mm:ss")+ "_" + getUserData()?.EMPL_NO + ':' + pass1 : '';
     }  
-    if(tempUpdateReason !=='')
+    if(currentReason !=='')
     {
       if (checkMAINVLMatching()) {
         if ((getCompany() === 'CMS') && (await handleCheckCodeInfo2()) || getCompany() !== 'CMS') {
