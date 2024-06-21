@@ -28,9 +28,6 @@ const QLVL = () => {
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [m_name, setM_Name] = useState("");
   const [fscList, setFSCList] = useState<FSC_LIST_DATA[]>([]);
-
-
-
   const [clickedRows, setClickedRows] = useState<MATERIAL_TABLE_DATA>({
     M_ID: 0,
     M_NAME: "",
@@ -49,7 +46,7 @@ const QLVL = () => {
     UPD_EMPL: "",
     EXP_DATE: "-",
     FSC: "N",
-    FSC_CODE: "-",
+    FSC_CODE: "01",
     FSC_NAME: "NA",
     TDS: "N"
   });
@@ -136,18 +133,32 @@ const QLVL = () => {
       Swal.fire("Thông báo", "Vật liệu đã tồn tại", "error");
     }
   };
+
   const updateMaterial = async () => {
-    generalQuery("updateMaterial", clickedRows)
+    await generalQuery("updateMaterial", clickedRows)
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Update vật liệu thành công", "success");
+
+          generalQuery("updateM090FSC", clickedRows)
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                Swal.fire("Thông báo", "Update vật liệu thành công", "success");
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         } else {
         }
       })
       .catch((error) => {
         console.log(error);
       });
+
+      
   };
   const uploadTDS = async (M_ID: number, up_file: any) => {
     if (up_file !== null && up_file !== undefined) {

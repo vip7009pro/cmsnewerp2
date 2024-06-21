@@ -1765,7 +1765,7 @@ const BOM_MANAGER = () => {
   }
   const handleUpdateCode = async () => {
     let tempUpdateReason: string = codefullinfo?.UPDATE_REASON ?? '-';
-    let currentReason: string = '';
+    let currentReason: string = '-';
 
     if((codefullinfo.PDBV ?? 'N') ==='Y')
     {
@@ -1777,9 +1777,10 @@ const BOM_MANAGER = () => {
         inputPlaceholder: "Bạn update cái gì ?",
         showCancelButton: true,
       });   
-      currentReason = pass1;   
+      currentReason = pass1 ?? '';   
       tempUpdateReason +=  (pass1 !== undefined && pass1 !=='')? moment().format("YYYY-MM-DD HH:mm:ss")+ "_" + getUserData()?.EMPL_NO + ':' + pass1 : '';
     }  
+    console.log(currentReason)
     if(currentReason !=='')
     {
       if (checkMAINVLMatching()) {
