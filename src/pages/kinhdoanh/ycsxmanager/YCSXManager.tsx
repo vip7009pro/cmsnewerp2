@@ -2748,6 +2748,34 @@ const YCSXManager = () => {
                       .catch((error) => {
                         console.log(error);
                       });
+                    if (ycsxdatatablefilter.current[i].PL_HANG === 'AM') {
+                      generalQuery("checkInLaiCount_AMZ", {
+                        PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+                      })
+                        .then((response) => {
+                          console.log(response.data.tk_status);
+                          if (response.data.tk_status !== "NG") {
+                            if (response.data.data[0].IN_LAI_QTY === 0) {
+                              generalQuery("deleteAMZ_DATA", {
+                                PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+                              })
+                                .then((response) => {
+                                  console.log(response.data.tk_status);
+                                  if (response.data.tk_status !== "NG") {
+                                  } else {
+                                  }
+                                })
+                                .catch((error) => {
+                                  console.log(error);
+                                });
+                            }
+                          } else {
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+                    }
                   }
                 } else {
                   //Swal.fire("Thông báo", "Update YCSX thất bại: " +response.data.message , "error");

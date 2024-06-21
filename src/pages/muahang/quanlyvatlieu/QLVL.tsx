@@ -16,6 +16,7 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
   CustomerListData,
+  FSC_LIST_DATA,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
 import {CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
@@ -26,6 +27,10 @@ const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [m_name, setM_Name] = useState("");
+  const [fscList, setFSCList] = useState<FSC_LIST_DATA[]>([]);
+
+
+
   const [clickedRows, setClickedRows] = useState<MATERIAL_TABLE_DATA>({
     M_ID: 0,
     M_NAME: "",
@@ -42,7 +47,11 @@ const QLVL = () => {
     INS_EMPL: "",
     UPD_DATE: "",
     UPD_EMPL: "",
-    EXP_DATE: "-"
+    EXP_DATE: "-",
+    FSC: "N",
+    FSC_CODE: "-",
+    FSC_NAME: "NA",
+    TDS: "N"
   });
   const load_material_table = () => {
     generalQuery("get_material_table", {
@@ -64,6 +73,9 @@ const QLVL = () => {
                 INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE: moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
                 EXP_DATE: element.EXP_DATE ?? '-',
+                FSC: element.FSC ?? 'N',
+                FSC_CODE: element.FSC_CODE ?? '01',
+                FSC_NAME: element.FSC_CODE ?? 'NO_FSC',
                 id: index,
               };
             },
@@ -85,14 +97,12 @@ const QLVL = () => {
       });
   };
   const seMaterialInfo = (keyname: string, value: any) => {
-    console.log(keyname);
-    console.log(value);
-    let tempCustInfo: MATERIAL_TABLE_DATA = {
+    let tempMaterialInfo: MATERIAL_TABLE_DATA = {
       ...clickedRows,
       [keyname]: value,
     };
     //console.log(tempcodefullinfo);
-    setClickedRows(tempCustInfo);
+    setClickedRows(tempMaterialInfo);
   };
   const addMaterial = async () => {
     let materialExist: boolean = false;
@@ -204,6 +214,20 @@ const QLVL = () => {
         console.log(error);
       });
   };
+  const getFSCList = () => {
+    generalQuery("getFSCList", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data)
+        setFSCList(response.data.data);
+      } else {
+        setFSCList([])
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -857,6 +881,9 @@ const QLVL = () => {
     { field: 'SLITTING_PRICE', headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
     { field: 'MASTER_WIDTH', headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
     { field: 'ROLL_LENGTH', headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'FSC', headerName: 'FSC', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'FSC_CODE', headerName: 'FSC_CODE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'FSC_NAME', headerName: 'FSC_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'USE_YN', headerName: 'USE_YN', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
     {
@@ -922,6 +949,7 @@ const QLVL = () => {
   useEffect(() => {
     load_material_table();
     getcustomerlist();
+    getFSCList();
   }, []);
   return (
     <div className="qlvl">
@@ -1072,6 +1100,50 @@ const QLVL = () => {
                   onChange={(e) => seMaterialInfo("EXP_DATE", e.target.value)}
                 ></input>
               </label>
+              <div className="forminputcolumn">
+              <label>
+                    <b>FSC:</b>
+                    <select
+                      name='fsc'
+                      value={clickedRows?.FSC}
+                      onChange={(e) => {
+                        let tempMaterialInfo: MATERIAL_TABLE_DATA = {
+                          ...clickedRows,
+                          FSC: e.target.value,
+                          FSC_CODE: e.target.value ==='N' ? '01': clickedRows.FSC_CODE
+                        };
+                        setClickedRows(tempMaterialInfo);                       
+                      }}
+                    >
+                      <option value='Y'> Y </option>
+                      <option value='N'> N </option>                      
+                    </select>
+              </label>
+              <label>
+                    <b>Loại FSC:</b>
+                    <select
+                    disabled={clickedRows?.FSC ==='N'}
+                      name='fsc'
+                      value={clickedRows?.FSC_CODE}
+                      onChange={(e) => {
+                        seMaterialInfo(
+                          "FSC_CODE", e.target.value,
+                        );                       
+
+                      }}
+                    >
+                      {
+                        fscList.map((ele: FSC_LIST_DATA,index: number )=> {
+                          return (
+                            <option key={index} value={ele.FSC_CODE}> {ele.FSC_NAME} </option>
+                          )
+                        })
+                      }
+                                         
+                    </select>
+              </label>
+
+            </div>
               <label>
                 <b>Mở/Khóa:</b>
                 <input
@@ -1089,6 +1161,7 @@ const QLVL = () => {
                 ></input>
               </label>
             </div>
+            
           </div>
           <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {

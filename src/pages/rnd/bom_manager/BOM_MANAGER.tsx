@@ -53,6 +53,7 @@ import {
   COMPONENT_DATA,
   CustomerListData,
   DEFAULT_DM,
+  FSC_LIST_DATA,
   MACHINE_LIST,
   MASTER_MATERIAL_HSD,
   MATERIAL_INFO,
@@ -70,15 +71,10 @@ const BOM_MANAGER = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
-  const [codedatatablefilter, setCodeDataTableFilter] = useState<
-    Array<CODE_INFO>
-  >([]);
-  const [bomsxdatatablefilter, setBomSXDataTableFilter] = useState<
-    Array<BOM_SX>
-  >([]);
-  const [bomgiadatatablefilter, setBomGiaDataTableFilter] = useState<
-    Array<BOM_GIA>
-  >([]);
+  const [updateReason, setUpdateReason] = useState("");
+  const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
+  const [bomsxdatatablefilter, setBomSXDataTableFilter] = useState<Array<BOM_SX>>([]);
+  const [bomgiadatatablefilter, setBomGiaDataTableFilter] = useState<Array<BOM_GIA>>([]);
   const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
     id: 0,
     WIDTH_OFFSET: 0,
@@ -187,6 +183,7 @@ const BOM_MANAGER = () => {
     PROD_DVT: "01",
     QL_HSD: "Y",
     EXP_DATE: '0',
+    FSC_CODE: '01'
   });
   const [file, setFile] = useState<any>(null);
   const [file2, setFile2] = useState<any>(null);
@@ -236,6 +233,7 @@ const BOM_MANAGER = () => {
   const [enableEdit, setEnableEdit] = useState(false);
   const [enableform, setEnableForm] = useState(true);
   const [rows, setRows] = useState<CODE_INFO[]>([]);
+  const [fscList, setFSCList] = useState<FSC_LIST_DATA[]>([]);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
     [],
   );
@@ -1001,8 +999,8 @@ const BOM_MANAGER = () => {
             (element: CODE_INFO, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -1053,7 +1051,21 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         testinvoicetable: true,
       });
     }
-  };
+  };  
+  const getFSCList = () => {
+    generalQuery("getFSCList", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data)
+        setFSCList(response.data.data);
+      } else {
+        setFSCList([])
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   const getcustomerlist = () => {
     generalQuery("selectcustomerList", {})
       .then((response) => {
@@ -1090,44 +1102,16 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           let loaded_data: CODE_FULL_INFO[] = response.data.data.map(
             (element: CODE_FULL_INFO, index: number) => {
               return {
-                ...element,            
-                CUST_CD:
-                  element.CUST_CD === null || element.CUST_CD === ""
-                    ? "0000"
-                    : element.CUST_CD,
-                PROD_PROJECT:
-                  element.PROD_PROJECT === null || element.PROD_PROJECT === ""
-                    ? ""
-                    : element.PROD_PROJECT,
-                PROD_MODEL:
-                  element.PROD_MODEL === null || element.PROD_MODEL === ""
-                    ? ""
-                    : element.PROD_MODEL,
-                CODE_12:
-                  element.CODE_12 === null || element.CODE_12 === ""
-                    ? "7"
-                    : element.CODE_12,
-                PROD_TYPE:
-                  element.PROD_TYPE === null || element.PROD_TYPE === ""
-                    ? getCompany() === 'CMS' ? "TSP" : "LABEL"
-                    : element.PROD_TYPE.trim(),
-                G_NAME_KD:
-                  element.G_NAME_KD === null || element.G_NAME_KD === ""
-                    ? "7"
-                    : element.G_NAME_KD,
-                DESCR:
-                  element.DESCR === null || element.DESCR === ""
-                    ? ""
-                    : element.DESCR,
-                PROD_MAIN_MATERIAL:
-                  element.PROD_MAIN_MATERIAL === null ||
-                    element.PROD_MAIN_MATERIAL === ""
-                    ? ""
-                    : element.PROD_MAIN_MATERIAL,
-                G_NAME:
-                  element.G_NAME === null || element.G_NAME === ""
-                    ? ""
-                    : element.G_NAME,
+                ...element,
+                CUST_CD: element.CUST_CD ?? "0000",
+                PROD_PROJECT: element.PROD_PROJECT ?? "",
+                PROD_MODEL: element.PROD_MODEL ?? "",
+                CODE_12: element.CODE_12 === null || element.CODE_12 === "" ? "7" : element.CODE_12,
+                PROD_TYPE: element.PROD_TYPE === null || element.PROD_TYPE === "" ? getCompany() === 'CMS' ? "TSP" : "LABEL" : element.PROD_TYPE.trim(),
+                G_NAME_KD: element.G_NAME_KD === null || element.G_NAME_KD === "" ? "7" : element.G_NAME_KD,
+                DESCR: element.DESCR === null || element.DESCR === "" ? "" : element.DESCR,
+                PROD_MAIN_MATERIAL: element.PROD_MAIN_MATERIAL === null || element.PROD_MAIN_MATERIAL === "" ? "" : element.PROD_MAIN_MATERIAL,
+                G_NAME: element.G_NAME === null || element.G_NAME === ""   ? ""   : element.G_NAME,
                 G_LENGTH: element.G_LENGTH === null ? 0 : element.G_LENGTH,
                 G_WIDTH: element.G_WIDTH === null ? 0 : element.G_WIDTH,
                 PD: element.PD === null ? 0 : element.PD,
@@ -1137,55 +1121,27 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 G_CG: element.G_CG === null ? 0 : element.G_CG,
                 G_SG_L: element.G_SG_L === null ? 0 : element.G_SG_L,
                 G_SG_R: element.G_SG_R === null ? 0 : element.G_SG_R,
-                PACK_DRT:
-                  element.PACK_DRT === null || element.PACK_DRT === ""
-                    ? "1"
-                    : element.PACK_DRT,
-                KNIFE_TYPE:
-                  element.KNIFE_TYPE === null ? 0 : element.KNIFE_TYPE,
-                KNIFE_LIFECYCLE:
-                  element.KNIFE_LIFECYCLE === null
-                    ? 0
-                    : element.KNIFE_LIFECYCLE,
-                KNIFE_PRICE:
-                  element.KNIFE_PRICE === null ? 0 : element.KNIFE_PRICE,
+                PACK_DRT: element.PACK_DRT === null || element.PACK_DRT === ""   ? "1"   : element.PACK_DRT,
+                KNIFE_TYPE: element.KNIFE_TYPE === null ? 0 : element.KNIFE_TYPE,
+                KNIFE_LIFECYCLE: element.KNIFE_LIFECYCLE === null   ? 0   : element.KNIFE_LIFECYCLE,
+                KNIFE_PRICE: element.KNIFE_PRICE === null ? 0 : element.KNIFE_PRICE,
                 CODE_33: element.CODE_33 === null ? "03" : element.CODE_33,
                 PROD_DVT: element.PROD_DVT === null ? "01" : element.PROD_DVT,
-                ROLE_EA_QTY:
-                  element.ROLE_EA_QTY === null ? 0 : element.ROLE_EA_QTY,
+                ROLE_EA_QTY: element.ROLE_EA_QTY === null ? 0 : element.ROLE_EA_QTY,
                 RPM: element.RPM === null ? 0 : element.RPM,
-                PIN_DISTANCE:
-                  element.PIN_DISTANCE === null ? 0 : element.PIN_DISTANCE,
-                PROCESS_TYPE:
-                  element.PROCESS_TYPE === null ? "" : element.PROCESS_TYPE,
-                EQ1:
-                  element.EQ1 === null || element.EQ1 === ""
-                    ? "NA"
-                    : element.EQ1,
-                EQ2:
-                  element.EQ2 === null || element.EQ2 === ""
-                    ? "NA"
-                    : element.EQ2,
-                EQ3:
-                  element.EQ3 === null || element.EQ3 === ""
-                    ? "NA"
-                    : element.EQ3,
-                EQ4:
-                  element.EQ4 === null || element.EQ4 === ""
-                    ? "NA"
-                    : element.EQ4,
-                PROD_DIECUT_STEP:
-                  element.PROD_DIECUT_STEP === null
-                    ? ""
-                    : element.PROD_DIECUT_STEP,
-                PROD_PRINT_TIMES:
-                  element.PROD_PRINT_TIMES === null
-                    ? ""
-                    : element.PROD_PRINT_TIMES,
-                PO_TYPE: element.PO_TYPE === null ? "E1" : element.PO_TYPE,
-                FSC: element.FSC === null ? "N" : element.FSC,
-                QL_HSD: element.QL_HSD === null ? 'N' : element.QL_HSD,
-                EXP_DATE: element.EXP_DATE === null ? 0 : element.EXP_DATE,
+                PIN_DISTANCE: element.PIN_DISTANCE === null ? 0 : element.PIN_DISTANCE,
+                PROCESS_TYPE: element.PROCESS_TYPE === null ? "" : element.PROCESS_TYPE,
+                EQ1: element.EQ1 === null || element.EQ1 === ""   ? "NA"   : element.EQ1,
+                EQ2: element.EQ2 === null || element.EQ2 === ""   ? "NA"   : element.EQ2,
+                EQ3: element.EQ3 === null || element.EQ3 === ""   ? "NA"   : element.EQ3,
+                EQ4: element.EQ4 === null || element.EQ4 === ""   ? "NA"   : element.EQ4,
+                PROD_DIECUT_STEP: element.PROD_DIECUT_STEP ?? '',
+                PROD_PRINT_TIMES: element.PROD_PRINT_TIMES ?? 0,
+                PO_TYPE: element.PO_TYPE ?? 'E1',
+                FSC: element.FSC ?? 'N',
+                QL_HSD: element.QL_HSD ?? 'N',
+                EXP_DATE: element.EXP_DATE ??0,
+                FSC_CODE: element.FSC_CODE ?? '01',
                 id: index,
               };
             },
@@ -1460,7 +1416,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           k !== "LOSS_SETTING3" &&
           k !== "LOSS_SETTING4" &&
           k !== "NOTE" &&
-          k !== "PD_HSD"
+          k !== "PD_HSD" &&
+          k !== "UPDATE_REASON"
         ) {
           Swal.fire("Thông báo", "Không được để trống: " + k, "error");
           result = false;
@@ -1503,7 +1460,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           k !== "LOSS_SETTING3" &&
           k !== "LOSS_SETTING4" &&
           k !== "NOTE" &&
-          k !== "PD_HSD"
+          k !== "PD_HSD" &&
+          k !== "UPDATE_REASON"
         ) {
           Swal.fire("Thông báo", "Không được để trống: " + k, "error");
           result = false;
@@ -1776,64 +1734,87 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       handleinsertCodeTBG(newGCODE);
     }
   };
-  const checkMAINVLMatching = (): boolean=> {
+  const checkMAINVLMatching = (): boolean => {
     let checkM: boolean = false;
-    if(bomsxtable.length > 0) {
-      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number)=> ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";
+    if (bomsxtable.length > 0) {
+      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";
       console.log(mainM);
       console.log(selectedMasterMaterial.M_NAME);
-      if(mainM === 'NG') {
+      if (mainM === 'NG') {
         checkM = false;
-        Swal.fire('Thông báo','Bom VL chưa set liệu chính','error')
+        Swal.fire('Thông báo', 'Bom VL chưa set liệu chính', 'error')
       }
       else {
-        if(mainM === selectedMasterMaterial.M_NAME) {
+        if (mainM === selectedMasterMaterial.M_NAME) {
           checkM = true;
         }
         else {
           checkM = false;
-          Swal.fire('Thông báo','Liệu chính được chọn không khớp liệu chính trong BOM VL','error')
+          Swal.fire('Thông báo', 'Liệu chính được chọn không khớp liệu chính trong BOM VL', 'error')
         }
-      }      
+      }
     }
     else {
       checkM = true;
     }
-    
+
 
     return checkM;
   }
   const handleUpdateCode = async () => {
-    if(checkMAINVLMatching()) {
-      if ((getCompany() === 'CMS') && (await handleCheckCodeInfo2()) || getCompany() !== 'CMS') {
-        let tempInfo = codefullinfo;
-        if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
-          tempInfo = { ...codefullinfo, PD_HSD: 'P', UPD_COUNT: (codefullinfo?.UPD_COUNT??0) +1  }
-        }
-        else {
-          tempInfo = { ...codefullinfo, PD_HSD: 'N', UPD_COUNT: (codefullinfo?.UPD_COUNT??0) +1  }
-        }
-        await generalQuery("updateM100", tempInfo)
-          .then((response) => {
-            ////console.log(response.data);
-            if (response.data.tk_status !== "NG") {
-              Swal.fire(
-                "Thông báo",
-                "Update thành công: " + codefullinfo.G_CODE,
-                "success",
-              );
-            } else {
-              Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
-            }
-          })
-          .catch((error) => {
-            //console.log(error);
-          });
-        confirmUpdateM100TBG();
-      }
+    let tempUpdateReason: string = codefullinfo?.UPDATE_REASON ?? '-';
 
-    }
+    if((codefullinfo.PDBV ?? 'N') ==='Y')
+    {
+      const { value: pass1 } = await Swal.fire({
+        title: "Xác nhận",
+        input: "text",
+        inputLabel: "Lý do update thông tin code",
+        inputValue: "",
+        inputPlaceholder: "Bạn update cái gì ?",
+        showCancelButton: true,
+      });      
+      tempUpdateReason = pass1 ?? '';
+    }  
+    if(tempUpdateReason !=='')
+    {
+      if (checkMAINVLMatching()) {
+        if ((getCompany() === 'CMS') && (await handleCheckCodeInfo2()) || getCompany() !== 'CMS') {
+          let tempInfo = codefullinfo;
+          if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
+            tempInfo = { ...codefullinfo, PD_HSD: 'P', UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1, UPDATE_REASON: tempUpdateReason }
+          }
+          else {
+            tempInfo = { ...codefullinfo, PD_HSD: 'N', UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1, UPDATE_REASON: tempUpdateReason }
+          }
+          await generalQuery("updateM100", tempInfo)
+            .then((response) => {
+              ////console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+                Swal.fire(
+                  "Thông báo",
+                  "Update thành công: " + codefullinfo.G_CODE,
+                  "success",
+                );
+              } else {
+                Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              //console.log(error);
+            });
+          confirmUpdateM100TBG();
+        }
   
+      }
+      
+    }
+    else {
+      Swal.fire("Thông báo","Phải nhập lý do update","error");   
+    }
+
+    
+
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -1884,7 +1865,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   };
   const handleInsertBOMSX = async () => {
     if (bomgiatable.length > 0) {
-      if(checkMAINVLMatching()) {
+      if (checkMAINVLMatching()) {
         if (bomsxtable.length > 0) {
           //delete old bom from M140
           let err_code: string = "0";
@@ -2039,7 +2020,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
         }
       }
-      
+
     } else {
       Swal.fire(
         "Thông báo",
@@ -2663,6 +2644,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     </Typography>
   );
   useEffect(() => {
+    getFSCList();
     getmateriallist();
     getcustomerlist();
     getMachineList();
@@ -2832,12 +2814,12 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   GMANAGEMENT_UNIT: 0,
                   M_LOSS_UNIT: 0,
                   G_WIDTH: codefullinfo?.G_WIDTH ?? 0,
-                  G_LENGTH: codefullinfo?.G_LENGTH??0,
+                  G_LENGTH: codefullinfo?.G_LENGTH ?? 0,
                   G_C: codefullinfo?.G_C ?? 0,
                   G_C_R: codefullinfo?.G_C_R ?? 0,
                   G_LG: codefullinfo?.G_LG ?? 0,
                   G_CG: codefullinfo?.G_CG ?? 0,
-                  G_SG_L:codefullinfo?.G_SG_L ?? 0,
+                  G_SG_L: codefullinfo?.G_SG_L ?? 0,
                   G_SG_R: codefullinfo?.G_SG_R ?? 0,
                   PROD_PRINT_TIMES: 0,
                   KNIFE_COST: 0,
@@ -2878,9 +2860,9 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 {" "}
                 {codedatatablefilter[0]?.G_CODE}:{" "}
               </div>
-              <div className="biginfokd"> 
-              {codedatatablefilter[0]?.G_NAME}
-              </div>                         
+              <div className="biginfokd">
+                {codedatatablefilter[0]?.G_NAME}
+              </div>
             </div>
             <div
               className="down"
@@ -3619,13 +3601,41 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                             : codefullinfo?.FSC
                         }
                         onChange={(e) => {
-                          handleSetCodeInfo("FSC", e.target.value);
+                          let tempcodefullinfo = { ...codefullinfo, 
+                            FSC: e.target.value,
+                            FSC_CODE: e.target.value ==='N' ? '01': codefullinfo.FSC_CODE
+                           };
+                          ////console.log(tempcodefullinfo);
+                          setCodeFullInfo(tempcodefullinfo);
                         }}
                       >
                         <option value="Y">YES</option>
                         <option value="N">NO</option>
                       </select>
                     </label>
+                    <label>
+                    Loại FSC:
+                    <select
+                    disabled={codefullinfo?.FSC ==='N'}
+                      name='fsc'
+                      value={codefullinfo?.FSC_CODE}
+                      onChange={(e) => {
+                        handleSetCodeInfo(
+                          "FSC_CODE", e.target.value,
+                        );        
+
+                      }}
+                    >
+                      {
+                        fscList.map((ele: FSC_LIST_DATA,index: number )=> {
+                          return (
+                            <option key={index} value={ele.FSC_CODE}> {ele.FSC_NAME} </option>
+                          )
+                        })
+                      }
+                                         
+                    </select>
+              </label>
                   </div>
                   <div className="info33">
                     <label>
@@ -3836,8 +3846,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               </div>
             </div>
             <div className="updatehistory">
-                Update {codefullinfo.UPD_COUNT ?? 0} lần / Người update cuối {codefullinfo.UPD_EMPL ?? ''} / Thời điểm update cuối {moment.utc(codefullinfo.UPD_DATE ?? '').format("YYYY-MM-DD HH:mm:ss")}
-              </div>  
+              Update {codefullinfo.UPD_COUNT ?? 0} lần / Người update cuối {codefullinfo.UPD_EMPL ?? ''} / Thời điểm update cuối {moment.utc(codefullinfo.UPD_DATE ?? '').format("YYYY-MM-DD HH:mm:ss")}
+            </div>
             <div className="materiallist">
               <Autocomplete
                 disabled={column_bomsx[0].editable || column_bomgia[0].editable}
@@ -3977,21 +3987,21 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>
         </div>
       )}
-      {showHideDesignBom && 
-      <div className="design_panel">
-        <div className="closediv">
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHideDesignBOM(prev => !prev)
-          }}
-        >
-          <AiOutlineClose color="red" size={20} />
-          Close
-        </IconButton>
+      {showHideDesignBom &&
+        <div className="design_panel">
+          <div className="closediv">
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHideDesignBOM(prev => !prev)
+              }}
+            >
+              <AiOutlineClose color="red" size={20} />
+              Close
+            </IconButton>
+          </div>
+          <BOM_DESIGN />
         </div>
-        <BOM_DESIGN/>
-      </div>
       }
       {selection.thempohangloat && (
         <div className="uphangloat">

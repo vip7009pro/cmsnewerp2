@@ -560,6 +560,15 @@ export interface MATERIAL_TABLE_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
   EXP_DATE: string;
+  TDS: string;
+  FSC: string;
+  FSC_CODE: string;
+  FSC_NAME: string;
+
+}
+export interface FSC_LIST_DATA {
+  FSC_CODE: string, 
+  FSC_NAME: string,  
 }
 //bang chang cong
 export interface BANGCHAMCONG_DATA {
@@ -2333,6 +2342,7 @@ export interface CODE_FULL_INFO {
   EQ4?: string;
   PO_TYPE?: string;
   FSC?: string;
+  FSC_CODE?: string;
   PROD_DVT?: string;
   id?: number;
   PROD_LAST_PRICE?: number;
@@ -2376,6 +2386,7 @@ export interface CODE_FULL_INFO {
   UPD_COUNT?: number;
   UPD_DATE?: string;
   UPD_EMPL?: string;
+  UPDATE_REASON?: string; 
 }
 export interface LIST_BOM_AMAZON {
   id: string;
