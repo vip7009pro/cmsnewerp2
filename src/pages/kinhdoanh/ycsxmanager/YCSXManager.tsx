@@ -2721,6 +2721,40 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
                   //Swal.fire("Thông báo", "Delete YCSX thành công", "success");
+                  if(ycsxdatatablefilter.current[i].PL_HANG != 'TT') {
+                    generalQuery("delete_P500_YCSX", {
+                      PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,                     
+                      INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
+                    })
+                      .then((response) => {
+                        console.log(response.data.tk_status);
+                        if (response.data.tk_status !== "NG") {
+                         
+                        } else {
+                         
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+
+                      generalQuery("delete_P501_YCSX", {
+                        PLAN_ID: ycsxdatatablefilter.current[i].PROD_REQUEST_NO+'A',                     
+                        INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
+                      })
+                        .then((response) => {
+                          console.log(response.data.tk_status);
+                          if (response.data.tk_status !== "NG") {
+                           
+                          } else {
+                           
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+
+                  }
                 } else {
                   //Swal.fire("Thông báo", "Update YCSX thất bại: " +response.data.message , "error");
                   err_code = true;
@@ -2735,7 +2769,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       if (!err_code) {
         Swal.fire(
           "Thông báo",
-          "Xóa YCSX thành công (chỉ PO của người đăng nhập)!",
+          "Xóa YCSX thành công (chỉ YCSX của người đăng nhập)!",
           "success"
         );
       } else {
