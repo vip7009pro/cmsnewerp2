@@ -1051,20 +1051,20 @@ const BOM_MANAGER = () => {
         testinvoicetable: true,
       });
     }
-  };  
+  };
   const getFSCList = () => {
     generalQuery("getFSCList", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data)
-        setFSCList(response.data.data);
-      } else {
-        setFSCList([])
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data)
+          setFSCList(response.data.data);
+        } else {
+          setFSCList([])
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const getcustomerlist = () => {
     generalQuery("selectcustomerList", {})
@@ -1111,7 +1111,7 @@ const BOM_MANAGER = () => {
                 G_NAME_KD: element.G_NAME_KD === null || element.G_NAME_KD === "" ? "7" : element.G_NAME_KD,
                 DESCR: element.DESCR === null || element.DESCR === "" ? "" : element.DESCR,
                 PROD_MAIN_MATERIAL: element.PROD_MAIN_MATERIAL === null || element.PROD_MAIN_MATERIAL === "" ? "" : element.PROD_MAIN_MATERIAL,
-                G_NAME: element.G_NAME === null || element.G_NAME === ""   ? ""   : element.G_NAME,
+                G_NAME: element.G_NAME === null || element.G_NAME === "" ? "" : element.G_NAME,
                 G_LENGTH: element.G_LENGTH === null ? 0 : element.G_LENGTH,
                 G_WIDTH: element.G_WIDTH === null ? 0 : element.G_WIDTH,
                 PD: element.PD === null ? 0 : element.PD,
@@ -1121,9 +1121,9 @@ const BOM_MANAGER = () => {
                 G_CG: element.G_CG === null ? 0 : element.G_CG,
                 G_SG_L: element.G_SG_L === null ? 0 : element.G_SG_L,
                 G_SG_R: element.G_SG_R === null ? 0 : element.G_SG_R,
-                PACK_DRT: element.PACK_DRT === null || element.PACK_DRT === ""   ? "1"   : element.PACK_DRT,
+                PACK_DRT: element.PACK_DRT === null || element.PACK_DRT === "" ? "1" : element.PACK_DRT,
                 KNIFE_TYPE: element.KNIFE_TYPE === null ? 0 : element.KNIFE_TYPE,
-                KNIFE_LIFECYCLE: element.KNIFE_LIFECYCLE === null   ? 0   : element.KNIFE_LIFECYCLE,
+                KNIFE_LIFECYCLE: element.KNIFE_LIFECYCLE === null ? 0 : element.KNIFE_LIFECYCLE,
                 KNIFE_PRICE: element.KNIFE_PRICE === null ? 0 : element.KNIFE_PRICE,
                 CODE_33: element.CODE_33 === null ? "03" : element.CODE_33,
                 PROD_DVT: element.PROD_DVT === null ? "01" : element.PROD_DVT,
@@ -1131,16 +1131,16 @@ const BOM_MANAGER = () => {
                 RPM: element.RPM === null ? 0 : element.RPM,
                 PIN_DISTANCE: element.PIN_DISTANCE === null ? 0 : element.PIN_DISTANCE,
                 PROCESS_TYPE: element.PROCESS_TYPE === null ? "" : element.PROCESS_TYPE,
-                EQ1: element.EQ1 === null || element.EQ1 === ""   ? "NA"   : element.EQ1,
-                EQ2: element.EQ2 === null || element.EQ2 === ""   ? "NA"   : element.EQ2,
-                EQ3: element.EQ3 === null || element.EQ3 === ""   ? "NA"   : element.EQ3,
-                EQ4: element.EQ4 === null || element.EQ4 === ""   ? "NA"   : element.EQ4,
+                EQ1: element.EQ1 === null || element.EQ1 === "" ? "NA" : element.EQ1,
+                EQ2: element.EQ2 === null || element.EQ2 === "" ? "NA" : element.EQ2,
+                EQ3: element.EQ3 === null || element.EQ3 === "" ? "NA" : element.EQ3,
+                EQ4: element.EQ4 === null || element.EQ4 === "" ? "NA" : element.EQ4,
                 PROD_DIECUT_STEP: element.PROD_DIECUT_STEP ?? '',
                 PROD_PRINT_TIMES: element.PROD_PRINT_TIMES ?? 0,
                 PO_TYPE: element.PO_TYPE ?? 'E1',
                 FSC: element.FSC ?? 'N',
                 QL_HSD: element.QL_HSD ?? 'N',
-                EXP_DATE: element.EXP_DATE ??0,
+                EXP_DATE: element.EXP_DATE ?? 0,
                 FSC_CODE: element.FSC_CODE ?? '01',
                 id: index,
               };
@@ -1759,16 +1759,12 @@ const BOM_MANAGER = () => {
     else {
       checkM = true;
     }
-
-
     return checkM;
   }
   const handleUpdateCode = async () => {
     let tempUpdateReason: string = codefullinfo?.UPDATE_REASON ?? '-';
     let currentReason: string = '-';
-
-    if((codefullinfo.PDBV ?? 'N') ==='Y')
-    {
+    if ((codefullinfo.PDBV ?? 'N') === 'Y') {
       const { value: pass1 } = await Swal.fire({
         title: "Xác nhận",
         input: "text",
@@ -1776,13 +1772,12 @@ const BOM_MANAGER = () => {
         inputValue: "",
         inputPlaceholder: "Bạn update cái gì ?",
         showCancelButton: true,
-      });   
-      currentReason = pass1 ?? '';   
-      tempUpdateReason +=  (pass1 !== undefined && pass1 !=='')? moment().format("YYYY-MM-DD HH:mm:ss")+ "_" + getUserData()?.EMPL_NO + ':' + pass1 : '';
-    }  
+      });
+      currentReason = pass1 ?? '';
+      tempUpdateReason += (pass1 !== undefined && pass1 !== '') ? moment().format("YYYY-MM-DD HH:mm:ss") + "_" + getUserData()?.EMPL_NO + ':' + pass1 : '';
+    }
     console.log(currentReason)
-    if(currentReason !=='')
-    {
+    if (currentReason !== '') {
       if (checkMAINVLMatching()) {
         if ((getCompany() === 'CMS') && (await handleCheckCodeInfo2()) || getCompany() !== 'CMS') {
           let tempInfo = codefullinfo;
@@ -1810,16 +1805,11 @@ const BOM_MANAGER = () => {
             });
           confirmUpdateM100TBG();
         }
-  
       }
-      
     }
     else {
-      Swal.fire("Thông báo","Phải nhập lý do update","error");   
+      Swal.fire("Thông báo", "Phải nhập lý do update", "error");
     }
-
-    
-
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -2025,7 +2015,6 @@ const BOM_MANAGER = () => {
           Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
         }
       }
-
     } else {
       Swal.fire(
         "Thông báo",
@@ -3606,10 +3595,11 @@ const BOM_MANAGER = () => {
                             : codefullinfo?.FSC
                         }
                         onChange={(e) => {
-                          let tempcodefullinfo = { ...codefullinfo, 
+                          let tempcodefullinfo = {
+                            ...codefullinfo,
                             FSC: e.target.value,
-                            FSC_CODE: e.target.value ==='N' ? '01': codefullinfo.FSC_CODE
-                           };
+                            FSC_CODE: e.target.value === 'N' ? '01' : codefullinfo.FSC_CODE
+                          };
                           ////console.log(tempcodefullinfo);
                           setCodeFullInfo(tempcodefullinfo);
                         }}
@@ -3619,28 +3609,26 @@ const BOM_MANAGER = () => {
                       </select>
                     </label>
                     <label>
-                    Loại FSC:
-                    <select
-                    disabled={codefullinfo?.FSC ==='N'}
-                      name='fsc'
-                      value={codefullinfo?.FSC_CODE}
-                      onChange={(e) => {
-                        handleSetCodeInfo(
-                          "FSC_CODE", e.target.value,
-                        );        
-
-                      }}
-                    >
-                      {
-                        fscList.map((ele: FSC_LIST_DATA,index: number )=> {
-                          return (
-                            <option key={index} value={ele.FSC_CODE}> {ele.FSC_NAME} </option>
-                          )
-                        })
-                      }
-                                         
-                    </select>
-              </label>
+                      Loại FSC:
+                      <select
+                        disabled={codefullinfo?.FSC === 'N'}
+                        name='fsc'
+                        value={codefullinfo?.FSC_CODE}
+                        onChange={(e) => {
+                          handleSetCodeInfo(
+                            "FSC_CODE", e.target.value,
+                          );
+                        }}
+                      >
+                        {
+                          fscList.map((ele: FSC_LIST_DATA, index: number) => {
+                            return (
+                              <option key={index} value={ele.FSC_CODE}> {ele.FSC_NAME} </option>
+                            )
+                          })
+                        }
+                      </select>
+                    </label>
                   </div>
                   <div className="info33">
                     <label>
