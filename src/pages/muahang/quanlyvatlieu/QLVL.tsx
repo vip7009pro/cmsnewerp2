@@ -10,7 +10,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
-import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -23,6 +23,7 @@ import {CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Compo
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
+import { checkBP } from "../../../api/GlobalFunction";
 const QLVL = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
@@ -72,7 +73,7 @@ const QLVL = () => {
                 EXP_DATE: element.EXP_DATE ?? '-',
                 FSC: element.FSC ?? 'N',
                 FSC_CODE: element.FSC_CODE ?? '01',
-                FSC_NAME: element.FSC_CODE ?? 'NO_FSC',
+                FSC_NAME: element.FSC_NAME ?? 'NO_FSC',
                 id: index,
               };
             },
@@ -146,6 +147,7 @@ const QLVL = () => {
               if (response.data.tk_status !== "NG") {
                 Swal.fire("Thông báo", "Update vật liệu thành công", "success");
               } else {
+                Swal.fire("Thông báo", "Update vật liệu thất bại", "error");
               }
             })
             .catch((error) => {
@@ -1179,10 +1181,16 @@ const QLVL = () => {
               load_material_table();
             }}>Refresh</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-              addMaterial();
+               checkBP(getUserData(), ["MUA"], ["ALL"], ["ALL"], () => {                
+                addMaterial();
+              })
+              
             }}>Add</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              updateMaterial();
+              checkBP(getUserData(), ["MUA"], ["ALL"], ["ALL"], () => {
+                updateMaterial();
+              })
+              
             }}>Update</Button>
           </div>
         </div>
