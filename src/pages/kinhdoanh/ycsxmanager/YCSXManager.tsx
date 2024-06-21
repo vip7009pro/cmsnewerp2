@@ -158,6 +158,7 @@ const YCSXManager = () => {
   const [id_congviec, setID_CongViec] = useState("");
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState("");
+  const [amz_PL_HANG, setAMZ_PL_HANG] = useState("TT");
   const [clickedRows, setClickedRows] = useState<YCSXTableData>({
     BLOCK_TDYCSX: 0,
     BTP_TDYCSX: 0,
@@ -1278,13 +1279,21 @@ const YCSXManager = () => {
   const handleGoToAmazon = () => {
     console.log(ycsxdatatablefilter.current.length);
     if (ycsxdatatablefilter.current.length === 1) {
-      setProdRequestNo(
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
-      );
-      handle_findAmazonCodeInfo(
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
-      );
-      setNav(3);
+      if(ycsxdatatablefilter.current[0].PL_HANG==='AM')
+      {
+        setProdRequestNo(
+          ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
+        );
+        handle_findAmazonCodeInfo(
+          ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
+        );
+        setNav(3);
+      }
+      else
+      {
+        Swal.fire("Thông báo","Đây không phải YCSX AMZ","error");
+      }
+      
     } else if (ycsxdatatablefilter.current.length > 1) {
       Swal.fire("Thông báo", "Chỉ chọn 1 YCSX để qua Amazon", "error");
     } else {
@@ -1515,88 +1524,96 @@ const YCSXManager = () => {
   };
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
-    isDuplicated = await checkDuplicateAMZ();
-    if (!isDuplicated) {
-      let uploadAmazonData = await handleAmazonData(
-        uploadExcelJson,
-        cavityAmazon,
-        codeCMS,
-        prodrequestno,
-        id_congviec
-      );
-      //console.log(uploadAmazonData);
-      let checkIDcongViecTonTai: boolean = false;
-      await generalQuery("checkIDCongViecAMZ", {
-        NO_IN: id_congviec,
-        PROD_REQUEST_NO: prodrequestno,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            checkIDcongViecTonTai = true;
-          } else {
-            checkIDcongViecTonTai = false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //if (!AMZ_check_flag) {
-      if (false) {
-        Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
-      } else {
-        if (!checkIDcongViecTonTai) {
-          let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
-          let sodu: number = uploadAmazonData.length % 1000;
-          for (let i = 1; i <= songuyen; i++) {
-            await generalQuery("insertData_Amazon_SuperFast", {
-              AMZDATA: uploadAmazonData.filter(
-                (e: UploadAmazonData, index: number) => {
-                  let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
-                  return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
-                }
-              ),
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  setProgressValue(i * 2 * 1000);
-                } else {
-                  console.log(response.data.message);
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-          await generalQuery("insertData_Amazon_SuperFast", {
-            AMZDATA: uploadAmazonData.filter(
-              (e: UploadAmazonData, index: number) => {
-                let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
-                return (
-                  rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
-                );
-              }
-            ),
+    if(amz_PL_HANG === 'AM')
+      {
+        isDuplicated = await checkDuplicateAMZ();
+        if (!isDuplicated) {
+          let uploadAmazonData = await handleAmazonData(
+            uploadExcelJson,
+            cavityAmazon,
+            codeCMS,
+            prodrequestno,
+            id_congviec
+          );
+          //console.log(uploadAmazonData);
+          let checkIDcongViecTonTai: boolean = false;
+          await generalQuery("checkIDCongViecAMZ", {
+            NO_IN: id_congviec,
+            PROD_REQUEST_NO: prodrequestno,
           })
             .then((response) => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
-                setProgressValue(uploadAmazonData.length * 2);
+                checkIDcongViecTonTai = true;
               } else {
-                console.log(response.data.message);
+                checkIDcongViecTonTai = false;
               }
             })
             .catch((error) => {
               console.log(error);
             });
-          setUploadExcelJSon([]);
-          checkDuplicateAMZ();
-          //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
-        } else {
-          Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
+          //if (!AMZ_check_flag) {
+          if (false) {
+            Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
+          } else {
+            if (!checkIDcongViecTonTai) {
+              let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
+              let sodu: number = uploadAmazonData.length % 1000;
+              for (let i = 1; i <= songuyen; i++) {
+                await generalQuery("insertData_Amazon_SuperFast", {
+                  AMZDATA: uploadAmazonData.filter(
+                    (e: UploadAmazonData, index: number) => {
+                      let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
+                      return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
+                    }
+                  ),
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      setProgressValue(i * 2 * 1000);
+                    } else {
+                      console.log(response.data.message);
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+              await generalQuery("insertData_Amazon_SuperFast", {
+                AMZDATA: uploadAmazonData.filter(
+                  (e: UploadAmazonData, index: number) => {
+                    let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
+                    return (
+                      rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
+                    );
+                  }
+                ),
+              })
+                .then((response) => {
+                  console.log(response.data.tk_status);
+                  if (response.data.tk_status !== "NG") {
+                    setProgressValue(uploadAmazonData.length * 2);
+                  } else {
+                    console.log(response.data.message);
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              setUploadExcelJSon([]);
+              checkDuplicateAMZ();
+              //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
+            } else {
+              Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
+            }
+          }
         }
+
       }
-    }
+      else {
+        Swal.fire("Thông báo","Đây không phải là yêu cầu sản xuất AMZ","error");
+      }
+  
   };
   const readUploadFileAmazon = (e: any) => {
     e.preventDefault();
@@ -3001,6 +3018,7 @@ const YCSXManager = () => {
           setCodeKD(response.data.data[0].G_NAME);
           setCodeCMS(response.data.data[0].G_CODE);
           setProd_Model(response.data.data[0].PROD_MODEL);
+          setAMZ_PL_HANG(response.data.data[0].PL_HANG);
           generalQuery("get_cavityAmazon", {
             g_code: response.data.data[0].G_CODE,
           })
