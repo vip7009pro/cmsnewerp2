@@ -1,33 +1,8 @@
-/* eslint-disable no-loop-func */
-import {
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridCallbackDetails,
-  GridCellEditCommitParams,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-  MuiBaseEvent,
-  MuiEvent,
-} from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
-import {
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
-import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -344,7 +319,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     return checkTonTai;
   }
   const checkNextPlanFSC = async (NEXT_PLAN: string) => {
-    let checkFSC: string = "N";
+    let checkFSC: string = "N", checkFSC_CODE='01';
     await generalQuery("checkFSC_PLAN_ID", {
       PLAN_ID: NEXT_PLAN,
     })
@@ -352,13 +327,14 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           checkFSC = response.data.data[0].FSC;
+          checkFSC_CODE = response.data.data[0].FSC_CODE;
         } else {
         }
       })
       .catch((error) => {
         console.log(error);
       });
-    return checkFSC;
+    return {FSC: checkFSC, FSC_CODE: checkFSC_CODE};
   };
   const checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
     let checkNhapKho: string = "N";
@@ -401,7 +377,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
-          let checkFSC: string = await checkNextPlanFSC(nextPlan);
+          let checkFSC: string = (await checkNextPlanFSC(nextPlan)).FSC;
+          let checkFSC_CODE: string = (await checkNextPlanFSC(nextPlan)).FSC_CODE;
           if (
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
