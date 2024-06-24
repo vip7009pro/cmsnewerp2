@@ -1791,8 +1791,8 @@ const MACHINE = () => {
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                ORG_LOSS_KT: element.LOSS_KT,
-                LOSS_KT: element?.LOSS_KT ?? 0 > 5 ? 5 : element.LOSS_KT ?? 0,
+                ORG_LOSS_KT: getCompany()==='CMS'? element.LOSS_KT :0,
+                LOSS_KT: getCompany()==='CMS'? element?.LOSS_KT ?? 0 > 5 ? 5 : element.LOSS_KT ?? 0 : 0,
                 id: index,
               };
             }

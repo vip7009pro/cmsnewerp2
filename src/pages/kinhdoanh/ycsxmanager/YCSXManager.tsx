@@ -1976,7 +1976,7 @@ const YCSXManager = () => {
               BTP_TDYCSX: tonkho_tdycsx.BTP,
               CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
               PDUYET:
-                pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
+                pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
             })
               .then((response) => {
@@ -2037,7 +2037,7 @@ const YCSXManager = () => {
               W8: fcst_tdycsx.W8,
               BTP_TDYCSX: tonkho_tdycsx.BTP,
               CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
-              PDUYET: pobalance_tdycsx.PO_BALANCE > 0 ? 1 : 0,
+              PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
             })
               .then((response) => {
@@ -2079,7 +2079,7 @@ const YCSXManager = () => {
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
               EMPL_NO: userData?.EMPL_NO,
-              phanloai: newphanloai,
+              phanloai: uploadExcelJson[i].PHANLOAI,
               PLAN_ID: next_prod_request_no + "A",
             })
               .then((response) => {
@@ -2458,7 +2458,7 @@ const YCSXManager = () => {
           W8: fcst_tdycsx.W8,
           BTP_TDYCSX: tonkho_tdycsx.BTP,
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
-          PDUYET: pobalance_tdycsx.PO_BALANCE > 0 ? 1 : 0,
+          PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
         })
           .then((response) => {
