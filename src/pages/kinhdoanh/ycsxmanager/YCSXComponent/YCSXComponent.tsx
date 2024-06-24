@@ -379,7 +379,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           </div>
         </div>
       )}
-      {request_codeinfo[0].PDUYET===1 && ((isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE) || ((isMainMaterialFSC && request_codeinfo[0].FSC !=='Y') && (!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y'))) && (
+      {request_codeinfo[0].PDUYET===1 && ((!isMainMaterialFSC && request_codeinfo[0].FSC !=='Y') || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE)) && (
         <div className="thongtinycsx">
           <div className="text1">
             1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: (
@@ -830,8 +830,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
         </div>
       )}
       {request_codeinfo[0].PDUYET!==1 && <div>YCSX chưa đươc phê duyệt, liên hệ Leader KD</div>}
-      {((!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') || (isMainMaterialFSC && request_codeinfo[0].FSC !=='Y') || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE!==request_codeinfo[0].FSC_CODE)) && <div>Hàng FSC liệu cũng phải là FSC, Liệu FSC, thì hàng cũng phải là FSC, và phải cùng 1 loại FSC, hãy cập nhật lại thông tin sản phẩm.</div>}
-      
+      {((!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') || (isMainMaterialFSC && request_codeinfo[0].FSC !=='Y') || ((isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') && mainMaterialFSC_CODE!==request_codeinfo[0].FSC_CODE)) && <div>Hàng FSC liệu cũng phải là FSC, Liệu FSC, thì hàng cũng phải là FSC, và phải cùng 1 loại FSC, hãy cập nhật lại thông tin sản phẩm.</div>}      
     </div>
   );
 };
