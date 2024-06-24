@@ -1,6 +1,6 @@
 import {
   Button,
-  IconButton, 
+  IconButton,
 } from "@mui/material";
 import moment from "moment";
 import React, {
@@ -86,10 +86,10 @@ const PLAN_DATATB = () => {
     const selectedrow = gridRef.current!.api.getSelectedRows();
     qlsxplandatafilter.current = selectedrow;
   }, []);
- /*  function setIdText(id: string, value: string | number | undefined) {
-    document.getElementById(id)!.textContent =
-      value == undefined ? "undefined" : value + "";
-  } */
+  /*  function setIdText(id: string, value: string | number | undefined) {
+     document.getElementById(id)!.textContent =
+       value == undefined ? "undefined" : value + "";
+   } */
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
     //setIdText("headerHeight", value);
@@ -392,7 +392,7 @@ const PLAN_DATATB = () => {
       }
     },
     {
-      field: "IS_SETTING", headerName: "IS_SETTING", width: 50, editable: true,  cellRenderer: (params: any) => {
+      field: "IS_SETTING", headerName: "IS_SETTING", width: 50, editable: true, cellRenderer: (params: any) => {
         if (params.data.IS_SETTING === 'Y')
           return (
             <span style={{ color: "blue", fontWeight: "bold" }}>
@@ -809,66 +809,82 @@ const PLAN_DATATB = () => {
     { field: "EQ4", headerName: "EQ4", width: 40, editable: false },
   ];
   const column_planmaterialtable = [
-    { field: 'CHITHI_ID',headerName: 'CT_ID', resizable: true,width: 100, editable: false, headerCheckboxSelection: true,
-    checkboxSelection: true,},
-    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 80, editable: false},
-    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80, editable: false },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
-      if (params.data.LIEUQL_SX === 1) {
+    {
+      field: 'CHITHI_ID', headerName: 'CT_ID', resizable: true, width: 100, editable: false, headerCheckboxSelection: true,
+      checkboxSelection: true,
+    },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 80, editable: false },
+    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 80, editable: false },
+    {
+      field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+        if (params.data.LIEUQL_SX === 1) {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.data.M_NAME}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "black" }}>{params.data.M_NAME}</span>
+          );
+        }
+      }
+    },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80, editable: false },
+    {
+      field: 'M_MET_QTY', headerName: 'M_MET_QTY', resizable: true, width: 80, editable: true, cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            {params.data.M_NAME}
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {params.data.M_MET_QTY}
           </span>
         );
-      } else {
+      }
+    },
+    {
+      field: 'M_QTY', headerName: 'M_QTY', resizable: true, width: 80, editable: true, cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "black" }}>{params.data.M_NAME}</span>
+          <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+            {params.data.M_QTY}
+          </span>
         );
       }
-    } },
-    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80, editable: false },
-    { field: 'M_MET_QTY',headerName: 'M_MET_QTY', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {params.data.M_MET_QTY}
-        </span>
-      );
-    }} ,
-    { field: 'M_QTY',headerName: 'M_QTY', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.M_QTY}
-        </span>
-      );
-    }} ,
-    { field: 'LIEUQL_SX',headerName: 'LIEUQL_SX', resizable: true,width: 80, editable: true, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.LIEUQL_SX}
-        </span>
-      );
-    }} ,
-    { field: 'M_STOCK',headerName: 'M_STOCK', resizable: true,width: 80, editable: false, cellRenderer:(params: any) => {
-      return (
-        <span style={{ color: "gray", fontWeight: "bold" }}>
-          {params.data.M_STOCK?.toLocaleString("en-US")}
-        </span>
-      );
-    }} ,
-    { field: 'OUT_KHO_SX',headerName: 'OUT_KHO_SX', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.OUT_KHO_SX}
-        </span>
-      );
-    }},
-    { field: 'OUT_CFM_QTY',headerName: 'OUT_CFM_QTY', resizable: true,width: 80, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "#F117FF", fontWeight: "bold" }}>
-          {params.data.OUT_CFM_QTY}
-        </span>
-      );
-    }},   
+    },
+    {
+      field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 80, editable: true, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+            {params.data.LIEUQL_SX}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'M_STOCK', headerName: 'M_STOCK', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.M_STOCK?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'OUT_KHO_SX', headerName: 'OUT_KHO_SX', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+            {params.data.OUT_KHO_SX}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'OUT_CFM_QTY', headerName: 'OUT_CFM_QTY', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#F117FF", fontWeight: "bold" }}>
+            {params.data.OUT_CFM_QTY}
+          </span>
+        );
+      }
+    },
   ]
   const [columns, setColumns] = useState<Array<any>>(column_plandatatable);
   const [readyRender, setReadyRender] = useState(false);
@@ -1424,10 +1440,10 @@ const PLAN_DATATB = () => {
               }
               return {
                 ...element,
-                ORG_LOSS_KT: getCompany()==='CMS'? element.LOSS_KT : 0,
-                LOSS_KT: getCompany()==='CMS'? element?.LOSS_KT??0 > 5 ? 5 : element.LOSS_KT??0 : 0,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
+                LOSS_KT: getCompany() === 'CMS' ? element?.LOSS_KT ?? 0 > 5 ? 5 : element.LOSS_KT ?? 0 : 0,
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 EQ_STATUS:
                   element.EQ_STATUS === "B"
@@ -1460,13 +1476,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   element.MASS_END_TIME === null
                     ? "X"
                     : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
-
                 /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
                   TON_CD2: element.TON_CD2 === null ? 0: element.TON_CD2,
                   TON_CD3: element.TON_CD3 === null ? 0: element.TON_CD3,
                   TON_CD4: element.TON_CD4 === null ? 0: element.TON_CD4, */
                 id: index,
-
               };
             }
           );
@@ -1710,7 +1724,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   ) => {
     let PD: number = 0,
       CAVITY_NGANG: number = 0,
-      CAVITY_DOC: number = 0,      
+      CAVITY_DOC: number = 0,
       FINAL_LOSS_SX: number = 0,
       FINAL_LOSS_SETTING: number = 0,
       M_MET_NEEDED: number = 0;
@@ -1735,11 +1749,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
           }
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+            FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+            FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
           } else if (PROCESS_NUMBER === 4) {
             FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
           }
@@ -1760,7 +1774,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
           const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
-            (element: QLSXCHITHIDATA, index: number) => { 
+            (element: QLSXCHITHIDATA, index: number) => {
               return {
                 ...element,
                 id: index
@@ -1830,7 +1844,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         CAVITY_DOC: number = 0,
         PLAN_QTY: number = selectedPlan?.PLAN_QTY ?? 0,
         PROCESS_NUMBER: number = selectedPlan?.PROCESS_NUMBER ?? 1,
-        
         FINAL_LOSS_SX: number = 0,
         FINAL_LOSS_SETTING: number = 0,
         M_MET_NEEDED: number = 0;
@@ -1854,11 +1867,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               FINAL_LOSS_SX = (rowdata.LOSS_SX4 ?? 0) + (selectedPlan?.LOSS_KT ?? 0);;
             }
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+              FINAL_LOSS_SETTING = (calc_loss_setting ? rowdata.LOSS_SETTING1 ?? 0 : 0) + (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0)+ (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING2 ?? 0) + (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0)+ (rowdata.LOSS_SETTING4 ?? 0);
+              FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING3 ?? 0) + (rowdata.LOSS_SETTING4 ?? 0);
             } else if (PROCESS_NUMBER === 4) {
               FINAL_LOSS_SETTING = (rowdata.LOSS_SETTING4 ?? 0);
             }
@@ -2340,185 +2353,184 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       myComponentRef.current?.handleInternalClick();
     }
   };
-  const planMaterialTableAG = useMemo(()=> 
+  const planMaterialTableAG = useMemo(() =>
     <AGTable
-        toolbar={
-          <div>
-            <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /*   checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmDKXL
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmDKXL
-                    );
-                  }}
-                >
-                  <AiOutlineBarcode color='green' size={20} />
-                  Lưu CT + ĐKXK
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmDeleteLieu
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmDeleteLieu
-                    );
-                    //handleConfirmDeleteLieu();
-                  }}
-                >
-                  <FcDeleteRow color='yellow' size={20} />
-                  Xóa Liệu
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmRESETLIEU
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmRESETLIEU
-                    );
-                    //handleConfirmRESETLIEU();
-                  }}
-                >
-                  <BiReset color='red' size={20} />
-                  RESET Liệu
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    if (selectedPlan !== undefined) {
-                      /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
-                setShowKhoAo(!showkhoao);
-                handle_loadKhoAo();
-                handle_loadlichsuxuatkhoao();
-                handle_loadlichsunhapkhoao();
-                handle_loadlichsuinputlieu(
-                  selectedPlan?.PLAN_ID === undefined
-                    ? "xxx"
-                    : selectedPlan?.PLAN_ID
-                );
-              }); */
-                      checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
-                        setShowKhoAo(!showkhoao);
-                      });
-                    } else {
-                      Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
-                    }
-                  }}
-                >
-                  <FaWarehouse color='blue' size={20} />
-                  KHO ẢO
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    handleGetChiThiTable(
-                      selectedPlan?.PLAN_ID === undefined
-                        ? "xxx"
-                        : selectedPlan?.PLAN_ID,
-                      selectedPlan?.G_CODE === undefined
-                        ? "xxx"
-                        : selectedPlan?.G_CODE,
-                      selectedPlan?.PLAN_QTY === undefined
-                        ? 0
-                        : selectedPlan?.PLAN_QTY,
-                      selectedPlan?.PROCESS_NUMBER === undefined
-                        ? 0
-                        : selectedPlan?.PROCESS_NUMBER,
-                      selectedPlan?.IS_SETTING ?? 'Y'
-                    );
-                  }}
-                >
-                  <BiRefresh color='yellow' size={20} />
-                  Refresh chỉ thị
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handle_xuatdao_sample
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_xuatdao_sample
-                    );
-                    //handle_xuatdao_sample();
-                  }}
-                >
-                  <GiCurvyKnife color='red' size={20} />
-                  Xuất dao sample
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handle_xuatlieu_sample
-            ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_xuatlieu_sample
-                    );
-                    //handle_xuatlieu_sample();
-                  }}
-                >
-                  <AiOutlineArrowRight color='blue' size={20} />
-                  Xuất liệu sample
-                </IconButton>
-          </div>}
-        columns={column_planmaterialtable}
-        data={chithidatatable}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onRowClick={(params: any) => {
-          clickedRow.current = params.data;
-          //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {
-          //console.log(params)
-          //setSelectedRows(params!.api.getSelectedRows()[0]);
-          //console.log(e!.api.getSelectedRows())
-          qlsxchithidatafilter.current = params!.api.getSelectedRows();
-        }}
-      />
-
-  ,[chithidatatable]);
+      toolbar={
+        <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              /*   checkBP(
+        userData?.EMPL_NO,
+        userData?.MAINDEPTNAME,
+        ["QLSX"],
+        handleConfirmDKXL
+      ); */
+              checkBP(
+                userData,
+                ["QLSX"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmDKXL
+              );
+            }}
+          >
+            <AiOutlineBarcode color='green' size={20} />
+            Lưu CT + ĐKXK
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              /* checkBP(
+        userData?.EMPL_NO,
+        userData?.MAINDEPTNAME,
+        ["QLSX"],
+        handleConfirmDeleteLieu
+      ); */
+              checkBP(
+                userData,
+                ["QLSX"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmDeleteLieu
+              );
+              //handleConfirmDeleteLieu();
+            }}
+          >
+            <FcDeleteRow color='yellow' size={20} />
+            Xóa Liệu
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              /* checkBP(
+        userData?.EMPL_NO,
+        userData?.MAINDEPTNAME,
+        ["QLSX"],
+        handleConfirmRESETLIEU
+      ); */
+              checkBP(
+                userData,
+                ["QLSX"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmRESETLIEU
+              );
+              //handleConfirmRESETLIEU();
+            }}
+          >
+            <BiReset color='red' size={20} />
+            RESET Liệu
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              if (selectedPlan !== undefined) {
+                /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
+          setShowKhoAo(!showkhoao);
+          handle_loadKhoAo();
+          handle_loadlichsuxuatkhoao();
+          handle_loadlichsunhapkhoao();
+          handle_loadlichsuinputlieu(
+            selectedPlan?.PLAN_ID === undefined
+              ? "xxx"
+              : selectedPlan?.PLAN_ID
+          );
+        }); */
+                checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
+                  setShowKhoAo(!showkhoao);
+                });
+              } else {
+                Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
+              }
+            }}
+          >
+            <FaWarehouse color='blue' size={20} />
+            KHO ẢO
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              handleGetChiThiTable(
+                selectedPlan?.PLAN_ID === undefined
+                  ? "xxx"
+                  : selectedPlan?.PLAN_ID,
+                selectedPlan?.G_CODE === undefined
+                  ? "xxx"
+                  : selectedPlan?.G_CODE,
+                selectedPlan?.PLAN_QTY === undefined
+                  ? 0
+                  : selectedPlan?.PLAN_QTY,
+                selectedPlan?.PROCESS_NUMBER === undefined
+                  ? 0
+                  : selectedPlan?.PROCESS_NUMBER,
+                selectedPlan?.IS_SETTING ?? 'Y'
+              );
+            }}
+          >
+            <BiRefresh color='yellow' size={20} />
+            Refresh chỉ thị
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              /* checkBP(
+        userData?.EMPL_NO,
+        userData?.MAINDEPTNAME,
+        ["QLSX"],
+        handle_xuatdao_sample
+      ); */
+              checkBP(
+                userData,
+                ["QLSX"],
+                ["ALL"],
+                ["ALL"],
+                handle_xuatdao_sample
+              );
+              //handle_xuatdao_sample();
+            }}
+          >
+            <GiCurvyKnife color='red' size={20} />
+            Xuất dao sample
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              /*  checkBP(
+        userData?.EMPL_NO,
+        userData?.MAINDEPTNAME,
+        ["QLSX"],
+        handle_xuatlieu_sample
+      ); */
+              checkBP(
+                userData,
+                ["QLSX"],
+                ["ALL"],
+                ["ALL"],
+                handle_xuatlieu_sample
+              );
+              //handle_xuatlieu_sample();
+            }}
+          >
+            <AiOutlineArrowRight color='blue' size={20} />
+            Xuất liệu sample
+          </IconButton>
+        </div>}
+      columns={column_planmaterialtable}
+      data={chithidatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        qlsxchithidatafilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [chithidatatable]);
   const planDataTableAG = useMemo(() => {
     return (
       <div className="ag-theme-quartz"
@@ -2544,8 +2556,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           enterNavigatesVerticallyAfterEdit={true}
           stopEditingWhenCellsLoseFocus={true}
           rowBuffer={10}
-          debounceVerticalScrollbar={false}    
-          enableCellTextSelection={true}       
+          debounceVerticalScrollbar={false}
+          enableCellTextSelection={true}
           floatingFiltersHeight={23}
           onSelectionChanged={onSelectionChanged}
           onRowClicked={(params: any) => {
@@ -2714,7 +2726,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     }
                     setShowChiThi(true);
                     setChiThiListRender(
-                      renderChiThi(qlsxplandatafilter.current,myComponentRef)
+                      renderChiThi(qlsxplandatafilter.current, myComponentRef)
                     );
                     //console.log(ycsxdatatablefilter);
                   } else {
@@ -2911,10 +2923,10 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             >
               Render Chỉ Thị
             </button>
-            <button onClick={()=> {
-                      handleClick();
-                      handlePrint();
-                      }}>Print Chỉ Thị</button>
+            <button onClick={() => {
+              handleClick();
+              handlePrint();
+            }}>Print Chỉ Thị</button>
             <button
               onClick={() => {
                 setShowChiThi(!showChiThi);
@@ -2953,10 +2965,10 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             >
               Render Chỉ Thị 2
             </button>
-            <button onClick={()=> {
-                      handleClick();
-                      handlePrint();
-                      }}>Print Chỉ Thị</button>
+            <button onClick={() => {
+              handleClick();
+              handlePrint();
+            }}>Print Chỉ Thị</button>
             <button
               onClick={() => {
                 setShowChiThi2(!showChiThi2);

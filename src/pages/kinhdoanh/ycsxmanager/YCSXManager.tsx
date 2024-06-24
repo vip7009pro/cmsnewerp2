@@ -435,202 +435,7 @@ const YCSXManager = () => {
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
     { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    {
-      field: "PO_TDYCSX",
-      cellDataType: "number",
-      headerName: "PO_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#6600ff" }}>
-            <b>{params.data.PO_TDYCSX?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TOTAL_TKHO_TDYCSX",
-      cellDataType: "number",
-      headerName: "TOTAL_TKHO_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#6600ff" }}>
-            <b>{params.data.TOTAL_TKHO_TDYCSX?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TKHO_TDYCSX",
-      cellDataType: "number",
-      headerName: "TKHO_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.TKHO_TDYCSX?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "BTP_TDYCSX",
-      cellDataType: "number",
-      headerName: "BTP_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.BTP_TDYCSX?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CK_TDYCSX",
-      cellDataType: "number",
-      headerName: "CK_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.CK_TDYCSX?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "BLOCK_TDYCSX",
-      cellDataType: "number",
-      headerName: "BLOCK_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.BLOCK_TDYCSX?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "FCST_TDYCSX",
-      cellDataType: "number",
-      headerName: "FCST_TDYCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#6600ff" }}>
-            <b>{params.data.FCST_TDYCSX?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "W1",
-      cellDataType: "number",
-      headerName: "W1",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W1?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W2",
-      cellDataType: "number",
-      headerName: "W2",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W2?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W3",
-      cellDataType: "number",
-      headerName: "W3",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W3?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W4",
-      cellDataType: "number",
-      headerName: "W4",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W4?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W5",
-      cellDataType: "number",
-      headerName: "W5",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W5?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W6",
-      cellDataType: "number",
-      headerName: "W6",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W6?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W7",
-      cellDataType: "number",
-      headerName: "W7",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W7?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "W8",
-      cellDataType: "number",
-      headerName: "W8",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.W8?.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },    
     {
       field: "PDUYET",
       headerName: "PDUYET",
@@ -3339,9 +3144,19 @@ const YCSXManager = () => {
                       <option value='VN'>Việt Nam (VN)</option>
                       <option value='AM'>Amazon (AM)</option>
                       <option value='DL'>Đổi LOT (DL)</option>
-                      <option value='M4'>NM4 (M4)</option>
-                      <option value='IN'>Hàng In Nhanh (IN)</option>
+                      <option value='M4'>NM4 (M4)</option>                      
                       <option value='GC'>Hàng Gia Công (GC)</option>
+                      {getCompany()!=='CMS' && <>                      
+                      <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                      <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                      <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                      <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                      <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                      <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                      <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                      <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                      <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                      </>}
                     </select>
                   </label>
                 </div>
@@ -3690,7 +3505,17 @@ const YCSXManager = () => {
                       <option value='AM'>Amazon (AM)</option>
                       <option value='DL'>Đổi LOT (DL)</option>
                       <option value='M4'>NM4 (M4)</option>
-                      <option value='IN'>Hàng In Nhanh (IN)</option>
+                      {getCompany()!=='CMS' && <>                      
+                      <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                      <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                      <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                      <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                      <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                      <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                      <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                      <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                      <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                      </>}
                       {/* <option value='SL'>Slitting (SL)</option> */}
                     </select>
                   </label>

@@ -127,10 +127,17 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       PROD_MAIN_MATERIAL: "",
       LIEUQL_SX: 0,
       FSC: "N",
+      NO_INSPECTION: "N",
+      PDBV: "N",
+      PDUYET:0,
+      PL_HANG:"TT",
+      PROD_TYPE:""
     },
   ]);
-
   const [checklieuchinh, setCheckLieuChinh] = useState(false);
+  const [isMainMaterialFSC, setIsMainMaterialFSC] = useState(false);
+  const [mainMaterialFSC_CODE, setMainMaterialFSC_CODE] = useState('01');
+  const [mainMaterialFSC_NAME,setMainMaterialFSC_NAME] = useState('NO_FSC');
 
   const initYCSX = async () => {
     let inventorydate: string = "202207";
@@ -146,8 +153,29 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       .catch((error) => {
         console.log(error);
       });
+      await generalQuery("checkMainMaterialFSC", {
+        M_NAME: DATA.PROD_MAIN_MATERIAL,
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            if(response.data.data[0].FSC==='Y')
+            {
+              setIsMainMaterialFSC(true);
+              setMainMaterialFSC_CODE(response.data.data[0].FSC_CODE);      
+              setMainMaterialFSC_NAME(response.data.data[0].FSC_NAME)        
+            }
+          } else {
+            setIsMainMaterialFSC(false);
+            setMainMaterialFSC_CODE('01');
+            setMainMaterialFSC_NAME('NO_FSC');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
-    generalQuery("ycsx_fullinfo", {
+
+    await generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
       TRADATE: moment(inventorydate).format("YYYY-MM-DD 08:00:00"),
       INVENTORY: inventorydate,
@@ -247,7 +275,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
         console.log(error);
       });
 
-    generalQuery("checkpobalance_tdycsx", {
+    await generalQuery("checkpobalance_tdycsx", {
       G_CODE: DATA.G_CODE,
     })
       .then((response) => {
@@ -259,7 +287,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       .catch((error) => {
         console.log(error);
       });
-    generalQuery("checktonkho_tdycsx", {
+    await generalQuery("checktonkho_tdycsx", {
       G_CODE: DATA.G_CODE,
     })
       .then((response) => {
@@ -272,6 +300,8 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
         console.log(error);
       });
   };
+  console.log('isMainMaterialFSC',isMainMaterialFSC)
+  console.log('request_codeinfo[0].FSC',request_codeinfo[0].FSC ==='Y')
   useEffect(() => {
     initYCSX();
   }, [DATA.PROD_REQUEST_NO]);
@@ -308,7 +338,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           />
         </div>
       )}
-      {request_codeinfo[0].PDUYET && (
+      {request_codeinfo[0].PDUYET===1 && (
         <div className="tieudeycsx">
           {company === "CMS" && (
             <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
@@ -349,7 +379,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           </div>
         </div>
       )}
-      {request_codeinfo[0].PDUYET && (
+      {request_codeinfo[0].PDUYET===1 && ((isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE) || ((isMainMaterialFSC && request_codeinfo[0].FSC !=='Y') && (!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y'))) && (
         <div className="thongtinycsx">
           <div className="text1">
             1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: (
@@ -476,7 +506,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           </div>
           <div className="text1">
             2. 제품 정보 Thông tin sản phẩm _
-            {request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+            {request_codeinfo[0]?.FSC === "Y" ? `(${mainMaterialFSC_NAME})` : ""}
             <span className="approval_info">
               (Specification: {DATA.DESCR}){" "}
             </span>
@@ -799,6 +829,9 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           </div>
         </div>
       )}
+      {request_codeinfo[0].PDUYET!==1 && <div>YCSX chưa đươc phê duyệt, liên hệ Leader KD</div>}
+      {((!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') || (isMainMaterialFSC && request_codeinfo[0].FSC !=='Y') || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE!==request_codeinfo[0].FSC_CODE)) && <div>Hàng FSC liệu cũng phải là FSC, Liệu FSC, thì hàng cũng phải là FSC, và phải cùng 1 loại FSC, hãy cập nhật lại thông tin sản phẩm.</div>}
+      
     </div>
   );
 };

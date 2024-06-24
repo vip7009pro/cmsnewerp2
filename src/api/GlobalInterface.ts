@@ -541,6 +541,7 @@ export interface FullBOM {
   NOTE: string;
   PROD_TYPE?: string;
   PL_HANG?: string;
+  FSC_CODE?: string;
 }
 //quan ly vat lieu
 export interface MATERIAL_TABLE_DATA {
