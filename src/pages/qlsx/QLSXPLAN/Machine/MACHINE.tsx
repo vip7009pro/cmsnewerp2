@@ -1792,7 +1792,7 @@ const MACHINE = () => {
                 G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 ORG_LOSS_KT: getCompany()==='CMS'? element.LOSS_KT :0,
-                LOSS_KT: getCompany()==='CMS'? element?.LOSS_KT ?? 0 > 5 ? 5 : element.LOSS_KT ?? 0 : 0,
+                LOSS_KT: getCompany()==='CMS'? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
                 id: index,
               };
             }
@@ -2519,29 +2519,36 @@ const MACHINE = () => {
         .catch((error) => {
           console.log(error);
         });
-        let FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = selectedPlanTable[i]?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0;
+        let NEEDED_QTY: number = selectedPlanTable[i].PLAN_QTY ,FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = selectedPlanTable[i]?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = selectedPlanTable[i].PD ?? 0, CAVITY: number =  selectedPlanTable[i].CAVITY ?? 0;
 
         if (selectedPlanTable[i].PROCESS_NUMBER === 1) {
-          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX1 ?? 0) + (selectedPlanTable[i].LOSS_SX2 ?? 0) + (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
           FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX2 ?? 0) + (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
           FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
           FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
+          FINAL_LOSS_SX = 0;
         }
         if (selectedPlanTable[i].PROCESS_NUMBER === 1) {
-          FINAL_LOSS_SETTING = (selectedPlanTable[i].IS_SETTING==='Y' ? selectedPlanTable[i].LOSS_SETTING1 ?? 0 : 0) + (selectedPlanTable[i].LOSS_SETTING2 ?? 0) + (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
           FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING2 ?? 0) + (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
           FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
           FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
+          FINAL_LOSS_SETTING = 0;
         }
+
+        /* console.log("PD",PD);
+        console.log("CAVITY",CAVITY);
+        NEEDED_QTY = NEEDED_QTY*(100+FINAL_LOSS_SX+FINAL_LOSS_KT)/100 + FINAL_LOSS_SETTING/PD*CAVITY*1000;
         console.log("sx loss",FINAL_LOSS_SX)
         console.log("sx setting",FINAL_LOSS_SETTING)
         console.log("kt lss",FINAL_LOSS_KT)
+        console.log("Needed_qty",NEEDED_QTY); */
+
+
         
       if (
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
@@ -4887,6 +4894,7 @@ const MACHINE = () => {
                   <div className="losskt">
                     <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
                       LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
+                      LOSS KT 10 LOT:{selectedPlan?.LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
                     </span>
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>

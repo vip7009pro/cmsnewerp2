@@ -350,6 +350,9 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       FINAL_LOSS_SETTING = 0;
     }
     FINAL_LOSS_SETTING = FINAL_LOSS_SETTING / (request_codeinfo[0]?.PD ?? 0) * ((request_codeinfo[0]?.G_C ?? 0) * (request_codeinfo[0]?.G_C_R ?? 0)) * 1000;
+
+    /* console.log('FINAL_LOSS_SX',FINAL_LOSS_SX)
+    console.log('FINAL_LOSS_SETTING',FINAL_LOSS_SETTING) */
     return {
       FN_LOSS_SX: FINAL_LOSS_SX,
       FN_LOSS_ST: FINAL_LOSS_SETTING
