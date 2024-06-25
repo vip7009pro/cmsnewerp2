@@ -13,9 +13,7 @@ import {
 } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
-const protocol = window.location.protocol.startsWith("https")
-  ? "https"
-  : "http";
+const protocol = window.location.protocol.startsWith("https")? "https": "http";
 const main_port = protocol === "https" ? "5014" : "5013";
 const sub_port = protocol === "https" ? "3006" : "3007";
 const socket = io(
@@ -28,7 +26,7 @@ const socket = io(
     : ""
 );
 socket.on("connect", () => {
-  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+  console.log(socket.id); 
 });
 socket.on("notification", (data) => {
   if (data.command === "logout") {
@@ -41,18 +39,18 @@ socket.on("notification", (data) => {
       LGOT();
     }
   }
-  console.log(data); // x8WIv7-mJelg7on_ALbx
+  console.log(data); 
 });
 /* socket.on("online_list", (data) => {
   console.log(data);
 }); */
 socket.on("login", (data) => {
   console.log(data);
-  // x8WIv7-mJelg7on_ALbx
+  
 });
 socket.on("logout", (data) => {
   console.log(data);
-  // x8WIv7-mJelg7on_ALbx
+  
 });
 socket.on("disconnect", () => {
   console.log(socket.id); //undefined
