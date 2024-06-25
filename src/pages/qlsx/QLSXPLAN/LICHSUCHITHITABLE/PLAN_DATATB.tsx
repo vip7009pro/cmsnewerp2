@@ -2258,14 +2258,8 @@ const PLAN_DATATB = () => {
           PLAN_EQ: qlsxplandatafilter.current[i].PLAN_EQ,
           PLAN_ORDER: qlsxplandatafilter.current[i].PLAN_ORDER,
           PROCESS_NUMBER: qlsxplandatafilter.current[i].PROCESS_NUMBER,
-          KETQUASX:
-            qlsxplandatafilter.current[i].KETQUASX === null
-              ? 0
-              : qlsxplandatafilter.current[i].KETQUASX,
-          NEXT_PLAN_ID:
-            qlsxplandatafilter.current[i].NEXT_PLAN_ID === null
-              ? "X"
-              : qlsxplandatafilter.current[i].NEXT_PLAN_ID,
+          KETQUASX: qlsxplandatafilter.current[i].KETQUASX === null ?? 0,
+          NEXT_PLAN_ID: qlsxplandatafilter.current[i].NEXT_PLAN_ID ?? "X",
           IS_SETTING: qlsxplandatafilter.current[i].IS_SETTING?.toUpperCase(),
           NEEDED_QTY:  NEEDED_QTY,
           CURRENT_LOSS_SX: FINAL_LOSS_SX,
