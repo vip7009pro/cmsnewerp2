@@ -106,6 +106,8 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
   .catch((error) => {
     console.log(error);
   });
+  let {NEEDED_QTY,FINAL_LOSS_SX,FINAL_LOSS_KT, FINAL_LOSS_SETTING} = await getCurrentDMToSave(planToSave); 
+
   if (
     parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
     1 &&
@@ -137,15 +139,13 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
       PLAN_EQ: planToSave?.PLAN_EQ,
       PLAN_ORDER: planToSave?.PLAN_ORDER,
       PROCESS_NUMBER: planToSave?.PROCESS_NUMBER,
-      KETQUASX:
-        planToSave?.KETQUASX === null
-          ? 0
-          : planToSave?.KETQUASX,
-      NEXT_PLAN_ID:
-        planToSave?.NEXT_PLAN_ID === null
-          ? "X"
-          : planToSave?.NEXT_PLAN_ID,
-      IS_SETTING: planToSave?.IS_SETTING?.toUpperCase()
+      KETQUASX: planToSave?.KETQUASX ?? 0,
+      NEXT_PLAN_ID: planToSave?.NEXT_PLAN_ID ?? "X",
+      IS_SETTING: planToSave?.IS_SETTING?.toUpperCase(),
+      NEEDED_QTY:  NEEDED_QTY,
+      CURRENT_LOSS_SX: FINAL_LOSS_SX,
+      CURRENT_LOSS_KT: FINAL_LOSS_KT,
+      CURRENT_SETTING_M: FINAL_LOSS_SETTING,
     })
       .then((response) => {
         //console.log(response.data.tk_status);
@@ -211,6 +211,44 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
   } else {
     Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
   }
+}
+export const getCurrentDMToSave = async(planData: QLSXPLANDATA) => {
+  let NEEDED_QTY: number = planData.PLAN_QTY ,FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = planData?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = planData.PD ?? 0, CAVITY: number =  planData.CAVITY ?? 0;
+
+        if (planData.PROCESS_NUMBER === 1) {
+          FINAL_LOSS_SX = (planData.LOSS_SX2 ?? 0) + (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0) ;
+        } else if (planData.PROCESS_NUMBER === 2) {
+          FINAL_LOSS_SX = (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0) ;
+        } else if (planData.PROCESS_NUMBER === 3) {
+          FINAL_LOSS_SX = (planData.LOSS_SX4 ?? 0) ;
+        } else if (planData.PROCESS_NUMBER === 4) {
+          FINAL_LOSS_SX = 0;
+        }
+        if (planData.PROCESS_NUMBER === 1) {
+          FINAL_LOSS_SETTING = (planData.LOSS_SETTING2 ?? 0) + (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
+        } else if (planData.PROCESS_NUMBER === 2) {
+          FINAL_LOSS_SETTING = (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
+        } else if (planData.PROCESS_NUMBER === 3) {
+          FINAL_LOSS_SETTING = (planData.LOSS_SETTING4 ?? 0);
+        } else if (planData.PROCESS_NUMBER === 4) {
+          FINAL_LOSS_SETTING = 0;
+        }
+
+        NEEDED_QTY = NEEDED_QTY*(100+FINAL_LOSS_SX+FINAL_LOSS_KT)/100 + FINAL_LOSS_SETTING/PD*CAVITY*1000;
+
+        /* console.log("PD",PD);
+        console.log("CAVITY",CAVITY);        
+        console.log("sx loss",FINAL_LOSS_SX)
+        console.log("sx setting",FINAL_LOSS_SETTING)
+        console.log("kt lss",FINAL_LOSS_KT)
+        console.log("Needed_qty",NEEDED_QTY); */
+
+        return {
+          NEEDED_QTY: Math.round(NEEDED_QTY),
+          FINAL_LOSS_SX: FINAL_LOSS_SX,
+          FINAL_LOSS_KT: planData.LOSS_KT,
+          FINAL_LOSS_SETTING: FINAL_LOSS_SETTING
+        }
 }
 const MACHINE = () => {
   const myComponentRef = useRef();
@@ -2519,30 +2557,12 @@ const MACHINE = () => {
         .catch((error) => {
           console.log(error);
         });
-        let NEEDED_QTY: number = selectedPlanTable[i].PLAN_QTY ,FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = selectedPlanTable[i]?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = selectedPlanTable[i].PD ?? 0, CAVITY: number =  selectedPlanTable[i].CAVITY ?? 0;
+        
 
-        if (selectedPlanTable[i].PROCESS_NUMBER === 1) {
-          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX2 ?? 0) + (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
-          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
-          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
-          FINAL_LOSS_SX = 0;
-        }
-        if (selectedPlanTable[i].PROCESS_NUMBER === 1) {
-          FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING2 ?? 0) + (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
-          FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
-          FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
-        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
-          FINAL_LOSS_SETTING = 0;
-        }
+        let {NEEDED_QTY,FINAL_LOSS_SX,FINAL_LOSS_KT,FINAL_LOSS_SETTING} = await getCurrentDMToSave(selectedPlanTable[i])
 
         /* console.log("PD",PD);
-        console.log("CAVITY",CAVITY);
-        NEEDED_QTY = NEEDED_QTY*(100+FINAL_LOSS_SX+FINAL_LOSS_KT)/100 + FINAL_LOSS_SETTING/PD*CAVITY*1000;
+        console.log("CAVITY",CAVITY);        
         console.log("sx loss",FINAL_LOSS_SX)
         console.log("sx setting",FINAL_LOSS_SETTING)
         console.log("kt lss",FINAL_LOSS_KT)
@@ -2581,10 +2601,10 @@ const MACHINE = () => {
           KETQUASX: selectedPlanTable[i].KETQUASX === null   ? 0   : selectedPlanTable[i].KETQUASX,
           NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID === null   ? "X"   : selectedPlanTable[i].NEXT_PLAN_ID,
           IS_SETTING: selectedPlanTable[i].IS_SETTING,
-          NEEDED_QTY:  0,
-          CURRENT_LOSS_SX: 0,
-          CURRENT_LOSS_KT: 0,
-          CURRENT_SETTING_M: 0,          
+          NEEDED_QTY:  NEEDED_QTY,
+          CURRENT_LOSS_SX: FINAL_LOSS_SX,
+          CURRENT_LOSS_KT: FINAL_LOSS_KT,
+          CURRENT_SETTING_M: FINAL_LOSS_SETTING,
         })
           .then((response) => {
             //console.log(response.data.tk_status);
@@ -4893,8 +4913,7 @@ const MACHINE = () => {
                   </div>
                   <div className="losskt">
                     <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
-                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
-                      LOSS KT 10 LOT:{selectedPlan?.LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
+                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)                      
                     </span>
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>

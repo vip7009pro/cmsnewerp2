@@ -42,6 +42,7 @@ import { GiCurvyKnife } from "react-icons/gi";
 import KHOAO from "../KHOAO/KHOAO";
 import {
   checkEQvsPROCESS,
+  getCurrentDMToSave,
   renderBanVe,
   renderChiThi,
   renderChiThi2,
@@ -2225,6 +2226,7 @@ const PLAN_DATATB = () => {
         .catch((error) => {
           console.log(error);
         });
+        let {NEEDED_QTY,FINAL_LOSS_SX,FINAL_LOSS_KT, FINAL_LOSS_SETTING} = await getCurrentDMToSave(qlsxplandatafilter.current[i]); 
       if (
         parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
         1 &&
@@ -2264,7 +2266,11 @@ const PLAN_DATATB = () => {
             qlsxplandatafilter.current[i].NEXT_PLAN_ID === null
               ? "X"
               : qlsxplandatafilter.current[i].NEXT_PLAN_ID,
-          IS_SETTING: qlsxplandatafilter.current[i].IS_SETTING?.toUpperCase()
+          IS_SETTING: qlsxplandatafilter.current[i].IS_SETTING?.toUpperCase(),
+          NEEDED_QTY:  NEEDED_QTY,
+          CURRENT_LOSS_SX: FINAL_LOSS_SX,
+          CURRENT_LOSS_KT: FINAL_LOSS_KT,
+          CURRENT_SETTING_M: FINAL_LOSS_SETTING,
         })
           .then((response) => {
             //console.log(response.data.tk_status);
