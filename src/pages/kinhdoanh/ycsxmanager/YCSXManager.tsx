@@ -3146,6 +3146,7 @@ const YCSXManager = () => {
                       <option value='DL'>Đổi LOT (DL)</option>
                       <option value='M4'>NM4 (M4)</option>                      
                       <option value='GC'>Hàng Gia Công (GC)</option>
+                      <option value='TM'>Hàng Thương Mại</option>
                       {getCompany()!=='CMS' && <>                      
                       <option value='I1'>Hàng In Nhanh 1 (I1)</option>
                       <option value='I2'>Hàng In Nhanh 2 (I2)</option>
@@ -3505,6 +3506,8 @@ const YCSXManager = () => {
                       <option value='AM'>Amazon (AM)</option>
                       <option value='DL'>Đổi LOT (DL)</option>
                       <option value='M4'>NM4 (M4)</option>
+                      <option value='GC'>Hàng Gia Công (GC)</option>
+                      <option value='TM'>Hàng Thương Mại</option>
                       {getCompany()!=='CMS' && <>                      
                       <option value='I1'>Hàng In Nhanh 1 (I1)</option>
                       <option value='I2'>Hàng In Nhanh 2 (I2)</option>

@@ -95,17 +95,17 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
   await generalQuery("checkP500PlanID_mobile", {
     PLAN_ID: planToSave?.PLAN_ID,
   })
-    .then((response) => {
-      //console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        checkPlanIdP500 = true;
-      } else {
-        checkPlanIdP500 = false;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  .then((response) => {
+    //console.log(response.data);
+    if (response.data.tk_status !== "NG") {
+      checkPlanIdP500 = true;
+    } else {
+      checkPlanIdP500 = false;
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
   if (
     parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
     1 &&
@@ -2519,6 +2519,30 @@ const MACHINE = () => {
         .catch((error) => {
           console.log(error);
         });
+        let FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = selectedPlanTable[i]?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0;
+
+        if (selectedPlanTable[i].PROCESS_NUMBER === 1) {
+          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX1 ?? 0) + (selectedPlanTable[i].LOSS_SX2 ?? 0) + (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
+          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX2 ?? 0) + (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
+          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX3 ?? 0) + (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
+          FINAL_LOSS_SX = (selectedPlanTable[i].LOSS_SX4 ?? 0) ;
+        }
+        if (selectedPlanTable[i].PROCESS_NUMBER === 1) {
+          FINAL_LOSS_SETTING = (selectedPlanTable[i].IS_SETTING==='Y' ? selectedPlanTable[i].LOSS_SETTING1 ?? 0 : 0) + (selectedPlanTable[i].LOSS_SETTING2 ?? 0) + (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 2) {
+          FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING2 ?? 0) + (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 3) {
+          FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING3 ?? 0) + (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
+        } else if (selectedPlanTable[i].PROCESS_NUMBER === 4) {
+          FINAL_LOSS_SETTING = (selectedPlanTable[i].LOSS_SETTING4 ?? 0);
+        }
+        console.log("sx loss",FINAL_LOSS_SX)
+        console.log("sx setting",FINAL_LOSS_SETTING)
+        console.log("kt lss",FINAL_LOSS_KT)
+        
       if (
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4 &&
@@ -2547,15 +2571,13 @@ const MACHINE = () => {
           PLAN_EQ: selectedPlanTable[i].PLAN_EQ,
           PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
           PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
-          KETQUASX:
-            selectedPlanTable[i].KETQUASX === null
-              ? 0
-              : selectedPlanTable[i].KETQUASX,
-          NEXT_PLAN_ID:
-            selectedPlanTable[i].NEXT_PLAN_ID === null
-              ? "X"
-              : selectedPlanTable[i].NEXT_PLAN_ID,
-          IS_SETTING: selectedPlanTable[i].IS_SETTING
+          KETQUASX: selectedPlanTable[i].KETQUASX === null   ? 0   : selectedPlanTable[i].KETQUASX,
+          NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID === null   ? "X"   : selectedPlanTable[i].NEXT_PLAN_ID,
+          IS_SETTING: selectedPlanTable[i].IS_SETTING,
+          NEEDED_QTY:  0,
+          CURRENT_LOSS_SX: 0,
+          CURRENT_LOSS_KT: 0,
+          CURRENT_SETTING_M: 0,          
         })
           .then((response) => {
             //console.log(response.data.tk_status);
@@ -3535,7 +3557,7 @@ const MACHINE = () => {
   };
   const handleClick = () => {
     if (myComponentRef.current) {
-      myComponentRef.current?.handleInternalClick();
+      //myComponentRef.current?.handleInternalClick();
     }
   };
   const ycsxDataTableAG = useMemo(() => {

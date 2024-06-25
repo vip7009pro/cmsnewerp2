@@ -2350,7 +2350,7 @@ const PLAN_DATATB = () => {
   }
   const handleClick = () => {
     if (myComponentRef.current) {
-      myComponentRef.current?.handleInternalClick();
+      //myComponentRef.current?.handleInternalClick();
     }
   };
   const planMaterialTableAG = useMemo(() =>
