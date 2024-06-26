@@ -600,7 +600,9 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             <div className="thongtinyeucau">
               <table className="ttyc1">
                 <thead>
-                  <tr>
+                  <tr>                    
+                    <th>Hạng mục/항목</th>
+                    <th>Thông tin/정보</th>
                     <th>Hạng mục/항목</th>
                     <th>Thông tin/정보</th>
                   </tr>
@@ -630,6 +632,21 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                               ? request_codeinfo[0]?.Setting4
                               : ""}{" "}
                       minutes
+                    </td>
+                    <td>
+                     Loss SX
+                    </td>                   
+                    <td>
+                      {DATA.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.LOSS_SX1
+                        : DATA.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.LOSS_SX2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.LOSS_SX3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.LOSS_SX4
+                              : ""}{" "}
+                      %
                     </td>
                   </tr>
                   <tr>
@@ -669,6 +686,21 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                         60}{" "}
                       minutes
                     </td>
+                    <td>
+                     Loss Setting
+                    </td>                   
+                    <td>
+                      {DATA.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.LOSS_SETTING1
+                        : DATA.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.LOSS_SETTING2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.LOSS_SETTING3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.LOSS_SETTING4
+                              : ""}{" "}
+                      met
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -700,7 +732,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+           <table className='ttyc2'>
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
