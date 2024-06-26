@@ -26,6 +26,7 @@ import {
   FaBarcode,
   FaLongArrowAltRight,
   FaReact,
+  FaProductHunt,
 } from "react-icons/fa";
 import { BiCart, BiSortAZ, BiTrendingUp } from "react-icons/bi";
 import {
@@ -360,7 +361,7 @@ const NavMenu = () => {
           title: getlang("baocaoqc", lang),
           path: "/qc/qcreport",
           icon: <MdBugReport color="blue" size={15} />,
-          MENU_CODE: getCompany() ==='CMS' ? "QC10" : "BL1",
+          MENU_CODE: getCompany() === 'CMS' ? "QC10" : "BL1",
         },
       ],
     },
@@ -411,10 +412,16 @@ const NavMenu = () => {
           MENU_CODE: "RD6",
         },
         {
+          title: getlang("samplemonitor", lang),
+          path: "/rnd/samplemonitor",
+          icon: <FaProductHunt color="#eef109" size={15} />,
+          MENU_CODE: "RD8",
+        },
+        {
           title: getlang("baocaornd", lang),
           path: "/rnd/baocaornd",
           icon: <FaReact color="#b50acc" size={15} />,
-          MENU_CODE: getCompany() ==='CMS' ? "RD7" : "BL1",
+          MENU_CODE: getCompany() === 'CMS' ? "RD7" : "BL1",
         },
       ],
     },

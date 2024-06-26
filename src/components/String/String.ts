@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  samplemonitor: "Theo dõi sample",
   baocaornd: "Báo cáo RnD",
   tinhthanhpho: "Tỉnh/thành phố",
   quanhuyen: "Quận huyện",
@@ -137,6 +138,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  samplemonitor: "Sample Monitor",
   baocaornd: "RnD Report",
   tinhthanhpho: "Province/City",
   quanhuyen: "District",
@@ -262,6 +264,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  samplemonitor: "샘플 모니터링",
   baocaornd: "RnD 보고서",
   tinhthanhpho: "시",
   quanhuyen: "군",

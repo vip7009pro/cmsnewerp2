@@ -1048,7 +1048,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             (element: STOCK_G_NAME_KD, index: number) => {
               return {
                 ...element,          
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },

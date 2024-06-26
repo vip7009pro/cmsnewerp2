@@ -97,6 +97,7 @@ import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
 import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
 import RND_REPORT from "./pages/rnd/rnd_report/RND_REPORT";
 import Blank from "./components/Blank/Blank";
+import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -645,6 +646,7 @@ function App() {
                         <Route path='designamazon' element={<DESIGN_AMAZON />}/>
                         <Route path='productbarcodemanager' element={<PRODUCT_BARCODE_MANAGER />}/>
                         <Route path='quanlygiaonhan' element={<QLGN />} />
+                        <Route path='samplemonitor' element={<SAMPLE_MONITOR />} />
                         <Route path='baocaornd' element={getCompany() ==='CMS' ?  <RND_REPORT /> : <Blank/>} />
                         
                       </Route>

@@ -92,7 +92,7 @@ const AGTable = (ag_data: AGInterface) => {
           getRowId={(params: any) => params.data.id}
           rowSelection={"multiple"}
           rowMultiSelectWithClick={false}
-          suppressRowClickSelection={false}
+          suppressRowClickSelection={true}
           enterNavigatesVertically={true}
           enterNavigatesVerticallyAfterEdit={true}
           stopEditingWhenCellsLoseFocus={true}
@@ -107,7 +107,7 @@ const AGTable = (ag_data: AGInterface) => {
           onRowClicked={ag_data.onRowClick}
           onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
           onCellEditingStopped={ag_data.onCellEditingStopped}
-          onCellClicked={ag_data.onCellClick}
+          onCellClicked={ag_data.onCellClick}          
         />
       </div>
       <div className="bottombar">
