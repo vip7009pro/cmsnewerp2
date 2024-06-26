@@ -50,8 +50,6 @@ const SAMPLE_MONITOR = () => {
     PROD_REQUEST_QTY: 0
   });
   const [ycsxInfo, setYCSXINFO]= useState<FullBOM[]>([]);
-
-
   const loadYCSXDataSAMPLE_MONITOR = (ycsx: string)=> {
     generalQuery("ycsx_fullinfo", {      
       PROD_REQUEST_NO: ycsx,      
