@@ -542,6 +542,7 @@ export interface FullBOM {
   PROD_TYPE?: string;
   PL_HANG?: string;
   FSC_CODE?: string;
+  USE_YN?: string;
 }
 //quan ly vat lieu
 export interface MATERIAL_TABLE_DATA {
@@ -1872,6 +1873,7 @@ export interface QLSXPLANDATA {
   PDBV_DATE?: string;
   LOSS_KT?: number;
   ORG_LOSS_KT?: number;
+  USE_YN?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;

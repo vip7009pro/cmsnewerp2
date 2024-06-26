@@ -366,7 +366,6 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
     console.log("so chi thi:"+ DATA.PLAN_ID)
   };
   const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number)=> ele.LIEUQL_SX === 1)?.M_NAME
-
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
@@ -474,7 +473,8 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         DATA.CHOTBC !== 'V' &&
         checkApprove() && 
         request_codeinfo[0].PL_HANG==='TT' && 
-        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX')
+        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX') &&
+        request_codeinfo[0].USE_YN==='Y'
         &&
         (
           <div className="thongtinycsx">
@@ -981,6 +981,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             </div>
           </div>
         )}
+        {request_codeinfo[0].USE_YN!=='Y' && <div>Code đã khóa, liên hệ RND</div>}
       {!checkApprove() && <div>Yêu cầu chưa được QC Pass <br></br>
         Cụ thể: <br></br>
         Phê duyệt bản vẽ : {request_codeinfo[0].PDBV === 'Y' ? "Đã phê duyệt" : "Chưa phê duyệt, báo PQC"} <br></br>
