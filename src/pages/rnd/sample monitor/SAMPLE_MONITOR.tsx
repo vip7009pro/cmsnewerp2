@@ -1,9 +1,9 @@
 import { Button, IconButton, createFilterOptions } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./SAMPLE_MONITOR.scss";
 import { generalQuery, getUserData, uploadQuery } from "../../../api/Api";
-import { MdAdd, MdLock, MdOutlinePivotTableChart, MdRefresh } from "react-icons/md";
+import { MdAdd, MdFaceUnlock, MdLock, MdOutlinePivotTableChart, MdRefresh } from "react-icons/md";
 import { CustomerListData, FullBOM, SAMPLE_MONITOR_DATA } from "../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
@@ -15,6 +15,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 const SAMPLE_MONITOR = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, setData] = useState<Array<SAMPLE_MONITOR_DATA>>([]);
+  const selectedSample = useRef<SAMPLE_MONITOR_DATA[]>([]);
   const [clickedRows, setClickedRows] = useState<SAMPLE_MONITOR_DATA>({
     SAMPLE_ID: 0,
     PROD_REQUEST_NO: '',
@@ -85,6 +86,7 @@ const SAMPLE_MONITOR = () => {
           );
           //console.log(loadeddata);
           setData(loadeddata);
+          selectedSample.current=[];
           /* Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
@@ -92,6 +94,7 @@ const SAMPLE_MONITOR = () => {
           ); */
         } else {
           setData([]);
+          selectedSample.current=[];
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -99,22 +102,48 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   };
-  const lockSample=(SAMPLE_ID: number,lockValue: string)=> {
-    generalQuery("lockSample", {      
-      SAMPLE_ID: SAMPLE_ID,
-      USE_YN: lockValue,      
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-         
-        } else {
-         
+  const lockSample=(lockValue: string)=> {
+    let err_code: string ='';
+
+    if(selectedSample.current.length>0)
+      {
+        for(let i=0;i<selectedSample.current.length;i++)
+        {
+          generalQuery("lockSample", {      
+            SAMPLE_ID: selectedSample.current[i].SAMPLE_ID,
+            USE_YN: lockValue,      
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                          
+              } else {
+                err_code += '| ' + response.data.message;
+                
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+    
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        if(err_code === '')
+        {
+          Swal.fire('Thông báo','Cập nhật thành công','success')
+          
+        }
+        else {
+          Swal.fire('Thông báo','Cập nhật thất bại: '+ err_code,'success')
+        }
+        loadSampleListTable();
+
+      }
+      else
+      {
+        Swal.fire('Thông báo','Chọn ít nhất 1 dòng','error')
+      }
+    
+
   }
   const seMaterialInfo = (keyname: string, value: any) => {
     let tempMaterialInfo: SAMPLE_MONITOR_DATA = {
@@ -251,7 +280,15 @@ const SAMPLE_MONITOR = () => {
           loadSampleListTable();
          
         } else {
-          Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
+          if(response.data.message.indexOf('PRIMARY KEY') > -1)
+          {
+            Swal.fire("Thông báo","Thêm sample thất bại, ycsx này đã thêm rồi","error");            
+          }
+          else
+          {
+            Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
+          }
+          
         }
       })
       .catch((error) => {
@@ -589,16 +626,29 @@ const SAMPLE_MONITOR = () => {
               }}
             >
               <MdRefresh color="#fb6812" size={20} />
-              Refresh
+              Reload
             </IconButton>
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                loadSampleListTable();
+                checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
+                  lockSample('N');
+                })                
               }}
             >
-              <MdLock color="#fb6812" size={20} />
-              Khóa/Mở
+              <MdLock color="#e70808" size={20} />
+              Khóa Sample
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
+                  lockSample('Y');
+                })                
+              }}
+            >
+              <MdLock color="#02b81a" size={20} />
+              Mở Sample
             </IconButton>
             
           </div>}
@@ -612,6 +662,7 @@ const SAMPLE_MONITOR = () => {
         }}
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())
+          selectedSample.current = params!.api.getSelectedRows()
         }} />
     )
   }, [data, colDefs])
