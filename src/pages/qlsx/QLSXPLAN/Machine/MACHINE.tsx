@@ -2440,6 +2440,7 @@ const MACHINE = () => {
     return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
   };
   const handle_AddPlan = async () => {
+    //console.log('Add pressed')
     if (ycsxdatatablefilter.current.length >= 1) {
       for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
         let check_ycsx_hethongcu: boolean = false;
