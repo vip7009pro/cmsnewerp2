@@ -9,6 +9,7 @@ interface AGInterface {
   columns: Array<any>,
   toolbar?: ReactElement,
   showFilter?: boolean,
+  suppressRowClickSelection?: boolean,
   onRowClick?: (e: any) => void,
   onCellClick?: (e: any) => void,
   onRowDoubleClick?: (e: any) => void,
@@ -92,7 +93,7 @@ const AGTable = (ag_data: AGInterface) => {
           getRowId={(params: any) => params.data.id}
           rowSelection={"multiple"}
           rowMultiSelectWithClick={false}
-          suppressRowClickSelection={true}
+          suppressRowClickSelection={ag_data.suppressRowClickSelection ?? true}
           enterNavigatesVertically={true}
           enterNavigatesVerticallyAfterEdit={true}
           stopEditingWhenCellsLoseFocus={true}

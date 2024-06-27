@@ -403,8 +403,7 @@ const MACHINE = () => {
   };
   const column_ycsxtable = getCompany() === 'CMS' ? [
     {
-      field: "G_CODE", headerName: "G_CODE", width: 110, headerCheckboxSelection: true,
-      checkboxSelection: true,
+      field: "G_CODE", headerName: "G_CODE", width: 110, 
     },
     {
       field: "G_NAME_KD",
@@ -837,8 +836,7 @@ const MACHINE = () => {
     },
   ] : [
     {
-      field: "G_CODE", headerName: "G_CODE", width: 110, headerCheckboxSelection: true,
-      checkboxSelection: true,
+      field: "G_CODE", headerName: "G_CODE", width: 110,
     },
     {
       field: "G_NAME_KD",
@@ -3666,6 +3664,7 @@ const MACHINE = () => {
             </IconButton>
           </div>
         }
+        suppressRowClickSelection={false}
         columns={column_ycsxtable}
         data={ycsxdatatable}
         onCellEditingStopped={(params: any) => {
