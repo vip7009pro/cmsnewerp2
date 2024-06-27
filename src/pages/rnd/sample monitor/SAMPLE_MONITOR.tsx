@@ -79,7 +79,9 @@ const SAMPLE_MONITOR = () => {
             (element: SAMPLE_MONITOR_DATA, index: number) => {
               return {
                 ...element,
+                DELIVERY_DT: element.APPROVE_DATE !== null? moment(element.DELIVERY_DT,'YYYYMMDD').format('YYYY-MM-DD'):'',
                 APPROVE_DATE: element.APPROVE_DATE !== null? moment(element.APPROVE_DATE).format('YYYY-MM-DD'):'',
+                INS_DATE: element.INS_DATE !== null? moment(element.INS_DATE).format('YYYY-MM-DD'):'',                
                 id: index,
               };
             },
@@ -102,14 +104,14 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   };
-  const lockSample=(lockValue: string)=> {
+  const lockSample= async (lockValue: string)=> {
     let err_code: string ='';
 
     if(selectedSample.current.length>0)
       {
         for(let i=0;i<selectedSample.current.length;i++)
         {
-          generalQuery("lockSample", {      
+          await generalQuery("lockSample", {      
             SAMPLE_ID: selectedSample.current[i].SAMPLE_ID,
             USE_YN: lockValue,      
           })
@@ -229,29 +231,41 @@ const SAMPLE_MONITOR = () => {
       });
   }
   const updateDataTable = (data_row: SAMPLE_MONITOR_DATA, key: string, value: any) => {
-    let dataToUpdate: SAMPLE_MONITOR_DATA = data.filter((ele:SAMPLE_MONITOR_DATA, index: number)=> ele.SAMPLE_ID === data_row.SAMPLE_ID)[0];
-    switch (getUserData()?.MAINDEPTNAME) {
-      case 'RND':        
-          updateRND_STATUS({ ...dataToUpdate, [key]: value });       
-        break;
-      case 'SX':        
-          updateSX_STATUS({ ...dataToUpdate, [key]: value });       
-        break;
-      case 'QC':        
-          updateQC_STATUS({ ...dataToUpdate, [key]: value });       
-        break;
-      case 'KD':        
-          updateAPPROVE_STATUS({ ...dataToUpdate, [key]: value });        
-        break;
-    }
-    setData(prev => {
-      const newData = prev.map((p) =>
-        p.SAMPLE_ID === data_row.SAMPLE_ID
-          ? { ...p, [key]: value, }
-          : p
-      );
-      return newData;
-    });
+    Swal.fire({
+      title: "Chắc chắn muốn update Data ?",
+      text: "Suy nghĩ kỹ trước khi hành động",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let dataToUpdate: SAMPLE_MONITOR_DATA = data.filter((ele:SAMPLE_MONITOR_DATA, index: number)=> ele.SAMPLE_ID === data_row.SAMPLE_ID)[0];
+        switch (getUserData()?.MAINDEPTNAME) {
+          case 'RND':        
+              updateRND_STATUS({ ...dataToUpdate, [key]: value });       
+            break;
+          case 'SX':        
+              updateSX_STATUS({ ...dataToUpdate, [key]: value });       
+            break;
+          case 'QC':        
+              updateQC_STATUS({ ...dataToUpdate, [key]: value });       
+            break;
+          case 'KD':        
+              updateAPPROVE_STATUS({ ...dataToUpdate, [key]: value });        
+            break;
+        }
+        setData(prev => {
+          const newData = prev.map((p) =>
+            p.SAMPLE_ID === data_row.SAMPLE_ID
+              ? { ...p, [key]: value, }
+              : p
+          );
+          return newData;
+        });        
+      }
+    });   
   }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -269,316 +283,395 @@ const SAMPLE_MONITOR = () => {
     }
   }
   const handle_Add_Sample =(ycsx: FullBOM) => {
-    generalQuery("addMonitoringSample", {      
-      PROD_REQUEST_NO: ycsx.PROD_REQUEST_NO,   
-      G_NAME_KD: ycsx.G_NAME_KD 
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo","Thêm sample thành công","success");
-          loadSampleListTable();
-         
-        } else {
-          if(response.data.message.indexOf('PRIMARY KEY') > -1)
-          {
-            Swal.fire("Thông báo","Thêm sample thất bại, ycsx này đã thêm rồi","error");            
-          }
-          else
-          {
-            Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
-          }
-          
-        }
+    if(ycsxInfo.length>0)
+    {
+      generalQuery("addMonitoringSample", {      
+        PROD_REQUEST_NO: ycsx.PROD_REQUEST_NO,   
+        G_NAME_KD: ycsx.G_NAME_KD 
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            Swal.fire("Thông báo","Thêm sample thành công","success");
+            loadSampleListTable();
+            
+          } else {
+            if(response.data.message.indexOf('PRIMARY KEY') > -1)
+            {
+              Swal.fire("Thông báo","Thêm sample thất bại, ycsx này đã thêm rồi","error");            
+            }
+            else
+            {
+              Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
+            }
+            
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+    }
+    else 
+    {
+      Swal.fire("Thông báo","Hãy nhập số YCSX","error");        
+    }
+    
 
 
   }
-  const colDefs = [
+  function CustomHeader({displayName}:{displayName: string}) {
+    return (
+      <div className="custom-header">
+      <span className="custom-header-icon">🔍</span>
+      <span className="custom-header-text">{displayName}</span>
+      </div>
+    )
+  }
+  const colDefs = [    
     {
-      field: 'SAMPLE_ID', headerName: 'ID', headerCheckboxSelection: true, checkboxSelection: true, width: 50, resizable: true, floatingFilter: true, /* cellStyle: (params:any) => {     
+      field: 'SAMPLE_ID', headerName: 'ID', headerCheckboxSelection: true, checkboxSelection: true, width: 50, resizable: true, pinned:'left', floatingFilter: true, /* cellStyle: (params:any) => {     
        if (params.data.M_ID%2==0 ) {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
         return { backgroundColor: '#f8d7da', color: '#721c24' };
       } 
     } */},
-    { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'CUST_NAME_KD', headerName: 'CUSTOMER', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'G_CODE', headerName: 'G_CODE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'G_NAME', headerName: 'G_NAME', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'G_WIDTH', headerName: 'G_WIDTH', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'G_LENGTH', headerName: 'G_LENGTH', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
     {
-      field: 'FILE_MAKET', headerName: 'FILE_MAKET', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        return (
-          <div className="checkboxcell">
-            <input type="checkbox" checked={params.data.FILE_MAKET === 'Y'} onChange={(e) => {
-              checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
-                handleUpdateData(e, params.data, 'FILE_MAKET')
-              })              
-              }}></input>
-            <span style={{ color: 'black' }}>{params.data.FILE_MAKET === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.FILE_MAKET === 'Y') {
-          return { backgroundColor: '#77da41', color: 'black' };
-        } else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
-    },
+      headerName:'SAMPLE INFO',
+      children: [
+       
+        { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'CUST_NAME_KD', headerName: 'CUSTOMER', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'G_CODE', headerName: 'G_CODE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'G_NAME', headerName: 'G_NAME', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'G_WIDTH', headerName: 'G_WIDTH', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'G_LENGTH', headerName: 'G_LENGTH', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'DELIVERY_DT', headerName: 'DELIVERY_DT', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'PROD_REQUEST_QTY', headerName: 'SAMPLE_QTY', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps)=> {
+          return (
+            <span>{params.data.PROD_REQUEST_QTY?.toLocaleString('en-US')}</span>
+          )
+        } },
+      ],
+      headerClass: 'header'
+    }, 
     {
-      field: 'FILM_FILE', headerName: 'FILM_FILE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        return (
-          <div className="checkboxcell">
-            <input type="checkbox" checked={params.data.FILM_FILE === 'Y'} onChange={(e) => {
-              checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
-                handleUpdateData(e, params.data, 'FILM_FILE')
-              })              
-              }}></input>
-            <span style={{ color: 'black' }}>{params.data.FILM_FILE === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.FILM_FILE === 'Y') {
-          return { backgroundColor: '#77da41', color: 'white' };
-        } else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
+      headerName:'RND',
+      children: [
+        {
+          field: 'FILE_MAKET', headerName: 'FILE_MAKET', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.FILE_MAKET === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'FILE_MAKET')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.FILE_MAKET === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.FILE_MAKET === 'Y') {
+              return { backgroundColor: '#77da41', color: 'black' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+        {
+          field: 'FILM_FILE', headerName: 'FILM_FILE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.FILM_FILE === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'FILM_FILE')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.FILM_FILE === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.FILM_FILE === 'Y') {
+              return { backgroundColor: '#77da41', color: 'white' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+        {
+          field: 'KNIFE_STATUS', headerName: 'KNIFE_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.KNIFE_STATUS === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'KNIFE_STATUS')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.KNIFE_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.KNIFE_STATUS === 'Y') {
+              return { backgroundColor: '#77da41', color: 'white' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+        { field: 'KNIFE_CODE', headerName: 'KNIFE_CODE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: true,  cellStyle: (params: any) => {
+          if (params.data.KNIFE_CODE !== '' && params.data.KNIFE_CODE !== null ) {
+            return { backgroundColor: '#77da41', color: 'black' };
+          } else {
+            return { backgroundColor: '#e7a44b', color: 'black' };
+          }
+        } },
+        {
+          field: 'FILM', headerName: 'FILM', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.FILM === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'FILM')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.FILM === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.FILM === 'Y') {
+              return { backgroundColor: '#77da41', color: 'white' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+
+      ],
+      headerClass: 'header'
     },
-    {
-      field: 'KNIFE_STATUS', headerName: 'KNIFE_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        return (
-          <div className="checkboxcell">
-            <input type="checkbox" checked={params.data.KNIFE_STATUS === 'Y'} onChange={(e) => {
-              checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
-                handleUpdateData(e, params.data, 'KNIFE_STATUS')
-              })              
-              }}></input>
-            <span style={{ color: 'black' }}>{params.data.KNIFE_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.KNIFE_STATUS === 'Y') {
-          return { backgroundColor: '#77da41', color: 'white' };
-        } else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
-    },
-    { field: 'KNIFE_CODE', headerName: 'KNIFE_CODE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: true,  cellStyle: (params: any) => {
-      if (params.data.KNIFE_CODE !== '' && params.data.KNIFE_CODE !== null ) {
-        return { backgroundColor: '#77da41', color: 'black' };
-      } else {
-        return { backgroundColor: '#e7a44b', color: 'black' };
-      }
-    } },
-    {
-      field: 'FILM', headerName: 'FILM', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        return (
-          <div className="checkboxcell">
-            <input type="checkbox" checked={params.data.FILM === 'Y'} onChange={(e) => {
-              checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
-                handleUpdateData(e, params.data, 'FILM')
-              })              
-              }}></input>
-            <span style={{ color: 'black' }}>{params.data.FILM === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.FILM === 'Y') {
-          return { backgroundColor: '#77da41', color: 'white' };
-        } else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
-    },
+   
     /* { field: 'RND_EMPL', headerName: 'RND_EMPL', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'RND_UPD_DATE', headerName: 'RND_UPD_DATE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false }, */
     {
-      field: 'PRINT_STATUS', headerName: 'PRINT_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        return (
-          <div className="checkboxcell">
-            <input type="checkbox" checked={params.data.PRINT_STATUS === 'Y'} onChange={(e) => {
-              checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], () => {
-                handleUpdateData(e, params.data, 'PRINT_STATUS')
-              })              
-              }}></input>
-            <span style={{ color: 'black' }}>{params.data.PRINT_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.PRINT_STATUS === 'Y') {
-          return { backgroundColor: '#77da41', color: 'white' };
-        } else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
+      headerName:'PRODUCTION',
+      children: [
+        {
+          field: 'PRINT_STATUS', headerName: 'PRINT_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.PRINT_STATUS === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'PRINT_STATUS')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.PRINT_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.PRINT_STATUS === 'Y') {
+              return { backgroundColor: '#77da41', color: 'white' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+        {
+          field: 'DIECUT_STATUS', headerName: 'DIECUT_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.DIECUT_STATUS === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'DIECUT_STATUS')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.DIECUT_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.DIECUT_STATUS === 'Y') {
+              return { backgroundColor: '#77da41', color: 'white' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+      ],
+      headerClass: 'header'
     },
-    {
-      field: 'DIECUT_STATUS', headerName: 'DIECUT_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        return (
-          <div className="checkboxcell">
-            <input type="checkbox" checked={params.data.DIECUT_STATUS === 'Y'} onChange={(e) => {
-              checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], () => {
-                handleUpdateData(e, params.data, 'DIECUT_STATUS')
-              })              
-              }}></input>
-            <span style={{ color: 'black' }}>{params.data.DIECUT_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.DIECUT_STATUS === 'Y') {
-          return { backgroundColor: '#77da41', color: 'white' };
-        } else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
-    },
+   
     /* { field: 'PR_EMPL', headerName: 'PR_EMPL', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'PR_UPD_DATE', headerName: 'PR_UPD_DATE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false }, */
     {
-      field: 'QC_STATUS', headerName: 'QC_STATUS', width: 80, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        const [showhidecell, setshowHideCell] = useState(params.data.QC_STATUS === 'P')
-        return (
-          <div className="checkboxcell">
-            {!showhidecell && <>
-              <label>
-                <input
-                  type="radio"
-                  name={params.data.SAMPLE_ID + 'A'}
-                  value="Y"
-                  checked={params.data.QC_STATUS === 'Y'}
-                  onChange={(e) => {
-                    checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
-                      updateDataTable(params.data, 'QC_STATUS', e.target.value)
-                    })
-                    
-                  }}
-                />
-                <span>OK</span>
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name={params.data.SAMPLE_ID + 'A'}
-                  value="N"
-                  checked={params.data.QC_STATUS === 'N'}
-                  onChange={(e) => {
-                    checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
-                      updateDataTable(params.data, 'QC_STATUS', e.target.value)
-                    })
-                  }}
-                />
-                <span>NG</span>
-              </label>
-            </>}
-            {showhidecell && <span style={{ color: 'black' }} onClick={() => { setshowHideCell(prev => !prev) }}>{params.data.QC_STATUS === 'Y' ? '' : params.data.QC_STATUS === 'N' ? '' : 'PENDING'}</span>}
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.QC_STATUS === 'Y') {
-          return { backgroundColor: '#77da41', color: 'white' };
-        }
-        else if (params.data.QC_STATUS === 'N') {
-          return { backgroundColor: '#ff0000', color: 'white' };
-        }
-        else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
+      headerName:'QC',
+      children: [
+        {
+          field: 'QC_STATUS', headerName: 'QC_STATUS', width: 80, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            const [showhidecell, setshowHideCell] = useState(params.data.QC_STATUS === 'P')
+            return (
+              <div className="checkboxcell">
+                {!showhidecell && <>
+                  <label>
+                    <input
+                      type="radio"
+                      name={params.data.SAMPLE_ID + 'A'}
+                      value="Y"
+                      checked={params.data.QC_STATUS === 'Y'}
+                      onChange={(e) => {
+                        checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
+                          updateDataTable(params.data, 'QC_STATUS', e.target.value)
+                        })
+                        
+                      }}
+                    />
+                    <span>OK</span>
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={params.data.SAMPLE_ID + 'A'}
+                      value="N"
+                      checked={params.data.QC_STATUS === 'N'}
+                      onChange={(e) => {
+                        checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
+                          updateDataTable(params.data, 'QC_STATUS', e.target.value)
+                        })
+                      }}
+                    />
+                    <span>NG</span>
+                  </label>
+                </>}
+                {showhidecell && <span style={{ color: 'black' }} onClick={() => { setshowHideCell(prev => !prev) }}>{params.data.QC_STATUS === 'Y' ? '' : params.data.QC_STATUS === 'N' ? '' : 'PENDING'}</span>}
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.QC_STATUS === 'Y') {
+              return { backgroundColor: '#77da41', color: 'white' };
+            }
+            else if (params.data.QC_STATUS === 'N') {
+              return { backgroundColor: '#ff0000', color: 'white' };
+            }
+            else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+        { field: 'TOTAL_STATUS', headerName: 'TOTAL_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+          let total_check: boolean = true;
+          total_check = params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y';      
+          return (
+              <span style={{ color: 'white', fontWeight:'bold' }}>{total_check ? 'COMPLETED' : 'NOT COMPLETED'}</span>
+          )
+        },
+        cellStyle: (params: any) => {
+          let total_check: boolean = true;
+          total_check = params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y';
+          if (total_check) {
+            return { backgroundColor: '#0aa03c', color: 'white' };
+          } else {
+            return { backgroundColor: '#d8000e', color: 'white' };
+          }
+        },
+        valueGetter: (params: any) => params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y' ? 'Y':'N'
+        
+       },
+      ],
+      headerClass: 'header'
     },
-    { field: 'TOTAL_STATUS', headerName: 'TOTAL_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-      let total_check: boolean = true;
-      total_check = params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y';      
-      return (
-          <span style={{ color: 'white', fontWeight:'bold' }}>{total_check ? 'COMPLETED' : 'NOT COMPLETED'}</span>
-      )
-    },
-    cellStyle: (params: any) => {
-      let total_check: boolean = true;
-      total_check = params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y';
-      if (total_check) {
-        return { backgroundColor: '#0aa03c', color: 'white' };
-      } else {
-        return { backgroundColor: '#d8000e', color: 'white' };
-      }
-    },
-    valueGetter: (params: any) => params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y' ? 'Y':'N'
     
-   },
     /* { field: 'QC_EMPL', headerName: 'QC_EMPL', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'QC_UPD_DATE', headerName: 'QC_UPD_DATE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false }, */
+
     {
-      field: 'APPROVE_STATUS', headerName: 'APPROVE_STATUS', width: 140, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
-        const [showhidecell, setshowHideCell] = useState(params.data.APPROVE_STATUS === 'P')
-        return (
-          <div className="checkboxcell">
-            {!showhidecell && <>
-              <label>
-                <input
-                  type="radio"
-                  name={params.data.SAMPLE_ID + 'B'}
-                  value="Y"
-                  checked={params.data.APPROVE_STATUS === 'Y'}
-                  onChange={(e) => {
-                    checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
-                      updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
-                    })                    
-                  }}
-                />
-                <span>APPROVED</span>
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name={params.data.SAMPLE_ID + 'B'}
-                  value="N"
-                  checked={params.data.APPROVE_STATUS === 'N'}
-                  onChange={(e) => {
-                    checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
-                      updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
-                    })   
-                  }}
-                />
-                <span>REJECTED</span>
-              </label>
-            </>}
-            {showhidecell && <span style={{ color: 'black' }} onClick={() => { setshowHideCell(prev => !prev) }}>{params.data.APPROVE_STATUS === 'Y' ? '' : params.data.APPROVE_STATUS === 'N' ? '' : 'PENDING'}</span>}
-          </div>
-        )
-      },
-      cellStyle: (params: any) => {
-        if (params.data.APPROVE_STATUS === 'Y') {
-          return { backgroundColor: '#06d436', color: 'white' };
-        }
-        else if (params.data.APPROVE_STATUS === 'N') {
-          return { backgroundColor: '#ff0000', color: 'white' };
-        }
-        else {
-          return { backgroundColor: '#e7a44b', color: 'white' };
-        }
-      }
-    },    
-    { field: 'APPROVE_DATE', headerName: 'APPROVE_DATE', width: 80, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'REMARK', headerName: 'REMARK', width: 100, resizable: true, floatingFilter: true, filter: true, editable: true },
-    { field: 'USE_YN', headerName: 'USE_YN', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
-    /* { field: 'INS_DATE', headerName: 'INS_DATE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
-    { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false }, */
+      headerName:'CUSTOMER',
+      children: [
+        {
+          field: 'APPROVE_STATUS', headerName: 'APPROVE_STATUS', width: 140, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            const [showhidecell, setshowHideCell] = useState(params.data.APPROVE_STATUS === 'P')
+            return (
+              <div className="checkboxcell">
+                {!showhidecell && <>
+                  <label>
+                    <input
+                      type="radio"
+                      name={params.data.SAMPLE_ID + 'B'}
+                      value="Y"
+                      checked={params.data.APPROVE_STATUS === 'Y'}
+                      onChange={(e) => {
+                        checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
+                          updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
+                        })                    
+                      }}
+                    />
+                    <span>APPROVED</span>
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={params.data.SAMPLE_ID + 'B'}
+                      value="N"
+                      checked={params.data.APPROVE_STATUS === 'N'}
+                      onChange={(e) => {
+                        checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
+                          updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
+                        })   
+                      }}
+                    />
+                    <span>REJECTED</span>
+                  </label>
+                </>}
+                {showhidecell && <span style={{ color: 'black' }} onClick={() => { setshowHideCell(prev => !prev) }}>{params.data.APPROVE_STATUS === 'Y' ? '' : params.data.APPROVE_STATUS === 'N' ? '' : 'PENDING'}</span>}
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.APPROVE_STATUS === 'Y') {
+              return { backgroundColor: '#06d436', color: 'white' };
+            }
+            else if (params.data.APPROVE_STATUS === 'N') {
+              return { backgroundColor: '#ff0000', color: 'white' };
+            }
+            else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },    
+        { field: 'APPROVE_DATE', headerName: 'APPROVE_DATE', width: 80, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'REMARK', headerName: 'REMARK', width: 100, resizable: true, floatingFilter: true, filter: true, editable: true },
+        { field: 'USE_YN', headerName: 'USE_YN', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps)=> {
+          if(params.data.USE_YN==='Y') {
+            return (
+              <span>MỞ</span>
+            )
+          }
+          else {
+            return (
+              <span>KHÓA</span>
+            )
+          }
+
+        },  cellStyle: (params: any) => {
+          if (params.data.USE_YN === 'Y') {
+            return { backgroundColor: '#06d436', color: 'white' };
+          }
+          else{
+            return { backgroundColor: '#ff0000', color: 'white' };
+          }         
+        } },
+        { field: 'INS_DATE', headerName: 'INS_DATE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
+        { field: 'INS_EMPL', headerName: 'PIC_KD', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
+      ],
+      headerClass: 'header'
+    },
+    
   ];
   const material_data_ag_table = useMemo(() => {
     return (
