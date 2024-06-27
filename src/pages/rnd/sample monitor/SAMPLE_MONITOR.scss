@@ -135,6 +135,12 @@
         .toolbar {
             display: flex;
             background-color: #b2ffa0;
+            .headerform {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              
+            }
           }
           .ag-theme-quartz input[class^=ag-]:not([type]),
           .ag-theme-quartz input[class^=ag-][type=text],
@@ -331,6 +337,7 @@
           font-size: 0.7rem;
         }
       }
+      
     }
   }
 }

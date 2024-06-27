@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./SAMPLE_MONITOR.scss";
 import { generalQuery, getUserData, uploadQuery } from "../../../api/Api";
-import { MdAdd, MdOutlinePivotTableChart } from "react-icons/md";
+import { MdAdd, MdLock, MdOutlinePivotTableChart, MdRefresh } from "react-icons/md";
 import { CustomerListData, FullBOM, SAMPLE_MONITOR_DATA } from "../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
@@ -49,6 +49,7 @@ const SAMPLE_MONITOR = () => {
     PROD_REQUEST_DATE: '',
     PROD_REQUEST_QTY: 0
   });
+  const [prod_request_no, setProd_Request_No]= useState('');
   const [ycsxInfo, setYCSXINFO]= useState<FullBOM[]>([]);
   const loadYCSXDataSAMPLE_MONITOR = (ycsx: string)=> {
     generalQuery("ycsx_fullinfo", {      
@@ -98,6 +99,23 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   };
+  const lockSample=(SAMPLE_ID: number,lockValue: string)=> {
+    generalQuery("lockSample", {      
+      SAMPLE_ID: SAMPLE_ID,
+      USE_YN: lockValue,      
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+         
+        } else {
+         
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const seMaterialInfo = (keyname: string, value: any) => {
     let tempMaterialInfo: SAMPLE_MONITOR_DATA = {
       ...clickedRows,
@@ -220,6 +238,27 @@ const SAMPLE_MONITOR = () => {
     else {
       updateDataTable(rowdata, key, 'N')
     }
+  }
+  const handle_Add_Sample =(ycsx: FullBOM) => {
+    generalQuery("addMonitoringSample", {      
+      PROD_REQUEST_NO: ycsx.PROD_REQUEST_NO,   
+      G_NAME_KD: ycsx.G_NAME_KD 
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo","Thêm sample thành công","success");
+          loadSampleListTable();
+         
+        } else {
+          Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
   }
   const colDefs = [
     {
@@ -509,17 +548,59 @@ const SAMPLE_MONITOR = () => {
       <AGTable
         showFilter={true}
         toolbar={
-          <div>
+          <div className="headerform">
+            <div className="forminputcolumn">
+              <label>
+                <span style={{fontSize:'0.8rem', fontWeight:'bold'}}>Số YCSX:</span>                
+                <input
+                  type='text'
+                  placeholder='1F80008'
+                  value={prod_request_no}
+                  onChange={(e) => {
+                    setProd_Request_No(e.target.value);
+                    if(e.target.value.length==7)
+                      {
+                        loadYCSXDataSAMPLE_MONITOR(e.target.value)
+                      }
+                      else {
+                        setYCSXINFO([])
+                      }
+                  }}
+                ></input>
+              </label>
+              <span style={{fontSize:'0.8rem', fontWeight:'bold', color:'blueviolet'}}>{ycsxInfo.length>0 && ycsxInfo[0].G_NAME_KD} |  {ycsxInfo.length>0 && ycsxInfo[0].G_NAME}</span>
+            </div>
             
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                setShowHidePivotTable(!showhidePivotTable);
+                //setShowHidePivotTable(!showhidePivotTable);
+                handle_Add_Sample(ycsxInfo[0]);
               }}
             >
-              <MdAdd color="#ff33bb" size={15} />
+              <MdAdd color="#05ac1b" size={15} />
               Add Sample
             </IconButton>
+            <span style={{fontSize:'1rem', fontWeight:'bold'}}>SAMPLE MONITOR</span>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                loadSampleListTable();
+              }}
+            >
+              <MdRefresh color="#fb6812" size={20} />
+              Refresh
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                loadSampleListTable();
+              }}
+            >
+              <MdLock color="#fb6812" size={20} />
+              Khóa/Mở
+            </IconButton>
+            
           </div>}
         columns={colDefs}
         data={data}
@@ -734,6 +815,9 @@ const SAMPLE_MONITOR = () => {
               <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
+            <div>
+              Dong thu 1
+            </div>
             
           </div>
         )}
