@@ -2478,12 +2478,7 @@ const MACHINE = () => {
             PLAN_LEADTIME: 0,
             STEP: 0,
             PLAN_ORDER: NextPlanOrder,
-            PROCESS_NUMBER:
-              selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ1
-                ? 1
-                : selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ2
-                  ? 2
-                  : 0,
+            PROCESS_NUMBER: selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ1   ? 1   : selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ2     ? 2     : 0,
             G_CODE: ycsxdatatablefilter.current[i].G_CODE,
             NEXT_PLAN_ID: "X",
             IS_SETTING: "Y"
