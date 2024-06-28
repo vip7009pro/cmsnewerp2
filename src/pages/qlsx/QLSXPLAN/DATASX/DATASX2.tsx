@@ -2002,6 +2002,7 @@ const DATASX2 = () => {
         );
       }
     },
+     */
     {
       field: 'TOTAL_LOSS', headerName: 'TOTAL_LOSS', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
@@ -2019,7 +2020,7 @@ const DATASX2 = () => {
           </span>
         );
       }
-    }, */
+    },
     { field: 'EQ1', headerName: 'EQ1', resizable: true, width: 40 },
     { field: 'EQ2', headerName: 'EQ2', resizable: true, width: 40 },
     { field: 'EQ3', headerName: 'EQ3', resizable: true, width: 40 },
@@ -2330,6 +2331,8 @@ const DATASX2 = () => {
                 ...element,
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                TOTAL_LOSS: 1-element.INS_OUTPUT*1.0/element.ESTIMATED_QTY,
+                TOTAL_LOSS2: 1-element.INS_OUTPUT*1.0/element.WAREHOUSE_ESTIMATED_QTY ,
                 PROD_REQUEST_DATE: moment
                   .utc(element.PROD_REQUEST_DATE)
                   .format("YYYY-MM-DD"),
