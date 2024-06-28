@@ -52,6 +52,7 @@ const AGTable = (ag_data: AGInterface) => {
   const onExportClick = () => {
     gridRef.current!.api.exportDataAsCsv();
   };
+
   useEffect(() => {
   }, [])
   return (

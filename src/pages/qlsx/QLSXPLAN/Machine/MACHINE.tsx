@@ -1,5 +1,5 @@
 /* eslint-disable no-loop-func */
-import React, { ReactElement, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
@@ -46,6 +46,7 @@ import {
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { AgGridReact } from "ag-grid-react";
 export const checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string) => {
   let maxprocess: number = 0;
   if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
@@ -2290,7 +2291,7 @@ const MACHINE = () => {
       }
     });
   };
-  const handle_DeleteLinePLAN = async () => {
+  const handle_DeleteLinePLAN_backup = async () => {
     if (qlsxplandatafilter.current.length > 0) {
       let datafilter = [...plandatatable];
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
@@ -2353,6 +2354,71 @@ const MACHINE = () => {
           }
         }
       }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+    }
+  };
+  const handle_DeleteLinePLAN = async () => {
+    if (qlsxplandatafilter.current.length > 0) {
+      for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
+        await generalQuery("checkPLANID_O302", {
+          PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+        })
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              if (qlsxplandatafilter.current[i].CHOTBC === null) {
+                generalQuery("deletePlanQLSX", {
+                  PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+                })
+                  .then((response) => {
+                    //console.log(response.data);
+                    if (response.data.tk_status !== "NG") {
+                      Swal.fire(
+                        "Thông báo",
+                        "Nội dung: " + response.data.message,
+                        "error"
+                      );
+                    } else {
+
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              } else {
+
+                Swal.fire(
+                  "Thông báo",
+                  "Chỉ thị + " +
+                  qlsxplandatafilter.current[i].PLAN_ID +
+                  ":  +đã chốt báo cáo, ko xóa được chỉ thị",
+                  "error"
+                );
+              }
+            }
+            /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          } else {
+            datafilter.splice(j,1);   
+            setPlanDataTable(datafilter);   
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });  */
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      }
+      clearSelectedRows();
+      loadQLSXPlan(selectedPlanDate);
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
@@ -2821,7 +2887,7 @@ const MACHINE = () => {
   };
   function PlanTableAGToolbar() {
     return (
-      <div>
+      <div className="toolbar">
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3581,6 +3647,30 @@ const MACHINE = () => {
       //myComponentRef.current?.handleInternalClick();
     }
   };
+  const gridRef = useRef<AgGridReact<any>>(null);
+  const setHeaderHeight = useCallback((value?: number) => {
+    gridRef.current!.api.setGridOption("headerHeight", value);
+    //setIdText("headerHeight", value);
+  }, []);
+  const defaultColDef = useMemo(() => {
+    return {
+      initialWidth: 100,
+      wrapHeaderText: true,
+      autoHeaderHeight: false,
+      editable: true,
+      floatingFilter: true,
+      filter: true,
+      headerCheckboxSelectionFilteredOnly: true,
+    };
+  }, []);
+  const getRowStyle = (params: any) => {
+    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
+  };
+  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const clearSelectedRows = useCallback(() => {
+    gridRef.current!.api.deselectAll();
+    qlsxplandatafilter.current = [];
+  }, []);
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -3675,6 +3765,126 @@ const MACHINE = () => {
   }, [ycsxdatatable])
   const planDataTableAG = useMemo(() => {
     return (
+      <div className="agtable">
+        {PlanTableAGToolbar()}
+      <div className="ag-theme-quartz"
+        style={{ height: '100%', }}
+      >
+        <AgGridReact
+          rowData={plandatatable.filter(
+            (element: QLSXPLANDATA, index: number) => {
+              return (
+                element.PLAN_EQ === selectedMachine &&
+                element.PLAN_FACTORY === selectedFactory
+              );
+            }
+          )}
+          columnDefs={column_plandatatable}
+          rowHeight={25}
+          defaultColDef={defaultColDef}
+          ref={gridRef}
+          onGridReady={() => {
+            setHeaderHeight(20);
+          }}
+          columnHoverHighlight={true}
+          rowStyle={rowStyle}
+          getRowStyle={getRowStyle}
+          getRowId={(params: any) => params.data.PLAN_ID}
+          rowSelection={"multiple"}
+          rowMultiSelectWithClick={true}
+          suppressRowClickSelection={true}
+          enterNavigatesVertically={true}
+          enterNavigatesVerticallyAfterEdit={true}
+          stopEditingWhenCellsLoseFocus={true}
+          rowBuffer={10}
+          debounceVerticalScrollbar={false}
+          enableCellTextSelection={true}
+          floatingFiltersHeight={23}
+          onSelectionChanged={(params: any) => {
+          qlsxplandatafilter.current = params!.api.getSelectedRows()
+        }}
+          onCellClicked={(params: any) => {
+            let rowData: QLSXPLANDATA = params.data;
+          setSelectedPlan(prev => rowData);
+          setDataDinhMuc({
+            ...datadinhmuc,
+            FACTORY: rowData.FACTORY ?? "NA",
+            EQ1: rowData.EQ1 ?? "NA",
+            EQ2: rowData.EQ2 ?? "NA",
+            EQ3: rowData.EQ3 ?? "NA",
+            EQ4: rowData.EQ4 ?? "NA",
+            Setting1: rowData.Setting1 ?? 0,
+            Setting2: rowData.Setting2 ?? 0,
+            Setting3: rowData.Setting3 ?? 0,
+            Setting4: rowData.Setting4 ?? 0,
+            UPH1: rowData.UPH1 ?? 0,
+            UPH2: rowData.UPH2 ?? 0,
+            UPH3: rowData.UPH3 ?? 0,
+            UPH4: rowData.UPH4 ?? 0,
+            Step1: rowData.Step1 ?? 0,
+            Step2: rowData.Step2 ?? 0,
+            Step3: rowData.Step3 ?? 0,
+            Step4: rowData.Step4 ?? 0,
+            LOSS_SX1: rowData.LOSS_SX1 ?? 0,
+            LOSS_SX2: rowData.LOSS_SX2 ?? 0,
+            LOSS_SX3: rowData.LOSS_SX3 ?? 0,
+            LOSS_SX4: rowData.LOSS_SX4 ?? 0,
+            LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
+            LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
+            LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
+            LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
+            NOTE: rowData.NOTE ?? "",
+          });
+          handleGetChiThiTable(
+            rowData.PLAN_ID,
+            rowData.G_CODE,
+            rowData.PLAN_QTY,
+            rowData.PROCESS_NUMBER,
+            rowData.IS_SETTING ?? 'Y'
+          );
+          getRecentDM(rowData.G_CODE);
+            
+          }}
+          onRowDoubleClicked={
+            (params: any) => {
+              
+            }
+          }
+          onCellEditingStopped={(params: any) => {
+            //console.log(params)
+          }}
+        />
+        
+      </div>
+      <div className="bottombar">
+        <div className="selected">
+          {ycsxdatatablefilter.current.length !== 0 && <span>
+            Selected: {ycsxdatatablefilter.current.length}/{plandatatable.filter(
+            (element: QLSXPLANDATA, index: number) => {
+              return (
+                element.PLAN_EQ === selectedMachine &&
+                element.PLAN_FACTORY === selectedFactory
+              );
+            }
+          ).length} rows
+          </span>}
+        </div>
+        <div className="totalrow">
+          <span>
+            Total: {plandatatable.filter(
+            (element: QLSXPLANDATA, index: number) => {
+              return (
+                element.PLAN_EQ === selectedMachine &&
+                element.PLAN_FACTORY === selectedFactory
+              );
+            }
+          ).length} rows
+          </span>
+        </div>
+      </div>
+      </div>
+    )
+   /*  return (
       <AGTable
         showFilter={false}
         toolbar={PlanTableAGToolbar()}
@@ -3734,7 +3944,7 @@ const MACHINE = () => {
         onSelectionChange={(params: any) => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()
         }} />
-    )
+    ) */
   }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
   const planMaterialTableAG = useMemo(() =>
     <AGTable
