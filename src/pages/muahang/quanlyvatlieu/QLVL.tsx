@@ -1181,13 +1181,13 @@ const QLVL = () => {
               load_material_table();
             }}>Refresh</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-               checkBP(getUserData(), ["MUA"], ["ALL"], ["ALL"], () => {                
+               checkBP(getUserData(), ["MUA","KETOAN"], ["ALL"], ["ALL"], () => {                
                 addMaterial();
               })
               
             }}>Add</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              checkBP(getUserData(), ["MUA"], ["ALL"], ["ALL"], () => {
+              checkBP(getUserData(), ["MUA","KETOAN"], ["ALL"], ["ALL"], () => {
                 updateMaterial();
               })
               
