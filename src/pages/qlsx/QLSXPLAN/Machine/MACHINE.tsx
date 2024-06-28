@@ -3755,11 +3755,13 @@ const MACHINE = () => {
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
         }} onCellClick={(params: any) => {
+          console.log([params.data])
+          ycsxdatatablefilter.current = [params.data]
           //setClickedRows(params.data)
           //console.log(params)
         }} onSelectionChange={(params: any) => {
           //console.log(params!.api.getSelectedRows())
-          ycsxdatatablefilter.current = params!.api.getSelectedRows();
+          //ycsxdatatablefilter.current = params!.api.getSelectedRows();
         }} />
     )
   }, [ycsxdatatable])
