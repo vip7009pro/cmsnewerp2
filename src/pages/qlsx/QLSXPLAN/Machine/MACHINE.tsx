@@ -2360,6 +2360,15 @@ const MACHINE = () => {
   };
   const handle_DeleteLinePLAN = async () => {
     if (qlsxplandatafilter.current.length > 0) {
+      Swal.fire({
+        title: "Xóa chỉ thị",
+        text: "Đang xóa chỉ thị được chọn",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
         await generalQuery("checkPLANID_O302", {
           PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
@@ -2388,7 +2397,6 @@ const MACHINE = () => {
                     console.log(error);
                   });
               } else {
-
                 Swal.fire(
                   "Thông báo",
                   "Chỉ thị + " +
@@ -2397,27 +2405,14 @@ const MACHINE = () => {
                   "error"
                 );
               }
-            }
-            /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          } else {
-            datafilter.splice(j,1);   
-            setPlanDataTable(datafilter);   
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });  */
+            }        
           })
           .catch((error) => {
             console.log(error);
           });
-
       }
       clearSelectedRows();
+      Swal.fire('Thông báo','Xóa thành công','success')
       loadQLSXPlan(selectedPlanDate);
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
