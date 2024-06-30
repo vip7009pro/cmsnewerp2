@@ -1553,10 +1553,37 @@ const DATASX2 = () => {
       }
     },
     {
-      field: 'TOTAL_OUT_QTY', headerName: 'TOTAL_OUT_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+      field: 'NEXT_IN_QTY', headerName: 'NEXT_IN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "black", fontWeight: "bold" }}>
+            {e.data.NEXT_IN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'NOT_BEEP_QTY', headerName: 'NOT_BEEP_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#0570a1", fontWeight: "bold" }}>
+            {e.data.NOT_BEEP_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOCK_QTY', headerName: 'LOCK_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.LOCK_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'BEEP_QTY', headerName: 'BEEP_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "blue", fontWeight: "bold" }}>
-            {e.data.TOTAL_OUT_QTY?.toLocaleString("en-US",{
+            {e.data.BEEP_QTY?.toLocaleString("en-US",{
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,
             })}
@@ -1581,6 +1608,33 @@ const DATASX2 = () => {
         return (
           <span style={{ color: "red", fontWeight: "bold" }}>
             {e.data.REMAIN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'TON_KHO_AO', headerName: 'TON_KHO_AO', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.TON_KHO_AO?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'NEXT_OUT_QTY', headerName: 'NEXT_OUT_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.NEXT_OUT_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'RETURN_QTY', headerName: 'RETURN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.RETURN_QTY?.toLocaleString("en-US")}
           </span>
         );
       }
@@ -2195,6 +2249,7 @@ const DATASX2 = () => {
                 LOSS_SX: (element.ESTIMATED_QTY ?? 0) !== 0 ? 1 - (element.KETQUASX ?? 0) * 1.0 / (element.ESTIMATED_QTY ?? 0) : 0,
                 LOSS_SX_KT: (element.KETQUASX ?? 0) !== 0 ? 1 - (element.INS_INPUT ?? 0) * 1.0 / (element.KETQUASX ?? 0) : 0,
                 LOSS_KT: (element.INS_INPUT ?? 0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0) * 1.0 / (element.INS_INPUT ?? 0) : 0,
+                NOT_BEEP_QTY: element.PROCESS_NUMBER !==1 ? 0 : element.NOT_BEEP_QTY,
                 id: index,
               };
             },

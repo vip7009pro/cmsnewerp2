@@ -1601,6 +1601,13 @@ export interface SX_DATA {
   INSPECT_MATERIAL_NG: number;
   INSPECT_PROCESS_NG: number;
   SX_MARKING_QTY: number;
+  NEXT_IN_QTY: number;
+  NOT_BEEP_QTY: number;
+  LOCK_QTY: number;
+  BEEP_QTY: number;
+  TON_KHO_AO: number;
+  NEXT_OUT_QTY: number;
+  RETURN_QTY: number;
 }
 export interface TRA_PQC1_DATA {
   PQC1_ID: string;
@@ -2051,6 +2058,13 @@ export interface YCSX_SX_DATA {
   TOTAL_LOSS2: number;
   LOSS_THEM_TUI: number;
   SX_MARKING_QTY: number;
+  NEXT_IN_QTY: number;
+  NOT_BEEP_QTY: number;
+  LOCK_QTY: number;
+  BEEP_QTY: number;
+  TON_KHO_AO: number;
+  NEXT_OUT_QTY: number;
+  RETURN_QTY: number;
 }
 export interface LOSS_TABLE_DATA {
   XUATKHO_MET: number;
