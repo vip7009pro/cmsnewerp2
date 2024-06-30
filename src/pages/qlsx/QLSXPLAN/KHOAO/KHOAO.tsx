@@ -822,6 +822,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             }} onRowClick={(params: any) => {
               //console.log(e.data)
             }} onSelectionChange={(params: any) => {
+              console.log(params)
               tonkhoaodatafilter.current = params!.api.getSelectedRows();          
             }} />
         </div>
