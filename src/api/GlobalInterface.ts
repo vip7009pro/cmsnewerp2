@@ -1608,6 +1608,7 @@ export interface SX_DATA {
   TON_KHO_AO: number;
   NEXT_OUT_QTY: number;
   RETURN_QTY: number;
+  KETQUASX_M: number;
 }
 export interface TRA_PQC1_DATA {
   PQC1_ID: string;

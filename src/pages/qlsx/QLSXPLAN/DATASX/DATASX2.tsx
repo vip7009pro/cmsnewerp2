@@ -1,26 +1,9 @@
 import { IconButton } from "@mui/material";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Summary,
-  Toolbar,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../../api/Api";
-import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
@@ -34,6 +17,7 @@ import {
 } from "../../../../api/GlobalInterface";
 import { checkEQvsPROCESS } from "../Machine/MACHINE";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { CustomCellRendererProps } from "ag-grid-react";
 const DATASX2 = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = () => {
@@ -1522,11 +1506,11 @@ const DATASX2 = () => {
   const column_datasx_chithi = [
     { field: 'PHAN_LOAI', headerName: 'PHAN_LOAI', resizable: true, width: 80, },
     { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 80 },
-    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 60 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 60, pinned:'left' },
     { field: 'PLAN_DATE', headerName: 'PLAN_DATE', resizable: true, width: 80 },
     { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 60 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
-    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80, pinned: 'left' },
     {
       field: 'PLAN_QTY', headerName: 'PLAN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
@@ -1643,8 +1627,36 @@ const DATASX2 = () => {
     { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 50 },
     { field: 'SETTING_MET_TC', headerName: 'SETTING_MET_TC', resizable: true, width: 80 },
     { field: 'SETTING_DM_SX', headerName: 'SETTING_DM_SX', resizable: true, width: 80 },
-    { field: 'SETTING_MET', headerName: 'SETTING_MET', resizable: true, width: 80 },
-    { field: 'NG_MET', headerName: 'NG_MET', resizable: true, width: 80 },
+    { field: 'SETTING_MET', headerName: 'SETTING_MET', resizable: true, width: 80, cellRenderer: (e:CustomCellRendererProps)=> {
+      return (
+        <span style={{ color: "#d96e0a", fontWeight: "bold" }}>
+            {e.data.SETTING_MET?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+      )
+    }  },
+    { field: 'NG_MET', headerName: 'NG_MET', resizable: true, width: 80, cellRenderer: (e:CustomCellRendererProps)=> {
+      return (
+        <span style={{ color: "#ef1b1b", fontWeight: "bold" }}>
+            {e.data.NG_MET?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+      )
+    } },
+    { field: 'KETQUASX_M', headerName: 'KETQUASX_M', resizable: true, width: 80, cellRenderer: (e:CustomCellRendererProps)=> {
+      return (
+        <span style={{ color: "#059c32", fontWeight: "bold" }}>
+            {e.data.KETQUASX_M?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+      )
+    }  },
     {
       field: 'WAREHOUSE_ESTIMATED_QTY', headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
@@ -2250,6 +2262,9 @@ const DATASX2 = () => {
                 LOSS_SX_KT: (element.KETQUASX ?? 0) !== 0 ? 1 - (element.INS_INPUT ?? 0) * 1.0 / (element.KETQUASX ?? 0) : 0,
                 LOSS_KT: (element.INS_INPUT ?? 0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0) * 1.0 / (element.INS_INPUT ?? 0) : 0,
                 NOT_BEEP_QTY: element.PROCESS_NUMBER !==1 ? 0 : element.NOT_BEEP_QTY,
+                KETQUASX_M:  element.PD !== null?(element.KETQUASX*element.PD*1.0/element.CAVITY/1000): null,
+                NG_MET: element.PD !== null? element.USED_QTY - (element.KETQUASX*element.PD*1.0/element.CAVITY/1000) -  element.SETTING_MET : null,
+                NG_EA: element.ESTIMATED_QTY -element.SETTING_EA - element.KETQUASX,
                 id: index,
               };
             },
