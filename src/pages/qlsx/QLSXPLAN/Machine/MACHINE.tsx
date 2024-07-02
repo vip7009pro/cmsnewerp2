@@ -2369,47 +2369,94 @@ const MACHINE = () => {
         confirmButtonText: "OK",
         showConfirmButton: false,
       });
-      for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
+      for (let i = 0; i < qlsxplandatafilter.current.length; i++) { 
+        let isOnO302: boolean = false, isChotBaoCao: boolean = qlsxplandatafilter.current[i].CHOTBC === null, isOnOutKhoAo: boolean =false;
+        
         await generalQuery("checkPLANID_O302", {
           PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
         })
-          .then((response) => {
-            //console.log(response.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              if (qlsxplandatafilter.current[i].CHOTBC === null) {
-                generalQuery("deletePlanQLSX", {
-                  PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
-                })
-                  .then((response) => {
-                    //console.log(response.data);
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Nội dung: " + response.data.message,
-                        "error"
-                      );
-                    } else {
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            isOnO302 = true;
+          } else {
+            
+          }        
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else {
-                Swal.fire(
-                  "Thông báo",
-                  "Chỉ thị + " +
-                  qlsxplandatafilter.current[i].PLAN_ID +
-                  ":  +đã chốt báo cáo, ko xóa được chỉ thị",
-                  "error"
-                );
-              }
-            }        
+        await generalQuery("checkPLANID_OUT_KHO_AO", {
+          PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+        })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            isOnOutKhoAo = true;
+          } else {
+            
+          }        
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+
+        if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {
+          generalQuery("deletePlanQLSX", {
+            PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
           })
-          .catch((error) => {
-            console.log(error);
-          });
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+                
+              } else {
+
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } 
+        else {
+          if(isChotBaoCao)
+          {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ thị + " +
+              qlsxplandatafilter.current[i].PLAN_ID +
+              ":  +đã chốt báo cáo, ko xóa được chỉ thị",
+              "error"
+            );
+
+          }
+          else if(isOnO302)
+          {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ thị + " +
+              qlsxplandatafilter.current[i].PLAN_ID +
+              ":  +đã xuất kho thật",
+              "error"
+            );
+
+          }   
+          else if(isOnOutKhoAo)
+          {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ thị + " +
+              qlsxplandatafilter.current[i].PLAN_ID +
+              ":  +đã xuất kho ảo",
+              "error"
+            );
+            
+          }
+        }
+
+
+        
       }
       clearSelectedRows();
       Swal.fire('Thông báo','Xóa thành công','success')
