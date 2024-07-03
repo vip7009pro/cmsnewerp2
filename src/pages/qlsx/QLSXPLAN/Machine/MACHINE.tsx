@@ -1740,7 +1740,47 @@ const MACHINE = () => {
             "error"
           );
         } else {
-          generalQuery("saveQLSX", {
+          
+          await generalQuery("insertDBYCSX", {
+            PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
+            G_CODE: selectedPlan?.G_CODE,
+          })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                 
+               
+              } else {
+                generalQuery("updateDBYCSX", {
+                  PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
+                  LOSS_SX1: datadinhmuc.LOSS_SX1,
+                  LOSS_SX2: datadinhmuc.LOSS_SX2,
+                  LOSS_SX3: datadinhmuc.LOSS_SX3,
+                  LOSS_SX4: datadinhmuc.LOSS_SX4,
+                  LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+                  LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+                  LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,            
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                     
+                    } else {
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+          
+  
+
+
+          await generalQuery("saveQLSX", {
             G_CODE: selectedPlan?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,

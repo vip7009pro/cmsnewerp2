@@ -1736,6 +1736,21 @@ const YCSXManager = () => {
         console.log("err_Code1 = " + err_code1);
         if (err_code1 === 0) {
           if (uploadExcelJson[i].PHANLOAI === "TT") {
+
+            await generalQuery("insertDBYCSX", {
+              PROD_REQUEST_NO: next_prod_request_no,
+              G_CODE: uploadExcelJson[i].G_CODE,
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                 
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+
             await generalQuery("insert_ycsx", {
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
@@ -1799,8 +1814,7 @@ const YCSXManager = () => {
                 console.log(error);
               });
           } else {
-            let next_process_lot_no_p501: string =
-              await process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
+            let next_process_lot_no_p501: string = await process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
             await generalQuery("insert_ycsx", {
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
@@ -2159,6 +2173,20 @@ const YCSXManager = () => {
     }
     if (err_code === 0) {
       if (newphanloai === "TT") {
+        await generalQuery("insertDBYCSX", {
+          PROD_REQUEST_NO: next_prod_request_no,
+          G_CODE: selectedCode?.G_CODE,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+             
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
         await generalQuery("insert_ycsx", {
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,

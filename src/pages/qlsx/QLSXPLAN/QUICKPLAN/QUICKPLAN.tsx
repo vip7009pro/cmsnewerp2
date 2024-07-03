@@ -147,11 +147,8 @@ const QUICKPLAN = () => {
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedCode, setSelectedCode] = useState("CODE: ");
   const [selectedG_Code, setSelectedG_Code] = useState("");
-  const [selectedMachine, setSelectedMachine] = useState("FR01");
-  const [selectedFactory, setSelectedFactory] = useState("NM1");
-  const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment().format("YYYY-MM-DD"),
-  );
+  const [selectedPlan, setSelectedPlan] = useState<any>();
+
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
@@ -1576,7 +1573,43 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             "error",
           );
         } else {
-          generalQuery("saveQLSX", {
+          await generalQuery("insertDBYCSX", {
+            PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+            G_CODE: selectedPlan.G_CODE,
+          })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                
+               
+              } else {
+                generalQuery("updateDBYCSX", {
+                  PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+                  LOSS_SX1: datadinhmuc.LOSS_SX1,
+                  LOSS_SX2: datadinhmuc.LOSS_SX2,
+                  LOSS_SX3: datadinhmuc.LOSS_SX3,
+                  LOSS_SX4: datadinhmuc.LOSS_SX4,
+                  LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+                  LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+                  LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,          
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                     
+                    } else {
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+         
+          await generalQuery("saveQLSX", {
             G_CODE: selectedG_Code,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1958,6 +1991,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     details, // GridCallbackDetails
   ) => {
     let rowData: QLSXPLANDATA = params.row; 
+    setSelectedPlan(rowData);
     setSelectedCode("CODE: " + rowData.G_NAME_KD);
     setSelectedG_Code(rowData.G_CODE);
     setDataDinhMuc({
