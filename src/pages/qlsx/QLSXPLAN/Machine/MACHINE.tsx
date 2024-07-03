@@ -1774,12 +1774,8 @@ const MACHINE = () => {
             })
             .catch((error) => {
               console.log(error);
-            });
-
-          
-  
-
-
+            });  
+            
           await generalQuery("saveQLSX", {
             G_CODE: selectedPlan?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,

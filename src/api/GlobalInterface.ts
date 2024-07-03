@@ -2475,7 +2475,7 @@ export interface BOM_GIA {
   M_SS_PRICE: number;
   M_SLITTING_PRICE?: number;
   USAGE?: string;
-  MAIN_M: string;
+  MAIN_M: number;
   MAT_MASTER_WIDTH?: number;
   MAT_CUTWIDTH?: number;
   MAT_ROLL_LENGTH?: number;

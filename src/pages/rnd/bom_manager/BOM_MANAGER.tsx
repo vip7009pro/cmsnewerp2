@@ -21,7 +21,7 @@ import {
   GridCallbackDetails,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FcDeleteRow } from "react-icons/fc";
 import {
   AiFillDelete,
@@ -62,6 +62,7 @@ import {
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
 import BOM_DESIGN from "./BOM_DESIGN";
+import AGTable from "../../../components/DataTable/AGTable";
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
   const [showHideDesignBom, setShowHideDesignBOM] = useState(false);
@@ -73,8 +74,8 @@ const BOM_MANAGER = () => {
   );
   const [updateReason, setUpdateReason] = useState("");
   const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
-  const [bomsxdatatablefilter, setBomSXDataTableFilter] = useState<Array<BOM_SX>>([]);
-  const [bomgiadatatablefilter, setBomGiaDataTableFilter] = useState<Array<BOM_GIA>>([]);
+  const bomsxdatatablefilter = useRef<Array<BOM_SX>>([]);
+  const bomgiadatatablefilter = useRef<Array<BOM_GIA>>([]);
   const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
     id: 0,
     WIDTH_OFFSET: 0,
@@ -190,9 +191,6 @@ const BOM_MANAGER = () => {
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const [uploadfile, setUploadFile] = useState<any>(null);
-  const [selectedCust_CD, setSelectedCust_CD] =
-    useState<CustomerListData | null>();
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
     {
       M_CODE: "A0000001",
@@ -237,12 +235,6 @@ const BOM_MANAGER = () => {
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
     [],
   );
-  const [editedBOMSXRows, setEditedBOMSXRows] = useState<
-    Array<GridCellEditCommitParams>
-  >([]);
-  const [editedBOMGIARows, setEditedBOMGIARows] = useState<
-    Array<GridCellEditCommitParams>
-  >([]);
   const handleSetCodeInfo = (keyname: string, value: any) => {
     let tempcodefullinfo = { ...codefullinfo, [keyname]: value };
     ////console.log(tempcodefullinfo);
@@ -451,8 +443,10 @@ const BOM_MANAGER = () => {
       field: "M_CODE",
       headerName: "M_CODE",
       width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "blue" }}>{params.row.M_CODE} </span>;
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: "blue" }}>{params.data.M_CODE} </span>;
       },
       editable: enableEdit,
     },
@@ -460,8 +454,8 @@ const BOM_MANAGER = () => {
       field: "M_NAME",
       headerName: "M_NAME",
       width: 110,
-      renderCell: (params: any) => {
-        return <span style={{ color: "red" }}>{params.row.M_NAME} </span>;
+      cellRenderer: (params: any) => {
+        return <span style={{ color: "red" }}>{params.data.M_NAME} </span>;
       },
       editable: enableEdit,
     },
@@ -500,7 +494,8 @@ const BOM_MANAGER = () => {
     },
   ]);
   const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
-    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit },
+    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit ,headerCheckboxSelection: true,
+      checkboxSelection: true,},
     { field: "M_NAME", headerName: "M_NAME", width: 150, editable: enableEdit },
     {
       field: "CUST_CD",
@@ -615,19 +610,12 @@ const BOM_MANAGER = () => {
       </GridToolbarContainer>
     );
   }
-  function CustomToolbarBOMSXTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={20} />
-          EXCEL
-        </IconButton>
-        <IconButton
+  const bomsx_AGTable = useMemo(() =>
+    <AGTable
+      showFilter={false}
+      toolbar={       
+        <div>
+          <IconButton
           className="buttonIcon"
           onClick={() => {
             confirmSaveBOMSX();
@@ -657,8 +645,8 @@ const BOM_MANAGER = () => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            setcolumn_bomsx(
-              column_bomsx.map((element, index: number) => {
+            setcolumn_bomsx(prev => 
+              prev.map((element, index: number) => {
                 return { ...element, editable: !element.editable };
               }),
             );
@@ -668,23 +656,30 @@ const BOM_MANAGER = () => {
           <AiFillEdit color="yellow" size={20} />
           Bật tắt sửa
         </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarBOMGIATable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={20} />
-          EXCEL
-        </IconButton>
-        <IconButton
+        </div>
+      }
+      columns={column_bomsx}
+      data={bomsxtable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        bomsxdatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [bomsxtable,column_bomsx,selectedMaterial]);
+
+    const bomgia_AGTable = useMemo(() =>
+      <AGTable
+        showFilter={false}
+        toolbar={       
+          <div>
+            <IconButton
           className="buttonIcon"
           onClick={() => {
             confirmSaveBOMGIA();
@@ -714,8 +709,8 @@ const BOM_MANAGER = () => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            setcolumn_bomgia(
-              column_bomgia.map((element, index: number) => {
+            setcolumn_bomgia(prev =>
+              prev.map((element, index: number) => {
                 return { ...element, editable: !element.editable };
               }),
             );
@@ -743,10 +738,25 @@ const BOM_MANAGER = () => {
           <FcAdvertising color="red" size={20} />
           DESIGN BOM
         </IconButton> */}
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
+
+          </div>
+        }
+        columns={column_bomgia}
+        data={bomgiatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          //clickedRow.current = params.data;
+          //console.log(e.data) 
+        }} onSelectionChange={(params: any) => {
+          //console.log(params)
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+          bomgiadatatablefilter.current = params!.api.getSelectedRows();
+        }}
+      />
+      , [bomgiatable,column_bomgia,selectedMaterial]);
+
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
@@ -956,7 +966,7 @@ const BOM_MANAGER = () => {
   const handleGETBOMGIA = (G_CODE: string) => {
     setisLoading(true);
     generalQuery("getbomgia", {
-      G_CODE: G_CODE,
+      G_CODE: G_CODE, 
     })
       .then((response) => {
         ////console.log(response.data);
@@ -1148,7 +1158,7 @@ const BOM_MANAGER = () => {
           );
           ////console.log(loaded_data[0]);
           setCodeFullInfo(loaded_data[0]);
-          console.log(loaded_data[0])
+          //console.log(loaded_data[0])
           setSelectedMasterMaterial({
             M_NAME: loaded_data[0]?.PROD_MAIN_MATERIAL ?? "",
             EXP_DATE: masterMaterialList.filter((ele: MASTER_MATERIAL_HSD, index: number) => ele.M_NAME === loaded_data[0]?.PROD_MAIN_MATERIAL)[0].EXP_DATE ?? 0
@@ -1285,30 +1295,7 @@ const BOM_MANAGER = () => {
       setCodeDataTableFilter([]);
     }
   };
-  const handleBOMSXSelectionforUpdate = (ids: GridSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = bomsxtable.filter((element: BOM_SX) =>
-      selectedID.has(element.id),
-    );
-    if (datafilter.length > 0) {
-      ////console.log(datafilter);
-      setBomSXDataTableFilter(datafilter);
-    } else {
-      setBomSXDataTableFilter([]);
-    }
-  };
-  const handleBOMGIASelectionforUpdate = (ids: GridSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = bomgiatable.filter((element: BOM_GIA) =>
-      selectedID.has(element.id),
-    );
-    if (datafilter.length > 0) {
-      ////console.log(datafilter);
-      setBomGiaDataTableFilter(datafilter);
-    } else {
-      setBomGiaDataTableFilter([]);
-    }
-  };
+ 
   const handleClearInfo = () => {
     setCodeFullInfo({
       CUST_CD: "0000",
@@ -1346,7 +1333,15 @@ const BOM_MANAGER = () => {
       USE_YN: "Y",
       G_CODE: "",
       FSC: "N",
+      FSC_CODE:'01',
       PROD_DVT: "01",
+      APPSHEET:'N',
+      BANVE:'N',
+      NO_INSPECTION:'N',
+      PDBV:'N',
+      PD_HSD:'N',
+      QL_HSD:'Y',     
+
     });
   };
   const checkHSD = (): boolean => {
@@ -1739,9 +1734,7 @@ const BOM_MANAGER = () => {
   const checkMAINVLMatching = (): boolean => {
     let checkM: boolean = false;
     if (bomsxtable.length > 0) {
-      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";
-      console.log(mainM);
-      console.log(selectedMasterMaterial.M_NAME);
+      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";      
       if (mainM === 'NG') {
         checkM = false;
         Swal.fire('Thông báo', 'Bom VL chưa set liệu chính', 'error')
@@ -1844,11 +1837,11 @@ const BOM_MANAGER = () => {
     }
   };
   const handle_DeleteLineBOMSX = () => {
-    if (bomsxdatatablefilter.length > 0) {
+    if (bomsxdatatablefilter.current.length > 0) {
       let datafilter = [...bomsxtable];
-      for (let i = 0; i < bomsxdatatablefilter.length; i++) {
+      for (let i = 0; i < bomsxdatatablefilter.current.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
-          if (bomsxdatatablefilter[i].id === datafilter[j].id) {
+          if (bomsxdatatablefilter.current[i].id === datafilter[j].id) {
             datafilter.splice(j, 1);
           }
         }
@@ -1859,7 +1852,49 @@ const BOM_MANAGER = () => {
     }
   };
   const handleInsertBOMSX = async () => {
-    if (bomgiatable.length > 0) {
+    let currentBOMGIA: BOM_GIA[] = [];
+
+    await generalQuery("getbomgia", {
+      G_CODE: codefullinfo.G_CODE,
+    })
+      .then((response) => {
+        ////console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: BOM_GIA[] = response.data.data.map(
+            (element: BOM_GIA, index: number) => {
+              return {
+                ...element,
+                INS_DATE: moment
+                  .utc(element.INS_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                UPD_DATE: moment
+                  .utc(element.UPD_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index,
+              };
+            },
+          );
+          currentBOMGIA = loadeddata;
+         
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");          
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+
+      console.log('currentBOMGIA',currentBOMGIA);
+
+      const mainM_BOMSX: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";  
+      const mainM_BOMGIA: string = currentBOMGIA.find((ele: BOM_GIA, index: number) => ele.MAIN_M == 1)?.M_NAME ?? "NG";  
+
+      
+
+
+      console.log(bomsxtable)
+
+    if (currentBOMGIA.length > 0) {
       if (checkMAINVLMatching()) {
         if (bomsxtable.length > 0) {
           //delete old bom from M140
@@ -1876,11 +1911,11 @@ const BOM_MANAGER = () => {
           }
           for (let i = 0; i < bomsxtable.length; i++) {
             ////console.log(bomsxtable[i].LIEUQL_SX);
-            if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
+            if (bomsxtable[i].LIEUQL_SX === 1) {
               for (let j = 0; j < bomsxtable.length; j++) {
                 if (
                   bomsxtable[j].M_NAME === bomsxtable[i].M_NAME &&
-                  parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 0
+                  bomsxtable[j].LIEUQL_SX === 0
                 ) {
                   check_lieuql_sx_sot += 1;
                 }
@@ -1889,9 +1924,9 @@ const BOM_MANAGER = () => {
           }
           ////console.log('bang chi thi', bomsxtable);
           for (let i = 0; i < bomsxtable.length; i++) {
-            if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
+            if (bomsxtable[i].LIEUQL_SX === 1) {
               for (let j = 0; j < bomsxtable.length; j++) {
-                if (parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 1) {
+                if (bomsxtable[j].LIEUQL_SX === 1) {
                   ////console.log('i', bomsxtable[i].M_NAME);
                   ////console.log('j', bomsxtable[j].M_NAME);
                   if (bomsxtable[i].M_NAME !== bomsxtable[j].M_NAME) {
@@ -2117,7 +2152,7 @@ const BOM_MANAGER = () => {
             ? 0
             : selected_Material_Info.SLITTING_PRICE,
         USAGE: "",
-        MAIN_M: "0",
+        MAIN_M: 0,
         MAT_MASTER_WIDTH: selected_Material_Info.MASTER_WIDTH,
         MAT_CUTWIDTH: selectedMaterial?.WIDTH_CD,
         MAT_ROLL_LENGTH: selected_Material_Info.ROLL_LENGTH,
@@ -2137,11 +2172,11 @@ const BOM_MANAGER = () => {
     }
   };
   const handle_DeleteLineBOMGIA = () => {
-    if (bomgiadatatablefilter.length > 0) {
+    if (bomgiadatatablefilter.current.length > 0) {
       let datafilter = [...bomgiatable];
-      for (let i = 0; i < bomgiadatatablefilter.length; i++) {
+      for (let i = 0; i < bomgiadatatablefilter.current.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
-          if (bomgiadatatablefilter[i].id === datafilter[j].id) {
+          if (bomgiadatatablefilter.current[i].id === datafilter[j].id) {
             datafilter.splice(j, 1);
           }
         }
@@ -2156,8 +2191,28 @@ const BOM_MANAGER = () => {
       //delete old bom from M140
       let err_code: string = "0";
       let checkMAIN_M: number = 0;
+      let isCodeMassProd: boolean  = false;
+      let isNewCode: boolean = true;
+      await generalQuery("checkMassG_CODE", {
+        G_CODE: codefullinfo.G_CODE,
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            isCodeMassProd = true;
+            console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
+            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
+            
+          } else {
+            console.log(parseInt(response.data.message) )
+          }
+        })
+        .catch((error) => {
+          //console.log(error);
+        });
+        
+        console.log(isNewCode)
       for (let i = 0; i < bomgiatable.length; i++) {
-        checkMAIN_M += parseInt(bomgiatable[i].MAIN_M);
+        checkMAIN_M += bomgiatable[i].MAIN_M;
         if (
           bomgiatable[i].CUST_CD === "" ||
           bomgiatable[i].USAGE === "" ||
@@ -2167,10 +2222,13 @@ const BOM_MANAGER = () => {
           err_code = "Không được để ô nào NG màu đỏ";
         }
       }
+      if(getCompany()==='CMS' && !isNewCode) {
+        err_code += "_ Code đã chạy mass, không thể sửa BOM";
+      }
       //console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {
-        err_code += "| Phải chỉ định liệu quản lý";
-      }
+        err_code += "_ Phải chỉ định liệu quản lý";
+      }      
       ////console.log(err_code);
       if (err_code === "0") {
         //console.log("vao bom gia insert");
@@ -2246,7 +2304,7 @@ const BOM_MANAGER = () => {
           M_SS_PRICE: 0,
           M_SLITTING_PRICE: 0,
           USAGE: "",
-          MAIN_M: "0",
+          MAIN_M: 0,
           MAT_MASTER_WIDTH: 0,
           MAT_CUTWIDTH: bomsxtable[i]?.WIDTH_CD,
           MAT_ROLL_LENGTH: 0,
@@ -3883,7 +3941,8 @@ const BOM_MANAGER = () => {
                     {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
                     {pinBOM ? "(Đang ghim BOM)" : ""}
                   </span>
-                  <DataGrid
+                  {bomsx_AGTable}
+                  {/* <DataGrid
                     components={{
                       Toolbar: CustomToolbarBOMSXTable,
                       LoadingOverlay: LinearProgress,
@@ -3897,19 +3956,18 @@ const BOM_MANAGER = () => {
                     onSelectionModelChange={(ids) => {
                       handleBOMSXSelectionforUpdate(ids);
                     }}
-                    /*  rows={codeinfodatatable}
-              columns={columnDefinition} */
+                    
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
                     editMode="cell"
-                    /* experimentalFeatures={{ newEditingApi: true }}  */
+                    
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
                       details: GridCallbackDetails,
                     ) => {
-                      ////console.log(params);
+                      //console.log(params);
                       let tempeditrows = editedRows;
                       tempeditrows.push(params);
                       setEditedBOMSXRows(tempeditrows);
@@ -3922,7 +3980,7 @@ const BOM_MANAGER = () => {
                       );
                       setBOMSXTable(newdata);
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
               <div className="bomgia">
@@ -3933,7 +3991,8 @@ const BOM_MANAGER = () => {
                     BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
                     {pinBOM ? "(Đang ghim BOM)" : ""}
                   </span>
-                  <DataGrid
+                  {bomgia_AGTable}
+                  {/* <DataGrid
                     components={{
                       Toolbar: CustomToolbarBOMGIATable,
                       LoadingOverlay: LinearProgress,
@@ -3946,14 +4005,11 @@ const BOM_MANAGER = () => {
                     checkboxSelection
                     onSelectionModelChange={(ids) => {
                       handleBOMGIASelectionforUpdate(ids);
-                    }}
-                    /*  rows={codeinfodatatable}
-              columns={columnDefinition} */
+                    }}                   
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
-                    editMode="cell"
-                    /* experimentalFeatures={{ newEditingApi: true }}  */
+                    editMode="cell"                    
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
@@ -3972,7 +4028,8 @@ const BOM_MANAGER = () => {
                       );
                       setBOMGIATable(newdata);
                     }}
-                  />
+                  /> */}
+
                 </div>
               </div>
             </div>
