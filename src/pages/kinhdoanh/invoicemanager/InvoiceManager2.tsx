@@ -44,7 +44,6 @@ import {
   UserData,
   WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
-
 const InvoiceManager2 = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [isPending, startTransition] = useTransition();
@@ -107,7 +106,6 @@ const InvoiceManager2 = () => {
   >([]);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-
   const column_invoicetable = [
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 130 },
@@ -175,7 +173,7 @@ const InvoiceManager2 = () => {
             <b>
               {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -305,7 +303,6 @@ const InvoiceManager2 = () => {
       },
     },
   ];
-
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -313,7 +310,6 @@ const InvoiceManager2 = () => {
       handletraInvoice();
     }
   };
-
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -366,7 +362,6 @@ const InvoiceManager2 = () => {
               });
               clearInvoiceform();
             }); */
-
             checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setSelection({
                 ...selection,
@@ -496,8 +491,8 @@ const InvoiceManager2 = () => {
             (element: InvoiceTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
             },
@@ -588,7 +583,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         .catch((error) => {
           console.log(error);
         });
-
       await generalQuery("checkcustcodeponoPOBALANCE", {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
@@ -605,7 +599,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         .catch((error) => {
           console.log(error);
         });
-
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -679,7 +672,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         .catch((error) => {
           console.log(error);
         });
-
       await generalQuery("checkcustcodeponoPOBALANCE", {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
@@ -696,7 +688,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         .catch((error) => {
           console.log(error);
         });
-
       if (err_code === 0) {
         await generalQuery("insert_invoice", {
           DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
@@ -865,7 +856,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     ) {
       err_code = 4;
     }
-
     await generalQuery("checkcustcodeponoPOBALANCE", {
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust_CD?.CUST_CD,
@@ -882,7 +872,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       .catch((error) => {
         console.log(error);
       });
-
     if (err_code === 0) {
       await generalQuery("insert_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -1035,7 +1024,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     ) {
       err_code = 4;
     }
-
     if (err_code === 0) {
       await generalQuery("update_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -1756,14 +1744,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                           "en-US",
                           {
                             style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                           },
                         )}{" "}
                       </td>
                     </tr>
                   </tbody>
                 </table>
-
                 {/*  <div className='summarygroup'>
                 <div className='summaryvalue'>
                   <b>
