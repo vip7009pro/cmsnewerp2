@@ -672,7 +672,7 @@ const BOM_MANAGER = () => {
         bomsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomsxtable,column_bomsx,selectedMaterial]);
+    , [bomsxtable,column_bomsx,selectedMaterial,selectedMasterMaterial]);
 
     const bomgia_AGTable = useMemo(() =>
       <AGTable
@@ -755,7 +755,7 @@ const BOM_MANAGER = () => {
           bomgiadatatablefilter.current = params!.api.getSelectedRows();
         }}
       />
-      , [bomgiatable,column_bomgia,selectedMaterial]);
+      , [bomgiatable,column_bomgia,selectedMaterial,selectedMasterMaterial]);
 
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
@@ -1734,7 +1734,9 @@ const BOM_MANAGER = () => {
   const checkMAINVLMatching = (): boolean => {
     let checkM: boolean = false;
     if (bomsxtable.length > 0) {
-      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";      
+      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";   
+      console.log('mainM',mainM);   
+      console.log('selectedMasterMaterial.M_NAME',selectedMasterMaterial.M_NAME);   
       if (mainM === 'NG') {
         checkM = false;
         Swal.fire('Thông báo', 'Bom VL chưa set liệu chính', 'error')
@@ -1888,14 +1890,12 @@ const BOM_MANAGER = () => {
 
       const mainM_BOMSX: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";  
       const mainM_BOMGIA: string = currentBOMGIA.find((ele: BOM_GIA, index: number) => ele.MAIN_M == 1)?.M_NAME ?? "NG";  
-
-      
-
-
-      console.log(bomsxtable)
+      console.log('mainM_BOMSX',mainM_BOMSX)
+      console.log('mainM_BOMGIA',mainM_BOMGIA)       
 
     if (currentBOMGIA.length > 0) {
-      if (checkMAINVLMatching()) {
+
+      if (checkMAINVLMatching() && mainM_BOMGIA === mainM_BOMSX) {
         if (bomsxtable.length > 0) {
           //delete old bom from M140
           let err_code: string = "0";
@@ -2050,12 +2050,15 @@ const BOM_MANAGER = () => {
           Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
         }
       }
+      else 
+      {
+        if (mainM_BOMGIA !== mainM_BOMSX)
+        {
+          Swal.fire("Thông báo","Liệu chính trong BOM SX fai giống với liệu chính trong BOM giá","warning",);              
+        }
+      }
     } else {
-      Swal.fire(
-        "Thông báo",
-        "Code chưa có BOM giá, phải thêm BOM giá trước",
-        "warning",
-      );
+      Swal.fire("Thông báo","Code chưa có BOM giá, phải thêm BOM giá trước","warning",); 
     }
   };
   const handleInsertBOMSX_WITH_GIA = async () => {
@@ -2188,27 +2191,80 @@ const BOM_MANAGER = () => {
   };
   const handleInsertBOMGIA = async () => {
     if (bomgiatable.length > 0) {
+      console.log(bomgiatable)
       //delete old bom from M140
       let err_code: string = "0";
       let checkMAIN_M: number = 0;
       let isCodeMassProd: boolean  = false;
       let isNewCode: boolean = true;
+
+      let total_lieuql_sx: number = 0;
+      let check_lieuql_sx_sot: number = 0;
+      let check_num_lieuql_sx: number = 1;
+      let check_lieu_qlsx_khac1: number = 0;
+      let checkusageMain: number =0;
+      let m_list: string = "";
+      for (let i = 0; i < bomgiatable.length - 1; i++) {
+        m_list += `'${bomgiatable[i].M_CODE}',`;
+      }
+      m_list += `'${bomgiatable[bomgiatable.length - 1].M_CODE}'`;
+
+      for (let i = 0; i < bomgiatable.length; i++) {
+        checkusageMain += bomgiatable[i].USAGE?.toUpperCase() ==='MAIN' ? 1: 0;        
+      }
+      
+
+      for (let i = 0; i < bomgiatable.length; i++) {
+        total_lieuql_sx += bomgiatable[i].MAIN_M;
+        if (bomgiatable[i].MAIN_M > 1) check_lieu_qlsx_khac1 += 1;
+      }
+      for (let i = 0; i < bomgiatable.length; i++) {
+        ////console.log(bomgiatable[i].MAIN_M);
+        if (bomgiatable[i].MAIN_M === 1) {
+          for (let j = 0; j < bomgiatable.length; j++) {
+            if (
+              bomgiatable[j].M_NAME === bomgiatable[i].M_NAME &&
+              bomgiatable[j].MAIN_M === 0
+            ) {
+              check_lieuql_sx_sot += 1;
+            }
+          }
+        }
+      }
+      ////console.log('bang chi thi', bomgiatable);
+      for (let i = 0; i < bomgiatable.length; i++) {
+        if (bomgiatable[i].MAIN_M === 1) {
+          for (let j = 0; j < bomgiatable.length; j++) {
+            if (bomgiatable[j].MAIN_M === 1) {
+              ////console.log('i', bomgiatable[i].M_NAME);
+              ////console.log('j', bomgiatable[j].M_NAME);
+              if (bomgiatable[i].M_NAME !== bomgiatable[j].M_NAME) {
+                check_num_lieuql_sx = 2;
+              }
+            }
+          }
+        }
+      }
+
+
+
+
       await generalQuery("checkMassG_CODE", {
         G_CODE: codefullinfo.G_CODE,
       })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            isCodeMassProd = true;
-            console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
-            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
-            
-          } else {
-            console.log(parseInt(response.data.message) )
-          }
-        })
-        .catch((error) => {
-          //console.log(error);
-        });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          isCodeMassProd = true;
+          console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
+          isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240603;
+          
+        } else {
+          console.log(parseInt(response.data.message) )
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
         
         console.log(isNewCode)
       for (let i = 0; i < bomgiatable.length; i++) {
@@ -2222,6 +2278,21 @@ const BOM_MANAGER = () => {
           err_code = "Không được để ô nào NG màu đỏ";
         }
       }
+
+      if (
+        total_lieuql_sx > 0 &&
+        check_lieuql_sx_sot === 0 &&
+        check_num_lieuql_sx === 1 &&
+        check_lieu_qlsx_khac1 === 0
+      ) {
+      } else {
+        err_code += " | Check lại liệu quản lý (liệu chính)";
+      }
+
+      if(checkusageMain ===0) {
+        err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
+      }
+
       if(getCompany()==='CMS' && !isNewCode) {
         err_code += "_ Code đã chạy mass, không thể sửa BOM";
       }
@@ -2680,21 +2751,6 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
-  const renderOptionCustomer = (props: React.HTMLAttributes<HTMLLIElement>, option: CustomerListData, state: AutocompleteRenderOptionState) => (
-    <Typography style={{ fontSize: '0.7rem' }} {...props}>
-      {`${option.CUST_NAME_KD}${option.CUST_CD}`}
-    </Typography>
-  );
-  const renderOptionMaterial = (props: React.HTMLAttributes<HTMLLIElement>, option: MaterialListData, state: AutocompleteRenderOptionState) => (
-    <Typography style={{ fontSize: '0.7rem' }} {...props}>
-      {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
-    </Typography>
-  );
-  const renderOptionMainMaterial = (props: React.HTMLAttributes<HTMLLIElement>, option: MaterialListData, state: AutocompleteRenderOptionState) => (
-    <Typography style={{ fontSize: '0.7rem' }} {...props}>
-      {`${option.M_NAME}`}
-    </Typography>
-  );
   useEffect(() => {
     getFSCList();
     getmateriallist();
