@@ -2293,7 +2293,7 @@ const BOM_MANAGER = () => {
         err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
       }
 
-      if(getCompany()==='CMS' && !isNewCode) {
+      if(getCompany()==='CMS' && isNewCode) {
         err_code += "_ Code đã chạy mass, không thể sửa BOM";
       }
       //console.log(checkMAIN_M);
