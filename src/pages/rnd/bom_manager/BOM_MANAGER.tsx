@@ -2256,7 +2256,7 @@ const BOM_MANAGER = () => {
         if (response.data.tk_status !== "NG") {
           isCodeMassProd = true;
           console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
-          isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240603;
+          isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
           
         } else {
           console.log(parseInt(response.data.message) )
