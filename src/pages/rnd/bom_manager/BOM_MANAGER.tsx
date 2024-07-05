@@ -312,16 +312,16 @@ const BOM_MANAGER = () => {
       field: "BANVE",
       headerName: "BANVE",
       width: 260,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
           ////console.log(file);
           checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
-            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   generalQuery("update_banve_value", {
-                    G_CODE: params.row.G_CODE,
+                    G_CODE: params.data.G_CODE,
                     banvevalue: "Y",
                   })
                     .then((response) => {
@@ -333,7 +333,7 @@ const BOM_MANAGER = () => {
                         );
                         let tempcodeinfodatatable = rows.map(
                           (element, index) => {
-                            return element.G_CODE === params.row.G_CODE
+                            return element.G_CODE === params.data.G_CODE
                               ? { ...element, BANVE: "Y" }
                               : element;
                           },
@@ -363,8 +363,8 @@ const BOM_MANAGER = () => {
               });
           });
         };
-        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
+        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+        if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
           return (
             <span style={{ color: "gray" }}>
               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
@@ -397,8 +397,8 @@ const BOM_MANAGER = () => {
       field: "NO_INSPECTION",
       headerName: "KT NGOAI QUAN",
       width: 120,
-      renderCell: (params: any) => {
-        if (params.row.NO_INSPECTION !== "Y")
+      cellRenderer: (params: any) => {
+        if (params.data.NO_INSPECTION !== "Y")
           return <span style={{ color: "green" }}>Kiểm tra</span>;
         return <span style={{ color: "red" }}>Không kiểm tra</span>;
       },
@@ -408,8 +408,8 @@ const BOM_MANAGER = () => {
       field: "USE_YN",
       headerName: "SỬ DỤNG",
       width: 80,
-      renderCell: (params: any) => {
-        if (params.row.USE_YN !== "Y")
+      cellRenderer: (params: any) => {
+        if (params.data.USE_YN !== "Y")
           return <span style={{ color: "red" }}>KHÓA</span>;
         return <span style={{ color: "green" }}>MỞ</span>;
       },
@@ -419,11 +419,11 @@ const BOM_MANAGER = () => {
       field: "PDBV",
       headerName: "PD BANVE",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         if (
-          params.row.PDBV === "P" ||
-          params.row.PDBV === "R" ||
-          params.row.PDBV === null
+          params.data.PDBV === "P" ||
+          params.data.PDBV === "R" ||
+          params.data.PDBV === null
         )
           return (
             <span style={{ color: "red" }}>
@@ -502,11 +502,11 @@ const BOM_MANAGER = () => {
       headerName: "Vendor",
       width: 80,
       editable: enableEdit,
-      renderCell: (params: any) => {
-        if (params.row.CUST_CD === "") {
+      cellRenderer: (params: any) => {
+        if (params.data.CUST_CD === "") {
           return <span style={{ backgroundColor: "red" }}>NG</span>;
         } else {
-          return <span>{params.row.CUST_CD}</span>;
+          return <span>{params.data.CUST_CD}</span>;
         }
       },
     },
@@ -515,11 +515,11 @@ const BOM_MANAGER = () => {
       headerName: "USAGE",
       width: 80,
       editable: enableEdit,
-      renderCell: (params: any) => {
-        if (params.row.USAGE === "") {
+      cellRenderer: (params: any) => {
+        if (params.data.USAGE === "") {
           return <span style={{ backgroundColor: "red" }}>NG</span>;
         } else {
-          return <span>{params.row.USAGE}</span>;
+          return <span>{params.data.USAGE}</span>;
         }
       },
     },
@@ -529,11 +529,11 @@ const BOM_MANAGER = () => {
       headerName: "Khổ liệu",
       width: 80,
       editable: enableEdit,
-      renderCell: (params: any) => {
-        if (params.row.MAT_MASTER_WIDTH === 0) {
+      cellRenderer: (params: any) => {
+        if (params.data.MAT_MASTER_WIDTH === 0) {
           return <span style={{ backgroundColor: "red" }}>NG</span>;
         } else {
-          return <span>{params.row.MAT_MASTER_WIDTH}</span>;
+          return <span>{params.data.MAT_MASTER_WIDTH}</span>;
         }
       },
     },
@@ -548,11 +548,11 @@ const BOM_MANAGER = () => {
       headerName: "Dài liệu",
       width: 110,
       editable: enableEdit,
-      renderCell: (params: any) => {
-        if (params.row.MAT_ROLL_LENGTH === 0) {
+      cellRenderer: (params: any) => {
+        if (params.data.MAT_ROLL_LENGTH === 0) {
           return <span style={{ backgroundColor: "red" }}>NG</span>;
         } else {
-          return <span>{params.row.MAT_ROLL_LENGTH}</span>;
+          return <span>{params.data.MAT_ROLL_LENGTH}</span>;
         }
       },
     },

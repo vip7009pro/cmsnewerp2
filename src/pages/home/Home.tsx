@@ -74,7 +74,7 @@ import SettingPage from "../setting/SettingPage";
 import RND_REPORT from "../rnd/rnd_report/RND_REPORT";
 import Blank from "../../components/Blank/Blank";
 import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
-export const current_ver: number = 409;
+export const current_ver: number = 410;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
