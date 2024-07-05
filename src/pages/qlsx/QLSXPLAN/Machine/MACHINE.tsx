@@ -2406,7 +2406,7 @@ const MACHINE = () => {
         showConfirmButton: false,
       });
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) { 
-        let isOnO302: boolean = false, isChotBaoCao: boolean = qlsxplandatafilter.current[i].CHOTBC === null, isOnOutKhoAo: boolean =false;
+        let isOnO302: boolean = false, isChotBaoCao: boolean = (qlsxplandatafilter.current[i].CHOTBC === "V"), isOnOutKhoAo: boolean =false;
         
         await generalQuery("checkPLANID_O302", {
           PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
@@ -2440,13 +2440,14 @@ const MACHINE = () => {
 
 
         if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {
+          console.log('vao delete')
           generalQuery("deletePlanQLSX", {
             PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
           })
             .then((response) => {
               //console.log(response.data);
-              if (response.data.tk_status !== "NG") {
-                
+              if (response.data.tk_status !== "NG") {                
+                Swal.fire('Thông báo','Xóa thành công','success')
               } else {
 
               }
@@ -2494,8 +2495,7 @@ const MACHINE = () => {
 
         
       }
-      clearSelectedRows();
-      Swal.fire('Thông báo','Xóa thành công','success')
+      clearSelectedRows();      
       loadQLSXPlan(selectedPlanDate);
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");

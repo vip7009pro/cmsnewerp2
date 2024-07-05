@@ -1692,7 +1692,22 @@ const PLAN_DATATB = () => {
     let selectedPlanTable: QLSXPLANDATA[] = qlsxplandatafilter.current;
     let err_code: string = "0";
     for (let i = 0; i < selectedPlanTable.length; i++) {
-      if (selectedPlanTable[i].XUATDAOFILM !== "V" && selectedPlanTable[i].MAIN_MATERIAL !== "V" && selectedPlanTable[i].INT_TEM !== "V" && selectedPlanTable[i].CHOTBC !== "V") {
+      let isOnOutKhoAo: boolean =false;
+      await generalQuery("checkPLANID_OUT_KHO_AO", {
+        PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+      })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          isOnOutKhoAo = true;
+        } else {
+          
+        }        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      if (selectedPlanTable[i].XUATDAOFILM !== "V" && selectedPlanTable[i].MAIN_MATERIAL !== "V" && selectedPlanTable[i].INT_TEM !== "V" && selectedPlanTable[i].CHOTBC !== "V" && !isOnOutKhoAo) {
         await generalQuery("deletePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
         })
@@ -1706,7 +1721,7 @@ const PLAN_DATATB = () => {
             console.log(error);
           });
       } else {
-        err_code += `${selectedPlanTable[i].PLAN_ID}: Đã xuất dao,  liệu hoặc in tem hoặc chốt báo cáo, ko xóa được !`
+        err_code += `${selectedPlanTable[i].PLAN_ID}: Đã xuất dao, xuất liệu hoặc in tem hoặc chốt báo cáo, ko xóa được !`
       }
     }
     if (err_code !== "0") {

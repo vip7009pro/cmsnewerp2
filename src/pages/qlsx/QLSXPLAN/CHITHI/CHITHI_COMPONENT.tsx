@@ -698,7 +698,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                             ? request_codeinfo[0]?.LOSS_SETTING3
                             : DATA.PROCESS_NUMBER === 4
                               ? request_codeinfo[0]?.LOSS_SETTING4
-                              : ""}{" "}
+                              : ""}
                       met
                     </td>
                   </tr>

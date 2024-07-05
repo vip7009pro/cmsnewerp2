@@ -631,7 +631,16 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                     <td>{element.PLAN_EQ}</td>
                     <td>{element.STEP}</td>
                     <td>{element.PLAN_QTY.toLocaleString("en-US")}</td>
-                    <td>{element.IS_SETTING === 'Y' ? "Có setting" : "Không setting"}</td>
+                    <td>{element.IS_SETTING === 'Y' ? element.STEP===0? `${
+                      element.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.LOSS_SETTING1
+                        : element.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.LOSS_SETTING2
+                          : element.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.LOSS_SETTING3
+                            : element.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.LOSS_SETTING4
+                              : ""}`: 0 : "Không setting"}</td>
                   </tr>
                 ))}
               </tbody>
