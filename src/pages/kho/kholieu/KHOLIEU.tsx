@@ -170,7 +170,9 @@ const KHOLIEU = () => {
         );
       },
     },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 180 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+    { field: "INS_EMPL", headerName: "NV_GIAO", width: 80 },
+    { field: "INS_RECEPTION", headerName: "NV_NHAN", width: 80 },
   ];
   const column_NHAPLIEUDATA = [
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },

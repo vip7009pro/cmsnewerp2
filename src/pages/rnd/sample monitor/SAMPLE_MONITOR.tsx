@@ -29,6 +29,9 @@ const SAMPLE_MONITOR = () => {
     FILM: '',
     RND_EMPL: '',
     RND_UPD_DATE: '',
+    MATERIAL_STATUS:'',
+    PUR_EMPL:'',
+    PUR_UPD_DATE:'',
     PRINT_STATUS: '',
     DIECUT_STATUS: '',
     PR_EMPL: '',
@@ -211,6 +214,23 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   }
+  const updateMATERIAL_STATUS =(datarow: SAMPLE_MONITOR_DATA) => {
+  generalQuery("updateMATERIAL_STATUS", {      
+      SAMPLE_ID: datarow.SAMPLE_ID,
+      MATERIAL_STATUS: datarow.MATERIAL_STATUS,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          Swal.fire('Thông báo','Update data thành công','success');
+        } else {
+          Swal.fire('Thông báo','Update data thất bại','error');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const updateAPPROVE_STATUS = async (datarow: SAMPLE_MONITOR_DATA) => {
   generalQuery("updateAPPROVE_SAMPLE_STATUS", {      
       SAMPLE_ID: datarow.SAMPLE_ID,
@@ -255,6 +275,13 @@ const SAMPLE_MONITOR = () => {
           case 'KD':        
               updateAPPROVE_STATUS({ ...dataToUpdate, [key]: value });        
             break;
+          case 'MUA':        
+              updateMATERIAL_STATUS({ ...dataToUpdate, [key]: value });        
+            break;
+          case 'KHO':        
+              updateMATERIAL_STATUS({ ...dataToUpdate, [key]: value });        
+            break;
+          
         }
         setData(prev => {
           const newData = prev.map((p) =>
@@ -354,9 +381,21 @@ const SAMPLE_MONITOR = () => {
             <span>{params.data.PROD_REQUEST_QTY?.toLocaleString('en-US')}</span>
           )
         } },
+        { field: 'BANVE', headerName: 'BANVE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps)=> {
+          let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          )
+        } },
+        
       ],
       headerClass: 'header'
     }, 
+   
     {
       headerName:'RND',
       children: [
@@ -455,6 +494,34 @@ const SAMPLE_MONITOR = () => {
       ],
       headerClass: 'header'
     },
+    {
+      headerName:'MATERIAL',
+      children: [     
+        {
+          field: 'MATERIAL_STATUS', headerName: 'MATERIAL_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+            return (
+              <div className="checkboxcell">
+                <input type="checkbox" checked={params.data.MATERIAL_STATUS === 'Y'} onChange={(e) => {
+                  checkBP(getUserData(), ["MUA","KHO"], ["ALL"], ["ALL"], () => {
+                    handleUpdateData(e, params.data, 'MATERIAL_STATUS')
+                  })              
+                  }}></input>
+                <span style={{ color: 'black' }}>{params.data.MATERIAL_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
+              </div>
+            )
+          },
+          cellStyle: (params: any) => {
+            if (params.data.MATERIAL_STATUS === 'Y') {
+              return { backgroundColor: '#77da41', color: 'black' };
+            } else {
+              return { backgroundColor: '#e7a44b', color: 'white' };
+            }
+          }
+        },
+      
+      ],
+      headerClass: 'header'
+    }, 
    
     /* { field: 'RND_EMPL', headerName: 'RND_EMPL', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'RND_UPD_DATE', headerName: 'RND_UPD_DATE', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false }, */
@@ -566,7 +633,7 @@ const SAMPLE_MONITOR = () => {
         },
         { field: 'TOTAL_STATUS', headerName: 'TOTAL_STATUS', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
           let total_check: boolean = true;
-          total_check = params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y';      
+          total_check = params.data.FILE_MAKET==='Y' && params.data.FILM_FILE==='Y' && params.data.KNIFE_STATUS==='Y' && params.data.KNIFE_CODE!=='' && params.data.KNIFE_CODE!==null && params.data.FILM==='Y' && params.data.PRINT_STATUS==='Y' && params.data.DIECUT_STATUS==='Y' && params.data.QC_STATUS==='Y' && params.data.MATERIAL_STATUS ==='Y';      
           return (
               <span style={{ color: 'white', fontWeight:'bold' }}>{total_check ? 'COMPLETED' : 'NOT COMPLETED'}</span>
           )

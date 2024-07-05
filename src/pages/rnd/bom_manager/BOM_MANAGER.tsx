@@ -1769,7 +1769,7 @@ const BOM_MANAGER = () => {
         showCancelButton: true,
       });
       currentReason = pass1 ?? '';
-      tempUpdateReason += (pass1 !== undefined && pass1 !== '') ? moment().format("YYYY-MM-DD HH:mm:ss") + "_" + getUserData()?.EMPL_NO + ':' + pass1 : '';
+      tempUpdateReason = (pass1 !== undefined && pass1 !== '') ? moment().format("YYYY-MM-DD HH:mm:ss") + "_" + getUserData()?.EMPL_NO + ':' + pass1 : '';
     }
     console.log(currentReason)
     if (currentReason !== '') {
@@ -1782,9 +1782,10 @@ const BOM_MANAGER = () => {
           else {
             tempInfo = { ...codefullinfo, PD_HSD: 'N', UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1, UPDATE_REASON: tempUpdateReason }
           }
+          console.log('vao toi day')
           await generalQuery("updateM100", tempInfo)
             .then((response) => {
-              ////console.log(response.data);
+              console.log(response.data);
               if (response.data.tk_status !== "NG") {
                 Swal.fire(
                   "Thông báo",
@@ -1797,7 +1798,7 @@ const BOM_MANAGER = () => {
             })
             .catch((error) => {
               //console.log(error);
-            });
+          });
           confirmUpdateM100TBG();
         }
       }
