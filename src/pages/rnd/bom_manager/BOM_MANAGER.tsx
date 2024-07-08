@@ -2260,6 +2260,7 @@ const BOM_MANAGER = () => {
           isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
           
         } else {
+          isNewCode = false;
           console.log(parseInt(response.data.message) )
         }
       })
