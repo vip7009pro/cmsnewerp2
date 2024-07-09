@@ -3810,3 +3810,13 @@ export interface SAMPLE_MONITOR_DATA {
   G_LENGTH: number,
   CUST_NAME_KD: string,
 }
+
+export interface SX_ACHIVE_DATA {
+  SX_DATE? : string,
+  SX_YM?: string,
+  SX_YW?: string,
+  SX_YEAR?: string,
+  SX_RESULT: number,
+  PLAN_QTY: number,
+  ACHIVE_RATE: number,
+}

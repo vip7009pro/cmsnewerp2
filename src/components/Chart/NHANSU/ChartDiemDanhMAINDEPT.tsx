@@ -18,9 +18,9 @@ import {
 } from "recharts";
 
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
-import { DiemDanhMainDeptData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
+import { DiemDanhMainDeptData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { generalQuery, getGlobalSetting } from "../../../api/Api";
 
 const ChartDiemDanhMAINDEPT = () => {
   const [diemdanhMainDeptData, setDiemDanhMainDeptData] = useState<

@@ -65,7 +65,6 @@ import PieChart, {
   Export,
 } from "devextreme-react/pie-chart";
 import { Grid, IconButton } from "@mui/material";
-import ChartDiemDanhMAINDEPT from "../../../components/Chart/ChartDiemDanhMAINDEPT";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -92,6 +91,7 @@ import {
 } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
 import NSDailyGraph from "../../../components/Chart/NHANSU/NSDailyGraph";
+import ChartDiemDanhMAINDEPT from "../../../components/Chart/NHANSU/ChartDiemDanhMAINDEPT";
 
 const BaoCaoNhanSu = () => {
   const COLORS = [

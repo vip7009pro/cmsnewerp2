@@ -7,6 +7,7 @@ import {
   PQC3_DATA,
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
+  SX_ACHIVE_DATA,
   SX_TREND_LOSS_DATA,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
@@ -20,11 +21,20 @@ import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend"
 import SX_MonthlyLossTrend from "../../../components/Chart/SX/SX_MonthlyLossTrend";
 import SX_YearlyLossTrend from "../../../components/Chart/SX/SX_YearlyLossTrend";
 import WidgetSXLOSS from "../../../components/Widget/WidgetSXLOSS";
+import SXDailyAchiveTrend from "../../../components/Chart/SX/SXDailyAchiveTrend";
+import SXWeeklyAchiveTrend from "../../../components/Chart/SX/SXWeeklyAchiveTrend";
+import SXMonthlyAchiveTrend from "../../../components/Chart/SX/SXMonthlyAchiveTrend";
+import SXYearlyAchiveTrend from "../../../components/Chart/SX/SXYearlyAchiveTrend";
 const SX_REPORT = () => {
   const [dailysxloss, setDailySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [weeklysxloss, setWeeklySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [monthlysxloss, setMonthlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [yearlysxloss, setYearlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
+
+  const [dailysxachive, setDailySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
+  const [weeklysxachive, setWeeklySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
+  const [monthlysxachive, setMonthlySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
+  const [yearlysxachive, setYearlySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
@@ -43,7 +53,7 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        console.log(response.data.data);
+        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
@@ -74,7 +84,7 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        //console.log(response.data.data);
+        //
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
@@ -104,7 +114,7 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        //console.log(response.data.data);
+        //
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
@@ -134,7 +144,7 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        //console.log(response.data.data);
+        //
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
@@ -163,7 +173,7 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        // console.log(response.data.data);
+        // 
         if (response.data.tk_status !== "NG") {
           const loadeddata: RND_NEWCODE_BY_CUSTOMER[] = response.data.data.map(
             (element: RND_NEWCODE_BY_CUSTOMER, index: number) => {
@@ -193,7 +203,7 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        // console.log(response.data.data);
+        // 
         if (response.data.tk_status !== "NG") {
           const loadeddata: RND_NEWCODE_BY_PRODTYPE[] = response.data.data.map(
             (element: RND_NEWCODE_BY_PRODTYPE, index: number) => {
@@ -214,6 +224,128 @@ const SX_REPORT = () => {
       });
   }
 
+  const handle_getDailyAchiveData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("sxdailyachivementtrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
+            (element: SX_ACHIVE_DATA, index: number) => {
+              return {
+                ...element,                
+                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,
+                SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+              };
+            },
+          );
+          setDailySXAchive(loadeddata);
+        } else {
+          setDailySXAchive([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getWeeklyAchiveData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-28, "day").format("YYYY-MM-DD");
+    await generalQuery("sxweeklyachivementtrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
+            (element: SX_ACHIVE_DATA, index: number) => {
+              return {
+                ...element,                
+                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,                
+              };
+            },
+          );
+          setWeeklySXAchive(loadeddata);
+        } else {
+          setWeeklySXAchive([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getMonthlyAchiveData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-180, "day").format("YYYY-MM-DD");
+    await generalQuery("sxmonthlyachivementtrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
+            (element: SX_ACHIVE_DATA, index: number) => {
+              return {
+                ...element,                
+                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,                
+              };
+            },
+          );
+          setMonthlySXAchive(loadeddata);
+        } else {
+          setMonthlySXAchive([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getYearlyAchiveData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("sxyearlyachivementtrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
+            (element: SX_ACHIVE_DATA, index: number) => {
+              return {
+                ...element,                
+                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,                
+              };
+            },
+          );
+          setYearlySXAchive(loadeddata);
+        } else {
+          setYearlySXAchive([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -229,6 +361,10 @@ const SX_REPORT = () => {
       handle_getWeeklyNewCodeData("ALL", searchCodeArray),
       handle_getMonthlyNewCodeData("ALL", searchCodeArray),
       handle_getYearlyNewCodeData("ALL", searchCodeArray),
+      handle_getDailyAchiveData("ALL", searchCodeArray),
+      handle_getWeeklyAchiveData("ALL", searchCodeArray),
+      handle_getMonthlyAchiveData("ALL", searchCodeArray),
+      handle_getYearlyAchiveData("ALL", searchCodeArray),
       handle_newCodeByCustomer(fromdate, todate, searchCodeArray),
       handle_newCodeByProdType(fromdate, todate, searchCodeArray),
     ]).then((values) => {
@@ -414,6 +550,82 @@ const SX_REPORT = () => {
                   dldata={[...yearlysxloss].reverse()}
                   processColor="#53eb34"
                   materialColor="#ff0000"
+                />
+              </div>
+            </div>
+          </div>
+          <span className="section_title">3. PRODUCTION ACHIVEMENT TRENDING</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Daily Achiv Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(dailysxachive, "Daily Achive Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>
+                </span>
+                <SXDailyAchiveTrend
+                  dldata={dailysxachive}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+             
+            </div>
+           
+          </div>
+          <div className="dailygraphtotal">            
+            <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+                <span className="subsection">Weekly SX Achive <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(weeklysxachive, "Weekly SX Achive");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <SXWeeklyAchiveTrend
+                  dldata={[...weeklysxachive].reverse()}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Monthly SX Achive <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(monthlysxachive, "Monthly SX Achive");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <SXMonthlyAchiveTrend
+                  dldata={[...monthlysxachive].reverse()}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly SX Achive <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yearlysxachive, "Yearly SX Achive");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <SXYearlyAchiveTrend
+                  dldata={[...yearlysxachive].reverse()}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
                 />
               </div>
             </div>
