@@ -7,23 +7,24 @@ import {
   PQC3_DATA,
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
-  RND_NEWCODE_TREND_DATA,
+  SX_TREND_LOSS_DATA,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import WidgetRND from "../../../components/Widget/WidgetRND";
-import RNDDailyNewCode from "../../../components/Chart/RNDDailyNewCode";
-import RNDWeeklyNewCode from "../../../components/Chart/RNDWeeklyNewCode";
-import RNDMonthlyNewCode from "../../../components/Chart/RNDMonthlyNewCode";
-import RNDYearlyNewCode from "../../../components/Chart/RNDYearlyNewCode";
-import RNDNewCodeByCustomer from "../../../components/Chart/RNDNewCodeByCustomer";
-import RNDNewCodeByProdType from "../../../components/Chart/RNDNewCodeByProdType";
+import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
+import RNDNewCodeByProdType from "../../../components/Chart/RND/RNDNewCodeByProdType";
+import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
+import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";
+import SX_MonthlyLossTrend from "../../../components/Chart/SX/SX_MonthlyLossTrend";
+import SX_YearlyLossTrend from "../../../components/Chart/SX/SX_YearlyLossTrend";
+import WidgetSXLOSS from "../../../components/Widget/WidgetSXLOSS";
 const SX_REPORT = () => {
-  const [dailynewcode, setDailyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
-  const [weeklynewcode, setWeeklyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
-  const [monthlynewcode, setMonthlyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
-  const [yearlynewcode, setYearlyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
+  const [dailysxloss, setDailySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [weeklysxloss, setWeeklySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [monthlysxloss, setMonthlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [yearlysxloss, setYearlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
@@ -34,7 +35,7 @@ const SX_REPORT = () => {
   const handle_getDailyNewCodeData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("rnddailynewcode", {
+    await generalQuery("datasxdailylosstrend", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -42,20 +43,20 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: RND_NEWCODE_TREND_DATA[] = response.data.data.map(
-            (element: RND_NEWCODE_TREND_DATA, index: number) => {
+          const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,
-                TOTAL: element.NEWCODE + element.ECN,
-                CREATED_DATE: moment.utc(element.CREATED_DATE).format("YYYY-MM-DD"),
+                ...element,                
+                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,
+                INPUT_DATE: moment.utc(element.INPUT_DATE).format("YYYY-MM-DD"),
               };
             },
           );
-          setDailyNewCode(loadeddata);
+          setDailySXLoss(loadeddata);
         } else {
-          setDailyNewCode([]);
+          setDailySXLoss([]);
         }
       })
       .catch((error) => {
@@ -65,7 +66,7 @@ const SX_REPORT = () => {
   const handle_getWeeklyNewCodeData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("rndweeklynewcode", {
+    await generalQuery("datasxweeklylosstrend", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -75,17 +76,17 @@ const SX_REPORT = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: RND_NEWCODE_TREND_DATA[] = response.data.data.map(
-            (element: RND_NEWCODE_TREND_DATA, index: number) => {
+          const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,
-                TOTAL: element.NEWCODE + element.ECN,
+                ...element,  
+                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,              
               };
             },
           );
-          setWeeklyNewCode(loadeddata);
+          setWeeklySXLoss(loadeddata);
         } else {
-          setWeeklyNewCode([]);
+          setWeeklySXLoss([]);
         }
       })
       .catch((error) => {
@@ -95,7 +96,7 @@ const SX_REPORT = () => {
   const handle_getMonthlyNewCodeData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("rndmonthlynewcode", {
+    await generalQuery("datasxmonthlylosstrend", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -105,17 +106,17 @@ const SX_REPORT = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: RND_NEWCODE_TREND_DATA[] = response.data.data.map(
-            (element: RND_NEWCODE_TREND_DATA, index: number) => {
+          const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,
-                TOTAL: element.NEWCODE + element.ECN,
+                ...element,       
+                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,                  
               };
             },
           );
-          setMonthlyNewCode(loadeddata)
+          setMonthlySXLoss(loadeddata)
         } else {
-          setMonthlyNewCode([])
+          setMonthlySXLoss([])
         }
       })
       .catch((error) => {
@@ -125,7 +126,7 @@ const SX_REPORT = () => {
   const handle_getYearlyNewCodeData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("rndyearlynewcode", {
+    await generalQuery("datasxyearlylosstrend", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -135,17 +136,17 @@ const SX_REPORT = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: RND_NEWCODE_TREND_DATA[] = response.data.data.map(
-            (element: RND_NEWCODE_TREND_DATA, index: number) => {
+          const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,
-                TOTAL: element.NEWCODE + element.ECN,
+                ...element,        
+                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,                       
               };
             },
           );
-          setYearlyNewCode(loadeddata)
+          setYearlySXLoss(loadeddata)
         } else {
-          setYearlyNewCode([])
+          setYearlySXLoss([])
         }
       })
       .catch((error) => {
@@ -212,6 +213,7 @@ const SX_REPORT = () => {
         console.log(error);
       });
   }
+
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -220,7 +222,7 @@ const SX_REPORT = () => {
       showCancelButton: false,
       allowOutsideClick: false,
       confirmButtonText: "OK",
-      showConfirmButton: false,
+      showConfirmButton: false, 
     });
     Promise.all([
       handle_getDailyNewCodeData("ALL", searchCodeArray),
@@ -239,7 +241,7 @@ const SX_REPORT = () => {
   return (
     <div className="rndreport">
       <div className="title">
-        <span>RND REPORT</span>
+        <span>PRODUCTION REPORT</span>
       </div>
       <div className="doanhthureport">
         <div className="pobalancesummary">
@@ -248,7 +250,7 @@ const SX_REPORT = () => {
             <input
               type="date"
               value={fromdate.slice(0, 10)}
-              onChange={(e) => {
+              onChange={(e) => { 
                 setFromDate(e.target.value);
               }}
             ></input>
@@ -294,88 +296,88 @@ const SX_REPORT = () => {
             Search
           </button>
         </div>
-        <span className="section_title">1. OverView</span>
+        <span className="section_title">1. PRODUCTION LOSS OVERVIEW</span>
         <div className="revenuewidget">
           <div className="revenuwdg">
-            <WidgetRND
+            <WidgetSXLOSS
               widgettype="revenue"
-              label="Today Code"
+              label="Today loss"
               topColor="#4e9ce6"
               botColor="#ffffff"
-              material_ppm={dailynewcode[0]?.NEWCODE}
-              process_ppm={dailynewcode[0]?.ECN}
-              total_ppm={dailynewcode[0]?.NEWCODE + dailynewcode[0]?.ECN}
+              material_ppm={dailysxloss[dailysxloss.length-1]?.PURE_INPUT}
+              process_ppm={dailysxloss[dailysxloss.length-1]?.PURE_OUTPUT}
+              total_ppm={dailysxloss[dailysxloss.length-1]?.LOSS_RATE}
             />
           </div>
           <div className="revenuwdg">
-            <WidgetRND
+            <WidgetSXLOSS
               widgettype="revenue"
-              label="This Week Code"
+              label="This Week loss"
               topColor="#4e9ce6"
               botColor="#ffffff"
-              material_ppm={weeklynewcode[0]?.NEWCODE}
-              process_ppm={weeklynewcode[0]?.ECN}
-              total_ppm={weeklynewcode[0]?.NEWCODE + weeklynewcode[0]?.ECN}
+              material_ppm={weeklysxloss[0]?.PURE_INPUT}
+              process_ppm={weeklysxloss[0]?.PURE_OUTPUT}
+              total_ppm={weeklysxloss[0]?.LOSS_RATE}
             />
           </div>
           <div className="revenuwdg">
-            <WidgetRND
+            <WidgetSXLOSS
               widgettype="revenue"
-              label="This Month Code"
+              label="This Month loss"
               topColor="#4e9ce6"
               botColor="#ffffff"
-              material_ppm={monthlynewcode[0]?.NEWCODE}
-              process_ppm={monthlynewcode[0]?.ECN}
-              total_ppm={monthlynewcode[0]?.NEWCODE + monthlynewcode[0]?.ECN}
+              material_ppm={monthlysxloss[0]?.PURE_INPUT}
+              process_ppm={monthlysxloss[0]?.PURE_OUTPUT}
+              total_ppm={monthlysxloss[0]?.LOSS_RATE}
             />
           </div>
           <div className="revenuwdg">
-            <WidgetRND
+            <WidgetSXLOSS
               widgettype="revenue"
-              label="This Year Code"
+              label="This Year loss"
               topColor="#4e9ce6"
               botColor="#ffffff"
-              material_ppm={yearlynewcode[0]?.NEWCODE}
-              process_ppm={yearlynewcode[0]?.ECN}
-              total_ppm={yearlynewcode[0]?.NEWCODE + yearlynewcode[0]?.ECN}
+              material_ppm={yearlysxloss[0]?.PURE_INPUT}
+              process_ppm={yearlysxloss[0]?.PURE_OUTPUT}
+              total_ppm={yearlysxloss[0]?.LOSS_RATE}
             />
           </div>
         </div>
         <br></br>
         <hr></hr>
         <div className="graph">
-          <span className="section_title">2. RND NewCode Trending</span>
+          <span className="section_title">2. PRODUCTION LOSS TRENDING</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
-                <span className="subsection">Daily New Code <IconButton
+                <span className="subsection">Daily Loss <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(dailynewcode, "Daily New Code Data");
+                    SaveExcel(dailysxloss, "Daily Loss Data");
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
                   Excel
                 </IconButton>
                 </span>
-                <RNDDailyNewCode
-                  dldata={[...dailynewcode].reverse()}
+                <SX_DailyLossTrend
+                  dldata={dailysxloss}
                   processColor="#53eb34"
                   materialColor="#ff0000"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly New Code <IconButton
+                <span className="subsection">Weekly Loss <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(weeklynewcode, "Weekly New Code Data");
+                    SaveExcel(weeklysxloss, "Weekly New Code Data");
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
                   Excel
                 </IconButton></span>
-                <RNDWeeklyNewCode
-                  dldata={[...weeklynewcode].reverse()}
+                <SX_WeeklyLossTrend
+                  dldata={[...weeklysxloss].reverse()}
                   processColor="#53eb34"
                   materialColor="#ff0000"
                 />
@@ -383,33 +385,33 @@ const SX_REPORT = () => {
             </div>
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly New Code <IconButton
+                <span className="subsection">Monthly Loss <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(monthlynewcode, "Monthly New Code Data");
+                    SaveExcel(monthlysxloss, "Monthly Loss Data");
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
                   Excel
                 </IconButton></span>
-                <RNDMonthlyNewCode
-                  dldata={[...monthlynewcode].reverse()}
+                <SX_MonthlyLossTrend
+                  dldata={[...monthlysxloss].reverse()}
                   processColor="#53eb34"
                   materialColor="#ff0000"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly New Code <IconButton
+                <span className="subsection">Yearly Loss <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(yearlynewcode, "Yearly New Code Data");
+                    SaveExcel(yearlysxloss, "Yearly Loss Data");
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
                   Excel
                 </IconButton></span>
-                <RNDYearlyNewCode
-                  dldata={[...yearlynewcode].reverse()}
+                <SX_YearlyLossTrend
+                  dldata={[...yearlysxloss].reverse()}
                   processColor="#53eb34"
                   materialColor="#ff0000"
                 />

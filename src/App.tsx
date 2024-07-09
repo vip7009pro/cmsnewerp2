@@ -98,6 +98,7 @@ import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
 import RND_REPORT from "./pages/rnd/rnd_report/RND_REPORT";
 import Blank from "./components/Blank/Blank";
 import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
+import SX_REPORT from "./pages/sx/BAOCAOSX/SX_REPORT";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -1053,6 +1054,18 @@ function App() {
                               jobname='Leader'
                             >
                               <PLANRESULT />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='baocaosx'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <SX_REPORT />
                             </ProtectedRoute>
                           }
                         />

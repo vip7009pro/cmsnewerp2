@@ -28,7 +28,7 @@ import {
   FaReact,
   FaProductHunt,
 } from "react-icons/fa";
-import { BiCart, BiSortAZ, BiTrendingUp } from "react-icons/bi";
+import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp } from "react-icons/bi";
 import {
   FcPlanner,
   FcSettings,
@@ -546,6 +546,12 @@ const NavMenu = () => {
           path: "sx/planresult",
           icon: <BiTrendingUp color="green" size={15} />,
           MENU_CODE: "SX12",
+        },
+        {
+          title: getlang("baocaosx", lang),
+          path: "sx/baocaosx",
+          icon: <FcBullish color="#ec3ede" size={15} />,
+          MENU_CODE: "SX13",
         },
       ],
     },

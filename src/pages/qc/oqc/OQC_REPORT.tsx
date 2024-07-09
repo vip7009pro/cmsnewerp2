@@ -7,13 +7,13 @@ import { OQC_TREND_DATA, OQC_NG_BY_CUSTOMER, OQC_NG_BY_PRODTYPE } from "../../..
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
-import OQCDailyNGRate from "../../../components/Chart/OQCDailyNGRate";
-import OQCWeeklyNGRate from "../../../components/Chart/OQCWeeklyNGRate";
-import OQCMonthlyNGRate from "../../../components/Chart/OQCMonthlyNGRate";
-import OQCYearlyNGRate from "../../../components/Chart/OQCYearlyNGRate";
+import OQCDailyNGRate from "../../../components/Chart/OQC/OQCDailyNGRate";
+import OQCWeeklyNGRate from "../../../components/Chart/OQC/OQCWeeklyNGRate";
+import OQCMonthlyNGRate from "../../../components/Chart/OQC/OQCMonthlyNGRate";
+import OQCYearlyNGRate from "../../../components/Chart/OQC/OQCYearlyNGRate";
 import WidgetOQC from "../../../components/Widget/WidgetOQC";
-import OQCNGByCustomer from "../../../components/Chart/OQCNGByCustomer";
-import OQCNGByProdType from "../../../components/Chart/OQCNGByProdType";
+import OQCNGByCustomer from "../../../components/Chart/OQC/OQCNGByCustomer";
+import OQCNGByProdType from "../../../components/Chart/OQC/OQCNGByProdType";
 const OQC_REPORT = () => {
   const [dailyppm, setDailyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<OQC_TREND_DATA[]>([]);

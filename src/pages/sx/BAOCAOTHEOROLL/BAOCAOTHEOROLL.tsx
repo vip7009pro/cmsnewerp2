@@ -40,10 +40,10 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import SX_DailyLossTrend from "../../../components/Chart/SX_DailyLossTrend";
-import SX_WeeklyLossTrend from "../../../components/Chart/SX_WeeklyLossTrend";
-import SX_MonthlyLossTrend from "../../../components/Chart/SX_MonthlyLossTrend";
-import SX_YearlyLossTrend from "../../../components/Chart/SX_YearlyLossTrend";
+import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
+import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";
+import SX_MonthlyLossTrend from "../../../components/Chart/SX/SX_MonthlyLossTrend";
+import SX_YearlyLossTrend from "../../../components/Chart/SX/SX_YearlyLossTrend";
 const BAOCAOTHEOROLL = () => {
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
@@ -293,32 +293,32 @@ const BAOCAOTHEOROLL = () => {
   };
   const getDailyLossTrend = async (mc: string, ft: string, fr: string, td: string) => {
     await generalQuery("dailysxlosstrend", {
-      MACHINE: mc,
-      FACTORY: ft,
-      FROM_DATE: fr,
-      TO_DATE: td,
+    MACHINE: mc,
+    FACTORY: ft,
+    FROM_DATE: fr,
+    TO_DATE: td,
     })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: SX_TREND_LOSS_DATA[] = response.data.data.map(
-            (element: SX_TREND_LOSS_DATA, index: number) => {
-              return {
-                ...element,                
-                INPUT_DATE: moment(element.INPUT_DATE).utc().format("YYYY-MM-DD"),   
-                LOSS_RATE:  1-element.PURE_OUTPUT*1.0/element.PURE_INPUT         
-              };
-            }
-          );
-          console.log(loaded_data)
-          setDailyLossTrend(loaded_data);
-        } else {
-          setDailyLossTrend([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: SX_TREND_LOSS_DATA[] = response.data.data.map(
+          (element: SX_TREND_LOSS_DATA, index: number) => {
+            return {
+              ...element,                
+              INPUT_DATE: moment(element.INPUT_DATE).utc().format("YYYY-MM-DD"),   
+              LOSS_RATE:  1-element.PURE_OUTPUT*1.0/element.PURE_INPUT         
+            };
+          }
+        );
+        console.log(loaded_data)
+        setDailyLossTrend(loaded_data);
+      } else {
+        setDailyLossTrend([]);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
   const getWeeklyLossTrend = async (mc: string, ft: string, fr: string, td: string) => {
     await generalQuery("weeklysxlosstrend", {

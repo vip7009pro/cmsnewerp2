@@ -91,7 +91,7 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
-import NSDailyGraph from "../../../components/Chart/NSDailyGraph";
+import NSDailyGraph from "../../../components/Chart/NHANSU/NSDailyGraph";
 
 const BaoCaoNhanSu = () => {
   const COLORS = [

@@ -7,7 +7,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { WEB_SETTING_DATA, WorstCodeData, WorstData } from '../../api/GlobalInterface';
-import ChartWorstCodeByErrCode from '../Chart/ChartWorstCodeByErrCode';
+import ChartWorstCodeByErrCode from '../Chart/INSPECTION/ChartWorstCodeByErrCode';
 import { generalQuery, getGlobalSetting } from '../../api/Api';
 import Swal from 'sweetalert2';
 import './InspectionWorstTable.scss'

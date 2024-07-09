@@ -74,6 +74,7 @@ import SettingPage from "../setting/SettingPage";
 import RND_REPORT from "../rnd/rnd_report/RND_REPORT";
 import Blank from "../../components/Blank/Blank";
 import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
+import SX_REPORT from "../sx/BAOCAOSX/SX_REPORT";
 export const current_ver: number = 411;
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -427,27 +428,7 @@ function Home() {
       MENU_CODE: "SX8",
       MENU_NAME: getlang("khoao", lang),
       MENU_ITEM: <KHOAO />,
-    },
-    {
-      MENU_CODE: "SX9",
-      MENU_NAME: getlang("lichsuxuatlieuthat", lang),
-      MENU_ITEM: <LICHSUINPUTLIEU />,
-    },
-    {
-      MENU_CODE: "SX10",
-      MENU_NAME: getlang("materiallotstatus", lang),
-      MENU_ITEM: <TINHHINHCUONLIEU />,
-    },
-    {
-      MENU_CODE: "SX13",
-      MENU_NAME: getlang("sxrolldata", lang),
-      MENU_ITEM: <BAOCAOTHEOROLL />,
-    },
-    {
-      MENU_CODE: "SX14",
-      MENU_NAME: getlang("lichsutemlotsx", lang),
-      MENU_ITEM: <LICHSUTEMLOTSX />,
-    },
+    },   
     {
       MENU_CODE: "SX11",
       MENU_NAME: getlang("quanlycapa", lang),
@@ -457,6 +438,11 @@ function Home() {
       MENU_CODE: "SX12",
       MENU_NAME: getlang("hieusuatsx", lang),
       MENU_ITEM: <PLANRESULT />,
+    },
+    {
+      MENU_CODE: "SX13",
+      MENU_NAME: getlang("baocaosx", lang),
+      MENU_ITEM: <SX_REPORT />,
     },
     {
       MENU_CODE: "KO1",

@@ -13,12 +13,12 @@ import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import WidgetRND from "../../../components/Widget/WidgetRND";
-import RNDDailyNewCode from "../../../components/Chart/RNDDailyNewCode";
-import RNDWeeklyNewCode from "../../../components/Chart/RNDWeeklyNewCode";
-import RNDMonthlyNewCode from "../../../components/Chart/RNDMonthlyNewCode";
-import RNDYearlyNewCode from "../../../components/Chart/RNDYearlyNewCode";
-import RNDNewCodeByCustomer from "../../../components/Chart/RNDNewCodeByCustomer";
-import RNDNewCodeByProdType from "../../../components/Chart/RNDNewCodeByProdType";
+import RNDDailyNewCode from "../../../components/Chart/RND/RNDDailyNewCode";
+import RNDWeeklyNewCode from "../../../components/Chart/RND/RNDWeeklyNewCode";
+import RNDMonthlyNewCode from "../../../components/Chart/RND/RNDMonthlyNewCode";
+import RNDYearlyNewCode from "../../../components/Chart/RND/RNDYearlyNewCode";
+import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
+import RNDNewCodeByProdType from "../../../components/Chart/RND/RNDNewCodeByProdType";
 const RND_REPORT = () => {
   const [dailynewcode, setDailyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
   const [weeklynewcode, setWeeklyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
