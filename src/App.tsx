@@ -99,6 +99,7 @@ import RND_REPORT from "./pages/rnd/rnd_report/RND_REPORT";
 import Blank from "./components/Blank/Blank";
 import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
 import SX_REPORT from "./pages/sx/BAOCAOSX/SX_REPORT";
+import BCSX from "./pages/sx/BAOCAOSX/BCSX";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -1065,7 +1066,7 @@ function App() {
                               maindeptname='all'
                               jobname='Leader'
                             >
-                              <SX_REPORT />
+                              <BCSX />
                             </ProtectedRoute>
                           }
                         />

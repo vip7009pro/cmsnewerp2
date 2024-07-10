@@ -617,7 +617,7 @@ const SX_REPORT = () => {
   return (
     <div className="sxreport">
       <div className="title">
-        <span>PRODUCTION REPORT</span>
+        <span>PRODUCTION PERFORMANCE REPORT</span>
       </div>
       <div className="doanhthureport">
         <div className="pobalancesummary">
