@@ -2619,6 +2619,23 @@ export interface OPERATION_TIME_DATA {
   SETTING_TIME_RATE: number;
   LOSS_TIME_RATE: number;
 }
+export interface PRODUCTION_EFFICIENCY_DATA {
+  SX_YEAR?: string;
+  SX_YW?: string;
+  SX_YM?: string;
+  SX_DATE?: string;
+  ALVB_TIME: number;
+  TOTAL_TIME: number;
+  PURE_RUN_TIME: number;
+  RUN_TIME_SX: number;
+  SETTING_TIME: number;
+  LOSS_TIME: number;
+  PURE_RUN_RATE: number;
+  HIEU_SUAT_TIME: number;
+  SETTING_TIME_RATE: number;
+  LOSS_TIME_RATE: number;
+  OPERATION_RATE: number;
+}
 //redux interface
 export interface UserData {
   EMPL_IMAGE?: string;
@@ -3819,4 +3836,16 @@ export interface SX_ACHIVE_DATA {
   SX_RESULT: number,
   PLAN_QTY: number,
   ACHIVE_RATE: number,
+}
+
+export interface SX_LOSSTIME_REASON_DATA {
+  REASON: string,
+  LOSS_TIME: number,
+  TOTAL_LOSS_TIME: number,
+  RATE: number,
+}
+export interface  SX_LOSSTIME_BY_EMPL {
+  EMPL_NAME: string,
+  TOTAL_LOSS_TIME: number,
+
 }

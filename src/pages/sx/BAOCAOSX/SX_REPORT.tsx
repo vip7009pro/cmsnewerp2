@@ -5,13 +5,16 @@ import { generalQuery } from "../../../api/Api";
 import "./SX_REPORT.scss";
 import {
   PQC3_DATA,
+  PRODUCTION_EFFICIENCY_DATA,
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
   SX_ACHIVE_DATA,
+  SX_LOSSTIME_BY_EMPL,
+  SX_LOSSTIME_REASON_DATA,
   SX_TREND_LOSS_DATA,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { nFormatter, SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import WidgetRND from "../../../components/Widget/WidgetRND";
 import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
@@ -25,16 +28,47 @@ import SXDailyAchiveTrend from "../../../components/Chart/SX/SXDailyAchiveTrend"
 import SXWeeklyAchiveTrend from "../../../components/Chart/SX/SXWeeklyAchiveTrend";
 import SXMonthlyAchiveTrend from "../../../components/Chart/SX/SXMonthlyAchiveTrend";
 import SXYearlyAchiveTrend from "../../../components/Chart/SX/SXYearlyAchiveTrend";
+import WidgetSXAchive from "../../../components/Widget/WidgetSXAchive";
+import SXDailyEffTrend from "../../../components/Chart/SX/SXDailyEffTrend";
+import SXWeeklyEffTrend from "../../../components/Chart/SX/SXWeeklyEffTrend";
+import SXMonthlyEffTrend from "../../../components/Chart/SX/SXMonthlyEffTrend";
+import SXYearlyEffTrend from "../../../components/Chart/SX/SXYearlyEffTrend";
+import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
+import SXLossTimeByReason from "../../../components/Chart/SX/SXLossTimeByReason";
+import SXLossTimeByEmpl from "../../../components/Chart/SX/SXLossTimeByEmpl";
+
 const SX_REPORT = () => {
   const [dailysxloss, setDailySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [weeklysxloss, setWeeklySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [monthlysxloss, setMonthlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
-  const [yearlysxloss, setYearlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [yearlysxloss, setYearlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);  
 
   const [dailysxachive, setDailySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
   const [weeklysxachive, setWeeklySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
   const [monthlysxachive, setMonthlySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
   const [yearlysxachive, setYearlySXAchive] = useState<SX_ACHIVE_DATA[]>([]);
+  
+  const [dailysxaeff, setDailySXEff] = useState<PRODUCTION_EFFICIENCY_DATA[]>([]);
+  const [weeklysxaeff, setWeeklySXEff] = useState<PRODUCTION_EFFICIENCY_DATA[]>([]);
+  const [monthlysxaeff, setMonthlySXEff] = useState<PRODUCTION_EFFICIENCY_DATA[]>([]);
+  const [yearlysxaeff, setYearlySXEff] = useState<PRODUCTION_EFFICIENCY_DATA[]>([]);
+  const [selectedSXAffOverView, setSelectedSXAffOverView] = useState<PRODUCTION_EFFICIENCY_DATA>({
+    ALVB_TIME: 0,
+    HIEU_SUAT_TIME:0,
+    LOSS_TIME:0,
+    LOSS_TIME_RATE:0,
+    OPERATION_RATE:0,
+    PURE_RUN_RATE:0,
+    PURE_RUN_TIME:0,
+    RUN_TIME_SX:0,
+    SETTING_TIME:0,
+    SETTING_TIME_RATE:0,
+    TOTAL_TIME:0,
+  })
+
+  const [sxLossTimeByReason, setSXLossTimeByReason] = useState<SX_LOSSTIME_REASON_DATA[]>([]);
+  const [sxLossTimeByEmpl, setSXLossTimeByEmpl] = useState<SX_LOSSTIME_BY_EMPL[]>([]);
+
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
@@ -53,13 +87,12 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,                
-                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,
+                ...element,
+                LOSS_RATE: 1 - element.PURE_OUTPUT * 1.0 / element.PURE_INPUT,
                 INPUT_DATE: moment.utc(element.INPUT_DATE).format("YYYY-MM-DD"),
               };
             },
@@ -89,8 +122,8 @@ const SX_REPORT = () => {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,  
-                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,              
+                ...element,
+                LOSS_RATE: 1 - element.PURE_OUTPUT * 1.0 / element.PURE_INPUT,
               };
             },
           );
@@ -119,8 +152,8 @@ const SX_REPORT = () => {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,       
-                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,                  
+                ...element,
+                LOSS_RATE: 1 - element.PURE_OUTPUT * 1.0 / element.PURE_INPUT,
               };
             },
           );
@@ -149,8 +182,8 @@ const SX_REPORT = () => {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {
               return {
-                ...element,        
-                LOSS_RATE: 1-element.PURE_OUTPUT*1.0/element.PURE_INPUT,                       
+                ...element,
+                LOSS_RATE: 1 - element.PURE_OUTPUT * 1.0 / element.PURE_INPUT,
               };
             },
           );
@@ -224,6 +257,154 @@ const SX_REPORT = () => {
       });
   }
 
+  const handle_getDailyEffData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("dailyEQEffTrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map(
+            (element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+              return {
+                ...element,
+                PURE_RUN_RATE: element.PURE_RUN_TIME * 1.0 / element.TOTAL_TIME,
+                OPERATION_RATE: element.TOTAL_TIME*1.0/element.ALVB_TIME,
+                SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+              };
+            },
+          );  
+          let temp_aff: PRODUCTION_EFFICIENCY_DATA =  {
+            ALVB_TIME: 0,
+            HIEU_SUAT_TIME:0,
+            LOSS_TIME:0,
+            LOSS_TIME_RATE:0,
+            OPERATION_RATE:0,
+            PURE_RUN_RATE:0,
+            PURE_RUN_TIME:0,
+            RUN_TIME_SX:0,
+            SETTING_TIME:0,
+            SETTING_TIME_RATE:0,
+            TOTAL_TIME:0,
+          }
+          for(let i=0;i<loadeddata.length;i++) 
+          {
+            temp_aff.ALVB_TIME += loadeddata[i].ALVB_TIME;
+            temp_aff.LOSS_TIME += loadeddata[i].LOSS_TIME;
+            temp_aff.PURE_RUN_TIME += loadeddata[i].PURE_RUN_TIME;
+            temp_aff.RUN_TIME_SX += loadeddata[i].RUN_TIME_SX;
+            temp_aff.SETTING_TIME += loadeddata[i].SETTING_TIME;
+            temp_aff.TOTAL_TIME += loadeddata[i].TOTAL_TIME;
+          }
+          temp_aff.OPERATION_RATE = temp_aff.TOTAL_TIME/temp_aff.ALVB_TIME; // ti le van hanh
+          temp_aff.HIEU_SUAT_TIME = temp_aff.RUN_TIME_SX/temp_aff.TOTAL_TIME; // hieu suat may
+          temp_aff.SETTING_TIME_RATE = temp_aff.PURE_RUN_TIME/temp_aff.TOTAL_TIME; //hieu suat san xuat
+          setSelectedSXAffOverView(temp_aff)
+          setDailySXEff(loadeddata);
+        } else {
+          setDailySXEff([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getWeeklyEffData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-35, "day").format("YYYY-MM-DD");
+    await generalQuery("weeklyEQEffTrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map(
+            (element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+              return {
+                ...element,
+                PURE_RUN_RATE: element.PURE_RUN_TIME * 1.0 / element.TOTAL_TIME,              
+                OPERATION_RATE: element.TOTAL_TIME*1.0/element.ALVB_TIME,  
+              };
+            },
+          );
+          setWeeklySXEff(loadeddata);
+        } else {
+          setWeeklySXEff([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getMonthlyEffData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("monthlyEQEffTrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map(
+            (element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+              return {
+                ...element,
+                PURE_RUN_RATE: element.PURE_RUN_TIME * 1.0 / element.TOTAL_TIME,     
+                OPERATION_RATE: element.TOTAL_TIME*1.0/element.ALVB_TIME,           
+              };
+            },
+          );
+          setMonthlySXEff(loadeddata);
+        } else {
+          setMonthlySXEff([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getYearlyEffData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("yearlyEQEffTrending", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map(
+            (element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+              return {
+                ...element,
+                PURE_RUN_RATE: element.PURE_RUN_TIME * 1.0 / element.TOTAL_TIME,  
+                OPERATION_RATE: element.TOTAL_TIME*1.0/element.ALVB_TIME,              
+              };
+            },
+          );          
+          setYearlySXEff(loadeddata);
+        } else {
+          setYearlySXEff([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handle_getDailyAchiveData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
@@ -235,13 +416,12 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
             (element: SX_ACHIVE_DATA, index: number) => {
               return {
-                ...element,                
-                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,
+                ...element,
+                ACHIVE_RATE: element.SX_RESULT * 1.0 / element.PLAN_QTY,
                 SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
               };
             },
@@ -266,13 +446,12 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
             (element: SX_ACHIVE_DATA, index: number) => {
               return {
-                ...element,                
-                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,                
+                ...element,
+                ACHIVE_RATE: element.SX_RESULT * 1.0 / element.PLAN_QTY,
               };
             },
           );
@@ -296,13 +475,12 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
             (element: SX_ACHIVE_DATA, index: number) => {
               return {
-                ...element,                
-                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,                
+                ...element,
+                ACHIVE_RATE: element.SX_RESULT * 1.0 / element.PLAN_QTY,
               };
             },
           );
@@ -326,19 +504,75 @@ const SX_REPORT = () => {
       CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map(
             (element: SX_ACHIVE_DATA, index: number) => {
               return {
-                ...element,                
-                ACHIVE_RATE: element.SX_RESULT*1.0/element.PLAN_QTY,                
+                ...element,
+                ACHIVE_RATE: element.SX_RESULT * 1.0 / element.PLAN_QTY,
               };
             },
           );
           setYearlySXAchive(loadeddata);
         } else {
           setYearlySXAchive([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handle_getSXLossTimeByReason = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("sxLossTimeByReason", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: SX_LOSSTIME_REASON_DATA[] = response.data.data.map(
+            (element: SX_LOSSTIME_REASON_DATA, index: number) => {
+              return {
+                ...element,               
+              };
+            },
+          );            
+          setSXLossTimeByReason(loadeddata);
+        } else {
+          setSXLossTimeByReason([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getSXLossTimeByEmpl = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("sxLossTimeByEmpl", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: SX_LOSSTIME_BY_EMPL[] = response.data.data.map(
+            (element: SX_LOSSTIME_BY_EMPL, index: number) => {
+              return {
+                ...element,               
+              };
+            },
+          );            
+          setSXLossTimeByEmpl(loadeddata);
+        } else {
+          setSXLossTimeByEmpl([]);
         }
       })
       .catch((error) => {
@@ -354,7 +588,7 @@ const SX_REPORT = () => {
       showCancelButton: false,
       allowOutsideClick: false,
       confirmButtonText: "OK",
-      showConfirmButton: false, 
+      showConfirmButton: false,
     });
     Promise.all([
       handle_getDailyNewCodeData("ALL", searchCodeArray),
@@ -365,6 +599,12 @@ const SX_REPORT = () => {
       handle_getWeeklyAchiveData("ALL", searchCodeArray),
       handle_getMonthlyAchiveData("ALL", searchCodeArray),
       handle_getYearlyAchiveData("ALL", searchCodeArray),
+      handle_getDailyEffData("ALL", searchCodeArray),
+      handle_getWeeklyEffData("ALL", searchCodeArray),
+      handle_getMonthlyEffData("ALL", searchCodeArray),
+      handle_getYearlyEffData("ALL", searchCodeArray),
+      handle_getSXLossTimeByReason("ALL", searchCodeArray),
+      handle_getSXLossTimeByEmpl("ALL", searchCodeArray),
       handle_newCodeByCustomer(fromdate, todate, searchCodeArray),
       handle_newCodeByProdType(fromdate, todate, searchCodeArray),
     ]).then((values) => {
@@ -375,7 +615,7 @@ const SX_REPORT = () => {
     initFunction();
   }, []);
   return (
-    <div className="rndreport">
+    <div className="sxreport">
       <div className="title">
         <span>PRODUCTION REPORT</span>
       </div>
@@ -386,7 +626,7 @@ const SX_REPORT = () => {
             <input
               type="date"
               value={fromdate.slice(0, 10)}
-              onChange={(e) => { 
+              onChange={(e) => {
                 setFromDate(e.target.value);
               }}
             ></input>
@@ -437,12 +677,12 @@ const SX_REPORT = () => {
           <div className="revenuwdg">
             <WidgetSXLOSS
               widgettype="revenue"
-              label="Today loss"
+              label="Yesterday loss"
               topColor="#4e9ce6"
               botColor="#ffffff"
-              material_ppm={dailysxloss[dailysxloss.length-1]?.PURE_INPUT}
-              process_ppm={dailysxloss[dailysxloss.length-1]?.PURE_OUTPUT}
-              total_ppm={dailysxloss[dailysxloss.length-1]?.LOSS_RATE}
+              material_ppm={dailysxloss[dailysxloss.length - 2]?.PURE_INPUT}
+              process_ppm={dailysxloss[dailysxloss.length - 2]?.PURE_OUTPUT}
+              total_ppm={dailysxloss[dailysxloss.length - 2]?.LOSS_RATE}
             />
           </div>
           <div className="revenuwdg">
@@ -554,7 +794,56 @@ const SX_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="section_title">3. PRODUCTION ACHIVEMENT TRENDING</span>
+          <span className="section_title">3. PRODUCTION ACHIVEMENT OVERVIEW</span>
+          <div className="revenuewidget">
+            <div className="revenuwdg">
+              <WidgetSXAchive
+                widgettype="revenue"
+                label="Yesterday achivement"
+                topColor="#b1e64e"
+                botColor="#ffffff"
+                material_ppm={dailysxachive[dailysxachive.length - 2]?.ACHIVE_RATE}
+                process_ppm={dailysxachive[dailysxachive.length - 2]?.ACHIVE_RATE}
+                total_ppm={dailysxachive[dailysxachive.length - 2]?.ACHIVE_RATE}
+              />
+            </div>
+            <div className="revenuwdg">
+              <WidgetSXAchive
+                widgettype="revenue"
+                label="This Week achivement"
+                topColor="#b1e64e"
+                botColor="#ffffff"
+                material_ppm={weeklysxachive[0]?.ACHIVE_RATE}
+                process_ppm={weeklysxachive[0]?.ACHIVE_RATE}
+                total_ppm={weeklysxachive[0]?.ACHIVE_RATE}
+              />
+            </div>
+            <div className="revenuwdg">
+              <WidgetSXAchive
+                widgettype="revenue"
+                label="This Month achivement"
+                topColor="#b1e64e"
+                botColor="#ffffff"
+                material_ppm={monthlysxachive[0]?.ACHIVE_RATE}
+                process_ppm={monthlysxachive[0]?.ACHIVE_RATE}
+                total_ppm={monthlysxachive[0]?.ACHIVE_RATE}
+              />
+            </div>
+            <div className="revenuwdg">
+              <WidgetSXAchive
+                widgettype="revenue"
+                label="This Year achivement"
+                topColor="#b1e64e"
+                botColor="#ffffff"
+                material_ppm={yearlysxachive[0]?.ACHIVE_RATE}
+                process_ppm={yearlysxachive[0]?.ACHIVE_RATE}
+                total_ppm={yearlysxachive[0]?.ACHIVE_RATE}
+              />
+            </div>
+          </div>
+          <br></br>
+          <hr></hr>
+          <span className="section_title">4. PRODUCTION ACHIVEMENT TRENDING</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
@@ -574,13 +863,11 @@ const SX_REPORT = () => {
                   materialColor="#74c938"
                 />
               </div>
-             
             </div>
-           
           </div>
-          <div className="dailygraphtotal">            
+          <div className="dailygraphtotal">
             <div className="monthlyweeklygraph">
-            <div className="dailygraph">
+              <div className="dailygraph">
                 <span className="subsection">Weekly SX Achive <IconButton
                   className='buttonIcon'
                   onClick={() => {
@@ -630,34 +917,171 @@ const SX_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">2.5 New Code By Customer and Prod Type ({fromdate}- {todate})
+          <br></br>
+          <hr></hr>
+          <span className="section_title">5. PRODUCTION EFFICIENCY OVERVIEW</span>
+          <div className='mainprogressdiv'>
+            <div className='subprogressdiv'>
+              <div className='sectiondiv'>
+                <div className='efficiencydiv'>
+                  <CIRCLE_COMPONENT
+                    type='timesummary'
+                    value={`${selectedSXAffOverView.OPERATION_RATE.toLocaleString('en-US',{style:'percent'})}`}
+                    title='OPERATION RATE'
+                    color='red'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='timesummary'
+                    value={`${selectedSXAffOverView.HIEU_SUAT_TIME.toLocaleString('en-US',{style:'percent'})}`}
+                    title='PROD EFFICIENCY'
+                    color='#FE28A7'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='timesummary'
+                    value={`${selectedSXAffOverView.SETTING_TIME_RATE.toLocaleString('en-US',{style:'percent'})}`}
+                    title='EQ EFFICIENCY'
+                    color='#00B215'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${selectedSXAffOverView.ALVB_TIME.toLocaleString('en-US')} min`}
+                    title='AVLB TIME'
+                    color='blue'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${selectedSXAffOverView.TOTAL_TIME.toLocaleString('en-US')} min`}
+                    title='TT PROD TIME'
+                    color='#742BFE'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${selectedSXAffOverView.SETTING_TIME.toLocaleString('en-US')} min`}
+                    title='SETTING TIME'
+                    color='#FE5E2B'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${selectedSXAffOverView.PURE_RUN_TIME.toLocaleString('en-US')} min`}
+                    title='RUN TIME'
+                    color='#21B800'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${selectedSXAffOverView.LOSS_TIME.toLocaleString('en-US')} min`}
+                    title='LOSS TIME'
+                    color='red'
+                  />
+                </div>
+              </div>             
+            </div>
+          </div>
+
+
+          <br></br>
+          <hr></hr>
+          <span className="section_title">6. PRODUCTION EFFICIENCY TRENDING</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Daily EFF Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(dailysxaeff, "Daily EFF Rate");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>
+                </span>
+                <SXDailyEffTrend
+                  dldata={dailysxaeff}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="dailygraphtotal">
+            <div className="monthlyweeklygraph">
+              <div className="dailygraph">
+                <span className="subsection">Weekly EFF Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(weeklysxaeff, "Weekly EFF Rate");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <SXWeeklyEffTrend
+                  dldata={[...weeklysxaeff].reverse()}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Monthly EFF Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(monthlysxaeff, "Monthly EFF Rate");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <SXMonthlyEffTrend
+                  dldata={[...monthlysxaeff].reverse()}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly EFF Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yearlysxaeff, "Yearly EFF Rate");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <SXYearlyEffTrend
+                  dldata={[...yearlysxaeff].reverse()}
+                  processColor="#f1f5c8"
+                  materialColor="#74c938"
+                />
+              </div>
+            </div>
+          </div>
+          <span className="subsection_title">2.5 Production Loss Time Details ({fromdate}- {todate})
           </span>
           <div className="defect_trending">
             <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">New Code By Customer <IconButton
+              <span className="subsection">Loss Time By Reason <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(newcodebycustomer, "Newcode by Customer");
+                  SaveExcel(sxLossTimeByReason, "SX LOSS TIME BY REASON");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
                 Excel
               </IconButton>
               </span>
-              <RNDNewCodeByCustomer data={[...newcodebycustomer].reverse()} />
+              <SXLossTimeByReason data={[...sxLossTimeByReason].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">New Code By Product Type <IconButton
+              <span className="subsection">Loss Time by Employee <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(newcodebyprodtype, "Newcode by Prod Type");
+                  SaveExcel(sxLossTimeByEmpl, "Loss Time by Employee");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
                 Excel
               </IconButton>
               </span>
-              <RNDNewCodeByProdType data={[...newcodebyprodtype].reverse()} />
+              <SXLossTimeByEmpl data={[...sxLossTimeByEmpl].slice(0,10).reverse()} />
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 @media only screen and (max-width: 5000px) {
-  .rndreport {
+  .sxreport {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -330,13 +330,65 @@
             }
           }
         }
+        .mainprogressdiv {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;          
+          
+          border-radius: 15px;
+          flex-direction: column;
+          padding: 10px;          
+  
+          .subprogressdiv {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            .sectiondiv {
+              width: 100%;
+              padding: 10px;
+              align-self: center;
+              justify-content: center;
+              font-size: 1.5rem;
+              .lossdiv {
+                display: flex;
+                padding: 10px;
+                flex-wrap: wrap;
+                gap: 3px;
+                justify-content: space-around;
+              }
+              .totalachivementdiv {
+                font-size: 4rem;
+                align-self: center;
+                text-align: center;
+                color: #1b9910;
+              }
+              .totallosstdiv {
+                font-size: 4rem;
+                align-self: center;
+                text-align: center;
+                color: #ff0000;
+              }
+              .efftitle {
+                font-size: 1rem;
+              }
+              .efficiencydiv {
+                display: flex;
+                justify-content: space-around;
+                font-size: 1.5rem;
+                align-self: center;
+                text-align: center;
+                color: #0004f9;
+              }
+            }
+          }
+        }
         
       }
     }
   }
 }
 @media only screen and (max-width: 768px) {
-  .rndreport {
+  .sxreport {
     display: flex;
     flex-direction: column;
     .doanhthureport {
