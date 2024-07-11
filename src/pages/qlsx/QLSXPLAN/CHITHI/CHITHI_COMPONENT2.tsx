@@ -1,7 +1,7 @@
 import moment from "moment";
 import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getCompany } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -448,11 +448,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   <td>{((PLAN_LIST.find((ele: QLSXPLANDATA, index: number) => ele.STEP === 0)?.PLAN_QTY ?? 0) * (1 + lossSXByProcessNumber(PLAN_LIST.find((ele: QLSXPLANDATA, index: number) => ele.STEP === 0)).FN_LOSS_SX / 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}EA</td>
                 </tr>
                 <tr>
-                  <td>PD/Cavity (Hàng * Cột)</td>
-                  <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}/
-                    ({request_codeinfo[0]?.G_C_R} * {request_codeinfo[0]?.G_C})=
-                    {request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}
-                  </td>
+                  <td>PD/Cavity</td>                  
+                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")} {`${getCompany()==='CMS'? '': request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}</td>
                 </tr>
               </tbody>
             </table>
