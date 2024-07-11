@@ -535,7 +535,7 @@ const NavMenu = () => {
           MENU_CODE: "SX8",
           cName: "sub-nav",
         },
-        {
+       /*  {
           title: getlang("quanlycapa", lang),
           path: "sx/capamanager",
           icon: <FcCapacitor color="blue" size={15} />,
@@ -546,7 +546,7 @@ const NavMenu = () => {
           path: "sx/planresult",
           icon: <BiTrendingUp color="green" size={15} />,
           MENU_CODE: "SX12",
-        },
+        }, */
         {
           title: getlang("baocaosx", lang),
           path: "sx/baocaosx",
