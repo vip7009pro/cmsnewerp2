@@ -10,6 +10,7 @@ import PLAN_STATUS from "./PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./EQ_STATUS/EQ_STATUS";
 import EQ_STATUS2 from "./EQ_STATUS/EQ_STATUS2";
 import KHOAO from "./KHOAO/KHOAO";
+import QUICKPLAN2 from "./QUICKPLAN/QUICKPLAN2";
 
 const QLSXPLAN = () => {
   const [selection, setSelection] = useState<any>({
@@ -295,7 +296,7 @@ const QLSXPLAN = () => {
         )}
         {selection.tab4 && (
           <div className="datadtc">
-            <QUICKPLAN />
+            <QUICKPLAN2 />
           </div>
         )}
         {selection.tab5 && (

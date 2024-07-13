@@ -55,6 +55,7 @@ import { AgGridReact } from "ag-grid-react";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
+import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 const PLAN_DATATB = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
@@ -3024,7 +3025,7 @@ const PLAN_DATATB = () => {
       {
         showQuickPlan && (
           <div className="quickplandiv">
-            <QUICKPLAN />
+            <QUICKPLAN2 />
           </div>
         )
       }
