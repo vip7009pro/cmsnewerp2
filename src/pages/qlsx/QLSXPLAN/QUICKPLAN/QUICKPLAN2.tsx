@@ -643,6 +643,7 @@ const QUICKPLAN2 = () => {
       width: 90,
       headerCheckboxSelection: true,
       checkboxSelection: true,
+      pinned:'left',
       editable: false,
       resizable: true,
     },
@@ -1548,6 +1549,7 @@ const QUICKPLAN2 = () => {
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== undefined) {
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
+        console.log(datadinhmuc)
         let err_code: string = "0";
         if (
           datadinhmuc.FACTORY === "NA" ||
