@@ -146,7 +146,7 @@ const QUICKPLAN2 = () => {
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedCode, setSelectedCode] = useState("CODE: ");
   const [selectedG_Code, setSelectedG_Code] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState<any>();
+  const selectedPlan = useRef<QLSXPLANDATA>();
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
@@ -652,6 +652,7 @@ const QUICKPLAN2 = () => {
       headerName: "YCSX_NO",
       width: 100,
       editable: true,
+      pinned: 'left'
     },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
     { field: "G_NAME", headerName: "G_NAME", width: 130, editable: false },
@@ -1238,6 +1239,32 @@ const QUICKPLAN2 = () => {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
   };
+  const handle_DeleteCompletedPLAN =  (datafilter: QLSXPLANDATA[],PLAN_ID: string) => {   
+    if (qlsxplandatafilter.current.length > 0) {   
+        for (let j = 0; j < datafilter.length; j++) {
+          if (PLAN_ID === datafilter[j].PLAN_ID) {
+            console.log('plan to delete: ',PLAN_ID)
+            let prev_length: number = datafilter.length;
+            datafilter.splice(j, 1);
+            let len: number = datafilter.length - 1;
+            if (prev_length === 1) {
+              //console.log('vao day');
+              setTemID(0);
+              localStorage.setItem("temp_plan_table_max_id", "0");
+            } else {
+              setTemID(datafilter[len].id);
+              localStorage.setItem(
+                "temp_plan_table_max_id",
+                datafilter[len].id.toString(),
+              );
+            }           
+            localStorage.setItem("temp_plan_table", JSON.stringify(datafilter));
+          }
+        }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+    }   
+  };
   const getNextPLAN_ID = async (
     PROD_REQUEST_NO: string,
     plan_row: QLSXPLANDATA,
@@ -1451,7 +1478,8 @@ const QUICKPLAN2 = () => {
     );
   };
   const handle_SavePlan = async () => {
-    if (qlsxplandatafilter.current.length !== 0) {
+    if (qlsxplandatafilter.current.length > 0) {    
+      let org_plan_tb = [...plandatatable]; 
       localStorage.setItem("temp_plan_table", JSON.stringify(plandatatable));
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
@@ -1473,22 +1501,22 @@ const QUICKPLAN2 = () => {
           await generalQuery("checkProd_request_no_Exist_O302", {
             PROD_REQUEST_NO: qlsxplandatafilter.current[i].PROD_REQUEST_NO,
           })
-            .then((response) => {
-              //console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data[0].PLAN_ID);
-                if (response.data.data.length > 0) {
-                  check_ycsx_hethongcu = true;
-                } else {
-                  check_ycsx_hethongcu = false;
-                }
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data[0].PLAN_ID);
+              if (response.data.data.length > 0) {
+                check_ycsx_hethongcu = true;
               } else {
+                check_ycsx_hethongcu = false;
               }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          //check_ycsx_hethongcu = false;
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+          //check_ycsx_hethongcu = false;          
           let nextPlan = await getNextPLAN_ID(
             qlsxplandatafilter.current[i].PROD_REQUEST_NO,
             qlsxplandatafilter.current[i],
@@ -1496,17 +1524,14 @@ const QUICKPLAN2 = () => {
           let NextPlanID = nextPlan.NEXT_PLAN_ID;
           let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
           if (check_ycsx_hethongcu === false) {
-            generalQuery("addPlanQLSX", {
+            await generalQuery("addPlanQLSX", {
               STEP: qlsxplandatafilter.current[i].STEP,
               PLAN_QTY: qlsxplandatafilter.current[i].PLAN_QTY,
               PLAN_LEADTIME: qlsxplandatafilter.current[i].PLAN_LEADTIME,
               PLAN_EQ: qlsxplandatafilter.current[i].PLAN_EQ,
               PLAN_ORDER: NextPlanOrder,
               PROCESS_NUMBER: qlsxplandatafilter.current[i].PROCESS_NUMBER,
-              KETQUASX:
-                qlsxplandatafilter.current[i].KETQUASX === null
-                  ? 0
-                  : qlsxplandatafilter.current[i].KETQUASX,
+              KETQUASX: qlsxplandatafilter.current[i].KETQUASX ?? 0,
               PLAN_ID: NextPlanID,
               PLAN_DATE: moment().format("YYYY-MM-DD"),
               PROD_REQUEST_NO: qlsxplandatafilter.current[i].PROD_REQUEST_NO,
@@ -1518,7 +1543,8 @@ const QUICKPLAN2 = () => {
               .then((response) => {
                 //console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
-                  handle_DeleteLinePLAN();
+                  handle_DeleteCompletedPLAN(org_plan_tb,qlsxplandatafilter.current[i].PLAN_ID)
+                 
                 } else {
                   err_code += "_" + response.data.message;
                 }
@@ -1536,7 +1562,9 @@ const QUICKPLAN2 = () => {
             qlsxplandatafilter.current[i].G_NAME_KD +
             ": Plan QTY =0 hoặc Process number trắng hoặc khác giá trị 1 or 2, hoặc chỉ thị nhiều hơn ycsx qty, hoặc PLAN_EQ rỗng, hoặc không hợp lệ, hoặc Step không nằm trong khoảng từ 0 đến 9 sẽ ko được lưu";
         }
+
       }
+      setPlanDataTable(org_plan_tb);     
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
       } else {
@@ -1547,7 +1575,7 @@ const QUICKPLAN2 = () => {
     }
   };
   const handleSaveQLSX = async () => {
-    if (selectedG_Code !== undefined) {
+    if (selectedPlan.current?.G_CODE !== '') {
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         console.log(datadinhmuc)
         let err_code: string = "0";
@@ -1568,14 +1596,14 @@ const QUICKPLAN2 = () => {
           );
         } else {
           await generalQuery("insertDBYCSX", {
-            PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
-            G_CODE: selectedPlan.G_CODE,
+            PROD_REQUEST_NO: selectedPlan.current?.PROD_REQUEST_NO,
+            G_CODE: selectedPlan.current?.G_CODE,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
               } else {
                 generalQuery("updateDBYCSX", {
-                  PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+                  PROD_REQUEST_NO: selectedPlan.current?.PROD_REQUEST_NO,
                   LOSS_SX1: datadinhmuc.LOSS_SX1,
                   LOSS_SX2: datadinhmuc.LOSS_SX2,
                   LOSS_SX3: datadinhmuc.LOSS_SX3,
@@ -1599,7 +1627,7 @@ const QUICKPLAN2 = () => {
               console.log(error);
             });
           await generalQuery("saveQLSX", {
-            G_CODE: selectedG_Code,
+            G_CODE: selectedPlan.current?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
             EQ2: datadinhmuc.EQ2,
@@ -2079,6 +2107,7 @@ const QUICKPLAN2 = () => {
         }}
         onCellClick={(params: any) => {
           let rowData: QLSXPLANDATA = params.data;
+          selectedPlan.current = rowData;
           setDataDinhMuc({
             ...datadinhmuc,
             FACTORY: rowData.FACTORY ?? "NA",
@@ -2114,7 +2143,7 @@ const QUICKPLAN2 = () => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()
         }} />
     )
-  }, [plandatatable])
+  }, [plandatatable,datadinhmuc])
   useEffect(() => {
     let temp_table: any = [];
     let temp_max: number = 0;
