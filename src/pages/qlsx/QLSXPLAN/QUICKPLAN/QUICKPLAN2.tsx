@@ -643,7 +643,7 @@ const QUICKPLAN2 = () => {
       width: 90,
       headerCheckboxSelection: true,
       checkboxSelection: true,
-      pinned:'left',
+      pinned: 'left',
       editable: false,
       resizable: true,
     },
@@ -1239,31 +1239,31 @@ const QUICKPLAN2 = () => {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
   };
-  const handle_DeleteCompletedPLAN =  (datafilter: QLSXPLANDATA[],PLAN_ID: string) => {   
-    if (qlsxplandatafilter.current.length > 0) {   
-        for (let j = 0; j < datafilter.length; j++) {
-          if (PLAN_ID === datafilter[j].PLAN_ID) {
-            console.log('plan to delete: ',PLAN_ID)
-            let prev_length: number = datafilter.length;
-            datafilter.splice(j, 1);
-            let len: number = datafilter.length - 1;
-            if (prev_length === 1) {
-              //console.log('vao day');
-              setTemID(0);
-              localStorage.setItem("temp_plan_table_max_id", "0");
-            } else {
-              setTemID(datafilter[len].id);
-              localStorage.setItem(
-                "temp_plan_table_max_id",
-                datafilter[len].id.toString(),
-              );
-            }           
-            localStorage.setItem("temp_plan_table", JSON.stringify(datafilter));
+  const handle_DeleteCompletedPLAN = (datafilter: QLSXPLANDATA[], PLAN_ID: string) => {
+    if (qlsxplandatafilter.current.length > 0) {
+      for (let j = 0; j < datafilter.length; j++) {
+        if (PLAN_ID === datafilter[j].PLAN_ID) {
+          console.log('plan to delete: ', PLAN_ID)
+          let prev_length: number = datafilter.length;
+          datafilter.splice(j, 1);
+          let len: number = datafilter.length - 1;
+          if (prev_length === 1) {
+            //console.log('vao day');
+            setTemID(0);
+            localStorage.setItem("temp_plan_table_max_id", "0");
+          } else {
+            setTemID(datafilter[len].id);
+            localStorage.setItem(
+              "temp_plan_table_max_id",
+              datafilter[len].id.toString(),
+            );
           }
+          localStorage.setItem("temp_plan_table", JSON.stringify(datafilter));
         }
+      }
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
-    }   
+    }
   };
   const getNextPLAN_ID = async (
     PROD_REQUEST_NO: string,
@@ -1478,8 +1478,8 @@ const QUICKPLAN2 = () => {
     );
   };
   const handle_SavePlan = async () => {
-    if (qlsxplandatafilter.current.length > 0) {    
-      let org_plan_tb = [...plandatatable]; 
+    if (qlsxplandatafilter.current.length > 0) {
+      let org_plan_tb = [...plandatatable];
       localStorage.setItem("temp_plan_table", JSON.stringify(plandatatable));
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
@@ -1501,21 +1501,21 @@ const QUICKPLAN2 = () => {
           await generalQuery("checkProd_request_no_Exist_O302", {
             PROD_REQUEST_NO: qlsxplandatafilter.current[i].PROD_REQUEST_NO,
           })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data[0].PLAN_ID);
-              if (response.data.data.length > 0) {
-                check_ycsx_hethongcu = true;
+            .then((response) => {
+              //console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //console.log(response.data.data[0].PLAN_ID);
+                if (response.data.data.length > 0) {
+                  check_ycsx_hethongcu = true;
+                } else {
+                  check_ycsx_hethongcu = false;
+                }
               } else {
-                check_ycsx_hethongcu = false;
               }
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
           //check_ycsx_hethongcu = false;          
           let nextPlan = await getNextPLAN_ID(
             qlsxplandatafilter.current[i].PROD_REQUEST_NO,
@@ -1543,8 +1543,7 @@ const QUICKPLAN2 = () => {
               .then((response) => {
                 //console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
-                  handle_DeleteCompletedPLAN(org_plan_tb,qlsxplandatafilter.current[i].PLAN_ID)
-                 
+                  handle_DeleteCompletedPLAN(org_plan_tb, qlsxplandatafilter.current[i].PLAN_ID)
                 } else {
                   err_code += "_" + response.data.message;
                 }
@@ -1562,9 +1561,8 @@ const QUICKPLAN2 = () => {
             qlsxplandatafilter.current[i].G_NAME_KD +
             ": Plan QTY =0 hoặc Process number trắng hoặc khác giá trị 1 or 2, hoặc chỉ thị nhiều hơn ycsx qty, hoặc PLAN_EQ rỗng, hoặc không hợp lệ, hoặc Step không nằm trong khoảng từ 0 đến 9 sẽ ko được lưu";
         }
-
       }
-      setPlanDataTable(org_plan_tb);     
+      setPlanDataTable(org_plan_tb);
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
       } else {
@@ -1792,8 +1790,8 @@ const QUICKPLAN2 = () => {
   };
   const get1YCSXDATA = async (PROD_REQUEST_NO: string) => {
     let temp_data: YCSXTableData[] = [];
-    await generalQuery("quickcheckycsx", {      
-      PROD_REQUEST_NO: PROD_REQUEST_NO,     
+    await generalQuery("quickcheckycsx", {
+      PROD_REQUEST_NO: PROD_REQUEST_NO,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1802,7 +1800,7 @@ const QUICKPLAN2 = () => {
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
               return {
-                ...element,              
+                ...element,
               };
             },
           );
@@ -2143,7 +2141,7 @@ const QUICKPLAN2 = () => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()
         }} />
     )
-  }, [plandatatable,datadinhmuc])
+  }, [plandatatable, datadinhmuc])
   useEffect(() => {
     let temp_table: any = [];
     let temp_max: number = 0;

@@ -350,35 +350,3 @@ export function dynamicSort(property: string) {
     return result * sortOrder;
   }
 }
-
-
-/* async function fetchImageAsBlob(imageUrl: string): Promise<Blob> {
-  const response = await fetch(imageUrl);
-  if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.statusText}`);
-  }
-  return await response.blob();
-}
-
-async function addImageToWorksheet(imageUrl: string, worksheet: any, cell: string) {
-  const imageBuffer = await fetchImageAsBlob(imageUrl);
-  const image = await XlsxPopulate.fromDataAsync(imageBuffer);
-  worksheet.addImage(image, cell);
-}
-
-export async function saveJsonWithImageToExcel(jsonData: any, outputPath: string) {
-  const workbook = await XlsxPopulate.fromBlankAsync();
-  const worksheet = workbook.sheet(0);
-
-  // Ghi dữ liệu JSON vào bảng tính
-  worksheet.cell('A1').value(jsonData);
-
-  // Thêm ảnh
-  for(let i=0;i<jsonData.length; i++) {
-    await addImageToWorksheet("https://cms.ddns.net/INS_PATROL/INS_PATROL_2876.png", worksheet, 'B2');
-  }
-
-  // Lưu workbook vào tệp Excel
-  await workbook.toFileAsync(outputPath);
-} */
-
