@@ -92,6 +92,7 @@
             background-image: linear-gradient(0deg, #ececec, #eee7e7);
           }
           
+          
           .traxuatkiembutton {
             font-weight: bold;
             padding-left: 5px;
@@ -143,6 +144,17 @@
           margin-right: 10px;
           input {
             width: 150px;
+            height: 20px;
+            font-size: 0.8rem;
+            outline: none;
+            border-radius: 5px;
+            border: none;
+            padding: 5px;
+            margin-left: 5px;
+            background-image: linear-gradient(0deg, #ececec, #eee7e7);
+          }
+          .checkbox1 {
+            width: 15px;
             height: 20px;
             font-size: 0.8rem;
             outline: none;

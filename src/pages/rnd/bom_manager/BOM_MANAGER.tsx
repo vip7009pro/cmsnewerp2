@@ -64,6 +64,8 @@ import UpHangLoat from "./UpHangLoat";
 import BOM_DESIGN from "./BOM_DESIGN";
 import AGTable from "../../../components/DataTable/AGTable";
 const BOM_MANAGER = () => {
+  const [activeOnly, setActiveOnly] = useState(true)
+  const [cndb, setCNDB] = useState(false)
   const labelprintref = useRef(null);
   const [showHideDesignBom, setShowHideDesignBOM] = useState(false);
   const handlePrint = useReactToPrint({
@@ -1001,6 +1003,8 @@ const BOM_MANAGER = () => {
     setisLoading(true);
     generalQuery("codeinfo", {
       G_NAME: codeCMS,
+      CNDB: cndb,
+      ACTIVE_ONLY: activeOnly
     })
       .then((response) => {
         ////console.log(response.data);
@@ -2841,6 +2845,15 @@ const BOM_MANAGER = () => {
                 <div className="tracuuFcstform">
                   <div className="forminput">
                     <div className="forminputcolumn">
+                                      
+                        <input
+                          className="checkbox1"
+                          type="checkbox"
+                          placeholder="Active"
+                          checked={cndb}
+                          onChange={(e) => setCNDB(e.target.checked)}                          
+                        ></input>
+                     
                       <label>
                         <b>Code:</b>{" "}
                         <input
@@ -2853,6 +2866,16 @@ const BOM_MANAGER = () => {
                           }}
                         ></input>
                       </label>
+
+                      Active                 
+                        <input
+                          className="checkbox1"
+                          type="checkbox"
+                          placeholder="Active"
+                          checked={activeOnly}
+                          onChange={(e) => setActiveOnly(e.target.checked)}                          
+                        ></input>
+                     
                       <button
                         className="traxuatkiembutton"
                         onClick={() => {

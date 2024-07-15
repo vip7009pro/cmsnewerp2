@@ -19,6 +19,8 @@ import { RootState } from "../../../redux/store";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const CODE_MANAGER = () => {
+  const [activeOnly, setActiveOnly] = useState(true)
+  const [cndb, setCNDB] = useState(false)
   const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_FULL_INFO>>([]);
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData,);
   const [isLoading, setisLoading] = useState(false);
@@ -1832,6 +1834,8 @@ const CODE_MANAGER = () => {
     setColumnDefinition(column_codeinfo);
     generalQuery("codeinfo", {
       G_NAME: codeCMS,
+      CNDB: cndb,
+      ACTIVE_ONLY: activeOnly
     })
       .then((response) => {
         //console.log(response.data);
@@ -2008,6 +2012,14 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME?.search('CNDB
         <div className="tracuuFcstTable">
           <div className="toolbar">
             <div className="searchdiv">
+            <input
+                          className="checkbox1"
+                          type="checkbox"
+                          placeholder="Active"
+                          checked={cndb}
+                          onChange={(e) => setCNDB(e.target.checked)}                          
+                        ></input>
+                     
               <label>
                 <b>Code:</b>{" "}
                 <input
@@ -2020,6 +2032,15 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME?.search('CNDB
                   }}
                 ></input>
               </label>
+              Active                 
+                        <input
+                          className="checkbox1"
+                          type="checkbox"
+                          placeholder="Active"
+                          checked={activeOnly}
+                          onChange={(e) => setActiveOnly(e.target.checked)}                          
+                        ></input>
+                     
               <button
                 className="traxuatkiembutton"
                 onClick={() => {
