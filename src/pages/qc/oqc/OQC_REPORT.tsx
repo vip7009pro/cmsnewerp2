@@ -445,7 +445,7 @@ const OQC_REPORT = () => {
               <OQCNGByCustomer data={[...oqcNGByCustomer].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">New Code By Product Type <IconButton
+              <span className="subsection">NG By Product Type <IconButton
                 className='buttonIcon'
                 onClick={() => {
                 }}
