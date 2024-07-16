@@ -951,7 +951,7 @@ const FAILING = () => {
                   <b>Mã nhân viên giao:</b>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"NHU1903"}
                     value={request_empl}
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
@@ -978,7 +978,7 @@ const FAILING = () => {
                   <b>Mã nhân viên nhận:</b>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"NHU1903"}
                     value={request_empl2}
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
@@ -1146,7 +1146,7 @@ const FAILING = () => {
                   <b>Ng.Giao:</b>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"NHU1903"}
                     value={request_empl}
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
@@ -1171,7 +1171,7 @@ const FAILING = () => {
                   <b>Ng.Nhận:</b>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"NHU1903"}
                     value={request_empl2}
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {

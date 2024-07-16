@@ -72,7 +72,7 @@ import RND_REPORT from "../rnd/rnd_report/RND_REPORT";
 import Blank from "../../components/Blank/Blank";
 import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
 import BCSX from "../sx/BAOCAOSX/BCSX";
-export const current_ver: number = 417;
+export const current_ver: number = 418;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;

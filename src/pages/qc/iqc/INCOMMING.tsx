@@ -1,7 +1,7 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./INCOMMING.scss";
@@ -16,7 +16,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const INCOMMING = () => {
-  const [isNewRegister, setNewRegister] = useState(true);
+  const [isNewRegister, setNewRegister] = useState(false);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
     { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
@@ -203,6 +203,11 @@ const INCOMMING = () => {
   const [total_qty, setTotal_QTY] = useState(0);
   const [total_roll, setTotal_ROLL] = useState(0);
   const [nq_qty, setNQ_QTY] = useState(0);
+
+  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
+  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [vendor, setVendor] = useState("");
+
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsData.current);
     if (selectedRowsData.current.length > 0) {
@@ -290,6 +295,8 @@ const INCOMMING = () => {
   const column_iqcdatatable = [
     { field: 'IQC1_ID',headerName: 'IQC1_ID', headerCheckboxSelection: true, checkboxSelection: true,resizable: true,width: 80 },
     { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80 },
+    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
+    { field: 'WIDTH_CD',headerName: 'SIZE', resizable: true,width: 60 },
     { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
     { field: 'LOT_CMS',headerName: 'LOT_CMS', resizable: true,width: 80 },
     { field: 'LOT_VENDOR',headerName: 'LOT_VENDOR', resizable: true,width: 80 },
@@ -415,10 +422,26 @@ const INCOMMING = () => {
       <AGTable
         toolbar={
           <div>
+           
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                handletraIQC1Data();
+                setInspectionDataTable([]);
+                setNewRegister(true);  
+                setVendor("");              
+                setVendorLot("");              
+                setM_Code("");              
+                setM_Name("");
+              }}
+            >
+              <AiFillFileAdd color="green" size={15} />
+              New INPUT
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                //handletraIQC1Data();
+                setNewRegister(false);
               }}
             >
               <AiOutlineSearch color="red" size={15} />
@@ -497,7 +520,14 @@ const INCOMMING = () => {
   }, [dtcDataTable]);
 
   const handletraIQC1Data = () => {
-    generalQuery("loadIQC1table", {})
+    generalQuery("loadIQC1table", {
+      M_CODE: m_code.trim(),
+      M_NAME: m_name.trim(),
+      LOTNCC: vendorLot.trim(),
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      VENDOR_NAME: vendor.trim()
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -599,10 +629,8 @@ const INCOMMING = () => {
   };
   const checkInput = (): boolean => {
     if (
-      inputno !== "" &&
-      vendorLot !== "" &&
-      request_empl !== "" &&
-      exp_date !== "" &&
+      inputno !== "" &&      
+      request_empl !== "" &&      
       nq_qty !== 0 &&
       dtc_id !== 0
     ) {
@@ -616,6 +644,8 @@ const INCOMMING = () => {
       id: inspectiondatatable.length,
       IQC1_ID: inspectiondatatable.length,
       M_CODE: m_code,
+      M_NAME: m_name,
+      WIDTH_CD: width_cd,
       M_LOT_NO: inputno,
       LOT_CMS: inputno.substring(0, 6),
       LOT_VENDOR: vendorLot,
@@ -690,11 +720,11 @@ const INCOMMING = () => {
     <div className="incomming">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          <div className="tracuuDataInspectionform">
+          {isNewRegister && <div className="tracuuDataInspectionform">
             <b style={{ color: "blue" }}>INPUT DATA KIỂM TRA INCOMMING</b>
             <div className="forminput">
               <div className="forminputcolumn">
-                <b>LOT NVL CMS</b>
+                <b>LOT NVL ERP</b>
                 <label>
                   <input
                     type="text"
@@ -723,7 +753,7 @@ const INCOMMING = () => {
                 <label>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"abcdxyz"}
                     value={vendorLot}
                     onChange={(e) => {
                       setVendorLot(e.target.value);
@@ -768,7 +798,7 @@ const INCOMMING = () => {
                 <label>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"NHU1903"}
                     value={request_empl}
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
@@ -804,7 +834,98 @@ const INCOMMING = () => {
                 </label>
               </div>
             </div>
-            <div className="formbutton">
+            <div className="formbutton">             
+              <Button fullWidth={true}  color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f735', color: 'black' }} onClick={() => {
+                if (checkInput()) {
+                  if(isNewRegister)
+                  {
+                    addRow();
+                  }
+                  else {
+                    Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');
+                  }
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Hãy nhập đủ thông tin trước khi đăng ký",
+                    "error",
+                  );
+                }
+              }}>Add</Button>
+              <Button fullWidth={true}  color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
+                if(isNewRegister)
+                {
+                  insertIQC1Table();
+                }
+                else {
+                  Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');
+                }
+              }}>Save</Button>
+            </div>
+          </div>}
+          {!isNewRegister && <div className="tracuuDataInspectionform">
+            <b style={{ color: "blue" }}>TRA DATA INCOMMING</b>
+            <div className="forminput">
+          <div className="forminputcolumn">
+            <label>
+              <b>Từ ngày:</b>
+              <input
+                type="date"
+                value={fromdate.slice(0, 10)}
+                onChange={(e) => setFromDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Tới ngày:</b>{" "}
+              <input
+                type="date"
+                value={todate.slice(0, 10)}
+                onChange={(e) => setToDate(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className="forminputcolumn">
+            <label>
+              <b>Tên Liệu:</b>{" "}
+              <input
+                type="text"
+                placeholder="SJ-203020HC"
+                value={m_name}
+                onChange={(e) => setM_Name(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Mã Liệu CMS:</b>{" "}
+              <input
+                type="text"
+                placeholder="A123456"
+                value={m_code}
+                onChange={(e) => setM_Code(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className="forminputcolumn">
+            <label>
+              <b>Vendor Name:</b>{" "}
+              <input
+                type="text"
+                placeholder="SSJ"
+                value={vendor}
+                onChange={(e) => setVendor(e.target.value)}
+              ></input>
+            </label>           
+            <label>
+              <b>Vendor LOT:</b>{" "}
+              <input
+                type="text"
+                placeholder="abcxyz123"
+                value={vendorLot}
+                onChange={(e) => setVendorLot(e.target.value)}
+              ></input>
+            </label>           
+          </div>
+          </div>
+            {isNewRegister && <div className="formbutton">
               <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#4959e7', color: 'white' }} onClick={() => {
                 setInspectionDataTable([]);
                 setNewRegister(true);
@@ -835,8 +956,13 @@ const INCOMMING = () => {
                   Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');
                 }
               }}>Save</Button>
-            </div>
-          </div>
+            </div>}
+            {!isNewRegister && <div className="formbutton">
+              <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#4959e7', color: 'white' }} onClick={() => {
+               handletraIQC1Data();
+              }}>Tra Data</Button>          
+            </div>}
+          </div>}
           <div className="tracuuYCSXTable">{iqcDataTable}</div>
           <div className="tracuuDataInspectionform2">
             <b style={{ color: "blue" }}>Kết quả ĐTC</b>

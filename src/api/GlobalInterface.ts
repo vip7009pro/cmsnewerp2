@@ -1385,6 +1385,8 @@ export interface IQC_INCOMMING_DATA {
   id?: number;
   IQC1_ID: number;
   M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
   M_LOT_NO: string;
   LOT_CMS: string;
   LOT_VENDOR: string;

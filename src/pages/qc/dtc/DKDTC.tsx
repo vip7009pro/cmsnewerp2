@@ -495,7 +495,7 @@ const DKDTC = () => {
                 <label>
                   <input
                     type="text"
-                    placeholder={"NVD1201"}
+                    placeholder={"NHU1903"}
                     value={request_empl}
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
