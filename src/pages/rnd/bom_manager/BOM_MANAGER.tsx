@@ -20,7 +20,7 @@ import {
   GridCallbackDetails,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FcDeleteRow } from "react-icons/fc";
 import {
   AiFillDelete,
@@ -74,7 +74,7 @@ const BOM_MANAGER = () => {
     (state: RootState) => state.totalSlice.company,
   );
   const [updateReason, setUpdateReason] = useState("");
-  const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
+  const codedatatablefilter = useRef<Array<CODE_INFO>>([]);
   const bomsxdatatablefilter = useRef<Array<BOM_SX>>([]);
   const bomgiadatatablefilter = useRef<Array<BOM_GIA>>([]);
   const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
@@ -897,15 +897,16 @@ const BOM_MANAGER = () => {
             handleGETBOMGIA(params.data.G_CODE);
           }
           ////console.log(datafilter[0]);
+          codedatatablefilter.current = [params.data];
           handlecodefullinfo(params.data.G_CODE);
         }} onSelectionChange={(params: any) => {
           //setCodeDataTableFilter(params!.api.getSelectedRows());
-          //console.log(e!.api.getSelectedRows())
-          setCodeDataTableFilter(params!.api.getSelectedRows());
+          //console.log(e!.api.getSelectedRows())          
         }} />
     )
   }
-  const codeInfoAGTable = useMemo(() => {
+ 
+   const codeInfoAGTable = useMemo(() => {
     return (
       <AGTable
         toolbar={
@@ -953,13 +954,15 @@ const BOM_MANAGER = () => {
           }
           ////console.log(datafilter[0]);
           handlecodefullinfo(params.data.G_CODE);
+          //console.log([params.data]);
+          codedatatablefilter.current = [params.data];
         }} onSelectionChange={(params: any) => {
           //setCodeDataTableFilter(params!.api.getSelectedRows());
           //console.log(e!.api.getSelectedRows())
-          setCodeDataTableFilter(params!.api.getSelectedRows());
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
         }} />
     )
-  }, [rows, pinBOM, enableform])
+  }, [rows, pinBOM, enableform,codefullinfo])
   const bomsx_AGTable = useMemo(() =>
     <AGTable
       showFilter={false}
@@ -1022,7 +1025,7 @@ const BOM_MANAGER = () => {
         bomsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomsxtable, column_bomsx, selectedMaterial, selectedMasterMaterial]);
+    , [bomsxtable, column_bomsx, selectedMaterial, selectedMasterMaterial,enableEdit]);
   const bomgia_AGTable = useMemo(() =>
     <AGTable
       showFilter={false}
@@ -1103,7 +1106,7 @@ const BOM_MANAGER = () => {
         bomgiadatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial]);
+    , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial,enableEdit]);
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
@@ -1118,7 +1121,7 @@ const BOM_MANAGER = () => {
       });
   };
   const resetBanVe = async (value: string) => {
-    if (codedatatablefilter.length >= 1) {
+    if (codedatatablefilter.current.length >= 1) {
       if (
         userData?.EMPL_NO?.toUpperCase() === "NVH1011" ||
         userData?.EMPL_NO?.toUpperCase() === "NHU1903" ||
@@ -1127,9 +1130,9 @@ const BOM_MANAGER = () => {
         userData?.EMPL_NO?.toUpperCase() === "LTH1992" ||
         userData?.EMPL_NO?.toUpperCase() === "LTD1984"
       ) {
-        for (let i = 0; i < codedatatablefilter.length; i++) {
+        for (let i = 0; i < codedatatablefilter.current.length; i++) {
           await generalQuery("resetbanve", {
-            G_CODE: codedatatablefilter[i].G_CODE,
+            G_CODE: codedatatablefilter.current[i].G_CODE,
             VALUE: value,
           })
             .then((response) => {
@@ -1633,7 +1636,7 @@ const BOM_MANAGER = () => {
     );
     if (datafilter.length > 0) {
       ////console.log(datafilter);
-      setCodeDataTableFilter(datafilter);
+      codedatatablefilter.current = datafilter;
       if (!pinBOM) {
         handleGETBOMSX(datafilter[0].G_CODE);
         handleGETBOMGIA(datafilter[0].G_CODE);
@@ -1641,7 +1644,7 @@ const BOM_MANAGER = () => {
       ////console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
     } else {
-      setCodeDataTableFilter([]);
+      codedatatablefilter.current =  [];
     }
   };
   const handleClearInfo = () => {
@@ -2162,7 +2165,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleAddNewLineBOMSX = async () => {
-    if (codedatatablefilter.length > 0) {
+    if (codedatatablefilter.current.length > 0) {
       let tempeditrows: BOM_SX = {
         id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         G_CODE: codefullinfo.G_CODE,
@@ -2439,7 +2442,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleAddNewLineBOMGIA = async () => {
-    if (codedatatablefilter.length > 0) {
+    if (codedatatablefilter.current.length > 0) {
       let selected_Material_Info: MATERIAL_INFO = {
         M_ID: 564,
         M_NAME: "OS75-006WP",
@@ -3263,10 +3266,10 @@ const BOM_MANAGER = () => {
             <div className="codeinfobig">
               <div className="biginfocms">
                 {" "}
-                {codedatatablefilter[0]?.G_CODE}:{" "}
+                {codedatatablefilter.current[0]?.G_CODE}:{" "}
               </div>
               <div className="biginfokd">
-                {codedatatablefilter[0]?.G_NAME}
+                {codedatatablefilter.current[0]?.G_NAME}
               </div>
             </div>
             <div
