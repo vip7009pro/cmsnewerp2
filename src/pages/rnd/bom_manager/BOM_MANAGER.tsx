@@ -468,8 +468,7 @@ const BOM_MANAGER = () => {
       headerName: "LIEUQL_SX",
       width: 80,
       editable: enableEdit,
-    },
-    { field: "MAIN_M", headerName: "MAIN_M", width: 80, editable: enableEdit },
+    },   
     {
       field: "INS_EMPL",
       headerName: "INS_EMPL",
@@ -2008,12 +2007,8 @@ const BOM_MANAGER = () => {
                   G_CODE: codefullinfo.G_CODE,
                   M_CODE: bomsxtable[i].M_CODE,
                   M_QTY: bomsxtable[i].M_QTY,
-                  MAIN_M:
-                    bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
-                  LIEUQL_SX:
-                    bomsxtable[i].LIEUQL_SX === null
-                      ? "0"
-                      : bomsxtable[i].LIEUQL_SX,
+                  MAIN_M: bomsxtable[i].MAIN_M ?? "0",
+                  LIEUQL_SX: bomsxtable[i].LIEUQL_SX ?? "0",
                 })
                   .then((response) => {
                     if (response.data.tk_status !== "NG") {
@@ -2030,12 +2025,8 @@ const BOM_MANAGER = () => {
                   G_SEQ: zeroPad(parseInt(max_g_seq) + i + 1, 3),
                   M_CODE: bomsxtable[i].M_CODE,
                   M_QTY: bomsxtable[i].M_QTY,
-                  MAIN_M:
-                    bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
-                  LIEUQL_SX:
-                    bomsxtable[i].LIEUQL_SX === null
-                      ? "0"
-                      : bomsxtable[i].LIEUQL_SX,
+                  MAIN_M: bomsxtable[i].MAIN_M ?? "0",
+                  LIEUQL_SX: bomsxtable[i].LIEUQL_SX ?? "0",
                 })
                   .then((response) => {
                     if (response.data.tk_status !== "NG") {
