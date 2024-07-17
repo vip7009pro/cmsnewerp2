@@ -154,14 +154,7 @@ const PoManager = () => {
       //qlsxplandatafilter.current = [];
       //console.log(dataGridRef.current);
     }
-  };
-  function removeInvisibleCharacters(inputString: string) {
-    // Define a regular expression to match invisible characters
-    var regex = /[^\x20-\x7E\t]/g; // This regex matches anything outside the printable ASCII range
-    // Use the replace method to remove the matched characters
-    var cleanedString = inputString.replace(regex, '');
-    return cleanedString;
-  }
+  }; 
   const autogeneratePO_NO = async (cust_cd: string) => {
     let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
     let next_po_no: string = po_no_to_check + "_001";

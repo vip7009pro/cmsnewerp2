@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  AutocompleteRenderOptionState,
   Button,
   Checkbox,
   createFilterOptions,
@@ -468,7 +467,7 @@ const BOM_MANAGER = () => {
       headerName: "LIEUQL_SX",
       width: 80,
       editable: enableEdit,
-    },   
+    },
     {
       field: "INS_EMPL",
       headerName: "INS_EMPL",
@@ -495,8 +494,10 @@ const BOM_MANAGER = () => {
     },
   ]);
   const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
-    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit ,headerCheckboxSelection: true,
-      checkboxSelection: true,},
+    {
+      field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit, headerCheckboxSelection: true,
+      checkboxSelection: true,
+    },
     { field: "M_NAME", headerName: "M_NAME", width: 150, editable: enableEdit },
     {
       field: "CUST_CD",
@@ -566,97 +567,445 @@ const BOM_MANAGER = () => {
       editable: enableEdit,
     },
   ]);
-  function CustomToolbarPOTable() {
+  let column_codeinfo2 = [
+    {
+      field: "id", headerName: "ID", width: 30, editable: enableEdit,
+    },
+    { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      flex: 1,
+      minWidth: 120,
+      editable: enableEdit,
+    },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_TYPE",
+      headerName: "PROD_TYPE",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "BEP",
+      headerName: "BEP",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_LAST_PRICE",
+      headerName: "PRICE",
+      width: 80,
+      editable: enableEdit,
+    },
+    { field: "PD", headerName: "PD", width: 80, editable: enableEdit },
+    { field: "CAVITY", headerName: "CAVITY", width: 80, editable: enableEdit },
+    {
+      field: "PACKING_QTY",
+      headerName: "PACKING_QTY",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "G_WIDTH",
+      headerName: "G_WIDTH",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "G_LENGTH",
+      headerName: "G_LENGTH",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_PROJECT",
+      headerName: "PROD_PROJECT",
+      width: 120,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_MODEL",
+      headerName: "PROD_MODEL",
+      width: 120,
+      editable: enableEdit,
+    },
+    {
+      field: "M_NAME_FULLBOM",
+      headerName: "FULLBOM",
+      flex: 1,
+      minWidth: 150,
+      editable: enableEdit,
+    },
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 260,
+      cellRenderer: (params: any) => {
+        let file: any = null;
+        useEffect(() => {
+        }, [rows]);
+        const uploadFile2: any = async (e: any) => {
+          //console.log(file);
+          checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.data.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success",
+                        );
+                        console.log("G_CODE AAAA", params.data.G_CODE);
+                        console.log("rows", rows);
+                        let tempcodeinfodatatable = rows.map(
+                          (element: CODE_INFO, index: number) => {
+                            console.log("element G_CODE", element.G_CODE);
+                            return element.G_CODE === params.data.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          },
+                        );
+                        console.log(tempcodeinfodatatable);
+                        setRows(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          });
+        };
+        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+        if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className="uploadfile">
+              <IconButton className="buttonIcon" onClick={(e) => {
+                uploadFile2(e);
+              }}
+              >
+                <AiOutlineCloudUpload color="yellow" size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept=".pdf"
+                type="file"
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+        }
+      },
+      editable: enableEdit,
+    },
+    {
+      field: "APPSHEET",
+      headerName: "APPSHEET",
+      width: 260,
+      cellRenderer: (params: any) => {
+        let file: any = null;
+        const uploadFile2: any = async (e: any) => {
+          //console.log(file);
+          checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+            uploadQuery(file, "Appsheet_" + params.data.G_CODE + ".docx", "appsheet")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_appsheet_value", {
+                    G_CODE: params.data.G_CODE,
+                    appsheetvalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload Appsheet thành công",
+                          "success",
+                        );
+                        /* let tempcodeinfodatatable = rows.map(
+                          (element: CODE_FULL_INFO, index: number) => {
+                            console.log("element G_CODE", element.G_CODE);
+                            return element.G_CODE === params.data.G_CODE
+                              ? { ...element, APPSHEET: "Y" }
+                              : element;
+                          },
+                        );                        
+                        setRows(tempcodeinfodatatable); */
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload appsheet thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          });
+        };
+        let hreftlink = "/appsheet/Appsheet_" + params.data.G_CODE + ".docx";
+        if (params.data.APPSHEET !== "N" && params.data.APPSHEET !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className="uploadfile">
+              <IconButton
+                className="buttonIcon"
+                onClick={(e) => {
+                  uploadFile2(e);
+                }}
+              >
+                <AiOutlineCloudUpload color="yellow" size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept=".docx"
+                type="file"
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+        }
+      },
+      editable: enableEdit,
+    },
+    {
+      field: "NO_INSPECTION",
+      headerName: "KT NGOAI QUAN",
+      width: 120,
+      cellRenderer: (params: any) => {
+        if (params.data.NO_INSPECTION !== "Y")
+          return <span style={{ color: "green" }}>Kiểm tra</span>;
+        return <span style={{ color: "red" }}>Không kiểm tra</span>;
+      },
+      editable: enableEdit,
+    },
+    {
+      field: "USE_YN",
+      headerName: "SỬ DỤNG",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.USE_YN !== "Y")
+          return <span style={{ color: "red" }}>KHÓA</span>;
+        return <span style={{ color: "green" }}>MỞ</span>;
+      },
+      editable: true,
+    },
+  ];
+  function codeInfoAGTable1() {
     return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            confirmResetBanVe();
-          }}
-        >
-          <BiReset color="green" size={15} />
-          RESET BẢN VẼ
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setEnableForm(!enableform);
-            Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-          }}
-        >
-          <AiFillEdit color="yellow" size={15} />
-          Bật tắt sửa
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setPINBOM(!pinBOM);
-            Swal.fire("Thông báo", "Ghim/ bỏ ghim BOM thành công", "success");
-          }}
-        >
-          <AiOutlinePushpin color="red" size={15} />
-          Ghim BOM
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
+      <AGTable
+        toolbar={
+          <>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                confirmResetBanVe();
+              }}
+            >
+              <BiReset color="green" size={15} />
+              RESET BẢN VẼ
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setEnableForm(!enableform);
+                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              }}
+            >
+              <AiFillEdit color="yellow" size={15} />
+              Bật tắt sửa
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setPINBOM(!pinBOM);
+                Swal.fire("Thông báo", "Ghim/ bỏ ghim BOM thành công", "success");
+              }}
+            >
+              <AiOutlinePushpin color="red" size={15} />
+              Ghim BOM
+            </IconButton>
+          </>
+        }
+        showFilter={true}
+        columns={column_codeinfo2}
+        data={rows}
+        onCellEditingStopped={(params: any) => {
+        }} onRowClick={(params: any) => {
+          //console.log(e.data)
+          if (!pinBOM) {
+            handleGETBOMSX(params.data.G_CODE);
+            handleGETBOMGIA(params.data.G_CODE);
+          }
+          ////console.log(datafilter[0]);
+          handlecodefullinfo(params.data.G_CODE);
+        }} onSelectionChange={(params: any) => {
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
+          //console.log(e!.api.getSelectedRows())
+          setCodeDataTableFilter(params!.api.getSelectedRows());
+        }} />
+    )
   }
+  const codeInfoAGTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                confirmResetBanVe();
+              }}
+            >
+              <BiReset color="green" size={15} />
+              RESET BẢN VẼ
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setEnableForm(prev => !prev);
+                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              }}
+            >
+              <AiFillEdit color="yellow" size={15} />
+              Bật tắt sửa
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setPINBOM(prev => !prev);
+                Swal.fire("Thông báo", "Ghim/ bỏ ghim BOM thành công", "success");
+              }}
+            >
+              <AiOutlinePushpin color="red" size={15} />
+              Ghim BOM
+            </IconButton>
+          </>
+        }
+        showFilter={true}
+        columns={column_codeinfo2}
+        data={rows}
+        onCellEditingStopped={(params: any) => {
+        }} onRowClick={(params: any) => {
+          //console.log(e.data)        
+          if (!pinBOM) {
+            handleGETBOMSX(params.data.G_CODE);
+            handleGETBOMGIA(params.data.G_CODE);
+          }
+          ////console.log(datafilter[0]);
+          handlecodefullinfo(params.data.G_CODE);
+        }} onSelectionChange={(params: any) => {
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
+          //console.log(e!.api.getSelectedRows())
+          setCodeDataTableFilter(params!.api.getSelectedRows());
+        }} />
+    )
+  }, [rows, pinBOM, enableform])
   const bomsx_AGTable = useMemo(() =>
     <AGTable
       showFilter={false}
-      toolbar={       
+      toolbar={
         <div>
           <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            confirmSaveBOMSX();
-          }}
-        >
-          <AiFillSave color="blue" size={20} />
-          Lưu BOM
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            handleAddNewLineBOMSX();
-          }}
-        >
-          <BiAddToQueue color="yellow" size={20} />
-          Thêm dòng
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            handle_DeleteLineBOMSX();
-          }}
-        >
-          <FcDeleteRow color="yellow" size={20} />
-          Xóa dòng
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setcolumn_bomsx(prev => 
-              prev.map((element, index: number) => {
-                return { ...element, editable: !element.editable };
-              }),
-            );
-            Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-          }}
-        >
-          <AiFillEdit color="yellow" size={20} />
-          Bật tắt sửa
-        </IconButton>
+            className="buttonIcon"
+            onClick={() => {
+              confirmSaveBOMSX();
+            }}
+          >
+            <AiFillSave color="blue" size={20} />
+            Lưu BOM
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              handleAddNewLineBOMSX();
+            }}
+          >
+            <BiAddToQueue color="yellow" size={20} />
+            Thêm dòng
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              handle_DeleteLineBOMSX();
+            }}
+          >
+            <FcDeleteRow color="yellow" size={20} />
+            Xóa dòng
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setcolumn_bomsx(prev =>
+                prev.map((element, index: number) => {
+                  return { ...element, editable: !element.editable };
+                }),
+              );
+              Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+            }}
+          >
+            <AiFillEdit color="yellow" size={20} />
+            Bật tắt sửa
+          </IconButton>
         </div>
       }
       columns={column_bomsx}
@@ -673,64 +1022,63 @@ const BOM_MANAGER = () => {
         bomsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomsxtable,column_bomsx,selectedMaterial,selectedMasterMaterial]);
-
-    const bomgia_AGTable = useMemo(() =>
-      <AGTable
-        showFilter={false}
-        toolbar={       
-          <div>
-            <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            confirmSaveBOMGIA();
-          }}
-        >
-          <AiFillSave color="blue" size={20} />
-          Lưu BOM
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            handleAddNewLineBOMGIA();
-          }}
-        >
-          <BiAddToQueue color="yellow" size={20} />
-          Thêm dòng
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            handle_DeleteLineBOMGIA();
-          }}
-        >
-          <FcDeleteRow color="yellow" size={20} />
-          Xóa dòng
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setcolumn_bomgia(prev =>
-              prev.map((element, index: number) => {
-                return { ...element, editable: !element.editable };
-              }),
-            );
-            Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-          }}
-        >
-          <AiFillEdit color="yellow" size={15} />
-          Bật tắt sửa
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            confirmCloneBOMSX();
-          }}
-        >
-          <FaRegClone color="red" size={20} />
-          Clone BOMSX
-        </IconButton>
-        {/* <IconButton
+    , [bomsxtable, column_bomsx, selectedMaterial, selectedMasterMaterial]);
+  const bomgia_AGTable = useMemo(() =>
+    <AGTable
+      showFilter={false}
+      toolbar={
+        <div>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              confirmSaveBOMGIA();
+            }}
+          >
+            <AiFillSave color="blue" size={20} />
+            Lưu BOM
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              handleAddNewLineBOMGIA();
+            }}
+          >
+            <BiAddToQueue color="yellow" size={20} />
+            Thêm dòng
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              handle_DeleteLineBOMGIA();
+            }}
+          >
+            <FcDeleteRow color="yellow" size={20} />
+            Xóa dòng
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setcolumn_bomgia(prev =>
+                prev.map((element, index: number) => {
+                  return { ...element, editable: !element.editable };
+                }),
+              );
+              Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+            }}
+          >
+            <AiFillEdit color="yellow" size={15} />
+            Bật tắt sửa
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              confirmCloneBOMSX();
+            }}
+          >
+            <FaRegClone color="red" size={20} />
+            Clone BOMSX
+          </IconButton>
+          {/* <IconButton
           className="buttonIcon"
           onClick={() => {
             setShowHideDesignBOM(prev=> !prev)
@@ -739,25 +1087,23 @@ const BOM_MANAGER = () => {
           <FcAdvertising color="red" size={20} />
           DESIGN BOM
         </IconButton> */}
-
-          </div>
-        }
-        columns={column_bomgia}
-        data={bomgiatable}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onRowClick={(params: any) => {
-          //clickedRow.current = params.data;
-          //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {
-          //console.log(params)
-          //setSelectedRows(params!.api.getSelectedRows()[0]);
-          //console.log(e!.api.getSelectedRows())
-          bomgiadatatablefilter.current = params!.api.getSelectedRows();
-        }}
-      />
-      , [bomgiatable,column_bomgia,selectedMaterial,selectedMasterMaterial]);
-
+        </div>
+      }
+      columns={column_bomgia}
+      data={bomgiatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        bomgiadatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial]);
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
@@ -967,7 +1313,7 @@ const BOM_MANAGER = () => {
   const handleGETBOMGIA = (G_CODE: string) => {
     setisLoading(true);
     generalQuery("getbomgia", {
-      G_CODE: G_CODE, 
+      G_CODE: G_CODE,
     })
       .then((response) => {
         ////console.log(response.data);
@@ -1298,7 +1644,6 @@ const BOM_MANAGER = () => {
       setCodeDataTableFilter([]);
     }
   };
- 
   const handleClearInfo = () => {
     setCodeFullInfo({
       CUST_CD: "0000",
@@ -1336,15 +1681,14 @@ const BOM_MANAGER = () => {
       USE_YN: "Y",
       G_CODE: "",
       FSC: "N",
-      FSC_CODE:'01',
+      FSC_CODE: '01',
       PROD_DVT: "01",
-      APPSHEET:'N',
-      BANVE:'N',
-      NO_INSPECTION:'N',
-      PDBV:'N',
-      PD_HSD:'N',
-      QL_HSD:'Y',     
-
+      APPSHEET: 'N',
+      BANVE: 'N',
+      NO_INSPECTION: 'N',
+      PDBV: 'N',
+      PD_HSD: 'N',
+      QL_HSD: 'Y',
     });
   };
   const checkHSD = (): boolean => {
@@ -1737,9 +2081,9 @@ const BOM_MANAGER = () => {
   const checkMAINVLMatching = (): boolean => {
     let checkM: boolean = false;
     if (bomsxtable.length > 0) {
-      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";   
-      console.log('mainM',mainM);   
-      console.log('selectedMasterMaterial.M_NAME',selectedMasterMaterial.M_NAME);   
+      const mainM: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";
+      console.log('mainM', mainM);
+      console.log('selectedMasterMaterial.M_NAME', selectedMasterMaterial.M_NAME);
       if (mainM === 'NG') {
         checkM = false;
         Swal.fire('Thông báo', 'Bom VL chưa set liệu chính', 'error')
@@ -1801,7 +2145,7 @@ const BOM_MANAGER = () => {
             })
             .catch((error) => {
               //console.log(error);
-          });
+            });
           confirmUpdateM100TBG();
         }
       }
@@ -1859,7 +2203,6 @@ const BOM_MANAGER = () => {
   };
   const handleInsertBOMSX = async () => {
     let currentBOMGIA: BOM_GIA[] = [];
-
     await generalQuery("getbomgia", {
       G_CODE: codefullinfo.G_CODE,
     })
@@ -1881,7 +2224,6 @@ const BOM_MANAGER = () => {
             },
           );
           currentBOMGIA = loadeddata;
-         
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");          
         }
@@ -1889,16 +2231,12 @@ const BOM_MANAGER = () => {
       .catch((error) => {
         //console.log(error);
       });
-
-      console.log('currentBOMGIA',currentBOMGIA);
-
-      const mainM_BOMSX: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";  
-      const mainM_BOMGIA: string = currentBOMGIA.find((ele: BOM_GIA, index: number) => ele.MAIN_M == 1)?.M_NAME ?? "NG";  
-      console.log('mainM_BOMSX',mainM_BOMSX)
-      console.log('mainM_BOMGIA',mainM_BOMGIA)       
-
+    console.log('currentBOMGIA', currentBOMGIA);
+    const mainM_BOMSX: string = bomsxtable.find((ele: BOM_SX, index: number) => ele.LIEUQL_SX == 1)?.M_NAME ?? "NG";
+    const mainM_BOMGIA: string = currentBOMGIA.find((ele: BOM_GIA, index: number) => ele.MAIN_M == 1)?.M_NAME ?? "NG";
+    console.log('mainM_BOMSX', mainM_BOMSX)
+    console.log('mainM_BOMGIA', mainM_BOMGIA)
     if (currentBOMGIA.length > 0) {
-
       if (checkMAINVLMatching() && mainM_BOMGIA === mainM_BOMSX) {
         if (bomsxtable.length > 0) {
           //delete old bom from M140
@@ -2046,15 +2384,13 @@ const BOM_MANAGER = () => {
           Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
         }
       }
-      else 
-      {
-        if (mainM_BOMGIA !== mainM_BOMSX)
-        {
-          Swal.fire("Thông báo","Liệu chính trong BOM SX fai giống với liệu chính trong BOM giá","warning",);              
+      else {
+        if (mainM_BOMGIA !== mainM_BOMSX) {
+          Swal.fire("Thông báo", "Liệu chính trong BOM SX fai giống với liệu chính trong BOM giá", "warning",);
         }
       }
     } else {
-      Swal.fire("Thông báo","Code chưa có BOM giá, phải thêm BOM giá trước","warning",); 
+      Swal.fire("Thông báo", "Code chưa có BOM giá, phải thêm BOM giá trước", "warning",);
     }
   };
   const handleInsertBOMSX_WITH_GIA = async () => {
@@ -2191,25 +2527,21 @@ const BOM_MANAGER = () => {
       //delete old bom from M140
       let err_code: string = "0";
       let checkMAIN_M: number = 0;
-      let isCodeMassProd: boolean  = false;
+      let isCodeMassProd: boolean = false;
       let isNewCode: boolean = true;
-
       let total_lieuql_sx: number = 0;
       let check_lieuql_sx_sot: number = 0;
       let check_num_lieuql_sx: number = 1;
       let check_lieu_qlsx_khac1: number = 0;
-      let checkusageMain: number =0;
+      let checkusageMain: number = 0;
       let m_list: string = "";
       for (let i = 0; i < bomgiatable.length - 1; i++) {
         m_list += `'${bomgiatable[i].M_CODE}',`;
       }
       m_list += `'${bomgiatable[bomgiatable.length - 1].M_CODE}'`;
-
       for (let i = 0; i < bomgiatable.length; i++) {
-        checkusageMain += bomgiatable[i].USAGE?.toUpperCase() ==='MAIN' ? 1: 0;        
+        checkusageMain += bomgiatable[i].USAGE?.toUpperCase() === 'MAIN' ? 1 : 0;
       }
-      
-
       for (let i = 0; i < bomgiatable.length; i++) {
         total_lieuql_sx += bomgiatable[i].MAIN_M;
         if (bomgiatable[i].MAIN_M > 1) check_lieu_qlsx_khac1 += 1;
@@ -2241,29 +2573,23 @@ const BOM_MANAGER = () => {
           }
         }
       }
-
-
-
-
       await generalQuery("checkMassG_CODE", {
         G_CODE: codefullinfo.G_CODE,
       })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          isCodeMassProd = true;
-          console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
-          isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
-          
-        } else {
-          isNewCode = false;
-          console.log(parseInt(response.data.message) )
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
-        
-        console.log(isNewCode)
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            isCodeMassProd = true;
+            console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
+            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
+          } else {
+            isNewCode = false;
+            console.log(parseInt(response.data.message))
+          }
+        })
+        .catch((error) => {
+          //console.log(error);
+        });
+      console.log(isNewCode)
       for (let i = 0; i < bomgiatable.length; i++) {
         checkMAIN_M += bomgiatable[i].MAIN_M;
         if (
@@ -2275,7 +2601,6 @@ const BOM_MANAGER = () => {
           err_code = "Không được để ô nào NG màu đỏ";
         }
       }
-
       if (
         total_lieuql_sx > 0 &&
         check_lieuql_sx_sot === 0 &&
@@ -2285,18 +2610,16 @@ const BOM_MANAGER = () => {
       } else {
         err_code += " | Check lại liệu quản lý (liệu chính)";
       }
-
-      if(checkusageMain ===0) {
+      if (checkusageMain === 0) {
         err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
       }
-
-      if(getCompany()==='CMS' && isNewCode) {
+      if (getCompany() === 'CMS' && isNewCode) {
         err_code += "_ Code đã chạy mass, không thể sửa BOM";
       }
       //console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {
         err_code += "_ Phải chỉ định liệu quản lý";
-      }      
+      }
       ////console.log(err_code);
       if (err_code === "0") {
         //console.log("vao bom gia insert");
@@ -2836,15 +3159,13 @@ const BOM_MANAGER = () => {
                 <div className="tracuuFcstform">
                   <div className="forminput">
                     <div className="forminputcolumn">
-                                      
-                        <input
-                          className="checkbox1"
-                          type="checkbox"
-                          placeholder="Active"
-                          checked={cndb}
-                          onChange={(e) => setCNDB(e.target.checked)}                          
-                        ></input>
-                     
+                      <input
+                        className="checkbox1"
+                        type="checkbox"
+                        placeholder="Active"
+                        checked={cndb}
+                        onChange={(e) => setCNDB(e.target.checked)}
+                      ></input>
                       <label>
                         <b>Code:</b>{" "}
                         <input
@@ -2857,16 +3178,14 @@ const BOM_MANAGER = () => {
                           }}
                         ></input>
                       </label>
-
-                      Active                 
-                        <input
-                          className="checkbox1"
-                          type="checkbox"
-                          placeholder="Active"
-                          checked={activeOnly}
-                          onChange={(e) => setActiveOnly(e.target.checked)}                          
-                        ></input>
-                     
+                      Active
+                      <input
+                        className="checkbox1"
+                        type="checkbox"
+                        placeholder="Active"
+                        checked={activeOnly}
+                        onChange={(e) => setActiveOnly(e.target.checked)}
+                      ></input>
                       <button
                         className="traxuatkiembutton"
                         onClick={() => {
@@ -2879,7 +3198,8 @@ const BOM_MANAGER = () => {
                   </div>
                 </div>
                 <div className="codeinfotable">
-                  <DataGrid
+                  {codeInfoAGTable}
+                  {/* <DataGrid
                     components={{
                       Toolbar: CustomToolbarPOTable,
                       LoadingOverlay: LinearProgress,
@@ -2891,14 +3211,11 @@ const BOM_MANAGER = () => {
                     columns={column_codeinfo}
                     onSelectionModelChange={(ids) => {
                       handleCODESelectionforUpdate(ids);
-                    }}
-                    /*  rows={codeinfodatatable}
-              columns={columnDefinition} */
+                    }}                   
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
-                    editMode="cell"
-                    /* experimentalFeatures={{ newEditingApi: true }}  */
+                    editMode="cell"                   
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
@@ -2917,7 +3234,7 @@ const BOM_MANAGER = () => {
                       );
                       setRows(newdata);
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -3897,41 +4214,7 @@ const BOM_MANAGER = () => {
                           inputProps={{ "aria-label": "controlled" }}
                         />
                       }
-                    />
-                    {/* <label>
-                      <Autocomplete
-                        sx={{
-                          height: 10,
-                          margin: "1px",
-                          position: "initial",
-                          fontSize: "0.7rem",
-                        }}
-                        disabled={enableform}
-                        size='small'
-                        disablePortal
-                        options={masterMaterialList}
-                        className='autocomplete'
-                        filterOptions={filterOptions1}
-                        isOptionEqualToValue={(option: any, value: any) =>
-                          option.M_NAME === value.M_NAME
-                        }
-                        getOptionLabel={(option: any) => `${option.M_NAME}`}
-                        renderInput={(params) => (
-                          <TextField {...params} label='Select Main Material' />
-                        )}
-                        defaultValue={{
-                          M_NAME: "",
-                        }}
-                        value={selectedMasterMaterial}
-                        onChange={(event: any, newValue: any) => {
-                          //console.log(newValue);
-                          handleSetCodeInfo(
-                            "PROD_MAIN_MATERIAL",
-                            newValue === null ? "" : newValue.M_NAME
-                          );
-                        }}
-                      />
-                    </label> */}
+                    />                    
                     {company === "CMS" && (
                       <Button
                         onClick={() => {
@@ -4013,46 +4296,7 @@ const BOM_MANAGER = () => {
                     {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
                     {pinBOM ? "(Đang ghim BOM)" : ""}
                   </span>
-                  {bomsx_AGTable}
-                  {/* <DataGrid
-                    components={{
-                      Toolbar: CustomToolbarBOMSXTable,
-                      LoadingOverlay: LinearProgress,
-                    }}
-                    sx={{ fontSize: 12 }}
-                    loading={isLoading}
-                    rowHeight={30}
-                    rows={bomsxtable}
-                    columns={column_bomsx}
-                    checkboxSelection
-                    onSelectionModelChange={(ids) => {
-                      handleBOMSXSelectionforUpdate(ids);
-                    }}
-                    
-                    rowsPerPageOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                    ]}
-                    editMode="cell"
-                    
-                    onCellEditCommit={(
-                      params: GridCellEditCommitParams,
-                      event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails,
-                    ) => {
-                      //console.log(params);
-                      let tempeditrows = editedRows;
-                      tempeditrows.push(params);
-                      setEditedBOMSXRows(tempeditrows);
-                      ////console.log(editedRows);
-                      const keyvar = params.field;
-                      const newdata = bomsxtable.map((p) =>
-                        p.id === params.id
-                          ? { ...p, [keyvar]: params.value }
-                          : p,
-                      );
-                      setBOMSXTable(newdata);
-                    }}
-                  /> */}
+                  {bomsx_AGTable}                  
                 </div>
               </div>
               <div className="bomgia">
@@ -4063,45 +4307,7 @@ const BOM_MANAGER = () => {
                     BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
                     {pinBOM ? "(Đang ghim BOM)" : ""}
                   </span>
-                  {bomgia_AGTable}
-                  {/* <DataGrid
-                    components={{
-                      Toolbar: CustomToolbarBOMGIATable,
-                      LoadingOverlay: LinearProgress,
-                    }}
-                    sx={{ fontSize: 12 }}
-                    loading={isLoading}
-                    rowHeight={30}
-                    rows={bomgiatable}
-                    columns={column_bomgia}
-                    checkboxSelection
-                    onSelectionModelChange={(ids) => {
-                      handleBOMGIASelectionforUpdate(ids);
-                    }}                   
-                    rowsPerPageOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                    ]}
-                    editMode="cell"                    
-                    onCellEditCommit={(
-                      params: GridCellEditCommitParams,
-                      event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails,
-                    ) => {
-                      ////console.log(params);
-                      let tempeditrows = editedRows;
-                      tempeditrows.push(params);
-                      setEditedBOMGIARows(tempeditrows);
-                      ////console.log(editedRows);
-                      const keyvar = params.field;
-                      const newdata = bomgiatable.map((p) =>
-                        p.id === params.id
-                          ? { ...p, [keyvar]: params.value }
-                          : p,
-                      );
-                      setBOMGIATable(newdata);
-                    }}
-                  /> */}
-
+                  {bomgia_AGTable}                  
                 </div>
               </div>
             </div>
