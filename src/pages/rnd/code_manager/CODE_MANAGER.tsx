@@ -1844,8 +1844,8 @@ const CODE_MANAGER = () => {
             (element: CODE_FULL_INFO, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element.G_NAME : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element.G_NAME_KD : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -2012,14 +2012,13 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME?.search('CNDB
         <div className="tracuuFcstTable">
           <div className="toolbar">
             <div className="searchdiv">
-            <input
-                          className="checkbox1"
-                          type="checkbox"
-                          placeholder="Active"
-                          checked={cndb}
-                          onChange={(e) => setCNDB(e.target.checked)}                          
-                        ></input>
-                     
+              <input
+                className="checkbox1"
+                type="checkbox"
+                placeholder="Active"
+                checked={cndb}
+                onChange={(e) => setCNDB(e.target.checked)}
+              ></input>
               <label>
                 <b>Code:</b>{" "}
                 <input
@@ -2032,15 +2031,14 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME?.search('CNDB
                   }}
                 ></input>
               </label>
-              Active                 
-                        <input
-                          className="checkbox1"
-                          type="checkbox"
-                          placeholder="Active"
-                          checked={activeOnly}
-                          onChange={(e) => setActiveOnly(e.target.checked)}                          
-                        ></input>
-                     
+              Active
+              <input
+                className="checkbox1"
+                type="checkbox"
+                placeholder="Active"
+                checked={activeOnly}
+                onChange={(e) => setActiveOnly(e.target.checked)}
+              ></input>
               <button
                 className="traxuatkiembutton"
                 onClick={() => {

@@ -909,7 +909,7 @@ const BOM_MANAGER = () => {
     return (
       <AGTable
         toolbar={
-          <>
+          <div>
             <IconButton
               className="buttonIcon"
               onClick={() => {
@@ -939,7 +939,7 @@ const BOM_MANAGER = () => {
               <AiOutlinePushpin color="red" size={15} />
               Ghim BOM
             </IconButton>
-          </>
+          </div>
         }
         showFilter={true}
         columns={column_codeinfo2}
@@ -3198,43 +3198,7 @@ const BOM_MANAGER = () => {
                   </div>
                 </div>
                 <div className="codeinfotable">
-                  {codeInfoAGTable}
-                  {/* <DataGrid
-                    components={{
-                      Toolbar: CustomToolbarPOTable,
-                      LoadingOverlay: LinearProgress,
-                    }}
-                    sx={{ fontSize: "0.7rem" }}
-                    loading={isLoading}
-                    rowHeight={30}
-                    rows={rows}
-                    columns={column_codeinfo}
-                    onSelectionModelChange={(ids) => {
-                      handleCODESelectionforUpdate(ids);
-                    }}                   
-                    rowsPerPageOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                    ]}
-                    editMode="cell"                   
-                    onCellEditCommit={(
-                      params: GridCellEditCommitParams,
-                      event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails,
-                    ) => {
-                      ////console.log(params);
-                      let tempeditrows = editedRows;
-                      tempeditrows.push(params);
-                      setEditedRows(tempeditrows);
-                      ////console.log(editedRows);
-                      const keyvar = params.field;
-                      const newdata = rows.map((p) =>
-                        p.id === params.id
-                          ? { ...p, [keyvar]: params.value }
-                          : p,
-                      );
-                      setRows(newdata);
-                    }}
-                  /> */}
+                  {codeInfoAGTable}                  
                 </div>
               </div>
             </div>
