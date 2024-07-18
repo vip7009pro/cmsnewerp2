@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
-import { autoGetProdPrice, checkBP, zeroPad } from "../../../api/GlobalFunction";
+import { autoGetProdPrice, checkBP, f_autogeneratePO_NO, f_autopheduyetgia, f_checkG_CODE_USE_YN, f_checkPOExist, f_compareDateToNow, f_dongboGiaPO, f_getcodelist, f_getcustomerlist, f_insertPO, f_loadPoDataFull, f_loadprice, f_updatePO, zeroPad } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -44,7 +44,6 @@ const PoManager = () => {
   const [trigger, setTrigger] = useState(true);
   const [sh, setSH] = useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
-  const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -105,105 +104,11 @@ const PoManager = () => {
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
-      podatatablefilter.current = [];
-      //qlsxplandatafilter.current = [];
-      //console.log(dataGridRef.current);
+      podatatablefilter.current = [];      
     }
   };
-  const autogeneratePO_NO = async (cust_cd: string) => {
-    let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
-    let next_po_no: string = po_no_to_check + "_001";
-    await generalQuery("checkcustomerpono", {
-      CHECK_PO_NO: po_no_to_check,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let arr = response.data.data[0].PO_NO.split("_");
-          next_po_no = po_no_to_check + "_" + zeroPad(parseInt(arr[2]) + 1, 3);
-          console.log("next_PO_NO", next_po_no);
-        } else {
-          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
-    return next_po_no;
-  };
-  const dongboGiaPO = () => {
-    generalQuery("dongbogiasptupo", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-        } else {
-          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
-  };
-  const loadprice = (G_CODE?: string, CUST_NAME?: string) => {
-    if (G_CODE !== undefined && CUST_NAME !== undefined) {
-      generalQuery("loadbanggiamoinhat", {
-        ALLTIME: true,
-        FROM_DATE: "",
-        TO_DATE: "",
-        M_NAME: "",
-        G_CODE: G_CODE,
-        G_NAME: "",
-        CUST_NAME_KD: CUST_NAME,
-      })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            let loaded_data: PRICEWITHMOQ[] = [];
-            loaded_data =
-              company !== "CMS"
-                ? response.data.data
-                  .map((element: PRICEWITHMOQ, index: number) => {
-                    return {
-                      ...element,
-                      PRICE_DATE:
-                        element.PRICE_DATE !== null
-                          ? moment
-                            .utc(element.PRICE_DATE)
-                            .format("YYYY-MM-DD")
-                          : "",
-                      id: index,
-                    };
-                  })
-                  .filter(
-                    (element: PRICEWITHMOQ, index: number) =>
-                      element.FINAL === "Y"
-                  )
-                : response.data.data.map(
-                  (element: PRICEWITHMOQ, index: number) => {
-                    return {
-                      ...element,
-                      PRICE_DATE:
-                        element.PRICE_DATE !== null
-                          ? moment
-                            .utc(element.PRICE_DATE)
-                            .format("YYYY-MM-DD")
-                          : "",
-                      id: index,
-                    };
-                  }
-                );
-            setNewCodePrice(loaded_data);
-          } else {
-            /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-        });
-    }
+  const loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
+    setNewCodePrice(await f_loadprice(G_CODE,CUST_NAME)); 
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
@@ -244,18 +149,40 @@ const PoManager = () => {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const json: any = XLSX.utils.sheet_to_json(worksheet);
-        const keys = Object.keys(json[0]);
-        let uploadexcelcolumn = keys.map((element, index) => {
+        let keys = Object.keys(json[0]);
+        keys.push('CHECKSTATUS');
+        let uploadexcelcolumn = keys.map((e, index) => {
           return {
-            field: element,
-            headerName: element,
-            width: 150,
+            field: e,
+            headerName: e,
+            width: 100,
+            cellRenderer: (ele: any) => {
+              //console.log(ele);
+              if (e === "CHECKSTATUS") {
+                if (ele.data[e] === "Waiting") {
+                  return (
+                    <span style={{ color: "blue", fontWeight: "bold" }}>
+                      {ele.data[e]}
+                    </span>
+                  );
+                } else if (ele.data[e] === "OK") {
+                  return (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]}
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span style={{ color: "red", fontWeight: "bold" }}>
+                      {ele.data[e]}
+                    </span>
+                  );
+                }
+              } else {
+                return <span>{ele.data[e]}</span>;
+              }
+            },
           };
-        });
-        uploadexcelcolumn.push({
-          field: "CHECKSTATUS",
-          headerName: "CHECKSTATUS",
-          width: 350,
         });
         setColumnsExcel(uploadexcelcolumn);
         setUploadExcelJSon(
@@ -267,11 +194,10 @@ const PoManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-  const handletraPO = () => {
+  const handletraPO = async () => {
     if (getCompany() === 'CMS') {
-      autopheduyetgia();
+      f_autopheduyetgia();
     }
-    setisLoading(true);
     Swal.fire({
       title: "Tra cứu PO",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -282,72 +208,48 @@ const PoManager = () => {
       showConfirmButton: false,
     });
     clearSelection();
-    generalQuery("traPODataFull", {
-      alltime: alltime,
-      justPoBalance: justpobalance,
-      start_date: fromdate,
-      end_date: todate,
-      cust_name: cust_name,
-      codeCMS: codeCMS,
-      codeKD: codeKD,
-      prod_type: prod_type,
-      empl_name: empl_name,
-      po_no: po_no,
-      over: over,
-      id: id,
-      material: material,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: POTableData[] = response.data.data.map(
-            (element: POTableData, index: number) => {
-              return {
-                ...element,
-                id: index,
-                PO_DATE: element.PO_DATE.slice(0, 10),
-                RD_DATE: element.RD_DATE.slice(0, 10),
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-              };
-            }
-          );
-          let po_summary_temp: POSummaryData = {
-            total_po_qty: 0,
-            total_delivered_qty: 0,
-            total_pobalance_qty: 0,
-            total_po_amount: 0,
-            total_delivered_amount: 0,
-            total_pobalance_amount: 0,
-          };
-          for (let i = 0; i < loadeddata.length; i++) {
-            po_summary_temp.total_po_qty += loadeddata[i].PO_QTY;
-            po_summary_temp.total_delivered_qty +=
-              loadeddata[i].TOTAL_DELIVERED;
-            po_summary_temp.total_pobalance_qty += loadeddata[i].PO_BALANCE;
-            po_summary_temp.total_po_amount += loadeddata[i].PO_AMOUNT;
-            po_summary_temp.total_delivered_amount +=
-              loadeddata[i].DELIVERED_AMOUNT;
-            po_summary_temp.total_pobalance_amount +=
-              loadeddata[i].BALANCE_AMOUNT;
-          }
-          setPoSummary(po_summary_temp);
-          setPoDataTable(loadeddata);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-          setPoDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let loadeddata: POTableData[] = [];
+    loadeddata = await f_loadPoDataFull(
+      {
+        alltime: alltime,
+        justPoBalance: justpobalance,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        po_no: po_no,
+        over: over,
+        id: id,
+        material: material,
+      }
+    );
+    if (loadeddata.length > 0) {
+      let po_summary_temp: POSummaryData = {
+        total_po_qty: 0,
+        total_delivered_qty: 0,
+        total_pobalance_qty: 0,
+        total_po_amount: 0,
+        total_delivered_amount: 0,
+        total_pobalance_amount: 0,
+      };
+      for (let i = 0; i < loadeddata.length; i++) {
+        po_summary_temp.total_po_qty += loadeddata[i].PO_QTY;
+        po_summary_temp.total_delivered_qty += loadeddata[i].TOTAL_DELIVERED;
+        po_summary_temp.total_pobalance_qty += loadeddata[i].PO_BALANCE;
+        po_summary_temp.total_po_amount += loadeddata[i].PO_AMOUNT;
+        po_summary_temp.total_delivered_amount += loadeddata[i].DELIVERED_AMOUNT;
+        po_summary_temp.total_pobalance_amount += loadeddata[i].BALANCE_AMOUNT;
+      }
+      setPoSummary(po_summary_temp);
+      setPoDataTable(loadeddata);
+      Swal.fire("Thông báo", "Đã load " + loadeddata.length + " dòng", "success");
+    }
+    else {
+      Swal.fire("Thông báo", "Không có dữ liệu", "success");
+    }
   };
   const handle_checkPOHangLoat = async () => {
     if (uploadExcelJson.length > 0) {
@@ -360,98 +262,16 @@ const PoManager = () => {
         confirmButtonText: "OK",
         showConfirmButton: false,
       });
-      let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-      console.log(keysArray);
-      let column_map = keysArray.map((e, index) => {
-        return {
-          field: e,
-          headerName: e,
-          width: 100,
-          cellRenderer: (ele: any) => {
-            //console.log(ele);
-            if (e === "CHECKSTATUS") {
-              if (ele.data[e] === "Waiting") {
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              } else if (ele.data[e] === "OK") {
-                return (
-                  <span style={{ color: "green", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              }
-            } else {
-              return <span>{ele.data[e]}</span>;
-            }
-          },
-        };
-      });
-      setColumnsExcel(column_map);
-      setisLoading(true);
       let tempjson = uploadExcelJson;
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
-        await generalQuery("checkPOExist", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-          CUST_CD: uploadExcelJson[i].CUST_CD,
-          PO_NO: uploadExcelJson[i].PO_NO,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              err_code = 1;
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        let now = moment();
-        let po_date = moment(uploadExcelJson[i].PO_DATE);
-        if (now < po_date) {
-          err_code = 2;
-          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-        } else {
-          //tempjson[i].CHECKSTATUS = "OK";
-        }
-        await generalQuery("checkGCodeVer", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-              if (response.data.data[0].USE_YN === "Y") {
-                //tempjson[i].CHECKSTATUS = "OK";
-              } else {
-                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-                err_code = 3;
-              }
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-              err_code = 4;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        let tempgia = {
-          prod_price: 0,
-          bep: 0
-        };
+        err_code = await f_checkPOExist(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_NO) ? 1 : 0;
+        err_code = f_compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
+        let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+        err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
+        let tempgia = { prod_price: 0, bep: 0 };
         if (getCompany() !== 'CMS') {
           tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
-          //console.log(tempgia);
           if (tempgia.prod_price !== 0) {
             tempjson[i].PROD_PRICE = tempgia.prod_price;
             tempjson[i].BEP = tempgia.bep;
@@ -484,96 +304,16 @@ const PoManager = () => {
     }
   };
   const handle_upPOHangLoat = async () => {
-    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-    let column_map = keysArray.map((e, index) => {
-      return {
-        field: e,
-        headerName: e,
-        width: 100,
-        cellRenderer: (ele: any) => {
-          //console.log(ele);
-          if (e === "CHECKSTATUS") {
-            if (ele.data[e] === "Waiting") {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else if (ele.data[e] === "OK") {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            }
-          } else {
-            return <span>{ele.data[e]}</span>;
-          }
-        },
-      };
-    });
-    setColumnsExcel(column_map);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkPOExist", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-        CUST_CD: uploadExcelJson[i].CUST_CD,
-        PO_NO: uploadExcelJson[i].PO_NO,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            err_code = 1;
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      let now = moment();
-      let po_date = moment(uploadExcelJson[i].PO_DATE);
-      if (now < po_date) {
-        err_code = 2;
-        //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-      } else {
-        //tempjson[i].CHECKSTATUS = "OK";
-      }
-      await generalQuery("checkGCodeVer", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-              //tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-              err_code = 3;
-            }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-            err_code = 4;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      if (getCompany() !== 'CMS') {
-        if (uploadExcelJson[i].CHECKSTATUS != 'OK') {
-          err_code = 5;
-        }
-      }
+      err_code = await f_checkPOExist(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_NO) ? 1 : 0;
+      err_code = f_compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
+      let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+      err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
+      uploadExcelJson[i].CHECKSTATUS !== 'OK' ? err_code = 5 : err_code;
       if (err_code === 0) {
-        await generalQuery("insert_po", {
+        tempjson[i].CHECKSTATUS = await f_insertPO({
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           PO_NO: uploadExcelJson[i].PO_NO,
@@ -584,19 +324,7 @@ const PoManager = () => {
           PROD_PRICE: uploadExcelJson[i].PROD_PRICE,
           BEP: uploadExcelJson[i].BEP ?? 0,
           REMARK: uploadExcelJson[i].REMARK,
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              err_code = 5;
-              tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        });
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
       } else if (err_code === 2) {
@@ -646,33 +374,11 @@ const PoManager = () => {
       }
     });
   };
-  const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getcustomerlist = async () => {
+    setCustomerList(await f_getcustomerlist());
   };
-  const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          if (!isPending) {
-            startTransition(() => {
-              setCodeList(response.data.data);
-            });
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getcodelist = async (G_NAME: string) => {
+    setCodeList(await f_getcodelist(G_NAME));
   };
   const setNav = (choose: number) => {
     if (choose === 1) {
@@ -703,40 +409,10 @@ const PoManager = () => {
   };
   const handle_add_1PO = async () => {
     let err_code: number = 0;
-    await generalQuery("checkPOExist", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          err_code = 1;
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    let now = moment();
-    let po_date = moment(newpodate);
-    if (now < po_date) {
-      err_code = 2;
-      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-    } else {
-      //tempjson[i].CHECKSTATUS = "OK";
-    }
-    if (selectedCode?.USE_YN === "N") {
-      err_code = 3;
-    }
-    if (
-      selectedCode?.G_CODE === "" ||
-      selectedCust_CD?.CUST_CD === "" ||
-      newpono === "" ||
-      userData?.EMPL_NO === "" ||
-      newpoprice === ""
-    ) {
+    err_code = await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono) ? 1 : 0;
+    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;   
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
+    if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newpono === "" || userData?.EMPL_NO === "" || newpoprice === "") {
       err_code = 4;
     }
     let recheckPrice: number = newcodeprice.filter(
@@ -744,11 +420,12 @@ const PoManager = () => {
         return newpoprice === e.PROD_PRICE.toString();
       }
     ).length ?? 0;
+
     if (getCompany() !== 'CMS') {
       if (recheckPrice === 0) err_code = 5;
     }
     if (err_code === 0) {
-      await generalQuery("insert_po", {
+      let kq = await f_insertPO( {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -758,31 +435,21 @@ const PoManager = () => {
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
         BEP: newpoBEP === "" ? 0 : newpoBEP,
-        REMARK: newporemark === undefined ? "" : newporemark,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm PO mới thành công", "success");
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Thêm PO mới thất bại: " + response.data.message,
-              "error"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        REMARK: newporemark ?? "",
+      });
+      if (kq === "OK") {
+        Swal.fire("Thông báo", "Thêm PO mới thành công", "success");
+      } else {
+        Swal.fire(
+          "Thông báo",
+          "Thêm PO mới thất bại: " + kq,
+          "error"
+        );
+      }    
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Đã tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire(
-        "Thông báo",
-        "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
-      );
+      Swal.fire( "Thông báo", "NG: Ngày PO không được trước ngày hôm nay", "error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -907,70 +574,28 @@ const PoManager = () => {
         them1po: !selection.them1po,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE:
-          clickedRow.current?.G_CODE === undefined
-            ? ""
-            : clickedRow.current?.G_CODE,
-        G_NAME:
-          clickedRow.current?.G_NAME === undefined
-            ? ""
-            : clickedRow.current?.G_NAME,
-        G_NAME_KD:
-          clickedRow.current?.G_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.G_NAME_KD,
+        G_CODE: clickedRow.current?.G_CODE ?? "",
+        G_NAME: clickedRow.current?.G_NAME ?? "",
+        G_NAME_KD: clickedRow.current?.G_NAME_KD ?? "",
         PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
         PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD:
-          clickedRow.current?.CUST_CD === undefined
-            ? ""
-            : clickedRow.current?.CUST_CD,
-        CUST_NAME_KD:
-          clickedRow.current?.CUST_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.CUST_NAME_KD,
+        CUST_CD: clickedRow.current?.CUST_CD ?? "",
+        CUST_NAME_KD: clickedRow.current?.CUST_NAME_KD ?? "",
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewPoDate(
-        clickedRow.current?.PO_DATE === undefined
-          ? ""
-          : clickedRow.current?.PO_DATE
-      );
-      setNewRdDate(
-        clickedRow.current?.RD_DATE === undefined
-          ? ""
-          : clickedRow.current?.RD_DATE
-      );
-      setNewPoQty(
-        clickedRow.current?.PO_QTY === undefined
-          ? "0"
-          : clickedRow.current?.PO_QTY
-      );
-      setNewPoNo(
-        clickedRow.current?.PO_NO === undefined ? "" : clickedRow.current?.PO_NO
-      );
-      setNewPoPrice(
-        clickedRow.current?.PROD_PRICE === undefined
-          ? "0"
-          : clickedRow.current?.PROD_PRICE
-      );
-      setNewPoBEP(
-        clickedRow.current?.BEP ?? 0
-      );
-      setNewPoRemark(
-        clickedRow.current?.REMARK === undefined
-          ? ""
-          : clickedRow.current?.REMARK
-      );
+      setNewPoDate(clickedRow.current?.PO_DATE ?? "");
+      setNewRdDate(clickedRow.current?.RD_DATE ?? "");
+      setNewPoQty(clickedRow.current?.PO_QTY ?? "0");
+      setNewPoNo(clickedRow.current?.PO_NO ?? "");
+      setNewPoPrice(clickedRow.current?.PROD_PRICE ?? "0");
+      setNewPoBEP(clickedRow.current?.BEP ?? 0);
+      setNewPoRemark(clickedRow.current?.REMARK ?? "");
       setSelectedID(clickedRow.current?.PO_ID);
-      loadprice(
-        clickedRow.current?.G_CODE,
-        clickedRow.current?.CUST_NAME_KD
-      );
+      loadprice(clickedRow.current?.G_CODE, clickedRow.current?.CUST_NAME_KD);
     } else {
       clearPOform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để sửa", "error");
@@ -986,44 +611,21 @@ const PoManager = () => {
         them1invoice: true,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE:
-          clickedRow.current?.G_CODE === undefined
-            ? ""
-            : clickedRow.current?.G_CODE,
-        G_NAME:
-          clickedRow.current?.G_NAME === undefined
-            ? ""
-            : clickedRow.current?.G_NAME,
-        G_NAME_KD:
-          clickedRow.current?.G_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.G_NAME_KD,
+        G_CODE:clickedRow.current?.G_CODE ?? "",
+        G_NAME:clickedRow.current?.G_NAME ?? "",
+        G_NAME_KD:clickedRow.current?.G_NAME_KD ?? "",
         PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
         PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD:
-          clickedRow.current?.CUST_CD === undefined
-            ? ""
-            : clickedRow.current?.CUST_CD,
-        CUST_NAME_KD:
-          clickedRow.current?.CUST_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.CUST_NAME_KD,
+        CUST_CD:clickedRow.current?.CUST_CD ?? "",
+        CUST_NAME_KD:clickedRow.current?.CUST_NAME_KD ?? "",
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewPoDate(
-        clickedRow.current?.PO_DATE === undefined
-          ? ""
-          : clickedRow.current?.PO_DATE
-      );
-      setNewRdDate(
-        clickedRow.current?.RD_DATE === undefined
-          ? ""
-          : clickedRow.current?.RD_DATE
-      );
+      setNewPoDate(clickedRow.current?.PO_DATE ?? "");
+      setNewRdDate(clickedRow.current?.RD_DATE ?? "");
       setNewInvoiceQty(0);
       setNewPoNo(
         clickedRow.current?.PO_NO === undefined ? "" : clickedRow.current?.PO_NO
@@ -1038,33 +640,9 @@ const PoManager = () => {
   };
   const updatePO = async () => {
     let err_code: number = 0;
-    await generalQuery("checkPOExist", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-          err_code = 1;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    let now = moment();
-    let po_date = moment(newpodate);
-    if (now < po_date) {
-      err_code = 2;
-      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-    } else {
-      //tempjson[i].CHECKSTATUS = "OK";
-    }
-    if (selectedCode?.USE_YN === "N") {
-      err_code = 3;
-    }
+    err_code = await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono) ? 1 : 0;
+    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
@@ -1078,14 +656,12 @@ const PoManager = () => {
       err_code = 5;
     }
     if (getCompany() !== 'CMS') {
-      if (Number(newpoprice) !== clickedRow.current.PROD_PRICE) {
-        console.log('newpoprice', newpoprice)
-        console.log('clickedRow.current.PROD_PRICE', clickedRow.current.PROD_PRICE)
+      if (Number(newpoprice) !== clickedRow.current.PROD_PRICE) {       
         err_code = 6;
       }
     }
     if (err_code === 0) {
-      await generalQuery("update_po", {
+      let kq =  await f_updatePO({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -1097,30 +673,16 @@ const PoManager = () => {
         BEP: newpoBEP === '' ? 0 : newpoBEP,
         REMARK: newporemark,
         PO_ID: selectedID,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Update Po thành công", "success");
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Update PO thất bại: " + response.data.message,
-              "error"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      });
+      if (kq === "OK") {
+        Swal.fire("Thông báo", "Update Po thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Update PO thất bại: " + kq, "error");
+      }    
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire(
-        "Thông báo",
-        "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
-      );
+      Swal.fire("Thông báo", "NG: Ngày PO không được trước ngày hôm nay", "error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -1648,19 +1210,6 @@ const PoManager = () => {
     ],
     store: podatatable,
   });
-  const autopheduyetgia = () => {
-    generalQuery("autopheduyetgiaall", {
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
   const column_potable = [
     { field: "PO_ID", cellDataType: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
@@ -1668,8 +1217,8 @@ const PoManager = () => {
     { field: "G_NAME", headerName: "G_NAME", width: 120 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 70 },
-    { field: "PO_DATE",  headerName: "PO_DATE", width: 70 },
-    { field: "RD_DATE",  headerName: "RD_DATE", width: 70 },
+    { field: "PO_DATE", headerName: "PO_DATE", width: 70 },
+    { field: "RD_DATE", headerName: "RD_DATE", width: 70 },
     {
       field: "BEP",
       cellDataType: "number",
@@ -1956,8 +1505,8 @@ const PoManager = () => {
     , [uploadExcelJson, columnsExcel, trigger]);
   useEffect(() => {
     if (getCompany() === 'CMS' && getSever() !== 'http://222.252.1.63:3007') {
-      autopheduyetgia();
-      dongboGiaPO();
+      f_autopheduyetgia();
+      f_dongboGiaPO();
     }
     getcustomerlist();
     getcodelist("");
@@ -2320,7 +1869,7 @@ const PoManager = () => {
                         (async () => {
                           if (company !== "CMS") {
                             setNewPoNo(
-                              await autogeneratePO_NO(newValue.CUST_CD)
+                              await f_autogeneratePO_NO(newValue.CUST_CD)
                             );
                           }
                           //console.log(await autogeneratePO_NO(newValue.CUST_CD));

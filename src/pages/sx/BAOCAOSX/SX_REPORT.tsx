@@ -995,7 +995,7 @@ const SX_REPORT = () => {
                 </IconButton>
                 </span>
                 <SXDailyEffTrend
-                  dldata={dailysxaeff}
+                  dldata={[...dailysxaeff].reverse()}
                   processColor="#f1f5c8"
                   materialColor="#74c938"
                 />

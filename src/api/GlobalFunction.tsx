@@ -3,8 +3,8 @@ import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
-import { generalQuery, getCompany } from "./Api";
-import { PRICEWITHMOQ, UserData } from "./GlobalInterface";
+import { generalQuery, getAuditMode, getCompany } from "./Api";
+import { CodeListData, CustomerListData, POTableData, PRICEWITHMOQ, UserData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 
@@ -350,3 +350,320 @@ export function dynamicSort(property: string) {
     return result * sortOrder;
   }
 }
+
+//PO Manager Functions
+export const f_autopheduyetgia = () => {
+  generalQuery("autopheduyetgiaall", {
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const f_loadPoDataFull = async (filterData: any) =>  {
+  let podata: POTableData[] = [];
+  await generalQuery("traPODataFull", filterData)
+  .then((response) => {
+    //console.log(response.data.data);
+    if (response.data.tk_status !== "NG") {
+      const loadeddata: POTableData[] = response.data.data.map(
+        (element: POTableData, index: number) => {
+          return {
+            ...element,
+            id: index,
+            PO_DATE: element.PO_DATE.slice(0, 10),
+            RD_DATE: element.RD_DATE.slice(0, 10),
+            G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+            G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+          };
+        }
+      );
+      podata = loadeddata;
+     
+    } else {    
+      podata = [];
+    }
+  })
+  .catch((error) => {
+    Swal.fire("Thông báo", "Nội dung: " + error, "error");
+    console.log(error);
+  });
+
+  return podata;
+}
+
+export const f_checkPOExist = async (G_CODE: string, CUST_CD: string, PO_NO: string) => {
+  let kq= false;
+  await generalQuery("checkPOExist", {
+    G_CODE: G_CODE,
+    CUST_CD: CUST_CD,
+    PO_NO: PO_NO,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_compareDateToNow = (date: string): boolean => {
+  let kq: boolean = false;
+  let now = moment();
+  let comparedate = moment(date);
+  if (now < comparedate) {
+    kq = true;    
+  } else {
+    
+  }
+  return kq;
+
+}
+
+export const f_checkG_CODE_USE_YN = async (G_CODE: string) => {
+  let kq: number = 0; // OK
+  await generalQuery("checkGCodeVer", {
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        if (response.data.data[0].USE_YN === "Y") {
+          //tempjson[i].CHECKSTATUS = "OK";
+          kq= 0;
+        } else {
+          //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+          kq = 1;
+        }
+      } else {
+        //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+        kq = 2;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_insertPO = async (poData: any) => {
+  let kq: string = 'NG';
+  await generalQuery("insert_po", {
+    G_CODE: poData.G_CODE,
+    CUST_CD: poData.CUST_CD,
+    PO_NO: poData.PO_NO,
+    EMPL_NO: poData.EMPL_NO,
+    PO_QTY: poData.PO_QTY,
+    PO_DATE: poData.PO_DATE,
+    RD_DATE: poData.RD_DATE,
+    PROD_PRICE: poData.PROD_PRICE,
+    BEP: poData.BEP ?? 0,
+    REMARK: poData.REMARK,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_updatePO = async (poData: any) => {
+  let kq: string = 'NG';
+  await generalQuery("update_po", {
+    G_CODE: poData.G_CODE,
+    CUST_CD: poData.CUST_CD,
+    PO_NO: poData.PO_NO,
+    EMPL_NO: poData.EMPL_NO,
+    PO_QTY: poData.PO_QTY,
+    PO_DATE: poData.PO_DATE,
+    RD_DATE: poData.RD_DATE,
+    PROD_PRICE: poData.PROD_PRICE,
+    BEP: poData.BEP ?? 0,
+    REMARK: poData.REMARK,
+    PO_ID: poData.PO_ID
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_deletePO = async (poData: any) => {
+  let kq: string = 'NG';
+  await generalQuery("delete_po", {
+    PO_ID: poData.PO_ID
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+
+
+export const f_autogeneratePO_NO = async (cust_cd: string) => {
+  let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
+  let next_po_no: string = po_no_to_check + "_001";
+  await generalQuery("checkcustomerpono", {
+    CHECK_PO_NO: po_no_to_check,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let arr = response.data.data[0].PO_NO.split("_");
+        next_po_no = po_no_to_check + "_" + zeroPad(parseInt(arr[2]) + 1, 3);
+        console.log("next_PO_NO", next_po_no);
+      } else {
+        //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+    });
+  return next_po_no;
+};
+
+export const f_dongboGiaPO = () => {
+  generalQuery("dongbogiasptupo", {})
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+        //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+    });
+};
+
+export const f_getcustomerlist = async () => {
+  let customerList: CustomerListData[] = [];
+  await generalQuery("selectcustomerList", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        customerList = response.data.data;
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return customerList;
+};
+
+export const f_getcodelist = async (G_NAME: string) => {
+  let codeList: CodeListData[] = [];
+  await generalQuery("selectcodeList", { G_NAME: G_NAME })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        codeList = response.data.data;       
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return codeList;
+};
+
+export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
+  let newCodePriceData: PRICEWITHMOQ[] = [];    
+  if (G_CODE !== undefined && CUST_NAME !== undefined) {
+    await generalQuery("loadbanggiamoinhat", {
+      ALLTIME: true,
+      FROM_DATE: "",
+      TO_DATE: "",
+      M_NAME: "",
+      G_CODE: G_CODE,
+      G_NAME: "",
+      CUST_NAME_KD: CUST_NAME,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: PRICEWITHMOQ[] = [];
+          loaded_data =
+            getCompany() !== "CMS"
+              ? response.data.data
+                .map((element: PRICEWITHMOQ, index: number) => {
+                  return {
+                    ...element,
+                    PRICE_DATE:
+                      element.PRICE_DATE !== null
+                        ? moment
+                          .utc(element.PRICE_DATE)
+                          .format("YYYY-MM-DD")
+                        : "",
+                    id: index,
+                  };
+                })
+                .filter(
+                  (element: PRICEWITHMOQ, index: number) =>
+                    element.FINAL === "Y"
+                )
+              : response.data.data.map(
+                (element: PRICEWITHMOQ, index: number) => {
+                  return {
+                    ...element,
+                    PRICE_DATE:
+                      element.PRICE_DATE !== null
+                        ? moment
+                          .utc(element.PRICE_DATE)
+                          .format("YYYY-MM-DD")
+                        : "",
+                    id: index,
+                  };
+                }
+              );
+              newCodePriceData =loaded_data;
+        } else {
+          /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });
+  }
+  return newCodePriceData;
+};
+
