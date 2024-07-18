@@ -6,30 +6,20 @@ import {
   TextField,
   createFilterOptions,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { DataGrid, GridSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useCallback, useContext, useEffect, useMemo, useState, useTransition, Profiler } from "react";
+import React, { useEffect, useMemo, useState, useTransition } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
 import {
   AiFillAmazonCircle,
   AiFillEdit,
   AiFillFileAdd,
-  AiFillFileExcel,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import "./YCSXManager.scss";
@@ -41,9 +31,7 @@ import DrawComponent from "./DrawComponent/DrawComponent";
 import TraAMZ from "./TraAMZ/TraAMZ";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from "axios";
 import { TbLogout } from "react-icons/tb";
-import Draggable from "devextreme-react/draggable";
 import {
   CodeListData,
   CustomerListData,
@@ -55,9 +43,6 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../api/GlobalInterface";
-/* import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../components/DataTable/AGTable";
 const YCSXManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
@@ -435,7 +420,7 @@ const YCSXManager = () => {
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
     { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },    
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
     {
       field: "PDUYET",
       headerName: "PDUYET",
@@ -1084,8 +1069,7 @@ const YCSXManager = () => {
   const handleGoToAmazon = () => {
     console.log(ycsxdatatablefilter.current.length);
     if (ycsxdatatablefilter.current.length === 1) {
-      if(ycsxdatatablefilter.current[0].PL_HANG==='AM')
-      {
+      if (ycsxdatatablefilter.current[0].PL_HANG === 'AM') {
         setProdRequestNo(
           ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
         );
@@ -1094,11 +1078,9 @@ const YCSXManager = () => {
         );
         setNav(3);
       }
-      else
-      {
-        Swal.fire("Thông báo","Đây không phải YCSX AMZ","error");
+      else {
+        Swal.fire("Thông báo", "Đây không phải YCSX AMZ", "error");
       }
-      
     } else if (ycsxdatatablefilter.current.length > 1) {
       Swal.fire("Thông báo", "Chỉ chọn 1 YCSX để qua Amazon", "error");
     } else {
@@ -1329,75 +1311,52 @@ const YCSXManager = () => {
   };
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
-    if(amz_PL_HANG === 'AM')
-      {
-        isDuplicated = await checkDuplicateAMZ();
-        if (!isDuplicated) {
-          let uploadAmazonData = await handleAmazonData(
-            uploadExcelJson,
-            cavityAmazon,
-            codeCMS,
-            prodrequestno,
-            id_congviec
-          );
-          //console.log(uploadAmazonData);
-          let checkIDcongViecTonTai: boolean = false;
-          await generalQuery("checkIDCongViecAMZ", {
-            NO_IN: id_congviec,
-            PROD_REQUEST_NO: prodrequestno,
+    if (amz_PL_HANG === 'AM') {
+      isDuplicated = await checkDuplicateAMZ();
+      if (!isDuplicated) {
+        let uploadAmazonData = await handleAmazonData(
+          uploadExcelJson,
+          cavityAmazon,
+          codeCMS,
+          prodrequestno,
+          id_congviec
+        );
+        //console.log(uploadAmazonData);
+        let checkIDcongViecTonTai: boolean = false;
+        await generalQuery("checkIDCongViecAMZ", {
+          NO_IN: id_congviec,
+          PROD_REQUEST_NO: prodrequestno,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              checkIDcongViecTonTai = true;
+            } else {
+              checkIDcongViecTonTai = false;
+            }
           })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                checkIDcongViecTonTai = true;
-              } else {
-                checkIDcongViecTonTai = false;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          //if (!AMZ_check_flag) {
-          if (false) {
-            Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
-          } else {
-            if (!checkIDcongViecTonTai) {
-              let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
-              let sodu: number = uploadAmazonData.length % 1000;
-              for (let i = 1; i <= songuyen; i++) {
-                await generalQuery("insertData_Amazon_SuperFast", {
-                  AMZDATA: uploadAmazonData.filter(
-                    (e: UploadAmazonData, index: number) => {
-                      let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
-                      return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
-                    }
-                  ),
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      setProgressValue(i * 2 * 1000);
-                    } else {
-                      console.log(response.data.message);
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              }
+          .catch((error) => {
+            console.log(error);
+          });
+        //if (!AMZ_check_flag) {
+        if (false) {
+          Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
+        } else {
+          if (!checkIDcongViecTonTai) {
+            let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
+            let sodu: number = uploadAmazonData.length % 1000;
+            for (let i = 1; i <= songuyen; i++) {
               await generalQuery("insertData_Amazon_SuperFast", {
                 AMZDATA: uploadAmazonData.filter(
                   (e: UploadAmazonData, index: number) => {
                     let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
-                    return (
-                      rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
-                    );
+                    return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
                   }
                 ),
               })
                 .then((response) => {
-                  console.log(response.data.tk_status);
                   if (response.data.tk_status !== "NG") {
-                    setProgressValue(uploadAmazonData.length * 2);
+                    setProgressValue(i * 2 * 1000);
                   } else {
                     console.log(response.data.message);
                   }
@@ -1405,20 +1364,40 @@ const YCSXManager = () => {
                 .catch((error) => {
                   console.log(error);
                 });
-              setUploadExcelJSon([]);
-              checkDuplicateAMZ();
-              //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
-            } else {
-              Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
             }
+            await generalQuery("insertData_Amazon_SuperFast", {
+              AMZDATA: uploadAmazonData.filter(
+                (e: UploadAmazonData, index: number) => {
+                  let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
+                  return (
+                    rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
+                  );
+                }
+              ),
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  setProgressValue(uploadAmazonData.length * 2);
+                } else {
+                  console.log(response.data.message);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            setUploadExcelJSon([]);
+            checkDuplicateAMZ();
+            //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
+          } else {
+            Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
           }
         }
-
       }
-      else {
-        Swal.fire("Thông báo","Đây không phải là yêu cầu sản xuất AMZ","error");
-      }
-  
+    }
+    else {
+      Swal.fire("Thông báo", "Đây không phải là yêu cầu sản xuất AMZ", "error");
+    }
   };
   const readUploadFileAmazon = (e: any) => {
     e.preventDefault();
@@ -1736,21 +1715,18 @@ const YCSXManager = () => {
         console.log("err_Code1 = " + err_code1);
         if (err_code1 === 0) {
           if (uploadExcelJson[i].PHANLOAI === "TT") {
-
             await generalQuery("insertDBYCSX", {
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
-                 
                 } else {
                 }
               })
               .catch((error) => {
                 console.log(error);
               });
-
             await generalQuery("insert_ycsx", {
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
@@ -1900,7 +1876,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               phanloai: uploadExcelJson[i].PHANLOAI,
               PLAN_ID: next_prod_request_no + "A",
-              PR_NB : 0,
+              PR_NB: 0,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -1922,7 +1898,7 @@ const YCSXManager = () => {
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               PLAN_ID: next_prod_request_no + "A",
-              PROCESS_NUMBER : 0,
+              PROCESS_NUMBER: 0,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -2181,14 +2157,12 @@ const YCSXManager = () => {
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
-             
             } else {
             }
           })
           .catch((error) => {
             console.log(error);
           });
-
         await generalQuery("insert_ycsx", {
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
@@ -2338,7 +2312,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           phanloai: newphanloai,
           PLAN_ID: next_prod_request_no + "A",
-          PR_NB : 0,
+          PR_NB: 0,
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -2360,7 +2334,7 @@ const YCSXManager = () => {
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
           PROD_REQUEST_NO: next_prod_request_no,
           PLAN_ID: next_prod_request_no + "A",
-          PROCESS_NUMBER : 0,
+          PROCESS_NUMBER: 0,
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -3176,19 +3150,19 @@ const YCSXManager = () => {
                       <option value='VN'>Việt Nam (VN)</option>
                       <option value='AM'>Amazon (AM)</option>
                       <option value='DL'>Đổi LOT (DL)</option>
-                      <option value='M4'>NM4 (M4)</option>                      
+                      <option value='M4'>NM4 (M4)</option>
                       <option value='GC'>Hàng Gia Công (GC)</option>
                       <option value='TM'>Hàng Thương Mại (TM)</option>
-                      {getCompany()!=='CMS' && <>                      
-                      <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                      <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                      <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                      <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                      <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                      <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                      <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                      <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                      <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                      {getCompany() !== 'CMS' && <>
+                        <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                        <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                        <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                        <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                        <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                        <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                        <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                        <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                        <option value='I9'>Hàng In Nhanh 9 (I9)</option>
                       </>}
                     </select>
                   </label>
@@ -3540,16 +3514,16 @@ const YCSXManager = () => {
                       <option value='M4'>NM4 (M4)</option>
                       <option value='GC'>Hàng Gia Công (GC)</option>
                       <option value='TM'>Hàng Thương Mại (TM)</option>
-                      {getCompany()!=='CMS' && <>                      
-                      <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                      <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                      <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                      <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                      <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                      <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                      <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                      <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                      <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                      {getCompany() !== 'CMS' && <>
+                        <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                        <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                        <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                        <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                        <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                        <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                        <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                        <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                        <option value='I9'>Hàng In Nhanh 9 (I9)</option>
                       </>}
                       {/* <option value='SL'>Slitting (SL)</option> */}
                     </select>

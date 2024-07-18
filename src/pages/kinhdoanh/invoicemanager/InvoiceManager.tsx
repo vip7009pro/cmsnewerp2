@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/a
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP, CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -24,23 +24,6 @@ import {
   WEB_SETTING_DATA,
   XUATKHOPODATA,
 } from "../../../api/GlobalInterface";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import AGTable from "../../../components/DataTable/AGTable";
 const InvoiceManager = () => {
   const showhidesearchdiv = useRef(false);
@@ -57,8 +40,8 @@ const InvoiceManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
-  const [old_invoice_qty, setOld_Invoice_Qty] = useState(0);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
+  const [old_invoice_qty, setOld_Invoice_Qty] = useState(0);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -103,7 +86,7 @@ const InvoiceManager = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [trigger, setTrigger] = useState(true);
   const [xuatkhopotable, setXuatKhoPOTable] = useState<XUATKHOPODATA[]>([])
-  const [selectedxuatkhopo, setSelectedXuatKhoPo] = useState<XUATKHOPODATA[]>([])
+  const selectedxuatkhopo = useRef<XUATKHOPODATA[]>([])
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -191,8 +174,8 @@ const InvoiceManager = () => {
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
                 PO_DATE: element.PO_DATE.slice(0, 10),
                 RD_DATE: element.RD_DATE.slice(0, 10),
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
               };
             },
           );
@@ -209,7 +192,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               loadeddata[i].DELIVERY_QTY;
             invoice_summary_temp.total_delivered_amount +=
               loadeddata[i].DELIVERED_AMOUNT;
-          }        
+          }
           setInvoiceSummary(invoice_summary_temp);
           setInvoiceDataTable(loadeddata);
           Swal.fire(
@@ -228,142 +211,151 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
   };
   const handle_checkInvoiceHangLoat = async () => {
-    Swal.fire({
-      title: "Đang check Invoice hàng loạt",
-      text: "Đang check, hãy chờ chút",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-    let column_map = keysArray.map((e, index) => {
-      return {
-        field: e,
-        headerName: e,
-        width: 100,
-        cellRenderer: (ele: any) => {
-          //console.log(ele);
-          if (e === "CHECKSTATUS") {
-            if (ele.data[e] === "Waiting") {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else if (ele.data[e] === "OK") {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
+    if(uploadExcelJson.length>0)
+    {
+      Swal.fire({
+        title: "Đang check Invoice hàng loạt",
+        text: "Đang check, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
+      let column_map = keysArray.map((e, index) => {
+        return {
+          field: e,
+          headerName: e,
+          width: 100,
+          cellRenderer: (ele: any) => {
+            //console.log(ele);
+            if (e === "CHECKSTATUS") {
+              if (ele.data[e] === "Waiting") {
+                return (
+                  <span style={{ color: "blue", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              } else if (ele.data[e] === "OK") {
+                return (
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "red", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              }
             } else {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
+              return <span>{ele.data[e]}</span>;
             }
-          } else {
-            return <span>{ele.data[e]}</span>;
-          }
-        },
-      };
-    });
-    setColumnsExcel(column_map);
-    let tempjson = uploadExcelJson;
-    for (let i = 0; i < uploadExcelJson.length; i++) {
-      let err_code: number = 0;
-      let po_date: string = '';
-      await generalQuery("checkPOExist", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-        CUST_CD: uploadExcelJson[i].CUST_CD,
-        PO_NO: uploadExcelJson[i].PO_NO,
-      })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            po_date = response.data.data[0].PO_DATE;
-            //console.log(po_date);
-            if (
-              uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
-            ) {
-              err_code = 5; //giao hang nhieu hon PO balance
-            }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-            err_code = 1;
-          }
+          },
+        };
+      });
+      setColumnsExcel(column_map);
+      let tempjson = uploadExcelJson;
+      for (let i = 0; i < uploadExcelJson.length; i++) {
+        let err_code: number = 0;
+        let po_date: string = '';
+        await generalQuery("checkPOExist", {
+          G_CODE: uploadExcelJson[i].G_CODE,
+          CUST_CD: uploadExcelJson[i].CUST_CD,
+          PO_NO: uploadExcelJson[i].PO_NO,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-      let now = moment();
-      let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
-      if (now < deliverydate) {
-        err_code = 2;
-      }
-      let podate = moment(po_date.substring(0, 10));
-      if (podate > deliverydate) {
-        err_code = 6;
-      }
-      await generalQuery("checkGCodeVer", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-      })
-        .then((response) => {
-          //console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-              //tempjson[i].CHECKSTATUS = "OK";
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              po_date = response.data.data[0].PO_DATE;
+              //console.log(po_date);
+              if (
+                uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
+              ) {
+                err_code = 5; //giao hang nhieu hon PO balance
+              }
             } else {
-              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-              err_code = 3;
+              //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+              err_code = 1;
             }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-            err_code = 4;
-          }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        let now = moment();
+        let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
+        if (now < deliverydate) {
+          err_code = 2;
+        }
+        let podate = moment(po_date.substring(0, 10));
+        if (podate > deliverydate) {
+          err_code = 6;
+        }
+        await generalQuery("checkGCodeVer", {
+          G_CODE: uploadExcelJson[i].G_CODE,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-      await generalQuery("checkcustcodeponoPOBALANCE", {
-        G_CODE: selectedCode?.G_CODE,
-        CUST_CD: selectedCust_CD?.CUST_CD,
-        PO_NO: newpono,
-      })
-        .then((response) => {
-          //console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
-            if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
-          } else {
-          }
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+              if (response.data.data[0].USE_YN === "Y") {
+                //tempjson[i].CHECKSTATUS = "OK";
+              } else {
+                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+                err_code = 3;
+              }
+            } else {
+              //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+              err_code = 4;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        await generalQuery("checkcustcodeponoPOBALANCE", {
+          G_CODE: selectedCode?.G_CODE,
+          CUST_CD: selectedCust_CD?.CUST_CD,
+          PO_NO: newpono,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-      if (err_code === 0) {
-        tempjson[i].CHECKSTATUS = "OK";
-      } else if (err_code === 1) {
-        tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
-      } else if (err_code === 2) {
-        tempjson[i].CHECKSTATUS =
-          "NG: Ngày Giao hàng không được trước ngày hôm nay";
-      } else if (err_code === 3) {
-        tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-      } else if (err_code === 4) {
-        tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-      } else if (err_code === 5) {
-        tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
-      } else if (err_code === 6) {
-        tempjson[i].CHECKSTATUS = "NG: Ngày Invoice không được trước ngày PO";
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
+              if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        if (err_code === 0) {
+          tempjson[i].CHECKSTATUS = "OK";
+        } else if (err_code === 1) {
+          tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
+        } else if (err_code === 2) {
+          tempjson[i].CHECKSTATUS =
+            "NG: Ngày Giao hàng không được trước ngày hôm nay";
+        } else if (err_code === 3) {
+          tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+        } else if (err_code === 4) {
+          tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+        } else if (err_code === 5) {
+          tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
+        } else if (err_code === 6) {
+          tempjson[i].CHECKSTATUS = "NG: Ngày Invoice không được trước ngày PO";
+        }
       }
+      setUploadExcelJSon(tempjson);
+      setTrigger(!trigger);
+      Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
+
     }
-    setUploadExcelJSon(tempjson);
-    setTrigger(!trigger);
-    Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
+    else
+    {
+      Swal.fire('Thông báo','Không có dòng nào','error');
+    }
+    
   };
   const handle_upInvoiceHangLoat = async () => {
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
@@ -517,16 +509,16 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     setTrigger(!trigger);
   };
   const handle_upInvoiceXKHL = async () => {
-    if (selectedxuatkhopo.length > 0) {
-      for (let i = 0; i < selectedxuatkhopo.length; i++) {
-        if (selectedxuatkhopo[i].CHECKSTATUS.substring(0, 2) === 'OK') {
+    if (selectedxuatkhopo.current.length > 0) {
+      for (let i = 0; i < selectedxuatkhopo.current.length; i++) {
+        if (selectedxuatkhopo.current[i].CHECKSTATUS.substring(0, 2) === 'OK') {
           await generalQuery("insert_invoice", {
-            DELIVERY_QTY: selectedxuatkhopo[i].THISDAY_OUT_QTY,
-            DELIVERY_DATE: selectedxuatkhopo[i].OUT_DATE,
+            DELIVERY_QTY: selectedxuatkhopo.current[i].THISDAY_OUT_QTY,
+            DELIVERY_DATE: selectedxuatkhopo.current[i].OUT_DATE,
             REMARK: "",
-            G_CODE: selectedxuatkhopo[i].G_CODE,
-            CUST_CD: selectedxuatkhopo[i].CUST_CD,
-            PO_NO: selectedxuatkhopo[i].PO_NO,
+            G_CODE: selectedxuatkhopo.current[i].G_CODE,
+            CUST_CD: selectedxuatkhopo.current[i].CUST_CD,
+            PO_NO: selectedxuatkhopo.current[i].PO_NO,
             EMPL_NO: userData?.EMPL_NO,
             INVOICE_NO: "",
           })
@@ -1052,7 +1044,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     }
   }
   const column_invoicetable = [
-    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90 , headerCheckboxSelection: true, checkboxSelection: true,},
+    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "CUST_CD", headerName: "CUST_CD", width: 70 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
@@ -1074,12 +1066,12 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "PO_ID", headerName: "PO_ID", width: 70 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },
-    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 100,},
-    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 100,},
-    { field: "DELIVERY_DATE", type: "date", headerName: "DELIVERY_DATE", width: 100,},
+    { field: "PO_DATE",  headerName: "PO_DATE", width: 100, },
+    { field: "RD_DATE",  headerName: "RD_DATE", width: 100, },
+    { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 100, },
     {
       field: "DELIVERY_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "DELIVERY_QTY",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1092,7 +1084,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     },
     {
       field: "BEP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BEP",
       width: 60,
       cellRenderer: (params: any) => {
@@ -1110,7 +1102,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     },
     {
       field: "PROD_PRICE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PROD_PRICE",
       width: 100,
       cellRenderer: (params: any) => {
@@ -1128,7 +1120,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     },
     {
       field: "DELIVERED_AMOUNT",
-      type: "number",
+      cellDataType: "number",
       headerName: "DELIVERED_AMOUNT",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1146,7 +1138,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     },
     {
       field: "DELIVERED_BEP_AMOUNT",
-      type: "number",
+      cellDataType: "number",
       headerName: "DELIVERED_BEP_AMOUNT",
       width: 120,
       cellRenderer: (params: any) => {
@@ -1165,12 +1157,26 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
-    { field: "PROD_MAIN_MATERIAL",headerName: "PROD_MAIN_MATERIAL",width: 120},
-    { field: "YEARNUM", type: "number", headerName: "YEARNUM", width: 80 },
-    { field: "WEEKNUM", type: "number", headerName: "WEEKNUM", width: 80 },
-    { field: "INVOICE_NO", type: "number", headerName: "INVOICE_NO", width: 120},  
+    { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
+    { field: "YEARNUM", cellDataType: "number", headerName: "YEARNUM", width: 80 },
+    { field: "WEEKNUM", cellDataType: "number", headerName: "WEEKNUM", width: 80 },
+    { field: "INVOICE_NO", cellDataType: "number", headerName: "INVOICE_NO", width: 120 },
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
+  const column_xuatkho = [
+    { field: "CUST_CD", headerName: "CUST_CD", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90, },
+    { field: "G_CODE", headerName: "G_CODE", width: 90, },
+    { field: "G_NAME", headerName: "G_NAME", width: 90, },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90, },
+    { field: "OUT_DATE", headerName: "OUT_DATE", width: 90, },
+    { field: "PO_NO", headerName: "PO_NO", width: 90, },
+    { field: "PO_QTY", headerName: "PO_QTY", width: 90, },
+    { field: "DELIVERY_QTY", headerName: "DELIVERY_QTY", width: 90, },
+    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 90, },
+    { field: "THISDAY_OUT_QTY", headerName: "THISDAY_OUT_QTY", width: 90, },
+    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 90, },
+  ]
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1496,115 +1502,115 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       showFilter={true}
       toolbar={
         <div>
-           <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    showhidesearchdiv.current = !showhidesearchdiv.current;
-                    setSH(!showhidesearchdiv.current);
-                  }}
-                >
-                  <TbLogout color="green" size={15} />
-                  Show/Hide
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(invoicedatatable, "Invoice Table");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-                      setSelection({
-                        ...selection,
-                        trapo: true,
-                        thempohangloat: false,
-                        them1po: false,
-                        them1invoice: true,
-                      });
-                      clearInvoiceform();
-                    }); */
-                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-                      setSelection({
-                        ...selection,
-                        trapo: true,
-                        thempohangloat: false,
-                        them1po: false,
-                        them1invoice: true,
-                      });
-                      clearInvoiceform();
-                    });
-                  }}
-                >
-                  <AiFillFileAdd color="blue" size={15} />
-                  NEW INV
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    /* checkBP(
-                      userData?.EMPL_NO,
-                      userData?.MAINDEPTNAME,
-                      ["KD"],
-                      handle_fillsuaformInvoice
-                    ); */
-                    checkBP(
-                      userData,
-                      ["KD"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_fillsuaformInvoice,
-                    );
-                    //handle_fillsuaformInvoice();
-                  }}
-                >
-                  <FaFileInvoiceDollar color="lightgreen" size={15} />
-                  SỬA INV
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    /*  checkBP(
-                      userData?.EMPL_NO,
-                      userData?.MAINDEPTNAME,
-                      ["KD"],
-                      handleConfirmDeleteInvoice
-                    ); */
-                    checkBP(
-                      userData,
-                      ["KD"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmDeleteInvoice,
-                    );
-                    //handleConfirmDeleteInvoice();
-                  }}
-                >
-                  <MdOutlineDelete color="red" size={15} />
-                  XÓA INV
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    updateInvoiceNo(invoice_no_ref.current);
-                  }}
-                >
-                  <MdUpdate color="#dc3240" size={15} />
-                  Update I.V No
-                </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              showhidesearchdiv.current = !showhidesearchdiv.current;
+              setSH(!showhidesearchdiv.current);
+            }}
+          >
+            <TbLogout color="green" size={15} />
+            Show/Hide
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              SaveExcel(invoicedatatable, "Invoice Table");
+            }}
+          >
+            <AiFillFileExcel color="green" size={15} />
+            SAVE
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+                setSelection({
+                  ...selection,
+                  trapo: true,
+                  thempohangloat: false,
+                  them1po: false,
+                  them1invoice: true,
+                });
+                clearInvoiceform();
+              }); */
+              checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
+                setSelection({
+                  ...selection,
+                  trapo: true,
+                  thempohangloat: false,
+                  them1po: false,
+                  them1invoice: true,
+                });
+                clearInvoiceform();
+              });
+            }}
+          >
+            <AiFillFileAdd color="blue" size={15} />
+            NEW INV
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              /* checkBP(
+                userData?.EMPL_NO,
+                userData?.MAINDEPTNAME,
+                ["KD"],
+                handle_fillsuaformInvoice
+              ); */
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handle_fillsuaformInvoice,
+              );
+              //handle_fillsuaformInvoice();
+            }}
+          >
+            <FaFileInvoiceDollar color="lightgreen" size={15} />
+            SỬA INV
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              /*  checkBP(
+                userData?.EMPL_NO,
+                userData?.MAINDEPTNAME,
+                ["KD"],
+                handleConfirmDeleteInvoice
+              ); */
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmDeleteInvoice,
+              );
+              //handleConfirmDeleteInvoice();
+            }}
+          >
+            <MdOutlineDelete color="red" size={15} />
+            XÓA INV
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
+            }}
+          >
+            <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+            Pivot
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              updateInvoiceNo(invoice_no_ref.current);
+            }}
+          >
+            <MdUpdate color="#dc3240" size={15} />
+            Update I.V No
+          </IconButton>
         </div>
       }
       columns={column_invoicetable}
@@ -1613,7 +1619,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         //console.log(e.data)
       }} onRowClick={(params: any) => {
         clickedRow.current = params.data;
-      }} onSelectionChange={(params: any) => {       
+      }} onSelectionChange={(params: any) => {
         invoicedatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
@@ -1640,108 +1646,39 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         //console.log(e.data)
       }} onRowClick={(params: any) => {
         //clickedRow.current = params.data;        
-      }} onSelectionChange={(params: any) => {        
+      }} onSelectionChange={(params: any) => {
         //setSelectedRows(params!.api.getSelectedRows()[0]);        
       }}
     />
     , [uploadExcelJson, columnsExcel, trigger]);
-  const xuatkhoPOTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={xuatkhopotable}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              console.log(e.selectedRowsData)
-              setSelectedXuatKhoPo(e.selectedRowsData);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
+  const xuatkhoPOAGTable = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
             }}
           >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(uploadExcelJson, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columnsExcel.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [xuatkhopotable, trigger]
-  );
+            <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+            Pivot
+          </IconButton>
+        </div>
+      }
+      columns={column_xuatkho}
+      data={xuatkhopotable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;        
+      }} onSelectionChange={(params: any) => {
+        //setSelectedRows(params!.api.getSelectedRows()[0]);  
+        selectedxuatkhopo.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [xuatkhopotable, trigger]);
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
@@ -1836,7 +1773,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               </div>
             </form>
             <div className="insertInvoiceTable">
-              {excelDataAGTable}              
+              {excelDataAGTable}
             </div>
           </div>
         </div>
@@ -2078,7 +2015,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             </div>
           )}
           <div className="tracuuInvoiceTable">
-            {invoiceDataAGTable}           
+            {invoiceDataAGTable}
           </div>
         </div>
       )}
@@ -2293,7 +2230,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 </div>
               </form>
               <div className="insertInvoiceTable">
-                {xuatkhoPOTable}
+                {xuatkhoPOAGTable}
               </div>
             </div>
           </div>

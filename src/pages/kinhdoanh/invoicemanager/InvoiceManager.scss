@@ -40,7 +40,7 @@
       .batchnewinvoice {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 1px;
         width: 100%;
         box-sizing: border-box;
         align-items: center;
@@ -97,12 +97,10 @@
             }
           }
         }
-
         .insertInvoiceTable {
           display: flex;
-          width: 99%;
-          height: 80vh;
-          margin-top: 10px;
+          width: 100%;
+          height: 84vh;          
           background-image: linear-gradient(0deg, #afd3d1, #fac57f);
           border-radius: 5px;
 
@@ -184,7 +182,6 @@
         }
       }
     }
-
     .tracuuInvoice {
       width: 100%;
       height: 92vh;
@@ -194,7 +191,7 @@
         display: flex;
         flex-direction: column;
         width: 260px;
-        height: 99%;
+        height: 100%;
         align-items: center;
         font-size: 0.7rem;
         background-image: linear-gradient(0deg, #afd3d1, #c663da);
@@ -361,7 +358,6 @@
         }
       }
     }
-
     .them1invoice {
       display: flex;
       position: fixed;

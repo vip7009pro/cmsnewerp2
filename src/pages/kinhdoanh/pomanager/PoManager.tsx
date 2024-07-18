@@ -1662,17 +1662,17 @@ const PoManager = () => {
       });
   }
   const column_potable = [
-    { field: "PO_ID", type: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
+    { field: "PO_ID", cellDataType: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 120 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 70 },
-    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 70 },
-    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 70 },
+    { field: "PO_DATE",  headerName: "PO_DATE", width: 70 },
+    { field: "RD_DATE",  headerName: "RD_DATE", width: 70 },
     {
       field: "BEP",
-      type: "number",
+      cellDataType: "number",
       headerName: "BEP",
       width: 60,
       cellRenderer: (params: any) => {
@@ -1690,7 +1690,7 @@ const PoManager = () => {
     },
     {
       field: "PROD_PRICE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PROD_PRICE",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1708,7 +1708,7 @@ const PoManager = () => {
     },
     {
       field: "PO_QTY",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_QTY",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1721,7 +1721,7 @@ const PoManager = () => {
     },
     {
       field: "TOTAL_DELIVERED",
-      type: "number",
+      cellDataType: "number",
       headerName: "TOTAL_DELIVERED",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1734,7 +1734,7 @@ const PoManager = () => {
     },
     {
       field: "PO_BALANCE",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_BALANCE",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1747,7 +1747,7 @@ const PoManager = () => {
     },
     {
       field: "PO_AMOUNT",
-      type: "number",
+      cellDataType: "number",
       headerName: "PO_AMOUNT",
       width: 80,
       cellRenderer: (params: any) => {
@@ -1765,7 +1765,7 @@ const PoManager = () => {
     },
     {
       field: "DELIVERED_AMOUNT",
-      type: "number",
+      cellDataType: "number",
       headerName: "DELIVERED_AMOUNT",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1783,7 +1783,7 @@ const PoManager = () => {
     },
     {
       field: "BALANCE_AMOUNT",
-      type: "number",
+      cellDataType: "number",
       headerName: "BALANCE_AMOUNT",
       width: 90,
       cellRenderer: (params: any) => {
@@ -1801,7 +1801,7 @@ const PoManager = () => {
     },
     {
       field: "DELIVERED_BEP_AMOUNT",
-      type: "number",
+      cellDataType: "number",
       headerName: "DELIVERED_BEP_AMOUNT",
       width: 100,
       cellRenderer: (params: any) => {
@@ -1825,8 +1825,8 @@ const PoManager = () => {
       headerName: "PROD_MAIN_MATERIAL",
       width: 110,
     },
-    { field: "POMONTH", type: "number", headerName: "POMONTH", width: 80 },
-    { field: "POWEEKNUM", type: "number", headerName: "POWEEKNUM", width: 80 },
+    { field: "POMONTH", cellDataType: "number", headerName: "POMONTH", width: 80 },
+    { field: "POWEEKNUM", cellDataType: "number", headerName: "POWEEKNUM", width: 80 },
     { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
     { field: "REMARK", headerName: "REMARK", width: 110 },
   ];
