@@ -355,8 +355,7 @@ export function dynamicSort(property: string) {
 export const f_autopheduyetgia = () => {
   generalQuery("autopheduyetgiaall", {
   })
-    .then((response) => {
-      console.log(response.data.tk_status);
+    .then((response) => {      
       if (response.data.tk_status !== "NG") {
       } else {
       }
@@ -429,7 +428,22 @@ export const f_compareDateToNow = (date: string): boolean => {
     
   }
   return kq;
-
+}
+export const f_compareTwoDate = (date1: string, date2: string): number => {
+  let kq: number = 0;
+  let mdate1 = moment(date1);
+  let mdate2 = moment(date2);
+  if (mdate1 < mdate2) {
+    kq = -1;    
+  } 
+  else if(mdate1 == mdate2){
+    kq =0;
+  }
+  else 
+  {
+    kq = 1;
+  }
+  return kq;
 }
 
 export const f_checkG_CODE_USE_YN = async (G_CODE: string) => {
@@ -473,8 +487,7 @@ export const f_insertPO = async (poData: any) => {
     BEP: poData.BEP ?? 0,
     REMARK: poData.REMARK,
   })
-    .then((response) => {
-      console.log(response.data.tk_status);
+    .then((response) => {      
       if (response.data.tk_status !== "NG") {
         kq =  "OK";
       } else {       
@@ -516,10 +529,10 @@ export const f_updatePO = async (poData: any) => {
     return kq;
 }
 
-export const f_deletePO = async (poData: any) => {
+export const f_deletePO = async (PO_ID: number) => {
   let kq: string = 'NG';
   await generalQuery("delete_po", {
-    PO_ID: poData.PO_ID
+    PO_ID: PO_ID
   })
     .then((response) => {
       console.log(response.data.tk_status);
@@ -534,8 +547,6 @@ export const f_deletePO = async (poData: any) => {
     });
     return kq;
 }
-
-
 
 export const f_autogeneratePO_NO = async (cust_cd: string) => {
   let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
@@ -667,3 +678,29 @@ export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
   return newCodePriceData;
 };
 
+export const f_insertInvoice =  async (invoiceData: any) => {
+  let kq: string = 'NG';
+  await generalQuery("insert_invoice", {
+    G_CODE: invoiceData.G_CODE,
+    CUST_CD: invoiceData.CUST_CD,
+    PO_NO: invoiceData.PO_NO,
+    EMPL_NO: invoiceData.EMPL_NO,
+    DELIVERY_QTY: invoiceData.DELIVERY_QTY,
+    PO_DATE: invoiceData.PO_DATE,
+    RD_DATE: invoiceData.RD_DATE,
+    DELIVERY_DATE: invoiceData.DELIVERY_DATE,
+    REMARK: invoiceData.REMARK,
+  })
+    .then((response) => {      
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+
+}

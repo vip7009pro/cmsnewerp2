@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
-import { autoGetProdPrice, checkBP, f_autogeneratePO_NO, f_autopheduyetgia, f_checkG_CODE_USE_YN, f_checkPOExist, f_compareDateToNow, f_dongboGiaPO, f_getcodelist, f_getcustomerlist, f_insertPO, f_loadPoDataFull, f_loadprice, f_updatePO, zeroPad } from "../../../api/GlobalFunction";
+import { autoGetProdPrice, checkBP, f_autogeneratePO_NO, f_autopheduyetgia, f_checkG_CODE_USE_YN, f_checkPOExist, f_compareDateToNow, f_compareTwoDate, f_deletePO, f_dongboGiaPO, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_insertPO, f_loadPoDataFull, f_loadprice, f_updatePO, zeroPad } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -420,7 +420,6 @@ const PoManager = () => {
         return newpoprice === e.PROD_PRICE.toString();
       }
     ).length ?? 0;
-
     if (getCompany() !== 'CMS') {
       if (recheckPrice === 0) err_code = 5;
     }
@@ -460,34 +459,11 @@ const PoManager = () => {
   };
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
-    await generalQuery("checkPOExist", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-          err_code = 1;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    let now = moment();
-    let invoicedate = moment(newinvoicedate);
-    let podate = moment(newpodate.substring(0, 10));
-    if (now < invoicedate) {
-      err_code = 2;
-    }
-    if (podate > invoicedate) {
-      err_code = 6;
-    }
-    if (selectedCode?.USE_YN === "N") {
-      err_code = 3;
-    }
+    err_code = await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono) ? 0 : 1;
+    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;   
+    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,newpodate.substring(0, 10));
+    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
@@ -508,7 +484,7 @@ const PoManager = () => {
       }
     }
     if (err_code === 0) {
-      await generalQuery("insert_invoice", {
+      let kq = await f_insertInvoice({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -518,22 +494,12 @@ const PoManager = () => {
         RD_DATE: newrddate,
         DELIVERY_DATE: newinvoicedate,
         REMARK: newinvoiceRemark,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Thêm Invoice mới thất bại: " + response.data.message,
-              "error"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      });
+      if (kq === "OK") {
+        Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq,  "error");
+      }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
@@ -640,7 +606,7 @@ const PoManager = () => {
   };
   const updatePO = async () => {
     let err_code: number = 0;
-    err_code = await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono) ? 1 : 0;
+    err_code = await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono) ? 0 : 1;
     err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
     if (
@@ -701,21 +667,8 @@ const PoManager = () => {
       let err_code: boolean = false;
       for (let i = 0; i < podatatablefilter.current.length; i++) {
         if (podatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          await generalQuery("delete_po", {
-            PO_ID: podatatablefilter.current[i].PO_ID,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-                err_code = true;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          let kq =  await f_deletePO(podatatablefilter.current[i].PO_ID);
+          if(kq  !=='OK') err_code = true;               
         }
       }
       if (!err_code) {
