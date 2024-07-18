@@ -15,21 +15,7 @@ export const SaveExcel = (data: any, title: string) => {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
   XLSX.writeFile(workbook, `${title}.xlsx`);
 };
-export const readUploadFile = (e: any) => {
-  e.preventDefault();
-  if (e.target.files) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const data = e.target.result;
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
-      return json;
-    };
-    reader.readAsArrayBuffer(e.target.files[0]);
-  }
-};
+
 export function CustomResponsiveContainer(props: any) {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
@@ -704,3 +690,57 @@ export const f_insertInvoice =  async (invoiceData: any) => {
     return kq;
 
 }
+
+export const f_readUploadFile = (e: any,setRow: React.Dispatch<React.SetStateAction<Array<any>>>, setColumn: React.Dispatch<React.SetStateAction<Array<any>>>) => {
+  e.preventDefault();
+  if (e.target.files) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const data = e.target.result;
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json: any = XLSX.utils.sheet_to_json(worksheet);
+      let keys = Object.keys(json[0]);
+      keys.push('CHECKSTATUS');
+      let uploadexcelcolumn = keys.map((e, index) => {
+        return {
+          field: e,
+          headerName: e,
+          width: 100,
+          cellRenderer: (ele: any) => {
+            //console.log(ele);
+            if (e === "CHECKSTATUS") {
+              if (ele.data[e] === "Waiting") {
+                return (
+                  <span style={{ color: "blue", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              } else if (ele.data[e] === "OK") {
+                return (
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "red", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              }
+            } else {
+              return <span>{ele.data[e]}</span>;
+            }
+          },
+        };
+      });
+      setRow(json.map((element: any, index: number) => {
+        return { ...element, CHECKSTATUS: "Waiting", id: index };
+      }));
+      setColumn(uploadexcelcolumn);
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+  }  
+};

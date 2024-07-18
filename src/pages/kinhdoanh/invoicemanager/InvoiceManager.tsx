@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/a
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_readUploadFile, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -94,38 +94,8 @@ const InvoiceManager = () => {
       handletraInvoice();
     }
   };
-  const readUploadFile = (e: any) => {
-    e.preventDefault();
-    if (e.target.files) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json: any = XLSX.utils.sheet_to_json(worksheet);
-        const keys = Object.keys(json[0]);
-        let uploadexcelcolumn = keys.map((element, index) => {
-          return {
-            field: element,
-            headerName: element,
-            width: 150,
-          };
-        });
-        uploadexcelcolumn.push({
-          field: "CHECKSTATUS",
-          headerName: "CHECKSTATUS",
-          width: 350,
-        });
-        setColumnsExcel(uploadexcelcolumn);
-        setUploadExcelJSon(
-          json.map((element: any, index: number) => {
-            return { ...element, id: index, CHECKSTATUS: "Waiting" };
-          }),
-        );
-      };
-      reader.readAsArrayBuffer(e.target.files[0]);
-    }
+  const loadFile = (e: any) => {
+    f_readUploadFile(e,setUploadExcelJSon,setColumnsExcel);    
   };
   const dataGridRef = useRef<any>(null);
   const clearSelection = () => {
@@ -1749,7 +1719,7 @@ const InvoiceManager = () => {
                   name="upload"
                   id="upload"
                   onChange={(e: any) => {
-                    readUploadFile(e);
+                    loadFile(e);
                   }}
                 />
               </label>
