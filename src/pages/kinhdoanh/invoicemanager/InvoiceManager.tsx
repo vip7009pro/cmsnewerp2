@@ -118,9 +118,7 @@ const InvoiceManager = () => {
   const [material, setMaterial] = useState("");
   const [over, setOver] = useState("");
   const [invoice_no, setInvoice_No] = useState("");
-  const [invoicedatatable, setInvoiceDataTable] = useState<
-    Array<InvoiceTableData>
-  >([]);
+  const [invoicedatatable, setInvoiceDataTable] = useState<Array<InvoiceTableData>>([]);
   const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
   const invoice_no_ref = useRef<string>("");
   const clickedRow = useRef<any>(null);

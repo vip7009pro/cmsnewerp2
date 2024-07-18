@@ -118,9 +118,7 @@ const PoManager = () => {
   const [newpoBEP, setNewPoBEP] = useState("");
   const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
-  const [newinvoicedate, setNewInvoiceDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
+  const [newinvoicedate, setNewInvoiceDate] = useState(moment().format("YYYY-MM-DD"));
   const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [poSummary, setPoSummary] = useState<POSummaryData>({
     total_po_qty: 0,

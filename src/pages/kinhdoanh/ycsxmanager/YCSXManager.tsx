@@ -1900,6 +1900,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               phanloai: uploadExcelJson[i].PHANLOAI,
               PLAN_ID: next_prod_request_no + "A",
+              PR_NB : 0,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -1921,6 +1922,7 @@ const YCSXManager = () => {
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               PLAN_ID: next_prod_request_no + "A",
+              PROCESS_NUMBER : 0,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -2336,6 +2338,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           phanloai: newphanloai,
           PLAN_ID: next_prod_request_no + "A",
+          PR_NB : 0,
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -2357,6 +2360,7 @@ const YCSXManager = () => {
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
           PROD_REQUEST_NO: next_prod_request_no,
           PLAN_ID: next_prod_request_no + "A",
+          PROCESS_NUMBER : 0,
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {

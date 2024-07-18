@@ -905,8 +905,7 @@ const BOM_MANAGER = () => {
         }} />
     )
   }
- 
-   const codeInfoAGTable = useMemo(() => {
+  const codeInfoAGTable = useMemo(() => {
     return (
       <AGTable
         toolbar={
@@ -962,7 +961,7 @@ const BOM_MANAGER = () => {
           //setCodeDataTableFilter(params!.api.getSelectedRows());
         }} />
     )
-  }, [rows, pinBOM, enableform,codefullinfo])
+  }, [rows, pinBOM, enableform, codefullinfo])
   const bomsx_AGTable = useMemo(() =>
     <AGTable
       showFilter={false}
@@ -1025,7 +1024,7 @@ const BOM_MANAGER = () => {
         bomsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomsxtable, column_bomsx, selectedMaterial, selectedMasterMaterial,enableEdit]);
+    , [bomsxtable, column_bomsx, selectedMaterial, selectedMasterMaterial, enableEdit]);
   const bomgia_AGTable = useMemo(() =>
     <AGTable
       showFilter={false}
@@ -1106,7 +1105,7 @@ const BOM_MANAGER = () => {
         bomgiadatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial,enableEdit]);
+    , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial, enableEdit]);
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
@@ -1349,7 +1348,7 @@ const BOM_MANAGER = () => {
   };
   const handleCODEINFO = () => {
     setisLoading(true);
-    generalQuery("codeinfo", {
+    generalQuery("codeinforRnD", {
       G_NAME: codeCMS,
       CNDB: cndb,
       ACTIVE_ONLY: activeOnly
@@ -1644,7 +1643,7 @@ const BOM_MANAGER = () => {
       ////console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
     } else {
-      codedatatablefilter.current =  [];
+      codedatatablefilter.current = [];
     }
   };
   const handleClearInfo = () => {
@@ -3201,7 +3200,7 @@ const BOM_MANAGER = () => {
                   </div>
                 </div>
                 <div className="codeinfotable">
-                  {codeInfoAGTable}                  
+                  {codeInfoAGTable}
                 </div>
               </div>
             </div>
@@ -4181,7 +4180,7 @@ const BOM_MANAGER = () => {
                           inputProps={{ "aria-label": "controlled" }}
                         />
                       }
-                    />                    
+                    />
                     {company === "CMS" && (
                       <Button
                         onClick={() => {
@@ -4263,7 +4262,7 @@ const BOM_MANAGER = () => {
                     {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
                     {pinBOM ? "(Đang ghim BOM)" : ""}
                   </span>
-                  {bomsx_AGTable}                  
+                  {bomsx_AGTable}
                 </div>
               </div>
               <div className="bomgia">
@@ -4274,7 +4273,7 @@ const BOM_MANAGER = () => {
                     BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
                     {pinBOM ? "(Đang ghim BOM)" : ""}
                   </span>
-                  {bomgia_AGTable}                  
+                  {bomgia_AGTable}
                 </div>
               </div>
             </div>

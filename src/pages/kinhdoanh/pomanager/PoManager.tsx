@@ -27,6 +27,7 @@ import moment from "moment";
 import React, {
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useTransition,
@@ -65,6 +66,7 @@ import {
   UserData,
   WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const PoManager = () => {
   const dataGridRef = useRef<any>(null);
   const showhidesearchdiv = useRef(false);
@@ -136,10 +138,7 @@ const PoManager = () => {
   const [material, setMaterial] = useState("");
   const [over, setOver] = useState("");
   const [invoice_no, setInvoice_No] = useState("");
-  const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]);
-  /*   const [podatatablefilter, setPoDataTableFilter] = useState<
-    Array<POTableData>
-  >([]); */
+  const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]); 
   const podatatablefilter = useRef<POTableData[]>([]);
   const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
@@ -154,7 +153,7 @@ const PoManager = () => {
       //qlsxplandatafilter.current = [];
       //console.log(dataGridRef.current);
     }
-  }; 
+  };
   const autogeneratePO_NO = async (cust_cd: string) => {
     let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
     let next_po_no: string = po_no_to_check + "_001";
@@ -349,10 +348,11 @@ const PoManager = () => {
             (element: POTableData, index: number) => {
               return {
                 ...element,
+                id: index,
                 PO_DATE: element.PO_DATE.slice(0, 10),
                 RD_DATE: element.RD_DATE.slice(0, 10),
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
               };
             }
           );
@@ -476,132 +476,140 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
   };
   const handle_checkPOHangLoat = async () => {
-    Swal.fire({
-      title: "Đang check PO hàng loạt",
-      text: "Đang check, hãy chờ chút",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-    let column_map = keysArray.map((e, index) => {
-      return {
-        dataField: e,
-        caption: e,
-        width: 100,
-        cellRender: (ele: any) => {
-          //console.log(ele);
-          if (e === "CHECKSTATUS") {
-            if (ele.data[e] === "Waiting") {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else if (ele.data[e] === "OK") {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
+    if(uploadExcelJson.length > 0) 
+    {
+      Swal.fire({
+        title: "Đang check PO hàng loạt",
+        text: "Đang check, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
+      let column_map = keysArray.map((e, index) => {
+        return {
+          dataField: e,
+          caption: e,
+          width: 100,
+          cellRender: (ele: any) => {
+            //console.log(ele);
+            if (e === "CHECKSTATUS") {
+              if (ele.data[e] === "Waiting") {
+                return (
+                  <span style={{ color: "blue", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              } else if (ele.data[e] === "OK") {
+                return (
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "red", fontWeight: "bold" }}>
+                    {ele.data[e]}
+                  </span>
+                );
+              }
             } else {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
+              return <span>{ele.data[e]}</span>;
             }
-          } else {
-            return <span>{ele.data[e]}</span>;
-          }
-        },
-      };
-    });
-    setColumnsExcel(column_map);
-    setisLoading(true);
-    let tempjson = uploadExcelJson;
-    for (let i = 0; i < uploadExcelJson.length; i++) {
-      let err_code: number = 0;
-      await generalQuery("checkPOExist", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-        CUST_CD: uploadExcelJson[i].CUST_CD,
-        PO_NO: uploadExcelJson[i].PO_NO,
-      })
-        .then((response) => {
-          //console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            err_code = 1;
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-          }
+          },
+        };
+      });
+      setColumnsExcel(column_map);
+      setisLoading(true);
+      let tempjson = uploadExcelJson;
+      for (let i = 0; i < uploadExcelJson.length; i++) {
+        let err_code: number = 0;
+        await generalQuery("checkPOExist", {
+          G_CODE: uploadExcelJson[i].G_CODE,
+          CUST_CD: uploadExcelJson[i].CUST_CD,
+          PO_NO: uploadExcelJson[i].PO_NO,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-      let now = moment();
-      let po_date = moment(uploadExcelJson[i].PO_DATE);
-      if (now < po_date) {
-        err_code = 2;
-        //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-      } else {
-        //tempjson[i].CHECKSTATUS = "OK";
-      }
-      await generalQuery("checkGCodeVer", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-      })
-        .then((response) => {
-          //console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-              //tempjson[i].CHECKSTATUS = "OK";
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              err_code = 1;
             } else {
-              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-              err_code = 3;
+              //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
             }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-            err_code = 4;
-          }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        let now = moment();
+        let po_date = moment(uploadExcelJson[i].PO_DATE);
+        if (now < po_date) {
+          err_code = 2;
+          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+        } else {
+          //tempjson[i].CHECKSTATUS = "OK";
+        }
+        await generalQuery("checkGCodeVer", {
+          G_CODE: uploadExcelJson[i].G_CODE,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-      let tempgia = {
-        prod_price: 0,
-        bep: 0
-      };
-      if (getCompany() !== 'CMS') {
-        tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
-        //console.log(tempgia);
-        if (tempgia.prod_price !== 0) {
-          tempjson[i].PROD_PRICE = tempgia.prod_price;
-          tempjson[i].BEP = tempgia.bep;
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+              if (response.data.data[0].USE_YN === "Y") {
+                //tempjson[i].CHECKSTATUS = "OK";
+              } else {
+                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+                err_code = 3;
+              }
+            } else {
+              //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+              err_code = 4;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        let tempgia = {
+          prod_price: 0,
+          bep: 0
+        };
+        if (getCompany() !== 'CMS') {
+          tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
+          //console.log(tempgia);
+          if (tempgia.prod_price !== 0) {
+            tempjson[i].PROD_PRICE = tempgia.prod_price;
+            tempjson[i].BEP = tempgia.bep;
+          }
+          else {
+            err_code = 5;
+          }
         }
-        else {
-          err_code = 5;
+        if (err_code === 0) {
+          tempjson[i].CHECKSTATUS = "OK";
+        } else if (err_code === 1) {
+          tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+        } else if (err_code === 2) {
+          tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+        } else if (err_code === 3) {
+          tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+        } else if (err_code === 4) {
+          tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+        }
+        else if (err_code === 5) {
+          tempjson[i].CHECKSTATUS = "NG: Chưa có giá hoặc chua phê duyệt giá";
         }
       }
-      if (err_code === 0) {
-        tempjson[i].CHECKSTATUS = "OK";
-      } else if (err_code === 1) {
-        tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-      } else if (err_code === 2) {
-        tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-      } else if (err_code === 3) {
-        tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-      } else if (err_code === 4) {
-        tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-      }
-      else if (err_code === 5) {
-        tempjson[i].CHECKSTATUS = "NG: Chưa có giá hoặc chua phê duyệt giá";
-      }
+      Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");
+      setUploadExcelJSon(tempjson);
+      setTrigger(!trigger);
     }
-    Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");
-    setUploadExcelJSon(tempjson);
-    setTrigger(!trigger);
+    else 
+    {
+      Swal.fire("Thông báo","Chưa có dòng nào","error");
+    }
+    
   };
   const handle_upPOHangLoat = async () => {
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
@@ -932,12 +940,12 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
     let now = moment();
     let invoicedate = moment(newinvoicedate);
-    let podate = moment(newpodate.substring(0,10));
+    let podate = moment(newpodate.substring(0, 10));
     if (now < invoicedate) {
       err_code = 2;
     }
     if (podate > invoicedate) {
-      err_code = 6;      
+      err_code = 6;
     }
     if (selectedCode?.USE_YN === "N") {
       err_code = 3;
@@ -991,7 +999,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire("Thông báo","NG: Ngày Invoice không được trước ngày hôm nay","error");
+      Swal.fire("Thông báo", "NG: Ngày Invoice không được trước ngày hôm nay", "error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -1000,7 +1008,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       Swal.fire("Thông báo", "NG: Invoice QTY nhiều hơn PO BALANCE", "error");
     }
     else if (err_code === 6) {
-      Swal.fire("Thông báo","NG: Ngày Invoice không được trước ngày PO","error");
+      Swal.fire("Thông báo", "NG: Ngày Invoice không được trước ngày PO", "error");
     }
   };
   const clearPOform = () => {
@@ -1781,330 +1789,303 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       .catch((error) => {
         console.log(error);
       });
-  }
-  const poDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            ref={dataGridRef}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={podatatable}
-            columnWidth='auto'
-            keyExpr='PO_ID'
-            
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              podatatablefilter.current = e.selectedRowsData;
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-              clickedRow.current = e.data;
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    showhidesearchdiv.current = !showhidesearchdiv.current;
-                    setSH(!showhidesearchdiv.current);
-                  }}
-                >
-                  <TbLogout color='green' size={15} />
-                  Show/Hide
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(podatatable, "PO Table");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
-                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
-                    clearPOform();
-                  }}
-                >
-                  <AiFillFileAdd color='blue' size={15} />
-                  NEW PO
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaformInvoice
-            ); */
-                    checkBP(
-                      userData,
-                      ["KD"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_fillsuaformInvoice
-                    );
-                    //handle_fillsuaformInvoice();
-                  }}
-                >
-                  <FaFileInvoiceDollar color='lightgreen' size={15} />
-                  NEW INV
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaform
-            ); */
-                    checkBP(
-                      userData,
-                      ["KD"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_fillsuaform
-                    );
-                    //handle_fillsuaform();
-                  }}
-                >
-                  <AiFillEdit color='orange' size={15} />
-                  SỬA PO
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeletePO
-            ); */
-                    checkBP(
-                      userData,
-                      ["KD"],
-                      ["ALL"],
-                      ["ALL"],
-                      handleConfirmDeletePO
-                    );
-                    //handleConfirmDeletePO();
-                  }}
-                >
-                  <MdOutlineDelete color='red' size={15} />
-                  XÓA PO
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columns.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_QTY'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='TOTAL_DELIVERED'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_BALANCE'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='BALANCE_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_BEP_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [podatatable, getGlobalSetting()]
-  );
-  const excelDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={uploadExcelJson}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => { }}
-            onRowClick={(e) => {
-              //console.log(e.data);
+  } 
+  const column_potable = [
+    { field: "PO_ID", type: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
+    { field: "PO_NO", headerName: "PO_NO", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 120 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 70 },
+    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 70 },
+    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 70 },
+    {
+      field: "BEP",
+      type: "number",
+      headerName: "BEP",
+      width: 60,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#077abdFF" }}>
+            <b>
+              {params.data.BEP?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PROD_PRICE",
+      type: "number",
+      headerName: "PROD_PRICE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.data.PROD_PRICE?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_QTY",
+      type: "number",
+      headerName: "PO_QTY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_DELIVERED",
+      type: "number",
+      headerName: "TOTAL_DELIVERED",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.TOTAL_DELIVERED?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_BALANCE",
+      type: "number",
+      headerName: "PO_BALANCE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_BALANCE?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_AMOUNT",
+      type: "number",
+      headerName: "PO_AMOUNT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.PO_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_AMOUNT",
+      type: "number",
+      headerName: "DELIVERED_AMOUNT",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.DELIVERED_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BALANCE_AMOUNT",
+      type: "number",
+      headerName: "BALANCE_AMOUNT",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.BALANCE_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_BEP_AMOUNT",
+      type: "number",
+      headerName: "DELIVERED_BEP_AMOUNT",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#077abdFF" }}>
+            <b>
+              {params.data.DELIVERED_BEP_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 110 },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
+    { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
+    {
+      field: "PROD_MAIN_MATERIAL",
+      headerName: "PROD_MAIN_MATERIAL",
+      width: 110,
+    },
+    { field: "POMONTH", type: "number", headerName: "POMONTH", width: 80 },
+    { field: "POWEEKNUM", type: "number", headerName: "POWEEKNUM", width: 80 },
+    { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
+    { field: "REMARK", headerName: "REMARK", width: 110 },
+  ];
+  const poDataAGTable = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              showhidesearchdiv.current = !showhidesearchdiv.current;
+              setSH(!showhidesearchdiv.current);
             }}
           >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='single' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(uploadExcelJson, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columnsExcel.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [uploadExcelJson, columnsExcel, trigger]
-  );
+            <TbLogout color='green' size={15} />
+            Show/Hide
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
+              clearPOform();
+            }}
+          >
+            <AiFillFileAdd color='blue' size={15} />
+            NEW PO
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handle_fillsuaformInvoice
+              );
+            }}
+          >
+            <FaFileInvoiceDollar color='lightgreen' size={15} />
+            NEW INV
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handle_fillsuaform
+              );
+            }}
+          >
+            <AiFillEdit color='orange' size={15} />
+            SỬA PO
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmDeletePO
+              );
+            }}
+          >
+            <MdOutlineDelete color='red' size={15} />
+            XÓA PO
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
+            }}
+          >
+            <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+            Pivot
+          </IconButton>
+        </div>
+      }
+      columns={column_potable}
+      data={podatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        clickedRow.current = params.data;
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        podatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [podatatable]);
+  const excelDataAGTable = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
+            }}
+          >
+            <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+            Pivot
+          </IconButton>
+        </div>
+      }
+      columns={column_excel}
+      data={uploadExcelJson}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;        
+      }} onSelectionChange={(params: any) => {        
+        //setSelectedRows(params!.api.getSelectedRows()[0]);        
+      }}
+    />
+    , [uploadExcelJson, columnsExcel, trigger]);
+
   useEffect(() => {
-    if (getCompany() === 'CMS' && getSever() !=='http://222.252.1.63:3007' ) {
+    if (getCompany() === 'CMS' && getSever() !== 'http://222.252.1.63:3007') {
       autopheduyetgia();
       dongboGiaPO();
     }
@@ -2168,26 +2149,9 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               }}>Up PO</Button>
             </div>
             <div className='insertPOTable'>
-              {excelDataTable}
-              {/* <DataGrid
-                  sx={{ fontSize: "0.6rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excel2}
-                  rowsPerPageOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode="row"
-                  getRowHeight={() => "auto"}
-                /> */}
+              {excelDataAGTable}              
             </div>
-          </div>
-          <div className='singlenewpo'></div>
+          </div>          
         </div>
       )}
       {selection.trapo && (
@@ -2449,28 +2413,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               </table>
             </div>
             <div className='tablegrid'>
-              {poDataTable}
-              {/* <DataGrid
-                sx={{ fontSize: "0.7rem", flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPOTable,
-                  LoadingOverlay: LinearProgress,
-                }}
-                loading={isLoading}
-                rowHeight={30}
-                rows={podatatable}
-                columns={column_potable}
-                rowsPerPageOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                ]}
-                editMode="row"
-                getRowId={(row) => row.PO_ID}
-                checkboxSelection
-                disableSelectionOnClick
-                onSelectionModelChange={(ids) => {
-                  handlePOSelectionforUpdate(ids);
-                }}
-              /> */}
+              {poDataAGTable}              
             </div>
           </div>
         </div>
