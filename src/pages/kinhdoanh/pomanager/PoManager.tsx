@@ -1,54 +1,12 @@
-import {
-  Button,
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-  createFilterOptions,
-} from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
+import { Button, Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
-import {
-  AiFillCloseCircle,
-  AiFillEdit,
-  AiFillFileAdd,
-  AiFillFileExcel,
-} from "react-icons/ai";
+import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
-import {
-  autoGetProdPrice,
-  checkBP,
-  CustomResponsiveContainer,
-  SaveExcel,
-  zeroPad,
-} from "../../../api/GlobalFunction";
+import { autoGetProdPrice, checkBP, zeroPad } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -87,7 +45,6 @@ const PoManager = () => {
   const [sh, setSH] = useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
-  const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -138,13 +95,12 @@ const PoManager = () => {
   const [material, setMaterial] = useState("");
   const [over, setOver] = useState("");
   const [invoice_no, setInvoice_No] = useState("");
-  const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]); 
+  const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]);
   const podatatablefilter = useRef<POTableData[]>([]);
   const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
-  const [columns, setColumns] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const clearSelection = () => {
     if (dataGridRef.current) {
@@ -301,7 +257,7 @@ const PoManager = () => {
           headerName: "CHECKSTATUS",
           width: 350,
         });
-        setColumn_Excel(uploadexcelcolumn);
+        setColumnsExcel(uploadexcelcolumn);
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
             return { ...element, CHECKSTATUS: "Waiting", id: index };
@@ -375,88 +331,6 @@ const PoManager = () => {
             po_summary_temp.total_pobalance_amount +=
               loadeddata[i].BALANCE_AMOUNT;
           }
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-          let column_map = keysArray.map((e, index) => {
-            return {
-              dataField: e,
-              caption: e,
-              width: 100,
-              cellRender: (ele: any) => {
-                //console.log(ele);
-                if (e === "PROD_PRICE") {
-                  if (ele.data["FINAL"] === 'Y')
-                    return (
-                      <span style={{ color: "#03b048", fontWeight: "normal" }}>
-                        {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 6,
-                        })}
-                      </span>
-                    );
-                  return (
-                    <span style={{ color: "#de0374", fontWeight: "normal" }}>
-                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 6,
-                      })}
-                    </span>
-                  );
-                }
-                else if (e === "BEP") {
-                  return (
-                    <span style={{ color: "#0684cd", fontWeight: "normal" }}>
-                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 6,
-                      })}
-                    </span>
-                  );
-                }
-                else if (
-                  ["PO_QTY", "TOTAL_DELIVERED", "PO_BALANCE"].indexOf(e) > -1 ||
-                  e.indexOf("RESULT") > -1
-                ) {
-                  return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US")}
-                    </span>
-                  );
-                } else if (
-                  ["PO_AMOUNT", "DELIVERED_AMOUNT", "BALANCE_AMOUNT"].indexOf(
-                    e
-                  ) > -1 ||
-                  e.indexOf("_EA") > -1
-                ) {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </span>
-                  );
-                } else if (
-                  ["DELIVERED_BEP_AMOUNT"].indexOf(
-                    e
-                  ) > -1 ||
-                  e.indexOf("_EA") > -1
-                ) {
-                  return (
-                    <span style={{ color: "#094BB8", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </span>
-                  );
-                }
-                else {
-                  return <span>{ele.data[e]}</span>;
-                }
-              },
-            };
-          });
-          setColumns(column_map);
           setPoSummary(po_summary_temp);
           setPoDataTable(loadeddata);
           setisLoading(false);
@@ -476,8 +350,7 @@ const PoManager = () => {
       });
   };
   const handle_checkPOHangLoat = async () => {
-    if(uploadExcelJson.length > 0) 
-    {
+    if (uploadExcelJson.length > 0) {
       Swal.fire({
         title: "Đang check PO hàng loạt",
         text: "Đang check, hãy chờ chút",
@@ -488,12 +361,13 @@ const PoManager = () => {
         showConfirmButton: false,
       });
       let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
+      console.log(keysArray);
       let column_map = keysArray.map((e, index) => {
         return {
-          dataField: e,
-          caption: e,
+          field: e,
+          headerName: e,
           width: 100,
-          cellRender: (ele: any) => {
+          cellRenderer: (ele: any) => {
             //console.log(ele);
             if (e === "CHECKSTATUS") {
               if (ele.data[e] === "Waiting") {
@@ -605,20 +479,18 @@ const PoManager = () => {
       setUploadExcelJSon(tempjson);
       setTrigger(!trigger);
     }
-    else 
-    {
-      Swal.fire("Thông báo","Chưa có dòng nào","error");
+    else {
+      Swal.fire("Thông báo", "Chưa có dòng nào", "error");
     }
-    
   };
   const handle_upPOHangLoat = async () => {
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
     let column_map = keysArray.map((e, index) => {
       return {
-        dataField: e,
-        caption: e,
+        field: e,
+        headerName: e,
         width: 100,
-        cellRender: (ele: any) => {
+        cellRenderer: (ele: any) => {
           //console.log(ele);
           if (e === "CHECKSTATUS") {
             if (ele.data[e] === "Waiting") {
@@ -648,7 +520,6 @@ const PoManager = () => {
     });
     setColumnsExcel(column_map);
     let tempjson = uploadExcelJson;
-    console.log(tempjson);
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       await generalQuery("checkPOExist", {
@@ -1789,7 +1660,7 @@ const PoManager = () => {
       .catch((error) => {
         console.log(error);
       });
-  } 
+  }
   const column_potable = [
     { field: "PO_ID", type: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
@@ -2072,18 +1943,17 @@ const PoManager = () => {
           </IconButton>
         </div>
       }
-      columns={column_excel}
+      columns={columnsExcel}
       data={uploadExcelJson}
       onCellEditingStopped={(params: any) => {
         //console.log(e.data)
       }} onRowClick={(params: any) => {
         //clickedRow.current = params.data;        
-      }} onSelectionChange={(params: any) => {        
+      }} onSelectionChange={(params: any) => {
         //setSelectedRows(params!.api.getSelectedRows()[0]);        
       }}
     />
     , [uploadExcelJson, columnsExcel, trigger]);
-
   useEffect(() => {
     if (getCompany() === 'CMS' && getSever() !== 'http://222.252.1.63:3007') {
       autopheduyetgia();
@@ -2149,9 +2019,9 @@ const PoManager = () => {
               }}>Up PO</Button>
             </div>
             <div className='insertPOTable'>
-              {excelDataAGTable}              
+              {excelDataAGTable}
             </div>
-          </div>          
+          </div>
         </div>
       )}
       {selection.trapo && (
@@ -2413,7 +2283,7 @@ const PoManager = () => {
               </table>
             </div>
             <div className='tablegrid'>
-              {poDataAGTable}              
+              {poDataAGTable}
             </div>
           </div>
         </div>

@@ -1,31 +1,11 @@
-import {
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-  createFilterOptions,
-} from "@mui/material";
-import {
-  GridSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
+import React, { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
-import {
-  AiFillCloseCircle,
-  AiFillEdit,
-  AiFillFileAdd,
-  AiFillFileExcel,
-} from "react-icons/ai";
+import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { checkBP, CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
@@ -61,6 +41,7 @@ import {
   Summary,
   TotalItem,
 } from "devextreme-react/data-grid";
+import AGTable from "../../../components/DataTable/AGTable";
 const InvoiceManager = () => {
   const showhidesearchdiv = useRef(false);
   const [sh, setSH] = useState(true);
@@ -77,11 +58,9 @@ const InvoiceManager = () => {
     (state: RootState) => state.totalSlice.userData,
   );
   const [old_invoice_qty, setOld_Invoice_Qty] = useState(0);
-  const [columns, setColumns] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
-  const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -100,9 +79,7 @@ const InvoiceManager = () => {
   const [newpono, setNewPoNo] = useState("");
   const [newpoprice, setNewPoPrice] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
-  const [newinvoicedate, setNewInvoiceDate] = useState(
-    moment().format("YYYY-MM-DD"),
-  );
+  const [newinvoicedate, setNewInvoiceDate] = useState(moment().format("YYYY-MM-DD"));
   const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [invoiceSummary, setInvoiceSummary] = useState<InvoiceSummaryData>({
     total_po_qty: 0,
@@ -157,7 +134,7 @@ const InvoiceManager = () => {
           headerName: "CHECKSTATUS",
           width: 350,
         });
-        setColumn_Excel(uploadexcelcolumn);
+        setColumnsExcel(uploadexcelcolumn);
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
             return { ...element, id: index, CHECKSTATUS: "Waiting" };
@@ -210,6 +187,7 @@ const InvoiceManager = () => {
             (element: InvoiceTableData, index: number) => {
               return {
                 ...element,
+                id: index,
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
                 PO_DATE: element.PO_DATE.slice(0, 10),
                 RD_DATE: element.RD_DATE.slice(0, 10),
@@ -231,81 +209,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               loadeddata[i].DELIVERY_QTY;
             invoice_summary_temp.total_delivered_amount +=
               loadeddata[i].DELIVERED_AMOUNT;
-          }
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-          let column_map = keysArray.map((e, index) => {
-            return {
-              dataField: e,
-              caption: e,
-              width: 100,
-              cellRender: (ele: any) => {
-                //console.log(ele);
-                if (e === "PROD_PRICE") {
-                  return (
-                    <span style={{ color: "#ED15FF", fontWeight: "normal" }}>
-                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 6,
-                      })}
-                    </span>
-                  );
-                }
-                else if (e === "BEP") {
-                  return (
-                    <span style={{ color: "#0684cd", fontWeight: "normal" }}>
-                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 6,
-                      })}
-                    </span>
-                  );
-                }
-                else if (
-                  ["PO_QTY", "DELIVERY_QTY", "PO_BALANCE"].indexOf(e) > -1 ||
-                  e.indexOf("RESULT") > -1
-                ) {
-                  return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US")}
-                    </span>
-                  );
-                } else if (
-                  ["PO_AMOUNT", "DELIVERED_AMOUNT", "BALANCE_AMOUNT"].indexOf(
-                    e
-                  ) > -1 ||
-                  e.indexOf("_EA") > -1
-                ) {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </span>
-                  );
-                }
-                else if (
-                  ["DELIVERED_BEP_AMOUNT"].indexOf(
-                    e
-                  ) > -1 ||
-                  e.indexOf("_EA") > -1
-                ) {
-                  return (
-                    <span style={{ color: "#094BB8", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </span>
-                  );
-                }
-                else {
-                  return <span>{ele.data[e]}</span>;
-                }
-              },
-            };
-          });
-          setColumns(column_map);
+          }        
           setInvoiceSummary(invoice_summary_temp);
           setInvoiceDataTable(loadeddata);
           Swal.fire(
@@ -336,10 +240,10 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
     let column_map = keysArray.map((e, index) => {
       return {
-        dataField: e,
-        caption: e,
+        field: e,
+        headerName: e,
         width: 100,
-        cellRender: (ele: any) => {
+        cellRenderer: (ele: any) => {
           //console.log(ele);
           if (e === "CHECKSTATUS") {
             if (ele.data[e] === "Waiting") {
@@ -465,10 +369,10 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
     let column_map = keysArray.map((e, index) => {
       return {
-        dataField: e,
-        caption: e,
+        field: e,
+        headerName: e,
         width: 100,
-        cellRender: (ele: any) => {
+        cellRenderer: (ele: any) => {
           //console.log(ele);
           if (e === "CHECKSTATUS") {
             if (ele.data[e] === "Waiting") {
@@ -1147,6 +1051,126 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       Swal.fire("Thông báo", "Chọn ít nhất 1 Invoice để update invoice no !", "error");
     }
   }
+  const column_invoicetable = [
+    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90 , headerCheckboxSelection: true, checkboxSelection: true,},
+    { field: "CUST_CD", headerName: "CUST_CD", width: 70 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 110 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      flex: 1,
+      minWidth: 180,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#0660c7" }}>
+            <b>{params.data.G_NAME}</b>
+          </span>
+        );
+      },
+    },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+    { field: "PO_ID", headerName: "PO_ID", width: 70 },
+    { field: "PO_NO", headerName: "PO_NO", width: 80 },
+    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 100,},
+    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 100,},
+    { field: "DELIVERY_DATE", type: "date", headerName: "DELIVERY_DATE", width: 100,},
+    {
+      field: "DELIVERY_QTY",
+      type: "number",
+      headerName: "DELIVERY_QTY",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.DELIVERY_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BEP",
+      type: "number",
+      headerName: "BEP",
+      width: 60,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#5983f8" }}>
+            <b>
+              {params.data.BEP?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PROD_PRICE",
+      type: "number",
+      headerName: "PROD_PRICE",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.data.PROD_PRICE?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_AMOUNT",
+      type: "number",
+      headerName: "DELIVERED_AMOUNT",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.DELIVERED_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_BEP_AMOUNT",
+      type: "number",
+      headerName: "DELIVERED_BEP_AMOUNT",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#1485cfFF" }}>
+            <b>
+              {params.data.DELIVERED_BEP_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
+    { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
+    { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
+    { field: "PROD_MAIN_MATERIAL",headerName: "PROD_MAIN_MATERIAL",width: 120},
+    { field: "YEARNUM", type: "number", headerName: "YEARNUM", width: 80 },
+    { field: "WEEKNUM", type: "number", headerName: "WEEKNUM", width: 80 },
+    { field: "INVOICE_NO", type: "number", headerName: "INVOICE_NO", width: 120},  
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+  ];
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1467,52 +1491,12 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     ],
     store: invoicedatatable,
   });
-  const invoiceDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            ref={dataGridRef}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={invoicedatatable}
-            columnWidth='auto'
-            keyExpr='DELIVERY_ID'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              invoicedatatablefilter.current = e.selectedRowsData;
-            }}
-            onRowClick={(e) => {
-              console.log(e.data);
-              clickedRow.current = e.data;
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
+  const invoiceDataAGTable = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <div>
+           <IconButton
                   className="buttonIcon"
                   onClick={() => {
                     showhidesearchdiv.current = !showhidesearchdiv.current;
@@ -1621,153 +1605,46 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   <MdUpdate color="#dc3240" size={15} />
                   Update I.V No
                 </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columns.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERY_QTY'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_BEP_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [invoicedatatable, getGlobalSetting()]
-  );
-  const excelDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={uploadExcelJson}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => { }}
-            onRowClick={(e) => {
-              //console.log(e.data);
+        </div>
+      }
+      columns={column_invoicetable}
+      data={invoicedatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        clickedRow.current = params.data;
+      }} onSelectionChange={(params: any) => {       
+        invoicedatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [invoicedatatable, getGlobalSetting()]);
+  const excelDataAGTable = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
             }}
           >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='single' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(uploadExcelJson, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columnsExcel.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [uploadExcelJson, columnsExcel, trigger]
-  );
+            <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+            Pivot
+          </IconButton>
+        </div>
+      }
+      columns={columnsExcel}
+      data={uploadExcelJson}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;        
+      }} onSelectionChange={(params: any) => {        
+        //setSelectedRows(params!.api.getSelectedRows()[0]);        
+      }}
+    />
+    , [uploadExcelJson, columnsExcel, trigger]);
   const xuatkhoPOTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -1959,22 +1836,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               </div>
             </form>
             <div className="insertInvoiceTable">
-              {excelDataTable}
-              {/* <DataGrid
-                  sx={{ fontSize: "0.7rem", flex: 1 }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excelinvoice2}
-                  rowsPerPageOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode="row"
-                /> */}
+              {excelDataAGTable}              
             </div>
           </div>
         </div>
@@ -2216,30 +2078,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             </div>
           )}
           <div className="tracuuInvoiceTable">
-            {
-              invoiceDataTable
-            }
-            {/* <DataGrid
-              sx={{ fontSize: "0.7rem" }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={invoicedatatable}
-              columns={column_invoicetable}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode="row"
-              getRowId={(row) => row.DELIVERY_ID}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
-                handleInvoiceSelectionforUpdate(ids);
-              }}
-            /> */}
+            {invoiceDataAGTable}           
           </div>
         </div>
       )}
