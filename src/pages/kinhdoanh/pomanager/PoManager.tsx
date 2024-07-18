@@ -5,8 +5,26 @@ import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
-import { autoGetProdPrice, checkBP, f_autogeneratePO_NO, f_autopheduyetgia, f_checkG_CODE_USE_YN, f_checkPOExist, f_compareDateToNow, f_compareTwoDate, f_deletePO, f_dongboGiaPO, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_insertPO, f_loadPoDataFull, f_loadprice, f_updatePO, zeroPad } from "../../../api/GlobalFunction";
+import { getCompany, getGlobalSetting, getSever } from "../../../api/Api";
+import {
+  autoGetProdPrice,
+  checkBP,
+  f_autogeneratePO_NO,
+  f_autopheduyetgia,
+  f_checkG_CODE_USE_YN,
+  f_checkPOExist,
+  f_compareDateToNow,
+  f_compareTwoDate,
+  f_deletePO,
+  f_dongboGiaPO,
+  f_getcodelist,
+  f_getcustomerlist,
+  f_insertInvoice,
+  f_insertPO,
+  f_loadPoDataFull,
+  f_loadprice,
+  f_updatePO,
+} from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -265,7 +283,7 @@ const PoManager = () => {
       let tempjson = uploadExcelJson;
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
-        err_code = await f_checkPOExist(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_NO) ? 1 : 0;
+        err_code = (await f_checkPOExist(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_NO)) ? 1 : 0;
         err_code = f_compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
         let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
         err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
@@ -307,7 +325,7 @@ const PoManager = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      err_code = await f_checkPOExist(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_NO) ? 1 : 0;
+      err_code = (await f_checkPOExist(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_NO)) ? 1 : 0;
       err_code = f_compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
       let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
       err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
@@ -409,7 +427,7 @@ const PoManager = () => {
   };
   const handle_add_1PO = async () => {
     let err_code: number = 0;
-    err_code = await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono) ? 1 : 0;
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono)) ? 1 : 0;
     err_code = f_compareDateToNow(newpodate) ? 2 : err_code;   
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
     if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newpono === "" || userData?.EMPL_NO === "" || newpoprice === "") {
@@ -459,7 +477,7 @@ const PoManager = () => {
   };
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
-    err_code = await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono) ? 0 : 1;
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono)) ? 0 : 1;
     err_code = f_compareDateToNow(newpodate) ? 2 : err_code;   
     let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,newpodate.substring(0, 10));
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
@@ -606,7 +624,7 @@ const PoManager = () => {
   };
   const updatePO = async () => {
     let err_code: number = 0;
-    err_code = await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono) ? 0 : 1;
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
     err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
     if (
