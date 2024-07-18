@@ -1479,10 +1479,7 @@ const PoManager = () => {
         </div>
         <div
           className='mininavitem'
-          onClick={() =>
-            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setNav(2);
-            }) */
+          onClick={() =>            
             checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
