@@ -427,7 +427,7 @@ const PoManager = () => {
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
     err_code = (await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono)) ? 0 : 1;
-    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;   
+    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
     let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,newpodate.substring(0, 10));
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   

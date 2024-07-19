@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/a
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP, f_loadInvoiceDataFull, f_readUploadFile, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -625,41 +625,13 @@ const InvoiceManager = () => {
     }
   };
   const handle_add_1Invoice = async () => {
-    let err_code: number = 0;
-    let po_date: string = '';
-    await generalQuery("checkPOExist", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          po_date = response.data.data[0].PO_DATE;
-          if (newinvoiceQTY > response.data.data.PO_BALANCE) {
-            err_code = 5; //giao hang nhieu hon PO balance
-          }
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-          err_code = 1;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    let now = moment();
-    let invoicedate = moment(newinvoicedate);
-    if (now < invoicedate) {
-      err_code = 2;
-    }
-    let podate = moment(po_date.substring(0, 10));
-    if (podate > invoicedate) {
-      err_code = 6;
-    }
-    if (selectedCode?.USE_YN === "N") {
-      err_code = 3;
-    }
-    
+    let err_code: number = 0;    
+    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono);
+    err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
+    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,po_info[0].PO_DATE.substring(0, 10));
+    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code; 
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
@@ -669,24 +641,10 @@ const InvoiceManager = () => {
     ) {
       err_code = 4;
     }
-    await generalQuery("checkcustcodeponoPOBALANCE", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
-          if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    err_code = newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code;
+    
     if (err_code === 0) {
-      await generalQuery("insert_invoice", {
+      let kq = await f_insertInvoice({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -695,22 +653,12 @@ const InvoiceManager = () => {
         DELIVERY_DATE: newinvoicedate,
         REMARK: newinvoiceRemark,
         INVOICE_NO: "",
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Thêm Invoice mới thất bại: " + response.data.message,
-              "error",
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      });
+      if (kq === "OK") {
+        Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq,  "error");
+      }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {

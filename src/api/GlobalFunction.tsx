@@ -405,7 +405,7 @@ export const f_checkPOExist = async (G_CODE: string, CUST_CD: string, PO_NO: str
 }
 
 export const f_checkPOInfo = async (G_CODE: string, CUST_CD: string, PO_NO: string) => {
-  let kq= false;
+  let kq: Array<any>= [];
   await generalQuery("checkPOExist", {
     G_CODE: G_CODE,
     CUST_CD: CUST_CD,
@@ -414,7 +414,7 @@ export const f_checkPOInfo = async (G_CODE: string, CUST_CD: string, PO_NO: stri
     .then((response) => {
       //console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        kq = true;
+        kq = response.data.data;
       } else {
         //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
       }
