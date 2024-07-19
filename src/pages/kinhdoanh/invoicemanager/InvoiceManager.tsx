@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/a
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP, f_readUploadFile, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_loadInvoiceDataFull, f_readUploadFile, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -106,7 +106,7 @@ const InvoiceManager = () => {
       //console.log(dataGridRef.current);
     }
   };
-  const handletraInvoice = () => {
+  const handletraInvoice = async () => {
     Swal.fire({
       title: "Tra cứu Invoices",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -117,7 +117,8 @@ const InvoiceManager = () => {
       showConfirmButton: false,
     });
     clearSelection();
-    generalQuery("traInvoiceDataFull", {
+    let loadeddata: InvoiceTableData[]  = [];
+    loadeddata = await f_loadInvoiceDataFull({
       alltime: alltime,
       justPoBalance: justpobalance,
       start_date: fromdate,
@@ -132,53 +133,35 @@ const InvoiceManager = () => {
       id: id,
       material: material,
       invoice_no: invoice_no
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InvoiceTableData[] = response.data.data.map(
-            (element: InvoiceTableData, index: number) => {
-              return {
-                ...element,
-                id: index,
-                DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
-                PO_DATE: element.PO_DATE.slice(0, 10),
-                RD_DATE: element.RD_DATE.slice(0, 10),
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-              };
-            },
-          );
-          let invoice_summary_temp: InvoiceSummaryData = {
-            total_po_qty: 0,
-            total_delivered_qty: 0,
-            total_pobalance_qty: 0,
-            total_po_amount: 0,
-            total_delivered_amount: 0,
-            total_pobalance_amount: 0,
-          };
-          for (let i = 0; i < loadeddata.length; i++) {
-            invoice_summary_temp.total_delivered_qty +=
-              loadeddata[i].DELIVERY_QTY;
-            invoice_summary_temp.total_delivered_amount +=
-              loadeddata[i].DELIVERED_AMOUNT;
-          }
-          setInvoiceSummary(invoice_summary_temp);
-          setInvoiceDataTable(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-          setInvoiceDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
+    if (loadeddata.length > 0) {
+      let invoice_summary_temp: InvoiceSummaryData = {
+        total_po_qty: 0,
+        total_delivered_qty: 0,
+        total_pobalance_qty: 0,
+        total_po_amount: 0,
+        total_delivered_amount: 0,
+        total_pobalance_amount: 0,
+      };
+      for (let i = 0; i < loadeddata.length; i++) {
+        invoice_summary_temp.total_delivered_qty +=
+          loadeddata[i].DELIVERY_QTY;
+        invoice_summary_temp.total_delivered_amount +=
+          loadeddata[i].DELIVERED_AMOUNT;
+      }
+      setInvoiceSummary(invoice_summary_temp);
+      setInvoiceDataTable(loadeddata);
+      Swal.fire(
+        "Thông báo",
+        "Đã load " + loadeddata.length + " dòng",
+        "success",
+      );
+    }
+    else 
+    {
+      setInvoiceDataTable([]);
+      Swal.fire("Thông báo", "Không có dữ liệu", "success");
+    }
   };
   const handle_checkInvoiceHangLoat = async () => {
     if(uploadExcelJson.length>0)
@@ -1130,7 +1113,7 @@ const InvoiceManager = () => {
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
     { field: "YEARNUM", cellDataType: "number", headerName: "YEARNUM", width: 80 },
     { field: "WEEKNUM", cellDataType: "number", headerName: "WEEKNUM", width: 80 },
-    { field: "INVOICE_NO", cellDataType: "number", headerName: "INVOICE_NO", width: 120 },
+    { field: "INVOICE_NO", cellDataType: "string", headerName: "INVOICE_NO", width: 120 },
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
   const column_xuatkho = [

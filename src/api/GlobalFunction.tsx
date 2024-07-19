@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany } from "./Api";
-import { CodeListData, CustomerListData, POTableData, PRICEWITHMOQ, UserData } from "./GlobalInterface";
+import { CodeListData, CustomerListData, InvoiceTableData, POTableData, PRICEWITHMOQ, UserData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 
@@ -404,6 +404,27 @@ export const f_checkPOExist = async (G_CODE: string, CUST_CD: string, PO_NO: str
     return kq;
 }
 
+export const f_checkPOInfo = async (G_CODE: string, CUST_CD: string, PO_NO: string) => {
+  let kq= false;
+  await generalQuery("checkPOExist", {
+    G_CODE: G_CODE,
+    CUST_CD: CUST_CD,
+    PO_NO: PO_NO,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
 export const f_compareDateToNow = (date: string): boolean => {
   let kq: boolean = false;
   let now = moment();
@@ -744,3 +765,38 @@ export const f_readUploadFile = (e: any,setRow: React.Dispatch<React.SetStateAct
     reader.readAsArrayBuffer(e.target.files[0]);
   }  
 };
+
+// Invoice manager function
+
+export const f_loadInvoiceDataFull = async (filterData: any) =>  {
+  let invoicedata: InvoiceTableData[] = [];
+  await generalQuery("traInvoiceDataFull", filterData)
+  .then((response) => {
+    //console.log(response.data.data);
+    if (response.data.tk_status !== "NG") {
+      const loadeddata: InvoiceTableData[] = response.data.data.map(
+        (element: InvoiceTableData, index: number) => {
+          return {
+            ...element,
+            id: index,
+            DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
+            PO_DATE: element.PO_DATE.slice(0, 10),
+            RD_DATE: element.RD_DATE.slice(0, 10),
+            G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+            G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+          };
+        },
+      );
+      invoicedata = loadeddata;
+     
+    } else {    
+      invoicedata = [];
+    }
+  })
+  .catch((error) => {
+    Swal.fire("Thông báo", "Nội dung: " + error, "error");
+    console.log(error);
+  });
+  return invoicedata;
+}
+

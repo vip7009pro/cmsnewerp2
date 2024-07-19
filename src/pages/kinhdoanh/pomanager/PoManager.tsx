@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState, useTransition } from "reac
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import Swal from "sweetalert2";
-import * as XLSX from "xlsx";
 import { getCompany, getGlobalSetting, getSever } from "../../../api/Api";
 import {
   autoGetProdPrice,
@@ -23,6 +22,7 @@ import {
   f_insertPO,
   f_loadPoDataFull,
   f_loadprice,
+  f_readUploadFile,
   f_updatePO,
 } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
@@ -46,7 +46,6 @@ import AGTable from "../../../components/DataTable/AGTable";
 const PoManager = () => {
   const dataGridRef = useRef<any>(null);
   const showhidesearchdiv = useRef(false);
-  const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -157,61 +156,10 @@ const PoManager = () => {
       CUST_NAME: "SELECT_CUSTOMER VINA",
     });
   };
-  const readUploadFile = (e: any) => {
-    e.preventDefault();
-    if (e.target.files) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json: any = XLSX.utils.sheet_to_json(worksheet);
-        let keys = Object.keys(json[0]);
-        keys.push('CHECKSTATUS');
-        let uploadexcelcolumn = keys.map((e, index) => {
-          return {
-            field: e,
-            headerName: e,
-            width: 100,
-            cellRenderer: (ele: any) => {
-              //console.log(ele);
-              if (e === "CHECKSTATUS") {
-                if (ele.data[e] === "Waiting") {
-                  return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                      {ele.data[e]}
-                    </span>
-                  );
-                } else if (ele.data[e] === "OK") {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {ele.data[e]}
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span style={{ color: "red", fontWeight: "bold" }}>
-                      {ele.data[e]}
-                    </span>
-                  );
-                }
-              } else {
-                return <span>{ele.data[e]}</span>;
-              }
-            },
-          };
-        });
-        setColumnsExcel(uploadexcelcolumn);
-        setUploadExcelJSon(
-          json.map((element: any, index: number) => {
-            return { ...element, CHECKSTATUS: "Waiting", id: index };
-          })
-        );
-      };
-      reader.readAsArrayBuffer(e.target.files[0]);
-    }
+  const loadFile = (e: any) => {
+    f_readUploadFile(e,setUploadExcelJSon,setColumnsExcel);    
   };
+
   const handletraPO = async () => {
     if (getCompany() === 'CMS') {
       f_autopheduyetgia();
@@ -266,6 +214,7 @@ const PoManager = () => {
       Swal.fire("Thông báo", "Đã load " + loadeddata.length + " dòng", "success");
     }
     else {
+      setPoDataTable([]);
       Swal.fire("Thông báo", "Không có dữ liệu", "success");
     }
   };
@@ -1525,7 +1474,7 @@ const PoManager = () => {
                 name='upload'
                 id='upload'
                 onChange={(e: any) => {
-                  readUploadFile(e);
+                  loadFile(e);
                 }}
               />
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
