@@ -659,6 +659,7 @@ const InvoiceManager = () => {
     if (selectedCode?.USE_YN === "N") {
       err_code = 3;
     }
+    
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
