@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/a
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -174,121 +174,23 @@ const InvoiceManager = () => {
         allowOutsideClick: false,
         confirmButtonText: "OK",
         showConfirmButton: false,
-      });
-      let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-      let column_map = keysArray.map((e, index) => {
-        return {
-          field: e,
-          headerName: e,
-          width: 100,
-          cellRenderer: (ele: any) => {
-            //console.log(ele);
-            if (e === "CHECKSTATUS") {
-              if (ele.data[e] === "Waiting") {
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              } else if (ele.data[e] === "OK") {
-                return (
-                  <span style={{ color: "green", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              }
-            } else {
-              return <span>{ele.data[e]}</span>;
-            }
-          },
-        };
-      });
-      setColumnsExcel(column_map);
+      });      
       let tempjson = uploadExcelJson;
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
-        let po_date: string = '';
-        await generalQuery("checkPOExist", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-          CUST_CD: uploadExcelJson[i].CUST_CD,
-          PO_NO: uploadExcelJson[i].PO_NO,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              po_date = response.data.data[0].PO_DATE;
-              //console.log(po_date);
-              if (
-                uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
-              ) {
-                err_code = 5; //giao hang nhieu hon PO balance
-              }
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-              err_code = 1;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        let now = moment();
-        let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
-        if (now < deliverydate) {
-          err_code = 2;
-        }
-        let podate = moment(po_date.substring(0, 10));
-        if (podate > deliverydate) {
-          err_code = 6;
-        }
-        await generalQuery("checkGCodeVer", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-              if (response.data.data[0].USE_YN === "Y") {
-                //tempjson[i].CHECKSTATUS = "OK";
-              } else {
-                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-                err_code = 3;
-              }
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-              err_code = 4;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("checkcustcodeponoPOBALANCE", {
-          G_CODE: selectedCode?.G_CODE,
-          CUST_CD: selectedCust_CD?.CUST_CD,
-          PO_NO: newpono,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
-              if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE??"", uploadExcelJson[i].CUST_CD??"", uploadExcelJson[i].PO_NO);
+        err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
+        let checkCompareIVDatevsPODate: number = f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE,po_info[0].PO_DATE.substring(0, 10));
+        err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+        err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
+        let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+        err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
         if (err_code === 0) {
           tempjson[i].CHECKSTATUS = "OK";
         } else if (err_code === 1) {
           tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
         } else if (err_code === 2) {
-          tempjson[i].CHECKSTATUS =
-            "NG: Ngày Giao hàng không được trước ngày hôm nay";
+          tempjson[i].CHECKSTATUS = "NG: Ngày Giao hàng không được trước ngày hôm nay";
         } else if (err_code === 3) {
           tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
         } else if (err_code === 4) {
@@ -302,146 +204,34 @@ const InvoiceManager = () => {
       setUploadExcelJSon(tempjson);
       setTrigger(!trigger);
       Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
-
     }
     else
     {
       Swal.fire('Thông báo','Không có dòng nào','error');
     }
-    
   };
-  const handle_upInvoiceHangLoat = async () => {
-    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-    let column_map = keysArray.map((e, index) => {
-      return {
-        field: e,
-        headerName: e,
-        width: 100,
-        cellRenderer: (ele: any) => {
-          //console.log(ele);
-          if (e === "CHECKSTATUS") {
-            if (ele.data[e] === "Waiting") {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else if (ele.data[e] === "OK") {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            }
-          } else {
-            return <span>{ele.data[e]}</span>;
-          }
-        },
-      };
-    });
-    setColumnsExcel(column_map);
+  const handle_upInvoiceHangLoat = async () => {    
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      let po_date: string = '';
-      await generalQuery("checkPOExist", {
+      let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE??"", uploadExcelJson[i].CUST_CD??"", uploadExcelJson[i].PO_NO);
+      err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
+      let checkCompareIVDatevsPODate: number = f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE,po_info[0].PO_DATE.substring(0, 10));
+      err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+      err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
+      let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+      err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
+      if (err_code === 0) {
+        tempjson[i].CHECKSTATUS = await f_insertInvoice({
+        DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
+        DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
+        REMARK: uploadExcelJson[i]?.REMARK ?? "",
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
         PO_NO: uploadExcelJson[i].PO_NO,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            po_date = response.data.data[0].PO_DATE;
-            console.log(po_date);
-            if (
-              uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
-            ) {
-              err_code = 5; //giao hang nhieu hon PO balance
-            }
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-          } else {
-            err_code = 1;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      let now = moment();
-      let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
-      if (now < deliverydate) {
-        err_code = 2;
-      }
-      let podate = moment(po_date.substring(0, 10));
-      if (podate > deliverydate) {
-        err_code = 6;
-      }
-      await generalQuery("checkGCodeVer", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-              //tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-              err_code = 3;
-            }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-            err_code = 4;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      await generalQuery("checkcustcodeponoPOBALANCE", {
-        G_CODE: selectedCode?.G_CODE,
-        CUST_CD: selectedCust_CD?.CUST_CD,
-        PO_NO: newpono,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
-            if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      if (err_code === 0) {
-        await generalQuery("insert_invoice", {
-          DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
-          DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
-          REMARK: uploadExcelJson[i]?.REMARK ?? "",
-          G_CODE: uploadExcelJson[i].G_CODE,
-          CUST_CD: uploadExcelJson[i].CUST_CD,
-          PO_NO: uploadExcelJson[i].PO_NO,
-          EMPL_NO: userData?.EMPL_NO,
-          INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              err_code = 5;
-              tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        EMPL_NO: userData?.EMPL_NO,
+        INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
+        }); 
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
       } else if (err_code === 2) {
@@ -463,9 +253,10 @@ const InvoiceManager = () => {
   };
   const handle_upInvoiceXKHL = async () => {
     if (selectedxuatkhopo.current.length > 0) {
+      let err_code: number = 0;
       for (let i = 0; i < selectedxuatkhopo.current.length; i++) {
         if (selectedxuatkhopo.current[i].CHECKSTATUS.substring(0, 2) === 'OK') {
-          await generalQuery("insert_invoice", {
+          let kq = await  f_insertInvoice({
             DELIVERY_QTY: selectedxuatkhopo.current[i].THISDAY_OUT_QTY,
             DELIVERY_DATE: selectedxuatkhopo.current[i].OUT_DATE,
             REMARK: "",
@@ -474,17 +265,17 @@ const InvoiceManager = () => {
             PO_NO: selectedxuatkhopo.current[i].PO_NO,
             EMPL_NO: userData?.EMPL_NO,
             INVOICE_NO: "",
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          });
+          if(kq !=='OK') err_code = 1;          
         }
+      }
+      if(err_code === 0)
+      {
+        Swal.fire('Thông báo','Thêm invoice từ lịch sử xuất kho thành công', 'success');
+      }
+      else
+      {
+        Swal.fire('Thông báo','Có 1 hoặc nhiều invoice đã bị lỗi, hãy kiểm tra lại', 'error');
       }
       loadXuatKho();
     }
@@ -565,31 +356,11 @@ const InvoiceManager = () => {
       }
     });
   };
-  const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getcustomerlist = async () => {
+    setCustomerList(await f_getcustomerlist());
   };
-  const getcodelist = (G_NAME: string) => {
-    startTransition(() => {
-      generalQuery("selectcodeList", { G_NAME: G_NAME })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            setCodeList(response.data.data);
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
+  const getcodelist = async (G_NAME: string) => {
+    setCodeList(await f_getcodelist(G_NAME));
   };
   const setNav = (choose: number) => {
     if (choose === 1) {
@@ -632,16 +403,9 @@ const InvoiceManager = () => {
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
     err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code; 
-    if (
-      selectedCode?.G_CODE === "" ||
-      selectedCust_CD?.CUST_CD === "" ||
-      newinvoicedate === "" ||
-      userData?.EMPL_NO === "" ||
-      newinvoiceQTY === 0
-    ) {
+    if (  selectedCode?.G_CODE === "" ||  selectedCust_CD?.CUST_CD === "" ||  newinvoicedate === "" ||  userData?.EMPL_NO === "" ||  newinvoiceQTY === 0) {
       err_code = 4;
-    }
-    err_code = newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code;
+    }   
     
     if (err_code === 0) {
       let kq = await f_insertInvoice({
@@ -699,54 +463,23 @@ const InvoiceManager = () => {
         them1invoice: true,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE:
-          clickedRow.current?.G_CODE === undefined
-            ? ""
-            : clickedRow.current?.G_CODE,
-        G_NAME:
-          clickedRow.current?.G_NAME === undefined
-            ? ""
-            : clickedRow.current?.G_NAME,
-        G_NAME_KD:
-          clickedRow.current?.G_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.G_NAME_KD,
+        G_CODE:clickedRow.current?.G_CODE ?? "",
+        G_NAME:clickedRow.current?.G_NAME ?? "",
+        G_NAME_KD:clickedRow.current?.G_NAME_KD ?? "",
         PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD:
-          clickedRow.current?.CUST_CD === undefined
-            ? ""
-            : clickedRow.current?.CUST_CD,
-        CUST_NAME_KD:
-          clickedRow.current?.CUST_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.CUST_NAME_KD,
+        CUST_CD:clickedRow.current?.CUST_CD ?? "",
+        CUST_NAME_KD:clickedRow.current?.CUST_NAME_KD ?? "",
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewInvoiceQty(
-        clickedRow.current?.DELIVERY_QTY === undefined
-          ? 0
-          : clickedRow.current?.DELIVERY_QTY
-      );
-      setNewPoNo(
-        clickedRow.current?.PO_NO === undefined
-          ? ""
-          : clickedRow.current?.PO_NO
-      );
+      setNewInvoiceQty( clickedRow.current?.DELIVERY_QTY ?? 0);
+      setNewPoNo( clickedRow.current?.PO_NO ?? "");
       setNewInvoiceDate(moment().format("YYYY-MM-DD"));
-      setNewInvoiceRemark(
-        clickedRow.current?.REMARK === undefined
-          ? ""
-          : clickedRow.current?.REMARK
-      );
-      setSelectedID(
-        clickedRow.current?.DELIVERY_ID === undefined
-          ? ""
-          : clickedRow.current?.DELIVERY_ID
-      );
+      setNewInvoiceRemark(clickedRow.current?.REMARK ?? "");
+      setSelectedID(clickedRow.current?.DELIVERY_ID ?? "");
       setOld_Invoice_Qty(clickedRow.current?.DELIVERY_QTY ?? 0);
     } else {
       clearInvoiceform();
@@ -755,59 +488,20 @@ const InvoiceManager = () => {
   };
   const updateInvoice = async () => {
     let err_code: number = 0;
-    await generalQuery("checkPOExist", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-          err_code = 1;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    let now = moment();
-    let invoicedate = moment(newinvoicedate);
-    if (now < invoicedate) {
-      err_code = 2;
-      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-    } else {
-      //tempjson[i].CHECKSTATUS = "OK";
-    }
-    if (selectedCode?.USE_YN === "N") {
-      err_code = 3;
-    }
-    if (
-      selectedCode?.G_CODE === "" ||
-      selectedCust_CD?.CUST_CD === "" ||
-      newpono === "" ||
-      userData?.EMPL_NO === ""
-    ) {
+    //validating invoice information
+    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono);
+    err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
+    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,po_info[0].PO_DATE.substring(0, 10));
+    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code; 
+    if (selectedCode?.G_CODE === "" ||selectedCust_CD?.CUST_CD === "" ||newinvoicedate === "" ||userData?.EMPL_NO === "" ||newinvoiceQTY === 0){
       err_code = 4;
     }
-    await generalQuery("checkcustcodeponoPOBALANCE", {
-      G_CODE: selectedCode?.G_CODE,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      PO_NO: newpono,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
-          if (tem_this_po_balance + old_invoice_qty < newinvoiceQTY) err_code = 5;
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    err_code = newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code;
+
     if (err_code === 0) {
-      await generalQuery("update_invoice", {
+      let kq = await f_updateInvoice({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -816,30 +510,21 @@ const InvoiceManager = () => {
         DELIVERY_QTY: newinvoiceQTY,
         REMARK: newinvoiceRemark,
         DELIVERY_ID: selectedID,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Update Invoice thành công", "success");
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Update Invoice thất bại: " + response.data.message,
-              "error",
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      });
+
+      if (kq === "OK") {
+        Swal.fire("Thông báo", "Update Invoice thành công", "success");
+      } else {
+        Swal.fire(
+          "Thông báo",
+          "Update Invoice thất bại: " + kq,
+          "error",
+        );
+      }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire(
-        "Thông báo",
-        "NG: Ngày Giao Hàng không được trước ngày hôm nay",
-        "error",
-      );
+      Swal.fire("Thông báo","NG: Ngày Giao Hàng không được trước ngày hôm nay","error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -856,21 +541,10 @@ const InvoiceManager = () => {
       let err_code: boolean = false;
       for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          await generalQuery("delete_invoice", {
-            DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-                err_code = true;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          if(await f_deleteInvoice(invoicedatatablefilter.current[i].DELIVERY_ID) !=='OK')
+          {
+            err_code = true;
+          }          
         }
       }
       if (!err_code) {
@@ -907,37 +581,20 @@ const InvoiceManager = () => {
     limit: 100,
   });
   const updateInvoiceNo = async (invoice_no: string) => {
+    console.log(invoice_no);
+    console.log(invoicedatatablefilter.current);
     if (invoicedatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
-        console.log(userData?.EMPL_NO);
-        console.log(invoicedatatablefilter.current[i].EMPL_NO);
-        console.log('invoice_no', invoice_no);
+      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {        
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          await generalQuery("update_invoice_no", {
-            DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,
-            INVOICE_NO: invoice_no_ref.current
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-                err_code = true;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          if(await f_updateInvoiceNo(invoicedatatablefilter.current[i].DELIVERY_ID,invoice_no) !=='OK')
+          {
+            err_code = true;
+          }          
         }
       }
       if (!err_code) {
-        Swal.fire(
-          "Thông báo",
-          "Update invoice no!",
-          "success",
-        );
+        Swal.fire("Thông báo","Update invoice no!","success",);
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL!", "error");
       }

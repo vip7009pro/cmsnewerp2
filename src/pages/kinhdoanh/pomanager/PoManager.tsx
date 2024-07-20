@@ -292,6 +292,7 @@ const PoManager = () => {
           BEP: uploadExcelJson[i].BEP ?? 0,
           REMARK: uploadExcelJson[i].REMARK,
         });
+        
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
       } else if (err_code === 2) {

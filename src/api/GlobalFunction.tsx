@@ -800,3 +800,67 @@ export const f_loadInvoiceDataFull = async (filterData: any) =>  {
   return invoicedata;
 }
 
+export const f_updateInvoice = async (invoiceData: any) => {
+  let kq: string = 'NG';
+  await generalQuery("update_invoice", {
+    G_CODE: invoiceData.G_CODE,
+    CUST_CD: invoiceData.CUST_CD,
+    PO_NO: invoiceData.PO_NO,
+    EMPL_NO: invoiceData.EMPL_NO,
+    DELIVERY_DATE: invoiceData.DELIVERY_DATE,
+    DELIVERY_QTY: invoiceData.DELIVERY_QTY,
+    REMARK: invoiceData.REMARK,
+    DELIVERY_ID: invoiceData.DELIVERY_ID,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_deleteInvoice = async (DELIVERY_ID: number) => {
+  let kq: string = 'NG';
+  await generalQuery("delete_invoice", {
+    DELIVERY_ID: DELIVERY_ID
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_updateInvoiceNo = async (DELIVERY_ID: number, INVOICE_NO: string) => {  
+  let kq: string = 'NG';
+  await generalQuery("update_invoice_no", {    
+    DELIVERY_ID: DELIVERY_ID,
+    INVOICE_NO: INVOICE_NO
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq =  "OK";
+      } else {       
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
