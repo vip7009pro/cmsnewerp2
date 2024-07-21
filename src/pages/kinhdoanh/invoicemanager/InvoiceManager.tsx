@@ -4,8 +4,7 @@ import React, { useEffect, useMemo, useRef, useState, useTransition } from "reac
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { checkBP, f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
@@ -95,7 +94,7 @@ const InvoiceManager = () => {
     }
   };
   const loadFile = (e: any) => {
-    f_readUploadFile(e,setUploadExcelJSon,setColumnsExcel);    
+    f_readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
   };
   const dataGridRef = useRef<any>(null);
   const clearSelection = () => {
@@ -117,7 +116,7 @@ const InvoiceManager = () => {
       showConfirmButton: false,
     });
     clearSelection();
-    let loadeddata: InvoiceTableData[]  = [];
+    let loadeddata: InvoiceTableData[] = [];
     loadeddata = await f_loadInvoiceDataFull({
       alltime: alltime,
       justPoBalance: justpobalance,
@@ -157,31 +156,20 @@ const InvoiceManager = () => {
         "success",
       );
     }
-    else 
-    {
+    else {
       setInvoiceDataTable([]);
       Swal.fire("Thông báo", "Không có dữ liệu", "success");
     }
   };
   const handle_checkInvoiceHangLoat = async () => {
-    if(uploadExcelJson.length>0)
-    {
-      Swal.fire({
-        title: "Đang check Invoice hàng loạt",
-        text: "Đang check, hãy chờ chút",
-        icon: "info",
-        showCancelButton: false,
-        allowOutsideClick: false,
-        confirmButtonText: "OK",
-        showConfirmButton: false,
-      });      
+    if (uploadExcelJson.length > 0) {      
       let tempjson = uploadExcelJson;
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
-        let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE??"", uploadExcelJson[i].CUST_CD??"", uploadExcelJson[i].PO_NO);
-        err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
-        let checkCompareIVDatevsPODate: number = f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE,po_info[0].PO_DATE.substring(0, 10));
-        err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+        let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE ?? "", uploadExcelJson[i].CUST_CD ?? "", uploadExcelJson[i].PO_NO);
+        err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
+        let checkCompareIVDatevsPODate: number = po_info.length > 0 ?  f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0]?.PO_DATE.substring(0, 10)) : err_code;
+        err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
         err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
         let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
         err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
@@ -205,33 +193,32 @@ const InvoiceManager = () => {
       setTrigger(!trigger);
       Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
     }
-    else
-    {
-      Swal.fire('Thông báo','Không có dòng nào','error');
+    else {
+      Swal.fire('Thông báo', 'Không có dòng nào', 'error');
     }
   };
-  const handle_upInvoiceHangLoat = async () => {    
+  const handle_upInvoiceHangLoat = async () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE??"", uploadExcelJson[i].CUST_CD??"", uploadExcelJson[i].PO_NO);
-      err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
-      let checkCompareIVDatevsPODate: number = f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE,po_info[0].PO_DATE.substring(0, 10));
-      err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
+      let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE ?? "", uploadExcelJson[i].CUST_CD ?? "", uploadExcelJson[i].PO_NO);
+      err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
+      let checkCompareIVDatevsPODate: number = po_info.length >  0 ?  f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0].PO_DATE.substring(0, 10)): err_code;
+      err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
       err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
       let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
       err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = await f_insertInvoice({
-        DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
-        DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
-        REMARK: uploadExcelJson[i]?.REMARK ?? "",
-        G_CODE: uploadExcelJson[i].G_CODE,
-        CUST_CD: uploadExcelJson[i].CUST_CD,
-        PO_NO: uploadExcelJson[i].PO_NO,
-        EMPL_NO: userData?.EMPL_NO,
-        INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
-        }); 
+          DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
+          DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
+          REMARK: uploadExcelJson[i]?.REMARK ?? "",
+          G_CODE: uploadExcelJson[i].G_CODE,
+          CUST_CD: uploadExcelJson[i].CUST_CD,
+          PO_NO: uploadExcelJson[i].PO_NO,
+          EMPL_NO: userData?.EMPL_NO,
+          INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
+        });
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
       } else if (err_code === 2) {
@@ -256,7 +243,7 @@ const InvoiceManager = () => {
       let err_code: number = 0;
       for (let i = 0; i < selectedxuatkhopo.current.length; i++) {
         if (selectedxuatkhopo.current[i].CHECKSTATUS.substring(0, 2) === 'OK') {
-          let kq = await  f_insertInvoice({
+          let kq = await f_insertInvoice({
             DELIVERY_QTY: selectedxuatkhopo.current[i].THISDAY_OUT_QTY,
             DELIVERY_DATE: selectedxuatkhopo.current[i].OUT_DATE,
             REMARK: "",
@@ -266,16 +253,14 @@ const InvoiceManager = () => {
             EMPL_NO: userData?.EMPL_NO,
             INVOICE_NO: "",
           });
-          if(kq !=='OK') err_code = 1;          
+          if (kq !== 'OK') err_code = 1;
         }
       }
-      if(err_code === 0)
-      {
-        Swal.fire('Thông báo','Thêm invoice từ lịch sử xuất kho thành công', 'success');
+      if (err_code === 0) {
+        Swal.fire('Thông báo', 'Thêm invoice từ lịch sử xuất kho thành công', 'success');
       }
-      else
-      {
-        Swal.fire('Thông báo','Có 1 hoặc nhiều invoice đã bị lỗi, hãy kiểm tra lại', 'error');
+      else {
+        Swal.fire('Thông báo', 'Có 1 hoặc nhiều invoice đã bị lỗi, hãy kiểm tra lại', 'error');
       }
       loadXuatKho();
     }
@@ -318,8 +303,16 @@ const InvoiceManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành thêm", "Đang thêm Invoice hàng loạt", "success");
+      if (result.isConfirmed) {       
+        Swal.fire({
+          title: "Up Invoice",
+          text: "Đang up invoice hàng loạt",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
+          showConfirmButton: false,
+        });
         handle_upInvoiceHangLoat();
       }
     });
@@ -334,8 +327,16 @@ const InvoiceManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành thêm", "Đang thêm Invoice hàng loạt", "success");
+      if (result.isConfirmed) {        
+        Swal.fire({
+          title: "Check Invoice",
+          text: "Đang up invoice hàng loạt",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
+          showConfirmButton: false,
+        });
         handle_upInvoiceXKHL();
       }
     });
@@ -350,8 +351,16 @@ const InvoiceManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành check", "Đang check Invoice hàng loạt", "success");
+      if (result.isConfirmed) {        
+        Swal.fire({
+          title: "Check Invoice",
+          text: "Đang check Invoice hàng loạt",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
+          showConfirmButton: false,
+        });
         handle_checkInvoiceHangLoat();
       }
     });
@@ -396,17 +405,16 @@ const InvoiceManager = () => {
     }
   };
   const handle_add_1Invoice = async () => {
-    let err_code: number = 0;    
-    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono);
-    err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
-    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,po_info[0].PO_DATE.substring(0, 10));
-    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
-    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
-    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code; 
-    if (  selectedCode?.G_CODE === "" ||  selectedCust_CD?.CUST_CD === "" ||  newinvoicedate === "" ||  userData?.EMPL_NO === "" ||  newinvoiceQTY === 0) {
+    let err_code: number = 0;
+    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
+    err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
+    let checkCompareIVDatevsPODate: number = po_info.length > 0 ?  f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10)): err_code;
+    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
+    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
+    if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newinvoicedate === "" || userData?.EMPL_NO === "" || newinvoiceQTY === 0) {
       err_code = 4;
-    }   
-    
+    }
     if (err_code === 0) {
       let kq = await f_insertInvoice({
         G_CODE: selectedCode?.G_CODE,
@@ -421,7 +429,7 @@ const InvoiceManager = () => {
       if (kq === "OK") {
         Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
       } else {
-        Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq,  "error");
+        Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq, "error");
       }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
@@ -463,20 +471,20 @@ const InvoiceManager = () => {
         them1invoice: true,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE:clickedRow.current?.G_CODE ?? "",
-        G_NAME:clickedRow.current?.G_NAME ?? "",
-        G_NAME_KD:clickedRow.current?.G_NAME_KD ?? "",
+        G_CODE: clickedRow.current?.G_CODE ?? "",
+        G_NAME: clickedRow.current?.G_NAME ?? "",
+        G_NAME_KD: clickedRow.current?.G_NAME_KD ?? "",
         PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD:clickedRow.current?.CUST_CD ?? "",
-        CUST_NAME_KD:clickedRow.current?.CUST_NAME_KD ?? "",
+        CUST_CD: clickedRow.current?.CUST_CD ?? "",
+        CUST_NAME_KD: clickedRow.current?.CUST_NAME_KD ?? "",
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewInvoiceQty( clickedRow.current?.DELIVERY_QTY ?? 0);
-      setNewPoNo( clickedRow.current?.PO_NO ?? "");
+      setNewInvoiceQty(clickedRow.current?.DELIVERY_QTY ?? 0);
+      setNewPoNo(clickedRow.current?.PO_NO ?? "");
       setNewInvoiceDate(moment().format("YYYY-MM-DD"));
       setNewInvoiceRemark(clickedRow.current?.REMARK ?? "");
       setSelectedID(clickedRow.current?.DELIVERY_ID ?? "");
@@ -489,17 +497,16 @@ const InvoiceManager = () => {
   const updateInvoice = async () => {
     let err_code: number = 0;
     //validating invoice information
-    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono);
-    err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;    
-    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,po_info[0].PO_DATE.substring(0, 10));
-    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
-    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
-    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code; 
-    if (selectedCode?.G_CODE === "" ||selectedCust_CD?.CUST_CD === "" ||newinvoicedate === "" ||userData?.EMPL_NO === "" ||newinvoiceQTY === 0){
+    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
+    err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
+    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10));
+    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
+    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
+    if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newinvoicedate === "" || userData?.EMPL_NO === "" || newinvoiceQTY === 0) {
       err_code = 4;
     }
     err_code = newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code;
-
     if (err_code === 0) {
       let kq = await f_updateInvoice({
         G_CODE: selectedCode?.G_CODE,
@@ -511,7 +518,6 @@ const InvoiceManager = () => {
         REMARK: newinvoiceRemark,
         DELIVERY_ID: selectedID,
       });
-
       if (kq === "OK") {
         Swal.fire("Thông báo", "Update Invoice thành công", "success");
       } else {
@@ -524,7 +530,7 @@ const InvoiceManager = () => {
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire("Thông báo","NG: Ngày Giao Hàng không được trước ngày hôm nay","error");
+      Swal.fire("Thông báo", "NG: Ngày Giao Hàng không được trước ngày hôm nay", "error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -541,10 +547,9 @@ const InvoiceManager = () => {
       let err_code: boolean = false;
       for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          if(await f_deleteInvoice(invoicedatatablefilter.current[i].DELIVERY_ID) !=='OK')
-          {
+          if ((await f_deleteInvoice(invoicedatatablefilter.current[i].DELIVERY_ID)) !== 'OK') {
             err_code = true;
-          }          
+          }
         }
       }
       if (!err_code) {
@@ -580,21 +585,18 @@ const InvoiceManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const updateInvoiceNo = async (invoice_no: string) => {
-    console.log(invoice_no);
-    console.log(invoicedatatablefilter.current);
+  const updateInvoiceNo = async (invoice_no: string) => {    
     if (invoicedatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {        
+      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          if(await f_updateInvoiceNo(invoicedatatablefilter.current[i].DELIVERY_ID,invoice_no) !=='OK')
-          {
+          if ((await f_updateInvoiceNo(invoicedatatablefilter.current[i].DELIVERY_ID, invoice_no)) !== 'OK') {
             err_code = true;
-          }          
+          }
         }
       }
       if (!err_code) {
-        Swal.fire("Thông báo","Update invoice no!","success",);
+        Swal.fire("Thông báo", "Update invoice no!", "success",);
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL!", "error");
       }
@@ -625,8 +627,8 @@ const InvoiceManager = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "PO_ID", headerName: "PO_ID", width: 70 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },
-    { field: "PO_DATE",  headerName: "PO_DATE", width: 100, },
-    { field: "RD_DATE",  headerName: "RD_DATE", width: 100, },
+    { field: "PO_DATE", headerName: "PO_DATE", width: 100, },
+    { field: "RD_DATE", headerName: "RD_DATE", width: 100, },
     { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 100, },
     {
       field: "DELIVERY_QTY",
@@ -1553,23 +1555,6 @@ const InvoiceManager = () => {
                     </tr>
                   </tbody>
                 </table>
-                {/*  <div className='summarygroup'>
-                <div className='summaryvalue'>
-                  <b>
-                    DELIVERED QTY:{" "}
-                    {invoiceSummary.total_delivered_qty.toLocaleString("en-US")} EA
-                  </b>
-                </div>
-                <div className='summaryvalue'>
-                  <b>
-                    DELIVERED AMOUNT:{" "}
-                    {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                    })}
-                  </b>
-                </div>
-              </div>         */}
               </div>
             </div>
           )}

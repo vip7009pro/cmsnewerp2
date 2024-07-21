@@ -322,6 +322,15 @@ const PoManager = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm PO hàng loạt", "success");
+        Swal.fire({
+          title: "Up PO",
+          text: "Đang up PO hàng loạt",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
+          showConfirmButton: false,
+        });
         handle_upPOHangLoat();
       }
     });
@@ -336,8 +345,16 @@ const PoManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành check", "Đang check PO hàng loạt", "success");
+      if (result.isConfirmed) {        
+        Swal.fire({
+          title: "Check PO",
+          text: "Đang check PO hàng loạt",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
+          showConfirmButton: false,
+        });
         handle_checkPOHangLoat();
       }
     });
