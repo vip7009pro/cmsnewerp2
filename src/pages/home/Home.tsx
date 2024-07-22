@@ -425,7 +425,7 @@ function Home() {
       MENU_CODE: "SX8",
       MENU_NAME: getlang("khoao", lang),
       MENU_ITEM: <KHOAO />,
-    },   
+    },
     {
       MENU_CODE: "SX11",
       MENU_NAME: getlang("quanlycapa", lang),
