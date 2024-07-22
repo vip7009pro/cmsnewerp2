@@ -138,7 +138,7 @@ const SXYearlyEffTrend = ({
           yAxisId='left-axis'
           type='monotone'
           dataKey='OPERATION_RATE'
-          stroke='white'
+          stroke='#6a7eeb'
           label={{ position: "top", fill: 'black', formatter: labelFormatterPercent, fontSize: '0.7rem', fontWeight: 'bold', color: 'black' }}
         />
         <Line
