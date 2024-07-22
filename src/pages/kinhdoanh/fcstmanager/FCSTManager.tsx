@@ -50,7 +50,7 @@ const FCSTManager = () => {
   const [cust_name, setCust_Name] = useState("");
   const [prod_type, setProdType] = useState("");
   const [id, setID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
 
   const [po_no, setPo_No] = useState("");
@@ -1571,7 +1571,6 @@ const FCSTManager = () => {
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };
-
   const confirmUpFcstHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn thêm FCST hàng loạt ?",
@@ -1604,7 +1603,6 @@ const FCSTManager = () => {
       }
     });
   };
-
   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({
@@ -1635,7 +1633,6 @@ const FCSTManager = () => {
       });
     }
   };
-
   const handleFcstSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = fcstdatatable.filter((element: any) =>
@@ -1647,7 +1644,6 @@ const FCSTManager = () => {
       setFCSTDataTableFilter([]);
     }
   };
-
   const deleteFcst = async () => {
     if (fcstdatatablefilter.length >= 1) {
       let err_code: boolean = false;

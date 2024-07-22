@@ -49,7 +49,7 @@ const PlanManager = () => {
   const [cust_name, setCust_Name] = useState("");
   const [prod_type, setProdType] = useState("");
   const [id, setID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
 
   const [po_no, setPo_No] = useState("");
