@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-
 import { generalQuery, getGlobalSetting } from "../../../../api/Api";
 import moment from "moment";
 import {
@@ -28,7 +27,6 @@ import {
   YCSX_BALANCE_CAPA_DATA,
 } from "../../../../api/GlobalInterface";
 import { CustomResponsiveContainer } from "../../../../api/GlobalFunction";
-
 const CAPASX = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime;
@@ -118,7 +116,6 @@ const CAPASX = () => {
         e.FACTORY === "NM1" &&
         e.EQ_ACTIVE === "OK"
     ).length;
-
     const FRNM2: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "FR" &&
@@ -153,7 +150,6 @@ const CAPASX = () => {
       DC2: DCNM2,
       ED2: EDNM2,
     };
-
     //console.log(eq_sttdata);
     let FR_EMPL = {
       TNM1: 0,
@@ -179,7 +175,6 @@ const CAPASX = () => {
       NM1: 0,
       NM2: 0,
     };
-
     await generalQuery("diemdanhallbp", {
       MAINDEPTCODE: 5,
     })
@@ -269,7 +264,6 @@ const CAPASX = () => {
       ED: ED_EMPL,
     };
     //console.log(empl_info);
-
     await generalQuery("capabydeliveryplan", {
       PLAN_DATE: plan_date,
       EQ: eq,
@@ -524,7 +518,7 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.NM1 + ED_EMPL.NM2/2) / 2) * dailytime,
+          ((ED_EMPL.NM1 + ED_EMPL.NM2 / 2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
@@ -534,12 +528,11 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.TNM1 + ED_EMPL.TNM2/2) / 2) * dailytime,
+          ((ED_EMPL.TNM1 + ED_EMPL.TNM2 / 2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
         ),
-      
     },
     {
       EQ_NAME: "DC",
@@ -611,7 +604,6 @@ const CAPASX = () => {
         ),
     },
   ];
-
   const getTotalEMPL = () => {
     return (
       machinecount.filter(
@@ -748,17 +740,14 @@ const CAPASX = () => {
     const SRNM1: number = EQ_STTDATA.SR1;
     const DCNM1: number = EQ_STTDATA.DC1;
     const EDNM1: number = EQ_STTDATA.ED1;
-
     const FRNM2: number = EQ_STTDATA.FR2;
     const SRNM2: number = EQ_STTDATA.SR2;
     const DCNM2: number = EQ_STTDATA.DC2;
     const EDNM2: number = EQ_STTDATA.ED2;
-
     const FR_EMPL = EMPL_INFO.FR;
     const SR_EMPL = EMPL_INFO.SR;
     const DC_EMPL = EMPL_INFO.DC;
     const ED_EMPL = EMPL_INFO.ED;
-
     if (FACTORY === "NM1") {
       if (EQ === "FR") {
         return Math.min((FR_EMPL.TNM1 / 4) * dailytime, FRNM1 * dailytime);
@@ -791,17 +780,14 @@ const CAPASX = () => {
     const SRNM1: number = EQ_STTDATA.SR1;
     const DCNM1: number = EQ_STTDATA.DC1;
     const EDNM1: number = EQ_STTDATA.ED1;
-
     const FRNM2: number = EQ_STTDATA.FR2;
     const SRNM2: number = EQ_STTDATA.SR2;
     const DCNM2: number = EQ_STTDATA.DC2;
     const EDNM2: number = EQ_STTDATA.ED2;
-
     const FR_EMPL = EMPL_INFO.FR;
     const SR_EMPL = EMPL_INFO.SR;
     const DC_EMPL = EMPL_INFO.DC;
     const ED_EMPL = EMPL_INFO.ED;
-
     if (FACTORY === "NM1") {
       if (EQ === "FR") {
         return Math.min((FR_EMPL.TNM1 / 4) * dailytime, FRNM1 * dailytime2);
@@ -834,17 +820,14 @@ const CAPASX = () => {
     const SRNM1: number = EQ_STTDATA.SR1;
     const DCNM1: number = EQ_STTDATA.DC1;
     const EDNM1: number = EQ_STTDATA.ED1;
-
     const FRNM2: number = EQ_STTDATA.FR2;
     const SRNM2: number = EQ_STTDATA.SR2;
     const DCNM2: number = EQ_STTDATA.DC2;
     const EDNM2: number = EQ_STTDATA.ED2;
-
     const FR_EMPL = EMPL_INFO.FR;
     const SR_EMPL = EMPL_INFO.SR;
     const DC_EMPL = EMPL_INFO.DC;
     const ED_EMPL = EMPL_INFO.ED;
-
     if (FACTORY === "NM1") {
       if (EQ === "FR") {
         return Math.min((FR_EMPL.NM1 / 4) * dailytime, FRNM1 * dailytime);
@@ -1326,528 +1309,527 @@ const CAPASX = () => {
         </select> */}
           </div>
           <div className='ycsxbalancedatatable'>
-        <table>
-          <thead>
-            <tr>
-              <th style={{ color: "black", fontWeight: "normal" }}>EQ_NAME</th>
-              <th style={{ color: "black", fontWeight: "normal" }}>EQ_QTY</th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                DAILY_TIME (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                MAX_CAPA (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                MAX_CAPA_WF (人)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                AVAILABLE_WF(人)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                REAL_WF (人)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                EQ_AVL_CAPA (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                EQ_REAL_CAPA (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                MAN_AVL_CAPA (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                MAN_REAL_CAPA (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                YCSX_BALANCE (min)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                AVL_LEADTIME (DAYS)
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                REL_LEADTIME (DAYS)
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ color: "blue", fontWeight: "normal" }}>FR</td>
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]?.EQ_QTY
-                }
-              </td>
-              {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
-              {/* DAILY TIME*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
-                {(
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* MAX CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
-                )[0]?.EQ_QTY *
-                  2 *
-                  2}
-              </td>
-              {/* MAX CAPA WF*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {FR_EMPL.TNM1 + FR_EMPL.TNM2}
-              </td>
-              {/* AVAILABLE WORKFORCE*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {FR_EMPL.NM1 + FR_EMPL.NM2}
-              </td>
-              {/* REAL WORKFORCE*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ AVAILABLE CAPA*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ REAL CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((FR_EMPL.TNM1 + FR_EMPL.TNM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* AVAILABLE CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((FR_EMPL.NM1 + FR_EMPL.NM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-              </td>
-              {/* REAL CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {ycsxbalance
-                  .filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]
-                  ?.YCSX_BALANCE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-              </td>
-              {/*YCSX BALANCE*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "FR"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*AVL LEADTIME DAYS*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "FR"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "FR"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*REL LEADTIME DAYS*/}
-            </tr>
-            <tr>
-              <td style={{ color: "blue", fontWeight: "normal" }}>SR</td>
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]?.EQ_QTY
-                }
-              </td>
-              {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
-              {/* DAILY TIME*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
-                {(
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* MAX CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
-                )[0]?.EQ_QTY *
-                  2 *
-                  2}
-              </td>
-              {/* MAX CAPA WF*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {SR_EMPL.TNM1 + SR_EMPL.TNM2}
-              </td>
-              {/* AVAILABLE WORKFORCE*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {SR_EMPL.NM1 + SR_EMPL.NM2}
-              </td>
-              {/* REAL WORKFORCE*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ AVAILABLE CAPA*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ REAL CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((SR_EMPL.TNM1 + SR_EMPL.TNM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* AVAILABLE CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((SR_EMPL.NM1 + SR_EMPL.NM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-              </td>
-              {/* REAL CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {ycsxbalance
-                  .filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]
-                  ?.YCSX_BALANCE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-              </td>
-              {/*YCSX BALANCE*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "SR"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/* ALV LEADTIME DAYS*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "SR"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "SR"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*LEADTIME DAYS*/}
-            </tr>
-            <tr>
-              <td style={{ color: "blue", fontWeight: "normal" }}>DC</td>
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]?.EQ_QTY
-                }
-              </td>
-              {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
-              {/* DAILY TIME*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
-                {(
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* MAX CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
-                )[0]?.EQ_QTY *
-                  2 *
-                  1}
-              </td>
-              {/* MAX CAPA WF*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {DC_EMPL.TNM1 + DC_EMPL.TNM2}
-              </td>
-              {/* AVAILABLE WORKFORCE*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {DC_EMPL.NM1 + DC_EMPL.NM2}
-              </td>
-              {/* REAL WORKFORCE*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ AVAILABLE CAPA*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ REAL CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((DC_EMPL.TNM1 + DC_EMPL.TNM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* AVAILABLE CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((DC_EMPL.NM1 + DC_EMPL.NM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-              </td>
-              {/* REAL CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {ycsxbalance
-                  .filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]
-                  ?.YCSX_BALANCE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-              </td>
-              {/*YCSX BALANCE*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "DC"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*AVL LEADTIME DAYS*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "DC"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "DC"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*REL LEADTIME DAYS*/}
-            </tr>
-            <tr>
-              <td style={{ color: "blue", fontWeight: "normal" }}>ED</td>
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]?.EQ_QTY
-                }
-              </td>
-              {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
-              {/* DAILY TIME*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
-                {(
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* MAX CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
-                )[0]?.EQ_QTY *
-                  2 *
-                  1}
-              </td>
-              {/* MAX CAPA WF*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {ED_EMPL.TNM1 + ED_EMPL.TNM2}
-              </td>
-              {/* AVAILABLE WORKFORCE*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {ED_EMPL.NM1 + ED_EMPL.NM2}
-              </td>
-              {/* REAL WORKFORCE*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ AVAILABLE CAPA*/}
-              <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
-                {Math.min(
-                  ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
-                  machinecount.filter(
-                    (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]?.EQ_QTY * dailytime
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* EQ REAL CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((ED_EMPL.TNM1 + ED_EMPL.TNM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              </td>
-              {/* AVAILABLE CAPA*/}
-              <td style={{ color: "blue", fontWeight: "normal" }}>
-                {(
-                  ((ED_EMPL.NM1 + ED_EMPL.NM2) * dailytime) /
-                  2
-                )?.toLocaleString("en-US", {
-                  maximumFractionDigits: 0,
-                })}
-              </td>
-              {/* REAL CAPA*/}
-              <td style={{ color: "green", fontWeight: "normal" }}>
-                {ycsxbalance
-                  .filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]
-                  ?.YCSX_BALANCE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                  })}
-              </td>
-              {/*YCSX BALANCE*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "ED"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                )?.toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*LEADTIME DAYS*/}
-              <td style={{ color: "red", fontWeight: "normal" }}>
-                {(
-                  ycsxbalance.filter(
-                    (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "ED"
-                  )[0]?.YCSX_BALANCE /
-                  Math.min(
-                    ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
-                    machinecount.filter(
-                      (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "ED"
-                    )[0]?.EQ_QTY * dailytime
-                  )
-                )?.toLocaleString("en-US", { maximumFractionDigits: 1 })}
-              </td>
-              {/*LEADTIME DAYS*/}
-            </tr>
-          </tbody>
-        </table>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ color: "black", fontWeight: "normal" }}>EQ_NAME</th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>EQ_QTY</th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    DAILY_TIME (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    MAX_CAPA (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    MAX_CAPA_WF (人)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    AVAILABLE_WF(人)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    REAL_WF (人)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    EQ_AVL_CAPA (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    EQ_REAL_CAPA (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    MAN_AVL_CAPA (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    MAN_REAL_CAPA (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    YCSX_BALANCE (min)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    AVL_LEADTIME (DAYS)
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    REL_LEADTIME (DAYS)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>FR</td>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]?.EQ_QTY
+                    }
+                  </td>
+                  {/* EQ QTY*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
+                  {/* DAILY TIME*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
+                    {(
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* MAX CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {machinecount.filter(
+                      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+                    )[0]?.EQ_QTY *
+                      2 *
+                      2}
+                  </td>
+                  {/* MAX CAPA WF*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {FR_EMPL.TNM1 + FR_EMPL.TNM2}
+                  </td>
+                  {/* AVAILABLE WORKFORCE*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {FR_EMPL.NM1 + FR_EMPL.NM2}
+                  </td>
+                  {/* REAL WORKFORCE*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ AVAILABLE CAPA*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ REAL CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((FR_EMPL.TNM1 + FR_EMPL.TNM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* AVAILABLE CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((FR_EMPL.NM1 + FR_EMPL.NM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  {/* REAL CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {ycsxbalance
+                      .filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]
+                      ?.YCSX_BALANCE?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                  </td>
+                  {/*YCSX BALANCE*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "FR"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*AVL LEADTIME DAYS*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "FR"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "FR"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*REL LEADTIME DAYS*/}
+                </tr>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>SR</td>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]?.EQ_QTY
+                    }
+                  </td>
+                  {/* EQ QTY*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
+                  {/* DAILY TIME*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
+                    {(
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* MAX CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {machinecount.filter(
+                      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+                    )[0]?.EQ_QTY *
+                      2 *
+                      2}
+                  </td>
+                  {/* MAX CAPA WF*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {SR_EMPL.TNM1 + SR_EMPL.TNM2}
+                  </td>
+                  {/* AVAILABLE WORKFORCE*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {SR_EMPL.NM1 + SR_EMPL.NM2}
+                  </td>
+                  {/* REAL WORKFORCE*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ AVAILABLE CAPA*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ REAL CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((SR_EMPL.TNM1 + SR_EMPL.TNM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* AVAILABLE CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((SR_EMPL.NM1 + SR_EMPL.NM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  {/* REAL CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {ycsxbalance
+                      .filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]
+                      ?.YCSX_BALANCE?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                  </td>
+                  {/*YCSX BALANCE*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "SR"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/* ALV LEADTIME DAYS*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "SR"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "SR"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*LEADTIME DAYS*/}
+                </tr>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>DC</td>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]?.EQ_QTY
+                    }
+                  </td>
+                  {/* EQ QTY*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
+                  {/* DAILY TIME*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
+                    {(
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* MAX CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {machinecount.filter(
+                      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
+                    )[0]?.EQ_QTY *
+                      2 *
+                      1}
+                  </td>
+                  {/* MAX CAPA WF*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {DC_EMPL.TNM1 + DC_EMPL.TNM2}
+                  </td>
+                  {/* AVAILABLE WORKFORCE*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {DC_EMPL.NM1 + DC_EMPL.NM2}
+                  </td>
+                  {/* REAL WORKFORCE*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ AVAILABLE CAPA*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ REAL CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((DC_EMPL.TNM1 + DC_EMPL.TNM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* AVAILABLE CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((DC_EMPL.NM1 + DC_EMPL.NM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  {/* REAL CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {ycsxbalance
+                      .filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]
+                      ?.YCSX_BALANCE?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                  </td>
+                  {/*YCSX BALANCE*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "DC"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*AVL LEADTIME DAYS*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "DC"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "DC"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*REL LEADTIME DAYS*/}
+                </tr>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>ED</td>
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]?.EQ_QTY
+                    }
+                  </td>
+                  {/* EQ QTY*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
+                  {/* DAILY TIME*/}
+                  <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
+                    {(
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* MAX CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {machinecount.filter(
+                      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+                    )[0]?.EQ_QTY *
+                      2 *
+                      1}
+                  </td>
+                  {/* MAX CAPA WF*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {ED_EMPL.TNM1 + ED_EMPL.TNM2}
+                  </td>
+                  {/* AVAILABLE WORKFORCE*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {ED_EMPL.NM1 + ED_EMPL.NM2}
+                  </td>
+                  {/* REAL WORKFORCE*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ AVAILABLE CAPA*/}
+                  <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
+                    {Math.min(
+                      ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
+                      machinecount.filter(
+                        (ele: MACHINE_COUNTING, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]?.EQ_QTY * dailytime
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* EQ REAL CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((ED_EMPL.TNM1 + ED_EMPL.TNM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+                  </td>
+                  {/* AVAILABLE CAPA*/}
+                  <td style={{ color: "blue", fontWeight: "normal" }}>
+                    {(
+                      ((ED_EMPL.NM1 + ED_EMPL.NM2) * dailytime) /
+                      2
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  {/* REAL CAPA*/}
+                  <td style={{ color: "green", fontWeight: "normal" }}>
+                    {ycsxbalance
+                      .filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]
+                      ?.YCSX_BALANCE?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                  </td>
+                  {/*YCSX BALANCE*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "ED"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*LEADTIME DAYS*/}
+                  <td style={{ color: "red", fontWeight: "normal" }}>
+                    {(
+                      ycsxbalance.filter(
+                        (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
+                          ele.EQ_NAME === "ED"
+                      )[0]?.YCSX_BALANCE /
+                      Math.min(
+                        ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
+                        machinecount.filter(
+                          (ele: MACHINE_COUNTING, index: number) =>
+                            ele.EQ_NAME === "ED"
+                        )[0]?.EQ_QTY * dailytime
+                      )
+                    )?.toLocaleString("en-US", { maximumFractionDigits: 1 })}
+                  </td>
+                  {/*LEADTIME DAYS*/}
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
           <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
-          
           {selectedFactory === "NM1" && (
             <div className='starndardworkforce'>{DeliveryLeadTimeMMSR}</div>
           )}
@@ -1856,7 +1838,6 @@ const CAPASX = () => {
           )}
         </div>
       </div>
-   
     </div>
   );
 };
