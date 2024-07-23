@@ -464,6 +464,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             else if (checkYCSX_USE_YN !== 'Y') {
               err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;
             }
+            else if (checkNextPlanClose ===true) {
+              err_code += `| Chỉ thị next đã chốt báo cáo, không thể input liệu!`;
+            }
           }
         }
         if (err_code !== "0") {
