@@ -353,6 +353,24 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return checkNhapKho;
   }
+  const isNextPlanClosed = async (NEXT_PLAN: string)=> {
+    let nextPlanClosed: boolean = false;
+    await generalQuery("checkNextPlanClosed", {
+      PLAN_ID: NEXT_PLAN,
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          nextPlanClosed = response.data.data[0].CHOTBC ==='V';
+        } else {
+          nextPlanClosed = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return nextPlanClosed;
+  }
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
@@ -377,6 +395,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
+          let checkNextPlanClose = await isNextPlanClosed(nextPlan);
           let checkFSC: string = (await checkNextPlanFSC(nextPlan)).FSC;
           let checkFSC_CODE: string = (await checkNextPlanFSC(nextPlan)).FSC_CODE;
           if (
@@ -384,7 +403,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
             checkFSC === tonkhoaodatafilter.current[i].FSC &&
             checktontaikhoao &&
-            checkYCSX_USE_YN === 'Y'
+            checkYCSX_USE_YN === 'Y' &&
+            !checkNextPlanClose
           ) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
