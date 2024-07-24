@@ -17,7 +17,7 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP, f_saveQLSX } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { AgGridReact } from "ag-grid-react";
 const CODE_MANAGER = () => {  
   const [uploadfile, setUploadFile] = useState<any>(null);
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
@@ -2106,47 +2107,40 @@ const CODE_MANAGER = () => {
       checkBP(userData, ["QLSX", "KD", "RND"], ["ALL"], ["ALL"], async () => {
         let err_code: string = "0";
         for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("saveQLSX", {
-            G_CODE: codedatatablefilter[i].G_CODE,
-            PROD_DIECUT_STEP: codedatatablefilter[i].PROD_DIECUT_STEP,
-            PROD_PRINT_TIMES: codedatatablefilter[i].PROD_PRINT_TIMES,
-            FACTORY: codedatatablefilter[i].FACTORY,
-            EQ1: codedatatablefilter[i].EQ1,
-            EQ2: codedatatablefilter[i].EQ2,
-            EQ3: codedatatablefilter[i].EQ3,
-            EQ4: codedatatablefilter[i].EQ4,
-            Setting1: codedatatablefilter[i].Setting1,
-            Setting2: codedatatablefilter[i].Setting2,
-            Setting3: codedatatablefilter[i].Setting3,
-            Setting4: codedatatablefilter[i].Setting4,
-            UPH1: codedatatablefilter[i].UPH1,
-            UPH2: codedatatablefilter[i].UPH2,
-            UPH3: codedatatablefilter[i].UPH3,
-            UPH4: codedatatablefilter[i].UPH4,
-            Step1: codedatatablefilter[i].Step1,
-            Step2: codedatatablefilter[i].Step2,
-            Step3: codedatatablefilter[i].Step3,
-            Step4: codedatatablefilter[i].Step4,
-            LOSS_SX1: codedatatablefilter[i].LOSS_SX1,
-            LOSS_SX2: codedatatablefilter[i].LOSS_SX2,
-            LOSS_SX3: codedatatablefilter[i].LOSS_SX3,
-            LOSS_SX4: codedatatablefilter[i].LOSS_SX4,
-            LOSS_SETTING1: codedatatablefilter[i].LOSS_SETTING1,
-            LOSS_SETTING2: codedatatablefilter[i].LOSS_SETTING2,
-            LOSS_SETTING3: codedatatablefilter[i].LOSS_SETTING3,
-            LOSS_SETTING4: codedatatablefilter[i].LOSS_SETTING4,
-            NOTE: codedatatablefilter[i].NOTE,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+            if(!(await f_saveQLSX({
+              G_CODE: codedatatablefilter[i].G_CODE,
+              PROD_DIECUT_STEP: codedatatablefilter[i].PROD_DIECUT_STEP,
+              PROD_PRINT_TIMES: codedatatablefilter[i].PROD_PRINT_TIMES,
+              FACTORY: codedatatablefilter[i].FACTORY,
+              EQ1: codedatatablefilter[i].EQ1,
+              EQ2: codedatatablefilter[i].EQ2,
+              EQ3: codedatatablefilter[i].EQ3,
+              EQ4: codedatatablefilter[i].EQ4,
+              Setting1: codedatatablefilter[i].Setting1,
+              Setting2: codedatatablefilter[i].Setting2,
+              Setting3: codedatatablefilter[i].Setting3,
+              Setting4: codedatatablefilter[i].Setting4,
+              UPH1: codedatatablefilter[i].UPH1,
+              UPH2: codedatatablefilter[i].UPH2,
+              UPH3: codedatatablefilter[i].UPH3,
+              UPH4: codedatatablefilter[i].UPH4,
+              Step1: codedatatablefilter[i].Step1,
+              Step2: codedatatablefilter[i].Step2,
+              Step3: codedatatablefilter[i].Step3,
+              Step4: codedatatablefilter[i].Step4,
+              LOSS_SX1: codedatatablefilter[i].LOSS_SX1,
+              LOSS_SX2: codedatatablefilter[i].LOSS_SX2,
+              LOSS_SX3: codedatatablefilter[i].LOSS_SX3,
+              LOSS_SX4: codedatatablefilter[i].LOSS_SX4,
+              LOSS_SETTING1: codedatatablefilter[i].LOSS_SETTING1,
+              LOSS_SETTING2: codedatatablefilter[i].LOSS_SETTING2,
+              LOSS_SETTING3: codedatatablefilter[i].LOSS_SETTING3,
+              LOSS_SETTING4: codedatatablefilter[i].LOSS_SETTING4,
+              NOTE: codedatatablefilter[i].NOTE,
+            }))) {
+              err_code = "1";
+            } 
+
         }
         if (err_code === "1") {
           Swal.fire(

@@ -17,6 +17,7 @@ import EQ_SUMMARY from "./EQ_SUMMARY";
 import { Checkbox, TextField } from "@mui/material";
 import { EQ_STT } from "../../../../api/GlobalInterface";
 import { useSpring, animated } from "@react-spring/web";
+import { f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
 const EQ_STATUS = () => {
   const [time, setTime] = useState(5);
   const [fullScreen, setFullScreen] = useState(false);
@@ -32,36 +33,10 @@ const EQ_STATUS = () => {
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const [totalmachine, setTotalMachine] = useState(39);
-  const handle_loadEQ_STATUS = () => {
-    generalQuery("checkEQ_STATUS", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: EQ_STT[] = response.data.data.map(
-            (element: EQ_STT, index: number) => {
-              return {
-                ...element,
-                id: index,
-              };
-            }
-          );
-          //console.log(loaded_data);
-          setEQ_STATUS(loaded_data);
-          setEQ_SERIES([
-            ...new Set(
-              loaded_data.map((e: EQ_STT, index: number) => {
-                return e.EQ_SERIES === undefined ? "" : e.EQ_SERIES;
-              })
-            ), 'FR+SR'
-          ]);
-        } else {
-          setEQ_STATUS([]);
-          setEQ_SERIES([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handle_loadEQ_STATUS = async () => {
+    let eq_data = await f_handle_loadEQ_STATUS();
+    setEQ_STATUS(eq_data.EQ_STATUS);
+    setEQ_SERIES(eq_data.EQ_SERIES);   
   };
   const springs = useSpring({
     from: { x: 2000, y: 0 },

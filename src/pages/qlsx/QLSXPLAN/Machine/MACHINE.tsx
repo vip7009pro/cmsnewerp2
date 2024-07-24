@@ -17,259 +17,49 @@ import {
 import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
-import { checkBP, PLAN_ID_ARRAY, zeroPad } from "../../../../api/GlobalFunction";
-import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
-import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
+import {
+  checkBP,
+  f_getMachineListData,
+  f_getRecentDMData,
+  PLAN_ID_ARRAY,
+  renderBanVe,
+  renderChiThi,
+  renderChiThi2,
+  renderYCSX,
+  f_saveSinglePlan,
+  zeroPad,
+  f_handle_loadEQ_STATUS,
+  f_saveQLSX,
+  f_insertDMYCSX,
+  f_updateBatchPlan,
+} from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
-import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 import { GiCurvyKnife } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { resetChithiArray } from "../../../../redux/slices/globalSlice";
-import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import KHOAO from "../KHOAO/KHOAO";
 import { TbLogout } from "react-icons/tb";
 import {
   DINHMUC_QSLX,
-  EQ_STATUS,
-  LICHSUINPUTLIEUSX,
-  LICHSUNHAPKHOAO,
-  LICHSUXUATKHOAO,
+  EQ_STT,
   MACHINE_LIST,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
-  TONLIEUXUONG,
   UserData,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
-export const checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string) => {
-  let maxprocess: number = 0;
-  if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
-  if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
-  if (["NA", "NO", "", null].indexOf(EQ3) === -1) maxprocess++;
-  if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
-  return maxprocess;
-};
-export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
-  return planlist.map((element, index) => (
-    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />
-    /*  <>
-     <CHITHI_COMPONENT key={index} DATA={element} />
-     <CHECKSHEETSX key={index+'A'} DATA={element}/>
-     </> */
-  ));
-};
-export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
-  //console.log(planlist);
-  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} />;
-};
-export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
-  return ycsxlist.map((element, index) => (
-    <YCSXComponent key={index} DATA={element} />
-  ));
-};
-export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
-  return ycsxlist.map((element, index) =>
-    element.BANVE === "Y" ? (
-      <DrawComponent
-        key={index}
-        G_CODE={element.G_CODE}
-        PDBV={element.PDBV}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PDBV_EMPL={element.PDBV_EMPL}
-        PDBV_DATE={element.PDBV_DATE}
-      />
-    ) : (
-      <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-    )
-  );
-};
-export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
-  let check_NEXT_PLAN_ID: boolean = true;
-  let checkPlanIdP500: boolean = false;
-  let err_code: string = '0';
-  await generalQuery("checkP500PlanID_mobile", {
-    PLAN_ID: planToSave?.PLAN_ID,
-  })
-    .then((response) => {
-      //console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        checkPlanIdP500 = true;
-      } else {
-        checkPlanIdP500 = false;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await getCurrentDMToSave(planToSave);
-  if (
-    parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
-    1 &&
-    parseInt(planToSave?.PROCESS_NUMBER.toString()) <=
-    4 &&
-    planToSave?.PLAN_QTY !== 0 &&
-    planToSave?.PLAN_QTY <=
-    planToSave?.PROD_REQUEST_QTY &&
-    planToSave?.PLAN_ID !==
-    planToSave?.NEXT_PLAN_ID &&
-    planToSave?.CHOTBC !== "V" &&
-    check_NEXT_PLAN_ID &&
-    parseInt(planToSave?.STEP.toString()) >= 0 &&
-    parseInt(planToSave?.STEP.toString()) <= 9 &&
-    checkEQvsPROCESS(
-      planToSave?.EQ1,
-      planToSave?.EQ2,
-      planToSave?.EQ3,
-      planToSave?.EQ4
-    ) >= planToSave?.PROCESS_NUMBER &&
-    checkPlanIdP500 === false
-  ) {
-    await generalQuery("updatePlanQLSX", {
-      PLAN_ID: planToSave?.PLAN_ID,
-      STEP: planToSave?.STEP,
-      PLAN_QTY: planToSave?.PLAN_QTY,
-      OLD_PLAN_QTY: planToSave?.PLAN_QTY,
-      PLAN_LEADTIME: planToSave?.PLAN_LEADTIME,
-      PLAN_EQ: planToSave?.PLAN_EQ,
-      PLAN_ORDER: planToSave?.PLAN_ORDER,
-      PROCESS_NUMBER: planToSave?.PROCESS_NUMBER,
-      KETQUASX: planToSave?.KETQUASX ?? 0,
-      NEXT_PLAN_ID: planToSave?.NEXT_PLAN_ID ?? "X",
-      IS_SETTING: planToSave?.IS_SETTING?.toUpperCase(),
-      NEEDED_QTY: NEEDED_QTY,
-      CURRENT_LOSS_SX: FINAL_LOSS_SX,
-      CURRENT_LOSS_KT: FINAL_LOSS_KT,
-      CURRENT_SETTING_M: FINAL_LOSS_SETTING,
-    })
-      .then((response) => {
-        //console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-        } else {
-          err_code += "_" + response.data.message;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } else {
-    err_code += "_" + planToSave?.G_NAME_KD + ":";
-    if (
-      !(
-        parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
-        1 &&
-        parseInt(planToSave?.PROCESS_NUMBER.toString()) <=
-        4
-      )
-    ) {
-      err_code += "_: Process number chưa đúng";
-    } else if (planToSave?.PLAN_QTY === 0) {
-      err_code += "_: Số lượng chỉ thị =0";
-    } else if (
-      planToSave?.PLAN_QTY >
-      planToSave?.PROD_REQUEST_QTY
-    ) {
-      err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
-    } else if (
-      planToSave?.PLAN_ID ===
-      planToSave?.NEXT_PLAN_ID
-    ) {
-      err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
-    } else if (!check_NEXT_PLAN_ID) {
-      err_code +=
-        "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
-    } else if (planToSave?.CHOTBC === "V") {
-      err_code +=
-        "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
-    } else if (
-      !(
-        parseInt(planToSave?.STEP.toString()) >= 0 &&
-        parseInt(planToSave?.STEP.toString()) <= 9
-      )
-    ) {
-      err_code += "_: Hãy nhập STEP từ 0 -> 9";
-    } else if (
-      !(
-        parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
-        1 &&
-        parseInt(planToSave?.PROCESS_NUMBER.toString()) <=
-        4
-      )
-    ) {
-      err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
-    } else if (checkPlanIdP500) {
-      err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
-    }
-  }
-  if (err_code !== "0") {
-    Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
-  } else {
-    Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
-  }
-}
-export const getCurrentDMToSave = async (planData: QLSXPLANDATA) => {
-  let NEEDED_QTY: number = planData.PLAN_QTY, FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = planData?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = planData.PD ?? 0, CAVITY: number = planData.CAVITY ?? 0;
-  if (planData.PROCESS_NUMBER === 1) {
-    FINAL_LOSS_SX = (planData.LOSS_SX2 ?? 0) + (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
-  } else if (planData.PROCESS_NUMBER === 2) {
-    FINAL_LOSS_SX = (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
-  } else if (planData.PROCESS_NUMBER === 3) {
-    FINAL_LOSS_SX = (planData.LOSS_SX4 ?? 0);
-  } else if (planData.PROCESS_NUMBER === 4) {
-    FINAL_LOSS_SX = 0;
-  }
-  if (planData.PROCESS_NUMBER === 1) {
-    FINAL_LOSS_SETTING = (planData.LOSS_SETTING2 ?? 0) + (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
-  } else if (planData.PROCESS_NUMBER === 2) {
-    FINAL_LOSS_SETTING = (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
-  } else if (planData.PROCESS_NUMBER === 3) {
-    FINAL_LOSS_SETTING = (planData.LOSS_SETTING4 ?? 0);
-  } else if (planData.PROCESS_NUMBER === 4) {
-    FINAL_LOSS_SETTING = 0;
-  }
-  NEEDED_QTY = NEEDED_QTY * (100 + FINAL_LOSS_SX + FINAL_LOSS_KT) / 100 + FINAL_LOSS_SETTING / PD * CAVITY * 1000;
-  /* console.log("PD",PD);
-  console.log("CAVITY",CAVITY);        
-  console.log("sx loss",FINAL_LOSS_SX)
-  console.log("sx setting",FINAL_LOSS_SETTING)
-  console.log("kt lss",FINAL_LOSS_KT)
-  console.log("Needed_qty",NEEDED_QTY); */
-  return {
-    NEEDED_QTY: Math.round(NEEDED_QTY),
-    FINAL_LOSS_SX: FINAL_LOSS_SX,
-    FINAL_LOSS_KT: planData.LOSS_KT,
-    FINAL_LOSS_SETTING: FINAL_LOSS_SETTING
-  }
-}
+
 const MACHINE = () => {
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
-  const getRecentDM = (G_CODE: string) => {
-    generalQuery("loadRecentDM", { G_CODE: G_CODE })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: RecentDM[] = response.data.data.map(
-            (element: RecentDM, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          setRecentDMData(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setRecentDMData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getRecentDM = async (G_CODE: string) => {
+    setRecentDMData(await f_getRecentDMData(G_CODE));
   }
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.multiple_chithi_array
@@ -294,7 +84,7 @@ const MACHINE = () => {
       setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
   };
-  const [eq_status, setEQ_STATUS] = useState<EQ_STATUS[]>([]);
+  const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
     FACTORY: "NM1",
     EQ1: "",
@@ -373,29 +163,8 @@ const MACHINE = () => {
       localStorage.setItem("maxLieu", "12");
     }
   };
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());    
   };
   const column_ycsxtable = getCompany() === 'CMS' ? [
     {
@@ -1684,41 +1453,15 @@ const MACHINE = () => {
       }
     },
   ]
-  const handle_loadEQ_STATUS = () => {
-    generalQuery("checkEQ_STATUS", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: EQ_STATUS[] = response.data.data.map(
-            (element: EQ_STATUS, index: number) => {
-              return {
-                ...element,
-                id: index,
-              };
-            }
-          );
-          setEQ_SERIES([
-            ...new Set(
-              loaded_data.map((e: EQ_STATUS, index: number) => {
-                return e.EQ_SERIES;
-              })
-            ),
-          ]);
-          setEQ_STATUS(loaded_data);
-        } else {
-          setEQ_STATUS([]);
-          setEQ_SERIES([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handle_loadEQ_STATUS = async () => {
+    let eq_data = await f_handle_loadEQ_STATUS();
+    setEQ_STATUS(eq_data.EQ_STATUS);
+    setEQ_SERIES(eq_data.EQ_SERIES);
   };
   const handleSaveQLSX = async () => {
     if (selectedPlan !== undefined) {
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
-        let err_code: string = "0";
-        console.log(datadinhmuc);
+        let err_code: string = "0";        
         if (
           datadinhmuc.FACTORY === "NA" ||
           datadinhmuc.EQ1 === "NA" ||
@@ -1735,38 +1478,19 @@ const MACHINE = () => {
             "error"
           );
         } else {
-          await generalQuery("insertDBYCSX", {
+          await f_insertDMYCSX({
             PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
             G_CODE: selectedPlan?.G_CODE,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-              } else {
-                generalQuery("updateDBYCSX", {
-                  PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
-                  LOSS_SX1: datadinhmuc.LOSS_SX1,
-                  LOSS_SX2: datadinhmuc.LOSS_SX2,
-                  LOSS_SX3: datadinhmuc.LOSS_SX3,
-                  LOSS_SX4: datadinhmuc.LOSS_SX4,
-                  LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
-                  LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-                  LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                    } else {
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          await generalQuery("saveQLSX", {
+            LOSS_SX1: datadinhmuc.LOSS_SX1,
+            LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SX3: datadinhmuc.LOSS_SX3,
+            LOSS_SX4: datadinhmuc.LOSS_SX4,
+            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+          });          
+          err_code = (await f_saveQLSX({
             G_CODE: selectedPlan?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1794,17 +1518,8 @@ const MACHINE = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          })) ? "0" : "1";
+          
           if (err_code === "1") {
             Swal.fire(
               "Thông báo",
@@ -2423,16 +2138,16 @@ const MACHINE = () => {
           .catch((error) => {
             console.log(error);
           });
-        if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {
-          console.log('vao delete')
+        if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {          
           generalQuery("deletePlanQLSX", {
             PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
           })
             .then((response) => {
               //console.log(response.data);
               if (response.data.tk_status !== "NG") {
-                Swal.fire('Thông báo', 'Xóa thành công', 'success')
+                
               } else {
+               
               }
             })
             .catch((error) => {
@@ -2469,6 +2184,7 @@ const MACHINE = () => {
           }
         }
       }
+      Swal.fire('Thông báo', 'Xóa hoàn thành', 'success')
       clearSelectedRows();
       loadQLSXPlan(selectedPlanDate);
     } else {
@@ -2555,8 +2271,7 @@ const MACHINE = () => {
     //console.log(next_plan_id);
     return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
   };
-  const handle_AddPlan = async () => {
-    console.log('ycsxdatatablefilter.current', ycsxdatatablefilter.current)
+  const handle_AddPlan = async () => {    
     if (ycsxdatatablefilter.current.length >= 1) {
       for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
         let check_ycsx_hethongcu: boolean = false;
@@ -2641,131 +2356,8 @@ const MACHINE = () => {
         );
       }
     );
-    //console.log(selectedPlanTable);
     let err_code: string = "0";
-    for (let i = 0; i < selectedPlanTable.length; i++) {
-      let check_NEXT_PLAN_ID: boolean = true;
-      if (selectedPlanTable[i].NEXT_PLAN_ID !== "X") {
-        if (
-          selectedPlanTable[i].NEXT_PLAN_ID === selectedPlanTable[i + 1].PLAN_ID
-        ) {
-          check_NEXT_PLAN_ID = true;
-        } else {
-          check_NEXT_PLAN_ID = false;
-        }
-      }
-      let checkPlanIdP500: boolean = false;
-      await generalQuery("checkP500PlanID_mobile", {
-        PLAN_ID: selectedPlanTable[i].PLAN_ID,
-      })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            checkPlanIdP500 = true;
-          } else {
-            checkPlanIdP500 = false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await getCurrentDMToSave(selectedPlanTable[i])
-      /* console.log("PD",PD);
-      console.log("CAVITY",CAVITY);        
-      console.log("sx loss",FINAL_LOSS_SX)
-      console.log("sx setting",FINAL_LOSS_SETTING)
-      console.log("kt lss",FINAL_LOSS_KT)
-      console.log("Needed_qty",NEEDED_QTY); */
-      if (
-        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4 &&
-        selectedPlanTable[i].PLAN_QTY !== 0 &&
-        selectedPlanTable[i].PLAN_QTY <=
-        selectedPlanTable[i].PROD_REQUEST_QTY &&
-        selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID &&
-        selectedPlanTable[i].CHOTBC !== "V" &&
-        check_NEXT_PLAN_ID &&
-        parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
-        parseInt(selectedPlanTable[i].STEP.toString()) <= 9 &&
-        checkEQvsPROCESS(
-          selectedPlanTable[i].EQ1,
-          selectedPlanTable[i].EQ2,
-          selectedPlanTable[i].EQ3,
-          selectedPlanTable[i].EQ4
-        ) >= selectedPlanTable[i].PROCESS_NUMBER &&
-        checkPlanIdP500 === false
-      ) {
-        await generalQuery("updatePlanQLSX", {
-          PLAN_ID: selectedPlanTable[i].PLAN_ID,
-          STEP: selectedPlanTable[i].STEP,
-          PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
-          OLD_PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
-          PLAN_LEADTIME: selectedPlanTable[i].PLAN_LEADTIME,
-          PLAN_EQ: selectedPlanTable[i].PLAN_EQ,
-          PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
-          PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
-          KETQUASX: selectedPlanTable[i].KETQUASX === null ? 0 : selectedPlanTable[i].KETQUASX,
-          NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID === null ? "X" : selectedPlanTable[i].NEXT_PLAN_ID,
-          IS_SETTING: selectedPlanTable[i].IS_SETTING,
-          NEEDED_QTY: NEEDED_QTY,
-          CURRENT_LOSS_SX: FINAL_LOSS_SX,
-          CURRENT_LOSS_KT: FINAL_LOSS_KT,
-          CURRENT_SETTING_M: FINAL_LOSS_SETTING,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += "_" + response.data.message;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
-        if (
-          !(
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4
-          )
-        ) {
-          err_code += "_: Process number chưa đúng";
-        } else if (selectedPlanTable[i].PLAN_QTY === 0) {
-          err_code += "_: Số lượng chỉ thị =0";
-        } else if (
-          selectedPlanTable[i].PLAN_QTY > selectedPlanTable[i].PROD_REQUEST_QTY
-        ) {
-          err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
-        } else if (
-          selectedPlanTable[i].PLAN_ID === selectedPlanTable[i].NEXT_PLAN_ID
-        ) {
-          err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
-        } else if (!check_NEXT_PLAN_ID) {
-          err_code +=
-            "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
-        } else if (selectedPlanTable[i].CHOTBC === "V") {
-          err_code +=
-            "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
-        } else if (
-          !(
-            parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
-            parseInt(selectedPlanTable[i].STEP.toString()) <= 9
-          )
-        ) {
-          err_code += "_: Hãy nhập STEP từ 0 -> 9";
-        } else if (
-          !(
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4
-          )
-        ) {
-          err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
-        } else if (checkPlanIdP500) {
-          err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
-        }
-      }
-    }
+    err_code = await f_updateBatchPlan(selectedPlanTable);    
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
@@ -4203,11 +3795,11 @@ const MACHINE = () => {
                 <div className='FRlist'>
                   {eq_status
                     .filter(
-                      (element: EQ_STATUS, index: number) =>
+                      (element: EQ_STT, index: number) =>
                         element.FACTORY === "NM1" &&
-                        element.EQ_NAME.substring(0, 2) === ele_series
+                        (element.EQ_NAME??"NA").substring(0, 2) === ele_series
                     )
-                    .map((element: EQ_STATUS, index: number) => {
+                    .map((element: EQ_STT, index: number) => {
                       return (
                         <MACHINE_COMPONENT
                           key={index}
@@ -4220,8 +3812,8 @@ const MACHINE = () => {
                           machine_data={plandatatable}
                           onClick={() => {
                             setShowPlanWindow(true);
-                            setSelectedFactory(element.FACTORY);
-                            setSelectedMachine(element.EQ_NAME);
+                            setSelectedFactory(element.FACTORY??"NM1");
+                            setSelectedMachine(element.EQ_NAME??"NA");
                             setTrigger(!trigger);
                             setSelectedPlan(undefined);
                             setChiThiDataTable([]);
@@ -4361,25 +3953,25 @@ const MACHINE = () => {
                 <div className='FRlist'>
                   {eq_status
                     .filter(
-                      (element: EQ_STATUS, index: number) =>
+                      (element: EQ_STT, index: number) =>
                         element.FACTORY === "NM2" &&
-                        element.EQ_NAME.substring(0, 2) === ele_series
+                        (element.EQ_NAME ?? "NA").substring(0, 2) === ele_series
                     )
-                    .map((element: EQ_STATUS, index: number) => {
+                    .map((element: EQ_STT, index: number) => {
                       return (
                         <MACHINE_COMPONENT
                           key={index}
                           factory={element.FACTORY}
                           machine_name={element.EQ_NAME}
                           eq_status={element.EQ_STATUS}
-                          current_g_name={element.G_NAME}
+                          current_g_name={element.G_NAME ?? ""}
                           current_plan_id={element.CURR_PLAN_ID}
                           run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                           machine_data={plandatatable}
                           onClick={() => {
                             setShowPlanWindow(true);
-                            setSelectedFactory(element.FACTORY);
-                            setSelectedMachine(element.EQ_NAME);
+                            setSelectedFactory(element.FACTORY ?? "NM1");
+                            setSelectedMachine(element.EQ_NAME ?? "NA");
                             setSelectedPlan(undefined);
                             setTrigger(!trigger);
                             setChiThiDataTable([]);
@@ -5291,7 +4883,7 @@ const MACHINE = () => {
                       <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.8rem', padding: '3px', backgroundColor: '#0f20db' }} onClick={() => {
                         if (selectedPlan !== undefined) {
                           checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
-                            await saveSinglePlan(selectedPlan);
+                            await f_saveSinglePlan(selectedPlan);
                             await loadQLSXPlan(selectedPlanDate);
                             await handleGetChiThiTable(
                               selectedPlan?.PLAN_ID ?? 'xxx',

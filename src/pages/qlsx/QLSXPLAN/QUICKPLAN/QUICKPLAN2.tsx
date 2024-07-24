@@ -50,6 +50,9 @@ import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
+  f_getRecentDMData,
+  f_insertDMYCSX,
+  f_saveQLSX,
   PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
@@ -154,28 +157,7 @@ const QUICKPLAN2 = () => {
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const getRecentDM = (G_CODE: string) => {
-    generalQuery("loadRecentDM", { G_CODE: G_CODE })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: RecentDM[] = response.data.data.map(
-            (element: RecentDM, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          setRecentDMData(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setRecentDMData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
@@ -1593,38 +1575,20 @@ const QUICKPLAN2 = () => {
             "error",
           );
         } else {
-          await generalQuery("insertDBYCSX", {
+
+          await f_insertDMYCSX({
             PROD_REQUEST_NO: selectedPlan.current?.PROD_REQUEST_NO,
             G_CODE: selectedPlan.current?.G_CODE,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-              } else {
-                generalQuery("updateDBYCSX", {
-                  PROD_REQUEST_NO: selectedPlan.current?.PROD_REQUEST_NO,
-                  LOSS_SX1: datadinhmuc.LOSS_SX1,
-                  LOSS_SX2: datadinhmuc.LOSS_SX2,
-                  LOSS_SX3: datadinhmuc.LOSS_SX3,
-                  LOSS_SX4: datadinhmuc.LOSS_SX4,
-                  LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
-                  LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-                  LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                    } else {
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          await generalQuery("saveQLSX", {
+            LOSS_SX1: datadinhmuc.LOSS_SX1,
+            LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SX3: datadinhmuc.LOSS_SX3,
+            LOSS_SX4: datadinhmuc.LOSS_SX4,
+            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+          }); 
+          err_code = await f_saveQLSX({
             G_CODE: selectedPlan.current?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1652,17 +1616,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          }) ? "0" : "1";
           if (err_code === "1") {
             Swal.fire(
               "Thông báo",
@@ -2103,7 +2057,7 @@ const QUICKPLAN2 = () => {
             setPlanDataTable(newdata);
           }
         }}
-        onCellClick={(params: any) => {
+        onCellClick={ async (params: any) => {
           let rowData: QLSXPLANDATA = params.data;
           selectedPlan.current = rowData;
           setDataDinhMuc({
@@ -2135,7 +2089,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
             NOTE: rowData.NOTE ?? "",
           });
-          getRecentDM(rowData.G_CODE);
+          setRecentDMData(await f_getRecentDMData(rowData.G_CODE));          
         }}
         onSelectionChange={(params: any) => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()

@@ -1379,6 +1379,7 @@ export interface EQ_STT {
   PROCESS_NUMBER?: number;
   PLAN_QTY?: number;
   ACC_TIME?: number;
+  G_NAME?: string;
 }
 //iqc data
 export interface IQC_INCOMMING_DATA {

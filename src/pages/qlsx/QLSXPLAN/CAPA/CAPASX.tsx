@@ -26,16 +26,14 @@ import {
   WEB_SETTING_DATA,
   YCSX_BALANCE_CAPA_DATA,
 } from "../../../../api/GlobalInterface";
-import { CustomResponsiveContainer } from "../../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
 const CAPASX = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime;
   const [trigger, setTrigger] = useState(true);
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedMachine, setSelectedMachine] = useState("FR");
-  const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment.utc().format("YYYY-MM-DD")
-  );
+  const [selectedPlanDate, setSelectedPlanDate] = useState(  moment.utc().format("YYYY-MM-DD"));
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [datadiemdanh, setDataDiemDanh] = useState<DATA_DIEM_DANH[]>([]);
   const [dlleadtime, setDlLeadTime] = useState<DELIVERY_PLAN_CAPA[]>([
@@ -671,36 +669,9 @@ const CAPASX = () => {
       (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
     )[0]?.EQ_QTY;
   };
-  const handle_loadEQ_STATUS = () => {
-    generalQuery("checkEQ_STATUS", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: EQ_STT[] = response.data.data.map(
-            (element: EQ_STT, index: number) => {
-              return {
-                ...element,
-                id: index,
-              };
-            }
-          );
-          //console.log(loaded_data);
-          setEQ_STATUS(loaded_data);
-          /*  let temp_lt: DELIVERY_PLAN_CAPA[]= dlleadtime.map((ele:DELIVERY_PLAN_CAPA, index:number)=> {
-            return {
-              ...ele,
-              AVL_CAPA: STD_CAPA(ele.FACTORY, ele.EQ),
-              REAL_CAPA:  STD_CAPA(ele.FACTORY, ele.EQ),
-            }
-          });
-          setDlLeadTime(temp_lt); */
-        } else {
-          setEQ_STATUS([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handle_loadEQ_STATUS = async () => {
+    let eq_data = await f_handle_loadEQ_STATUS();
+    setEQ_STATUS(eq_data.EQ_STATUS);    
   };
   const getrunningFR = () => {
     return eq_status.filter(

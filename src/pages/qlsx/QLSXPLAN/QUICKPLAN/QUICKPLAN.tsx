@@ -49,6 +49,8 @@ import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
+  f_insertDMYCSX,
+  f_saveQLSX,
   PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
@@ -1573,43 +1575,19 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             "error",
           );
         } else {
-          await generalQuery("insertDBYCSX", {
-            PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
-            G_CODE: selectedPlan.G_CODE,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                
-               
-              } else {
-                generalQuery("updateDBYCSX", {
-                  PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
-                  LOSS_SX1: datadinhmuc.LOSS_SX1,
-                  LOSS_SX2: datadinhmuc.LOSS_SX2,
-                  LOSS_SX3: datadinhmuc.LOSS_SX3,
-                  LOSS_SX4: datadinhmuc.LOSS_SX4,
-                  LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
-                  LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-                  LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,          
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                     
-                    } else {
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-
-         
-          await generalQuery("saveQLSX", {
+          await f_insertDMYCSX({
+            PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
+            G_CODE: selectedPlan?.G_CODE,
+            LOSS_SX1: datadinhmuc.LOSS_SX1,
+            LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SX3: datadinhmuc.LOSS_SX3,
+            LOSS_SX4: datadinhmuc.LOSS_SX4,
+            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+          }); 
+          err_code = await f_saveQLSX({
             G_CODE: selectedG_Code,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1637,17 +1615,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          }) ? "0" : "1";
           if (err_code === "1") {
             Swal.fire(
               "Thông báo",

@@ -49,6 +49,7 @@ import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
+  f_saveQLSX,
   PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
@@ -1388,33 +1389,36 @@ const PLANTABLE = () => {
             "error",
           );
         } else {
-          generalQuery("saveQLSX", {
+          err_code = await f_saveQLSX({
             G_CODE: qlsxplandatafilter[0].G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
             EQ2: datadinhmuc.EQ2,
+            EQ3: datadinhmuc.EQ3,
+            EQ4: datadinhmuc.EQ4,
             Setting1: datadinhmuc.Setting1,
             Setting2: datadinhmuc.Setting2,
+            Setting3: datadinhmuc.Setting3,
+            Setting4: datadinhmuc.Setting4,
             UPH1: datadinhmuc.UPH1,
             UPH2: datadinhmuc.UPH2,
+            UPH3: datadinhmuc.UPH3,
+            UPH4: datadinhmuc.UPH4,
             Step1: datadinhmuc.Step1,
             Step2: datadinhmuc.Step2,
+            Step3: datadinhmuc.Step3,
+            Step4: datadinhmuc.Step4,
             LOSS_SX1: datadinhmuc.LOSS_SX1,
             LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SX3: datadinhmuc.LOSS_SX3,
+            LOSS_SX4: datadinhmuc.LOSS_SX4,
             LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          }) ? "0" : "1";
+          
           if (err_code === "1") {
             Swal.fire(
               "Thông báo",

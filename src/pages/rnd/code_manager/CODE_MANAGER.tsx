@@ -9,7 +9,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, uploadQuery } from "../../../api/Api";
-import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP, f_saveQLSX } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
@@ -1902,7 +1902,7 @@ const CODE_MANAGER = () => {
       checkBP(userData, ["QLSX", "KD", "RND"], ["ALL"], ["ALL"], async () => {
         let err_code: string = "0";
         for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("saveQLSX", {
+          if(!(await f_saveQLSX({
             G_CODE: codedatatablefilter[i].G_CODE,
             PROD_DIECUT_STEP: codedatatablefilter[i].PROD_DIECUT_STEP,
             PROD_PRINT_TIMES: codedatatablefilter[i].PROD_PRINT_TIMES,
@@ -1932,17 +1932,9 @@ const CODE_MANAGER = () => {
             LOSS_SETTING3: codedatatablefilter[i].LOSS_SETTING3,
             LOSS_SETTING4: codedatatablefilter[i].LOSS_SETTING4,
             NOTE: codedatatablefilter[i].NOTE,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          }))) {
+            err_code = "1";
+          }
         }
         if (err_code === "1") {
           Swal.fire(

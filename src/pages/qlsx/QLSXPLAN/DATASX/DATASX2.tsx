@@ -15,9 +15,9 @@ import {
   SX_DATA,
   YCSX_SX_DATA,
 } from "../../../../api/GlobalInterface";
-import { checkEQvsPROCESS } from "../Machine/MACHINE";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
+import { f_checkEQvsPROCESS } from "../../../../api/GlobalFunction";
 const DATASX2 = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = () => {
@@ -2449,7 +2449,7 @@ const DATASX2 = () => {
           };
           let maxprocess: number = 1;
           for (let i = 0; i < loaded_data.length; i++) {
-            maxprocess = checkEQvsPROCESS(loaded_data[i].EQ1, loaded_data[i].EQ2, loaded_data[i].EQ3, loaded_data[i].EQ4);
+            maxprocess = f_checkEQvsPROCESS(loaded_data[i].EQ1, loaded_data[i].EQ2, loaded_data[i].EQ3, loaded_data[i].EQ4);
             temp_loss_info.XUATKHO_MET += loaded_data[i].M_OUTPUT;
             temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
             temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;

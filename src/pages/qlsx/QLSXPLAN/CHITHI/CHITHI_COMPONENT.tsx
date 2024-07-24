@@ -17,6 +17,7 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
+import { f_checkEQvsPROCESS } from "../../../../api/GlobalFunction";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
 
   const company: string = useSelector(
@@ -157,7 +158,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             }
           }
           setRequest_CodeInfo(response.data.data);
-          let checkpr: number = checkEQvsPROCESS(
+          let checkpr: number = f_checkEQvsPROCESS(
             response.data.data[0].EQ1,
             response.data.data[0].EQ2,
             response.data.data[0].EQ3,
@@ -267,19 +268,6 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       //console.log(true)
       return true;
     }
-  };
-  const checkEQvsPROCESS = (
-    EQ1: string,
-    EQ2: string,
-    EQ3: string,
-    EQ4: string,
-  ) => {
-    let maxprocess: number = 0;
-    if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
-    if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
-    if (["NA", "NO", "", null].indexOf(EQ3) === -1) maxprocess++;
-    if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
-    return maxprocess;
   };
   const check_lieuql_sx_m140 = () => {
     generalQuery("check_lieuql_sx_m140", {

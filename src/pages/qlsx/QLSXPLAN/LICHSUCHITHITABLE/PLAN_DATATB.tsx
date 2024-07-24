@@ -23,6 +23,12 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../../api/Api";
 import {
   checkBP,
+  f_checkEQvsPROCESS,
+  f_getCurrentDMToSave,
+  f_updateBatchPlan,
+  f_updatePlanQLSX,
+  renderChiThi,
+  renderChiThi2,
   SaveExcel,
   zeroPad,
 } from "../../../../api/GlobalFunction";
@@ -40,14 +46,6 @@ import { FcDeleteRow } from "react-icons/fc";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import { GiCurvyKnife } from "react-icons/gi";
 import KHOAO from "../KHOAO/KHOAO";
-import {
-  checkEQvsPROCESS,
-  getCurrentDMToSave,
-  renderBanVe,
-  renderChiThi,
-  renderChiThi2,
-  renderYCSX,
-} from "../Machine/MACHINE";
 import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
@@ -2221,127 +2219,9 @@ const PLAN_DATATB = () => {
       allowOutsideClick: false,
       confirmButtonText: "OK",
       showConfirmButton: false,
-    });
-    let selectedPlanTable: QLSXPLANDATA[] = qlsxplandatafilter.current;
-    //console.log(selectedPlanTable);
+    });   
     let err_code: string = "0";
-    for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
-      let check_NEXT_PLAN_ID: boolean = true;
-      let checkPlanIdP500: boolean = false;
-      await generalQuery("checkP500PlanID_mobile", {
-        PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
-      })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            checkPlanIdP500 = true;
-          } else {
-            checkPlanIdP500 = false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-        let {NEEDED_QTY,FINAL_LOSS_SX,FINAL_LOSS_KT, FINAL_LOSS_SETTING} = await getCurrentDMToSave(qlsxplandatafilter.current[i]); 
-      if (
-        parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
-        1 &&
-        parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
-        4 &&
-        qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
-        qlsxplandatafilter.current[i].PLAN_QTY <=
-        qlsxplandatafilter.current[i].PROD_REQUEST_QTY &&
-        qlsxplandatafilter.current[i].PLAN_ID !==
-        qlsxplandatafilter.current[i].NEXT_PLAN_ID &&
-        qlsxplandatafilter.current[i].CHOTBC !== "V" &&
-        check_NEXT_PLAN_ID &&
-        parseInt(qlsxplandatafilter.current[i].STEP.toString()) >= 0 &&
-        parseInt(qlsxplandatafilter.current[i].STEP.toString()) <= 9 &&
-        checkEQvsPROCESS(
-          qlsxplandatafilter.current[i].EQ1,
-          qlsxplandatafilter.current[i].EQ2,
-          qlsxplandatafilter.current[i].EQ3,
-          qlsxplandatafilter.current[i].EQ4
-        ) >= qlsxplandatafilter.current[i].PROCESS_NUMBER &&
-        checkPlanIdP500 === false
-      ) {
-        await generalQuery("updatePlanQLSX", {
-          PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
-          STEP: qlsxplandatafilter.current[i].STEP,
-          PLAN_QTY: qlsxplandatafilter.current[i].PLAN_QTY,
-          OLD_PLAN_QTY: qlsxplandatafilter.current[i].PLAN_QTY,
-          PLAN_LEADTIME: qlsxplandatafilter.current[i].PLAN_LEADTIME,
-          PLAN_EQ: qlsxplandatafilter.current[i].PLAN_EQ,
-          PLAN_ORDER: qlsxplandatafilter.current[i].PLAN_ORDER,
-          PROCESS_NUMBER: qlsxplandatafilter.current[i].PROCESS_NUMBER,
-          KETQUASX: qlsxplandatafilter.current[i].KETQUASX === null ?? 0,
-          NEXT_PLAN_ID: qlsxplandatafilter.current[i].NEXT_PLAN_ID ?? "X",
-          IS_SETTING: qlsxplandatafilter.current[i].IS_SETTING?.toUpperCase(),
-          NEEDED_QTY:  NEEDED_QTY,
-          CURRENT_LOSS_SX: FINAL_LOSS_SX,
-          CURRENT_LOSS_KT: FINAL_LOSS_KT,
-          CURRENT_SETTING_M: FINAL_LOSS_SETTING,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += "_" + response.data.message;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ":";
-        if (
-          !(
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
-            1 &&
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
-            4
-          )
-        ) {
-          err_code += "_: Process number chưa đúng";
-        } else if (qlsxplandatafilter.current[i].PLAN_QTY === 0) {
-          err_code += "_: Số lượng chỉ thị =0";
-        } else if (
-          qlsxplandatafilter.current[i].PLAN_QTY >
-          qlsxplandatafilter.current[i].PROD_REQUEST_QTY
-        ) {
-          err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
-        } else if (
-          qlsxplandatafilter.current[i].PLAN_ID ===
-          qlsxplandatafilter.current[i].NEXT_PLAN_ID
-        ) {
-          err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
-        } else if (!check_NEXT_PLAN_ID) {
-          err_code +=
-            "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
-        } else if (qlsxplandatafilter.current[i].CHOTBC === "V") {
-          err_code +=
-            "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
-        } else if (
-          !(
-            parseInt(qlsxplandatafilter.current[i].STEP.toString()) >= 0 &&
-            parseInt(qlsxplandatafilter.current[i].STEP.toString()) <= 9
-          )
-        ) {
-          err_code += "_: Hãy nhập STEP từ 0 -> 9";
-        } else if (
-          !(
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
-            1 &&
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
-            4
-          )
-        ) {
-          err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
-        } else if (checkPlanIdP500) {
-          err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
-        }
-      }
-    }
+    err_code = await f_updateBatchPlan(qlsxplandatafilter.current);    
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
@@ -2729,7 +2609,7 @@ const PLAN_DATATB = () => {
               </IconButton>
               <IconButton
                 className='buttonIcon'
-                onClick={() => {
+                onClick={async () => {
                   if (qlsxplandatafilter.current.length > 0) {
                     if (userData?.EMPL_NO !== "NHU1903") {
                       checkBP(
@@ -2737,13 +2617,23 @@ const PLAN_DATATB = () => {
                         ["QLSX"],
                         ["ALL"],
                         ["ALL"],
-                        handle_UpdatePlan
+                        async ()=> {
+                          await handle_UpdatePlan();
+                          setShowChiThi(true);
+                          setChiThiListRender(
+                          renderChiThi(qlsxplandatafilter.current, myComponentRef)
+                    );
+                        }                        
                       );
                     }
-                    setShowChiThi(true);
-                    setChiThiListRender(
-                      renderChiThi(qlsxplandatafilter.current, myComponentRef)
-                    );
+                    else 
+                    {
+                      setShowChiThi(true);
+                      setChiThiListRender(
+                        renderChiThi(qlsxplandatafilter.current, myComponentRef)
+                      );
+                    }
+                    
                     //console.log(ycsxdatatablefilter);
                   } else {
                     setShowChiThi(false);

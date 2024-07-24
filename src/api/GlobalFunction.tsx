@@ -4,9 +4,13 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany } from "./Api";
-import { CodeListData, CustomerListData, InvoiceTableData, POTableData, PRICEWITHMOQ, UserData } from "./GlobalInterface";
+import { CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
+import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
+import CHITHI_COMPONENT2 from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT2";
+import YCSXComponent from "../pages/kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
+import DrawComponent from "../pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 
 export const zeroPad = (num: number, places: number) => String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
@@ -765,7 +769,6 @@ export const f_readUploadFile = (e: any,setRow: React.Dispatch<React.SetStateAct
     reader.readAsArrayBuffer(e.target.files[0]);
   }  
 };
-
 // Invoice manager function
 
 export const f_loadInvoiceDataFull = async (filterData: any) =>  {
@@ -864,3 +867,531 @@ export const f_updateInvoiceNo = async (DELIVERY_ID: number, INVOICE_NO: string)
     });
     return kq;
 }
+
+//Machine functions
+export const f_checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string) => {
+  let maxprocess: number = 0;
+  if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
+  if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
+  if (["NA", "NO", "", null].indexOf(EQ3) === -1) maxprocess++;
+  if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
+  return maxprocess;
+};
+export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
+  return planlist.map((element, index) => (
+    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />   
+  ));
+};
+export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
+  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} />;
+};
+export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
+  return ycsxlist.map((element, index) => (
+    <YCSXComponent key={index} DATA={element} />
+  ));
+};
+export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
+  return ycsxlist.map((element, index) =>
+    element.BANVE === "Y" ? (
+      <DrawComponent
+        key={index}
+        G_CODE={element.G_CODE}
+        PDBV={element.PDBV}
+        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
+        PDBV_EMPL={element.PDBV_EMPL}
+        PDBV_DATE={element.PDBV_DATE}
+      />
+    ) : (
+      <div>Code: {element.G_NAME} : Không có bản vẽ</div>
+    )
+  );
+};
+export const f_getCurrentDMToSave = async (planData: QLSXPLANDATA) => {
+  console.log(planData);
+  let NEEDED_QTY: number = planData.PLAN_QTY ?? 0, FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = planData?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = planData.PD ?? 0, CAVITY: number = planData.CAVITY ?? 0;
+  
+  if (planData.PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SX = (planData.LOSS_SX2 ?? 0) + (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SX = (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SX = (planData.LOSS_SX4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SX = 0;
+  }
+  if (planData.PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SETTING = (planData.LOSS_SETTING2 ?? 0) + (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SETTING = (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SETTING = (planData.LOSS_SETTING4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SETTING = 0;
+  }
+
+ 
+
+  NEEDED_QTY = NEEDED_QTY * (100 + FINAL_LOSS_SX + FINAL_LOSS_KT) / 100 + FINAL_LOSS_SETTING / PD * CAVITY * 1000;
+ 
+  
+
+  return {
+    NEEDED_QTY: Math.round(NEEDED_QTY),
+    FINAL_LOSS_SX: FINAL_LOSS_SX,
+    FINAL_LOSS_KT: planData.LOSS_KT,
+    FINAL_LOSS_SETTING: FINAL_LOSS_SETTING
+  }
+}
+export const f_saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
+  let check_NEXT_PLAN_ID: boolean = true;
+  let checkPlanIdP500: boolean = false;
+  let err_code: string = '0';
+  await generalQuery("checkP500PlanID_mobile", {
+    PLAN_ID: planToSave?.PLAN_ID,
+  })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        checkPlanIdP500 = true;
+      } else {
+        checkPlanIdP500 = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await f_getCurrentDMToSave(planToSave);
+  if (
+    parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
+    1 &&
+    parseInt(planToSave?.PROCESS_NUMBER.toString()) <=
+    4 &&
+    planToSave?.PLAN_QTY !== 0 &&
+    planToSave?.PLAN_QTY <=
+    planToSave?.PROD_REQUEST_QTY &&
+    planToSave?.PLAN_ID !==
+    planToSave?.NEXT_PLAN_ID &&
+    planToSave?.CHOTBC !== "V" &&
+    check_NEXT_PLAN_ID &&
+    parseInt(planToSave?.STEP.toString()) >= 0 &&
+    parseInt(planToSave?.STEP.toString()) <= 9 &&
+    f_checkEQvsPROCESS(
+      planToSave?.EQ1,
+      planToSave?.EQ2,
+      planToSave?.EQ3,
+      planToSave?.EQ4
+    ) >= planToSave?.PROCESS_NUMBER &&
+    checkPlanIdP500 === false
+  ) {
+    err_code += await f_updatePlanQLSX({
+      PLAN_ID: planToSave?.PLAN_ID,
+      STEP: planToSave?.STEP,
+      PLAN_QTY: planToSave?.PLAN_QTY,
+      OLD_PLAN_QTY: planToSave?.PLAN_QTY,
+      PLAN_LEADTIME: planToSave?.PLAN_LEADTIME,
+      PLAN_EQ: planToSave?.PLAN_EQ,
+      PLAN_ORDER: planToSave?.PLAN_ORDER,
+      PROCESS_NUMBER: planToSave?.PROCESS_NUMBER,
+      KETQUASX: planToSave?.KETQUASX ?? 0,
+      NEXT_PLAN_ID: planToSave?.NEXT_PLAN_ID ?? "X",
+      IS_SETTING: planToSave?.IS_SETTING?.toUpperCase(),
+      NEEDED_QTY: NEEDED_QTY,
+      CURRENT_LOSS_SX: FINAL_LOSS_SX,
+      CURRENT_LOSS_KT: FINAL_LOSS_KT,
+      CURRENT_SETTING_M: FINAL_LOSS_SETTING,
+    });
+  
+  } else {
+    err_code += "_" + planToSave?.G_NAME_KD + ":";
+    if (
+      !(
+        parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
+        1 &&
+        parseInt(planToSave?.PROCESS_NUMBER.toString()) <=
+        4
+      )
+    ) {
+      err_code += "_: Process number chưa đúng";
+    } else if (planToSave?.PLAN_QTY === 0) {
+      err_code += "_: Số lượng chỉ thị =0";
+    } else if (
+      planToSave?.PLAN_QTY >
+      planToSave?.PROD_REQUEST_QTY
+    ) {
+      err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
+    } else if (
+      planToSave?.PLAN_ID ===
+      planToSave?.NEXT_PLAN_ID
+    ) {
+      err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
+    } else if (!check_NEXT_PLAN_ID) {
+      err_code +=
+        "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
+    } else if (planToSave?.CHOTBC === "V") {
+      err_code +=
+        "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
+    } else if (
+      !(
+        parseInt(planToSave?.STEP.toString()) >= 0 &&
+        parseInt(planToSave?.STEP.toString()) <= 9
+      )
+    ) {
+      err_code += "_: Hãy nhập STEP từ 0 -> 9";
+    } else if (
+      !(
+        parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
+        1 &&
+        parseInt(planToSave?.PROCESS_NUMBER.toString()) <=
+        4
+      )
+    ) {
+      err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
+    } else if (checkPlanIdP500) {
+      err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
+    }
+  }
+  if (err_code !== "0") {
+    Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
+  } else {
+    Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
+  }
+}
+export const f_getRecentDMData = async (G_CODE: string) => {
+  let recentDMData: RecentDM[] = [];
+  await generalQuery("loadRecentDM", { G_CODE: G_CODE })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: RecentDM[] = response.data.data.map(
+          (element: RecentDM, index: number) => {
+            return {
+              ...element,
+            };
+          },
+        );
+        recentDMData = loadeddata
+        
+      } else {
+        //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+        recentDMData = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return recentDMData;
+}
+export const f_getMachineListData = async () => {
+  let machineListData: MACHINE_LIST[] = [];
+  await generalQuery("getmachinelist", {})
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: MACHINE_LIST[] = response.data.data.map(
+          (element: MACHINE_LIST, index: number) => {
+            return {
+              ...element,
+            };
+          }
+        );
+        loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+        machineListData = loadeddata;
+       
+      } else {
+        //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+        machineListData = []
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return machineListData;
+};
+export const f_handle_loadEQ_STATUS = async () => {
+  let eq_status_data: EQ_STT[] = [];
+  let eq_series_data: string[] = [];
+
+  await generalQuery("checkEQ_STATUS", {})
+  .then((response) => {
+    //console.log(response.data.data);
+    if (response.data.tk_status !== "NG") {
+      const loaded_data: EQ_STT[] = response.data.data.map(
+        (element: EQ_STT, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
+        }
+      );
+      eq_series_data = [
+        ...new Set(
+          loaded_data.map((e: EQ_STT, index: number) => {
+            return e.EQ_SERIES ?? "NA";
+          })
+        ),
+      ];
+      eq_status_data = loaded_data
+      
+    } else {
+      eq_status_data = [];
+      eq_series_data = [];
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+    
+  return {
+    EQ_SERIES: eq_series_data,
+    EQ_STATUS: eq_status_data
+  }
+};
+export const f_saveQLSX = async (qlsxdata: any) => {
+  let isOk: boolean = false;
+  await generalQuery("saveQLSX", {
+    G_CODE: qlsxdata.G_CODE,
+    FACTORY: qlsxdata.FACTORY,
+    EQ1: qlsxdata.EQ1,
+    EQ2: qlsxdata.EQ2,
+    EQ3: qlsxdata.EQ3,
+    EQ4: qlsxdata.EQ4,
+    Setting1: qlsxdata.Setting1,
+    Setting2: qlsxdata.Setting2,
+    Setting3: qlsxdata.Setting3,
+    Setting4: qlsxdata.Setting4,
+    UPH1: qlsxdata.UPH1,
+    UPH2: qlsxdata.UPH2,
+    UPH3: qlsxdata.UPH3,
+    UPH4: qlsxdata.UPH4,
+    Step1: qlsxdata.Step1,
+    Step2: qlsxdata.Step2,
+    Step3: qlsxdata.Step3,
+    Step4: qlsxdata.Step4,
+    LOSS_SX1: qlsxdata.LOSS_SX1,
+    LOSS_SX2: qlsxdata.LOSS_SX2,
+    LOSS_SX3: qlsxdata.LOSS_SX3,
+    LOSS_SX4: qlsxdata.LOSS_SX4,
+    LOSS_SETTING1: qlsxdata.LOSS_SETTING1,
+    LOSS_SETTING2: qlsxdata.LOSS_SETTING2,
+    LOSS_SETTING3: qlsxdata.LOSS_SETTING3,
+    LOSS_SETTING4: qlsxdata.LOSS_SETTING4,
+    NOTE: qlsxdata.NOTE,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        isOk = true;
+      } else {
+        isOk = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return isOk;
+}
+export const f_updateDMYCSX = async (ycsxDMData: any) => {
+  generalQuery("updateDBYCSX", {
+    PROD_REQUEST_NO: ycsxDMData.PROD_REQUEST_NO,
+    LOSS_SX1: ycsxDMData.LOSS_SX1,
+    LOSS_SX2: ycsxDMData.LOSS_SX2,
+    LOSS_SX3: ycsxDMData.LOSS_SX3,
+    LOSS_SX4: ycsxDMData.LOSS_SX4,
+    LOSS_SETTING1: ycsxDMData.LOSS_SETTING1,
+    LOSS_SETTING2: ycsxDMData.LOSS_SETTING2,
+    LOSS_SETTING3: ycsxDMData.LOSS_SETTING3,
+    LOSS_SETTING4: ycsxDMData.LOSS_SETTING4,
+  })
+  .then((response) => {
+    if (response.data.tk_status !== "NG") {
+    } else {
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+export const f_insertDMYCSX = async (ycsxDMData: any) => {
+
+  await generalQuery("insertDBYCSX", {
+    PROD_REQUEST_NO: ycsxDMData.PROD_REQUEST_NO,
+    G_CODE: ycsxDMData.G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        f_updateDMYCSX({
+          PROD_REQUEST_NO: ycsxDMData.PROD_REQUEST_NO,
+          LOSS_SX1: ycsxDMData.LOSS_SX1,
+          LOSS_SX2: ycsxDMData.LOSS_SX2,
+          LOSS_SX3: ycsxDMData.LOSS_SX3,
+          LOSS_SX4: ycsxDMData.LOSS_SX4,
+          LOSS_SETTING1: ycsxDMData.LOSS_SETTING1,
+          LOSS_SETTING2: ycsxDMData.LOSS_SETTING2,
+          LOSS_SETTING3: ycsxDMData.LOSS_SETTING3,
+          LOSS_SETTING4: ycsxDMData.LOSS_SETTING4,
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+}
+export const f_updatePlanQLSX = async (planData: any) => {
+  let kq: string = "";
+  await generalQuery("updatePlanQLSX", {
+    PLAN_ID: planData.PLAN_ID,
+    STEP: planData.STEP,
+    PLAN_QTY: planData.PLAN_QTY,
+    OLD_PLAN_QTY: planData.PLAN_QTY,
+    PLAN_LEADTIME: planData.PLAN_LEADTIME,
+    PLAN_EQ: planData.PLAN_EQ,
+    PLAN_ORDER: planData.PLAN_ORDER,
+    PROCESS_NUMBER: planData.PROCESS_NUMBER,
+    KETQUASX: planData.KETQUASX ?? 0,
+    NEXT_PLAN_ID: planData.NEXT_PLAN_ID ?? "X",
+    IS_SETTING: planData.IS_SETTING?.toUpperCase(),
+    NEEDED_QTY: planData.NEEDED_QTY,
+    CURRENT_LOSS_SX: planData.CURRENT_LOSS_SX,
+    CURRENT_LOSS_KT: planData.CURRENT_LOSS_KT,
+    CURRENT_SETTING_M: planData.CURRENT_SETTING_M,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq += "_" + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_updateBatchPlan = async (planArray: any) => {
+  let err_code: string = "0";
+  Swal.fire({
+    title: "Lưu Plan",
+    text: "Đang lưu plan, hãy chờ một chút",
+    icon: "info",
+    showCancelButton: false,
+    allowOutsideClick: false,
+    confirmButtonText: "OK",
+    showConfirmButton: false,
+  }); 
+
+  
+  for (let i = 0; i < planArray.length; i++) {
+    let check_NEXT_PLAN_ID: boolean = true;
+    if (planArray[i].NEXT_PLAN_ID !== "X") {
+      if (
+        planArray[i].NEXT_PLAN_ID === planArray[i + 1].PLAN_ID
+      ) {
+        check_NEXT_PLAN_ID = true;
+      } else {
+        check_NEXT_PLAN_ID = false;
+      }
+    }
+    let checkPlanIdP500: boolean = false;
+    await generalQuery("checkP500PlanID_mobile", {
+      PLAN_ID: planArray[i].PLAN_ID,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          checkPlanIdP500 = true;
+        } else {
+          checkPlanIdP500 = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await f_getCurrentDMToSave(planArray[i])
+    console.log(NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING);
+    if (
+      parseInt(planArray[i].PROCESS_NUMBER.toString()) >= 1 &&
+      parseInt(planArray[i].PROCESS_NUMBER.toString()) <= 4 &&
+      planArray[i].PLAN_QTY !== 0 &&
+      planArray[i].PLAN_QTY <=
+      planArray[i].PROD_REQUEST_QTY &&
+      planArray[i].PLAN_ID !== planArray[i].NEXT_PLAN_ID &&
+      planArray[i].CHOTBC !== "V" &&
+      check_NEXT_PLAN_ID &&
+      parseInt(planArray[i].STEP.toString()) >= 0 &&
+      parseInt(planArray[i].STEP.toString()) <= 9 &&
+      f_checkEQvsPROCESS(
+        planArray[i].EQ1,
+        planArray[i].EQ2,
+        planArray[i].EQ3,
+        planArray[i].EQ4
+      ) >= planArray[i].PROCESS_NUMBER &&
+      checkPlanIdP500 === false
+    ) {
+
+      err_code += await f_updatePlanQLSX({
+        PLAN_ID: planArray[i].PLAN_ID,
+        STEP: planArray[i].STEP,
+        PLAN_QTY: planArray[i].PLAN_QTY,
+        OLD_PLAN_QTY: planArray[i].PLAN_QTY,
+        PLAN_LEADTIME: planArray[i].PLAN_LEADTIME,
+        PLAN_EQ: planArray[i].PLAN_EQ,
+        PLAN_ORDER: planArray[i].PLAN_ORDER,
+        PROCESS_NUMBER: planArray[i].PROCESS_NUMBER,
+        KETQUASX: planArray[i].KETQUASX === null ? 0 : planArray[i].KETQUASX,
+        NEXT_PLAN_ID: planArray[i].NEXT_PLAN_ID === null ? "X" : planArray[i].NEXT_PLAN_ID,
+        IS_SETTING: planArray[i].IS_SETTING,
+        NEEDED_QTY: NEEDED_QTY,
+        CURRENT_LOSS_SX: FINAL_LOSS_SX,
+        CURRENT_LOSS_KT: FINAL_LOSS_KT,
+        CURRENT_SETTING_M: FINAL_LOSS_SETTING,
+      });
+
+    } else {
+      err_code += "_" + planArray[i].G_NAME_KD + ":";
+      if (
+        !(
+          parseInt(planArray[i].PROCESS_NUMBER.toString()) >= 1 &&
+          parseInt(planArray[i].PROCESS_NUMBER.toString()) <= 4
+        )
+      ) {
+        err_code += "_: Process number chưa đúng";
+      } else if (planArray[i].PLAN_QTY === 0) {
+        err_code += "_: Số lượng chỉ thị =0";
+      } else if (
+        planArray[i].PLAN_QTY > planArray[i].PROD_REQUEST_QTY
+      ) {
+        err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
+      } else if (
+        planArray[i].PLAN_ID === planArray[i].NEXT_PLAN_ID
+      ) {
+        err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
+      } else if (!check_NEXT_PLAN_ID) {
+        err_code +=
+          "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
+      } else if (planArray[i].CHOTBC === "V") {
+        err_code +=
+          "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
+      } else if (
+        !(
+          parseInt(planArray[i].STEP.toString()) >= 0 &&
+          parseInt(planArray[i].STEP.toString()) <= 9
+        )
+      ) {
+        err_code += "_: Hãy nhập STEP từ 0 -> 9";
+      } else if (
+        !(
+          parseInt(planArray[i].PROCESS_NUMBER.toString()) >= 1 &&
+          parseInt(planArray[i].PROCESS_NUMBER.toString()) <= 4
+        )
+      ) {
+        err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
+      } else if (checkPlanIdP500) {
+        err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
+      }
+    }
+  }
+  return err_code; 
+};
