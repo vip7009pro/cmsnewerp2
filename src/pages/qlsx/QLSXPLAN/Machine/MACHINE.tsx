@@ -96,19 +96,18 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
   await generalQuery("checkP500PlanID_mobile", {
     PLAN_ID: planToSave?.PLAN_ID,
   })
-  .then((response) => {
-    //console.log(response.data);
-    if (response.data.tk_status !== "NG") {
-      checkPlanIdP500 = true;
-    } else {
-      checkPlanIdP500 = false;
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-  let {NEEDED_QTY,FINAL_LOSS_SX,FINAL_LOSS_KT, FINAL_LOSS_SETTING} = await getCurrentDMToSave(planToSave); 
-
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        checkPlanIdP500 = true;
+      } else {
+        checkPlanIdP500 = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await getCurrentDMToSave(planToSave);
   if (
     parseInt(planToSave?.PROCESS_NUMBER.toString()) >=
     1 &&
@@ -143,7 +142,7 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
       KETQUASX: planToSave?.KETQUASX ?? 0,
       NEXT_PLAN_ID: planToSave?.NEXT_PLAN_ID ?? "X",
       IS_SETTING: planToSave?.IS_SETTING?.toUpperCase(),
-      NEEDED_QTY:  NEEDED_QTY,
+      NEEDED_QTY: NEEDED_QTY,
       CURRENT_LOSS_SX: FINAL_LOSS_SX,
       CURRENT_LOSS_KT: FINAL_LOSS_KT,
       CURRENT_SETTING_M: FINAL_LOSS_SETTING,
@@ -213,43 +212,39 @@ export const saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
     Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
   }
 }
-export const getCurrentDMToSave = async(planData: QLSXPLANDATA) => {
-  let NEEDED_QTY: number = planData.PLAN_QTY ,FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = planData?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = planData.PD ?? 0, CAVITY: number =  planData.CAVITY ?? 0;
-
-        if (planData.PROCESS_NUMBER === 1) {
-          FINAL_LOSS_SX = (planData.LOSS_SX2 ?? 0) + (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0) ;
-        } else if (planData.PROCESS_NUMBER === 2) {
-          FINAL_LOSS_SX = (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0) ;
-        } else if (planData.PROCESS_NUMBER === 3) {
-          FINAL_LOSS_SX = (planData.LOSS_SX4 ?? 0) ;
-        } else if (planData.PROCESS_NUMBER === 4) {
-          FINAL_LOSS_SX = 0;
-        }
-        if (planData.PROCESS_NUMBER === 1) {
-          FINAL_LOSS_SETTING = (planData.LOSS_SETTING2 ?? 0) + (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
-        } else if (planData.PROCESS_NUMBER === 2) {
-          FINAL_LOSS_SETTING = (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
-        } else if (planData.PROCESS_NUMBER === 3) {
-          FINAL_LOSS_SETTING = (planData.LOSS_SETTING4 ?? 0);
-        } else if (planData.PROCESS_NUMBER === 4) {
-          FINAL_LOSS_SETTING = 0;
-        }
-
-        NEEDED_QTY = NEEDED_QTY*(100+FINAL_LOSS_SX+FINAL_LOSS_KT)/100 + FINAL_LOSS_SETTING/PD*CAVITY*1000;
-
-        /* console.log("PD",PD);
-        console.log("CAVITY",CAVITY);        
-        console.log("sx loss",FINAL_LOSS_SX)
-        console.log("sx setting",FINAL_LOSS_SETTING)
-        console.log("kt lss",FINAL_LOSS_KT)
-        console.log("Needed_qty",NEEDED_QTY); */
-
-        return {
-          NEEDED_QTY: Math.round(NEEDED_QTY),
-          FINAL_LOSS_SX: FINAL_LOSS_SX,
-          FINAL_LOSS_KT: planData.LOSS_KT,
-          FINAL_LOSS_SETTING: FINAL_LOSS_SETTING
-        }
+export const getCurrentDMToSave = async (planData: QLSXPLANDATA) => {
+  let NEEDED_QTY: number = planData.PLAN_QTY, FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = planData?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = planData.PD ?? 0, CAVITY: number = planData.CAVITY ?? 0;
+  if (planData.PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SX = (planData.LOSS_SX2 ?? 0) + (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SX = (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SX = (planData.LOSS_SX4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SX = 0;
+  }
+  if (planData.PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SETTING = (planData.LOSS_SETTING2 ?? 0) + (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SETTING = (planData.LOSS_SETTING3 ?? 0) + (planData.LOSS_SETTING4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SETTING = (planData.LOSS_SETTING4 ?? 0);
+  } else if (planData.PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SETTING = 0;
+  }
+  NEEDED_QTY = NEEDED_QTY * (100 + FINAL_LOSS_SX + FINAL_LOSS_KT) / 100 + FINAL_LOSS_SETTING / PD * CAVITY * 1000;
+  /* console.log("PD",PD);
+  console.log("CAVITY",CAVITY);        
+  console.log("sx loss",FINAL_LOSS_SX)
+  console.log("sx setting",FINAL_LOSS_SETTING)
+  console.log("kt lss",FINAL_LOSS_KT)
+  console.log("Needed_qty",NEEDED_QTY); */
+  return {
+    NEEDED_QTY: Math.round(NEEDED_QTY),
+    FINAL_LOSS_SX: FINAL_LOSS_SX,
+    FINAL_LOSS_KT: planData.LOSS_KT,
+    FINAL_LOSS_SETTING: FINAL_LOSS_SETTING
+  }
 }
 const MACHINE = () => {
   const myComponentRef = useRef();
@@ -404,7 +399,7 @@ const MACHINE = () => {
   };
   const column_ycsxtable = getCompany() === 'CMS' ? [
     {
-      field: "G_CODE", headerName: "G_CODE", width: 110, 
+      field: "G_CODE", headerName: "G_CODE", width: 110,
     },
     {
       field: "G_NAME_KD",
@@ -1740,15 +1735,12 @@ const MACHINE = () => {
             "error"
           );
         } else {
-          
           await generalQuery("insertDBYCSX", {
             PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
             G_CODE: selectedPlan?.G_CODE,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                 
-               
               } else {
                 generalQuery("updateDBYCSX", {
                   PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
@@ -1759,11 +1751,10 @@ const MACHINE = () => {
                   LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
                   LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
                   LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,            
+                  LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
                 })
                   .then((response) => {
                     if (response.data.tk_status !== "NG") {
-                     
                     } else {
                     }
                   })
@@ -1774,8 +1765,7 @@ const MACHINE = () => {
             })
             .catch((error) => {
               console.log(error);
-            });  
-            
+            });
           await generalQuery("saveQLSX", {
             G_CODE: selectedPlan?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
@@ -1864,8 +1854,8 @@ const MACHINE = () => {
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                ORG_LOSS_KT: getCompany()==='CMS'? element.LOSS_KT :0,
-                LOSS_KT: getCompany()==='CMS'? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
+                ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
+                LOSS_KT: getCompany() === 'CMS' ? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
                 id: index,
               };
             }
@@ -2405,40 +2395,34 @@ const MACHINE = () => {
         confirmButtonText: "OK",
         showConfirmButton: false,
       });
-      for (let i = 0; i < qlsxplandatafilter.current.length; i++) { 
-        let isOnO302: boolean = false, isChotBaoCao: boolean = (qlsxplandatafilter.current[i].CHOTBC === "V"), isOnOutKhoAo: boolean =false;
-        
+      for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
+        let isOnO302: boolean = false, isChotBaoCao: boolean = (qlsxplandatafilter.current[i].CHOTBC === "V"), isOnOutKhoAo: boolean = false;
         await generalQuery("checkPLANID_O302", {
           PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
         })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            isOnO302 = true;
-          } else {
-            
-          }        
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              isOnO302 = true;
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         await generalQuery("checkPLANID_OUT_KHO_AO", {
           PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
         })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            isOnOutKhoAo = true;
-          } else {
-            
-          }        
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              isOnOutKhoAo = true;
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {
           console.log('vao delete')
           generalQuery("deletePlanQLSX", {
@@ -2446,19 +2430,17 @@ const MACHINE = () => {
           })
             .then((response) => {
               //console.log(response.data);
-              if (response.data.tk_status !== "NG") {                
-                Swal.fire('Thông báo','Xóa thành công','success')
+              if (response.data.tk_status !== "NG") {
+                Swal.fire('Thông báo', 'Xóa thành công', 'success')
               } else {
-
               }
             })
             .catch((error) => {
               console.log(error);
             });
-        } 
+        }
         else {
-          if(isChotBaoCao)
-          {
+          if (isChotBaoCao) {
             Swal.fire(
               "Thông báo",
               "Chỉ thị + " +
@@ -2466,10 +2448,8 @@ const MACHINE = () => {
               ":  +đã chốt báo cáo, ko xóa được chỉ thị",
               "error"
             );
-
           }
-          else if(isOnO302)
-          {
+          else if (isOnO302) {
             Swal.fire(
               "Thông báo",
               "Chỉ thị + " +
@@ -2477,10 +2457,8 @@ const MACHINE = () => {
               ":  +đã xuất kho thật",
               "error"
             );
-
-          }   
-          else if(isOnOutKhoAo)
-          {
+          }
+          else if (isOnOutKhoAo) {
             Swal.fire(
               "Thông báo",
               "Chỉ thị + " +
@@ -2488,14 +2466,10 @@ const MACHINE = () => {
               ":  +đã xuất kho ảo",
               "error"
             );
-            
           }
         }
-
-
-        
       }
-      clearSelectedRows();      
+      clearSelectedRows();
       loadQLSXPlan(selectedPlanDate);
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
@@ -2582,7 +2556,7 @@ const MACHINE = () => {
     return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
   };
   const handle_AddPlan = async () => {
-    console.log('ycsxdatatablefilter.current',ycsxdatatablefilter.current)
+    console.log('ycsxdatatablefilter.current', ycsxdatatablefilter.current)
     if (ycsxdatatablefilter.current.length >= 1) {
       for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
         let check_ycsx_hethongcu: boolean = false;
@@ -2622,7 +2596,7 @@ const MACHINE = () => {
             PLAN_LEADTIME: 0,
             STEP: 0,
             PLAN_ORDER: NextPlanOrder,
-            PROCESS_NUMBER: selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ1   ? 1   : selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ2     ? 2     : 0,
+            PROCESS_NUMBER: selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ1 ? 1 : selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ2 ? 2 : 0,
             G_CODE: ycsxdatatablefilter.current[i].G_CODE,
             NEXT_PLAN_ID: "X",
             IS_SETTING: "Y"
@@ -2695,19 +2669,13 @@ const MACHINE = () => {
         .catch((error) => {
           console.log(error);
         });
-        
-
-        let {NEEDED_QTY,FINAL_LOSS_SX,FINAL_LOSS_KT,FINAL_LOSS_SETTING} = await getCurrentDMToSave(selectedPlanTable[i])
-
-        /* console.log("PD",PD);
-        console.log("CAVITY",CAVITY);        
-        console.log("sx loss",FINAL_LOSS_SX)
-        console.log("sx setting",FINAL_LOSS_SETTING)
-        console.log("kt lss",FINAL_LOSS_KT)
-        console.log("Needed_qty",NEEDED_QTY); */
-
-
-        
+      let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await getCurrentDMToSave(selectedPlanTable[i])
+      /* console.log("PD",PD);
+      console.log("CAVITY",CAVITY);        
+      console.log("sx loss",FINAL_LOSS_SX)
+      console.log("sx setting",FINAL_LOSS_SETTING)
+      console.log("kt lss",FINAL_LOSS_KT)
+      console.log("Needed_qty",NEEDED_QTY); */
       if (
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4 &&
@@ -2736,10 +2704,10 @@ const MACHINE = () => {
           PLAN_EQ: selectedPlanTable[i].PLAN_EQ,
           PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
           PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
-          KETQUASX: selectedPlanTable[i].KETQUASX === null   ? 0   : selectedPlanTable[i].KETQUASX,
-          NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID === null   ? "X"   : selectedPlanTable[i].NEXT_PLAN_ID,
+          KETQUASX: selectedPlanTable[i].KETQUASX === null ? 0 : selectedPlanTable[i].KETQUASX,
+          NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID === null ? "X" : selectedPlanTable[i].NEXT_PLAN_ID,
           IS_SETTING: selectedPlanTable[i].IS_SETTING,
-          NEEDED_QTY:  NEEDED_QTY,
+          NEEDED_QTY: NEEDED_QTY,
           CURRENT_LOSS_SX: FINAL_LOSS_SX,
           CURRENT_LOSS_KT: FINAL_LOSS_KT,
           CURRENT_SETTING_M: FINAL_LOSS_SETTING,
@@ -3842,189 +3810,186 @@ const MACHINE = () => {
           //ycsxdatatablefilter.current = params!.api.getSelectedRows();
         }} />
     )
-  }, [ycsxdatatable,selectedMachine,selectedPlanDate])
+  }, [ycsxdatatable, selectedMachine, selectedPlanDate])
   const planDataTableAG = useMemo(() => {
     return (
       <div className="agtable">
         {PlanTableAGToolbar()}
-      <div className="ag-theme-quartz"
-        style={{ height: '100%', }}
-      >
-        <AgGridReact
-          rowData={plandatatable.filter(
-            (element: QLSXPLANDATA, index: number) => {
-              return (
-                element.PLAN_EQ === selectedMachine &&
-                element.PLAN_FACTORY === selectedFactory
+        <div className="ag-theme-quartz"
+          style={{ height: '100%', }}
+        >
+          <AgGridReact
+            rowData={plandatatable.filter(
+              (element: QLSXPLANDATA, index: number) => {
+                return (
+                  element.PLAN_EQ === selectedMachine &&
+                  element.PLAN_FACTORY === selectedFactory
+                );
+              }
+            )}
+            columnDefs={column_plandatatable}
+            rowHeight={25}
+            defaultColDef={defaultColDef}
+            ref={gridRef}
+            onGridReady={() => {
+              setHeaderHeight(20);
+            }}
+            columnHoverHighlight={true}
+            rowStyle={rowStyle}
+            getRowStyle={getRowStyle}
+            getRowId={(params: any) => params.data.PLAN_ID}
+            rowSelection={"multiple"}
+            rowMultiSelectWithClick={true}
+            suppressRowClickSelection={true}
+            enterNavigatesVertically={true}
+            enterNavigatesVerticallyAfterEdit={true}
+            stopEditingWhenCellsLoseFocus={true}
+            rowBuffer={10}
+            debounceVerticalScrollbar={false}
+            enableCellTextSelection={true}
+            floatingFiltersHeight={23}
+            onSelectionChanged={(params: any) => {
+              qlsxplandatafilter.current = params!.api.getSelectedRows()
+            }}
+            onCellClicked={(params: any) => {
+              let rowData: QLSXPLANDATA = params.data;
+              setSelectedPlan(prev => rowData);
+              setDataDinhMuc({
+                ...datadinhmuc,
+                FACTORY: rowData.FACTORY ?? "NA",
+                EQ1: rowData.EQ1 ?? "NA",
+                EQ2: rowData.EQ2 ?? "NA",
+                EQ3: rowData.EQ3 ?? "NA",
+                EQ4: rowData.EQ4 ?? "NA",
+                Setting1: rowData.Setting1 ?? 0,
+                Setting2: rowData.Setting2 ?? 0,
+                Setting3: rowData.Setting3 ?? 0,
+                Setting4: rowData.Setting4 ?? 0,
+                UPH1: rowData.UPH1 ?? 0,
+                UPH2: rowData.UPH2 ?? 0,
+                UPH3: rowData.UPH3 ?? 0,
+                UPH4: rowData.UPH4 ?? 0,
+                Step1: rowData.Step1 ?? 0,
+                Step2: rowData.Step2 ?? 0,
+                Step3: rowData.Step3 ?? 0,
+                Step4: rowData.Step4 ?? 0,
+                LOSS_SX1: rowData.LOSS_SX1 ?? 0,
+                LOSS_SX2: rowData.LOSS_SX2 ?? 0,
+                LOSS_SX3: rowData.LOSS_SX3 ?? 0,
+                LOSS_SX4: rowData.LOSS_SX4 ?? 0,
+                LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
+                LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
+                LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
+                LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
+                NOTE: rowData.NOTE ?? "",
+              });
+              handleGetChiThiTable(
+                rowData.PLAN_ID,
+                rowData.G_CODE,
+                rowData.PLAN_QTY,
+                rowData.PROCESS_NUMBER,
+                rowData.IS_SETTING ?? 'Y'
               );
+              getRecentDM(rowData.G_CODE);
+            }}
+            onRowDoubleClicked={
+              (params: any) => {
+              }
             }
-          )}
-          columnDefs={column_plandatatable}
-          rowHeight={25}
-          defaultColDef={defaultColDef}
-          ref={gridRef}
-          onGridReady={() => {
-            setHeaderHeight(20);
-          }}
-          columnHoverHighlight={true}
-          rowStyle={rowStyle}
-          getRowStyle={getRowStyle}
-          getRowId={(params: any) => params.data.PLAN_ID}
-          rowSelection={"multiple"}
-          rowMultiSelectWithClick={true}
-          suppressRowClickSelection={true}
-          enterNavigatesVertically={true}
-          enterNavigatesVerticallyAfterEdit={true}
-          stopEditingWhenCellsLoseFocus={true}
-          rowBuffer={10}
-          debounceVerticalScrollbar={false}
-          enableCellTextSelection={true}
-          floatingFiltersHeight={23}
-          onSelectionChanged={(params: any) => {
-          qlsxplandatafilter.current = params!.api.getSelectedRows()
-        }}
-          onCellClicked={(params: any) => {
-            let rowData: QLSXPLANDATA = params.data;
-          setSelectedPlan(prev => rowData);
-          setDataDinhMuc({
-            ...datadinhmuc,
-            FACTORY: rowData.FACTORY ?? "NA",
-            EQ1: rowData.EQ1 ?? "NA",
-            EQ2: rowData.EQ2 ?? "NA",
-            EQ3: rowData.EQ3 ?? "NA",
-            EQ4: rowData.EQ4 ?? "NA",
-            Setting1: rowData.Setting1 ?? 0,
-            Setting2: rowData.Setting2 ?? 0,
-            Setting3: rowData.Setting3 ?? 0,
-            Setting4: rowData.Setting4 ?? 0,
-            UPH1: rowData.UPH1 ?? 0,
-            UPH2: rowData.UPH2 ?? 0,
-            UPH3: rowData.UPH3 ?? 0,
-            UPH4: rowData.UPH4 ?? 0,
-            Step1: rowData.Step1 ?? 0,
-            Step2: rowData.Step2 ?? 0,
-            Step3: rowData.Step3 ?? 0,
-            Step4: rowData.Step4 ?? 0,
-            LOSS_SX1: rowData.LOSS_SX1 ?? 0,
-            LOSS_SX2: rowData.LOSS_SX2 ?? 0,
-            LOSS_SX3: rowData.LOSS_SX3 ?? 0,
-            LOSS_SX4: rowData.LOSS_SX4 ?? 0,
-            LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
-            LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
-            LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
-            LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
-            NOTE: rowData.NOTE ?? "",
-          });
-          handleGetChiThiTable(
-            rowData.PLAN_ID,
-            rowData.G_CODE,
-            rowData.PLAN_QTY,
-            rowData.PROCESS_NUMBER,
-            rowData.IS_SETTING ?? 'Y'
-          );
-          getRecentDM(rowData.G_CODE);
-            
-          }}
-          onRowDoubleClicked={
-            (params: any) => {
-              
-            }
-          }
-          onCellEditingStopped={(params: any) => {
-            //console.log(params)
-          }}
-        />
-        
-      </div>
-      <div className="bottombar">
-        <div className="selected">
-          {ycsxdatatablefilter.current.length !== 0 && <span>
-            Selected: {ycsxdatatablefilter.current.length}/{plandatatable.filter(
-            (element: QLSXPLANDATA, index: number) => {
-              return (
-                element.PLAN_EQ === selectedMachine &&
-                element.PLAN_FACTORY === selectedFactory
-              );
-            }
-          ).length} rows
-          </span>}
+            onCellEditingStopped={(params: any) => {
+              //console.log(params)
+            }}
+          />
         </div>
-        <div className="totalrow">
-          <span>
-            Total: {plandatatable.filter(
-            (element: QLSXPLANDATA, index: number) => {
-              return (
-                element.PLAN_EQ === selectedMachine &&
-                element.PLAN_FACTORY === selectedFactory
-              );
-            }
-          ).length} rows
-          </span>
+        <div className="bottombar">
+          <div className="selected">
+            {ycsxdatatablefilter.current.length !== 0 && <span>
+              Selected: {ycsxdatatablefilter.current.length}/{plandatatable.filter(
+                (element: QLSXPLANDATA, index: number) => {
+                  return (
+                    element.PLAN_EQ === selectedMachine &&
+                    element.PLAN_FACTORY === selectedFactory
+                  );
+                }
+              ).length} rows
+            </span>}
+          </div>
+          <div className="totalrow">
+            <span>
+              Total: {plandatatable.filter(
+                (element: QLSXPLANDATA, index: number) => {
+                  return (
+                    element.PLAN_EQ === selectedMachine &&
+                    element.PLAN_FACTORY === selectedFactory
+                  );
+                }
+              ).length} rows
+            </span>
+          </div>
         </div>
-      </div>
       </div>
     )
-   /*  return (
-      <AGTable
-        showFilter={false}
-        toolbar={PlanTableAGToolbar()}
-        columns={column_plandatatable}
-        data={plandatatable.filter(
-          (element: QLSXPLANDATA, index: number) => {
-            return (
-              element.PLAN_EQ === selectedMachine &&
-              element.PLAN_FACTORY === selectedFactory
-            );
-          }
-        )}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }}
-        onCellClick={(params: any) => {
-          let rowData: QLSXPLANDATA = params.data;
-          setSelectedPlan(prev => rowData);
-          setDataDinhMuc({
-            ...datadinhmuc,
-            FACTORY: rowData.FACTORY ?? "NA",
-            EQ1: rowData.EQ1 ?? "NA",
-            EQ2: rowData.EQ2 ?? "NA",
-            EQ3: rowData.EQ3 ?? "NA",
-            EQ4: rowData.EQ4 ?? "NA",
-            Setting1: rowData.Setting1 ?? 0,
-            Setting2: rowData.Setting2 ?? 0,
-            Setting3: rowData.Setting3 ?? 0,
-            Setting4: rowData.Setting4 ?? 0,
-            UPH1: rowData.UPH1 ?? 0,
-            UPH2: rowData.UPH2 ?? 0,
-            UPH3: rowData.UPH3 ?? 0,
-            UPH4: rowData.UPH4 ?? 0,
-            Step1: rowData.Step1 ?? 0,
-            Step2: rowData.Step2 ?? 0,
-            Step3: rowData.Step3 ?? 0,
-            Step4: rowData.Step4 ?? 0,
-            LOSS_SX1: rowData.LOSS_SX1 ?? 0,
-            LOSS_SX2: rowData.LOSS_SX2 ?? 0,
-            LOSS_SX3: rowData.LOSS_SX3 ?? 0,
-            LOSS_SX4: rowData.LOSS_SX4 ?? 0,
-            LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
-            LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
-            LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
-            LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
-            NOTE: rowData.NOTE ?? "",
-          });
-          handleGetChiThiTable(
-            rowData.PLAN_ID,
-            rowData.G_CODE,
-            rowData.PLAN_QTY,
-            rowData.PROCESS_NUMBER,
-            rowData.IS_SETTING ?? 'Y'
-          );
-          getRecentDM(rowData.G_CODE);
-        }}
-        onSelectionChange={(params: any) => {
-          qlsxplandatafilter.current = params!.api.getSelectedRows()
-        }} />
-    ) */
+    /*  return (
+       <AGTable
+         showFilter={false}
+         toolbar={PlanTableAGToolbar()}
+         columns={column_plandatatable}
+         data={plandatatable.filter(
+           (element: QLSXPLANDATA, index: number) => {
+             return (
+               element.PLAN_EQ === selectedMachine &&
+               element.PLAN_FACTORY === selectedFactory
+             );
+           }
+         )}
+         onCellEditingStopped={(params: any) => {
+           //console.log(e.data)
+         }}
+         onCellClick={(params: any) => {
+           let rowData: QLSXPLANDATA = params.data;
+           setSelectedPlan(prev => rowData);
+           setDataDinhMuc({
+             ...datadinhmuc,
+             FACTORY: rowData.FACTORY ?? "NA",
+             EQ1: rowData.EQ1 ?? "NA",
+             EQ2: rowData.EQ2 ?? "NA",
+             EQ3: rowData.EQ3 ?? "NA",
+             EQ4: rowData.EQ4 ?? "NA",
+             Setting1: rowData.Setting1 ?? 0,
+             Setting2: rowData.Setting2 ?? 0,
+             Setting3: rowData.Setting3 ?? 0,
+             Setting4: rowData.Setting4 ?? 0,
+             UPH1: rowData.UPH1 ?? 0,
+             UPH2: rowData.UPH2 ?? 0,
+             UPH3: rowData.UPH3 ?? 0,
+             UPH4: rowData.UPH4 ?? 0,
+             Step1: rowData.Step1 ?? 0,
+             Step2: rowData.Step2 ?? 0,
+             Step3: rowData.Step3 ?? 0,
+             Step4: rowData.Step4 ?? 0,
+             LOSS_SX1: rowData.LOSS_SX1 ?? 0,
+             LOSS_SX2: rowData.LOSS_SX2 ?? 0,
+             LOSS_SX3: rowData.LOSS_SX3 ?? 0,
+             LOSS_SX4: rowData.LOSS_SX4 ?? 0,
+             LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
+             LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
+             LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
+             LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
+             NOTE: rowData.NOTE ?? "",
+           });
+           handleGetChiThiTable(
+             rowData.PLAN_ID,
+             rowData.G_CODE,
+             rowData.PLAN_QTY,
+             rowData.PROCESS_NUMBER,
+             rowData.IS_SETTING ?? 'Y'
+           );
+           getRecentDM(rowData.G_CODE);
+         }}
+         onSelectionChange={(params: any) => {
+           qlsxplandatafilter.current = params!.api.getSelectedRows()
+         }} />
+     ) */
   }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
   const planMaterialTableAG = useMemo(() =>
     <AGTable
@@ -5198,7 +5163,7 @@ const MACHINE = () => {
                   </div>
                   <div className="losskt">
                     <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
-                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)                      
+                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
                     </span>
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>
