@@ -3,7 +3,7 @@ import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
-import { generalQuery, getAuditMode, getCompany } from "./Api";
+import { generalQuery, getAuditMode, getCompany, getUserData } from "./Api";
 import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
@@ -1681,7 +1681,7 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
   return err_code;
 }
 export const f_handletraYCSXQLSX = async (filterdata: any) => {
-  console.log(filterdata);
+  //console.log(filterdata);
   let ycsxdata: YCSXTableData[]=[];
   await generalQuery("traYCSXDataFull_QLSX", {
     alltime: filterdata.alltime,
@@ -1775,6 +1775,32 @@ export const f_updateDKXLPLAN = async (PLAN_ID: string) => {
       console.log(error);
     });
 };
+
+export const f_updateXUATLIEUCHINHPLAN =  async (PLAN_ID: string) => {
+  await generalQuery("updateXUATLIEUCHINH_PLAN", { PLAN_ID: PLAN_ID })
+  .then((response) => {
+    console.log(response.data);
+    if (response.data.tk_status !== "NG") {
+    } else {
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+export const f_updateXUAT_DAO_FILM_PLAN =  async (PLAN_ID: string) => {
+  await generalQuery("update_XUAT_DAO_FILM_PLAN", { PLAN_ID: PLAN_ID })
+  .then((response) => {
+    console.log(response.data);
+    if (response.data.tk_status !== "NG") {
+    } else {
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+
 export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
   let err_code: string = "0";
   let checkPlanIdO300: boolean = true;
@@ -1962,6 +1988,430 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
     }
   } else {
     err_code = "Cần đăng ký ít nhất 1 met lòng";
+  }
+  return err_code;
+}
+export const f_deleteQLSXPlan = async(planToDelete: QLSXPLANDATA[])=> {
+  let err_code: string ="0";
+  if (planToDelete.length > 0) {    
+    for (let i = 0; i < planToDelete.length; i++) {
+      let isOnO302: boolean = false, isChotBaoCao: boolean = (planToDelete[i].CHOTBC === "V"), isOnOutKhoAo: boolean = false;
+      await generalQuery("checkPLANID_O302", {
+        PLAN_ID: planToDelete[i].PLAN_ID,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            isOnO302 = true;
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      await generalQuery("checkPLANID_OUT_KHO_AO", {
+        PLAN_ID: planToDelete[i].PLAN_ID,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            isOnOutKhoAo = true;
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {
+        generalQuery("deletePlanQLSX", {
+          PLAN_ID: planToDelete[i].PLAN_ID,
+        })
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      else {
+        if (isChotBaoCao) {
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã chốt báo cáo, ko xóa được chỉ thị";          
+        }
+        else if (isOnO302) {
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho thật";         
+        }
+        else if (isOnOutKhoAo) {
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho ảo"          
+        }
+      }
+    }
+  } else {
+    err_code = "Chọn ít nhất một dòng để xóa";
+  }
+  return err_code;
+}
+export const f_deleteChiThiMaterialLine = async(qlsxchithidatafilter: QLSXCHITHIDATA[], org_chithi_data: QLSXCHITHIDATA[]) => {
+  let kq :QLSXCHITHIDATA[] = [];
+  if (qlsxchithidatafilter.length > 0) {
+    let datafilter = [...org_chithi_data];
+    for (let i = 0; i < qlsxchithidatafilter.length; i++) {
+      for (let j = 0; j < datafilter.length; j++) {
+        if (qlsxchithidatafilter[i].CHITHI_ID === datafilter[j].CHITHI_ID) {
+          datafilter.splice(j, 1);
+        }
+      }
+    }
+    kq =  datafilter;
+  } else {
+    kq =  [...org_chithi_data];   
+    Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+  }
+  return kq;
+}
+export const f_getNextPlanOrder = async (PLAN_DATE: string, PLAN_EQ: string, PLAN_FACTORY: string) => {
+  let next_plan_order: number = 1;
+  await generalQuery("getLastestPLANORDER", {
+    PLAN_DATE: PLAN_DATE,
+    PLAN_EQ: PLAN_EQ,
+    PLAN_FACTORY: PLAN_FACTORY,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data[0].PLAN_ID);
+        next_plan_order = response.data.data[0].PLAN_ORDER + 1;
+      } else {
+        next_plan_order = 1;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return next_plan_order;
+}
+export const f_getNextPLAN_ID = async (PROD_REQUEST_NO: string, selectedPlanDate: string, selectedMachine: string, selectedFactory: string) => {
+  let next_plan_id: string = PROD_REQUEST_NO;
+  let next_plan_order: number = 1;
+  await generalQuery("getLastestPLAN_ID", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        let old_plan_id: string = response.data.data[0].PLAN_ID;
+        if (old_plan_id.substring(7, 8) === "Z") {
+          if (old_plan_id.substring(3, 4) === "0") {
+            next_plan_id = old_plan_id.substring(0, 3) + "A" + old_plan_id.substring(4, 7) + "A";
+          } else {
+            next_plan_id = old_plan_id.substring(0, 3) + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1] + old_plan_id.substring(4, 7) + "A";
+          }
+        } else {
+          next_plan_id = old_plan_id.substring(0, 7) + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1];
+        }
+      } else {
+        next_plan_id = PROD_REQUEST_NO + "A";
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  next_plan_order = await f_getNextPlanOrder(selectedPlanDate, selectedMachine, selectedFactory);
+  return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
+};
+export const f_checkProdReqExistO302 = async(PROD_REQUEST_NO: string) => {
+  let check_ycsx_hethongcu: boolean = false;
+  await generalQuery("checkProd_request_no_Exist_O302", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data[0].PLAN_ID);
+        if (response.data.data.length > 0) {
+          check_ycsx_hethongcu = true;
+        } else {
+          check_ycsx_hethongcu = false;
+        }
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return check_ycsx_hethongcu;
+}
+export const f_addPLANRaw = async (planData: any) => {
+  let err_code: string = '';
+  await generalQuery("addPlanQLSX", {
+    PLAN_ID:planData.PLAN_ID ,
+    PLAN_DATE:planData.PLAN_DATE ,
+    PROD_REQUEST_NO:planData.PROD_REQUEST_NO ,
+    PLAN_QTY:planData.PLAN_QTY ,
+    PLAN_EQ:planData.PLAN_EQ ,
+    PLAN_FACTORY:planData.PLAN_FACTORY ,
+    PLAN_LEADTIME:planData.PLAN_LEADTIME ,
+    STEP:planData.STEP ,
+    PLAN_ORDER:planData.PLAN_ORDER ,
+    PROCESS_NUMBER:planData.PROCESS_NUMBER ,
+    G_CODE:planData.G_CODE ,
+    NEXT_PLAN_ID:planData.NEXT_PLAN_ID ,
+    IS_SETTING:planData.IS_SETTING 
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+      } else {
+        err_code = response.data.message;
+      }
+    })
+    .catch((error) => {      
+      console.log(error);
+    });
+    return err_code;
+}
+export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], selectedPlanDate: string, selectedMachine: string, selectedFactory: string) => {
+  let err_code: string = '0';
+  if (ycsxdatatablefilter.length >= 1) {
+    for (let i = 0; i < ycsxdatatablefilter.length; i++) {
+      let check_ycsx_hethongcu: boolean = await f_checkProdReqExistO302(ycsxdatatablefilter[i].PROD_REQUEST_NO);      
+      let nextPlan = await f_getNextPLAN_ID(ycsxdatatablefilter[i].PROD_REQUEST_NO, selectedPlanDate, selectedMachine, selectedFactory);
+      let NextPlanID = nextPlan.NEXT_PLAN_ID;
+      let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
+      if (check_ycsx_hethongcu === false) {
+        //console.log(selectedMachine.substring(0,2));
+        err_code += await f_addPLANRaw({
+          PLAN_ID: NextPlanID,
+          PLAN_DATE: selectedPlanDate,
+          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+          PLAN_QTY: 0,
+          PLAN_EQ: selectedMachine,
+          PLAN_FACTORY: selectedFactory,
+          PLAN_LEADTIME: 0,
+          STEP: 0,
+          PLAN_ORDER: NextPlanOrder,
+          PROCESS_NUMBER: selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ1 ? 1 : selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ2 ? 2 : 0,
+          G_CODE: ycsxdatatablefilter[i].G_CODE,
+          NEXT_PLAN_ID: "X",
+          IS_SETTING: "Y"
+        });        
+      } else {
+        err_code += "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này | ";
+      }
+    }
+  } else {
+    err_code = "Chọn ít nhất 1 YCSX để Add !";
+  }
+  return err_code;
+}
+export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA)=> {
+  let err_code: string ='0';
+  if (selectedPlan.PLAN_ID !== 'XXX') {
+    let prod_request_no: string = selectedPlan?.PROD_REQUEST_NO === undefined   ? "xxx"   : selectedPlan?.PROD_REQUEST_NO;
+    let check_ycsx_sample: boolean = false;
+    let checkPLANID_EXIST_OUT_KHO_SX: boolean = false;
+    await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          if (loadeddata[0].CODE_55 === "04") {
+            check_ycsx_sample = true;
+          } else {
+            check_ycsx_sample = false;
+          }
+        } else {
+          check_ycsx_sample = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    //console.log('check ycsx sample', check_ycsx_sample);
+    await generalQuery("check_PLAN_ID_KHO_AO", {
+      PLAN_ID: selectedPlan?.PLAN_ID,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          if (response.data.data.length > 0) {
+            checkPLANID_EXIST_OUT_KHO_SX = true;
+          } else {
+            checkPLANID_EXIST_OUT_KHO_SX = false;
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    //console.log('check ton tai out kho ao',checkPLANID_EXIST_OUT_KHO_SX );
+    if (check_ycsx_sample) {
+      if (checkPLANID_EXIST_OUT_KHO_SX === false) {
+        //nhap kho ao
+        await generalQuery("nhapkhoao", {
+          FACTORY: selectedPlan.PLAN_FACTORY,
+          PHANLOAI: "N",
+          PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
+          PLAN_ID_SUDUNG: selectedPlan?.PLAN_ID,
+          M_CODE: "A0009680",
+          M_LOT_NO: "2201010001",
+          ROLL_QTY: 1,
+          IN_QTY: 1,
+          TOTAL_IN_QTY: 1,
+          USE_YN: "O",
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        //xuat kho ao
+        await generalQuery("xuatkhoao", {
+          FACTORY: selectedPlan.PLAN_FACTORY,
+          PHANLOAI: "N",
+          PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
+          PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
+          M_CODE: "A0009680",
+          M_LOT_NO: "2201010001",
+          ROLL_QTY: 1,
+          OUT_QTY: 1,
+          TOTAL_OUT_QTY: 1,
+          USE_YN: "O",
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              f_updateXUATLIEUCHINHPLAN(
+                selectedPlan?.PLAN_ID === undefined
+                  ? "xxx"
+                  : selectedPlan?.PLAN_ID
+              );
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });         
+        Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
+      } else {
+        f_updateXUATLIEUCHINHPLAN(selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID);
+        err_code = "Đã xuất liệu chính rồi";
+        Swal.fire("Thông báo", "Đã xuất liệu chính rồi", "info");
+      }
+    } else {
+      err_code = "Đây không phải ycsx sample";
+      Swal.fire("Thông báo", "Đây không phải ycsx sample", "info");
+    }
+  } else {
+    err_code = "Hãy chọn ít nhất 1 chỉ thị";
+    Swal.fire("Thông báo", "Hãy chọn ít nhất 1 chỉ thị", "error");
+  }
+  return err_code;
+}
+export const f_handle_xuatdao_sample =  async (selectedPlan: QLSXPLANDATA)=> {
+  let err_code: string = '0';
+  if (selectedPlan.PLAN_ID !== 'XXX') {
+    let prod_request_no: string =
+      selectedPlan?.PROD_REQUEST_NO === undefined
+        ? "xxx"
+        : selectedPlan?.PROD_REQUEST_NO;
+    let check_ycsx_sample: boolean = false;
+    let checkPLANID_EXIST_OUT_KNIFE_FILM: boolean = false;
+    await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          if (loadeddata[0].CODE_55 === "04") {
+            check_ycsx_sample = true;
+          } else {
+            check_ycsx_sample = false;
+          }
+        } else {
+          check_ycsx_sample = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(check_ycsx_sample);
+    await generalQuery("check_PLAN_ID_OUT_KNIFE_FILM", {
+      PLAN_ID: selectedPlan?.PLAN_ID,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          if (response.data.data.length > 0) {
+            checkPLANID_EXIST_OUT_KNIFE_FILM = true;
+          } else {
+            checkPLANID_EXIST_OUT_KNIFE_FILM = false;
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    if (check_ycsx_sample) {
+      if (checkPLANID_EXIST_OUT_KNIFE_FILM === false) {
+        await generalQuery("insert_OUT_KNIFE_FILM", {
+          PLAN_ID: selectedPlan?.PLAN_ID,
+          EQ_THUC_TE: selectedPlan?.PLAN_EQ,
+          CA_LAM_VIEC: "Day",
+          EMPL_NO: getUserData()?.EMPL_NO,
+          KNIFE_FILM_NO: "1K22LH20",
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              f_updateXUAT_DAO_FILM_PLAN(
+                selectedPlan?.PLAN_ID === undefined
+                  ? "xxx"
+                  : selectedPlan?.PLAN_ID
+              );
+              //console.log(response.data.data);
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });        
+      } else {
+        err_code = "Đã xuất dao rồi";
+        Swal.fire("Thông báo", "Đã xuất dao rồi", "info");
+      }
+    } else {
+      err_code = "Đây không phải ycsx sample";
+      Swal.fire("Thông báo", "Đây không phải ycsx sample", "info");
+    }
+  } else {
+    err_code = "Hãy chọn ít nhất 1 chỉ thị";
+    Swal.fire("Thông báo", "Hãy chọn ít nhất 1 chỉ thị", "error");
   }
   return err_code;
 }

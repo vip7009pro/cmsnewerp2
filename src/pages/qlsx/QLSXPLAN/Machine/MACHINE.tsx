@@ -38,6 +38,11 @@ import {
   f_handletraYCSXQLSX,
   f_setPendingYCSX,
   f_handleDangKyXuatLieu,
+  f_deleteQLSXPlan,
+  f_deleteChiThiMaterialLine,
+  f_addQLSXPLAN,
+  f_handle_xuatlieu_sample,
+  f_handle_xuatdao_sample,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -1657,7 +1662,7 @@ const MACHINE = () => {
     if (err_code === '0') {
       Swal.fire(
         "Thông báo",
-        "SET YCSX thành công (chỉ PO của người đăng nhập)!",
+        "SET Pending/Closed thành công!",
         "success"
       );
     }
@@ -1792,109 +1797,28 @@ const MACHINE = () => {
     });
   };
   const handle_DeleteLinePLAN = async () => {
-    if (qlsxplandatafilter.current.length > 0) {
-      Swal.fire({
-        title: "Xóa chỉ thị",
-        text: "Đang xóa chỉ thị được chọn",
-        icon: "info",
-        showCancelButton: false,
-        allowOutsideClick: false,
-        confirmButtonText: "OK",
-        showConfirmButton: false,
-      });
-      for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
-        let isOnO302: boolean = false, isChotBaoCao: boolean = (qlsxplandatafilter.current[i].CHOTBC === "V"), isOnOutKhoAo: boolean = false;
-        await generalQuery("checkPLANID_O302", {
-          PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
-        })
-          .then((response) => {
-            //console.log(response.data);
-            if (response.data.tk_status !== "NG") {
-              isOnO302 = true;
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("checkPLANID_OUT_KHO_AO", {
-          PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
-        })
-          .then((response) => {
-            //console.log(response.data);
-            if (response.data.tk_status !== "NG") {
-              isOnOutKhoAo = true;
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        if (!isChotBaoCao && !isOnO302 && !isOnOutKhoAo) {
-          generalQuery("deletePlanQLSX", {
-            PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
-          })
-            .then((response) => {
-              //console.log(response.data);
-              if (response.data.tk_status !== "NG") {
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        else {
-          if (isChotBaoCao) {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ thị + " +
-              qlsxplandatafilter.current[i].PLAN_ID +
-              ":  +đã chốt báo cáo, ko xóa được chỉ thị",
-              "error"
-            );
-          }
-          else if (isOnO302) {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ thị + " +
-              qlsxplandatafilter.current[i].PLAN_ID +
-              ":  +đã xuất kho thật",
-              "error"
-            );
-          }
-          else if (isOnOutKhoAo) {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ thị + " +
-              qlsxplandatafilter.current[i].PLAN_ID +
-              ":  +đã xuất kho ảo",
-              "error"
-            );
-          }
-        }
-      }
+    Swal.fire({
+      title: "Xóa chỉ thị",
+      text: "Đang xóa chỉ thị được chọn",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    let err_code: string = await f_deleteQLSXPlan(qlsxplandatafilter.current);
+    if (err_code === '0') {
       Swal.fire('Thông báo', 'Xóa hoàn thành', 'success')
-      clearSelectedRows();
-      loadQLSXPlan(selectedPlanDate);
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
-  };
-  const handle_DeleteLineCHITHI = () => {
-    if (qlsxchithidatafilter.current.length > 0) {
-      let datafilter = [...chithidatatable];
-      for (let i = 0; i < qlsxchithidatafilter.current.length; i++) {
-        for (let j = 0; j < datafilter.length; j++) {
-          if (qlsxchithidatafilter.current[i].CHITHI_ID === datafilter[j].CHITHI_ID) {
-            datafilter.splice(j, 1);
-          }
-        }
-      }
-      setChiThiDataTable(datafilter);
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+    else {
+      Swal.fire("Thông báo", err_code, "error");
     }
+    clearSelectedRows();
+    loadQLSXPlan(selectedPlanDate);
+  }
+  const handle_DeleteLineCHITHI = async () => {
+    let kq = await f_deleteChiThiMaterialLine(qlsxchithidatafilter.current, chithidatatable);
+    setChiThiDataTable(kq);
   };
   const getNextPLAN_ID = async (PROD_REQUEST_NO: string) => {
     let next_plan_id: string = PROD_REQUEST_NO;
@@ -1962,70 +1886,12 @@ const MACHINE = () => {
     return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
   };
   const handle_AddPlan = async () => {
-    if (ycsxdatatablefilter.current.length >= 1) {
-      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
-        let check_ycsx_hethongcu: boolean = false;
-        await generalQuery("checkProd_request_no_Exist_O302", {
-          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data[0].PLAN_ID);
-              if (response.data.data.length > 0) {
-                check_ycsx_hethongcu = true;
-              } else {
-                check_ycsx_hethongcu = false;
-              }
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        //check_ycsx_hethongcu = false;
-        let nextPlan = await getNextPLAN_ID(
-          ycsxdatatablefilter.current[i].PROD_REQUEST_NO
-        );
-        let NextPlanID = nextPlan.NEXT_PLAN_ID;
-        let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
-        if (check_ycsx_hethongcu === false) {
-          //console.log(selectedMachine.substring(0,2));
-          await generalQuery("addPlanQLSX", {
-            PLAN_ID: NextPlanID,
-            PLAN_DATE: selectedPlanDate,
-            PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-            PLAN_QTY: 0,
-            PLAN_EQ: selectedMachine,
-            PLAN_FACTORY: selectedFactory,
-            PLAN_LEADTIME: 0,
-            STEP: 0,
-            PLAN_ORDER: NextPlanOrder,
-            PROCESS_NUMBER: selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ1 ? 1 : selectedMachine.substring(0, 2) === ycsxdatatablefilter.current[i].EQ2 ? 2 : 0,
-            G_CODE: ycsxdatatablefilter.current[i].G_CODE,
-            NEXT_PLAN_ID: "X",
-            IS_SETTING: "Y"
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                loadQLSXPlan(selectedPlanDate);
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
-          Swal.fire(
-            "Thông báo",
-            "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này",
-            "error"
-          );
-        }
-      }
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
+    let err_code: string = await f_addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory);
+    if (err_code !== '0') {
+      Swal.fire("Thông báo", err_code, "error");
+    }
+    else {
+      loadQLSXPlan(selectedPlanDate);
     }
   };
   const handle_UpdatePlan = async () => {
@@ -2211,233 +2077,22 @@ const MACHINE = () => {
     )
   }
   const handle_xuatlieu_sample = async () => {
-    if (selectedPlan.PLAN_ID !== 'XXX') {
-      let prod_request_no: string =
-        selectedPlan?.PROD_REQUEST_NO === undefined
-          ? "xxx"
-          : selectedPlan?.PROD_REQUEST_NO;
-      let check_ycsx_sample: boolean = false;
-      let checkPLANID_EXIST_OUT_KHO_SX: boolean = false;
-      await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-            let loadeddata = response.data.data.map(
-              (element: any, index: number) => {
-                return {
-                  ...element,
-                  id: index,
-                };
-              }
-            );
-            if (loadeddata[0].CODE_55 === "04") {
-              check_ycsx_sample = true;
-            } else {
-              check_ycsx_sample = false;
-            }
-          } else {
-            check_ycsx_sample = false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //console.log('check ycsx sample', check_ycsx_sample);
-      await generalQuery("check_PLAN_ID_KHO_AO", {
-        PLAN_ID: selectedPlan?.PLAN_ID,
-      })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
-            if (response.data.data.length > 0) {
-              checkPLANID_EXIST_OUT_KHO_SX = true;
-            } else {
-              checkPLANID_EXIST_OUT_KHO_SX = false;
-            }
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //console.log('check ton tai out kho ao',checkPLANID_EXIST_OUT_KHO_SX );
-      if (check_ycsx_sample) {
-        if (checkPLANID_EXIST_OUT_KHO_SX === false) {
-          //nhap kho ao
-          await generalQuery("nhapkhoao", {
-            FACTORY: selectedFactory,
-            PHANLOAI: "N",
-            PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
-            PLAN_ID_SUDUNG: selectedPlan?.PLAN_ID,
-            M_CODE: "A0009680",
-            M_LOT_NO: "2201010001",
-            ROLL_QTY: 1,
-            IN_QTY: 1,
-            TOTAL_IN_QTY: 1,
-            USE_YN: "O",
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          //xuat kho ao
-          await generalQuery("xuatkhoao", {
-            FACTORY: selectedFactory,
-            PHANLOAI: "N",
-            PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
-            PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
-            M_CODE: "A0009680",
-            M_LOT_NO: "2201010001",
-            ROLL_QTY: 1,
-            OUT_QTY: 1,
-            TOTAL_OUT_QTY: 1,
-            USE_YN: "O",
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                updateXUATLIEUCHINHPLAN(
-                  selectedPlan?.PLAN_ID === undefined
-                    ? "xxx"
-                    : selectedPlan?.PLAN_ID
-                );
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
-        } else {
-          updateXUATLIEUCHINHPLAN(
-            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
-          );
-          Swal.fire("Thông báo", "Đã xuất liệu chính rồi", "info");
-        }
-      } else {
-        Swal.fire("Thông báo", "Đây không phải ycsx sample", "info");
-      }
-    } else {
-      Swal.fire("Thông báo", "Hãy chọn ít nhất 1 chỉ thị", "error");
+    let err_code: string = await f_handle_xuatlieu_sample(selectedPlan);
+    if (err_code === '0') {
+      Swal.fire('Thông báo', 'Xuất liệu ảo thành công', 'success');
+    }
+    else {
+      Swal.fire('Thông báo', err_code, 'error');
     }
   };
   const handle_xuatdao_sample = async () => {
-    if (selectedPlan.PLAN_ID !== 'XXX') {
-      let prod_request_no: string =
-        selectedPlan?.PROD_REQUEST_NO === undefined
-          ? "xxx"
-          : selectedPlan?.PROD_REQUEST_NO;
-      let check_ycsx_sample: boolean = false;
-      let checkPLANID_EXIST_OUT_KNIFE_FILM: boolean = false;
-      await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-            let loadeddata = response.data.data.map(
-              (element: any, index: number) => {
-                return {
-                  ...element,
-                  id: index,
-                };
-              }
-            );
-            if (loadeddata[0].CODE_55 === "04") {
-              check_ycsx_sample = true;
-            } else {
-              check_ycsx_sample = false;
-            }
-          } else {
-            check_ycsx_sample = false;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      console.log(check_ycsx_sample);
-      await generalQuery("check_PLAN_ID_OUT_KNIFE_FILM", {
-        PLAN_ID: selectedPlan?.PLAN_ID,
-      })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-            if (response.data.data.length > 0) {
-              checkPLANID_EXIST_OUT_KNIFE_FILM = true;
-            } else {
-              checkPLANID_EXIST_OUT_KNIFE_FILM = false;
-            }
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      if (check_ycsx_sample) {
-        if (checkPLANID_EXIST_OUT_KNIFE_FILM === false) {
-          await generalQuery("insert_OUT_KNIFE_FILM", {
-            PLAN_ID: selectedPlan?.PLAN_ID,
-            EQ_THUC_TE: selectedPlan?.PLAN_EQ,
-            CA_LAM_VIEC: "Day",
-            EMPL_NO: userData?.EMPL_NO,
-            KNIFE_FILM_NO: "1K22LH20",
-          })
-            .then((response) => {
-              //console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-                updateXUAT_DAO_FILM_PLAN(
-                  selectedPlan?.PLAN_ID === undefined
-                    ? "xxx"
-                    : selectedPlan?.PLAN_ID
-                );
-                //console.log(response.data.data);
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          Swal.fire("Thông báo", "Đã xuất dao ảo thành công", "success");
-        } else {
-          Swal.fire("Thông báo", "Đã xuất dao rồi", "info");
-        }
-      } else {
-        Swal.fire("Thông báo", "Đây không phải ycsx sample", "info");
-      }
-    } else {
-      Swal.fire("Thông báo", "Hãy chọn ít nhất 1 chỉ thị", "error");
+    let err_code: string = await f_handle_xuatdao_sample(selectedPlan);
+    if (err_code === '0') {
+      Swal.fire('Thông báo', 'Xuất dao ảo thành công', 'success');
     }
-  };
-  const updateXUATLIEUCHINHPLAN = (PLAN_ID: string) => {
-    generalQuery("updateXUATLIEUCHINH_PLAN", { PLAN_ID: PLAN_ID })
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const updateXUAT_DAO_FILM_PLAN = (PLAN_ID: string) => {
-    generalQuery("update_XUAT_DAO_FILM_PLAN", { PLAN_ID: PLAN_ID })
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    else {
+      Swal.fire('Thông báo', err_code, 'error');
+    }
   };
   const handleDangKyXuatLieu = async () => {
     let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, chithidatatable);
@@ -2734,7 +2389,7 @@ const MACHINE = () => {
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
         }} onCellClick={(params: any) => {
-          console.log([params.data])
+          //console.log([params.data])
           ycsxdatatablefilter.current = [params.data]
           //setClickedRows(params.data)
           //console.log(params)
