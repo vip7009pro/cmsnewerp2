@@ -1899,6 +1899,7 @@ const YCSXManager = () => {
               PROD_REQUEST_NO: next_prod_request_no,
               PLAN_ID: next_prod_request_no + "A",
               PROCESS_NUMBER: 0,
+              TEMP_QTY: uploadExcelJson[i].PROD_REQUEST_QTY
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -2335,6 +2336,7 @@ const YCSXManager = () => {
           PROD_REQUEST_NO: next_prod_request_no,
           PLAN_ID: next_prod_request_no + "A",
           PROCESS_NUMBER: 0,
+          TEMP_QTY: newycsxqty
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
