@@ -3,15 +3,7 @@ import {
   IconButton,
 } from "@mui/material";
 import moment from "moment";
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AiFillFileExcel,
   AiFillSave,
@@ -23,13 +15,11 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../../api/Api";
 import {
   checkBP,
-  f_checkEQvsPROCESS,
-  f_getCurrentDMToSave,
   f_updateBatchPlan,
-  f_updatePlanQLSX,
+  f_updatePlanOrder,
   renderChiThi,
   renderChiThi2,
-  SaveExcel,
+  SaveExcel,  
   zeroPad,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
@@ -48,7 +38,6 @@ import { GiCurvyKnife } from "react-icons/gi";
 import KHOAO from "../KHOAO/KHOAO";
 import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
-import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
 import { AgGridReact } from "ag-grid-react";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
@@ -1139,9 +1128,7 @@ const PLAN_DATATB = () => {
       selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
       selectedPlan?.G_CODE === undefined ? "xxx" : selectedPlan?.G_CODE,
       selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
-      selectedPlan?.PROCESS_NUMBER === undefined
-        ? 1
-        : selectedPlan?.PROCESS_NUMBER,
+      selectedPlan?.PROCESS_NUMBER === undefined ? 1 : selectedPlan?.PROCESS_NUMBER,
       selectedPlan?.IS_SETTING ?? 'Y'
     );
   };
@@ -1565,8 +1552,7 @@ const PLAN_DATATB = () => {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
             temp_plan_data.KETQUASX += loadeddata[i].KETQUASX;
           }
-          temp_plan_data.ACHIVEMENT_RATE =
-            (temp_plan_data.KETQUASX / temp_plan_data.PLAN_QTY) * 100;
+          temp_plan_data.ACHIVEMENT_RATE = (temp_plan_data.KETQUASX / temp_plan_data.PLAN_QTY) * 100;
           setSummaryData(temp_plan_data);
           setPlanDataTable(loadeddata);
           datatbTotalRow.current = loadeddata.length;
@@ -1575,12 +1561,8 @@ const PLAN_DATATB = () => {
           clearSelection();
           clearSelectedRows();
           if (!showhideM)
-            Swal.fire(
-              "Thông báo",
-              "Đã load: " + response.data.data.length + " dòng",
-              "success"
-            );
-          updatePlanOrder(fromdate);
+            Swal.fire("Thông báo","Đã load: " + response.data.data.length + " dòng", "success");
+            f_updatePlanOrder(fromdate);
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -1651,14 +1633,7 @@ const PLAN_DATATB = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành chuyển ngày PLAN", "Đang ngày plan", "success");
-        /*  checkBP(
-          userData?.EMPL_NO,
-          userData?.MAINDEPTNAME,
-          ["QLSX"],
-          handle_movePlan
-        ); */
         checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_movePlan);
-        //handle_movePlan();
       }
     });
   };
@@ -2229,21 +2204,7 @@ const PLAN_DATATB = () => {
       loadQLSXPlan(fromdate);
     }
   };
-  const updatePlanOrder = (plan_date: string) => {
-    generalQuery("updatePlanOrder", {
-      PLAN_DATE: plan_date
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-        } else {
-          Swal.fire('Thông báo', 'Update plan order thất bại', 'error');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+
   const handleClick = () => {
     if (myComponentRef.current) {
       //myComponentRef.current?.handleInternalClick();

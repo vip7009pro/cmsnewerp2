@@ -4,14 +4,13 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany } from "./Api";
-import { CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
 import CHITHI_COMPONENT2 from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT2";
 import YCSXComponent from "../pages/kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
-
 export const zeroPad = (num: number, places: number) => String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -19,7 +18,6 @@ export const SaveExcel = (data: any, title: string) => {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
   XLSX.writeFile(workbook, `${title}.xlsx`);
 };
-
 export function CustomResponsiveContainer(props: any) {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
@@ -340,12 +338,11 @@ export function dynamicSort(property: string) {
     return result * sortOrder;
   }
 }
-
 //PO Manager Functions
 export const f_autopheduyetgia = () => {
   generalQuery("autopheduyetgiaall", {
   })
-    .then((response) => {      
+    .then((response) => {
       if (response.data.tk_status !== "NG") {
       } else {
       }
@@ -354,41 +351,37 @@ export const f_autopheduyetgia = () => {
       console.log(error);
     });
 }
-
-export const f_loadPoDataFull = async (filterData: any) =>  {
+export const f_loadPoDataFull = async (filterData: any) => {
   let podata: POTableData[] = [];
   await generalQuery("traPODataFull", filterData)
-  .then((response) => {
-    //console.log(response.data.data);
-    if (response.data.tk_status !== "NG") {
-      const loadeddata: POTableData[] = response.data.data.map(
-        (element: POTableData, index: number) => {
-          return {
-            ...element,
-            id: index,
-            PO_DATE: element.PO_DATE.slice(0, 10),
-            RD_DATE: element.RD_DATE.slice(0, 10),
-            G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-            G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-          };
-        }
-      );
-      podata = loadeddata;
-     
-    } else {    
-      podata = [];
-    }
-  })
-  .catch((error) => {
-    Swal.fire("Thông báo", "Nội dung: " + error, "error");
-    console.log(error);
-  });
-
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: POTableData[] = response.data.data.map(
+          (element: POTableData, index: number) => {
+            return {
+              ...element,
+              id: index,
+              PO_DATE: element.PO_DATE.slice(0, 10),
+              RD_DATE: element.RD_DATE.slice(0, 10),
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+            };
+          }
+        );
+        podata = loadeddata;
+      } else {
+        podata = [];
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
   return podata;
 }
-
 export const f_checkPOExist = async (G_CODE: string, CUST_CD: string, PO_NO: string) => {
-  let kq= false;
+  let kq = false;
   await generalQuery("checkPOExist", {
     G_CODE: G_CODE,
     CUST_CD: CUST_CD,
@@ -405,11 +398,10 @@ export const f_checkPOExist = async (G_CODE: string, CUST_CD: string, PO_NO: str
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_checkPOInfo = async (G_CODE: string, CUST_CD: string, PO_NO: string) => {
-  let kq: Array<any>= [];
+  let kq: Array<any> = [];
   await generalQuery("checkPOExist", {
     G_CODE: G_CODE,
     CUST_CD: CUST_CD,
@@ -426,17 +418,15 @@ export const f_checkPOInfo = async (G_CODE: string, CUST_CD: string, PO_NO: stri
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_compareDateToNow = (date: string): boolean => {
   let kq: boolean = false;
   let now = moment();
   let comparedate = moment(date);
   if (now < comparedate) {
-    kq = true;    
+    kq = true;
   } else {
-    
   }
   return kq;
 }
@@ -445,18 +435,16 @@ export const f_compareTwoDate = (date1: string, date2: string): number => {
   let mdate1 = moment(date1);
   let mdate2 = moment(date2);
   if (mdate1 < mdate2) {
-    kq = -1;    
-  } 
-  else if(mdate1 == mdate2){
-    kq =0;
+    kq = -1;
   }
-  else 
-  {
+  else if (mdate1 == mdate2) {
+    kq = 0;
+  }
+  else {
     kq = 1;
   }
   return kq;
 }
-
 export const f_checkG_CODE_USE_YN = async (G_CODE: string) => {
   let kq: number = 0; // OK
   await generalQuery("checkGCodeVer", {
@@ -468,7 +456,7 @@ export const f_checkG_CODE_USE_YN = async (G_CODE: string) => {
         //console.log(response.data.data);
         if (response.data.data[0].USE_YN === "Y") {
           //tempjson[i].CHECKSTATUS = "OK";
-          kq= 0;
+          kq = 0;
         } else {
           //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
           kq = 1;
@@ -481,9 +469,8 @@ export const f_checkG_CODE_USE_YN = async (G_CODE: string) => {
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_insertPO = async (poData: any) => {
   let kq: string = 'NG';
   await generalQuery("insert_po", {
@@ -498,19 +485,18 @@ export const f_insertPO = async (poData: any) => {
     BEP: poData.BEP ?? 0,
     REMARK: poData.REMARK,
   })
-    .then((response) => {      
+    .then((response) => {
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_updatePO = async (poData: any) => {
   let kq: string = 'NG';
   await generalQuery("update_po", {
@@ -529,17 +515,16 @@ export const f_updatePO = async (poData: any) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_deletePO = async (PO_ID: number) => {
   let kq: string = 'NG';
   await generalQuery("delete_po", {
@@ -548,17 +533,16 @@ export const f_deletePO = async (PO_ID: number) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_autogeneratePO_NO = async (cust_cd: string) => {
   let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
   let next_po_no: string = po_no_to_check + "_001";
@@ -581,7 +565,6 @@ export const f_autogeneratePO_NO = async (cust_cd: string) => {
     });
   return next_po_no;
 };
-
 export const f_dongboGiaPO = () => {
   generalQuery("dongbogiasptupo", {})
     .then((response) => {
@@ -596,7 +579,6 @@ export const f_dongboGiaPO = () => {
       Swal.fire("Thông báo", " Có lỗi : " + error, "error");
     });
 };
-
 export const f_getcustomerlist = async () => {
   let customerList: CustomerListData[] = [];
   await generalQuery("selectcustomerList", {})
@@ -611,24 +593,22 @@ export const f_getcustomerlist = async () => {
     });
   return customerList;
 };
-
 export const f_getcodelist = async (G_NAME: string) => {
   let codeList: CodeListData[] = [];
   await generalQuery("selectcodeList", { G_NAME: G_NAME })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        codeList = response.data.data;       
+        codeList = response.data.data;
       } else {
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return codeList;
+  return codeList;
 };
-
 export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
-  let newCodePriceData: PRICEWITHMOQ[] = [];    
+  let newCodePriceData: PRICEWITHMOQ[] = [];
   if (G_CODE !== undefined && CUST_NAME !== undefined) {
     await generalQuery("loadbanggiamoinhat", {
       ALLTIME: true,
@@ -676,7 +656,7 @@ export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
                   };
                 }
               );
-              newCodePriceData =loaded_data;
+          newCodePriceData = loaded_data;
         } else {
           /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
         }
@@ -688,8 +668,7 @@ export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
   }
   return newCodePriceData;
 };
-
-export const f_insertInvoice =  async (invoiceData: any) => {
+export const f_insertInvoice = async (invoiceData: any) => {
   let kq: string = 'NG';
   await generalQuery("insert_invoice", {
     G_CODE: invoiceData.G_CODE,
@@ -702,21 +681,19 @@ export const f_insertInvoice =  async (invoiceData: any) => {
     DELIVERY_DATE: invoiceData.DELIVERY_DATE,
     REMARK: invoiceData.REMARK,
   })
-    .then((response) => {      
+    .then((response) => {
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
-
+  return kq;
 }
-
-export const f_readUploadFile = (e: any,setRow: React.Dispatch<React.SetStateAction<Array<any>>>, setColumn: React.Dispatch<React.SetStateAction<Array<any>>>) => {
+export const f_readUploadFile = (e: any, setRow: React.Dispatch<React.SetStateAction<Array<any>>>, setColumn: React.Dispatch<React.SetStateAction<Array<any>>>) => {
   e.preventDefault();
   if (e.target.files) {
     const reader = new FileReader();
@@ -767,42 +744,39 @@ export const f_readUploadFile = (e: any,setRow: React.Dispatch<React.SetStateAct
       setColumn(uploadexcelcolumn);
     };
     reader.readAsArrayBuffer(e.target.files[0]);
-  }  
+  }
 };
 // Invoice manager function
-
-export const f_loadInvoiceDataFull = async (filterData: any) =>  {
+export const f_loadInvoiceDataFull = async (filterData: any) => {
   let invoicedata: InvoiceTableData[] = [];
   await generalQuery("traInvoiceDataFull", filterData)
-  .then((response) => {
-    //console.log(response.data.data);
-    if (response.data.tk_status !== "NG") {
-      const loadeddata: InvoiceTableData[] = response.data.data.map(
-        (element: InvoiceTableData, index: number) => {
-          return {
-            ...element,
-            id: index,
-            DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
-            PO_DATE: element.PO_DATE.slice(0, 10),
-            RD_DATE: element.RD_DATE.slice(0, 10),
-            G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-            G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-          };
-        },
-      );
-      invoicedata = loadeddata;
-     
-    } else {    
-      invoicedata = [];
-    }
-  })
-  .catch((error) => {
-    Swal.fire("Thông báo", "Nội dung: " + error, "error");
-    console.log(error);
-  });
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: InvoiceTableData[] = response.data.data.map(
+          (element: InvoiceTableData, index: number) => {
+            return {
+              ...element,
+              id: index,
+              DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
+              PO_DATE: element.PO_DATE.slice(0, 10),
+              RD_DATE: element.RD_DATE.slice(0, 10),
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+            };
+          },
+        );
+        invoicedata = loadeddata;
+      } else {
+        invoicedata = [];
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
   return invoicedata;
 }
-
 export const f_updateInvoice = async (invoiceData: any) => {
   let kq: string = 'NG';
   await generalQuery("update_invoice", {
@@ -818,17 +792,16 @@ export const f_updateInvoice = async (invoiceData: any) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 export const f_deleteInvoice = async (DELIVERY_ID: number) => {
   let kq: string = 'NG';
   await generalQuery("delete_invoice", {
@@ -837,37 +810,35 @@ export const f_deleteInvoice = async (DELIVERY_ID: number) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
-export const f_updateInvoiceNo = async (DELIVERY_ID: number, INVOICE_NO: string) => {  
+export const f_updateInvoiceNo = async (DELIVERY_ID: number, INVOICE_NO: string) => {
   let kq: string = 'NG';
-  await generalQuery("update_invoice_no", {    
+  await generalQuery("update_invoice_no", {
     DELIVERY_ID: DELIVERY_ID,
     INVOICE_NO: INVOICE_NO
   })
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        kq =  "OK";
-      } else {       
+        kq = "OK";
+      } else {
         kq = "NG: Lỗi SQL: " + response.data.message;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
 //Machine functions
 export const f_checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string) => {
   let maxprocess: number = 0;
@@ -879,7 +850,7 @@ export const f_checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: s
 };
 export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
   return planlist.map((element, index) => (
-    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />   
+    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />
   ));
 };
 export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
@@ -909,7 +880,6 @@ export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
 export const f_getCurrentDMToSave = async (planData: QLSXPLANDATA) => {
   console.log(planData);
   let NEEDED_QTY: number = planData.PLAN_QTY ?? 0, FINAL_LOSS_SX: number = 0, FINAL_LOSS_KT: number = planData?.LOSS_KT ?? 0, FINAL_LOSS_SETTING: number = 0, PD: number = planData.PD ?? 0, CAVITY: number = planData.CAVITY ?? 0;
-  
   if (planData.PROCESS_NUMBER === 1) {
     FINAL_LOSS_SX = (planData.LOSS_SX2 ?? 0) + (planData.LOSS_SX3 ?? 0) + (planData.LOSS_SX4 ?? 0);
   } else if (planData.PROCESS_NUMBER === 2) {
@@ -928,13 +898,7 @@ export const f_getCurrentDMToSave = async (planData: QLSXPLANDATA) => {
   } else if (planData.PROCESS_NUMBER === 4) {
     FINAL_LOSS_SETTING = 0;
   }
-
- 
-
   NEEDED_QTY = NEEDED_QTY * (100 + FINAL_LOSS_SX + FINAL_LOSS_KT) / 100 + FINAL_LOSS_SETTING / PD * CAVITY * 1000;
- 
-  
-
   return {
     NEEDED_QTY: Math.round(NEEDED_QTY),
     FINAL_LOSS_SX: FINAL_LOSS_SX,
@@ -1000,7 +964,6 @@ export const f_saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
       CURRENT_LOSS_KT: FINAL_LOSS_KT,
       CURRENT_SETTING_M: FINAL_LOSS_SETTING,
     });
-  
   } else {
     err_code += "_" + planToSave?.G_NAME_KD + ":";
     if (
@@ -1070,7 +1033,6 @@ export const f_getRecentDMData = async (G_CODE: string) => {
           },
         );
         recentDMData = loadeddata
-        
       } else {
         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
         recentDMData = [];
@@ -1079,7 +1041,7 @@ export const f_getRecentDMData = async (G_CODE: string) => {
     .catch((error) => {
       console.log(error);
     });
-    return recentDMData;
+  return recentDMData;
 }
 export const f_getMachineListData = async () => {
   let machineListData: MACHINE_LIST[] = [];
@@ -1096,7 +1058,6 @@ export const f_getMachineListData = async () => {
         );
         loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
         machineListData = loadeddata;
-       
       } else {
         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
         machineListData = []
@@ -1105,42 +1066,39 @@ export const f_getMachineListData = async () => {
     .catch((error) => {
       console.log(error);
     });
-    return machineListData;
+  return machineListData;
 };
 export const f_handle_loadEQ_STATUS = async () => {
   let eq_status_data: EQ_STT[] = [];
   let eq_series_data: string[] = [];
-
   await generalQuery("checkEQ_STATUS", {})
-  .then((response) => {
-    //console.log(response.data.data);
-    if (response.data.tk_status !== "NG") {
-      const loaded_data: EQ_STT[] = response.data.data.map(
-        (element: EQ_STT, index: number) => {
-          return {
-            ...element,
-            id: index,
-          };
-        }
-      );
-      eq_series_data = [
-        ...new Set(
-          loaded_data.map((e: EQ_STT, index: number) => {
-            return e.EQ_SERIES ?? "NA";
-          })
-        ),
-      ];
-      eq_status_data = loaded_data
-      
-    } else {
-      eq_status_data = [];
-      eq_series_data = [];
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-    
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: EQ_STT[] = response.data.data.map(
+          (element: EQ_STT, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        eq_series_data = [
+          ...new Set(
+            loaded_data.map((e: EQ_STT, index: number) => {
+              return e.EQ_SERIES ?? "NA";
+            })
+          ),
+        ];
+        eq_status_data = loaded_data
+      } else {
+        eq_status_data = [];
+        eq_series_data = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   return {
     EQ_SERIES: eq_series_data,
     EQ_STATUS: eq_status_data
@@ -1188,7 +1146,7 @@ export const f_saveQLSX = async (qlsxdata: any) => {
     .catch((error) => {
       console.log(error);
     });
-    return isOk;
+  return isOk;
 }
 export const f_updateDMYCSX = async (ycsxDMData: any) => {
   generalQuery("updateDBYCSX", {
@@ -1202,17 +1160,16 @@ export const f_updateDMYCSX = async (ycsxDMData: any) => {
     LOSS_SETTING3: ycsxDMData.LOSS_SETTING3,
     LOSS_SETTING4: ycsxDMData.LOSS_SETTING4,
   })
-  .then((response) => {
-    if (response.data.tk_status !== "NG") {
-    } else {
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 export const f_insertDMYCSX = async (ycsxDMData: any) => {
-
   await generalQuery("insertDBYCSX", {
     PROD_REQUEST_NO: ycsxDMData.PROD_REQUEST_NO,
     G_CODE: ycsxDMData.G_CODE,
@@ -1236,7 +1193,6 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
     .catch((error) => {
       console.log(error);
     });
-
 }
 export const f_updatePlanQLSX = async (planData: any) => {
   let kq: string = "";
@@ -1267,9 +1223,26 @@ export const f_updatePlanQLSX = async (planData: any) => {
     .catch((error) => {
       console.log(error);
     });
-    return kq;
+  return kq;
 }
-
+export const f_checkPlanIDP500 = async (PLAN_ID: string) => {
+  let kq: boolean = false;
+  await generalQuery("checkP500PlanID_mobile", {
+    PLAN_ID: PLAN_ID,
+  })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
 export const f_updateBatchPlan = async (planArray: any) => {
   let err_code: string = "0";
   Swal.fire({
@@ -1280,9 +1253,7 @@ export const f_updateBatchPlan = async (planArray: any) => {
     allowOutsideClick: false,
     confirmButtonText: "OK",
     showConfirmButton: false,
-  }); 
-
-  
+  });
   for (let i = 0; i < planArray.length; i++) {
     let check_NEXT_PLAN_ID: boolean = true;
     if (planArray[i].NEXT_PLAN_ID !== "X") {
@@ -1295,20 +1266,7 @@ export const f_updateBatchPlan = async (planArray: any) => {
       }
     }
     let checkPlanIdP500: boolean = false;
-    await generalQuery("checkP500PlanID_mobile", {
-      PLAN_ID: planArray[i].PLAN_ID,
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          checkPlanIdP500 = true;
-        } else {
-          checkPlanIdP500 = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    checkPlanIdP500 = await f_checkPlanIDP500(planArray[i].PLAN_ID);
     let { NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING } = await f_getCurrentDMToSave(planArray[i])
     console.log(NEEDED_QTY, FINAL_LOSS_SX, FINAL_LOSS_KT, FINAL_LOSS_SETTING);
     if (
@@ -1330,7 +1288,6 @@ export const f_updateBatchPlan = async (planArray: any) => {
       ) >= planArray[i].PROCESS_NUMBER &&
       checkPlanIdP500 === false
     ) {
-
       err_code += await f_updatePlanQLSX({
         PLAN_ID: planArray[i].PLAN_ID,
         STEP: planArray[i].STEP,
@@ -1348,7 +1305,6 @@ export const f_updateBatchPlan = async (planArray: any) => {
         CURRENT_LOSS_KT: FINAL_LOSS_KT,
         CURRENT_SETTING_M: FINAL_LOSS_SETTING,
       });
-
     } else {
       err_code += "_" + planArray[i].G_NAME_KD + ":";
       if (
@@ -1393,5 +1349,619 @@ export const f_updateBatchPlan = async (planArray: any) => {
       }
     }
   }
-  return err_code; 
+  return err_code;
 };
+export const f_updatePlanOrder = (plan_date: string) => {
+  generalQuery("updatePlanOrder", {
+    PLAN_DATE: plan_date
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+        Swal.fire('Thông báo', 'Update plan order thất bại', 'error');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+export const f_loadQLSXPLANDATA = async (plan_date: string) => {
+  let planData: QLSXPLANDATA[] = [];
+  await generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: QLSXPLANDATA, index: number) => {
+            return {
+              ...element,
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+              PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+              ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
+              LOSS_KT: getCompany() === 'CMS' ? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
+              id: index,
+            };
+          }
+        );
+        //console.log(loadeddata);
+        planData = loadeddata;
+        f_updatePlanOrder(plan_date);
+      } else {
+        planData = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return planData;
+}
+export const f_getPlanMaterialTable = async (PLAN_ID: string) => {
+  let planMaterialTable: QLSXCHITHIDATA[] = [];
+  await generalQuery("getchithidatatable", {
+    PLAN_ID: PLAN_ID,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
+          (element: QLSXCHITHIDATA, index: number) => {
+            return {
+              ...element,
+              id: index
+            }
+          });
+        planMaterialTable = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return planMaterialTable;
+}
+export const f_getBOMSX = async (G_CODE: string) => {
+  let bomsx: BOMSX_DATA[] = [];
+  await generalQuery("getbomsx", {
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: BOMSX_DATA[] = response.data.data.map(
+          (element: BOMSX_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        bomsx = loaded_data;
+      } else {
+        bomsx = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return bomsx;
+}
+export const f_calcMaterialMet = async (PLAN_QTY: number, PD: number, CAVITY: number, PROCESS_NUMBER: number, LOSS_SX1: number, LOSS_SX2: number, LOSS_SX3: number, LOSS_SX4: number, LOSS_SETTING1: number, LOSS_SETTING2: number, LOSS_SETTING3: number, LOSS_SETTING4: number, LOSS_KT: number, IS_SETTING: string) => {
+  let FINAL_LOSS_SX: number = 0, FINAL_LOSS_SETTING: number = 0, M_MET_NEEDED: number = 0;
+  let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
+  if (PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SX = (LOSS_SX1 ?? 0) + (LOSS_SX2 ?? 0) + (LOSS_SX3 ?? 0) + (LOSS_SX4 ?? 0) + (LOSS_KT ?? 0);
+  } else if (PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SX = (LOSS_SX2 ?? 0) + (LOSS_SX3 ?? 0) + (LOSS_SX4 ?? 0) + (LOSS_KT ?? 0);
+  } else if (PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SX = (LOSS_SX3 ?? 0) + (LOSS_SX4 ?? 0) + (LOSS_KT ?? 0);
+  } else if (PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SX = (LOSS_SX4 ?? 0) + (LOSS_KT ?? 0);
+  }
+  if (PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SETTING = (calc_loss_setting ? LOSS_SETTING1 ?? 0 : 0) + (LOSS_SETTING2 ?? 0) + (LOSS_SETTING3 ?? 0) + (LOSS_SETTING4 ?? 0);
+  } else if (PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SETTING = (LOSS_SETTING2 ?? 0) + (LOSS_SETTING3 ?? 0) + (LOSS_SETTING4 ?? 0);
+  } else if (PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SETTING = (LOSS_SETTING3 ?? 0) + (LOSS_SETTING4 ?? 0);
+  } else if (PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SETTING = (LOSS_SETTING4 ?? 0);
+  }
+  M_MET_NEEDED = ((PLAN_QTY ?? 0) * (PD ?? 0) * 1.0) / ((CAVITY ?? 0) * 1.0) / 1000;
+  M_MET_NEEDED = ((M_MET_NEEDED + (M_MET_NEEDED * FINAL_LOSS_SX) * 1.0 / 100 + FINAL_LOSS_SETTING))
+  return M_MET_NEEDED;
+}
+export const f_handleGetChiThiTable = async (planData: QLSXPLANDATA) => {
+  let M_MET_NEEDED: number = 0;
+  let chiThiDataTable: QLSXCHITHIDATA[] = [];
+  chiThiDataTable = await f_getPlanMaterialTable(planData.PLAN_ID);
+  if (chiThiDataTable.length > 0) return chiThiDataTable;
+  M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
+  chiThiDataTable = tempBOMSX.map(
+    (element: BOMSX_DATA, index: number) => {
+      let temp_material_table: QLSXCHITHIDATA = {
+        CHITHI_ID: "NEW" + index,
+        PLAN_ID: planData.PLAN_ID,
+        M_CODE: element.M_CODE,
+        M_NAME: element.M_NAME,
+        WIDTH_CD: element.WIDTH_CD,
+        M_ROLL_QTY: 0,
+        M_MET_QTY: Math.ceil(element.M_QTY * M_MET_NEEDED),
+        M_QTY: element.M_QTY,
+        LIEUQL_SX: element.LIEUQL_SX,
+        MAIN_M: element.MAIN_M,
+        OUT_KHO_SX: 0,
+        OUT_CFM_QTY: 0,
+        INS_EMPL: "",
+        INS_DATE: "",
+        UPD_EMPL: "",
+        UPD_DATE: "",
+        M_STOCK: element.M_STOCK,
+        id: index.toString(),
+      };
+      return temp_material_table;
+    }
+  );
+  return chiThiDataTable;
+};
+export const f_handleResetChiThiTable = async (planData: QLSXPLANDATA) => {
+  let M_MET_NEEDED: number = 0;
+  let chiThiDataTable: QLSXCHITHIDATA[] = [];
+  M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
+  chiThiDataTable = tempBOMSX.map(
+    (element: BOMSX_DATA, index: number) => {
+      let temp_material_table: QLSXCHITHIDATA = {
+        CHITHI_ID: "NEW" + index,
+        PLAN_ID: planData.PLAN_ID,
+        M_CODE: element.M_CODE,
+        M_NAME: element.M_NAME,
+        WIDTH_CD: element.WIDTH_CD,
+        M_ROLL_QTY: 0,
+        M_MET_QTY: Math.ceil(element.M_QTY * M_MET_NEEDED),
+        M_QTY: element.M_QTY,
+        LIEUQL_SX: element.LIEUQL_SX,
+        MAIN_M: element.MAIN_M,
+        OUT_KHO_SX: 0,
+        OUT_CFM_QTY: 0,
+        INS_EMPL: "",
+        INS_DATE: "",
+        UPD_EMPL: "",
+        UPD_DATE: "",
+        M_STOCK: element.M_STOCK,
+        id: index.toString(),
+      };
+      return temp_material_table;
+    }
+  );
+  return chiThiDataTable;
+};
+export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chithidatatable: QLSXCHITHIDATA[]) => {
+  let err_code: string = "0";
+  let total_lieuql_sx: number = 0;
+  let check_lieuql_sx_sot: number = 0;
+  let check_num_lieuql_sx: number = 1;
+  let check_lieu_qlsx_khac1: number = 0;
+  //console.log(chithidatatable);
+  for (let i = 0; i < chithidatatable.length; i++) {
+    total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
+    if (chithidatatable[i].LIEUQL_SX > 1) check_lieu_qlsx_khac1 += 1;
+  }
+  for (let i = 0; i < chithidatatable.length; i++) {
+    //console.log(chithidatatable[i].LIEUQL_SX);
+    if (parseInt(chithidatatable[i].LIEUQL_SX.toString()) === 1) {
+      for (let j = 0; j < chithidatatable.length; j++) {
+        if (
+          chithidatatable[j].M_NAME === chithidatatable[i].M_NAME &&
+          parseInt(chithidatatable[j].LIEUQL_SX.toString()) === 0
+        ) {
+          check_lieuql_sx_sot += 1;
+        }
+      }
+    }
+  }
+  //console.log('bang chi thi', chithidatatable);
+  for (let i = 0; i < chithidatatable.length; i++) {
+    if (parseInt(chithidatatable[i].LIEUQL_SX.toString()) === 1) {
+      for (let j = 0; j < chithidatatable.length; j++) {
+        if (parseInt(chithidatatable[j].LIEUQL_SX.toString()) === 1) {
+          //console.log('i', chithidatatable[i].M_NAME);
+          //console.log('j', chithidatatable[j].M_NAME);
+          if (chithidatatable[i].M_NAME !== chithidatatable[j].M_NAME) {
+            check_num_lieuql_sx = 2;
+          }
+        }
+      }
+    }
+  }
+  //console.log('num lieu qlsx: ' + check_num_lieuql_sx);
+  //console.log('tong lieu qly: '+ total_lieuql_sx);
+  if (
+    total_lieuql_sx > 0 &&
+    check_lieuql_sx_sot === 0 &&
+    check_num_lieuql_sx === 1 &&
+    check_lieu_qlsx_khac1 === 0
+  ) {
+    await generalQuery("deleteMCODEExistIN_O302", {
+      //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
+      PLAN_ID: selectedPlan?.PLAN_ID,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    for (let i = 0; i < chithidatatable.length; i++) {
+      await generalQuery("updateLIEUQL_SX_M140", {
+        //G_CODE: qlsxplandatafilter.current[0].G_CODE,
+        G_CODE: selectedPlan?.G_CODE,
+        M_CODE: chithidatatable[i].M_CODE,
+        LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (chithidatatable[i].M_MET_QTY > 0) {
+        let checktontaiM_CODE: boolean = false;
+        await generalQuery("checkM_CODE_PLAN_ID_Exist", {
+          //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
+          PLAN_ID: selectedPlan?.PLAN_ID,
+          M_CODE: chithidatatable[i].M_CODE,
+        })
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              checktontaiM_CODE = true;
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        //console.log('checktontai',checktontaiM_CODE);
+        if (checktontaiM_CODE) {
+          await generalQuery("updateChiThi", {
+            PLAN_ID: selectedPlan?.PLAN_ID,
+            M_CODE: chithidatatable[i].M_CODE,
+            M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+            M_MET_QTY: chithidatatable[i].M_MET_QTY,
+            M_QTY: chithidatatable[i].M_QTY,
+            LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
+          })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+                err_code += "_" + response.data.message;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          await generalQuery("insertChiThi", {
+            //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
+            PLAN_ID: selectedPlan?.PLAN_ID,
+            M_CODE: chithidatatable[i].M_CODE,
+            M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+            M_MET_QTY: chithidatatable[i].M_MET_QTY,
+            M_QTY: chithidatatable[i].M_QTY,
+            LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+          })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+                err_code += "_" + response.data.message;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      } else {
+        err_code += "_" + chithidatatable[i].M_CODE + ": so met = 0";
+      }
+    }
+  } else {
+    err_code = "1";
+  }
+  return err_code;
+}
+export const f_handletraYCSXQLSX = async (filterdata: any) => {
+  console.log(filterdata);
+  let ycsxdata: YCSXTableData[]=[];
+  await generalQuery("traYCSXDataFull_QLSX", {
+    alltime: filterdata.alltime,
+    start_date: filterdata.start_date,
+    end_date: filterdata.end_date,
+    cust_name: filterdata.cust_name,
+    codeCMS: filterdata.codeCMS,
+    codeKD: filterdata.codeKD,
+    prod_type: filterdata.prod_type,
+    empl_name: filterdata.empl_name,
+    phanloai: filterdata.phanloai,
+    ycsx_pending: filterdata.ycsx_pending,
+    inspect_inputcheck: filterdata.inspect_inputcheck,
+    prod_request_no: filterdata.prod_request_no,
+    material: filterdata.material,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        const loadeddata: YCSXTableData[] = response.data.data.map(
+          (element: YCSXTableData, index: number) => {
+            return {
+              ...element,
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+              PO_TDYCSX: element.PO_TDYCSX ?? 0,
+              TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
+              TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
+              BTP_TDYCSX: element.BTP_TDYCSX ?? 0,
+              CK_TDYCSX: element.CK_TDYCSX ?? 0,
+              BLOCK_TDYCSX: element.BLOCK_TDYCSX ?? 0,
+              FCST_TDYCSX: element.FCST_TDYCSX ?? 0,
+              W1: element.W1 ?? 0,
+              W2: element.W2 ?? 0,
+              W3: element.W3 ?? 0,
+              W4: element.W4 ?? 0,
+              W5: element.W5 ?? 0,
+              W6: element.W6 ?? 0,
+              W7: element.W7 ?? 0,
+              W8: element.W8 ?? 0,
+              PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
+              id: index
+            };
+          }
+        );
+        ycsxdata = loadeddata;      
+      } else {
+        ycsxdata = []
+        console.log('err',response.data.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return ycsxdata;
+};
+export const f_setPendingYCSX = async (ycsxdatatablefilter: YCSXTableData[], pending_value: number) => {
+  let err_code: string = "0";
+  if (ycsxdatatablefilter.length >= 1) {    
+    for (let i = 0; i < ycsxdatatablefilter.length; i++) {
+      await generalQuery("setpending_ycsx", {
+        PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+        YCSX_PENDING: pending_value,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+          } else {
+            err_code = response.data.message;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  } else {
+    err_code = "Chọn ít nhất 1 YCSX để SET !";    
+  }
+  return err_code;
+};
+export const f_updateDKXLPLAN = async (PLAN_ID: string) => {
+  await generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
+  let err_code: string = "0";
+  let checkPlanIdO300: boolean = true;
+  let NEXT_OUT_NO: string = "001";
+  let NEXT_OUT_DATE: string = moment().format("YYYYMMDD");
+  await generalQuery("checkPLANID_O300", { PLAN_ID: selectedPlan.PLAN_ID })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        checkPlanIdO300 = true;
+        NEXT_OUT_DATE = response.data.data[0].OUT_DATE;
+      } else {
+        checkPlanIdO300 = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  //kiem tra xem  dang ky xuat lieu hay chua
+  let checkPlanIdO301: boolean = true;
+  let Last_O301_OUT_SEQ: number = 0;
+  await generalQuery("checkPLANID_O301", { PLAN_ID: selectedPlan.PLAN_ID })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);
+        checkPlanIdO301 = true;
+      } else {
+        checkPlanIdO301 = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  //console.log(checkPlanIdO302 +' _ '+checkPlanIdO301)
+  //get Next_ out_ no
+  console.log("check plan id o300", checkPlanIdO300);
+  if (!checkPlanIdO300) {
+    await generalQuery("getO300_LAST_OUT_NO", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          NEXT_OUT_NO = zeroPad(
+            parseInt(response.data.data[0].OUT_NO) + 1,
+            3
+          );
+          console.log("nextoutno_o300", NEXT_OUT_NO);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // get code_50 phan loai giao hang GC, SK, KD
+    let CODE_50: string = "";
+    await generalQuery("getP400", {
+      PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+      PROD_REQUEST_DATE: selectedPlan.PROD_REQUEST_DATE,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          CODE_50 = response.data.data[0].CODE_50;
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(CODE_50);
+    await generalQuery("insertO300", {
+      OUT_DATE: NEXT_OUT_DATE,
+      OUT_NO: NEXT_OUT_NO,
+      CODE_03: "01",
+      CODE_52: "01",
+      CODE_50: CODE_50,
+      USE_YN: "Y",
+      PROD_REQUEST_DATE: selectedPlan.PROD_REQUEST_DATE,
+      PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+      FACTORY: selectedFactory,
+      PLAN_ID: selectedPlan.PLAN_ID,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else {
+    await generalQuery("getO300_ROW", { PLAN_ID: selectedPlan.PLAN_ID })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          NEXT_OUT_NO = zeroPad(parseInt(response.data.data[0].OUT_NO), 3);
+          console.log("nextoutno_o300", NEXT_OUT_NO);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  let checkchithimettotal: number = 0;
+  for (let i = 0; i < chithidatatable.length; i++) {
+    checkchithimettotal += chithidatatable[i].M_MET_QTY;
+  }
+  if (checkchithimettotal > 0) {
+    for (let i = 0; i < chithidatatable.length; i++) {
+      if (chithidatatable[i].M_MET_QTY > 0) {
+        console.log("M_MET", chithidatatable[i].M_MET_QTY);
+        let TonTaiM_CODE_O301: boolean = false;
+        await generalQuery("checkM_CODE_PLAN_ID_Exist_in_O301", {
+          PLAN_ID: selectedPlan.PLAN_ID,
+          M_CODE: chithidatatable[i].M_CODE,
+        })
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              TonTaiM_CODE_O301 = true;
+            } else {
+              TonTaiM_CODE_O301 = false;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        if (chithidatatable[i].LIEUQL_SX === 1) {
+          f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
+        }
+        if (!TonTaiM_CODE_O301) {
+          console.log("Next Out NO", NEXT_OUT_NO);
+          await generalQuery("checkPLANID_O301", { PLAN_ID: selectedPlan.PLAN_ID })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+                Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          console.log("outseq", Last_O301_OUT_SEQ);
+          await generalQuery("insertO301", {
+            OUT_DATE: NEXT_OUT_DATE,
+            OUT_NO: NEXT_OUT_NO,
+            CODE_03: "01",
+            OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
+            USE_YN: "Y",
+            M_CODE: chithidatatable[i].M_CODE,
+            OUT_PRE_QTY:
+              chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
+            PLAN_ID: selectedPlan.PLAN_ID,
+          })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          await generalQuery("updateO301", {
+            M_CODE: chithidatatable[i].M_CODE,
+            OUT_PRE_QTY:
+              chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
+            PLAN_ID: selectedPlan.PLAN_ID,
+          })
+            .then((response) => {
+              console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      }
+    }
+  } else {
+    err_code = "Cần đăng ký ít nhất 1 met lòng";
+  }
+  return err_code;
+}

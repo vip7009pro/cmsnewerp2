@@ -1888,7 +1888,7 @@ export interface QLSXPLANDATA {
 }
 export interface QLSXCHITHIDATA {
   id: string;
-  CHITHI_ID: number;
+  CHITHI_ID: string;
   PLAN_ID: string;
   M_CODE: string;
   M_NAME: string;
@@ -3851,4 +3851,21 @@ export interface  SX_LOSSTIME_BY_EMPL {
   EMPL_NAME: string,
   TOTAL_LOSS_TIME: number,
 
+}
+export interface BOMSX_DATA {
+  LIEUQL_SX: number;
+  MAIN_M: number;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  RIV_NO: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_QTY: number;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  M_STOCK: number;
 }
