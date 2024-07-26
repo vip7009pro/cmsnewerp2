@@ -21,7 +21,6 @@ import {
   checkBP,
   f_getMachineListData,
   f_getRecentDMData,
-  PLAN_ID_ARRAY,
   renderBanVe,
   renderChiThi,
   renderChiThi2,
