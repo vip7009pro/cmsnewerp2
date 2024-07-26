@@ -1375,43 +1375,43 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
         let loadeddata = response.data.data.map(
           (element: QLSXPLANDATA, index: number) => {
             let temp_TCD1: number =
-                element.TON_CD1 === null ? 0 : element.TON_CD1;
-              let temp_TCD2: number =
-                element.TON_CD2 === null ? 0 : element.TON_CD2;
-              let temp_TCD3: number =
-                element.TON_CD3 === null ? 0 : element.TON_CD3;
-              let temp_TCD4: number =
-                element.TON_CD4 === null ? 0 : element.TON_CD4;
-              if (temp_TCD1 < 0) {
-                temp_TCD2 = temp_TCD2 - temp_TCD1;
-              }
-              if (temp_TCD2 < 0) {
-                temp_TCD3 = temp_TCD3 - temp_TCD2;
-              }
-              if (temp_TCD3 < 0) {
-                temp_TCD4 = temp_TCD4 - temp_TCD3;
-              }
+              element.TON_CD1 === null ? 0 : element.TON_CD1;
+            let temp_TCD2: number =
+              element.TON_CD2 === null ? 0 : element.TON_CD2;
+            let temp_TCD3: number =
+              element.TON_CD3 === null ? 0 : element.TON_CD3;
+            let temp_TCD4: number =
+              element.TON_CD4 === null ? 0 : element.TON_CD4;
+            if (temp_TCD1 < 0) {
+              temp_TCD2 = temp_TCD2 - temp_TCD1;
+            }
+            if (temp_TCD2 < 0) {
+              temp_TCD3 = temp_TCD3 - temp_TCD2;
+            }
+            if (temp_TCD3 < 0) {
+              temp_TCD4 = temp_TCD4 - temp_TCD3;
+            }
             return {
               ...element,
-                ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
-                LOSS_KT: getCompany()==='CMS'? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                EQ_STATUS: element.EQ_STATUS === "B"   ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
-                ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
-                CD1: element.CD1 === null ? 0 : element.CD1,
-                CD2: element.CD2 === null ? 0 : element.CD2,
-                CD3: element.CD3 === null ? 0 : element.CD3,
-                CD4: element.CD4 === null ? 0 : element.CD4,
-                TON_CD1: temp_TCD1,
-                TON_CD2: temp_TCD2,
-                TON_CD3: temp_TCD3,
-                TON_CD4: temp_TCD4,
-                SETTING_START_TIME: element.SETTING_START_TIME === null   ? "X"   : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
-                MASS_START_TIME: element.MASS_START_TIME === null   ? "X"   : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
-                MASS_END_TIME: element.MASS_END_TIME === null   ? "X"   : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),               
-                id: index,
+              ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
+              LOSS_KT: getCompany() === 'CMS' ? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+              PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+              EQ_STATUS: element.EQ_STATUS === "B" ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
+              ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
+              CD1: element.CD1 === null ? 0 : element.CD1,
+              CD2: element.CD2 === null ? 0 : element.CD2,
+              CD3: element.CD3 === null ? 0 : element.CD3,
+              CD4: element.CD4 === null ? 0 : element.CD4,
+              TON_CD1: temp_TCD1,
+              TON_CD2: temp_TCD2,
+              TON_CD3: temp_TCD3,
+              TON_CD4: temp_TCD4,
+              SETTING_START_TIME: element.SETTING_START_TIME === null ? "X" : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
+              MASS_START_TIME: element.MASS_START_TIME === null ? "X" : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
+              MASS_END_TIME: element.MASS_END_TIME === null ? "X" : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
+              id: index,
             };
           }
         );
@@ -1712,7 +1712,7 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
 }
 export const f_handletraYCSXQLSX = async (filterdata: any) => {
   //console.log(filterdata);
-  let ycsxdata: YCSXTableData[]=[];
+  let ycsxdata: YCSXTableData[] = [];
   await generalQuery("traYCSXDataFull_QLSX", {
     alltime: filterdata.alltime,
     start_date: filterdata.start_date,
@@ -1758,20 +1758,20 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
             };
           }
         );
-        ycsxdata = loadeddata;      
+        ycsxdata = loadeddata;
       } else {
         ycsxdata = []
-        console.log('err',response.data.message);
+        console.log('err', response.data.message);
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    return ycsxdata;
+  return ycsxdata;
 };
 export const f_setPendingYCSX = async (ycsxdatatablefilter: YCSXTableData[], pending_value: number) => {
   let err_code: string = "0";
-  if (ycsxdatatablefilter.length >= 1) {    
+  if (ycsxdatatablefilter.length >= 1) {
     for (let i = 0; i < ycsxdatatablefilter.length; i++) {
       await generalQuery("setpending_ycsx", {
         PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
@@ -1789,7 +1789,7 @@ export const f_setPendingYCSX = async (ycsxdatatablefilter: YCSXTableData[], pen
         });
     }
   } else {
-    err_code = "Chọn ít nhất 1 YCSX để SET !";    
+    err_code = "Chọn ít nhất 1 YCSX để SET !";
   }
   return err_code;
 };
@@ -1805,29 +1805,29 @@ export const f_updateDKXLPLAN = async (PLAN_ID: string) => {
       console.log(error);
     });
 };
-export const f_updateXUATLIEUCHINHPLAN =  async (PLAN_ID: string) => {
+export const f_updateXUATLIEUCHINHPLAN = async (PLAN_ID: string) => {
   await generalQuery("updateXUATLIEUCHINH_PLAN", { PLAN_ID: PLAN_ID })
-  .then((response) => {
-    console.log(response.data);
-    if (response.data.tk_status !== "NG") {
-    } else {
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
-export const f_updateXUAT_DAO_FILM_PLAN =  async (PLAN_ID: string) => {
+export const f_updateXUAT_DAO_FILM_PLAN = async (PLAN_ID: string) => {
   await generalQuery("update_XUAT_DAO_FILM_PLAN", { PLAN_ID: PLAN_ID })
-  .then((response) => {
-    console.log(response.data);
-    if (response.data.tk_status !== "NG") {
-    } else {
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
   let err_code: string = "0";
@@ -2019,9 +2019,9 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
   }
   return err_code;
 }
-export const f_deleteQLSXPlan = async(planToDelete: QLSXPLANDATA[])=> {
-  let err_code: string ="0";
-  if (planToDelete.length > 0) {    
+export const f_deleteQLSXPlan = async (planToDelete: QLSXPLANDATA[]) => {
+  let err_code: string = "0";
+  if (planToDelete.length > 0) {
     for (let i = 0; i < planToDelete.length; i++) {
       let isOnO302: boolean = false, isChotBaoCao: boolean = (planToDelete[i].CHOTBC === "V"), isOnOutKhoAo: boolean = false;
       await generalQuery("checkPLANID_O302", {
@@ -2066,13 +2066,13 @@ export const f_deleteQLSXPlan = async(planToDelete: QLSXPLANDATA[])=> {
       }
       else {
         if (isChotBaoCao) {
-          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã chốt báo cáo, ko xóa được chỉ thị";          
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã chốt báo cáo, ko xóa được chỉ thị";
         }
         else if (isOnO302) {
-          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho thật";         
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho thật";
         }
         else if (isOnOutKhoAo) {
-          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho ảo"          
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho ảo"
         }
       }
     }
@@ -2081,8 +2081,8 @@ export const f_deleteQLSXPlan = async(planToDelete: QLSXPLANDATA[])=> {
   }
   return err_code;
 }
-export const f_deleteChiThiMaterialLine = async(qlsxchithidatafilter: QLSXCHITHIDATA[], org_chithi_data: QLSXCHITHIDATA[]) => {
-  let kq :QLSXCHITHIDATA[] = [];
+export const f_deleteChiThiMaterialLine = async (qlsxchithidatafilter: QLSXCHITHIDATA[], org_chithi_data: QLSXCHITHIDATA[]) => {
+  let kq: QLSXCHITHIDATA[] = [];
   if (qlsxchithidatafilter.length > 0) {
     let datafilter = [...org_chithi_data];
     for (let i = 0; i < qlsxchithidatafilter.length; i++) {
@@ -2092,9 +2092,9 @@ export const f_deleteChiThiMaterialLine = async(qlsxchithidatafilter: QLSXCHITHI
         }
       }
     }
-    kq =  datafilter;
+    kq = datafilter;
   } else {
-    kq =  [...org_chithi_data];   
+    kq = [...org_chithi_data];
     Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
   }
   return kq;
@@ -2149,7 +2149,7 @@ export const f_getNextPLAN_ID = async (PROD_REQUEST_NO: string, selectedPlanDate
   next_plan_order = await f_getNextPlanOrder(selectedPlanDate, selectedMachine, selectedFactory);
   return { NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order };
 };
-export const f_checkProdReqExistO302 = async(PROD_REQUEST_NO: string) => {
+export const f_checkProdReqExistO302 = async (PROD_REQUEST_NO: string) => {
   let check_ycsx_hethongcu: boolean = false;
   await generalQuery("checkProd_request_no_Exist_O302", {
     PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -2169,24 +2169,24 @@ export const f_checkProdReqExistO302 = async(PROD_REQUEST_NO: string) => {
     .catch((error) => {
       console.log(error);
     });
-    return check_ycsx_hethongcu;
+  return check_ycsx_hethongcu;
 }
 export const f_addPLANRaw = async (planData: any) => {
   let err_code: string = '';
   await generalQuery("addPlanQLSX", {
-    PLAN_ID:planData.PLAN_ID ,
-    PLAN_DATE:planData.PLAN_DATE ,
-    PROD_REQUEST_NO:planData.PROD_REQUEST_NO ,
-    PLAN_QTY:planData.PLAN_QTY ,
-    PLAN_EQ:planData.PLAN_EQ ,
-    PLAN_FACTORY:planData.PLAN_FACTORY ,
-    PLAN_LEADTIME:planData.PLAN_LEADTIME ,
-    STEP:planData.STEP ,
-    PLAN_ORDER:planData.PLAN_ORDER ,
-    PROCESS_NUMBER:planData.PROCESS_NUMBER ,
-    G_CODE:planData.G_CODE ,
-    NEXT_PLAN_ID:planData.NEXT_PLAN_ID ,
-    IS_SETTING:planData.IS_SETTING 
+    PLAN_ID: planData.PLAN_ID,
+    PLAN_DATE: planData.PLAN_DATE,
+    PROD_REQUEST_NO: planData.PROD_REQUEST_NO,
+    PLAN_QTY: planData.PLAN_QTY,
+    PLAN_EQ: planData.PLAN_EQ,
+    PLAN_FACTORY: planData.PLAN_FACTORY,
+    PLAN_LEADTIME: planData.PLAN_LEADTIME,
+    STEP: planData.STEP,
+    PLAN_ORDER: planData.PLAN_ORDER,
+    PROCESS_NUMBER: planData.PROCESS_NUMBER,
+    G_CODE: planData.G_CODE,
+    NEXT_PLAN_ID: planData.NEXT_PLAN_ID,
+    IS_SETTING: planData.IS_SETTING
   })
     .then((response) => {
       console.log(response.data.tk_status);
@@ -2195,16 +2195,16 @@ export const f_addPLANRaw = async (planData: any) => {
         err_code = response.data.message;
       }
     })
-    .catch((error) => {      
+    .catch((error) => {
       console.log(error);
     });
-    return err_code;
+  return err_code;
 }
 export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], selectedPlanDate: string, selectedMachine: string, selectedFactory: string) => {
   let err_code: string = '0';
   if (ycsxdatatablefilter.length >= 1) {
     for (let i = 0; i < ycsxdatatablefilter.length; i++) {
-      let check_ycsx_hethongcu: boolean = await f_checkProdReqExistO302(ycsxdatatablefilter[i].PROD_REQUEST_NO);      
+      let check_ycsx_hethongcu: boolean = await f_checkProdReqExistO302(ycsxdatatablefilter[i].PROD_REQUEST_NO);
       let nextPlan = await f_getNextPLAN_ID(ycsxdatatablefilter[i].PROD_REQUEST_NO, selectedPlanDate, selectedMachine, selectedFactory);
       let NextPlanID = nextPlan.NEXT_PLAN_ID;
       let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -2224,7 +2224,7 @@ export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], select
           G_CODE: ycsxdatatablefilter[i].G_CODE,
           NEXT_PLAN_ID: "X",
           IS_SETTING: "Y"
-        });        
+        });
       } else {
         err_code += "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này | ";
       }
@@ -2234,10 +2234,10 @@ export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], select
   }
   return err_code;
 }
-export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA)=> {
-  let err_code: string ='0';
+export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA) => {
+  let err_code: string = '0';
   if (selectedPlan.PLAN_ID !== 'XXX') {
-    let prod_request_no: string = selectedPlan?.PROD_REQUEST_NO === undefined   ? "xxx"   : selectedPlan?.PROD_REQUEST_NO;
+    let prod_request_no: string = selectedPlan?.PROD_REQUEST_NO === undefined ? "xxx" : selectedPlan?.PROD_REQUEST_NO;
     let check_ycsx_sample: boolean = false;
     let checkPLANID_EXIST_OUT_KHO_SX: boolean = false;
     await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
@@ -2335,7 +2335,7 @@ export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA)=> {
           })
           .catch((error) => {
             console.log(error);
-          });         
+          });
         Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
       } else {
         f_updateXUATLIEUCHINHPLAN(selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID);
@@ -2352,7 +2352,7 @@ export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA)=> {
   }
   return err_code;
 }
-export const f_handle_xuatdao_sample =  async (selectedPlan: QLSXPLANDATA)=> {
+export const f_handle_xuatdao_sample = async (selectedPlan: QLSXPLANDATA) => {
   let err_code: string = '0';
   if (selectedPlan.PLAN_ID !== 'XXX') {
     let prod_request_no: string =
@@ -2428,7 +2428,7 @@ export const f_handle_xuatdao_sample =  async (selectedPlan: QLSXPLANDATA)=> {
           })
           .catch((error) => {
             console.log(error);
-          });        
+          });
       } else {
         err_code = "Đã xuất dao rồi";
         Swal.fire("Thông báo", "Đã xuất dao rồi", "info");
@@ -2443,3 +2443,50 @@ export const f_handle_xuatdao_sample =  async (selectedPlan: QLSXPLANDATA)=> {
   }
   return err_code;
 }
+export const f_handle_movePlan = async (qlsxplandatafilter: QLSXPLANDATA[], todate: string) => {
+  let err_code: string = '0';
+  if (qlsxplandatafilter.length > 0) {
+    let err_code: string = "0";
+    for (let i = 0; i < qlsxplandatafilter.length; i++) {
+      let checkplansetting: boolean = false;
+      await generalQuery("checkplansetting", {
+        PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            checkplansetting = true;
+          } else {
+            checkplansetting = false;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (!checkplansetting) {
+        generalQuery("move_plan", {
+          PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
+          PLAN_DATE: todate,
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += "Lỗi: " + response.data.message + "\n";
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        err_code +=
+          "Lỗi: PLAN_ID " +
+          qlsxplandatafilter[i].PLAN_ID +
+          " đã setting nên không di chuyển được sang ngày khác, phải chốt";
+      }
+    }
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất một chỉ thị để di chuyển", "error");
+  }
+  return err_code;
+};

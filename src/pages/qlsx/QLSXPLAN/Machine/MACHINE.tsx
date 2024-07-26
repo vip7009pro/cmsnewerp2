@@ -1871,7 +1871,7 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
     setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-    await f_loadQLSXPLANDATA(selectedPlanDate,'ALL','ALL')
+    setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate,'ALL','ALL'));    
   };
   function PlanTableAGToolbar() {
     return (
