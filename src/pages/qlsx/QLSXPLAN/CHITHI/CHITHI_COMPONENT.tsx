@@ -624,7 +624,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                      Loss SX
                     </td>                   
                     <td>
-                      {DATA.PROCESS_NUMBER === 1
+                      {(DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.LOSS_SX1
                         : DATA.PROCESS_NUMBER === 2
                           ? request_codeinfo[0]?.LOSS_SX2
@@ -632,8 +632,16 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                             ? request_codeinfo[0]?.LOSS_SX3
                             : DATA.PROCESS_NUMBER === 4
                               ? request_codeinfo[0]?.LOSS_SX4
-                              : ""}{" "}
-                      %
+                              : 0)} %/{((DATA.PROCESS_NUMBER === 1
+                                ? request_codeinfo[0]?.LOSS_SX1
+                                : DATA.PROCESS_NUMBER === 2
+                                  ? request_codeinfo[0]?.LOSS_SX2
+                                  : DATA.PROCESS_NUMBER === 3
+                                    ? request_codeinfo[0]?.LOSS_SX3
+                                    : DATA.PROCESS_NUMBER === 4
+                                      ? request_codeinfo[0]?.LOSS_SX4
+                                      : 0)*DATA.PLAN_QTY*(DATA.PD??0)/(DATA.CAVITY??0)/1000/100).toLocaleString('en-US',{maximumFractionDigits:1,minimumFractionDigits:1})}met
+                     
                     </td>
                   </tr>
                   <tr>

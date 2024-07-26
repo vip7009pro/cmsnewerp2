@@ -1775,7 +1775,6 @@ export const f_updateDKXLPLAN = async (PLAN_ID: string) => {
       console.log(error);
     });
 };
-
 export const f_updateXUATLIEUCHINHPLAN =  async (PLAN_ID: string) => {
   await generalQuery("updateXUATLIEUCHINH_PLAN", { PLAN_ID: PLAN_ID })
   .then((response) => {
@@ -1800,7 +1799,6 @@ export const f_updateXUAT_DAO_FILM_PLAN =  async (PLAN_ID: string) => {
     console.log(error);
   });
 }
-
 export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
   let err_code: string = "0";
   let checkPlanIdO300: boolean = true;
