@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../../api/Api";
 import {
   checkBP,
+  f_loadQLSXPLANDATA,
   f_updateBatchPlan,
   f_updatePlanOrder,
   renderChiThi,
@@ -1396,181 +1397,102 @@ const PLAN_DATATB = () => {
       }
     });
   };
-  const loadQLSXPlan = (plan_date: string) => {
-    //console.log(todate);
-    generalQuery("getqlsxplan2", {
-      PLAN_DATE: plan_date,
-      MACHINE: machine,
-      FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loadeddata = response.data.data.map(
-            (element: QLSXPLANDATA, index: number) => {
-              let temp_TCD1: number =
-                element.TON_CD1 === null ? 0 : element.TON_CD1;
-              let temp_TCD2: number =
-                element.TON_CD2 === null ? 0 : element.TON_CD2;
-              let temp_TCD3: number =
-                element.TON_CD3 === null ? 0 : element.TON_CD3;
-              let temp_TCD4: number =
-                element.TON_CD4 === null ? 0 : element.TON_CD4;
-              if (temp_TCD1 < 0) {
-                temp_TCD2 = temp_TCD2 - temp_TCD1;
-              }
-              if (temp_TCD2 < 0) {
-                temp_TCD3 = temp_TCD3 - temp_TCD2;
-              }
-              if (temp_TCD3 < 0) {
-                temp_TCD4 = temp_TCD4 - temp_TCD3;
-              }
-              return {
-                ...element,
-                ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
-                LOSS_KT: getCompany()==='CMS'? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                EQ_STATUS:
-                  element.EQ_STATUS === "B"
-                    ? "Đang setting"
-                    : element.EQ_STATUS === "M"
-                      ? "Đang Run"
-                      : element.EQ_STATUS === "K"
-                        ? "Chạy xong"
-                        : element.EQ_STATUS === "K"
-                          ? "KTST-KSX"
-                          : "Chưa chạy",
-                ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
-                CD1: element.CD1 === null ? 0 : element.CD1,
-                CD2: element.CD2 === null ? 0 : element.CD2,
-                CD3: element.CD3 === null ? 0 : element.CD3,
-                CD4: element.CD4 === null ? 0 : element.CD4,
-                TON_CD1: temp_TCD1,
-                TON_CD2: temp_TCD2,
-                TON_CD3: temp_TCD3,
-                TON_CD4: temp_TCD4,
-                SETTING_START_TIME:
-                  element.SETTING_START_TIME === null
-                    ? "X"
-                    : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
-                MASS_START_TIME:
-                  element.MASS_START_TIME === null
-                    ? "X"
-                    : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
-                MASS_END_TIME:
-                  element.MASS_END_TIME === null
-                    ? "X"
-                    : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
-                /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
-                  TON_CD2: element.TON_CD2 === null ? 0: element.TON_CD2,
-                  TON_CD3: element.TON_CD3 === null ? 0: element.TON_CD3,
-                  TON_CD4: element.TON_CD4 === null ? 0: element.TON_CD4, */
-                id: index,
-              };
-            }
-          );
-          //console.log(loadeddata);
-          let temp_plan_data: QLSXPLANDATA = {
-            id: -1,
-            PLAN_ID: "",
-            PLAN_DATE: "",
-            PROD_REQUEST_NO: "",
-            PLAN_QTY: 0,
-            PLAN_EQ: "",
-            PLAN_FACTORY: "",
-            PLAN_LEADTIME: 0,
-            INS_EMPL: "",
-            INS_DATE: "",
-            UPD_EMPL: "",
-            UPD_DATE: "",
-            G_CODE: "",
-            G_NAME: "",
-            G_NAME_KD: "",
-            PROD_REQUEST_DATE: "",
-            PROD_REQUEST_QTY: 0,
-            STEP: 0,
-            PLAN_ORDER: "",
-            PROCESS_NUMBER: 0,
-            KQ_SX_TAM: 0,
-            KETQUASX: 0,
-            ACHIVEMENT_RATE: 0,
-            CD1: 0,
-            CD2: 0,
-            TON_CD1: 0,
-            TON_CD2: 0,
-            FACTORY: "",
-            EQ1: "",
-            EQ2: "",
-            Setting1: 0,
-            Setting2: 0,
-            UPH1: 0,
-            UPH2: 0,
-            Step1: 0,
-            Step2: 0,
-            LOSS_SX1: 0,
-            LOSS_SX2: 0,
-            LOSS_SETTING1: 0,
-            LOSS_SETTING2: 0,
-            NOTE: "",
-            XUATDAOFILM: "",
-            EQ_STATUS: "",
-            MAIN_MATERIAL: "",
-            INT_TEM: "",
-            CHOTBC: "",
-            DKXL: "",
-            NEXT_PLAN_ID: "",
-            CD3: 0,
-            CD4: 0,
-            EQ3: "",
-            EQ4: "",
-            LOSS_SETTING3: 0,
-            LOSS_SETTING4: 0,
-            LOSS_SX3: 0,
-            LOSS_SX4: 0,
-            Setting3: 0,
-            Setting4: 0,
-            Step3: 0,
-            Step4: 0,
-            TON_CD3: 0,
-            TON_CD4: 0,
-            UPH3: 0,
-            UPH4: 0,
-            OLD_PLAN_QTY: 0,
-            ACC_TIME: 0,
-            AT_LEADTIME: 0,
-            CAVITY: 1,
-            MASS_END_TIME: '',
-            MASS_START_TIME: '',
-            PD: 1,
-            PDBV: 'N',
-            REQ_DF: 'R',
-            SETTING_START_TIME: ''
-          };
-          for (let i = 0; i < loadeddata.length; i++) {
-            temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
-            temp_plan_data.KETQUASX += loadeddata[i].KETQUASX;
-          }
-          temp_plan_data.ACHIVEMENT_RATE = (temp_plan_data.KETQUASX / temp_plan_data.PLAN_QTY) * 100;
-          setSummaryData(temp_plan_data);
-          setPlanDataTable(loadeddata);
-          datatbTotalRow.current = loadeddata.length;
-          setReadyRender(true);
-          setisLoading(false);
-          clearSelection();
-          clearSelectedRows();
-          if (!showhideM)
-            Swal.fire("Thông báo","Đã load: " + response.data.data.length + " dòng", "success");
-            f_updatePlanOrder(fromdate);
-        } else {
-          setPlanDataTable([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const loadQLSXPlan = async (plan_date: string) => {
+    let loadeddata: QLSXPLANDATA[] = [];
+    loadeddata = await f_loadQLSXPLANDATA(plan_date, machine, factory);
+    let temp_plan_data: QLSXPLANDATA = {
+      id: -1,
+      PLAN_ID: "",
+      PLAN_DATE: "",
+      PROD_REQUEST_NO: "",
+      PLAN_QTY: 0,
+      PLAN_EQ: "",
+      PLAN_FACTORY: "",
+      PLAN_LEADTIME: 0,
+      INS_EMPL: "",
+      INS_DATE: "",
+      UPD_EMPL: "",
+      UPD_DATE: "",
+      G_CODE: "",
+      G_NAME: "",
+      G_NAME_KD: "",
+      PROD_REQUEST_DATE: "",
+      PROD_REQUEST_QTY: 0,
+      STEP: 0,
+      PLAN_ORDER: "",
+      PROCESS_NUMBER: 0,
+      KQ_SX_TAM: 0,
+      KETQUASX: 0,
+      ACHIVEMENT_RATE: 0,
+      CD1: 0,
+      CD2: 0,
+      TON_CD1: 0,
+      TON_CD2: 0,
+      FACTORY: "",
+      EQ1: "",
+      EQ2: "",
+      Setting1: 0,
+      Setting2: 0,
+      UPH1: 0,
+      UPH2: 0,
+      Step1: 0,
+      Step2: 0,
+      LOSS_SX1: 0,
+      LOSS_SX2: 0,
+      LOSS_SETTING1: 0,
+      LOSS_SETTING2: 0,
+      NOTE: "",
+      XUATDAOFILM: "",
+      EQ_STATUS: "",
+      MAIN_MATERIAL: "",
+      INT_TEM: "",
+      CHOTBC: "",
+      DKXL: "",
+      NEXT_PLAN_ID: "",
+      CD3: 0,
+      CD4: 0,
+      EQ3: "",
+      EQ4: "",
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0,
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      Setting3: 0,
+      Setting4: 0,
+      Step3: 0,
+      Step4: 0,
+      TON_CD3: 0,
+      TON_CD4: 0,
+      UPH3: 0,
+      UPH4: 0,
+      OLD_PLAN_QTY: 0,
+      ACC_TIME: 0,
+      AT_LEADTIME: 0,
+      CAVITY: 1,
+      MASS_END_TIME: '',
+      MASS_START_TIME: '',
+      PD: 1,
+      PDBV: 'N',
+      REQ_DF: 'R',
+      SETTING_START_TIME: ''
+    };
+    for (let i = 0; i < loadeddata.length; i++) {
+      temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
+      temp_plan_data.KETQUASX += loadeddata[i].KETQUASX;
+    }
+    temp_plan_data.ACHIVEMENT_RATE = (temp_plan_data.KETQUASX / temp_plan_data.PLAN_QTY) * 100;
+    setSummaryData(temp_plan_data);
+    setPlanDataTable(loadeddata);
+
+    datatbTotalRow.current = loadeddata.length;
+    setReadyRender(true);
+    setisLoading(false);
+    clearSelection();
+    clearSelectedRows();
+    if (!showhideM)
+      Swal.fire("Thông báo", "Đã load: " + loadeddata.length + " dòng", "success");
+    f_updatePlanOrder(fromdate);
+
   };
   const handle_movePlan = async () => {
     if (qlsxplandatafilter.current.length > 0) {
@@ -2204,7 +2126,6 @@ const PLAN_DATATB = () => {
       loadQLSXPlan(fromdate);
     }
   };
-
   const handleClick = () => {
     if (myComponentRef.current) {
       //myComponentRef.current?.handleInternalClick();

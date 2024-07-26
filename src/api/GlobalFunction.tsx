@@ -1366,22 +1366,52 @@ export const f_updatePlanOrder = (plan_date: string) => {
       console.log(error);
     });
 }
-export const f_loadQLSXPLANDATA = async (plan_date: string) => {
+export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, factory: string) => {
   let planData: QLSXPLANDATA[] = [];
-  await generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
+  await generalQuery("getqlsxplan2", { PLAN_DATE: plan_date, MACHINE: machine, FACTORY: factory })
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
         let loadeddata = response.data.data.map(
           (element: QLSXPLANDATA, index: number) => {
+            let temp_TCD1: number =
+                element.TON_CD1 === null ? 0 : element.TON_CD1;
+              let temp_TCD2: number =
+                element.TON_CD2 === null ? 0 : element.TON_CD2;
+              let temp_TCD3: number =
+                element.TON_CD3 === null ? 0 : element.TON_CD3;
+              let temp_TCD4: number =
+                element.TON_CD4 === null ? 0 : element.TON_CD4;
+              if (temp_TCD1 < 0) {
+                temp_TCD2 = temp_TCD2 - temp_TCD1;
+              }
+              if (temp_TCD2 < 0) {
+                temp_TCD3 = temp_TCD3 - temp_TCD2;
+              }
+              if (temp_TCD3 < 0) {
+                temp_TCD4 = temp_TCD4 - temp_TCD3;
+              }
             return {
               ...element,
-              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-              PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-              ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
-              LOSS_KT: getCompany() === 'CMS' ? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
-              id: index,
+                ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
+                LOSS_KT: getCompany()==='CMS'? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+                EQ_STATUS: element.EQ_STATUS === "B"   ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
+                ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
+                CD1: element.CD1 === null ? 0 : element.CD1,
+                CD2: element.CD2 === null ? 0 : element.CD2,
+                CD3: element.CD3 === null ? 0 : element.CD3,
+                CD4: element.CD4 === null ? 0 : element.CD4,
+                TON_CD1: temp_TCD1,
+                TON_CD2: temp_TCD2,
+                TON_CD3: temp_TCD3,
+                TON_CD4: temp_TCD4,
+                SETTING_START_TIME: element.SETTING_START_TIME === null   ? "X"   : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
+                MASS_START_TIME: element.MASS_START_TIME === null   ? "X"   : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
+                MASS_END_TIME: element.MASS_END_TIME === null   ? "X"   : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),               
+                id: index,
             };
           }
         );
