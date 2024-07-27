@@ -144,8 +144,6 @@ const PLAN_DATATB = () => {
     USE_YN: 'XXX',
   };
   const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>(defaultPlan);
-  const [currentPlanPD, setCurrentPlanPD] = useState(0);
-  const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [showhideM, setShowHideM] = useState(false);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const clickedRow = useRef<any>(null);
@@ -1850,11 +1848,11 @@ const PLAN_DATATB = () => {
             </span>
             <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
               ___PD:
-              {currentPlanPD}
+              {selectedPlan.PD}
             </span>
             <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
               ___CAVITY:
-              {currentPlanCAVITY}
+              {selectedPlan.CAVITY}
             </span>
             <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
               ___PLAN_QTY:

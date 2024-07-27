@@ -6,7 +6,6 @@ import {
   MachineInterface,
   QLSXPLANDATA,
 } from "../../../../api/GlobalInterface";
-
 const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
   const runtopcolor: string = "#2fd5eb";
   const runbotcolor: string = "#8ce9f5";
@@ -20,39 +19,35 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
       );
     },
   );
-
   return (
     <div
       className="machine_component"
       style={{
-        backgroundImage: `linear-gradient(to right, ${
-          machine_data.run_stop === 1 ? runtopcolor : stoptopcolor
-        }, ${machine_data.run_stop === 1 ? runbotcolor : stopbotcolor})`,
+        backgroundImage: `linear-gradient(to right, ${machine_data.run_stop === 1 ? runtopcolor : stoptopcolor
+          }, ${machine_data.run_stop === 1 ? runbotcolor : stopbotcolor})`,
       }}
       onDoubleClick={machine_data.onClick}
     >
       <div
         className="tieude"
         style={{
-          backgroundColor: `${
-            machine_data.eq_status === "STOP"
+          backgroundColor: `${machine_data.eq_status === "STOP"
               ? "red"
               : machine_data.eq_status === "SETTING"
-              ? "yellow"
-              : `#50f73e`
-          }`,
+                ? "yellow"
+                : `#50f73e`
+            }`,
         }}
       >
         <div
           className="eqname"
           style={{
-            color: `${
-              machine_data.eq_status === "STOP"
+            color: `${machine_data.eq_status === "STOP"
                 ? "white"
                 : machine_data.eq_status === "SETTING"
-                ? "black"
-                : `black`
-            }`,
+                  ? "black"
+                  : `black`
+              }`,
           }}
         >
           {machine_data.machine_name === "ED36"
@@ -69,13 +64,12 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
           className="currentcode"
           style={{
             fontSize: 12,
-            color: `${
-              machine_data.eq_status === "STOP"
+            color: `${machine_data.eq_status === "STOP"
                 ? "white"
                 : machine_data.eq_status === "SETTING"
-                ? "black"
-                : `black`
-            }`,
+                  ? "black"
+                  : `black`
+              }`,
           }}
         >
           {machine_data.current_plan_id}_{machine_data.current_g_name}
@@ -104,5 +98,4 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
     </div>
   );
 };
-
 export default MACHINE_COMPONENT;

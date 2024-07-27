@@ -1622,7 +1622,7 @@ const MACHINE = () => {
     ));
   };
   const loadQLSXPlan = async (plan_date: string) => {
-    setPlanDataTable(await f_loadQLSXPLANDATA(plan_date,'ALL','ALL'));
+    setPlanDataTable(await f_loadQLSXPLANDATA(plan_date, 'ALL', 'ALL'));
   };
   const handletraYCSX = async () => {
     let ycsxData: YCSXTableData[] = [];
@@ -1870,7 +1870,7 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
     setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-    setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate,'ALL','ALL'));    
+    setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
   };
   function PlanTableAGToolbar() {
     return (
