@@ -16,9 +16,6 @@ import {
 import { Checkbox, IconButton } from "@mui/material";
 import { nFormatter, SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
-import WidgetRND from "../../../components/Widget/WidgetRND";
-import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
-import RNDNewCodeByProdType from "../../../components/Chart/RND/RNDNewCodeByProdType";
 import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
 import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";
 import SX_MonthlyLossTrend from "../../../components/Chart/SX/SX_MonthlyLossTrend";

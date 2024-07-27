@@ -1721,7 +1721,7 @@ const PLAN_DATATB = () => {
               </IconButton>
               <IconButton
                 className='buttonIcon'
-                onClick={() => {
+                onClick={async () => {
                   let ycsx_number: number = [
                     ...new Set(
                       qlsxplandatafilter.current.map(
@@ -1765,6 +1765,7 @@ const PLAN_DATATB = () => {
                           );
                         if (chithimain.length === 1) {
                           setShowChiThi2(true);
+                          await handle_UpdatePlan();
                           setChiThiListRender2(
                             renderChiThi2(qlsxplandatafilter.current, myComponentRef)
                           );
