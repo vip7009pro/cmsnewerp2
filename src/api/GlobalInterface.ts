@@ -3869,3 +3869,22 @@ export interface BOMSX_DATA {
   UPD_DATE: string;
   M_STOCK: number;
 }
+export interface PROD_OVER_DATA {
+  	AUTO_ID: number,
+    CUST_NAME_KD: string,
+    G_CODE:string,
+    G_NAME: string,
+    PROD_REQUEST_NO: string,
+    PLAN_ID: string,
+    OVER_QTY: number,
+    KD_CFM: string,
+    KD_EMPL_NO: string,
+    KD_CF_DATETIME: string,
+    HANDLE_STATUS: string,
+    INS_DATE: string,
+    INS_EMPL: string,
+    UPD_DATE: string,
+    UPD_EMPL: string,
+    KD_REMARK: string,
+    PROD_REQUEST_QTY: number
+}

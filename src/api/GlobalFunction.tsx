@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany, getUserData } from "./Api";
-import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -2491,3 +2491,59 @@ export const f_handle_movePlan = async (qlsxplandatafilter: QLSXPLANDATA[], toda
   return err_code;
 };
 
+// production over data
+export const f_loadProdOverData = async ()=> {
+  let kq: PROD_OVER_DATA[]= [];
+  await generalQuery("loadSampleMonitorTable", {
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: PROD_OVER_DATA, index: number) => {
+            return {
+              ...element,
+              KD_CF_DATETIME: element.KD_CF_DATETIME !== null? moment(element.KD_CF_DATETIME).format('YYYY-MM-DD'):'',
+              UPD_DATE: element.UPD_DATE !== null? moment(element.UPD_DATE).format('YYYY-MM-DD'):'',
+              INS_DATE: element.INS_DATE !== null? moment(element.INS_DATE).format('YYYY-MM-DD'):'',                
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;       
+        Swal.fire(
+          "Thông báo",
+          "Đã load: " + loadeddata.length + " dòng",
+          "success",
+        );
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+export const f_updateProdOverData = async (prod_over_data: PROD_OVER_DATA) => {
+  let err_code: string = "0";
+  await generalQuery("updateProdOverData", {      
+    AUTO_ID: prod_over_data.AUTO_ID,
+    KD_CFM: prod_over_data.KD_CFM
+  })    
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo','Update data thành công','success');
+      } else {
+        err_code = response.data.message;
+        Swal.fire('Thông báo','Update data thất bại','error');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return err_code;
+}
