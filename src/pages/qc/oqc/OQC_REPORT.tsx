@@ -351,7 +351,7 @@ const OQC_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className="graph">
-          <span className="section_title">2. PQC NG Trending</span>
+          <span className="section_title">2. OQC NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
