@@ -100,6 +100,7 @@ import Blank from "./components/Blank/Blank";
 import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
 import SX_REPORT from "./pages/sx/BAOCAOSX/SX_REPORT";
 import BCSX from "./pages/sx/BAOCAOSX/BCSX";
+import OVER_MONITOR from "./pages/kinhdoanh/over_prod_monitor/OVER_MONITOR";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -627,6 +628,7 @@ function App() {
                         <Route path='eqstatus' element={<EQ_STATUS />} />
                         <Route path='ins_status' element={<INSPECT_STATUS />} />
                         <Route path='shortage' element={<ShortageKD />} />
+                        <Route path='overmonitor' element={<OVER_MONITOR />} />
                       </Route>
                       <Route
                         path='rnd'

@@ -27,6 +27,7 @@ import {
   FaLongArrowAltRight,
   FaReact,
   FaProductHunt,
+  FaStackOverflow,
 } from "react-icons/fa";
 import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp } from "react-icons/bi";
 import {
@@ -261,7 +262,7 @@ const NavMenu = () => {
         {
           title: getlang("overmonitor", lang),
           path: "kinhdoanh/overmonitor",
-          icon: <FcInspection color="#cc00ff" size={15} />,
+          icon: <FaStackOverflow color="#db0c0c" size={15} />,
           MENU_CODE: "KD15",
           cName: "sub-nav",
         },
