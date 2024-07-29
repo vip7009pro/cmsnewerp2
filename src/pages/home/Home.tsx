@@ -72,6 +72,7 @@ import RND_REPORT from "../rnd/rnd_report/RND_REPORT";
 import Blank from "../../components/Blank/Blank";
 import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
 import BCSX from "../sx/BAOCAOSX/BCSX";
+import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
 export const current_ver: number = 426;
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -225,6 +226,11 @@ function Home() {
       MENU_CODE: "KD14",
       MENU_NAME: getlang("quanlygia", lang),
       MENU_ITEM: <QuotationTotal />,
+    },
+    {
+      MENU_CODE: "KD15",
+      MENU_NAME: getlang("ins_status", lang),
+      MENU_ITEM: <OVER_MONITOR />,
     },
     {
       MENU_CODE: "PU1",

@@ -259,6 +259,13 @@ const NavMenu = () => {
           cName: "sub-nav",
         },
         {
+          title: getlang("overmonitor", lang),
+          path: "kinhdoanh/overmonitor",
+          icon: <FcInspection color="#cc00ff" size={15} />,
+          MENU_CODE: "KD15",
+          cName: "sub-nav",
+        },
+        {
           title: getlang("baocao", lang),
           path: "/kinhdoanh/kinhdoanhreport",
           icon: <FcBullish size={15} />,
