@@ -2503,9 +2503,9 @@ export const f_loadProdOverData = async ()=> {
           (element: PROD_OVER_DATA, index: number) => {
             return {
               ...element,
-              KD_CF_DATETIME: element.KD_CF_DATETIME !== null? moment(element.KD_CF_DATETIME).format('YYYY-MM-DD HH:mm:ss'):'',
-              UPD_DATE: element.UPD_DATE !== null? moment(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
-              INS_DATE: element.INS_DATE !== null? moment(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'):'',                
+              KD_CF_DATETIME: element.KD_CF_DATETIME !== null? moment.utc(element.KD_CF_DATETIME).format('YYYY-MM-DD HH:mm:ss'):'',
+              UPD_DATE: element.UPD_DATE !== null? moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
+              INS_DATE: element.INS_DATE !== null? moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'):'',                
               id: index,
             };
           },
