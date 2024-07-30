@@ -2494,7 +2494,7 @@ export const f_handle_movePlan = async (qlsxplandatafilter: QLSXPLANDATA[], toda
 // production over data
 export const f_loadProdOverData = async ()=> {
   let kq: PROD_OVER_DATA[]= [];
-  await generalQuery("loadSampleMonitorTable", {
+  await generalQuery("loadProdOverData", {
   })
     .then((response) => {
       //console.log(response.data.data);
@@ -2503,9 +2503,9 @@ export const f_loadProdOverData = async ()=> {
           (element: PROD_OVER_DATA, index: number) => {
             return {
               ...element,
-              KD_CF_DATETIME: element.KD_CF_DATETIME !== null? moment(element.KD_CF_DATETIME).format('YYYY-MM-DD'):'',
-              UPD_DATE: element.UPD_DATE !== null? moment(element.UPD_DATE).format('YYYY-MM-DD'):'',
-              INS_DATE: element.INS_DATE !== null? moment(element.INS_DATE).format('YYYY-MM-DD'):'',                
+              KD_CF_DATETIME: element.KD_CF_DATETIME !== null? moment(element.KD_CF_DATETIME).format('YYYY-MM-DD HH:mm:ss'):'',
+              UPD_DATE: element.UPD_DATE !== null? moment(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
+              INS_DATE: element.INS_DATE !== null? moment(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'):'',                
               id: index,
             };
           },
@@ -2527,11 +2527,12 @@ export const f_loadProdOverData = async ()=> {
     });
     return kq;
 }
-export const f_updateProdOverData = async (prod_over_data: PROD_OVER_DATA) => {
+export const f_updateProdOverData = async (prod_over_data: PROD_OVER_DATA, KD_CFM_VALUE: string) => {
   let err_code: string = "0";
   await generalQuery("updateProdOverData", {      
     AUTO_ID: prod_over_data.AUTO_ID,
-    KD_CFM: prod_over_data.KD_CFM
+    KD_CFM: KD_CFM_VALUE,
+    KD_REMARK: prod_over_data.KD_REMARK
   })    
     .then((response) => {
       //console.log(response.data.data);

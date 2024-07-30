@@ -113,8 +113,7 @@ const SX_REPORT = () => {
       codeArray: df ? [] : listCode,
       CUST_NAME_KD: cust_name
     })
-      .then((response) => {
-        //
+      .then((response) => {        
         if (response.data.tk_status !== "NG") {
           const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map(
             (element: SX_TREND_LOSS_DATA, index: number) => {

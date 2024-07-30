@@ -3871,6 +3871,7 @@ export interface BOMSX_DATA {
 }
 export interface PROD_OVER_DATA {
   	AUTO_ID: number,
+    EMPL_NO: string,
     CUST_NAME_KD: string,
     G_CODE:string,
     G_NAME: string,
