@@ -2532,7 +2532,7 @@ export const f_updateProdOverData = async (prod_over_data: PROD_OVER_DATA, KD_CF
   await generalQuery("updateProdOverData", {      
     AUTO_ID: prod_over_data.AUTO_ID,
     KD_CFM: KD_CFM_VALUE,
-    KD_REMARK: prod_over_data.KD_REMARK
+    KD_REMARK: prod_over_data.KD_REMARK ?? ''
   })    
     .then((response) => {
       //console.log(response.data.data);
