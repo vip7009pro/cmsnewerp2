@@ -53,6 +53,7 @@ const OVER_MONITOR = () => {
     { field: 'CUST_NAME_KD', headerName: 'CUSTOMER', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'G_CODE', headerName: 'G_CODE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'G_NAME', headerName: 'G_NAME', width: 150, resizable: true, floatingFilter: true, filter: true, editable: false },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 150, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     { field: 'PLAN_ID', headerName: 'PLAN_ID', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
     {

@@ -10,6 +10,7 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import {
   LICHSUINPUTLIEU_DATA,
+  LICHSUNHAPKHOAO,
   LOSS_TABLE_DATA,
   MACHINE_LIST,
   SX_DATA,
@@ -53,6 +54,7 @@ const DATASX2 = () => {
     LICHSUINPUTLIEU_DATA[]
   >([]);
   const [showloss, setShowLoss] = useState(false);
+  const [khoaodata, setKhoAoData] = useState<LICHSUNHAPKHOAO[]>([]);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
     XUATKHO_MET: 0,
     XUATKHO_EA: 0,
@@ -2093,20 +2095,37 @@ const DATASX2 = () => {
     { field: 'EQ4', headerName: 'EQ4', resizable: true, width: 40 },
   ];
   const column_inputlieudatatable = [
-    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 80 },
-    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
-    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
     { field: 'INPUT_QTY', headerName: 'INPUT_QTY', resizable: true, width: 80 },
     { field: 'USED_QTY', headerName: 'USED_QTY', resizable: true, width: 80 },
     { field: 'REMAIN_QTY', headerName: 'REMAIN_QTY', resizable: true, width: 80 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 80 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80 },
     { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 80 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
     { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
     { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 80 },
-    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
     { field: 'EMPL_NO', headerName: 'EMPL_NO', resizable: true, width: 80 },
     { field: 'EQUIPMENT_CD', headerName: 'EQUIPMENT_CD', resizable: true, width: 80 },
     { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 80 },
+  ];
+  const column_nhapkhoaotable = [
+    { field: "USE_YN", headerName: "USE_YN", width: 40 },
+    { field: "PHANLOAI", headerName: "PL", width: 30 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 70 },
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_INPUT", width: 70 },
+    { field: "PLAN_ID_SUDUNG", headerName: "PLAN_SUDUNG", width: 80 },
+    { field: "TOTAL_IN_QTY", headerName: "INPUT_QTY", width: 70 },
+    { field: "IN_KHO_ID", headerName: "ID", width: 50 },
+    { field: "FACTORY", headerName: "FACTORY", width: 100 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 150 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 80 },
+    { field: "IN_QTY", headerName: "IN_QTY", width: 80 },
+    { field: "REMARK", headerName: "REMARK", width: 90 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
@@ -2165,11 +2184,45 @@ const DATASX2 = () => {
     ),
     [datasxtable],
   );
+  const load_nhapkhoao = async (M_LOT_NO: string) => {
+    await generalQuery("lichsunhapkhoao", {
+      FROM_DATE: '2022-01-01',
+      TO_DATE: moment().format("YYYY-MM-DD"),
+      FACTORY: 'ALL',
+      M_LOT_NO: M_LOT_NO
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: LICHSUNHAPKHOAO, index: number) => {
+              return {
+                ...element,
+                INS_DATE: moment
+                  .utc(element.INS_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setKhoAoData(loadeddata);
+         
+        } else {
+          setKhoAoData([]);         
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const datasx_lichsuxuatlieu2 = React.useMemo(
     () => (
       <AGTable
         toolbar={
           <div>
+            
           </div>}
         columns={column_inputlieudatatable}
         data={inputlieudatatable}
@@ -2177,12 +2230,34 @@ const DATASX2 = () => {
           //console.log(e.data)
         }} onRowClick={(e) => {
           //console.log(e.data)
+          load_nhapkhoao(e.data.M_LOT_NO)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
     ),
     [inputlieudatatable],
+  );
+  const datasx_lichsukhoao = React.useMemo(
+    () => (
+      <AGTable
+            toolbar={
+              <div>
+                
+              </div>
+            }
+            showFilter={true}
+            columns={column_nhapkhoaotable}
+            data={khoaodata}
+            onCellEditingStopped={(params: any) => {
+            }} onRowClick={(params: any) => {
+              //console.log(e.data)
+            }} onSelectionChange={(params: any) => {
+              console.log(params)
+              //tonkhoaodatafilter.current = params!.api.getSelectedRows();          
+            }} />
+    ),
+    [khoaodata],
   );
   const handle_loadlichsuinputlieu = (PLAN_ID: string) => {
     generalQuery("lichsuinputlieusanxuat_full", {
@@ -2904,10 +2979,11 @@ const DATASX2 = () => {
         <div className="tracuuYCSXTable">
           {selectbutton && <div className="chithi">
             {datasx_chithi2}
-          </div>}
+          </div>}          
           {selectbutton && <div className="lichsuxuatlieu">
             {datasx_lichsuxuatlieu2}
-          </div>}
+            {datasx_lichsukhoao}
+          </div>}         
           {!selectbutton && <div className="ycsx">
             {datasx_ycsx2}
           </div>}

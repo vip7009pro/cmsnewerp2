@@ -3875,6 +3875,7 @@ export interface PROD_OVER_DATA {
     CUST_NAME_KD: string,
     G_CODE:string,
     G_NAME: string,
+    G_NAME_KD: string,
     PROD_REQUEST_NO: string,
     PLAN_ID: string,
     OVER_QTY: number,
