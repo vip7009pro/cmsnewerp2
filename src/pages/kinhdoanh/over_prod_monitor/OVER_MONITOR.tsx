@@ -12,10 +12,11 @@ import { CustomCellRendererProps } from "ag-grid-react";
 import { checkBP, f_loadProdOverData, f_updateProdOverData } from "../../../api/GlobalFunction";
 import { AiFillCloseCircle } from "react-icons/ai";
 const OVER_MONITOR = () => {
+  const [only_pending, setOnly_Pending] = useState(true)
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, setData] = useState<Array<PROD_OVER_DATA>>([]);
   const loadProdOverData = async () => {
-    setData(await f_loadProdOverData());
+    setData(await f_loadProdOverData(only_pending));
   }
   const updateData = async (prod_over_data: PROD_OVER_DATA, updateValue: string) => {
     Swal.fire({
@@ -65,6 +66,20 @@ const OVER_MONITOR = () => {
       field: 'OVER_QTY', headerName: 'OVER_QTY', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
         return (
           <span style={{ color: 'red', fontWeight: 'bold' }}>{params.data.OVER_QTY?.toLocaleString('en-US')}</span>
+        )
+      }
+    },
+    {
+      field: 'PROD_LAST_PRICE', headerName: 'PRICE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+        return (
+          <span style={{ color: 'gray', fontWeight: 'bold' }}>{params.data.PROD_LAST_PRICE?.toLocaleString('en-US')}</span>
+        )
+      }
+    },
+    {
+      field: 'AMOUNT', headerName: 'AMOUNT', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
+        return (
+          <span style={{ color: '#7516c2', fontWeight: 'bold' }}>{params.data.AMOUNT?.toLocaleString('en-US',{style: "currency",currency:'USD'})}</span>
         )
       }
     },
@@ -166,7 +181,19 @@ const OVER_MONITOR = () => {
         showFilter={true}
         toolbar={
           <div className="headerform">
-            <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>PRODUCTION OVER MONITOR</span>
+            <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px'}}>
+              <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>PRODUCTION OVER MONITOR</span>
+              <label>
+                <span style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Only Pending</span>
+                <input
+                  className="checkbox1"
+                  type="checkbox"
+                  placeholder="Active"
+                  checked={only_pending}
+                  onChange={(e) => setOnly_Pending(e.target.checked)}
+                ></input>
+              </label>
+            </div>
             <IconButton
               className="buttonIcon"
               onClick={() => {

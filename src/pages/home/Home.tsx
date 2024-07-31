@@ -73,7 +73,7 @@ import Blank from "../../components/Blank/Blank";
 import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
 import BCSX from "../sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
-export const current_ver: number = 428;
+export const current_ver: number = 429;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;

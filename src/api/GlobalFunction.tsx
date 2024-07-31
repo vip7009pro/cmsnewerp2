@@ -2492,9 +2492,10 @@ export const f_handle_movePlan = async (qlsxplandatafilter: QLSXPLANDATA[], toda
 };
 
 // production over data
-export const f_loadProdOverData = async ()=> {
+export const f_loadProdOverData = async (only_pending: boolean)=> {
   let kq: PROD_OVER_DATA[]= [];
   await generalQuery("loadProdOverData", {
+    ONLY_PENDING: only_pending
   })
     .then((response) => {
       //console.log(response.data.data);
