@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany, getUserData } from "./Api";
-import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, LICHSUNHAPKHOAO, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -2549,3 +2549,29 @@ export const f_updateProdOverData = async (prod_over_data: PROD_OVER_DATA, KD_CF
     });
     return err_code;
 }
+export const f_load_nhapkhoao = async (filterData: any) => {
+  let kq: LICHSUNHAPKHOAO[] = [];
+  await generalQuery("lichsunhapkhoao", filterData)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: LICHSUNHAPKHOAO, index: number) => {
+            return {
+              ...element,
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;
+      } else {
+        kq =[];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+};

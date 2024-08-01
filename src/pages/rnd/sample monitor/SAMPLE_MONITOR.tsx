@@ -366,8 +366,7 @@ const SAMPLE_MONITOR = () => {
     } */},
     {
       headerName:'SAMPLE INFO',
-      children: [
-       
+      children: [       
         { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'CUST_NAME_KD', headerName: 'CUSTOMER', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'G_CODE', headerName: 'G_CODE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
