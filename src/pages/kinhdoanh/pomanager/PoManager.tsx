@@ -1317,6 +1317,175 @@ const PoManager = () => {
     { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
     { field: "REMARK", headerName: "REMARK", width: 110 },
   ];
+  const column_potable_cms = [
+    { field: "PO_ID", cellDataType: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
+    { field: "PO_NO", headerName: "PO_NO", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 120 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 70 },
+    { field: "PO_DATE", headerName: "PO_DATE", width: 70 },
+    { field: "RD_DATE", headerName: "RD_DATE", width: 70 },
+    /* {
+      field: "BEP",
+      cellDataType: "number",
+      headerName: "BEP",
+      width: 60,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#077abdFF" }}>
+            <b>
+              {params.data.BEP?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    }, */
+    {
+      field: "PROD_PRICE",
+      cellDataType: "number",
+      headerName: "PROD_PRICE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.data.PROD_PRICE?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_QTY",
+      cellDataType: "number",
+      headerName: "PO_QTY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_DELIVERED",
+      cellDataType: "number",
+      headerName: "TOTAL_DELIVERED",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.TOTAL_DELIVERED?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_BALANCE",
+      cellDataType: "number",
+      headerName: "PO_BALANCE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_BALANCE?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PO_AMOUNT",
+      cellDataType: "number",
+      headerName: "PO_AMOUNT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.PO_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_AMOUNT",
+      cellDataType: "number",
+      headerName: "DELIVERED_AMOUNT",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.DELIVERED_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BALANCE_AMOUNT",
+      cellDataType: "number",
+      headerName: "BALANCE_AMOUNT",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.BALANCE_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    /* {
+      field: "DELIVERED_BEP_AMOUNT",
+      cellDataType: "number",
+      headerName: "DELIVERED_BEP_AMOUNT",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#077abdFF" }}>
+            <b>
+              {params.data.DELIVERED_BEP_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    }, */
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 110 },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
+    { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
+    {
+      field: "PROD_MAIN_MATERIAL",
+      headerName: "PROD_MAIN_MATERIAL",
+      width: 110,
+    },
+    { field: "POMONTH", cellDataType: "number", headerName: "POMONTH", width: 80 },
+    { field: "POWEEKNUM", cellDataType: "number", headerName: "POWEEKNUM", width: 80 },
+    { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
+    { field: "REMARK", headerName: "REMARK", width: 110 },
+  ];
   const poDataAGTable = useMemo(() =>
     <AGTable
       showFilter={true}
@@ -1398,7 +1567,7 @@ const PoManager = () => {
           </IconButton>
         </div>
       }
-      columns={column_potable}
+      columns={getCompany()!=='CMS'?column_potable: column_potable_cms}
       data={podatatable}
       onCellEditingStopped={(params: any) => {
         //console.log(e.data)
