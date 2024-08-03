@@ -42,6 +42,7 @@ import {
   f_addQLSXPLAN,
   f_handle_xuatlieu_sample,
   f_handle_xuatdao_sample,
+  f_neededSXQtyByYCSX,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -60,6 +61,7 @@ import {
   QLSXPLANDATA,
   RecentDM,
   UserData,
+  YCSX_SLC_DATA,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
@@ -241,6 +243,27 @@ const MACHINE = () => {
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
+  const defaultSLCData: YCSX_SLC_DATA = {
+    PROD_REQUEST_NO: "XXX",
+    G_CODE: "XXX",
+    PD: 0,
+    CAVITY: 0,
+    LOSS_SX1: 0,
+    LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
+    LOSS_SETTING1: 0,
+    LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
+    LOSS_KT: 0,
+    PROD_REQUEST_QTY: 0,
+    SLC_CD1: 0,
+    SLC_CD2: 0,
+    SLC_CD3: 0,
+    SLC_CD4: 0
+  }
+  const [ycsxSLCData, setYCSXSLCDATA] = useState<YCSX_SLC_DATA>(defaultSLCData);
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const checkMaxLieu = () => {
@@ -1180,6 +1203,58 @@ const MACHINE = () => {
         return (
           <span style={{ color: "blue" }}>
             {params.data.PROD_REQUEST_QTY?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD1",
+      headerName: "SLC_CD1",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD1.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD2",
+      headerName: "SLC_CD2",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD3",
+      headerName: "SLC_CD3",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD4",
+      headerName: "SLC_CD4",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD4.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -2409,6 +2484,7 @@ const MACHINE = () => {
               if (params.column.colId !== 'IS_SETTING') {
                 setChiThiDataTable(await f_handleGetChiThiTable(rowData));
               }
+              setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
             }}
             onRowDoubleClicked={
               (params: any) => {
@@ -3149,6 +3225,21 @@ const MACHINE = () => {
                 <div className='planlist'>
                   {planDataTableAG}
                 </div>
+              </div>
+              <div className="soluongcandiv">
+                {(selectedPlan.EQ1 !=='NO' && selectedPlan.EQ1 !=='NA' )&&<div className="slcsub">
+                SLC1: {selectedPlan.SLC_CD1?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                </div>}
+                {(selectedPlan.EQ2 !=='NO' && selectedPlan.EQ2 !=='NA' )&&<div className="slcsub">
+                SLC2: {selectedPlan.SLC_CD2?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                </div>}
+                {(selectedPlan.EQ3 !=='NO' && selectedPlan.EQ3 !=='NA' )&&<div className="slcsub">
+                SLC3: {selectedPlan.SLC_CD3?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                </div>}
+                {(selectedPlan.EQ4 !=='NO' && selectedPlan.EQ4 !=='NA' )&&<div className="slcsub">
+                SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                </div>}
+                
               </div>
               <div className='datadinhmucto'>
                 <div className='datadinhmuc'>

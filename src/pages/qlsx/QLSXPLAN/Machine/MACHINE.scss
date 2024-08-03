@@ -553,6 +553,7 @@
               }
             }
           }
+
           .listchithi {
             display: flex;
             height: 44%;
@@ -659,6 +660,12 @@
               padding-right: 10px;
               font-size: 0.8rem;
             }
+          }
+          .soluongcandiv {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background-image: linear-gradient(0deg, #f2dfc8, #f07bec);
           }
           .datadinhmucto {
             display: flex;

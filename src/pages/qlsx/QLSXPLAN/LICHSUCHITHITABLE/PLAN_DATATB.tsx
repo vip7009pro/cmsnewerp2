@@ -753,6 +753,58 @@ const PLAN_DATATB = () => {
       },
     },
     {
+      field: "SLC_CD1",
+      headerName: "SLC_CD1",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD1.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD2",
+      headerName: "SLC_CD2",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD3",
+      headerName: "SLC_CD3",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD4",
+      headerName: "SLC_CD4",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD4.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
       field: "CD1",
       headerName: "CD1",
       width: 50,

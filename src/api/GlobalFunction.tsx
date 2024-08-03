@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany, getUserData } from "./Api";
-import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, LICHSUNHAPKHOAO, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, LICHSUNHAPKHOAO, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSX_SLC_DATA, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -1374,14 +1374,16 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
       if (response.data.tk_status !== "NG") {
         let loadeddata = response.data.data.map(
           (element: QLSXPLANDATA, index: number) => {
-            let temp_TCD1: number =
-              element.TON_CD1 === null ? 0 : element.TON_CD1;
-            let temp_TCD2: number =
-              element.TON_CD2 === null ? 0 : element.TON_CD2;
-            let temp_TCD3: number =
-              element.TON_CD3 === null ? 0 : element.TON_CD3;
-            let temp_TCD4: number =
-              element.TON_CD4 === null ? 0 : element.TON_CD4;
+            let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1*element.LOSS_SX2 + element.LOSS_SX1*element.LOSS_SX3 + element.LOSS_SX1*element.LOSS_SX4 + element.LOSS_SX1*(element.LOSS_KT??0))*1.0/10000;
+            let DU2: number = element.PROD_REQUEST_QTY * (element.LOSS_SX2*element.LOSS_SX3 + element.LOSS_SX2*element.LOSS_SX4 + element.LOSS_SX2*(element.LOSS_KT??0))*1.0/10000;
+            let DU3: number = element.PROD_REQUEST_QTY * (element.LOSS_SX3*element.LOSS_SX4 + element.LOSS_SX3*(element.LOSS_KT??0))*1.0/10000;
+            let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4*(element.LOSS_KT??0))*1.0/10000;
+            
+            let temp_TCD1: number = (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0) - element.CD1-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100));
+            let temp_TCD2: number = (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0) - element.CD2-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100));
+            let temp_TCD3: number = (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0) - element.CD3-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100));
+            let temp_TCD4: number = (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0) - element.CD4-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100));  
+
             if (temp_TCD1 < 0) {
               temp_TCD2 = temp_TCD2 - temp_TCD1;
             }
@@ -1400,17 +1402,22 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
               PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               EQ_STATUS: element.EQ_STATUS === "B" ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
               ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
-              CD1: element.CD1 === null ? 0 : element.CD1,
-              CD2: element.CD2 === null ? 0 : element.CD2,
-              CD3: element.CD3 === null ? 0 : element.CD3,
-              CD4: element.CD4 === null ? 0 : element.CD4,
-              TON_CD1: temp_TCD1,
-              TON_CD2: temp_TCD2,
-              TON_CD3: temp_TCD3,
-              TON_CD4: temp_TCD4,
+              SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
+              SLC_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0)-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100)),
+              SLC_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0)-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100)),
+              SLC_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0)-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100)),
+              CD1: element.CD1??0,
+              CD2: element.CD2??0,
+              CD3: element.CD3??0,
+              CD4: element.CD4??0,
+              TON_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 :temp_TCD1,
+              TON_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 :temp_TCD2,
+              TON_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 :temp_TCD3,
+              TON_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 :temp_TCD4,
               SETTING_START_TIME: element.SETTING_START_TIME === null ? "X" : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
               MASS_START_TIME: element.MASS_START_TIME === null ? "X" : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
               MASS_END_TIME: element.MASS_END_TIME === null ? "X" : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
+              CURRENT_SLC: element.PROCESS_NUMBER === 1 ? element.SLC_CD1 : element.PROCESS_NUMBER === 2 ? element.SLC_CD2 : element.PROCESS_NUMBER === 3 ?  element.SLC_CD3 : element.SLC_CD4,
               id: index,
             };
           }
@@ -1478,6 +1485,36 @@ export const f_getBOMSX = async (G_CODE: string) => {
   return bomsx;
 }
 export const f_calcMaterialMet = async (PLAN_QTY: number, PD: number, CAVITY: number, PROCESS_NUMBER: number, LOSS_SX1: number, LOSS_SX2: number, LOSS_SX3: number, LOSS_SX4: number, LOSS_SETTING1: number, LOSS_SETTING2: number, LOSS_SETTING3: number, LOSS_SETTING4: number, LOSS_KT: number, IS_SETTING: string) => {
+  let FINAL_LOSS_SX: number = 0, FINAL_LOSS_SETTING: number = 0, M_MET_NEEDED: number = 0;
+  let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
+  if (PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SX = (LOSS_SX1 ?? 0);
+  } else if (PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SX = (LOSS_SX2 ?? 0);
+  } else if (PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SX = (LOSS_SX3 ?? 0);
+  } else if (PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SX = (LOSS_SX4 ?? 0);
+  }
+  if (PROCESS_NUMBER === 1) {
+    FINAL_LOSS_SETTING = (calc_loss_setting ? LOSS_SETTING1 ?? 0 : 0);
+  } else if (PROCESS_NUMBER === 2) {
+    FINAL_LOSS_SETTING = (calc_loss_setting ? LOSS_SETTING2 ?? 0 : 0);
+  } else if (PROCESS_NUMBER === 3) {
+    FINAL_LOSS_SETTING = (calc_loss_setting ? LOSS_SETTING3 ?? 0 : 0);
+  } else if (PROCESS_NUMBER === 4) {
+    FINAL_LOSS_SETTING = (calc_loss_setting ? LOSS_SETTING4 ?? 0 : 0);
+  }
+  M_MET_NEEDED = ((PLAN_QTY ?? 0) * (PD ?? 0) * 1.0) / ((CAVITY ?? 0) * 1.0) / 1000;
+  M_MET_NEEDED = ((M_MET_NEEDED + (M_MET_NEEDED * FINAL_LOSS_SX) * 1.0 / 100 + FINAL_LOSS_SETTING))
+  console.log('PLAN_QTY',PLAN_QTY);
+  console.log('PD',PD);
+  console.log('CAVITY',CAVITY);
+  console.log('FINAL_LOSS_SX',FINAL_LOSS_SX)
+  console.log('FINAL_LOSS_SETTING',FINAL_LOSS_SETTING)
+  return M_MET_NEEDED;
+}
+export const f_calcMaterialMet2 = async (PLAN_QTY: number, PD: number, CAVITY: number, PROCESS_NUMBER: number, LOSS_SX1: number, LOSS_SX2: number, LOSS_SX3: number, LOSS_SX4: number, LOSS_SETTING1: number, LOSS_SETTING2: number, LOSS_SETTING3: number, LOSS_SETTING4: number, LOSS_KT: number, IS_SETTING: string) => {
   let FINAL_LOSS_SX: number = 0, FINAL_LOSS_SETTING: number = 0, M_MET_NEEDED: number = 0;
   let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
   if (PROCESS_NUMBER === 1) {
@@ -2576,3 +2613,32 @@ export const f_load_nhapkhoao = async (filterData: any) => {
     return kq;
 };
 
+export const f_neededSXQtyByYCSX = async(PROD_REQUEST_NO: string, G_CODE: string) => {
+  let kq: YCSX_SLC_DATA[]=[];
+  await generalQuery("neededSXQtyByYCSX", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+    G_CODE: G_CODE
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: YCSX_SLC_DATA, index: number) => {
+            return {
+              ...element,              
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;
+      } else {
+        kq =[];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+
+}
