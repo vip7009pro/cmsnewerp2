@@ -520,13 +520,13 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                     </td>
                   </tr>
                   <tr>
+                    <td>Tổng cần SX cho CĐ{DATA.PROCESS_NUMBER}</td>
+                    <td>{(DATA.PROCESS_NUMBER===1? DATA.SLC_CD1: DATA.PROCESS_NUMBER===2? DATA.SLC_CD2: DATA.PROCESS_NUMBER===3? DATA.SLC_CD3: DATA.SLC_CD4)?.toLocaleString('en-US')} EA</td>
+                  </tr>
+                  <tr style={{fontWeight:'bold'}}>
                     <td>Số lượng chỉ thị/지시 수량</td>
                     <td>{DATA.PLAN_QTY?.toLocaleString("en-US")} EA</td>
-                  </tr>
-                  <tr>
-                    <td>Số lượng cần sản xuất</td>
-                    <td>{request_codeinfo[0]?.NOTE} {(DATA.PLAN_QTY * (1 + lossSXByProcessNumber().FN_LOSS_SX / 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA</td>
-                  </tr>
+                  </tr>                  
                   <tr>
                     <td>P/D - Cavity</td>
                     <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")} {`${getCompany()==='CMS'? '': request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}
@@ -565,7 +565,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                   </tr>
                   <tr>
                     <td>Chú ý (QLSX)</td>
-                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1 + lossSXByProcessNumber().FN_LOSS_SX / 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA Cả loss)</td>
+                    <td>{request_codeinfo[0]?.NOTE}</td>
                   </tr>
                 </tbody>
               </table>
@@ -658,7 +658,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                               : ""}
                     </td>
                     <td>
-                      {DATA.PROCESS_NUMBER === 1
+                      {(DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.UPH1
                         : DATA.PROCESS_NUMBER === 2
                           ? request_codeinfo[0]?.UPH2
@@ -666,9 +666,9 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                             ? request_codeinfo[0]?.UPH3
                             : DATA.PROCESS_NUMBER === 4
                               ? request_codeinfo[0]?.UPH4
-                              : 0}
+                              : 0).toLocaleString('en-US')}
                       EA/h -{" "}
-                      {(DATA.PLAN_QTY /
+                      {((DATA.PLAN_QTY /
                         (DATA.PROCESS_NUMBER === 1
                           ? request_codeinfo[0]?.UPH1
                           : DATA.PROCESS_NUMBER === 2
@@ -678,7 +678,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                               : DATA.PROCESS_NUMBER === 4
                                 ? request_codeinfo[0]?.UPH4
                                 : 0)) *
-                        60}{" "}
+                        60).toLocaleString('en-US')}{" "}
                       minutes
                     </td>
                     <td>
@@ -693,7 +693,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                             ? request_codeinfo[0]?.LOSS_SETTING3
                             : DATA.PROCESS_NUMBER === 4
                               ? request_codeinfo[0]?.LOSS_SETTING4
-                              : ""}
+                              : ""} {" "}
                       met
                     </td>
                   </tr>

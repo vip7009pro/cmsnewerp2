@@ -440,13 +440,13 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   </td>
                 </tr>
                 <tr>
+                    <td>Tổng cần SX cho CĐ{main_plan.PROCESS_NUMBER}</td>
+                    <td>{(main_plan.PROCESS_NUMBER===1? main_plan.SLC_CD1: main_plan.PROCESS_NUMBER===2? main_plan.SLC_CD2: main_plan.PROCESS_NUMBER===3? main_plan.SLC_CD3: main_plan.SLC_CD4)?.toLocaleString('en-US')} EA</td>
+                  </tr>
+                <tr style={{fontWeight:'bold'}}>
                   <td>Số lượng chỉ thị/지시 수량</td>
                   <td>{main_plan.PLAN_QTY?.toLocaleString("en-US")} EA</td>
-                </tr>
-                <tr>
-                  <td>Số lượng cần sản xuất</td>
-                  <td>{((PLAN_LIST.find((ele: QLSXPLANDATA, index: number) => ele.STEP === 0)?.PLAN_QTY ?? 0) * (1 + lossSXByProcessNumber(PLAN_LIST.find((ele: QLSXPLANDATA, index: number) => ele.STEP === 0)).FN_LOSS_SX / 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}EA</td>
-                </tr>
+                </tr>                
                 <tr>
                   <td>PD/Cavity</td>                  
                     <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")} {`${getCompany()==='CMS'? '': request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}</td>
@@ -484,7 +484,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                 </tr>
                 <tr>
                   <td>Chú ý (QLSX)</td>
-                  <td>({((PLAN_LIST.find((ele: QLSXPLANDATA, index: number) => ele.STEP === 0)?.PLAN_QTY ?? 0) * (1 + lossSXByProcessNumber(PLAN_LIST.find((ele: QLSXPLANDATA, index: number) => ele.STEP === 0)).FN_LOSS_SX / 100) + lossSXByProcessNumber().FN_LOSS_ST).toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })})EA</td>
+                  <td>{main_plan.NOTE}</td>
                 </tr>
               </tbody>
             </table>
