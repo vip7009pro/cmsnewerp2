@@ -2723,7 +2723,7 @@ const MACHINE = () => {
       </div>
       {selection.tab1 && (
         <div className='NM1'>
-          {eq_series.map((ele_series: string, index: number) => {
+          {eq_series.map((ele_series: string, index: number) => {          
             return (
               <div key={index}>
                 <span className='machine_title'>{ele_series}-NM1</span>
@@ -3228,16 +3228,16 @@ const MACHINE = () => {
               </div>
               <div className="soluongcandiv">
                 {(selectedPlan.EQ1 !=='NO' && selectedPlan.EQ1 !=='NA' )&&<div className="slcsub">
-                SLC1: {selectedPlan.SLC_CD1?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                SLC1: {selectedPlan.SLC_CD1?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
                 {(selectedPlan.EQ2 !=='NO' && selectedPlan.EQ2 !=='NA' )&&<div className="slcsub">
-                SLC2: {selectedPlan.SLC_CD2?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                SLC2: {selectedPlan.SLC_CD2?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
                 {(selectedPlan.EQ3 !=='NO' && selectedPlan.EQ3 !=='NA' )&&<div className="slcsub">
-                SLC3: {selectedPlan.SLC_CD3?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                SLC3: {selectedPlan.SLC_CD3?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
                 {(selectedPlan.EQ4 !=='NO' && selectedPlan.EQ4 !=='NA' )&&<div className="slcsub">
-                SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})}
+                SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
                 
               </div>
