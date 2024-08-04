@@ -411,6 +411,11 @@ export interface YCSXTableData {
   PROD_PRINT_TIMES?: number;
   G_C?: number;
   G_C_R?: number;
+  LOSS_KT?: number;
+  SLC_CD1?: number;
+  SLC_CD2?: number;
+  SLC_CD3?: number;
+  SLC_CD4?: number;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
@@ -1887,7 +1892,7 @@ export interface QLSXPLANDATA {
   SLC_CD2?: number;
   SLC_CD3?: number;
   SLC_CD4?: number;
-  CURRENT_SLC?: number;
+  CURRENT_SLC?: number
 }
 export interface QLSXCHITHIDATA {
   id: string;

@@ -760,7 +760,7 @@ const PLAN_DATATB = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            {params.data?.SLC_CD1.toLocaleString("en", "US")}
+            {params.data?.SLC_CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -773,7 +773,7 @@ const PLAN_DATATB = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            {params.data?.SLC_CD2.toLocaleString("en", "US")}
+            {params.data?.SLC_CD2?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -786,7 +786,7 @@ const PLAN_DATATB = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            {params.data?.SLC_CD3.toLocaleString("en", "US")}
+            {params.data?.SLC_CD3?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -799,7 +799,7 @@ const PLAN_DATATB = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            {params.data?.SLC_CD4.toLocaleString("en", "US")}
+            {params.data?.SLC_CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
