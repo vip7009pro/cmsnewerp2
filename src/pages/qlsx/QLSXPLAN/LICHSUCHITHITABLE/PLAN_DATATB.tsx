@@ -1813,26 +1813,21 @@ const PLAN_DATATB = () => {
                             (element: QLSXPLANDATA, index: number) =>
                               element.STEP === 0
                           );
-                        if (chithimain.length === 1) {                         
-                          
-                          if (userData?.EMPL_NO !== "NHU1903") 
-                          {
+                        if (chithimain.length === 1) {
+                          if (userData?.EMPL_NO !== "NHU1903") {
                             await handle_UpdatePlan();
                             setShowChiThi2(true);
                             setChiThiListRender2(
                               renderChiThi2(qlsxplandatafilter.current, myComponentRef)
                             );
                           }
-                          else
-                          {
+                          else {
                             await handle_UpdatePlan();
                             setShowChiThi2(true);
                             setChiThiListRender2(
                               renderChiThi2(qlsxplandatafilter.current, myComponentRef)
                             );
                           }
-
-                          
                         } else if (chithimain.length === 0) {
                           Swal.fire(
                             "Thông báo",
