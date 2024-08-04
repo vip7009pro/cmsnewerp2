@@ -442,8 +442,12 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                 <tr>
                     <td>Tổng cần SX cho CĐ{main_plan.PROCESS_NUMBER}</td>
                     <td>{(main_plan.PROCESS_NUMBER===1? main_plan.SLC_CD1: main_plan.PROCESS_NUMBER===2? main_plan.SLC_CD2: main_plan.PROCESS_NUMBER===3? main_plan.SLC_CD3: main_plan.SLC_CD4)?.toLocaleString('en-US')} EA</td>
+                </tr>
+                <tr>
+                    <td>Tồn chưa chạy:</td>
+                    <td> {(main_plan.PROCESS_NUMBER===1? main_plan.TON_CD1: main_plan.PROCESS_NUMBER===2? main_plan.TON_CD2: main_plan.PROCESS_NUMBER===3? main_plan.TON_CD3: main_plan.TON_CD4)?.toLocaleString('en-US')} EA</td>
                   </tr>
-                <tr style={{fontWeight:'bold'}}>
+                <tr style={{fontWeight:'bold', backgroundColor:'greenyellow'}}> 
                   <td>Số lượng chỉ thị/지시 수량</td>
                   <td>{main_plan.PLAN_QTY?.toLocaleString("en-US")} EA</td>
                 </tr>                

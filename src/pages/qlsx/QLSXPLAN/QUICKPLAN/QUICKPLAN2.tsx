@@ -1,53 +1,20 @@
-import React, {
-  ReactElement,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
+import React, { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import "./QUICKPLAN.scss";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getGlobalSetting, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
-import { UserContext } from "../../../../api/Context";
+import { DataGrid, GridSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
+import { Button, IconButton, LinearProgress } from "@mui/material";
 import {
-  DataGrid,
-  GridAddIcon,
-  GridCallbackDetails,
-  GridCellEditCommitParams,
-  GridEventListener,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-  MuiBaseEvent,
-  MuiEvent,
-} from "@mui/x-data-grid";
-import {
-  Alert,
-  Button,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  AiFillAmazonCircle,
-  AiFillEdit,
-  AiFillFileAdd,
   AiFillFileExcel,
   AiFillFolderAdd,
   AiFillSave,
-  AiOutlineBarcode,
-  AiOutlineCaretRight,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
-  AiOutlineRollback,
-  AiOutlineSave,
 } from "react-icons/ai";
-import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
-import { FaArrowRight, FaWarehouse } from "react-icons/fa";
-import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
+import { MdOutlinePendingActions } from "react-icons/md";
+import { FaArrowRight } from "react-icons/fa";
+import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
   f_getRecentDMData,
@@ -60,11 +27,10 @@ import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComp
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
-import { BiRefresh, BiReset, BiShow } from "react-icons/bi";
+import { BiShow } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import axios from "axios";
 import {
   DINHMUC_QSLX,
   MACHINE_LIST,
@@ -80,8 +46,6 @@ const QUICKPLAN2 = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([]);
-  const [currentPlanPD, setCurrentPlanPD] = useState(0);
-  const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -118,9 +82,6 @@ const QUICKPLAN2 = () => {
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
-  const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
-  const [showplanwindow, setShowPlanWindow] = useState(false);
-  const [showkhoao, setShowKhoAo] = useState(false);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -148,14 +109,12 @@ const QUICKPLAN2 = () => {
     useState<Array<ReactElement>>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedCode, setSelectedCode] = useState("CODE: ");
-  const [selectedG_Code, setSelectedG_Code] = useState("");
   const selectedPlan = useRef<QLSXPLANDATA>();
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [temp_id, setTemID] = useState(0);
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
-  const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
@@ -1613,7 +1572,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
           }); 
-          err_code = await f_saveQLSX({
+          err_code = (await f_saveQLSX({
             G_CODE: selectedPlan.current?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1641,7 +1600,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          }) ? "0" : "1";
+          })) ? "0" : "1";
           if (err_code === "1") {
             Swal.fire(
               "Thông báo",

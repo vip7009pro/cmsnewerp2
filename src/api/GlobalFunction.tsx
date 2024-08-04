@@ -900,7 +900,7 @@ export const f_getCurrentDMToSave = async (planData: QLSXPLANDATA) => {
   }
   NEEDED_QTY = NEEDED_QTY * (100 + FINAL_LOSS_SX + FINAL_LOSS_KT) / 100 + FINAL_LOSS_SETTING / PD * CAVITY * 1000;
   return {
-    NEEDED_QTY: Math.round(NEEDED_QTY),
+    NEEDED_QTY: planData.PLAN_QTY /* Math.round(NEEDED_QTY) */,
     FINAL_LOSS_SX: FINAL_LOSS_SX,
     FINAL_LOSS_KT: planData.LOSS_KT,
     FINAL_LOSS_SETTING: FINAL_LOSS_SETTING

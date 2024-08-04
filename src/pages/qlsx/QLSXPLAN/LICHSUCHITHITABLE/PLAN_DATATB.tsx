@@ -1821,8 +1821,7 @@ const PLAN_DATATB = () => {
                               renderChiThi2(qlsxplandatafilter.current, myComponentRef)
                             );
                           }
-                          else {
-                            await handle_UpdatePlan();
+                          else {                            
                             setShowChiThi2(true);
                             setChiThiListRender2(
                               renderChiThi2(qlsxplandatafilter.current, myComponentRef)

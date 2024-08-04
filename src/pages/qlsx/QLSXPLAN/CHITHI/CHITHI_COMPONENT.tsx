@@ -523,7 +523,11 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                     <td>Tổng cần SX cho CĐ{DATA.PROCESS_NUMBER}</td>
                     <td>{(DATA.PROCESS_NUMBER===1? DATA.SLC_CD1: DATA.PROCESS_NUMBER===2? DATA.SLC_CD2: DATA.PROCESS_NUMBER===3? DATA.SLC_CD3: DATA.SLC_CD4)?.toLocaleString('en-US')} EA</td>
                   </tr>
-                  <tr style={{fontWeight:'bold'}}>
+                  <tr>
+                    <td>Tồn chưa chạy:</td>
+                    <td> {(DATA.PROCESS_NUMBER===1? DATA.TON_CD1: DATA.PROCESS_NUMBER===2? DATA.TON_CD2: DATA.PROCESS_NUMBER===3? DATA.TON_CD3: DATA.TON_CD4)?.toLocaleString('en-US')} EA</td>
+                  </tr>
+                  <tr style={{fontWeight:'bold', backgroundColor:'greenyellow'}}>
                     <td>Số lượng chỉ thị/지시 수량</td>
                     <td>{DATA.PLAN_QTY?.toLocaleString("en-US")} EA</td>
                   </tr>                  
