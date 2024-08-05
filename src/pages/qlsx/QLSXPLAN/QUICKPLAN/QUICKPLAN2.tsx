@@ -1956,10 +1956,10 @@ const QUICKPLAN2 = () => {
                 if (keyvar === "PLAN_EQ") {
                   if (params.value.length === 4) {
                     let plan_temp = params.value.substring(0, 2);
-                    let UPH1: number = p.UPH1 === null ? 999999999 : p.UPH1;
-                    let UPH2: number = p.UPH2 === null ? 999999999 : p.UPH2;
-                    let UPH3: number = p.UPH3 === null ? 999999999 : p.UPH3;
-                    let UPH4: number = p.UPH4 === null ? 999999999 : p.UPH4;
+                    let UPH1: number = p.UPH1 ?? 999999999;
+                    let UPH2: number = p.UPH2 ?? 999999999;
+                    let UPH3: number = p.UPH3 ?? 999999999;
+                    let UPH4: number = p.UPH4 ?? 999999999;
                     if (plan_temp === p.EQ1) {
                       return {
                         ...p,
