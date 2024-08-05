@@ -932,7 +932,7 @@ export const f_saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
     4 &&
     planToSave?.PLAN_QTY !== 0 &&
     planToSave?.PLAN_QTY <=
-    planToSave?.PROD_REQUEST_QTY &&
+    (planToSave?.CURRENT_SLC ?? 0) &&
     planToSave?.PLAN_ID !==
     planToSave?.NEXT_PLAN_ID &&
     planToSave?.CHOTBC !== "V" &&
@@ -979,7 +979,7 @@ export const f_saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
       err_code += "_: Số lượng chỉ thị =0";
     } else if (
       planToSave?.PLAN_QTY >
-      planToSave?.PROD_REQUEST_QTY
+      (planToSave?.CURRENT_SLC ?? 0)
     ) {
       err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
     } else if (
@@ -1274,7 +1274,7 @@ export const f_updateBatchPlan = async (planArray: any) => {
       parseInt(planArray[i].PROCESS_NUMBER.toString()) <= 4 &&
       planArray[i].PLAN_QTY !== 0 &&
       planArray[i].PLAN_QTY <=
-      planArray[i].PROD_REQUEST_QTY &&
+      planArray[i].CURRENT_SLC &&
       planArray[i].PLAN_ID !== planArray[i].NEXT_PLAN_ID &&
       planArray[i].CHOTBC !== "V" &&
       check_NEXT_PLAN_ID &&
@@ -1317,7 +1317,7 @@ export const f_updateBatchPlan = async (planArray: any) => {
       } else if (planArray[i].PLAN_QTY === 0) {
         err_code += "_: Số lượng chỉ thị =0";
       } else if (
-        planArray[i].PLAN_QTY > planArray[i].PROD_REQUEST_QTY
+        planArray[i].PLAN_QTY > planArray[i].CURRENT_SLC
       ) {
         err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
       } else if (
@@ -1374,10 +1374,14 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
       if (response.data.tk_status !== "NG") {
         let loadeddata = response.data.data.map(
           (element: QLSXPLANDATA, index: number) => {
-            let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1*element.LOSS_SX2 + element.LOSS_SX1*element.LOSS_SX3 + element.LOSS_SX1*element.LOSS_SX4 + element.LOSS_SX1*(element.LOSS_KT??0))*1.0/10000;
+            /* let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1*element.LOSS_SX2 + element.LOSS_SX1*element.LOSS_SX3 + element.LOSS_SX1*element.LOSS_SX4 + element.LOSS_SX1*(element.LOSS_KT??0))*1.0/10000;
             let DU2: number = element.PROD_REQUEST_QTY * (element.LOSS_SX2*element.LOSS_SX3 + element.LOSS_SX2*element.LOSS_SX4 + element.LOSS_SX2*(element.LOSS_KT??0))*1.0/10000;
             let DU3: number = element.PROD_REQUEST_QTY * (element.LOSS_SX3*element.LOSS_SX4 + element.LOSS_SX3*(element.LOSS_KT??0))*1.0/10000;
-            let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4*(element.LOSS_KT??0))*1.0/10000;
+            let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4*(element.LOSS_KT??0))*1.0/10000; */
+            let DU1: number = 0;
+            let DU2: number = 0;
+            let DU3: number = 0;
+            let DU4: number = 0;
             
             let temp_TCD1: number = (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0) - element.CD1-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100));
             let temp_TCD2: number = (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0) - element.CD2-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100));

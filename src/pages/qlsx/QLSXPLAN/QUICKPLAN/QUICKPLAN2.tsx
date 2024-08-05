@@ -633,59 +633,7 @@ const QUICKPLAN2 = () => {
           </span>
         );
       },
-    },
-    {
-      field: "SLC_CD1",
-      headerName: "SLC_CD1",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            {params.data?.SLC_CD1?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD2",
-      headerName: "SLC_CD2",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            {params.data?.SLC_CD2?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD3",
-      headerName: "SLC_CD3",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            {params.data?.SLC_CD3?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD4",
-      headerName: "SLC_CD4",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            {params.data?.SLC_CD4?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
+    },    
     {
       field: "CD1",
       headerName: "CD1",
@@ -892,6 +840,58 @@ const QUICKPLAN2 = () => {
       headerName: "NEXT_PLAN_ID",
       width: 120,
       editable: true,
+    },
+    {
+      field: "SLC_CD1",
+      headerName: "SLC_CD1",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD1?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD2",
+      headerName: "SLC_CD2",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD3",
+      headerName: "SLC_CD3",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD4",
+      headerName: "SLC_CD4",
+      width: 70,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            {params.data?.SLC_CD4?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
     },
   ];
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
@@ -1455,7 +1455,7 @@ const QUICKPLAN2 = () => {
             parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <= 4) &&
           qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
           qlsxplandatafilter.current[i].PLAN_QTY <=
-          qlsxplandatafilter.current[i].PROD_REQUEST_QTY &&
+          (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0) &&
           qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "" &&
           (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
@@ -1891,7 +1891,7 @@ const QUICKPLAN2 = () => {
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
-                      CD4: temp_ycsx_data[0].CD4,
+                      CD4: temp_ycsx_data[0].CD4,                      
                       SLC_CD1: temp_ycsx_data[0].SLC_CD1,
                       SLC_CD2: temp_ycsx_data[0].SLC_CD2,
                       SLC_CD3: temp_ycsx_data[0].SLC_CD3,
@@ -1965,6 +1965,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 1,
+                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD1,
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -1985,6 +1986,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 2,
+                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD2,
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -2005,6 +2007,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 3,
+                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD3,
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -2025,6 +2028,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 2,
+                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD4,
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
