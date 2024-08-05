@@ -792,55 +792,6 @@ const QUICKPLAN2 = () => {
       width: 60,
       editable: editplan,
     },
-    { field: "EQ1", headerName: "EQ1", width: 50, editable: editplan },
-    { field: "EQ2", headerName: "EQ2", width: 50, editable: editplan },
-    { field: "EQ3", headerName: "EQ3", width: 50, editable: editplan },
-    { field: "EQ4", headerName: "EQ4", width: 50, editable: editplan },
-    
-    { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
-    {
-      field: "IS_SETTING",
-      headerName: "IS_SETTING",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <input
-            type='checkbox'
-            name='alltimecheckbox'
-            defaultChecked={params.data.IS_SETTING === 'Y'}
-            onChange={(value) => {
-              //console.log(value);
-              const newdata = plandatatable.map((p) =>
-                p.PLAN_ID === params.data.PLAN_ID
-                  ? { ...p, IS_SETTING: params.data.IS_SETTING === 'Y' ? 'N' : 'Y' }
-                  : p
-              );
-              setPlanDataTable(newdata);
-              qlsxplandatafilter.current = [];
-            }}
-          ></input>
-        )
-      },
-      editable: false,
-    },
-    {
-      field: "PLAN_FACTORY",
-      headerName: "NM",
-      width: 50,
-      editable: false,
-    },
-    {
-      field: "PLAN_DATE",
-      headerName: "PLAN_DATE",
-      width: 110,
-      editable: false,
-    },
-    {
-      field: "NEXT_PLAN_ID",
-      headerName: "NEXT_PLAN_ID",
-      width: 120,
-      editable: true,
-    },
     {
       field: "SLC_CD1",
       headerName: "SLC_CD1",
@@ -893,6 +844,55 @@ const QUICKPLAN2 = () => {
         );
       },
     },
+    { field: "EQ1", headerName: "EQ1", width: 50, editable: editplan },
+    { field: "EQ2", headerName: "EQ2", width: 50, editable: editplan },
+    { field: "EQ3", headerName: "EQ3", width: 50, editable: editplan },
+    { field: "EQ4", headerName: "EQ4", width: 50, editable: editplan },
+    
+    { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
+    {
+      field: "IS_SETTING",
+      headerName: "IS_SETTING",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <input
+            type='checkbox'
+            name='alltimecheckbox'
+            defaultChecked={params.data.IS_SETTING === 'Y'}
+            onChange={(value) => {
+              //console.log(value);
+              const newdata = plandatatable.map((p) =>
+                p.PLAN_ID === params.data.PLAN_ID
+                  ? { ...p, IS_SETTING: params.data.IS_SETTING === 'Y' ? 'N' : 'Y' }
+                  : p
+              );
+              setPlanDataTable(newdata);
+              qlsxplandatafilter.current = [];
+            }}
+          ></input>
+        )
+      },
+      editable: false,
+    },
+    {
+      field: "PLAN_FACTORY",
+      headerName: "NM",
+      width: 50,
+      editable: false,
+    },
+    {
+      field: "PLAN_DATE",
+      headerName: "PLAN_DATE",
+      width: 110,
+      editable: false,
+    },
+    {
+      field: "NEXT_PLAN_ID",
+      headerName: "NEXT_PLAN_ID",
+      width: 120,
+      editable: true,
+    },    
   ];
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
@@ -1876,7 +1876,7 @@ const QUICKPLAN2 = () => {
           if (keyvar === "PROD_REQUEST_NO") {
             temp_ycsx_data = await get1YCSXDATA(params.value);
             //console.log('temp_ycsx_data',temp_ycsx_data)
-            const newdata = plandatatable.map((p) => {
+            const newdata: QLSXPLANDATA[] = plandatatable.map((p) => {
               if (p.PLAN_ID === params.data.PLAN_ID) {
                 if (keyvar === "PROD_REQUEST_NO") {
                   //console.log(keyvar);
@@ -1888,6 +1888,8 @@ const QUICKPLAN2 = () => {
                       G_NAME: temp_ycsx_data[0].G_NAME,
                       G_NAME_KD: temp_ycsx_data[0].G_NAME_KD,
                       PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
+                      CURRENT_SLC: (temp_ycsx_data[0].SLC_CD1 ?? 0),
+                      PLAN_QTY:  temp_ycsx_data[0].TON_CD1 <= 0 ? 0: temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor ? temp_ycsx_data[0].TON_CD1 : temp_ycsx_data[0].UPH1 * qtyFactor,
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
@@ -1944,106 +1946,15 @@ const QUICKPLAN2 = () => {
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
             //console.table(newdata)
             setPlanDataTable(newdata);
-          } else if (keyvar === "PLAN_EQ") {
-            let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
-              (element) => element.PLAN_ID === params.data.PLAN_ID,
-            )?.PROD_REQUEST_NO;
-            if (current_PROD_REQUEST_NO !== undefined) {
-              temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
-            }
-            const newdata = plandatatable.map((p) => {
-              if (p.PLAN_ID === params.data.PLAN_ID) {
+          } else if (keyvar === "PLAN_EQ") {            
+            const newdata: QLSXPLANDATA[]= plandatatable.map((p) => {
+              if (p.PLAN_ID === params.id) {
                 if (keyvar === "PLAN_EQ") {
                   if (params.value.length === 4) {
-                    let plan_temp = params.value.substring(0, 2);
-                    let UPH1: number = p.UPH1 ?? 999999999;
-                    let UPH2: number = p.UPH2 ?? 999999999;
-                    let UPH3: number = p.UPH3 ?? 999999999;
-                    let UPH4: number = p.UPH4 ?? 999999999;
-                    if (plan_temp === p.EQ1) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 1,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD1,
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD1 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD1 < UPH1 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD1
-                              : UPH1 * qtyFactor,
-                      };
-                    } else if (plan_temp === p.EQ2) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 2,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD2,
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD2 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD2 < UPH2 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD2
-                              : UPH2 * qtyFactor,
-                      };
-                    } else if (plan_temp === p.EQ3) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 3,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD3,
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD3 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD3 < UPH3 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD3
-                              : UPH3 * qtyFactor,
-                      };
-                    } else if (plan_temp === p.EQ4) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 2,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD4,
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD4 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD4 < UPH4 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD4
-                              : UPH4 * qtyFactor,
-                      };
+                    let plan_temp = params.value.substring(0, 2);                    
+                    if (plan_temp === p.EQ1 || plan_temp === p.EQ2 || plan_temp === p.EQ3 || plan_temp === p.EQ4) {
+                      return { ...p, [keyvar]: params.value };
+                      
                     } else {
                       Swal.fire(
                         "Thông báo",
@@ -2066,7 +1977,56 @@ const QUICKPLAN2 = () => {
             });
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
             setPlanDataTable(newdata);
-          } else {
+          }  else if (keyvar === "PROCESS_NUMBER") {   
+            let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
+              (element) => element.PLAN_ID === params.data.PLAN_ID,
+            )?.PROD_REQUEST_NO;
+            if (current_PROD_REQUEST_NO !== undefined) {
+              temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
+            }
+            const newdata = plandatatable.map((p) => {
+              if (p.PLAN_ID === params.data.PLAN_ID) {
+                if (keyvar === "PROCESS_NUMBER") {
+                  let prnb: number = p.PROCESS_NUMBER;
+                  if (prnb<=4 && prnb>=1) {                    
+                    let UPH1: number = p.UPH1 ?? 999999999;
+                    let UPH2: number = p.UPH2 ?? 999999999;
+                    let UPH3: number = p.UPH3 ?? 999999999;
+                    let UPH4: number = p.UPH4 ?? 999999999;
+                    let UPH: number  = prnb === 1? UPH1 : prnb === 2? UPH2 : prnb === 3? UPH3 : UPH4;
+                    let TON: number = prnb === 1? (temp_ycsx_data[0].TON_CD1 ?? 0) : prnb === 2? (temp_ycsx_data[0].TON_CD2 ?? 0) : prnb === 3? (temp_ycsx_data[0].TON_CD3 ?? 0) : (temp_ycsx_data[0].TON_CD4 ?? 0);
+                    let SLC: number = prnb === 1? (temp_ycsx_data[0].SLC_CD1 ?? 0) : prnb === 2? (temp_ycsx_data[0].SLC_CD2 ?? 0) : prnb === 3? (temp_ycsx_data[0].SLC_CD3 ?? 0) : (temp_ycsx_data[0].SLC_CD4 ?? 0);                    
+                    return {
+                      ...p,
+                      [keyvar]: params.value,                     
+                      CURRENT_SLC: SLC,
+                      CD1: temp_ycsx_data[0].CD1,
+                      CD2: temp_ycsx_data[0].CD2,
+                      CD3: temp_ycsx_data[0].CD3,
+                      CD4: temp_ycsx_data[0].CD4,
+                      TON_CD1: temp_ycsx_data[0].TON_CD1,
+                      TON_CD2: temp_ycsx_data[0].TON_CD2,
+                      TON_CD3: temp_ycsx_data[0].TON_CD3,
+                      TON_CD4: temp_ycsx_data[0].TON_CD4,
+                      PLAN_QTY:TON <= 0 ? 0: TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
+                    };
+                  } else {
+                    Swal.fire("Thông báo", "Nhập máy không đúng", "error");
+                    return { ...p, [keyvar]: "" };
+                  }
+                } else {
+                  console.log(keyvar);
+                  return { ...p, [keyvar]: params.value };
+                }
+              } else {
+                return p;
+              }
+            });
+            localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
+            setPlanDataTable(newdata);         
+
+          }
+          else {
             const newdata = plandatatable.map((p) => {
               if (p.PLAN_ID === params.id) {
                 return { ...p, [keyvar]: params.value };
