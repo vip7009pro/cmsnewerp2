@@ -3,8 +3,8 @@ import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
-import { generalQuery, getAuditMode, getCompany, getUserData } from "./Api";
-import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, LICHSUNHAPKHOAO, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, YCSX_SLC_DATA, YCSXTableData } from "./GlobalInterface";
+import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData } from "./Api";
+import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, InvoiceTableData, LICHSUNHAPKHOAO, MACHINE_LIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -1775,6 +1775,26 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
         //console.log(response.data.data);
         const loadeddata: YCSXTableData[] = response.data.data.map(
           (element: YCSXTableData, index: number) => {
+            let DU1: number = 0;
+            let DU2: number = 0;
+            let DU3: number = 0;
+            let DU4: number = 0;
+            
+            let temp_TCD1: number = (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0) - element.CD1-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100));
+            let temp_TCD2: number = (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0) - element.CD2-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100));
+            let temp_TCD3: number = (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0) - element.CD3-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100));
+            let temp_TCD4: number = (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0) - element.CD4-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100));  
+
+            if (temp_TCD1 < 0) {
+              temp_TCD2 = temp_TCD2 - temp_TCD1;
+            }
+            if (temp_TCD2 < 0) {
+              temp_TCD3 = temp_TCD3 - temp_TCD2;
+            }
+            if (temp_TCD3 < 0) {
+              temp_TCD4 = temp_TCD4 - temp_TCD3;
+            }
+
             return {
               ...element,
               G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
@@ -1795,6 +1815,14 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
               W7: element.W7 ?? 0,
               W8: element.W8 ?? 0,
               PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
+              SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
+              SLC_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0)-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100)),
+              SLC_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0)-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100)),
+              SLC_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0)-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100)),
+              TON_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 :temp_TCD1,
+              TON_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 :temp_TCD2,
+              TON_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 :temp_TCD3,
+              TON_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 :temp_TCD4,
               id: index
             };
           }
@@ -2243,6 +2271,7 @@ export const f_addPLANRaw = async (planData: any) => {
 }
 export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], selectedPlanDate: string, selectedMachine: string, selectedFactory: string) => {
   let err_code: string = '0';
+  const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   if (ycsxdatatablefilter.length >= 1) {
     for (let i = 0; i < ycsxdatatablefilter.length; i++) {
       let check_ycsx_hethongcu: boolean = await f_checkProdReqExistO302(ycsxdatatablefilter[i].PROD_REQUEST_NO);
@@ -2251,21 +2280,41 @@ export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], select
       let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
       if (check_ycsx_hethongcu === false) {
         //console.log(selectedMachine.substring(0,2));
-        err_code += await f_addPLANRaw({
-          PLAN_ID: NextPlanID,
-          PLAN_DATE: selectedPlanDate,
-          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
-          PLAN_QTY: 0,
-          PLAN_EQ: selectedMachine,
-          PLAN_FACTORY: selectedFactory,
-          PLAN_LEADTIME: 0,
-          STEP: 0,
-          PLAN_ORDER: NextPlanOrder,
-          PROCESS_NUMBER: selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ1 ? 1 : selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ2 ? 2 : 0,
-          G_CODE: ycsxdatatablefilter[i].G_CODE,
-          NEXT_PLAN_ID: "X",
-          IS_SETTING: "Y"
-        });
+        let selected_eq: string = selectedMachine.substring(0, 2);
+        let proc_number: number = selected_eq === ycsxdatatablefilter[i].EQ1 ? 1 : selected_eq === ycsxdatatablefilter[i].EQ2 ? 2 : selected_eq === ycsxdatatablefilter[i].EQ3 ? 3: selected_eq === ycsxdatatablefilter[i].EQ4 ? 4:0;
+
+        let UPH1: number = ycsxdatatablefilter[i].UPH1 ?? 999999999;
+        let UPH2: number = ycsxdatatablefilter[i].UPH2 ?? 999999999;
+        let UPH3: number = ycsxdatatablefilter[i].UPH3 ?? 999999999;
+        let UPH4: number = ycsxdatatablefilter[i].UPH4 ?? 999999999;
+
+        let UPH: number  = proc_number === 1? UPH1 : proc_number === 2? UPH2 : proc_number === 3? UPH3 : proc_number === 4? UPH4 : 999999999;
+        let TON: number = proc_number === 1? (ycsxdatatablefilter[i].TON_CD1 ?? 0) : proc_number === 2? (ycsxdatatablefilter[i].TON_CD2 ?? 0) : proc_number === 3? (ycsxdatatablefilter[i].TON_CD3 ?? 0) : proc_number === 4?(ycsxdatatablefilter[i].TON_CD4 ?? 0): 0;
+
+        if(proc_number === 0) 
+        {
+          err_code+= "Không đúng máy trong BOM | ";
+        }
+        else 
+        {
+          err_code += await f_addPLANRaw({
+            PLAN_ID: NextPlanID,
+            PLAN_DATE: selectedPlanDate,
+            PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+            PLAN_QTY: TON <= 0 ? 0: TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
+            PLAN_EQ: selectedMachine,
+            PLAN_FACTORY: selectedFactory,
+            PLAN_LEADTIME: 0,
+            STEP: 0,
+            PLAN_ORDER: NextPlanOrder,
+            PROCESS_NUMBER: proc_number,
+            G_CODE: ycsxdatatablefilter[i].G_CODE,
+            NEXT_PLAN_ID: "X",
+            IS_SETTING: "Y"
+          });
+
+        }
+        
       } else {
         err_code += "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này | ";
       }

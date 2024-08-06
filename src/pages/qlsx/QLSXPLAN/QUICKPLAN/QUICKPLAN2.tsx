@@ -1738,10 +1738,14 @@ const QUICKPLAN2 = () => {
           //console.log(response.data.data);
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
-              let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1 * element.LOSS_SX2 + element.LOSS_SX1 * element.LOSS_SX3 + element.LOSS_SX1 * element.LOSS_SX4 + element.LOSS_SX1 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
+              /* let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1 * element.LOSS_SX2 + element.LOSS_SX1 * element.LOSS_SX3 + element.LOSS_SX1 * element.LOSS_SX4 + element.LOSS_SX1 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
               let DU2: number = element.PROD_REQUEST_QTY * (element.LOSS_SX2 * element.LOSS_SX3 + element.LOSS_SX2 * element.LOSS_SX4 + element.LOSS_SX2 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
               let DU3: number = element.PROD_REQUEST_QTY * (element.LOSS_SX3 * element.LOSS_SX4 + element.LOSS_SX3 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
-              let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
+              let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4 * (element.LOSS_KT ?? 0)) * 1.0 / 10000; */
+              let DU1: number = 0;
+              let DU2: number = 0;
+              let DU3: number = 0;
+              let DU4: number = 0;
               let temp_TCD1: number = (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - element.CD1 - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100));
               let temp_TCD2: number = (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - element.CD2 - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100));
               let temp_TCD3: number = (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - element.CD3 - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100));
@@ -1757,7 +1761,7 @@ const QUICKPLAN2 = () => {
               }
               return {
                 ...element,
-                SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
+              SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
               SLC_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0)-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100)),
               SLC_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0)-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100)),
               SLC_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0)-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100)), 

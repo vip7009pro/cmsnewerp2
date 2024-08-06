@@ -55,7 +55,6 @@ import PRODUCT_BARCODE_MANAGER from "../rnd/product_barcode_manager/PRODUCT_BARC
 import QLSXPLAN from "../qlsx/QLSXPLAN/QLSXPLAN";
 import CAPA_MANAGER from "../qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import MACHINE from "../qlsx/QLSXPLAN/Machine/MACHINE";
-import QUICKPLAN from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
 import PLAN_DATATB from "../qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB";
 import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
 import PLAN_STATUS from "../qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
@@ -73,7 +72,8 @@ import Blank from "../../components/Blank/Blank";
 import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
 import BCSX from "../sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
-export const current_ver: number = 433;
+import QUICKPLAN2 from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2";
+export const current_ver: number = 435;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -370,7 +370,7 @@ function Home() {
     {
       MENU_CODE: "QL8",
       MENU_NAME: "QUICK PLAN",
-      MENU_ITEM: <QUICKPLAN />,
+      MENU_ITEM: <QUICKPLAN2 />,
     },
     {
       MENU_CODE: "QL9",

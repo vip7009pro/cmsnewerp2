@@ -1747,6 +1747,8 @@ export interface LICHSUNHAPKHOAO {
   IN_QTY: number;
   TOTAL_IN_QTY: number;
   INS_DATE: string;
+  KHO_CFM_DATE: string;
+  RETURN_STATUS: string;
 }
 export interface LICHSUXUATKHOAO {
   id: string;

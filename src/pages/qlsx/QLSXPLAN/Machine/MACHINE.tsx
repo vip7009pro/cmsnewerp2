@@ -280,32 +280,7 @@ const MACHINE = () => {
   };
   const column_ycsxtable = getCompany() === 'CMS' ? [
     {
-      field: "G_CODE", headerName: "G_CODE", width: 110,
-    },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 100,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
-      },
-    },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 250,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
-      },
-    },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 50, cellRenderer: (params: any) => {
         if (params.data.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
@@ -321,25 +296,34 @@ const MACHINE = () => {
         }
       },
     },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
-    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
-      field: "PO_BALANCE",
-      headerName: "PO_BALANCE",
-      width: 110,
+      field: "G_CODE", headerName: "G_CODE", width: 50,
+    },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 80,
       cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
-          </span>
-        );
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
       },
     },
     {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.data.PDBV === "P" || params.data.PDBV === null)
+          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
+      },
+    },    
+    {
       field: "PROD_REQUEST_QTY",
       cellDataType: "number",
-      headerName: "SL YCSX",
-      width: 80,
+      headerName: "SL_YCSX",
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
@@ -349,9 +333,109 @@ const MACHINE = () => {
       },
     },
     {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            {params.data.TON_CD1?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            {params.data.TON_CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            {params.data.TON_CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            {params.data.TON_CD4?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD1",
+      headerName: "SLC_CD1",
+      width: 65,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data?.SLC_CD1?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD2",
+      headerName: "SLC_CD2",
+      width: 65,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data?.SLC_CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD3",
+      headerName: "SLC_CD3",
+      width: 65,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data?.SLC_CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "SLC_CD4",
+      headerName: "SLC_CD4",
+      width: 65,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data?.SLC_CD4?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
       field: "CD1",
       headerName: "CD1",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -363,7 +447,7 @@ const MACHINE = () => {
     {
       field: "CD2",
       headerName: "CD2",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -375,7 +459,7 @@ const MACHINE = () => {
     {
       field: "CD3",
       headerName: "CD3",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -387,7 +471,7 @@ const MACHINE = () => {
     {
       field: "CD4",
       headerName: "CD4",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -396,97 +480,26 @@ const MACHINE = () => {
         );
       },
     },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 100 },    
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
-      field: "LOT_TOTAL_INPUT_QTY_EA",
-      cellDataType: "number",
-      headerName: "NK",
+      field: "PO_BALANCE",
+      headerName: "PO_BALANCE",
       width: 80,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      cellDataType: "number",
-      headerName: "XK",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TCD1",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD1?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TCD2",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD2?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD3",
-      headerName: "TCD3",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD3?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD4",
-      headerName: "TCD4",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD4?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      cellDataType: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
+    },    
     {
       field: "EQ1",
       headerName: "EQ1",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
       },
@@ -494,7 +507,7 @@ const MACHINE = () => {
     {
       field: "EQ2",
       headerName: "EQ2",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
       },
@@ -502,7 +515,7 @@ const MACHINE = () => {
     {
       field: "EQ3",
       headerName: "EQ3",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
       },
@@ -510,28 +523,15 @@ const MACHINE = () => {
     {
       field: "EQ4",
       headerName: "EQ4",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
       },
-    },
-    {
-      field: "SHORTAGE_YCSX",
-      cellDataType: "number",
-      headerName: "TỒN YCSX",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
+    },    
     {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
-      width: 80,
+      width: 70,
       cellRenderer: (params: any) => {
         if (params.data.PHAN_LOAI === "01")
           return (
@@ -559,8 +559,8 @@ const MACHINE = () => {
           );
       },
     },
-    { field: "PL_HANG", headerName: "PL_HANG", width: 120 },
-    { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PL_HANG", headerName: "PL_HANG", width: 50 },
+    { field: "REMARK", headerName: "REMARK", width: 60 },
     {
       field: "PDUYET",
       headerName: "PDUYET",
@@ -579,91 +579,7 @@ const MACHINE = () => {
             </span>
           );
       },
-    },
-    {
-      field: "BANVE",
-      headerName: "BANVE",
-      width: 260,
-      cellRenderer: (params: any) => {
-        let file: any = null;
-        const uploadFile2 = async (e: any) => {
-          //console.log(file);
-          checkBP(userData, ['KD', 'RND'], ['ALL'], ['ALL'], async () => {
-            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("update_banve_value", {
-                    G_CODE: params.data.G_CODE,
-                    banvevalue: "Y",
-                  })
-                    .then((response) => {
-                      if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thành công",
-                          "success"
-                        );
-                        let tempcodeinfodatatable = ycsxdatatable.map(
-                          (element: YCSXTableData, index) => {
-                            return element.G_CODE === params.data.G_CODE
-                              ? { ...element, BANVE: "Y" }
-                              : element;
-                          }
-                        );
-                        setYcsxDataTable(tempcodeinfodatatable);
-                      } else {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thất bại",
-                          "error"
-                        );
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload file thất bại:" + response.data.message,
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          })
-        };
-        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
-        if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
-          return (
-            <span style={{ color: "gray" }}>
-              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                LINK
-              </a>
-            </span>
-          );
-        } else {
-          return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile2}>
-                <AiOutlineCloudUpload color='yellow' size={15} />
-                Upload
-              </IconButton>
-              <input
-                accept='.pdf'
-                type='file'
-                onChange={(e: any) => {
-                  file = e.target.files[0];
-                  console.log(file);
-                }}
-              />
-            </div>
-          );
-        }
-      },
-    },
+    },   
     {
       field: "PDBV",
       headerName: "PD BANVE",
@@ -681,17 +597,7 @@ const MACHINE = () => {
           </span>
         );
       },
-    },
-    {
-      field: "",
-      headerName: "G_NAME",
-      width: 250,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
-      },
-    },
+    },    
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -1154,7 +1060,7 @@ const MACHINE = () => {
     {
       field: "PLAN_ID",
       headerName: "PLAN_ID",
-      width: 120,
+      width: 80,
       headerCheckboxSelection: true,
       checkboxSelection: true,
       editable: false,
@@ -1167,12 +1073,12 @@ const MACHINE = () => {
         }
       },
     },
-    { field: "G_CODE", headerName: "G_CODE", width: 90, editable: false },
-    { field: "G_NAME", headerName: "G_NAME", width: 150, editable: false },
+    { field: "G_CODE", headerName: "G_CODE", width: 70, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 120, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 100,
+      width: 90,
       editable: false,
       cellRenderer: (params: any) => {
         if (
@@ -1206,6 +1112,159 @@ const MACHINE = () => {
           </span>
         );
       },
+    },    
+    {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 50,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.TON_CD1?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 50,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.TON_CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 50,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.TON_CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 50,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.TON_CD4?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "PLAN_QTY",
+      headerName: "PLAN_QTY",
+      width: 80,
+      editable: true,
+      cellRenderer: (params: any) => {
+        if (params.data.PLAN_QTY === 0) {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              {params.data.PLAN_QTY?.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "PROCESS_NUMBER",
+      headerName: "PROC",
+      width: 50,
+      editable: true,
+      cellRenderer: (params: any) => {
+        if (
+          params.data.PROCESS_NUMBER === null ||
+          params.data.PROCESS_NUMBER === 0
+        ) {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green" }}>{params.data.PROCESS_NUMBER}</span>
+          );
+        }
+      },
+    },
+    { field: "STEP", headerName: "STEP", width: 50, editable: true },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 70, editable: true },
+    {
+      field: "PLAN_ORDER",
+      headerName: "STT",
+      width: 50,
+      editable: true,
+    },
+    {
+      field: "KETQUASX",
+      headerName: "KETQUASX",
+      width: 70,
+      editable: true,
+      cellRenderer: (params: any) => {
+        if (params.data.KETQUASX !== null) {
+          return <span>{params.data.KETQUASX?.toLocaleString("en-US")}</span>;
+        } else {
+          return <span>0</span>;
+        }
+      },
+    },
+    {
+      field: "KQ_SX_TAM",
+      headerName: "KETQUASX_TAM",
+      width: 80,
+      editable: true,
+      cellRenderer: (params: any) => {
+        if (params.data.KQ_SX_TAM !== null) {
+          return <span>{params.data.KQ_SX_TAM?.toLocaleString("en-US")}</span>;
+        } else {
+          return <span>0</span>;
+        }
+      },
+    },   
+    {
+      field: "PLAN_FACTORY",
+      headerName: "FACTORY",
+      width: 70,
+      editable: false,
+    },    
+    {
+      field: "IS_SETTING",
+      headerName: "IS_SETTING",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <input
+            type='checkbox'
+            name='alltimecheckbox'
+            //defaultChecked={params.data.IS_SETTING === 'Y'}
+            checked={params.data.IS_SETTING === 'Y'}
+            onChange={(e) => {
+              //console.log(e.target.checked);
+              const newdata = plandatatable.map((p) =>
+                p.PLAN_ID === params.data.PLAN_ID
+                  ? { ...p, IS_SETTING: e.target.checked ? 'Y' : 'N' }
+                  : p
+              );
+              setPlanDataTable(prev => newdata);
+              qlsxplandatafilter.current = [];
+            }}
+          ></input>
+        )
+      },
+      editable: false,
     },
     {
       field: "SLC_CD1",
@@ -1312,133 +1371,6 @@ const MACHINE = () => {
       },
     },
     {
-      field: "TON_CD1",
-      headerName: "TCD1",
-      width: 60,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.TON_CD1?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TCD2",
-      width: 60,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.TON_CD2?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD3",
-      headerName: "TCD3",
-      width: 60,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.TON_CD3?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD4",
-      headerName: "TCD4",
-      width: 60,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data.TON_CD4?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      width: 80,
-      editable: true,
-      cellRenderer: (params: any) => {
-        if (params.data.PLAN_QTY === 0) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              {params.data.PLAN_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "PROCESS_NUMBER",
-      headerName: "PROC",
-      width: 60,
-      editable: true,
-      cellRenderer: (params: any) => {
-        if (
-          params.data.PROCESS_NUMBER === null ||
-          params.data.PROCESS_NUMBER === 0
-        ) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>{params.data.PROCESS_NUMBER}</span>
-          );
-        }
-      },
-    },
-    { field: "STEP", headerName: "STEP", width: 50, editable: true },
-    {
-      field: "PLAN_ORDER",
-      headerName: "STT",
-      width: 50,
-      editable: true,
-    },
-    {
-      field: "KETQUASX",
-      headerName: "KETQUASX",
-      width: 70,
-      editable: true,
-      cellRenderer: (params: any) => {
-        if (params.data.KETQUASX !== null) {
-          return <span>{params.data.KETQUASX?.toLocaleString("en-US")}</span>;
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    {
-      field: "KQ_SX_TAM",
-      headerName: "KETQUASX_TAM",
-      width: 80,
-      editable: true,
-      cellRenderer: (params: any) => {
-        if (params.data.KQ_SX_TAM !== null) {
-          return <span>{params.data.KQ_SX_TAM?.toLocaleString("en-US")}</span>;
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 70, editable: true },
-    {
-      field: "PLAN_FACTORY",
-      headerName: "FACTORY",
-      width: 70,
-      editable: false,
-    },
-    {
       field: "PLAN_DATE",
       headerName: "PLAN_DATE",
       width: 90,
@@ -1480,32 +1412,6 @@ const MACHINE = () => {
       cellRenderer: (params: any) => {
         return (
           <span>{params.data?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
-        )
-      },
-      editable: false,
-    },
-    {
-      field: "IS_SETTING",
-      headerName: "IS_SETTING",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <input
-            type='checkbox'
-            name='alltimecheckbox'
-            //defaultChecked={params.data.IS_SETTING === 'Y'}
-            checked={params.data.IS_SETTING === 'Y'}
-            onChange={(e) => {
-              //console.log(e.target.checked);
-              const newdata = plandatatable.map((p) =>
-                p.PLAN_ID === params.data.PLAN_ID
-                  ? { ...p, IS_SETTING: e.target.checked ? 'Y' : 'N' }
-                  : p
-              );
-              setPlanDataTable(prev => newdata);
-              qlsxplandatafilter.current = [];
-            }}
-          ></input>
         )
       },
       editable: false,

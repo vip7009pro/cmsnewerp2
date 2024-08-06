@@ -16,7 +16,6 @@ import {
 import AGTable from "../../../../components/DataTable/AGTable";
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission] = useState(true);
-  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -25,24 +24,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [factory, setFactory] = useState("ALL");
-  const [machine, setMachine] = useState("ALL");
-  const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [datatable, setDataTable] = useState<any[]>([]);
   const [current_Column, setCurrent_Column] = useState<any[]>([]);
-  const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
-    Array<QLSXPLANDATA>
-  >([]);
   const tonkhoaodatafilter = useRef<Array<TONLIEUXUONG>>([]);
   const [nextPlan, setNextPlan] = useState(
     NEXT_PLAN === undefined ? "" : NEXT_PLAN,
   );
-  const [tonkhoaotable, setTonKhoAoTable] = useState<Array<TONLIEUXUONG>>([]);
-  const [lichsunhapkhoao, setLichSuNhapKhoAo] = useState<
-    Array<LICHSUNHAPKHOAO>
-  >([]);
-  const [lichsuxuatkhoao, setLichSuXuatKhoAo] = useState<
-    Array<LICHSUXUATKHOAO>
-  >([]);
   const [tableTitle, setTableTitle] = useState("");
   const column_nhapkhoaotable = [
     { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100 },
@@ -60,6 +47,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "USE_YN", headerName: "USE_YN", width: 90 },
     { field: "REMARK", headerName: "REMARK", width: 90 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+    { field: "KHO_CFM_DATE", headerName: "KHO_CFM_DATE", width: 100 },
+    { field: "RETURN_STATUS", headerName: "RETURN_STATUS", width: 100 },
   ];
   const column_xuatkhoaotable = [
     { field: "OUT_KHO_ID", headerName: "OUT_KHO_ID", width: 100 },
@@ -202,6 +191,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 INS_DATE: moment
                   .utc(element.INS_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
+                KHO_CFM_DATE: element.KHO_CFM_DATE !== null ?moment
+                  .utc(element.KHO_CFM_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss") : '',
                 id: index,
               };
             },
