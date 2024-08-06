@@ -978,13 +978,11 @@ export const f_saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
     } else if (planToSave?.PLAN_QTY === 0) {
       err_code += "_: Số lượng chỉ thị =0";
     } else if (
-      planToSave?.PLAN_QTY >
-      (planToSave?.CURRENT_SLC ?? 0)
+      planToSave?.PLAN_QTY >  (planToSave?.CURRENT_SLC ?? 0)
     ) {
       err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
     } else if (
-      planToSave?.PLAN_ID ===
-      planToSave?.NEXT_PLAN_ID
+      planToSave?.PLAN_ID === planToSave?.NEXT_PLAN_ID
     ) {
       err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
     } else if (!check_NEXT_PLAN_ID) {
@@ -994,10 +992,7 @@ export const f_saveSinglePlan = async (planToSave: QLSXPLANDATA) => {
       err_code +=
         "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
     } else if (
-      !(
-        parseInt(planToSave?.STEP.toString()) >= 0 &&
-        parseInt(planToSave?.STEP.toString()) <= 9
-      )
+      !(parseInt(planToSave?.STEP.toString()) >= 0 &&  parseInt(planToSave?.STEP.toString()) <= 9)
     ) {
       err_code += "_: Hãy nhập STEP từ 0 -> 9";
     } else if (
@@ -1388,7 +1383,7 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
             let temp_TCD3: number = (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0) - element.CD3-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100));
             let temp_TCD4: number = (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0) - element.CD4-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100));  
 
-            if (temp_TCD1 < 0) {
+            /* if (temp_TCD1 < 0) {
               temp_TCD2 = temp_TCD2 - temp_TCD1;
             }
             if (temp_TCD2 < 0) {
@@ -1396,7 +1391,7 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
             }
             if (temp_TCD3 < 0) {
               temp_TCD4 = temp_TCD4 - temp_TCD3;
-            }
+            } */
             return {
               ...element,
               ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
@@ -1785,7 +1780,7 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
             let temp_TCD3: number = (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0) - element.CD3-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100));
             let temp_TCD4: number = (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0) - element.CD4-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100));  
 
-            if (temp_TCD1 < 0) {
+           /*  if (temp_TCD1 < 0) {
               temp_TCD2 = temp_TCD2 - temp_TCD1;
             }
             if (temp_TCD2 < 0) {
@@ -1793,7 +1788,7 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
             }
             if (temp_TCD3 < 0) {
               temp_TCD4 = temp_TCD4 - temp_TCD3;
-            }
+            } */
 
             return {
               ...element,

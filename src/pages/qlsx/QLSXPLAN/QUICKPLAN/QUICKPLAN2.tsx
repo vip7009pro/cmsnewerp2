@@ -1451,19 +1451,20 @@ const QUICKPLAN2 = () => {
       localStorage.setItem("temp_plan_table", JSON.stringify(plandatatable));
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
+        console.log('CURRENT_SLC',qlsxplandatafilter.current[i].CURRENT_SLC)
         if (
-          (parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >= 1 ||
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <= 4) &&
+          (qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4) &&
           qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
-          qlsxplandatafilter.current[i].PLAN_QTY <=
-          (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0) &&
+          qlsxplandatafilter.current[i].PLAN_QTY <= (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0) &&
           qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "" &&
           (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED") &&
-          parseInt(qlsxplandatafilter.current[i].STEP.toString()) >= 0 &&
-          parseInt(qlsxplandatafilter.current[i].STEP.toString()) <= 9
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC") &&
+          qlsxplandatafilter.current[i].STEP>= 0 && qlsxplandatafilter.current[i].STEP<= 9
         ) {
           let check_ycsx_hethongcu: boolean = false;
           await generalQuery("checkProd_request_no_Exist_O302", {
@@ -1524,10 +1525,36 @@ const QUICKPLAN2 = () => {
               "__Yc này đã chạy hệ thống cũ, chạy nốt bằng hệ thống cũ nhé";
           }
         } else {
-          err_code +=
-            "_" +
-            qlsxplandatafilter.current[i].G_NAME_KD +
-            ": Plan QTY =0 hoặc Process number trắng hoặc khác giá trị 1 or 2, hoặc chỉ thị nhiều hơn ycsx qty, hoặc PLAN_EQ rỗng, hoặc không hợp lệ, hoặc Step không nằm trong khoảng từ 0 đến 9 sẽ ko được lưu";
+          if(!(qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4))
+          {
+            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Process Number không hợp lệ";
+          }
+          else if(qlsxplandatafilter.current[i].PLAN_QTY <= 0)
+          {
+            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị không hợp lệ";
+          }
+          else if(qlsxplandatafilter.current[i].PLAN_QTY > (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0))
+          {
+            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị lớn hơn số lượng cần sx";
+          }
+          else if(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "" )
+          {
+            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
+          }
+          else if(!(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC"))
+          {
+            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
+          }
+          else if(!(qlsxplandatafilter.current[i].STEP>= 0 && qlsxplandatafilter.current[i].STEP<= 9))
+          {
+            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": STEP không hợp lệ";
+          }         
         }
       }
       setPlanDataTable(org_plan_tb);
@@ -1750,7 +1777,7 @@ const QUICKPLAN2 = () => {
               let temp_TCD2: number = (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - element.CD2 - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100));
               let temp_TCD3: number = (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - element.CD3 - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100));
               let temp_TCD4: number = (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - element.CD4 - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100));
-              if (temp_TCD1 < 0) {
+              /* if (temp_TCD1 < 0) {
                 temp_TCD2 = temp_TCD2 - temp_TCD1;
               }
               if (temp_TCD2 < 0) {
@@ -1758,7 +1785,7 @@ const QUICKPLAN2 = () => {
               }
               if (temp_TCD3 < 0) {
                 temp_TCD4 = temp_TCD4 - temp_TCD3;
-              }
+              } */
               return {
                 ...element,
               SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
@@ -1952,8 +1979,6 @@ const QUICKPLAN2 = () => {
             //console.table(newdata)
             setPlanDataTable(newdata);
           } else if (keyvar === "PLAN_EQ") {  
-            
-           
             /* const newdata: QLSXPLANDATA[]= plandatatable.map((p) => {
               if (p.PLAN_ID === params.id) {
                 if (keyvar === "PLAN_EQ") {
@@ -2003,7 +2028,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 1,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD1,
+                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD1 ?? 0),
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -2024,7 +2049,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 2,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD2,
+                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD2 ?? 0),
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -2045,7 +2070,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 3,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD3,
+                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD3 ?? 0),
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -2066,7 +2091,7 @@ const QUICKPLAN2 = () => {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 2,
-                        CURRENT_SLC: temp_ycsx_data[0].SLC_CD4,
+                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD4 ?? 0),
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
