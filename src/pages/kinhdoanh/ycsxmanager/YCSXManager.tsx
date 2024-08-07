@@ -20,8 +20,8 @@ import {
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
+import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { MdLock, MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import "./YCSXManager.scss";
 import { FaArrowRight } from "react-icons/fa";
 import { ReactElement, useRef } from "react";
@@ -2703,6 +2703,38 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để SET !", "error");
     }
   };
+  const setOpenYCSX = async (openValue: string) => {
+    if (ycsxdatatablefilter.current.length >= 1) {
+      let err_code: boolean = false;
+      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
+        await generalQuery("setopen_ycsx", {
+          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+          USE_YN: openValue,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (!err_code) {
+        Swal.fire(
+          "Thông báo",
+          "SET YCSX thành công",
+          "success"
+        );
+      } else {
+        Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để SET !", "error");
+    }
+  };
   const handleConfirmDeleteYCSX = () => {
     Swal.fire({
       title: "Chắc chắn muốn xóa YCSX đã chọn ?",
@@ -2740,6 +2772,47 @@ const YCSXManager = () => {
       }
     });
   };
+  const handleConfirmOpenYCSX = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn mở YCSX đã chọn ?",
+      text: "Sẽ bắt đầu mở YCSX đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Xóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành mở",
+          "Đang mở YCSX",
+          "success"
+        );
+        setOpenYCSX('Y');
+      }
+    });
+  };
+  const handleConfirmLockYCSX = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn khóa YCSX đã chọn ?",
+      text: "Sẽ bắt đầu khóa YCSX đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Xóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành khóa",
+          "Đang khóa YCSX",
+          "success"
+        );
+        setOpenYCSX('N');
+      }
+    });
+  };
+  
   const handleConfirmSetClosedYCSX = () => {
     Swal.fire({
       title: "Chắc chắn muốn SET CLOSED YCSX đã chọn ?",
@@ -2992,6 +3065,37 @@ const YCSXManager = () => {
             >
               <AiFillAmazonCircle color='red' size={15} />
               Up Amazon
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["KD"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmLockYCSX
+                );                                
+              }}
+            >
+              <MdLock color='#ec0303' size={15} />
+              Khóa YCSX
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["KD"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmOpenYCSX
+                );
+                                
+              }}
+            >
+              <MdLock color='#245af0' size={15} />
+              Mở khóa YCSX
             </IconButton>
           </div>}
         columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
