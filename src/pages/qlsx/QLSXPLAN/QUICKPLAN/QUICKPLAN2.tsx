@@ -2177,8 +2177,7 @@ const QUICKPLAN2 = () => {
               }
             });
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
-            setPlanDataTable(newdata);         
-
+            setPlanDataTable(newdata);
           }
           else {
             const newdata = plandatatable.map((p) => {
