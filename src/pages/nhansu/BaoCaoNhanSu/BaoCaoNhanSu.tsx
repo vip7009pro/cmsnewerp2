@@ -3,7 +3,6 @@ import {
   Column,
   ColumnChooser,
   Editing,
-  Export as GridExport,
   FilterRow,
   Item,
   KeyboardNavigation,
@@ -11,23 +10,15 @@ import {
   Paging,
   Scrolling,
   SearchPanel,
-  Selection,
-  Summary,
   Toolbar,
-  TotalItem,
 } from "devextreme-react/data-grid";
 
 import {
   DataGrid,
-  GridSelectionModel,
-  GridToolbar,
   GridToolbarContainer,
-  GridToolbarExport,
-  GridCsvExportOptions,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
-  GridRowsProp,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import React, { useEffect, useMemo, useState } from "react";
@@ -41,22 +32,7 @@ import {
   weekdayarray,
 } from "../../../api/GlobalFunction";
 import moment from "moment";
-import { elementAcceptingRef } from "@mui/utils";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Bar,
-  ComposedChart,
-  Label,
-  LabelList,
-  Pie,
-  Cell,
-} from "recharts";
+import { Legend } from "recharts";
 import PieChart, {
   Series,
   Label as LB,
@@ -64,9 +40,9 @@ import PieChart, {
   Size,
   Export,
 } from "devextreme-react/pie-chart";
-import { Grid, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { RootState } from "../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Chart,
   ArgumentAxis,
@@ -1511,7 +1487,7 @@ const BaoCaoNhanSu = () => {
     loadDiemDanhFullSummaryTable();
   }, []);
   return (
-    <div className="baocaonhansu">
+    (<div className="baocaonhansu">
       <div className="baocao1">
         <div className="filterform">
           <label>
@@ -1596,8 +1572,8 @@ const BaoCaoNhanSu = () => {
           <div className="tiledilamtable">
             <DataGrid
               sx={{ width: "100%" }}
-              components={{
-                LoadingOverlay: LinearProgress,
+              slots={{
+                
               }}
               style={{ padding: "20px" }}
               loading={isLoading}
@@ -1621,8 +1597,8 @@ const BaoCaoNhanSu = () => {
         <div className="maindept_table">
           <div className="tiledilamtable">
             <DataGrid
-              components={{
-                LoadingOverlay: LinearProgress,
+              slots={{
+                
               }}
               style={{ padding: "20px" }}
               loading={isLoading}
@@ -1678,16 +1654,16 @@ const BaoCaoNhanSu = () => {
         <h3>{getlang("lichsudilamfullinfo", glbLang!)}</h3>
         <div className="maindept_table">
           <DataGrid
-            components={{
-              Toolbar: CustomToolbar3,
-              LoadingOverlay: LinearProgress,
+            slots={{
+              toolbar: CustomToolbar3,
+              
             }}
             style={{ padding: "20px" }}
             loading={isLoading}
             rowHeight={35}
             rows={diemdanhFullTable}
             columns={columns_diemdanhfull}
-            rowsPerPageOptions={[5, 10, 30, 50, 100, 500, 1000, 5000, 10000]}
+            pageSizeOptions={[5, 10, 30, 50, 100, 500, 1000, 5000, 10000]}
             editMode="row"
             getRowHeight={() => "auto"}
           />
@@ -1707,7 +1683,7 @@ const BaoCaoNhanSu = () => {
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 };
 export default BaoCaoNhanSu;

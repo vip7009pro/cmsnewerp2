@@ -1,7 +1,7 @@
-import { IconButton, LinearProgress } from "@mui/material";
+import { IconButton } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -9,13 +9,12 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useContext, useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./FCSTManager.scss";
@@ -63,7 +62,7 @@ const FCSTManager = () => {
   >([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
 
-  const column_fcsttable = [
+  const column_fcsttable:any = [
     { field: "FCST_ID", headerName: "FCST_ID", width: 80 },
     { field: "FCSTYEAR", headerName: "FCSTYEAR", width: 80 },
     { field: "FCSTWEEKNO", headerName: "FCSTWEEKNO", width: 80 },
@@ -780,7 +779,7 @@ const FCSTManager = () => {
     },
   ];
 
-  const column_excelplan2 = [
+  const column_excelplan2: any = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -1633,7 +1632,7 @@ const FCSTManager = () => {
       });
     }
   };
-  const handleFcstSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleFcstSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = fcstdatatable.filter((element: any) =>
       selectedID.has(element.FCST_ID),
@@ -2633,15 +2632,14 @@ const FCSTManager = () => {
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbar,                    
                   }}
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
                   columns={column_excelplan2}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode="row"
@@ -2838,23 +2836,23 @@ const FCSTManager = () => {
           )}
           <div className="tracuuFcstTable">
             <DataGrid
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+              slots={{
+                toolbar: CustomToolbarPOTable,
+                
               }}
               sx={{ fontSize: "0.7rem" }}
               loading={isLoading}
               rowHeight={30}
               rows={fcstdatatable}
               columns={column_fcsttable}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
               editMode="row"
               getRowId={(row) => row.FCST_ID}
               checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(ids) => {
                 handleFcstSelectionforUpdate(ids);
               }}
             />

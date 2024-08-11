@@ -1,7 +1,7 @@
-import { IconButton, LinearProgress } from "@mui/material";
+import { IconButton } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -9,13 +9,12 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useContext, useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
@@ -62,7 +61,7 @@ const PlanManager = () => {
   >([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
 
-  const column_plantable = [
+  const column_plantable:any = [
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 180 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
@@ -285,7 +284,7 @@ const PlanManager = () => {
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
 
-  const column_excelplan2 = [
+  const column_excelplan2:any = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
@@ -949,7 +948,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     }
   };
 
-  const handlePlanSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handlePlanSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
       selectedID.has(element.PLAN_ID),
@@ -1407,15 +1406,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbar,
+                    
                   }}
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
                   columns={column_excelplan2}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode="row"
@@ -1574,22 +1573,22 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           <div className="tracuuPlanTable">
             <DataGrid
               sx={{ fontSize: "0.7rem" }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+              slots={{
+                toolbar: CustomToolbarPOTable,
+                
               }}
               loading={isLoading}
               rowHeight={30}
               rows={plandatatable}
               columns={column_plantable}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
               editMode="row"
               getRowId={(row) => row.PLAN_ID}
               checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(ids) => {
                 handlePlanSelectionforUpdate(ids);
               }}
             />

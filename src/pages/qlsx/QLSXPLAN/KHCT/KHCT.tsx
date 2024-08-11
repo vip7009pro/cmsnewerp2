@@ -16,7 +16,7 @@ import {
   GridCallbackDetails,
   GridCellEditCommitParams,
   GridEventListener,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
   MuiBaseEvent,
@@ -1479,7 +1479,7 @@ const KHCT = () => {
             "error",
           );
         } else {
-          err_code = await f_saveQLSX({
+          err_code = (await f_saveQLSX({
             G_CODE: selectedG_Code,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1507,7 +1507,7 @@ const KHCT = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          }) ? "0" : "1";
+          })) ? "0" : "1";
           
           if (err_code === "1") {
             Swal.fire(
@@ -1737,7 +1737,7 @@ const KHCT = () => {
       </GridToolbarContainer>
     );
   }
-  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
       selectedID.has(element.PROD_REQUEST_NO),
@@ -1749,7 +1749,7 @@ const KHCT = () => {
       console.log("xoa filter");
     }
   };
-  const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleQLSXPlanDataSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
       selectedID.has(element.PLAN_ID),
@@ -2065,7 +2065,7 @@ const KHCT = () => {
     load_KHCT("2023-01-07");
   }, []);
   return (
-    <div className="khct">
+    (<div className="khct">
       <div className="planwindow">
         <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
@@ -2558,20 +2558,20 @@ const KHCT = () => {
                 <div className="tracuuYCSXTable">
                   <DataGrid
                     sx={{ fontSize: 12, flex: 1 }}
-                    components={{
-                      Toolbar: CustomToolbarPOTable,
-                      LoadingOverlay: LinearProgress,
+                    slots={{
+                      toolbar: CustomToolbarPOTable,
+                      
                     }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={ycsxdatatable}
                     columns={column_ycsxtable}
-                    rowsPerPageOptions={[
+                    pageSizeOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
                     editMode="row"
                     getRowId={(row) => row.PROD_REQUEST_NO}
-                    onSelectionModelChange={(ids) => {
+                    onRowSelectionModelChange={(ids) => {
                       handleYCSXSelectionforUpdate(ids);
                     }}
                   />
@@ -2679,22 +2679,22 @@ const KHCT = () => {
             <div className="planlist">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPLANTABLE,
-                  LoadingOverlay: LinearProgress,
+                slots={{
+                  toolbar: CustomToolbarPLANTABLE,
+                  
                 }}
                 loading={isLoading}
                 rowHeight={30}
                 rows={khcttable}
                 columns={column_khcttable}
-                rowsPerPageOptions={[
+                pageSizeOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
-                disableSelectionOnClick
+                disableRowSelectionOnClick
                 checkboxSelection
                 editMode="cell"
                 getRowId={(row) => row.PLAN_ID}
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
                 }}
                 onCellEditCommit={cellEditHandler}
@@ -2706,20 +2706,20 @@ const KHCT = () => {
             <div className="planlist">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPLANLIST,
-                  LoadingOverlay: LinearProgress,
+                slots={{
+                  toolbar: CustomToolbarPLANLIST,
+                  
                 }}
                 loading={isLoading}
                 rowHeight={30}
                 rows={plandatatable}
                 columns={column_listchithi}
-                rowsPerPageOptions={[
+                pageSizeOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
                 editMode="cell"
                 getRowId={(row) => row.id}
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
                 }}
               />
@@ -2727,7 +2727,7 @@ const KHCT = () => {
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default KHCT;

@@ -1,21 +1,15 @@
 import {
   DataGrid,
-  GridSelectionModel,
-  GridToolbar,
   GridToolbarContainer,
-  GridToolbarExport,
-  GridCsvExportOptions,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
-  GridRowsProp,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
-import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
@@ -385,7 +379,7 @@ const DieuChuyenTeamBP = () => {
   }, []);
 
   return (
-    <div className='dieuchuyenteam'>
+    (<div className='dieuchuyenteam'>
       <div className='filterform'>
         <label>
         {getlang("calamviec", glbLang!)}:
@@ -408,20 +402,20 @@ const DieuChuyenTeamBP = () => {
       <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.7rem" }}
-          components={{
-            Toolbar: CustomToolbar,
-            LoadingOverlay: LinearProgress,
+          slots={{
+            toolbar: CustomToolbar,
+            
           }}
           loading={isLoading}
           rowHeight={35}
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
-          rowsPerPageOptions={[5, 10, 50, 100, 500, 1000]}
+          pageSizeOptions={[5, 10, 50, 100, 500, 1000]}
           editMode='row'
           getRowHeight={() => "auto"}
         />
       </div>
-    </div>
+    </div>)
   );
 };
 

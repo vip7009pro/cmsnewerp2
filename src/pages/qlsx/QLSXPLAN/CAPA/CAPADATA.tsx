@@ -525,7 +525,7 @@ const CAPADATA = () => {
             "error",
           );
         } else {
-          err_code = await f_saveQLSX({
+          err_code = (await f_saveQLSX({
             G_CODE: selectedG_Code,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -553,7 +553,7 @@ const CAPADATA = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          }) ? "0" : "1";
+          })) ? "0" : "1";
           
           if (err_code === "1") {
             Swal.fire(

@@ -148,7 +148,7 @@ const TraAMZ = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="traAMZ">
+    (<div className="traAMZ">
       <div className="tracuuDataInspection">
         {showhidesearchdiv && (
           <div className="tracuuDataInspectionform">
@@ -245,23 +245,23 @@ const TraAMZ = () => {
           {readyRender && (
             <DataGrid
               sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarLICHSUINPUTSX,
-                LoadingOverlay: LinearProgress,
+              slots={{
+                toolbar: CustomToolbarLICHSUINPUTSX,
+                
               }}
               getRowId={(row) => row.id}
               loading={isLoading}
               rowHeight={30}
               rows={inspectiondatatable}
               columns={column_lichsuinputlieusanxuat}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
             />
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default TraAMZ;

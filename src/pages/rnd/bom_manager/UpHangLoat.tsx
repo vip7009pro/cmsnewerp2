@@ -345,7 +345,7 @@ const UpHangLoat = () => {
     let insertStatus: boolean = false;
     let checkg_name_kd: boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD);
     console.log('checkg_name_kd', checkg_name_kd);
-    if ((getCompany() === 'CMS') && await handleCheckCodeInfo(codefullinfo) || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
+    if ((getCompany() === 'CMS') && (await handleCheckCodeInfo(codefullinfo)) || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||

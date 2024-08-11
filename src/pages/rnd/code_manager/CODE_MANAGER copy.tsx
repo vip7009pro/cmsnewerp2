@@ -1,7 +1,7 @@
 import { IconButton } from "@mui/material";
 import {
 
-  GridSelectionModel,  
+  GridRowSelectionModel,  
   GridToolbarContainer,  
   GridToolbarQuickFilter,  
   GridCellEditCommitParams,  
@@ -2060,7 +2060,7 @@ const CODE_MANAGER = () => {
       });
     }
   };
-  const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleCODESelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = rows.filter((element: CODE_FULL_INFO) =>
       selectedID.has(element.id === undefined ? 0 : element.id),
@@ -2211,7 +2211,7 @@ const CODE_MANAGER = () => {
             {/* <DataGrid
               components={{
                 Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+                
               }}
               sx={{ fontSize: "0.7rem" }}
               loading={isLoading}
@@ -2219,11 +2219,11 @@ const CODE_MANAGER = () => {
               rows={rows}
               columns={columns}
               checkboxSelection
-              onSelectionModelChange={(ids) => {
+              onRowSelectionModelChange={(ids) => {
                 handleCODESelectionforUpdate(ids);
               }}
-              disableSelectionOnClick={true}             
-              rowsPerPageOptions={[
+              disableRowSelectionOnClick={true}             
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
               editMode="cell"              

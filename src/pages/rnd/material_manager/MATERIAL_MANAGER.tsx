@@ -9,7 +9,7 @@ import {
   DataGrid,
   GridCallbackDetails,
   GridCellEditCommitParams,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
@@ -210,7 +210,7 @@ const MATERIAL_MANAGER = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để lưu data", "error");
     }
   };
-  const handleMaterialDataSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleMaterialDataSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = datatable.filter((element: any) =>
       selectedID.has(element.M_ID),
@@ -237,7 +237,7 @@ const MATERIAL_MANAGER = () => {
     setReadyRender(true);
   }, []);
   return (
-    <div className="material_manager">
+    (<div className="material_manager">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
@@ -309,22 +309,22 @@ const MATERIAL_MANAGER = () => {
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarLICHSUINPUTSX,
-                LoadingOverlay: LinearProgress,
+              slots={{
+                toolbar: CustomToolbarLICHSUINPUTSX,
+                
               }}
               loading={isLoading}
               rowHeight={30}
               rows={datatable}
               columns={column_material_table}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
               checkboxSelection
-              disableSelectionOnClick
+              disableRowSelectionOnClick
               editMode="cell"
               getRowId={(row) => row.M_ID}
-              onSelectionModelChange={(ids) => {
+              onRowSelectionModelChange={(ids) => {
                 handleMaterialDataSelectionforUpdate(ids);
               }}
               onCellEditCommit={(
@@ -347,7 +347,7 @@ const MATERIAL_MANAGER = () => {
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default MATERIAL_MANAGER;

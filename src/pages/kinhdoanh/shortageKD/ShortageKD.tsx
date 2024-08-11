@@ -1,7 +1,7 @@
 import { IconButton, LinearProgress } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -673,7 +673,7 @@ const ShortageKD = () => {
       });
     }
   };
-  const handleShortageSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleShortageSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = shortagedatatable.filter((element: any) =>
       selectedID.has(element.ST_ID),
@@ -778,7 +778,7 @@ const ShortageKD = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className="shortage">
+    (<div className="shortage">
       <div className="mininavbar">
         <div
           className="mininavitem"
@@ -849,15 +849,15 @@ const ShortageKD = () => {
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbar,
+                    
                   }}
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
                   columns={column_excel_shortage}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode="row"
@@ -1013,30 +1013,30 @@ const ShortageKD = () => {
           </div>
           <div className="tracuuPlanTable">
             <DataGrid
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+              slots={{
+                toolbar: CustomToolbarPOTable,
+                
               }}
               sx={{ fontSize: "0.7rem" }}
               loading={isLoading}
               rowHeight={30}
               rows={shortagedatatable}
               columns={column_shortage}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
               editMode="row"
               getRowId={(row) => row.ST_ID}
               checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(ids) => {
                 handleShortageSelectionforUpdate(ids);
               }}
             />
           </div>
         </div>
       )}
-    </div>
+    </div>)
   );
 };
 export default ShortageKD;

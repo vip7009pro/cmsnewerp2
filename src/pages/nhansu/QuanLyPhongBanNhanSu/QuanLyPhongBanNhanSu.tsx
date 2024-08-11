@@ -1,11 +1,12 @@
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
   GridToolbarQuickFilter,
+  GridToolbar,
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
@@ -637,7 +638,7 @@ const QuanLyPhongBanNhanSu = () => {
     { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170 },
   ];
   const columns_employee_table = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,resizable: true },
     { field: "CMS_ID", headerName: "NS_ID", width: 120 },
     {
       field: "NV_CCID",
@@ -721,7 +722,7 @@ const QuanLyPhongBanNhanSu = () => {
     { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 170 },
     { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 170 },
   ];
-  const handleMainDeptSelection = (ids: GridSelectionModel) => {
+  const handleMainDeptSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = maindeptTable.filter((element: any) =>
       selectedID.has(element.id)
@@ -746,7 +747,7 @@ const QuanLyPhongBanNhanSu = () => {
     setMainDeptDataFilter(datafilter);
     //console.log(datafilter);
   };
-  const handlesubDeptSelection = (ids: GridSelectionModel) => {
+  const handlesubDeptSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = subdeptTable.filter((element: any) =>
       selectedID.has(element.id)
@@ -771,7 +772,7 @@ const QuanLyPhongBanNhanSu = () => {
     setSubDeptDataFilter(datafilter);
     //console.log(datafilter);
   };
-  const handleworkPositionSelection = (ids: GridSelectionModel) => {
+  const handleworkPositionSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = workpositionTable.filter((element: any) =>
       selectedID.has(element.id)
@@ -787,7 +788,7 @@ const QuanLyPhongBanNhanSu = () => {
     setWorkPositionDataFilter(datafilter);
     //console.log(datafilter);
   };
-  const handleEmployeeSelection = (ids: GridSelectionModel) => {
+  const handleEmployeeSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = employeeTable.filter((element: any) =>
       selectedID.has(element.id)
@@ -952,7 +953,7 @@ const QuanLyPhongBanNhanSu = () => {
       });
   }, []);
   return (
-    <div className='quanlyphongbannhansu'>
+    (<div className='quanlyphongbannhansu'>
       <div className='mininavbar'>
         <div
           className='mininavitem'
@@ -984,9 +985,9 @@ const QuanLyPhongBanNhanSu = () => {
                 rowHeight={25}
                 rows={maindeptTable}
                 columns={columns_maindept}
-                rowsPerPageOptions={[5, 10, 50, 100]}
+                pageSizeOptions={[5, 10, 50, 100]}
                 /* checkboxSelection */
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleMainDeptSelection(ids);
                 }}
               />
@@ -1085,9 +1086,9 @@ const QuanLyPhongBanNhanSu = () => {
                 rowHeight={25}
                 rows={subdeptTable}
                 columns={columns_subdept}
-                rowsPerPageOptions={[5, 10, 50, 100]}
+                pageSizeOptions={[5, 10, 50, 100]}
                 /* checkboxSelection */
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handlesubDeptSelection(ids);
                 }}
               />
@@ -1186,9 +1187,9 @@ const QuanLyPhongBanNhanSu = () => {
                 rowHeight={25}
                 rows={workpositionTable}
                 columns={columns_work_position}
-                rowsPerPageOptions={[5, 10, 50, 100]}
+                pageSizeOptions={[5, 10, 50, 100]}
                 /* checkboxSelection */
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleworkPositionSelection(ids);
                 }}
               />
@@ -1637,10 +1638,9 @@ const QuanLyPhongBanNhanSu = () => {
             <div className='maindept_table'>
               <DataGrid
                 sx={{ fontSize: "0.8rem" }}
-                components={{
-                  Toolbar: CustomToolbar,
-                  LoadingOverlay: LinearProgress,
-                }}
+                slots={{
+                  toolbar: GridToolbar,                  
+                }}                
                 loading={isLoading}
                 rowHeight={35}
                 rows={
@@ -1652,9 +1652,9 @@ const QuanLyPhongBanNhanSu = () => {
                     : employeeTable
                 }
                 columns={columns_employee_table}
-                rowsPerPageOptions={[5, 10, 50, 100, 500]}
+                pageSizeOptions={[5, 10, 50, 100, 500]}
                 editMode='row'
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleEmployeeSelection(ids);
                 }}
               />
@@ -1662,7 +1662,7 @@ const QuanLyPhongBanNhanSu = () => {
           </div>
         )}
       </div>
-    </div>
+    </div>)
   );
 };
 export default QuanLyPhongBanNhanSu;

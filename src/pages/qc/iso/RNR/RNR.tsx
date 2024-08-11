@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
@@ -298,7 +298,7 @@ const RNR = () => {
   useEffect(() => {
   }, []);
   return (
-    <div className="rnr">
+    (<div className="rnr">
       <div className="tracuuDataPqc">
         <div className="tracuuDataPQCform">
           <div className="forminput">
@@ -412,15 +412,15 @@ const RNR = () => {
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+              slots={{
+                toolbar: CustomToolbarPOTable,
+                
               }}
               loading={isLoading}
               rowHeight={30}
               rows={rnrdatatable}
               columns={columnDefinition}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
               editMode="row"
@@ -428,7 +428,7 @@ const RNR = () => {
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default RNR;

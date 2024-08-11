@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -454,7 +454,7 @@ const BOM_AMAZON = () => {
         console.log(error);
       });
   };
-  const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleCODESelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = rows.filter((element: CODE_INFO) =>
       selectedID.has(element.id)
@@ -473,7 +473,7 @@ const BOM_AMAZON = () => {
       setCodeDataTableFilter([]);
     }
   };
-  const handleLISTBOMAMAZONSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleLISTBOMAMAZONSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = listamazontable.filter((element: LIST_BOM_AMAZON) =>
       selectedID.has(element.id)
@@ -488,7 +488,7 @@ const BOM_AMAZON = () => {
       setBomSXDataTableFilter([]);
     }
   };
-  const handleBOMAMAZONSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleBOMAMAZONSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = bomamazontable.filter((element: BOM_AMAZON_DATA) =>
       selectedID.has(element.id)
@@ -628,7 +628,7 @@ const BOM_AMAZON = () => {
     loadCodePhoi();
   }, []);
   return (
-    <div className='bom_amazon'>
+    (<div className='bom_amazon'>
       <div className='bom_manager_wrapper'>
         <div className='left'>
           <div className='bom_manager_button'>
@@ -682,21 +682,21 @@ const BOM_AMAZON = () => {
               </div>
               <div className='codeinfotable'>
                 <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarCODETable,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbarCODETable,
+                    
                   }}
                   sx={{ fontSize: "0.7rem" }}
                   loading={isLoading}
                   rowHeight={30}
                   rows={rows}
                   columns={column_codeinfo}
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleCODESelectionforUpdate(ids);
                   }}
                   /*  rows={codeinfodatatable}
                 columns={columnDefinition} */
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode='cell'
@@ -742,21 +742,21 @@ const BOM_AMAZON = () => {
                   LIST CODE ĐÃ CÓ BOM AMAZON
                 </span>
                 <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarLISTBOMAMAZONTable,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbarLISTBOMAMAZONTable,
+                    
                   }}
                   sx={{ fontSize: "0.7rem" }}
                   loading={isLoading}
                   rowHeight={30}
                   rows={listamazontable}
                   columns={column_listbomamazon}
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleLISTBOMAMAZONSelectionforUpdate(ids);
                   }}
                   /*  rows={codeinfodatatable}
                 columns={columnDefinition} */
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode='cell'
@@ -795,21 +795,21 @@ const BOM_AMAZON = () => {
                   {column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
                 </span>
                 <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarBOMAMAZONTable,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbarBOMAMAZONTable,
+                    
                   }}
                   sx={{ fontSize: "0.7rem" }}
                   loading={isLoading}
                   rowHeight={30}
                   rows={bomamazontable}
                   columns={column_bomgia}
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleBOMAMAZONSelectionforUpdate(ids);
                   }}
                   /*  rows={codeinfodatatable}
                 columns={columnDefinition} */
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode='cell'
@@ -909,7 +909,7 @@ const BOM_AMAZON = () => {
           <div className='bottom'></div>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default BOM_AMAZON;

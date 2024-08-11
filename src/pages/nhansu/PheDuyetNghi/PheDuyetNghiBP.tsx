@@ -1,6 +1,6 @@
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbar,
   GridToolbarContainer,
   GridToolbarExport,
@@ -298,26 +298,26 @@ const PheDuyetNghiBP = () => {
   }, []);
 
   return (
-    <div className='pheduyetnghi'>
+    (<div className='pheduyetnghi'>
       <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
-          components={{
-            Toolbar: CustomToolbar,
-            LoadingOverlay: LinearProgress,
+          slots={{
+            toolbar: CustomToolbar,
+            
           }}
           loading={isLoading}
           rowHeight={35}
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
-          rowsPerPageOptions={[5, 10, 50, 100, 500, 1000, 2000, 5000]}
+          pageSizeOptions={[5, 10, 50, 100, 500, 1000, 2000, 5000]}
           editMode='row'
           getRowHeight={() => "auto"}
           checkboxSelection
-          disableSelectionOnClick
+          disableRowSelectionOnClick
         />
       </div>
-    </div>
+    </div>)
   );
 };
 

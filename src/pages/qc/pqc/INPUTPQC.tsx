@@ -1,7 +1,7 @@
 import { Autocomplete, LinearProgress, TextField } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -242,7 +242,7 @@ const INPUTPQC = () => {
     setLoaiSX("01");
     setLoaiXH("02");
   };
-  const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdateExcel = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
       selectedID.has(element.id),
@@ -312,7 +312,7 @@ const INPUTPQC = () => {
     getcodelist("");
   }, []);
   return (
-    <div className="INPUTPQC">
+    (<div className="INPUTPQC">
       <div className="mininavbarinput">
         <div className="mininavitem" onClick={() => setNav(1)}>
           <span className="mininavtext">Input PQC1</span>
@@ -930,21 +930,21 @@ const INPUTPQC = () => {
           <div className="insertYCSXTable">
             {true && (
               <DataGrid
-                components={{
-                  Toolbar: CustomToolbar,
-                  LoadingOverlay: LinearProgress,
+                slots={{
+                  toolbar: CustomToolbar,
+                  
                 }}
                 loading={isLoading}
                 rowHeight={35}
                 rows={uploadExcelJson}
                 columns={column_excel2}
-                rowsPerPageOptions={[
+                pageSizeOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                 ]}
                 editMode="row"
                 getRowHeight={() => "auto"}
                 checkboxSelection
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleYCSXSelectionforUpdateExcel(ids);
                 }}
               />
@@ -952,7 +952,7 @@ const INPUTPQC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default INPUTPQC;

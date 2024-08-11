@@ -17,7 +17,7 @@ import {
   GridAddIcon,
   GridCallbackDetails,
   GridCellEditCommitParams,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
   MuiBaseEvent,
@@ -1389,7 +1389,7 @@ const PLANTABLE = () => {
             "error",
           );
         } else {
-          err_code = await f_saveQLSX({
+          err_code = (await f_saveQLSX({
             G_CODE: qlsxplandatafilter[0].G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1417,7 +1417,7 @@ const PLANTABLE = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
-          }) ? "0" : "1";
+          })) ? "0" : "1";
           
           if (err_code === "1") {
             Swal.fire(
@@ -2958,7 +2958,7 @@ const PLANTABLE = () => {
       </GridToolbarContainer>
     );
   }
-  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
       selectedID.has(element.PROD_REQUEST_NO),
@@ -2971,7 +2971,7 @@ const PLANTABLE = () => {
       console.log("xoa filter");
     }
   };
-  const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleQLSXPlanDataSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
       selectedID.has(element.PLAN_ID),
@@ -3024,7 +3024,7 @@ const PLANTABLE = () => {
       //console.log("xoa filter");
     }
   };
-  const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = chithidatatable.filter((element: any) =>
       selectedID.has(element.CHITHI_ID),
@@ -3038,7 +3038,7 @@ const PLANTABLE = () => {
     }
   };
   const handleTonLieuXuongDataSelectionforUpdate = (
-    ids: GridSelectionModel,
+    ids: GridRowSelectionModel,
   ) => {
     const selectedID = new Set(ids);
     let datafilter = tonlieuxuongdatatable.filter((element: any) =>
@@ -3053,7 +3053,7 @@ const PLANTABLE = () => {
     }
   };
   const handleLichSuXuatKhoAoDataSelectionforUpdate = (
-    ids: GridSelectionModel,
+    ids: GridRowSelectionModel,
   ) => {
     const selectedID = new Set(ids);
     let datafilter = lichsuxuatkhoaotable.filter((element: any) =>
@@ -3068,7 +3068,7 @@ const PLANTABLE = () => {
     }
   };
   const handleLichSuInputSXDataSelectionforUpdate = (
-    ids: GridSelectionModel,
+    ids: GridRowSelectionModel,
   ) => {
     const selectedID = new Set(ids);
     let datafilter = lichsuinputlieutable.filter((element: any) =>
@@ -3304,7 +3304,7 @@ const PLANTABLE = () => {
       loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
   }, []);
   return (
-    <div className="tableplan">
+    (<div className="tableplan">
       <div className="planwindow">
         <div className="content">
           <div className="ycsxlist">
@@ -3497,20 +3497,20 @@ const PLANTABLE = () => {
               <div className="tracuuYCSXTable">
                 <DataGrid
                   sx={{ fontSize: 12, flex: 1 }}
-                  components={{
-                    Toolbar: CustomToolbarPOTable,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbarPOTable,
+                    
                   }}
                   loading={isLoading}
                   rowHeight={30}
                   rows={ycsxdatatable}
                   columns={column_ycsxtable}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                   ]}
                   editMode="row"
                   getRowId={(row) => row.PROD_REQUEST_NO}
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleYCSXSelectionforUpdate(ids);
                   }}
                 />
@@ -3598,21 +3598,21 @@ const PLANTABLE = () => {
                       <div className="tabletonkhoao">
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
-                          components={{
-                            Toolbar: CustomToolbarKHOAO,
-                            LoadingOverlay: LinearProgress,
+                          slots={{
+                            toolbar: CustomToolbarKHOAO,
+                            
                           }}
                           getRowId={(row) => row.id}
                           loading={isLoading}
                           rowHeight={30}
                           rows={tonlieuxuongdatatable}
                           columns={column_tonlieuxuongtable}
-                          rowsPerPageOptions={[
+                          pageSizeOptions={[
                             5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                           ]}
                           checkboxSelection
                           selectionModel={selectionModel}
-                          onSelectionModelChange={(ids) => {
+                          onRowSelectionModelChange={(ids) => {
                             setSelectionModel(ids);
                             handleTonLieuXuongDataSelectionforUpdate(ids);
                           }}
@@ -3635,21 +3635,21 @@ const PLANTABLE = () => {
                       <div className="lichsuinputsanxuat">
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
-                          components={{
-                            Toolbar: CustomToolbarLICHSUINPUTSX,
-                            LoadingOverlay: LinearProgress,
+                          slots={{
+                            toolbar: CustomToolbarLICHSUINPUTSX,
+                            
                           }}
                           getRowId={(row) => row.id}
                           loading={isLoading}
                           rowHeight={30}
                           rows={lichsuinputlieutable}
                           columns={column_lichsuinputlieusanxuat}
-                          rowsPerPageOptions={[
+                          pageSizeOptions={[
                             5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                           ]}
                           checkboxSelection
                           selectionModel={selectionModel_INPUTSX}
-                          onSelectionModelChange={(ids) => {
+                          onRowSelectionModelChange={(ids) => {
                             setSelectionModel_INPUTSX(ids);
                             handleLichSuInputSXDataSelectionforUpdate(ids);
                           }}
@@ -3680,20 +3680,20 @@ const PLANTABLE = () => {
                       >
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
-                          components={{
-                            Toolbar: CustomToolbarNHAPKHOAO,
-                            LoadingOverlay: LinearProgress,
+                          slots={{
+                            toolbar: CustomToolbarNHAPKHOAO,
+                            
                           }}
                           getRowId={(row) => row.id}
                           loading={isLoading}
                           rowHeight={30}
                           rows={lichsunhapkhoaotable}
                           columns={column_lichsunhapkhoaotable}
-                          rowsPerPageOptions={[
+                          pageSizeOptions={[
                             5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                           ]}
                           /*  checkboxSelection */
-                          onSelectionModelChange={(ids) => {
+                          onRowSelectionModelChange={(ids) => {
                             handleTonLieuXuongDataSelectionforUpdate(ids);
                           }}
                           onCellEditCommit={(
@@ -3718,21 +3718,21 @@ const PLANTABLE = () => {
                       >
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
-                          components={{
-                            Toolbar: CustomToolbarXUATKHOAO,
-                            LoadingOverlay: LinearProgress,
+                          slots={{
+                            toolbar: CustomToolbarXUATKHOAO,
+                            
                           }}
                           getRowId={(row) => row.id}
                           loading={isLoading}
                           rowHeight={30}
                           rows={lichsuxuatkhoaotable}
                           columns={column_lichsuxuatkhoaotable}
-                          rowsPerPageOptions={[
+                          pageSizeOptions={[
                             5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                           ]}
                           checkboxSelection
                           selectionModel={selectionModel_XUATKHOAO}
-                          onSelectionModelChange={(ids) => {
+                          onRowSelectionModelChange={(ids) => {
                             setSelectionModel_XUATKHOAO(ids);
                             handleLichSuXuatKhoAoDataSelectionforUpdate(ids);
                           }}
@@ -3810,20 +3810,20 @@ const PLANTABLE = () => {
             <div className="planlist">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPLANTABLE,
-                  LoadingOverlay: LinearProgress,
+                slots={{
+                  toolbar: CustomToolbarPLANTABLE,
+                  
                 }}
                 loading={isLoading}
                 rowHeight={30}
                 rows={plandatatable}
                 columns={column_plandatatable}
-                rowsPerPageOptions={[
+                pageSizeOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
                 editMode="cell"
                 getRowId={(row) => row.PLAN_ID}
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
                 }}
                 onCellEditCommit={(
@@ -4068,21 +4068,21 @@ const PLANTABLE = () => {
             <div className="chithitable">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarCHITHITABLE,
-                  LoadingOverlay: LinearProgress,
+                slots={{
+                  toolbar: CustomToolbarCHITHITABLE,
+                  
                 }}
                 getRowId={(row) => row.CHITHI_ID}
                 loading={isLoading}
                 rowHeight={30}
                 rows={chithidatatable}
                 columns={column_chithidatatable}
-                rowsPerPageOptions={[
+                pageSizeOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
                 editMode="cell"
                 checkboxSelection
-                onSelectionModelChange={(ids) => {
+                onRowSelectionModelChange={(ids) => {
                   handleQLSXCHITHIDataSelectionforUpdate(ids);
                 }}
                 onCellEditCommit={(
@@ -4104,7 +4104,7 @@ const PLANTABLE = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default PLANTABLE;

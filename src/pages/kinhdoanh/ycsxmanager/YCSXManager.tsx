@@ -6,7 +6,7 @@ import {
   TextField,
   createFilterOptions,
 } from "@mui/material";
-import { DataGrid, GridSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
+import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useEffect, useMemo, useState, useTransition } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
@@ -2371,7 +2371,7 @@ const YCSXManager = () => {
     setLoaiSX("01");
     setLoaiXH("02");
   };
-  const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdateExcel = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
       selectedID.has(element.id)
@@ -3117,7 +3117,7 @@ const YCSXManager = () => {
     getcodelist("");
   }, []);
   return (
-    <div className='ycsxmanager'>
+    (<div className='ycsxmanager'>
       <div className='mininavbar'>
         <div
           className='mininavitem'
@@ -3438,21 +3438,21 @@ const YCSXManager = () => {
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbar,
+                    
                   }}
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
                   columns={column_excel2}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode='row'
                   getRowHeight={() => "auto"}
                   checkboxSelection
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleYCSXSelectionforUpdateExcel(ids);
                   }}
                 />
@@ -3807,15 +3807,15 @@ const YCSXManager = () => {
                 {true && (
                   <DataGrid
                     sx={{ fontSize: "0.7rem" }}
-                    components={{
-                      Toolbar: CustomToolbarAmazon,
-                      LoadingOverlay: LinearProgress,
+                    slots={{
+                      toolbar: CustomToolbarAmazon,
+                      
                     }}
                     loading={isLoading}
                     rowHeight={35}
                     rows={uploadExcelJson}
                     columns={column_excel_amazon}
-                    rowsPerPageOptions={[
+                    pageSizeOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
                     editMode='row'
@@ -3832,7 +3832,7 @@ const YCSXManager = () => {
           <TraAMZ />
         </div>
       )}
-    </div>
+    </div>)
   );
 };
 export default YCSXManager;

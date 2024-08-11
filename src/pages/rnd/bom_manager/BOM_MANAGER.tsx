@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
   MuiEvent,
@@ -1628,7 +1628,7 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
-  const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleCODESelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = rows.filter((element: CODE_INFO) =>
       selectedID.has(element.id),

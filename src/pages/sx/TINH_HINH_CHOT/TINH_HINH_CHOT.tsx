@@ -173,20 +173,20 @@ const TINH_HINH_CHOT = () => {
   }, []);
 
   return (
-    <div className="tinhhinhchotbaocao">
+    (<div className="tinhhinhchotbaocao">
       <div className="nhamay1">
         <DataGrid
           sx={{ fontSize: 12, flex: 1 }}
-          components={{
-            Toolbar: CustomToolbarPLANTABLE,
-            LoadingOverlay: LinearProgress,
+          slots={{
+            toolbar: CustomToolbarPLANTABLE,
+            
           }}
           loading={isLoading}
           rowHeight={30}
           rows={tinh_hinh_chot_NM1}
           columns={column_chotbc}
-          rowsPerPageOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 500000]}
-          disableSelectionOnClick
+          pageSizeOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 500000]}
+          disableRowSelectionOnClick
           editMode="cell"
           getRowId={(row) => row.SX_DATE}
         />
@@ -194,21 +194,21 @@ const TINH_HINH_CHOT = () => {
       <div className="nhamay2">
         <DataGrid
           sx={{ fontSize: 12, flex: 1 }}
-          components={{
-            Toolbar: CustomToolbarPLANTABLE2,
-            LoadingOverlay: LinearProgress,
+          slots={{
+            toolbar: CustomToolbarPLANTABLE2,
+            
           }}
           loading={isLoading}
           rowHeight={30}
           rows={tinh_hinh_chot_NM2}
           columns={column_chotbc}
-          rowsPerPageOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 500000]}
-          disableSelectionOnClick
+          pageSizeOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 500000]}
+          disableRowSelectionOnClick
           editMode="cell"
           getRowId={(row) => row.SX_DATE}
         />
       </div>
-    </div>
+    </div>)
   );
 };
 

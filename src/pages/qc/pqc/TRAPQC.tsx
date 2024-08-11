@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
@@ -864,13 +864,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               sx={{ fontSize: 12, flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+                
               }}
               loading={isLoading}
               rowHeight={30}
               rows={pqcdatatable}
               columns={columnDefinition}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
               editMode="row"

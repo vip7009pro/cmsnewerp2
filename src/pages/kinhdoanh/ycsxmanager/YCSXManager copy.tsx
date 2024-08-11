@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -3793,7 +3793,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     setLoaiSX("01");
     setLoaiXH("02");
   };
-  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
       selectedID.has(element.PROD_REQUEST_NO)
@@ -3805,7 +3805,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       console.log("xoa filter");
     }
   };
-  const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdateExcel = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
       selectedID.has(element.id)
@@ -4240,7 +4240,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     getcodelist("");
   }, [ycsxdatatable]);
   return (
-    <div className='ycsxmanager'>
+    (<div className='ycsxmanager'>
       <div className='mininavbar'>
         <div
           className='mininavitem'
@@ -4550,21 +4550,21 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbar,
+                    
                   }}
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
                   columns={column_excel2}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode='row'
                   getRowHeight={() => "auto"}
                   checkboxSelection
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleYCSXSelectionforUpdateExcel(ids);
                   }}
                 />
@@ -4789,7 +4789,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               sx={{ fontSize: "0.7rem" }}
               components={{
                 Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+                
               }}
               loading={isLoading}
               rowHeight={30}
@@ -4797,14 +4797,14 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               columns={
                 getCompany() === "CMS" ? column_ycsxtable : column_ycsxtable_pvn
               }
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
               editMode='row'
               getRowId={(row) => row.PROD_REQUEST_NO}
               checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(ids) => {
                 handleYCSXSelectionforUpdate(ids);
               }}
             /> */}
@@ -5105,15 +5105,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 {true && (
                   <DataGrid
                     sx={{ fontSize: "0.7rem" }}
-                    components={{
-                      Toolbar: CustomToolbarAmazon,
-                      LoadingOverlay: LinearProgress,
+                    slots={{
+                      toolbar: CustomToolbarAmazon,
+                      
                     }}
                     loading={isLoading}
                     rowHeight={35}
                     rows={uploadExcelJson}
                     columns={column_excel_amazon}
-                    rowsPerPageOptions={[
+                    pageSizeOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
                     editMode='row'
@@ -5130,7 +5130,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           <TraAMZ />
         </div>
       )}
-    </div>
+    </div>)
   );
 };
 export default YCSXManager;

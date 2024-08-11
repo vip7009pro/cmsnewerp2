@@ -3,7 +3,7 @@ import "./QUICKPLAN.scss";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getGlobalSetting, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
-import { DataGrid, GridSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
+import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { Button, IconButton, LinearProgress } from "@mui/material";
 import {
   AiFillFileExcel,
@@ -144,7 +144,7 @@ const QUICKPLAN2 = () => {
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-  const column_ycsxtable = [
+  const column_ycsxtable:any = [
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -1742,7 +1742,7 @@ const QUICKPLAN2 = () => {
       </GridToolbarContainer>
     );
   }
-  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
       selectedID.has(element.PROD_REQUEST_NO),
@@ -2251,7 +2251,7 @@ const QUICKPLAN2 = () => {
     getMachineList();
   }, []);
   return (
-    <div className="quickplan">
+    (<div className="quickplan">
       <div className="planwindow">
         <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
@@ -2910,20 +2910,20 @@ const QUICKPLAN2 = () => {
                 <div className="tracuuYCSXTable">
                   <DataGrid
                     sx={{ fontSize: 12, flex: 1 }}
-                    components={{
-                      Toolbar: CustomToolbarPOTable,
-                      LoadingOverlay: LinearProgress,
+                    slots={{
+                      toolbar: CustomToolbarPOTable,
+                      
                     }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={ycsxdatatable}
                     columns={column_ycsxtable}
-                    rowsPerPageOptions={[
+                    pageSizeOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
                     editMode="row"
                     getRowId={(row) => row.PROD_REQUEST_NO}
-                    onSelectionModelChange={(ids) => {
+                    onRowSelectionModelChange={(ids:any) => {
                       handleYCSXSelectionforUpdate(ids);
                     }}
                   />
@@ -3036,7 +3036,7 @@ const QUICKPLAN2 = () => {
           )}
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default QUICKPLAN2;

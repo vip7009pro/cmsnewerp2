@@ -1,6 +1,6 @@
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbar,
   GridToolbarContainer,
   GridToolbarExport,
@@ -499,7 +499,7 @@ const DiemDanhNhomBP = () => {
   }, []);
 
   return (
-    <div className='diemdanhnhom'>
+    (<div className='diemdanhnhom'>
       <div className='filterform'>
         <label>
           {getlang("calamviec", glbLang!)}:
@@ -522,20 +522,20 @@ const DiemDanhNhomBP = () => {
       <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
-          components={{
-            Toolbar: CustomToolbar,
-            LoadingOverlay: LinearProgress,
+          slots={{
+            toolbar: CustomToolbar,
+            
           }}
           loading={isLoading}
           rowHeight={35}
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
-          rowsPerPageOptions={[5, 10, 50, 100, 500, 1000]}
+          pageSizeOptions={[5, 10, 50, 100, 500, 1000]}
           editMode='row'
           getRowHeight={() => "auto"}
         />
       </div>
-    </div>
+    </div>)
   );
 };
 export default DiemDanhNhomBP;

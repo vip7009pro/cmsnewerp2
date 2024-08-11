@@ -359,12 +359,12 @@ const CustomerPOBalanceByType = () => {
     handleCustomerPOBalanceByType();
   }, []);
   return (
-    <div className="customerpobalancebytype">
+    (<div className="customerpobalancebytype">
       <DataGrid
         sx={{ fontSize: 12, flex: 1 }}
-        components={{
-          Toolbar: CustomToolbarPOTable,
-          LoadingOverlay: LinearProgress,
+        slots={{
+          toolbar: CustomToolbarPOTable,
+          
         }}
         loading={isLoading}
         rowHeight={30}
@@ -372,7 +372,7 @@ const CustomerPOBalanceByType = () => {
         columns={customerpobalancebytype_potable}
         getRowId={(row) => row.CUST_NAME_KD}
       />
-    </div>
+    </div>)
   );
 };
 

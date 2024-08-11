@@ -28,7 +28,7 @@ import {
   DataGrid,
   GridCallbackDetails,
   GridCellEditCommitParams,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
   MuiBaseEvent,
@@ -292,7 +292,7 @@ const DESIGN_AMAZON = () => {
     [],
   );
   const [codeinfoKD, setcodeinfoKD] = useState<any>("");
-  const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleCODESelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = rows.filter((element: CODE_INFO) =>
       selectedID.has(element.id),
@@ -499,7 +499,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   };
   useEffect(() => { }, [trigger]);
   return (
-    <div className="design_window">
+    (<div className="design_window">
       <div className="design_control" id="dsg_ctrl">
         {showhidecodelist && (
           <div className="codelist">
@@ -535,21 +535,21 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               </div>
               <div className="codeinfotable">
                 <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarCODETable,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbarCODETable,
+                    
                   }}
                   sx={{ fontSize: 12 }}
                   loading={isLoading}
                   rowHeight={30}
                   rows={rows}
                   columns={column_codeinfo}
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleCODESelectionforUpdate(ids);
                   }}
                   /*  rows={codeinfodatatable}
                 columns={columnDefinition} */
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode="cell"
@@ -1143,7 +1143,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </Draggable>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };
 export default DESIGN_AMAZON;

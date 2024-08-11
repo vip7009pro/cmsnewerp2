@@ -1612,14 +1612,14 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             {/*  <DataGrid
               components={{
                 Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+                
               }}
               sx={{ fontSize: "0.7rem" }}
               loading={isLoading}
               rowHeight={30}
               rows={pofulldatatable}
               columns={columnDefinition}
-              rowsPerPageOptions={[
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
               editMode="row"
