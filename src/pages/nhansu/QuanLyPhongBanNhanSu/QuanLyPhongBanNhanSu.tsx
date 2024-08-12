@@ -6,16 +6,13 @@ import {
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
   GridToolbarQuickFilter,
-  GridToolbar,
 } from "@mui/x-data-grid";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
 import "./QuanLyPhongBanNhanSu.scss";
 import Swal from "sweetalert2";
-import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import moment from "moment";
-import { UserContext } from "../../../api/Context";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { BiRefresh } from "react-icons/bi";
@@ -638,83 +635,84 @@ const QuanLyPhongBanNhanSu = () => {
     { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170 },
   ];
   const columns_employee_table = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,resizable: true },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,resizable: true,headerClassName: 'super-app-theme--header', },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header', },
     {
       field: "NV_CCID",
       headerName: "NV_CCID",
       width: 120,
       renderCell: (params: any) => {
         return <span>{zeroPad(params.row.NV_CCID, 6)}</span>;
-      },
+      },headerClassName: 'super-app-theme--header',
     },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 170 },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
+    { field: "FULL_NAME", headerName: "FULL_NAME", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 100,headerClassName: 'super-app-theme--header', },
     {
       field: "DOB",
       headerName: "DOB",
-      width: 170,    
+      width: 100,headerClassName: 'super-app-theme--header',    
     },
-    { field: "HOMETOWN", headerName: "HOMETOWN", width: 170 },
-    { field: "ADD_PROVINCE", headerName: "ADD_PROVINCE", width: 170 },
-    { field: "ADD_DISTRICT", headerName: "ADD_DISTRICT", width: 170 },
-    { field: "ADD_COMMUNE", headerName: "ADD_COMMUNE", width: 170 },
-    { field: "ADD_VILLAGE", headerName: "ADD_VILLAGE", width: 170 },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 170 },
+    { field: "HOMETOWN", headerName: "HOMETOWN", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "ADD_PROVINCE", headerName: "ADD_PROVINCE", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "ADD_DISTRICT", headerName: "ADD_DISTRICT", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "ADD_COMMUNE", headerName: "ADD_COMMUNE", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "ADD_VILLAGE", headerName: "ADD_VILLAGE", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 100,headerClassName: 'super-app-theme--header', },
     {
       field: "WORK_START_DATE",
       headerName: "WORK_START_DATE",
-      width: 170,    
+      width: 100,   headerClassName: 'super-app-theme--header', 
     },
-    /*  { field: "PASSWORD", headerName: "PASSWORD", width: 170},   */
-    { field: "EMAIL", headerName: "EMAIL", width: 170 },
-    { field: "REMARK", headerName: "REMARK", width: 170 },
-    { field: "ONLINE_DATETIME", headerName: "ONLINE_DATETIME", width: 170 },
-    { field: "CTR_CD", headerName: "CTR_CD", width: 170 },
-    { field: "SEX_CODE", headerName: "SEX_CODE", width: 170 },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 170 },
-    { field: "SEX_NAME_KR", headerName: "SEX_NAME_KR", width: 170 },
-    { field: "WORK_STATUS_CODE", headerName: "WORK_STATUS_CODE", width: 170 },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 170 },
+    /*  { field: "PASSWORD", headerName: "PASSWORD", width: 100},   */
+    { field: "EMAIL", headerName: "EMAIL", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "REMARK", headerName: "REMARK", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "ONLINE_DATETIME", headerName: "ONLINE_DATETIME", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "CTR_CD", headerName: "CTR_CD", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "SEX_CODE", headerName: "SEX_CODE", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "SEX_NAME_KR", headerName: "SEX_NAME_KR", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "WORK_STATUS_CODE", headerName: "WORK_STATUS_CODE", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 100 ,headerClassName: 'super-app-theme--header',},
     {
       field: "WORK_STATUS_NAME_KR",
       headerName: "WORK_STATUS_NAME_KR",
-      width: 170,
+      width: 100,headerClassName: 'super-app-theme--header',
     },
-    { field: "FACTORY_CODE", headerName: "FACTORY_CODE", width: 170 },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 170 },
-    { field: "FACTORY_NAME_KR", headerName: "FACTORY_NAME_KR", width: 170 },
-    { field: "JOB_CODE", headerName: "JOB_CODE", width: 170 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 170 },
-    { field: "JOB_NAME_KR", headerName: "JOB_NAME_KR", width: 170 },
-    { field: "POSITION_CODE", headerName: "POSITION_CODE", width: 170 },
-    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 170 },
-    { field: "POSITION_NAME_KR", headerName: "POSITION_NAME_KR", width: 170 },
-    { field: "WORK_SHIFT_CODE", headerName: "WORK_SHIFT_CODE", width: 170 },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 170 },
-    { field: "WORK_SHIF_NAME_KR", headerName: "WORK_SHIF_NAME_KR", width: 170 },
+    { field: "FACTORY_CODE", headerName: "FACTORY_CODE", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "FACTORY_NAME_KR", headerName: "FACTORY_NAME_KR", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "JOB_CODE", headerName: "JOB_CODE", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "JOB_NAME_KR", headerName: "JOB_NAME_KR", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "POSITION_CODE", headerName: "POSITION_CODE", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "POSITION_NAME_KR", headerName: "POSITION_NAME_KR", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "WORK_SHIFT_CODE", headerName: "WORK_SHIFT_CODE", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 100 ,headerClassName: 'super-app-theme--header',},
+    { field: "WORK_SHIF_NAME_KR", headerName: "WORK_SHIF_NAME_KR", width: 100 ,headerClassName: 'super-app-theme--header',},
     {
       field: "WORK_POSITION_CODE",
       headerName: "WORK_POSITION_CODE",
-      width: 170,
+      width: 170,headerClassName: 'super-app-theme--header',
     },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 170,
+      width: 170,headerClassName: 'super-app-theme--header',
     },
     {
       field: "WORK_POSITION_NAME_KR",
       headerName: "WORK_POSITION_NAME_KR",
-      width: 170,
+      width: 170,headerClassName: 'super-app-theme--header',
     },
-    { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170 },
-    { field: "SUBDEPTCODE", headerName: "SUBDEPTCODE", width: 170 },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 170 },
-    { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 170 },
-    { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 170 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 170 },
-    { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 170 },
+    { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "SUBDEPTCODE", headerName: "SUBDEPTCODE", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 170,headerClassName: 'super-app-theme--header', },
   ];
   const handleMainDeptSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
@@ -931,24 +929,7 @@ const QuanLyPhongBanNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-    generalQuery("getemployee_full", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          setEmployeeTable(response.data.data);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      loademployeefull();
   }, []);
   return (
     (<div className='quanlyphongbannhansu'>
@@ -1635,10 +1616,18 @@ const QuanLyPhongBanNhanSu = () => {
             </div>
             <div className='maindept_table'>
               <DataGrid
-                sx={{ fontSize: "0.8rem" }}
+                sx={{
+                  fontSize: "0.7rem", '& .super-app-theme--header': {
+                    backgroundColor: 'rgba(184, 230, 18, 0.775)',
+                    fontSize:'0.8rem'
+                  },
+                }}
                 slots={{
                   toolbar: CustomToolbar,                  
-                }}                
+                }} 
+                columnHeaderHeight={20}
+                density="compact"
+                keepNonExistentRowsSelected={false}                   
                 loading={isLoading}
                 rowHeight={35}
                 rows={
