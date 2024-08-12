@@ -469,7 +469,17 @@ const DiemDanhNhomBP = () => {
       .then((response) => {
         ////console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          setDiemDanhNhomTable(response.data.data);
+          let loaded_data =  response.data.data.map((e: any, index: number)=> {
+            return (
+              {
+                ...e,
+                REQUEST_DATE: e.REQUEST_DATE !== null? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD'):'',
+                APPLY_DATE: e.APPLY_DATE !== null? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD'):'',
+                id: index
+              }
+            )
+          })
+          setDiemDanhNhomTable(loaded_data);
           setisLoading(false);
           Swal.fire(
             "Thông báo",

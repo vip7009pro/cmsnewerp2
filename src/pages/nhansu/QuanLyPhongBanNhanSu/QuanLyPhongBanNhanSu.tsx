@@ -888,6 +888,10 @@ const QuanLyPhongBanNhanSu = () => {
             (element: EmployeeTableData, index: number) => {
               return {
                 ...element,
+                DOB: element.DOB !== null? moment.utc(element.DOB).format('YYYY-MM-DD'):'',
+                WORK_START_DATE: element.WORK_START_DATE !== null? moment.utc(element.WORK_START_DATE).format('YYYY-MM-DD'):'',
+                RESIGN_DATE: element.RESIGN_DATE !== null? moment.utc(element.RESIGN_DATE).format('YYYY-MM-DD'):'',
+                ONLINE_DATETIME: element.ONLINE_DATETIME !== null? moment.utc(element.ONLINE_DATETIME).format('YYYY-MM-DD HH:mm:ss'):'',
                 FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
               };
             }
@@ -1633,7 +1637,7 @@ const QuanLyPhongBanNhanSu = () => {
               <DataGrid
                 sx={{ fontSize: "0.8rem" }}
                 slots={{
-                  toolbar: GridToolbar,                  
+                  toolbar: CustomToolbar,                  
                 }}                
                 loading={isLoading}
                 rowHeight={35}

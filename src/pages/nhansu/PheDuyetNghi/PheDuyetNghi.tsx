@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { PheDuyetNghiData } from "../../../api/GlobalInterface";
+import moment from "moment";
 
 const PheDuyetNghi = () => {
   const [isLoading, setisLoading] = useState(false);
@@ -272,6 +273,9 @@ const PheDuyetNghi = () => {
             return (
               {
                 ...e,
+                REQUEST_DATE: e.REQUEST_DATE !== null? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD'):'',
+                APPLY_DATE: e.APPLY_DATE !== null? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD'):'',
+                DOB: e.DOB !== null? moment.utc(e.DOB).format('YYYY-MM-DD'):'',
                 id: e.OFF_ID
               }
             )
