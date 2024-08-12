@@ -1,21 +1,15 @@
 import {
   DataGrid,
-  GridRowSelectionModel,
-  GridToolbar,
   GridToolbarContainer,
-  GridToolbarExport,
-  GridCsvExportOptions,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
-  GridRowsProp,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import "./DiemDanhNhom.scss";
 import Swal from "sweetalert2";
-import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { DiemDanhNhomData } from "../../../api/GlobalInterface";
@@ -412,20 +406,13 @@ const DiemDanhNhomBP = () => {
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 130,
-      valueGetter: (params: any) => {
-        if (params.row.REQUEST_DATE !== null)
-          return params.row.REQUEST_DATE.slice(0, 10);
-      },
+      width: 130,     
+      
     },
     {
       field: "APPLY_DATE",
       headerName: "APPLY_DATE",
-      width: 130,
-      valueGetter: (params: any) => {
-        if (params.row.APPLY_DATE !== null)
-          return params.row.APPLY_DATE.slice(0, 10);
-      },
+      width: 130,      
     },
     { field: "APPROVAL_STATUS", headerName: "APPROVAL_STATUS", width: 130 },
     { field: "OFF_ID", headerName: "OFF_ID", width: 130 },

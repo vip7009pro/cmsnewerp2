@@ -327,12 +327,7 @@ const BaoCaoNhanSu = () => {
     {
       field: "DATE_COLUMN",
       headerName: "DATE_COLUMN",
-      width: 120,
-      valueGetter: (params: any) => {
-        return params.row.DATE_COLUMN
-          ? params.row.DATE_COLUMN.slice(0, 10)
-          : "";
-      },
+      width: 120,     
     },
     {
       field: "WEEKDAY",
@@ -444,12 +439,7 @@ const BaoCaoNhanSu = () => {
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 120,
-      valueGetter: (params: any) => {
-        return params.row.REQUEST_DATE
-          ? params.row.REQUEST_DATE.slice(0, 10)
-          : "";
-      },
+      width: 120,      
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
   ];

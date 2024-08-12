@@ -29,10 +29,7 @@ const PheDuyetNghi = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 100,
-      valueGetter: (params: any) => {
-        return params.row.OFF_ID;
-      },
+      width: 100,     
     },
     {
       field: "PHE_DUYET",
@@ -217,18 +214,12 @@ const PheDuyetNghi = () => {
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 110,
-      valueGetter: (params: any) => {
-        return params.row.REQUEST_DATE.slice(0, 10);
-      },
+      width: 110,     
     },
     {
       field: "APPLY_DATE",
       headerName: "APPLY_DATE",
-      width: 100,
-      valueGetter: (params: any) => {
-        return params.row.APPLY_DATE.slice(0, 10);
-      },
+      width: 100,     
     },
     { field: "REASON_NAME", headerName: "REASON_NAME", width: 120 },
     { field: "CA_NGHI", headerName: "CA_NGHI", width: 80 },
@@ -238,9 +229,6 @@ const PheDuyetNghi = () => {
       field: "DOB",
       headerName: "DOB",
       width: 170,
-      valueGetter: (params: any) => {
-        return params.row.DOB.slice(0, 10);
-      },
     },
     { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 170 },
     { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 170 },
@@ -280,7 +268,15 @@ const PheDuyetNghi = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          setDiemDanhNhomTable(response.data.data);
+          let loaded_data =  response.data.data.map((e: any, index: number)=> {
+            return (
+              {
+                ...e,
+                id: e.OFF_ID
+              }
+            )
+          })
+          setDiemDanhNhomTable(loaded_data);
           setisLoading(false);
           Swal.fire(
             "Thông báo",

@@ -653,10 +653,7 @@ const QuanLyPhongBanNhanSu = () => {
     {
       field: "DOB",
       headerName: "DOB",
-      width: 170,
-      valueGetter: (params: any) => {
-        return params.row.DOB.slice(0, 10);
-      },
+      width: 170,    
     },
     { field: "HOMETOWN", headerName: "HOMETOWN", width: 170 },
     { field: "ADD_PROVINCE", headerName: "ADD_PROVINCE", width: 170 },
@@ -667,10 +664,7 @@ const QuanLyPhongBanNhanSu = () => {
     {
       field: "WORK_START_DATE",
       headerName: "WORK_START_DATE",
-      width: 170,
-      valueGetter: (params: any) => {
-        return params.row.WORK_START_DATE.slice(0, 10);
-      },
+      width: 170,    
     },
     /*  { field: "PASSWORD", headerName: "PASSWORD", width: 170},   */
     { field: "EMAIL", headerName: "EMAIL", width: 170 },

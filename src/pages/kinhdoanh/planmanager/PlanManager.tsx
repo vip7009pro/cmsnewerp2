@@ -85,7 +85,7 @@ const PlanManager = () => {
       headerName: "PROD_MAIN_MATERIAL",
       width: 120,
     },
-    { field: "PLAN_DATE", type: "date", headerName: "PLAN_DATE", width: 120 },
+    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 120 },
     {
       field: "D1",
       type: "number",

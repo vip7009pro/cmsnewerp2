@@ -41,10 +41,7 @@ const DieuChuyenTeam = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 100,
-      valueGetter: (params: any) => {
-        return params.row.EMPL_NO;
-      },
+      width: 100,     
     },
     { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
     {
@@ -325,7 +322,15 @@ const DieuChuyenTeam = () => {
     generalQuery("workpositionlist_BP", {})
       .then((response) => {
         //console.log(response.data.data);
-        setWorkPositionLoad(response.data.data);
+        let loaded_data =  response.data.data.map((e: any, index: number)=> {
+          return (
+            {
+              ...e,
+              id: e.EMPL_NO
+            }
+          )
+        })
+        setWorkPositionLoad(loaded_data);
         setisLoading(false);
       })
       .catch((error) => {
