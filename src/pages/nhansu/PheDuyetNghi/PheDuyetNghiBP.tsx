@@ -1,41 +1,33 @@
 import {
   DataGrid,
-  GridRowSelectionModel,
-  GridToolbar,
   GridToolbarContainer,
-  GridToolbarExport,
-  GridCsvExportOptions,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
-  GridRowsProp,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import "./PheDuyetNghi.scss";
 import Swal from "sweetalert2";
-import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { PheDuyetNghiData } from "../../../api/GlobalInterface";
 import moment from "moment";
-
 const PheDuyetNghiBP = () => {
   const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<PheDuyetNghiData>
   >([]);
-
   const columns_diemdanhnhom = [
     {
       field: "id",
       headerName: "ID",
-      width: 100,    
+      width: 100, headerClassName: 'super-app-theme--header',
     },
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 200,
+      width: 200, headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (pheduyet_value: number) => {
           if (pheduyet_value === 3) {
@@ -60,9 +52,9 @@ const PheDuyetNghiBP = () => {
                       const newProjects = diemdanhnhomtable.map((p) =>
                         p.OFF_ID === params.row.OFF_ID
                           ? {
-                              ...p,
-                              APPROVAL_STATUS: pheduyet_value,
-                            }
+                            ...p,
+                            APPROVAL_STATUS: pheduyet_value,
+                          }
                           : p
                       );
                       setDiemDanhNhomTable(newProjects);
@@ -90,9 +82,9 @@ const PheDuyetNghiBP = () => {
                   const newProjects = diemdanhnhomtable.map((p) =>
                     p.OFF_ID === params.row.OFF_ID
                       ? {
-                          ...p,
-                          APPROVAL_STATUS: pheduyet_value,
-                        }
+                        ...p,
+                        APPROVAL_STATUS: pheduyet_value,
+                      }
                       : p
                   );
                   setDiemDanhNhomTable(newProjects);
@@ -124,9 +116,9 @@ const PheDuyetNghiBP = () => {
                     const newProjects = diemdanhnhomtable.map((p) =>
                       p.OFF_ID === params.row.OFF_ID
                         ? {
-                            ...p,
-                            APPROVAL_STATUS: pheduyet_value,
-                          }
+                          ...p,
+                          APPROVAL_STATUS: pheduyet_value,
+                        }
                         : p
                     );
                     setDiemDanhNhomTable(newProjects);
@@ -149,19 +141,17 @@ const PheDuyetNghiBP = () => {
             }
           }
         };
-
         const onReset = () => {
           const newProjects = diemdanhnhomtable.map((p) =>
             p.OFF_ID === params.row.OFF_ID
               ? {
-                  ...p,
-                  APPROVAL_STATUS: 2,
-                }
+                ...p,
+                APPROVAL_STATUS: 2,
+              }
               : p
           );
           setDiemDanhNhomTable(newProjects);
         };
-
         if (params.row.APPROVAL_STATUS === 0) {
           return (
             <div className='onoffdiv'>
@@ -208,42 +198,41 @@ const PheDuyetNghiBP = () => {
         }
       },
     },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120 },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120, headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120, headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100, headerClassName: 'super-app-theme--header' },
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 110,     
+      width: 110, headerClassName: 'super-app-theme--header',
     },
     {
       field: "APPLY_DATE",
       headerName: "APPLY_DATE",
-      width: 100,     
+      width: 100, headerClassName: 'super-app-theme--header',
     },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120 },
-    { field: "CA_NGHI", headerName: "CA_NGHI", width: 80 },
-    { field: "REMARK", headerName: "REMARK", width: 170 },
-    { field: "ON_OFF", headerName: "ON_OFF", width: 120 },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120, headerClassName: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 80, headerClassName: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "ON_OFF", headerName: "ON_OFF", width: 120, headerClassName: 'super-app-theme--header' },
     {
       field: "DOB",
       headerName: "DOB",
-      width: 170,     
+      width: 170, headerClassName: 'super-app-theme--header',
     },
-    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 170 },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 170 },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 170 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 170 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPT_NAME", width: 170 },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPT_NAME", width: 170 },
+    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPT_NAME", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPT_NAME", width: 170, headerClassName: 'super-app-theme--header' },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 170,
+      width: 170, headerClassName: 'super-app-theme--header',
     },
   ];
-
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -262,20 +251,19 @@ const PheDuyetNghiBP = () => {
       </GridToolbarContainer>
     );
   }
-
   useEffect(() => {
     setisLoading(true);
     generalQuery("pheduyetnhomBP", {})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          let loaded_data =  response.data.data.map((e: any, index: number)=> {
+          let loaded_data = response.data.data.map((e: any, index: number) => {
             return (
               {
                 ...e,
-                REQUEST_DATE: e.REQUEST_DATE !== null? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD'):'',
-                APPLY_DATE: e.APPLY_DATE !== null? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD'):'',
-                DOB: e.DOB !== null? moment.utc(e.DOB).format('YYYY-MM-DD'):'',
+                REQUEST_DATE: e.REQUEST_DATE !== null ? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD') : '',
+                APPLY_DATE: e.APPLY_DATE !== null ? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD') : '',
+                DOB: e.DOB !== null ? moment.utc(e.DOB).format('YYYY-MM-DD') : '',
                 id: e.OFF_ID
               }
             )
@@ -296,15 +284,20 @@ const PheDuyetNghiBP = () => {
         setisLoading(false);
       });
   }, []);
-
   return (
     (<div className='pheduyetnghi'>
       <div className='maindept_table'>
         <DataGrid
-          sx={{ fontSize: "0.8rem" }}
+          sx={{
+            fontSize: "0.7rem", '& .super-app-theme--header': {
+              backgroundColor: 'rgba(158, 79, 4, 0.775)',
+              fontSize: '0.8rem',
+              color: 'white'
+            },
+          }}
+          columnHeaderHeight={20}
           slots={{
             toolbar: CustomToolbar,
-            
           }}
           loading={isLoading}
           rowHeight={35}
@@ -320,5 +313,4 @@ const PheDuyetNghiBP = () => {
     </div>)
   );
 };
-
 export default PheDuyetNghiBP;

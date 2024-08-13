@@ -41,13 +41,13 @@ const DieuChuyenTeam = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 100,     
+      width: 100,headerClassName: 'super-app-theme--header',     
     },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130,headerClassName: 'super-app-theme--header' },
     {
       field: "SET_TEAM",
       headerName: "SET_TEAM",
-      width: 200,
+      width: 200,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (teamvalue_info: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
@@ -121,11 +121,11 @@ const DieuChuyenTeam = () => {
         }
       },
     },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130 },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130,headerClassName: 'super-app-theme--header' },
     {
       field: "SET_NM",
       headerName: "SET_NM",
-      width: 100,
+      width: 100,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (teamvalue_info: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
@@ -192,12 +192,12 @@ const DieuChuyenTeam = () => {
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 130,
+      width: 130,headerClassName: 'super-app-theme--header',
     },
     {
       field: "SETVITRI",
       headerName: "SET_VI_TRI",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (work_position_code: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
@@ -274,16 +274,16 @@ const DieuChuyenTeam = () => {
         );
       },
     },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-    { field: "CMS_ID", headerName: "NS_ID", width: 100 },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130 },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130 },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130 },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130 },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 130 },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 130 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 130,headerClassName: 'super-app-theme--header' },
   ];
   function CustomToolbar() {
     return (
@@ -380,7 +380,14 @@ const DieuChuyenTeam = () => {
       </div>
       <div className='maindept_table'>
         <DataGrid
-          sx={{ fontSize: "0.8rem" }}
+          sx={{
+            fontSize: "0.7rem", '& .super-app-theme--header': {
+              backgroundColor: 'rgba(211, 23, 180, 0.775)',
+              fontSize:'0.8rem',
+              color:'white'
+            },
+          }}
+          columnHeaderHeight={20}
           slots={{
             toolbar: CustomToolbar,
             

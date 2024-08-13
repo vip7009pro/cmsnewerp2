@@ -66,13 +66,13 @@ const DieuChuyenTeamBP = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 100,
+      width: 100,headerClassName: 'super-app-theme--header',     
     },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130,headerClassName: 'super-app-theme--header' },
     {
       field: "SET_TEAM",
       headerName: "SET_TEAM",
-      width: 200,
+      width: 200,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (teamvalue_info: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
@@ -86,14 +86,14 @@ const DieuChuyenTeamBP = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? {
-                        ...p,
-                        WORK_SHIF_NAME:
-                          teamvalue_info === 0
-                            ? "Hành Chính"
-                            : teamvalue_info === 1
+                      ...p,
+                      WORK_SHIF_NAME:
+                        teamvalue_info === 0
+                          ? "Hành Chính"
+                          : teamvalue_info === 1
                             ? "TEAM 1"
                             : "TEAM 2",
-                      }
+                    }
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
@@ -146,11 +146,11 @@ const DieuChuyenTeamBP = () => {
         }
       },
     },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130 },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130,headerClassName: 'super-app-theme--header' },
     {
       field: "SET_NM",
       headerName: "SET_NM",
-      width: 100,
+      width: 100,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (teamvalue_info: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
@@ -164,10 +164,10 @@ const DieuChuyenTeamBP = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? {
-                        ...p,
-                        FACTORY_NAME:
-                          teamvalue_info === 1 ? "Nhà máy 1" : "Nhà máy 2",
-                      }
+                      ...p,
+                      FACTORY_NAME:
+                        teamvalue_info === 1 ? "Nhà máy 1" : "Nhà máy 2",
+                    }
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
@@ -217,12 +217,12 @@ const DieuChuyenTeamBP = () => {
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 130,
+      width: 130,headerClassName: 'super-app-theme--header',
     },
     {
       field: "SETVITRI",
       headerName: "SET_VI_TRI",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (work_position_code: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
@@ -237,7 +237,6 @@ const DieuChuyenTeamBP = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               Swal.fire("Tiến hành chuyển team", "Đang chuyển team", "success");
-
               generalQuery("setEMPL_WORK_POSITION", {
                 WORK_POSITION_CODE: work_position_code,
                 EMPL_NO: params.row.EMPL_NO,
@@ -300,16 +299,16 @@ const DieuChuyenTeamBP = () => {
         );
       },
     },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-    { field: "CMS_ID", headerName: "NS_ID", width: 100 },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130 },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130 },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130 },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130 },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 130 },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 130 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130,headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 130,headerClassName: 'super-app-theme--header' },
   ];
   function CustomToolbar() {
     return (
@@ -406,7 +405,14 @@ const DieuChuyenTeamBP = () => {
       </div>
       <div className='maindept_table'>
         <DataGrid
-          sx={{ fontSize: "0.7rem" }}
+         sx={{
+          fontSize: "0.7rem", '& .super-app-theme--header': {
+            backgroundColor: 'rgba(211, 23, 180, 0.775)',
+            fontSize:'0.8rem',
+            color:'white'
+          },
+        }}
+        columnHeaderHeight={20}
           slots={{
             toolbar: CustomToolbar,
             

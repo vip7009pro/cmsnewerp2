@@ -30,12 +30,12 @@ const PheDuyetNghi = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 100,     
+      width: 100,headerClassName: 'super-app-theme--header',     
     },
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 200,
+      width: 200,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         const onClick = (pheduyet_value: number) => {
           if (pheduyet_value === 3) {
@@ -208,39 +208,39 @@ const PheDuyetNghi = () => {
         }
       },
     },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120 },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100,headerClassName: 'super-app-theme--header' },
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 110,     
+      width: 110,headerClassName: 'super-app-theme--header',     
     },
     {
       field: "APPLY_DATE",
       headerName: "APPLY_DATE",
-      width: 100,     
+      width: 100,headerClassName: 'super-app-theme--header',     
     },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120 },
-    { field: "CA_NGHI", headerName: "CA_NGHI", width: 80 },
-    { field: "REMARK", headerName: "REMARK", width: 170 },
-    { field: "ON_OFF", headerName: "ON_OFF", width: 120 },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 80,headerClassName: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "ON_OFF", headerName: "ON_OFF", width: 120,headerClassName: 'super-app-theme--header' },
     {
       field: "DOB",
       headerName: "DOB",
-      width: 170,
+      width: 170,headerClassName: 'super-app-theme--header',
     },
-    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 170 },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 170 },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 170 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 170 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPT_NAME", width: 170 },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPT_NAME", width: 170 },
+    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPT_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPT_NAME", width: 170,headerClassName: 'super-app-theme--header' },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 170,
+      width: 170,headerClassName: 'super-app-theme--header',
     },
   ];
 
@@ -301,7 +301,14 @@ const PheDuyetNghi = () => {
     (<div className='pheduyetnghi'>
       <div className='maindept_table'>
         <DataGrid
-          sx={{ fontSize: "0.8rem" }}
+          sx={{
+            fontSize: "0.7rem", '& .super-app-theme--header': {
+              backgroundColor: 'rgba(158, 79, 4, 0.775)',
+              fontSize:'0.8rem',
+              color:'white'
+            },
+          }}
+          columnHeaderHeight={20}
           slots={{
             toolbar: CustomToolbar,
             

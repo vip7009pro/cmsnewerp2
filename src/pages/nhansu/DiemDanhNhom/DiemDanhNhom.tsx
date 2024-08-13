@@ -16,7 +16,6 @@ import { DiemDanhNhomData } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-
 const DiemDanhNhom = () => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang,
@@ -27,8 +26,8 @@ const DiemDanhNhom = () => {
     Array<DiemDanhNhomData>
   >([]);
   const columns_diemdanhnhom = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-    { field: "CMS_ID", headerName: "NS_ID", width: 100 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 170, headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 100, headerClassName: 'super-app-theme--header' },
     {
       field: "AVATAR",
       headerName: "AVATAR",
@@ -42,7 +41,7 @@ const DiemDanhNhom = () => {
             alt={params.row.EMPL_NO}
           ></img>
         );
-      },
+      }, headerClassName: 'super-app-theme--header',
     },
     {
       field: "DIEMDANH",
@@ -53,8 +52,8 @@ const DiemDanhNhom = () => {
           params.row.ON_OFF === 1
             ? "onbt"
             : params.row.ON_OFF === 0
-            ? "offbt"
-            : "";
+              ? "offbt"
+              : "";
         const dangkynghi_auto = (REASON_CODE: number) => {
           const insertData = {
             canghi: 1,
@@ -74,7 +73,6 @@ const DiemDanhNhom = () => {
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
-
                 Swal.fire(
                   "Thông báo",
                   "Người này nghỉ ko đăng ký, auto đăng ký nghỉ!",
@@ -84,7 +82,7 @@ const DiemDanhNhom = () => {
                 Swal.fire(
                   "Lỗi",
                   "Người này nghỉ ko đăng ký, auto chuyển nghỉ, tuy nhiên thao tác thất bại ! " +
-                    response.data.message,
+                  response.data.message,
                   "error"
                 );
               }
@@ -93,7 +91,6 @@ const DiemDanhNhom = () => {
               //console.log(error);
             });
         };
-
         const xoadangkynghi_auto = () => {
           const insertData = {
             EMPL_NO: params.row.EMPL_NO,
@@ -116,7 +113,6 @@ const DiemDanhNhom = () => {
               //console.log(error);
             });
         };
-
         const onClick = async (type: number, calv?: number) => {
           let current_team_dayshift: number = -2;
           /*  await generalQuery("checkcurrentDAYSHIFT",{})
@@ -125,11 +121,9 @@ const DiemDanhNhom = () => {
                       if (response.data.tk_status === "OK") {
                         current_team_dayshift = response.data.data[0].DAYSHIFT;                        
                       } else {
-                       
                       }
                     })
                     .catch((error) => {
-                      
                     }); */
           if (current_team_dayshift !== -1) {
             if (type === 1) {
@@ -144,8 +138,8 @@ const DiemDanhNhom = () => {
                     params.row.WORK_SHIF_NAME === "Hành Chính"
                       ? 0
                       : params.row.WORK_SHIF_NAME === "TEAM 1"
-                      ? 1
-                      : 2,
+                        ? 1
+                        : 2,
                   CURRENT_CA:
                     params.row.WORK_SHIF_NAME === "Hành Chính" ? 0 : calv,
                 })
@@ -184,8 +178,8 @@ const DiemDanhNhom = () => {
                   params.row.WORK_SHIF_NAME === "Hành Chính"
                     ? 0
                     : params.row.WORK_SHIF_NAME === "TEAM 1"
-                    ? 1
-                    : 2,
+                      ? 1
+                      : 2,
                 CURRENT_CA:
                   params.row.WORK_SHIF_NAME === "Hành Chính" ? 0 : calv,
               })
@@ -220,8 +214,8 @@ const DiemDanhNhom = () => {
                   params.row.WORK_SHIF_NAME === "Hành Chính"
                     ? 0
                     : params.row.WORK_SHIF_NAME === "TEAM 1"
-                    ? 1
-                    : 2,
+                      ? 1
+                      : 2,
                 CURRENT_CA:
                   params.row.WORK_SHIF_NAME === "Hành Chính" ? 0 : calv,
               })
@@ -296,7 +290,7 @@ const DiemDanhNhom = () => {
             </button>
           </div>
         );
-      },
+      }, headerClassName: 'super-app-theme--header',
     },
     {
       field: "TANGCA",
@@ -308,8 +302,8 @@ const DiemDanhNhom = () => {
           params.row.OVERTIME === 1
             ? "onbt"
             : params.row.OVERTIME === 0
-            ? "offbt"
-            : "";
+              ? "offbt"
+              : "";
         const onClick = (overtimeinfo: string) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
           generalQuery("dangkytangcanhom", {
@@ -323,10 +317,10 @@ const DiemDanhNhom = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? {
-                        ...p,
-                        OVERTIME: overtimeinfo === "KTC" ? 0 : 1,
-                        OVERTIME_INFO: overtimeinfo,
-                      }
+                      ...p,
+                      OVERTIME: overtimeinfo === "KTC" ? 0 : 1,
+                      OVERTIME_INFO: overtimeinfo,
+                    }
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
@@ -385,41 +379,41 @@ const DiemDanhNhom = () => {
             </button>
           </div>
         );
-      },
+      }, headerClassName: 'super-app-theme--header',
     },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130 },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130 },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130 },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 130 },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130 },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 130 },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130, headerClassName: 'super-app-theme--header' },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 130,
+      width: 130, headerClassName: 'super-app-theme--header',
     },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130 },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130, headerClassName: 'super-app-theme--header' },
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 130,     
+      width: 130, headerClassName: 'super-app-theme--header',
     },
     {
       field: "APPLY_DATE",
       headerName: "APPLY_DATE",
-      width: 130,
+      width: 130, headerClassName: 'super-app-theme--header',
     },
-    { field: "APPROVAL_STATUS", headerName: "APPROVAL_STATUS", width: 130 },
-    { field: "OFF_ID", headerName: "OFF_ID", width: 130 },
-    { field: "CA_NGHI", headerName: "CA_NGHI", width: 130 },
-    { field: "ON_OFF", headerName: "ON_OFF", width: 130 },
-    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 130 },
-    { field: "OVERTIME", headerName: "OVERTIME", width: 130 },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 130 },
-    { field: "REMARK", headerName: "REMARK", width: 130 },
+    { field: "APPROVAL_STATUS", headerName: "APPROVAL_STATUS", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "OFF_ID", headerName: "OFF_ID", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "ON_OFF", headerName: "ON_OFF", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "OVERTIME", headerName: "OVERTIME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 130, headerClassName: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 130, headerClassName: 'super-app-theme--header' },
   ];
   function CustomToolbar() {
     return (
@@ -456,19 +450,18 @@ const DiemDanhNhom = () => {
         //console.log(error);
       });
   };
-
   useEffect(() => {
     //console.log('vao day');
     generalQuery("diemdanhnhom", { team_name_list: WORK_SHIFT_CODE })
       .then((response) => {
         ////console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          let loaded_data =  response.data.data.map((e: any, index: number)=> {
+          let loaded_data = response.data.data.map((e: any, index: number) => {
             return (
               {
                 ...e,
-                REQUEST_DATE: e.REQUEST_DATE !== null? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD'):'',
-                APPLY_DATE: e.APPLY_DATE !== null? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD'):'',
+                REQUEST_DATE: e.REQUEST_DATE !== null ? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD') : '',
+                APPLY_DATE: e.APPLY_DATE !== null ? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD') : '',
                 id: index
               }
             )
@@ -487,12 +480,11 @@ const DiemDanhNhom = () => {
         //console.log(error);
       });
   }, []);
-
   return (
     (<div className='diemdanhnhom'>
       <div className='filterform'>
         <label>
-        {getlang("calamviec",glbLang!)}:
+          {getlang("calamviec", glbLang!)}:
           <select
             name='calamviec'
             value={WORK_SHIFT_CODE}
@@ -511,11 +503,17 @@ const DiemDanhNhom = () => {
       </div>
       <div className='maindept_table'>
         <DataGrid
-          sx={{ fontSize: "0.8rem" }}
+          sx={{
+            fontSize: "0.7rem", '& .super-app-theme--header': {
+              backgroundColor: 'rgba(211, 23, 180, 0.775)',
+              fontSize: '0.8rem',
+              color: 'white'
+            },
+          }}
+          columnHeaderHeight={20}
           slots={{
             toolbar: CustomToolbar,
-            
-          }}          
+          }}
           loading={isLoading}
           rowHeight={70}
           rows={diemdanhnhomtable}

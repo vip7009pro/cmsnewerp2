@@ -694,25 +694,25 @@ const QuanLyPhongBanNhanSu = () => {
     {
       field: "WORK_POSITION_CODE",
       headerName: "WORK_POSITION_CODE",
-      width: 170,headerClassName: 'super-app-theme--header',
+      width: 100,headerClassName: 'super-app-theme--header',
     },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 170,headerClassName: 'super-app-theme--header',
+      width: 100,headerClassName: 'super-app-theme--header',
     },
     {
       field: "WORK_POSITION_NAME_KR",
       headerName: "WORK_POSITION_NAME_KR",
-      width: 170,headerClassName: 'super-app-theme--header',
+      width: 100,headerClassName: 'super-app-theme--header',
     },
-    { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170,headerClassName: 'super-app-theme--header', },
-    { field: "SUBDEPTCODE", headerName: "SUBDEPTCODE", width: 170,headerClassName: 'super-app-theme--header', },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 170,headerClassName: 'super-app-theme--header', },
-    { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 170,headerClassName: 'super-app-theme--header', },
-    { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 170,headerClassName: 'super-app-theme--header', },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 170,headerClassName: 'super-app-theme--header', },
-    { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 170,headerClassName: 'super-app-theme--header', },
+    { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "SUBDEPTCODE", headerName: "SUBDEPTCODE", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 100,headerClassName: 'super-app-theme--header', },
+    { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 100,headerClassName: 'super-app-theme--header', },
   ];
   const handleMainDeptSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
@@ -1618,8 +1618,9 @@ const QuanLyPhongBanNhanSu = () => {
               <DataGrid
                 sx={{
                   fontSize: "0.7rem", '& .super-app-theme--header': {
-                    backgroundColor: 'rgba(184, 230, 18, 0.775)',
-                    fontSize:'0.8rem'
+                    backgroundColor: 'rgb(7, 180, 85)',
+                    fontSize:'0.8rem',
+                    color:'white'
                   },
                 }}
                 slots={{
