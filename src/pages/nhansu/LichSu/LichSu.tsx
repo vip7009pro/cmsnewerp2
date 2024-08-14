@@ -37,12 +37,12 @@ const LichSu = () => {
     {
       field: "DATE_COLUMN",
       headerName: "DATE_COLUMN",
-      width: 120,      
+      width: 120,headerClassName: 'super-app-theme--header',      
     },
     {
       field: "WEEKDAY",
       headerName: "WEEKDAY",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         if (params.row.WEEKDAY === "Sunday") {
           return (
@@ -66,7 +66,7 @@ const LichSu = () => {
     {
       field: "ON_OFF",
       headerName: "ON_OFF",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         if (params.row.ON_OFF === 1) {
           return (
@@ -94,7 +94,7 @@ const LichSu = () => {
     {
       field: "CHECK1",
       headerName: "CHECK1",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -108,7 +108,7 @@ const LichSu = () => {
     {
       field: "CHECK2",
       headerName: "CHECK2",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -122,7 +122,7 @@ const LichSu = () => {
     {
       field: "CHECK3",
       headerName: "CHECK3",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -136,7 +136,7 @@ const LichSu = () => {
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         if (params.row.APPROVAL_STATUS === 0) {
           return (
@@ -165,35 +165,35 @@ const LichSu = () => {
         }
       },
     },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120 },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120 },
-    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100 },
-    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120 },
-    { field: "OVERTIME", headerName: "OVERTIME", width: 100 },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120 },
-    { field: "REMARK", headerName: "REMARK", width: 170 },
-    { field: "XACNHAN", headerName: "XACNHAN", width: 120 },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120 },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120 },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120 },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120 },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120 },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120,headerClassName: 'super-app-theme--header' },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 120,
+      width: 120,headerClassName: 'super-app-theme--header',
     },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120 },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120 },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 120,    
+      width: 120,headerClassName: 'super-app-theme--header',    
     },
-    { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
+    { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClassName: 'super-app-theme--header' },
   ];
   function CustomToolbar() {
     return (
@@ -298,7 +298,14 @@ const LichSu = () => {
       </div>
       <div className='maindept_table'>
         <DataGrid
-          sx={{ fontSize: "0.8rem" }}
+          sx={{
+            fontSize: "0.7rem", '& .super-app-theme--header': {
+              backgroundColor: 'rgba(10, 138, 170, 0.775)',
+              fontSize:'0.8rem',
+              color:'white'
+            },
+          }}
+          columnHeaderHeight={20}
           slots={{
             toolbar: CustomToolbar,
             

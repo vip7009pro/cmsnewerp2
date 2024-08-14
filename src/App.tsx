@@ -1,16 +1,8 @@
 import "devextreme/dist/css/dx.light.css";
-import React, {
-  Component,
-  FC,
-  useEffect,
-  useState,
-  lazy,
-  Suspense,
-  useMemo,
-} from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Component, useEffect, useState, Suspense } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery, getCompany, getSocket, getUserData, logout as LGOUTF } from "./api/Api";
+import { checkLogin, generalQuery, getCompany, getSocket, getUserData } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,7 +19,6 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
-import { Button } from "@mui/material";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import Home, { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
@@ -98,7 +89,6 @@ import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
 import RND_REPORT from "./pages/rnd/rnd_report/RND_REPORT";
 import Blank from "./components/Blank/Blank";
 import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
-import SX_REPORT from "./pages/sx/BAOCAOSX/SX_REPORT";
 import BCSX from "./pages/sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "./pages/kinhdoanh/over_prod_monitor/OVER_MONITOR";
 

@@ -38,7 +38,7 @@
     border-radius: var(--ag-border-radius);
   }
   .ag-theme-quartz {
-    flex: 1;
+    flex: 1;    
     .ag-row-even .ag-row .ag-row-level-0 .ag-row-position-absolute .ag-row-not-inline-editing .ag-row-focus .ag-row-selected {
       background-color: #b2ffa0;
     }
@@ -47,7 +47,7 @@
     }
     .ag-header-cell {
       /* background-image: linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1)); */
-      background-color: rgb(230, 236, 241);
+      background-color: transparent;/* rgb(230, 236, 241); */
       color: rgb(5, 84, 162);
       /* White text */
       font-weight: bold;
@@ -59,13 +59,23 @@
       padding-right: 2px;
       .ag-input-field-input,
       .ag-text-field-input {
-        background-color: #f0f7ec;
+        background-color:transparent /* #f0f7ec */;
         padding: 0;
       }
     }
     .ag-row-selected {
       background-color: #ecb4b4 !important;
       /* Set your desired background color */
+    }
+    .ag-row {
+      background-color: white !important;
+      /* Set your desired background color */
+    }
+    .ag-root-wrapper {
+      background-color: white/* #b2ffa0 */;
+    }
+    .ag-header-container {
+      background-color: rgb(246, 250, 252);
     }
     /* Add border to the right of each data cell */
     .ag-cell {
