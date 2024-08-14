@@ -128,46 +128,46 @@ const BOM_AMAZON = () => {
     },
   ]);
   const [column_listbomamazon, setcolumn_listbomamazon] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header',width: 60, editable: enableEdit },
-    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header',width: 230, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 60, editable: enableEdit },
+    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 230, editable: enableEdit },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      headerClassName: 'super-app-theme--header',width: 120,
+      headerClassName: 'super-app-theme--header', width: 120,
       editable: enableEdit,
     },
-    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header',width: 110, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 110, editable: enableEdit },
   ]);
   const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header',width: 60, editable: enableEdit },
-    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header',width: 110, editable: enableEdit },
-    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header',width: 230, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 60, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 110, editable: enableEdit },
+    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 230, editable: enableEdit },
     {
       field: "G_CODE_MAU",
       headerName: "G_CODE_MAU",
-      headerClassName: 'super-app-theme--header',width: 120,
+      headerClassName: 'super-app-theme--header', width: 120,
       editable: enableEdit,
     },
     {
       field: "TEN_MAU",
       headerName: "TEN_MAU",
-      headerClassName: 'super-app-theme--header',width: 150,
+      headerClassName: 'super-app-theme--header', width: 150,
       editable: enableEdit,
     },
     {
       field: "DOITUONG_NO",
       headerName: "DOITUONG_NO",
-      headerClassName: 'super-app-theme--header',width: 120,
+      headerClassName: 'super-app-theme--header', width: 120,
       editable: enableEdit,
     },
     {
       field: "DOITUONG_NAME",
       headerName: "DOITUONG_NAME",
-      headerClassName: 'super-app-theme--header',width: 120,
+      headerClassName: 'super-app-theme--header', width: 120,
       editable: enableEdit,
     },
-    { field: "GIATRI", headerName: "GIATRI", headerClassName: 'super-app-theme--header',width: 120, editable: enableEdit },
-    { field: "REMARK", headerName: "REMARK", headerClassName: 'super-app-theme--header',width: 120, editable: enableEdit },
+    { field: "GIATRI", headerName: "GIATRI", headerClassName: 'super-app-theme--header', width: 120, editable: enableEdit },
+    { field: "REMARK", headerName: "REMARK", headerClassName: 'super-app-theme--header', width: 120, editable: enableEdit },
   ]);
   function CustomToolbarCODETable() {
     return (
@@ -649,11 +649,11 @@ const BOM_AMAZON = () => {
               sx={{
                 fontSize: "0.7rem", '& .super-app-theme--header': {
                   backgroundColor: 'rgba(125, 234, 241, 0.775)',
-                  fontSize:'0.8rem',
+                  fontSize: '0.8rem',
                   color: 'rgba(42, 96, 197, 0.775)'
                 },
               }}
-          columnHeaderHeight={20}
+              columnHeaderHeight={20}
               loading={isLoading}
               rowHeight={30}
               rows={rows}
@@ -714,11 +714,11 @@ const BOM_AMAZON = () => {
                 sx={{
                   fontSize: "0.7rem", '& .super-app-theme--header': {
                     backgroundColor: 'rgba(125, 234, 241, 0.775)',
-                    fontSize:'0.8rem',
+                    fontSize: '0.8rem',
                     color: 'rgba(42, 96, 197, 0.775)'
                   },
                 }}
-          columnHeaderHeight={20}
+                columnHeaderHeight={20}
                 loading={isLoading}
                 rowHeight={30}
                 rows={listamazontable}
@@ -771,13 +771,13 @@ const BOM_AMAZON = () => {
                   toolbar: CustomToolbarBOMAMAZONTable,
                 }}
                 sx={{
-            fontSize: "0.7rem", '& .super-app-theme--header': {
-              backgroundColor: 'rgba(125, 234, 241, 0.775)',
-              fontSize:'0.8rem',
-              color: 'rgba(42, 96, 197, 0.775)'
-            },
-          }}
-          columnHeaderHeight={20}
+                  fontSize: "0.7rem", '& .super-app-theme--header': {
+                    backgroundColor: 'rgba(125, 234, 241, 0.775)',
+                    fontSize: '0.8rem',
+                    color: 'rgba(42, 96, 197, 0.775)'
+                  },
+                }}
+                columnHeaderHeight={20}
                 loading={isLoading}
                 rowHeight={30}
                 rows={bomamazontable}
