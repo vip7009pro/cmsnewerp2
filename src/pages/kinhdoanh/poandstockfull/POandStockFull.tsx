@@ -1176,7 +1176,7 @@ const POandStockFull = () => {
         );
       },
     },
-    {
+    /* {
       field: "YCSX_BALANCE",
       cellDataType: "number",
       headerName: "YCSX_BALANCE",
@@ -1227,7 +1227,7 @@ const POandStockFull = () => {
           </span>
         );
       },
-    },
+    }, */
   ];
   const column_codeKD2 = [
     { field: "id", headerName: "No", width: 80 },
