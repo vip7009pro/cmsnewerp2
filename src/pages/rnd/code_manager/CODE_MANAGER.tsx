@@ -1830,6 +1830,15 @@ const CODE_MANAGER = () => {
     }
   };
   const handleCODEINFO = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setisLoading(true);
     setColumnDefinition(column_codeinfo);
     generalQuery("codeinfo", {

@@ -1606,6 +1606,15 @@ const MACHINE = () => {
     setPlanDataTable(await f_loadQLSXPLANDATA(plan_date, 'ALL', 'ALL'));
   };
   const handletraYCSX = async () => {
+    Swal.fire({
+      title: "Tra YCSX",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     let ycsxData: YCSXTableData[] = [];
     ycsxData = await f_handletraYCSXQLSX({
       alltime: alltime,
@@ -2390,7 +2399,7 @@ const MACHINE = () => {
               if (params.column.colId !== 'IS_SETTING') {
                 setChiThiDataTable(await f_handleGetChiThiTable(rowData));
               }
-              setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
+              //setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
             }}
             onRowDoubleClicked={
               (params: any) => {

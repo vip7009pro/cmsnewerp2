@@ -16,6 +16,15 @@ const OVER_MONITOR = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, setData] = useState<Array<PROD_OVER_DATA>>([]);
   const loadProdOverData = async () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setData(await f_loadProdOverData(only_pending));
   }
   const updateData = async (prod_over_data: PROD_OVER_DATA, updateValue: string) => {

@@ -107,6 +107,15 @@ const CUST_MANAGER = () => {
     });
   };
   const handleCUSTINFO = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     generalQuery("get_listcustomer", {})
       .then((response) => {
         /// console.log(response.data.data);

@@ -214,6 +214,15 @@ const KHOLIEU = () => {
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_XUATLIEUDATA);
   const handletra_inputlieu = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setSummaryWH("");
     setisLoading(true);
     let roll_no_array = rollNo.trim().split("-");
@@ -262,6 +271,15 @@ const KHOLIEU = () => {
       });
   };
   const handletra_outputlieu = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setisLoading(true);
     generalQuery("traxuatlieu", {
       G_NAME: codeKD,
@@ -307,6 +325,15 @@ const KHOLIEU = () => {
       });
   };
   const handletraWHSTOCKLIEU = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setSummaryWH("");
     setisLoading(true);
     generalQuery("tratonlieu", {

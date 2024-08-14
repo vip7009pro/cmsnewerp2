@@ -441,7 +441,7 @@ const KHOTP = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_STOCK_CMS);
-  const handletraXuatPack = () => {
+  const handletraXuatPack = () => {    
     let inout_qty: number = 0;
     setSummaryWH("");
     setisLoading(true);
@@ -608,7 +608,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             (element: TONKIEMGOP_KD, index: number) => {
               return {
                 ...element,                
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -806,6 +806,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>
           <div className="formbutton">
             <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#31ad00' }} onClick={() => {
+              Swal.fire({
+                title: "Tra data",
+                text: "Đang tra data",
+                icon: "info",
+                showCancelButton: false,
+                allowOutsideClick: false,
+                confirmButtonText: "OK",
+                showConfirmButton: false,
+              });
               setisLoading(true);
               setReadyRender(false);              
               switch (buttonselected) {

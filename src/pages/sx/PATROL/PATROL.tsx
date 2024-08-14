@@ -129,7 +129,7 @@ const PATROL = () => {
       todateRef.current = moment().format('YYYY-MM-DD')
     }
     if (!isLoading) {
-      getPatrolHeaderData();
+      /* getPatrolHeaderData(); */
     }
     else {
       Swal.fire('Thông báo', 'Đang load đợi tý', 'warning');
@@ -155,7 +155,7 @@ const PATROL = () => {
     }}>
       <div className="header">
         <img alt="running" src="/blink.gif" width={120} height={50}></img>
-        <PATROL_HEADER data={patrolheaderdata} />
+       {/*  <PATROL_HEADER data={patrolheaderdata} /> */}
         <div className="control">
           <div className="checkb">
             <Button color='secondary' onClick={() => {
@@ -185,7 +185,7 @@ const PATROL = () => {
             />
             Live
           </div>
-          <FromInputColumn>
+          <div className='forminputcolumn'>
             <label>
               <b>FROM:</b>
               <input
@@ -202,7 +202,7 @@ const PATROL = () => {
                 onChange={(e) => { todateRef.current = e.target.value; setTrigger(!trigger) }}
               ></input>
             </label>
-          </FromInputColumn>
+          </div>
         </div>
       </div>
       <div className="row">

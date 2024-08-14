@@ -1465,6 +1465,15 @@ const YCSXManager = () => {
     }
   };
   const handletraYCSX = () => {
+    Swal.fire({
+      title: "Tra YCSX",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setisLoading(true);
     generalQuery("traYCSXDataFull", {
       alltime: alltime,

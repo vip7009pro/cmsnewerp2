@@ -1,11 +1,8 @@
-import { IconButton, LinearProgress } from "@mui/material";
-import moment from "moment";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { FcSearch } from "react-icons/fc";
+import { IconButton } from "@mui/material";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
@@ -13,7 +10,7 @@ import KHOTP from "../../kho/khotp/KHOTP";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
-import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
+import { AgGridReact } from "ag-grid-react";
 /* import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 const POandStockFull = () => {
@@ -1427,6 +1424,15 @@ const POandStockFull = () => {
     };
   }, []);
   const handletraPOFullCMS = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setisLoading(true);
     setColumnDefinition(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
     generalQuery(getCompany() === "CMS" ? "traPOFullCMS" : "traPOFullCMS2", {
@@ -1481,6 +1487,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
   };
   const handletraPOFullKD = () => {
+    Swal.fire({
+      title: "Tra data",
+      text: "Đang tra data",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     setisLoading(true);
     setColumnDefinition(column_codeKD2);
     generalQuery(getCompany() === "CMS" ? "traPOFullKD" : "traPOFullKD2", {
