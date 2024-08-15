@@ -68,9 +68,13 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             }
           );
           setInspectionDataTable(loaded_data);
+          Swal.fire('Thông báo','Đã load '+ loaded_data.length + ' dòng','success');
           setReadyRender(true);
           setisLoading(false);
         } else {
+          Swal.fire('Thông báo','Không có dữ liệu','error');
+          setReadyRender(true);
+          setisLoading(false);
         }
       })
       .catch((error) => {

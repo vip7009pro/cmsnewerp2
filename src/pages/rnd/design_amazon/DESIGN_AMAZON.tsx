@@ -27,7 +27,7 @@ import { generalQuery, getAuditMode } from "../../../api/Api";
 import {
   DataGrid,
   GridCallbackDetails,
-  GridCellEditCommitParams,
+  GridCellEditStopParams,
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
@@ -288,7 +288,7 @@ const DESIGN_AMAZON = () => {
       });
   };
   const [trigger, setTrigger] = useState(false);
-  const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
+  const [editedRows, setEditedRows] = useState<Array<GridCellEditStopParams>>(
     [],
   );
   const [codeinfoKD, setcodeinfoKD] = useState<any>("");
@@ -555,7 +555,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   editMode="cell"
                   /* experimentalFeatures={{ newEditingApi: true }}  */
                   onCellEditCommit={(
-                    params: GridCellEditCommitParams,
+                    params: GridCellEditStopParams,
                     event: MuiEvent<MuiBaseEvent>,
                     details: GridCallbackDetails,
                   ) => {

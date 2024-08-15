@@ -4,7 +4,7 @@ import {
   GridRowSelectionModel,  
   GridToolbarContainer,  
   GridToolbarQuickFilter,  
-  GridCellEditCommitParams,  
+  GridCellEditStopParams,  
 } from "@mui/x-data-grid";
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FcCancel, } from "react-icons/fc";
@@ -1788,7 +1788,7 @@ const CODE_MANAGER = () => {
   ];
   const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);
   const [columns, setColumns] = useState<Array<any>>(column_codeinfo2);
-  const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
+  const [editedRows, setEditedRows] = useState<Array<GridCellEditStopParams>>(
     [],
   );
   const [columnDefinition, setColumnDefinition] =
@@ -2228,7 +2228,7 @@ const CODE_MANAGER = () => {
               ]}
               editMode="cell"              
               onCellEditCommit={(
-                params: GridCellEditCommitParams,
+                params: GridCellEditStopParams,
                 event: MuiEvent<MuiBaseEvent>,
                 details: GridCallbackDetails,
               ) => {                

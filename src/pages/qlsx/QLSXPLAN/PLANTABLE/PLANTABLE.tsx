@@ -16,7 +16,7 @@ import {
   DataGrid,
   GridAddIcon,
   GridCallbackDetails,
-  GridCellEditCommitParams,
+  GridCellEditStopParams,
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
@@ -3617,7 +3617,7 @@ const PLANTABLE = () => {
                             handleTonLieuXuongDataSelectionforUpdate(ids);
                           }}
                           onCellEditCommit={(
-                            params: GridCellEditCommitParams,
+                            params: GridCellEditStopParams,
                             event: MuiEvent<MuiBaseEvent>,
                             details: GridCallbackDetails,
                           ) => {
@@ -3654,7 +3654,7 @@ const PLANTABLE = () => {
                             handleLichSuInputSXDataSelectionforUpdate(ids);
                           }}
                           onCellEditCommit={(
-                            params: GridCellEditCommitParams,
+                            params: GridCellEditStopParams,
                             event: MuiEvent<MuiBaseEvent>,
                             details: GridCallbackDetails,
                           ) => {
@@ -3697,7 +3697,7 @@ const PLANTABLE = () => {
                             handleTonLieuXuongDataSelectionforUpdate(ids);
                           }}
                           onCellEditCommit={(
-                            params: GridCellEditCommitParams,
+                            params: GridCellEditStopParams,
                             event: MuiEvent<MuiBaseEvent>,
                             details: GridCallbackDetails,
                           ) => {
@@ -3737,7 +3737,7 @@ const PLANTABLE = () => {
                             handleLichSuXuatKhoAoDataSelectionforUpdate(ids);
                           }}
                           onCellEditCommit={(
-                            params: GridCellEditCommitParams,
+                            params: GridCellEditStopParams,
                             event: MuiEvent<MuiBaseEvent>,
                             details: GridCallbackDetails,
                           ) => {
@@ -3827,7 +3827,7 @@ const PLANTABLE = () => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
                 }}
                 onCellEditCommit={(
-                  params: GridCellEditCommitParams,
+                  params: GridCellEditStopParams,
                   event: MuiEvent<MuiBaseEvent>,
                   details: GridCallbackDetails,
                 ) => {
@@ -4086,7 +4086,7 @@ const PLANTABLE = () => {
                   handleQLSXCHITHIDataSelectionforUpdate(ids);
                 }}
                 onCellEditCommit={(
-                  params: GridCellEditCommitParams,
+                  params: GridCellEditStopParams,
                   event: MuiEvent<MuiBaseEvent>,
                   details: GridCallbackDetails,
                 ) => {

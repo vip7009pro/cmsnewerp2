@@ -5,28 +5,17 @@ import {
   createFilterOptions,
   FormControlLabel,
   IconButton,
-  LinearProgress,
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-  MuiEvent,
-  GridCellEditCommitParams,
-  MuiBaseEvent,
-  GridCallbackDetails,
-} from "@mui/x-data-grid";
+import { GridRowSelectionModel,  GridCellEditStopParams } from "@mui/x-data-grid";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FcDeleteRow } from "react-icons/fc";
 import {
   AiFillDelete,
   AiFillEdit,
   AiFillFileAdd,
-  AiFillFileExcel,
   AiFillSave,
   AiOutlineClose,
   AiOutlineCloudUpload,
@@ -34,7 +23,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -233,7 +222,7 @@ const BOM_MANAGER = () => {
   const [enableform, setEnableForm] = useState(true);
   const [rows, setRows] = useState<CODE_INFO[]>([]);
   const [fscList, setFSCList] = useState<FSC_LIST_DATA[]>([]);
-  const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
+  const [editedRows, setEditedRows] = useState<Array<GridCellEditStopParams>>(
     [],
   );
   const handleSetCodeInfo = (keyname: string, value: any) => {
@@ -2582,9 +2571,9 @@ const BOM_MANAGER = () => {
           if (response.data.tk_status !== "NG") {
             isCodeMassProd = true;
             console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
-            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) > 20240703;
+            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) <= 20240815;
           } else {
-            isNewCode = false;
+            isNewCode = true;
             console.log(parseInt(response.data.message))
           }
         })
@@ -2615,8 +2604,8 @@ const BOM_MANAGER = () => {
       if (checkusageMain === 0) {
         err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
       }
-      if (getCompany() === 'CMS' && isNewCode) {
-        err_code += "_ Code đã chạy mass, không thể sửa BOM";
+      if (getCompany() === 'CMS' && !isNewCode) {
+        err_code += "_ Code đã YCSX mass sau 15/08/2024, không thể sửa BOM";
       }
       //console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {

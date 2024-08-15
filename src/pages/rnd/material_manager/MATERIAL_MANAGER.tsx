@@ -8,7 +8,7 @@ import {
 import {
   DataGrid,
   GridCallbackDetails,
-  GridCellEditCommitParams,
+  GridCellEditStopParams,
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -45,7 +45,7 @@ interface MATERIAL_TABLE_DATA {
 }
 const MATERIAL_MANAGER = () => {
   const [alltime, setAllTime] = useState(false);
-  const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
+  const [editedRows, setEditedRows] = useState<Array<GridCellEditStopParams>>(
     [],
   );
   const [editable, setEditTable] = useState(false);
@@ -328,7 +328,7 @@ const MATERIAL_MANAGER = () => {
                 handleMaterialDataSelectionforUpdate(ids);
               }}
               onCellEditCommit={(
-                params: GridCellEditCommitParams,
+                params: GridCellEditStopParams,
                 event: MuiEvent<MuiBaseEvent>,
                 details: GridCallbackDetails,
               ) => {

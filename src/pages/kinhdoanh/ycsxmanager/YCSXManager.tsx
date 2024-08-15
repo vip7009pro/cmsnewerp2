@@ -2820,8 +2820,7 @@ const YCSXManager = () => {
         setOpenYCSX('N');
       }
     });
-  };
-  
+  };  
   const handleConfirmSetClosedYCSX = () => {
     Swal.fire({
       title: "Chắc chắn muốn SET CLOSED YCSX đã chọn ?",

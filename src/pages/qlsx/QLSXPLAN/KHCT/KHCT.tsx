@@ -14,7 +14,7 @@ import {
   DataGrid,
   GridAddIcon,
   GridCallbackDetails,
-  GridCellEditCommitParams,
+  GridCellEditStopParams,
   GridEventListener,
   GridRowSelectionModel,
   GridToolbarContainer,
@@ -1903,7 +1903,7 @@ const KHCT = () => {
     //console.log(params.row);
   };
   const cellEditHandler = (
-    params: GridCellEditCommitParams,
+    params: GridCellEditStopParams,
     event: MuiEvent<MuiBaseEvent>,
     details: GridCallbackDetails,
   ) => {
