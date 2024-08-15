@@ -66,14 +66,15 @@
         padding: 0;
       }
     }
-    .ag-row-selected {
-      background-color: #ecb4b4 !important;
-      /* Set your desired background color */
-    }
     .ag-row {
       background-color: white !important;
       /* Set your desired background color */
     }
+    .ag-row-selected {
+      background-color: #ecb4b4 !important;
+      /* Set your desired background color */
+    }
+    
     .ag-root-wrapper {
       background-color: white
         /* #b2ffa0 */
