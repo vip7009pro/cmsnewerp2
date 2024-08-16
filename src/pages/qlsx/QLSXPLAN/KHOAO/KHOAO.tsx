@@ -511,7 +511,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               err_code += `| Cuộn liệu đã được sử dụng!`;
             }
             else if (isExpired) {
-              err_code += `| Cuộn liệu tồn quá lâu, hãy trả kho thật rồi sử dụng!`;
+              err_code += `| Cuộn liệu tồn quá lâu, hãy trả Kho NVL rồi sử dụng!`;
             }
           }
         }

@@ -72,7 +72,7 @@ export const vn_lang = {
   phonghanhchinhnhansu: "HC-NS",
   materiallotstatus: "Tình hình cuộn liệu",
   sxrolldata: "Data theo Roll",
-  khothat: "Kho Thật",
+  khothat: "Kho NVL",
   khoao: "Kho SX Main",
   shortage: "Shortage",
   ins_status: "Tình trạng KT",

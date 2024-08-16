@@ -1115,7 +1115,7 @@ const PLAN_DATATB = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: "Đăng ký xuất liệu kho thật",
+          title: "Đăng ký xuất liệu Kho NVL",
           text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
           icon: "info",
           showCancelButton: false,

@@ -2133,7 +2133,7 @@ export const f_deleteQLSXPlan = async (planToDelete: QLSXPLANDATA[]) => {
           err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã chốt báo cáo, ko xóa được chỉ thị";
         }
         else if (isOnO302) {
-          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho thật";
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất Kho NVL";
         }
         else if (isOnOutKhoAo) {
           err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất Kho SX Main"

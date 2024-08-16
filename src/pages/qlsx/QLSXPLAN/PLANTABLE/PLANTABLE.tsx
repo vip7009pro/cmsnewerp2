@@ -1959,7 +1959,7 @@ const PLANTABLE = () => {
       if (result.isConfirmed) {
         Swal.fire({
           title: "Đăng ký xuất liệu",
-          text: "Đang đăng ký xuất liệu kho thật, hãy chờ một chút",
+          text: "Đang đăng ký xuất liệu Kho NVL, hãy chờ một chút",
           icon: "info",
           showCancelButton: false,
           allowOutsideClick: false,
@@ -2787,7 +2787,7 @@ const PLANTABLE = () => {
           }}
         >
           <AiOutlineBarcode color="green" size={20} />
-          Đăng ký Xuất Kho Thật
+          Đăng ký Xuất Kho NVL
         </IconButton>
         <IconButton
           className="buttonIcon"
