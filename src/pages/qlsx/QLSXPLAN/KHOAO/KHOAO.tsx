@@ -363,6 +363,27 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return nextPlanClosed;
   }
+  const checkMlotTonKhoAo = async (M_LOT_NO: string) => 
+  {
+   
+    let isTon: boolean = false;
+    await generalQuery("checktonKhoAoMLotNo", {
+      M_LOT_NO: M_LOT_NO,
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+         isTon = response.data.data[0].USE_YN ==='Y';
+        } else {
+         isTon = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return isTon;
+
+  }
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
@@ -387,6 +408,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
+          let isTonKhoAoMLOTNO: boolean = await checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
           let checkNextPlanClose = await isNextPlanClosed(nextPlan);
           let checkFSC: string = (await checkNextPlanFSC(nextPlan)).FSC;
           let checkFSC_CODE: string = (await checkNextPlanFSC(nextPlan)).FSC_CODE;
@@ -396,7 +418,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             checkFSC === tonkhoaodatafilter.current[i].FSC &&
             checktontaikhoao &&
             checkYCSX_USE_YN === 'Y' &&
-            !checkNextPlanClose
+            !checkNextPlanClose && 
+            isTonKhoAoMLOTNO
           ) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
@@ -458,6 +481,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             }
             else if (checkNextPlanClose ===true) {
               err_code += `| Chỉ thị next đã chốt báo cáo, không thể input liệu!`;
+            }
+            else if(!isTonKhoAoMLOTNO){
+              err_code += `| Cuộn liệu đã được sử dụng!`;
             }
           }
         }
