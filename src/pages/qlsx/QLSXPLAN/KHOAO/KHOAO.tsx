@@ -91,7 +91,21 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       },
     },
     { field: "WIDTH_CD", headerName: "SIZE", width: 50, editable: false },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false, cellRenderer: (params: any) => {
+      const date1 = moment.utc().format('YYYY-MM-DD');
+      const date2 = params.data.INS_DATE;
+      var diff: number = datediff(date1,date2);
+
+      if (diff > 2) {
+        return ( 
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.M_LOT_NO}
+          </span>
+        );
+      } else {
+        return <span style={{ color: "green" }}>{params.data.M_LOT_NO}</span>;
+      }
+    }, },
     {
       field: "ROLL_QTY",
       headerName: "ROLL_QTY",
