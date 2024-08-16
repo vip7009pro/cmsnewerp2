@@ -6,13 +6,7 @@ import { checkBP } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import {
-  LICHSUNHAPKHOAO,
-  LICHSUXUATKHOAO,
-  QLSXPLANDATA,
-  TONLIEUXUONG,
-  UserData,
-} from "../../../../api/GlobalInterface";
+import { LICHSUNHAPKHOAO, LICHSUXUATKHOAO, TONLIEUXUONG, UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission] = useState(true);
@@ -66,8 +60,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const column_tonkhoaotable = [
-    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true, 
-    checkboxSelection: true, },
+    {
+      field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true,
+      checkboxSelection: true,
+    },
     { field: "FACTORY", headerName: "NM", width: 60, editable: false },
     {
       field: "PLAN_ID_INPUT",
@@ -174,6 +170,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         }
       },
     },
+    { field: "PLAN_EQ", headerName: "MACHINE", width: 70, editable: false },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 100, editable: false },
   ];
   const load_nhapkhoao = () => {
     generalQuery("lichsunhapkhoao", {
@@ -191,7 +189,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 INS_DATE: moment
                   .utc(element.INS_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
-                KHO_CFM_DATE: element.KHO_CFM_DATE !== null ?moment
+                KHO_CFM_DATE: element.KHO_CFM_DATE !== null ? moment
                   .utc(element.KHO_CFM_DATE)
                   .format("YYYY-MM-DD HH:mm:ss") : '',
                 id: index,
@@ -203,7 +201,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           setCurrent_Column(column_nhapkhoaotable);
           setReadyRender(true);
           setisLoading(false);
-          setTableTitle("LỊCH SỬ NHẬP KHO ẢO");
+          setTableTitle("LỊCH SỬ NHẬP Kho SX Main");
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
@@ -242,7 +240,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           setDataTable(loadeddata);
           setReadyRender(true);
           setisLoading(false);
-          setTableTitle("LỊCH SỬ XUẤT KHO ẢO");
+          setTableTitle("LỊCH SỬ XUẤT Kho SX Main");
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
@@ -268,6 +266,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             (element: TONLIEUXUONG, index: number) => {
               return {
                 ...element,
+                INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
                 id: index,
               };
             },
@@ -276,7 +275,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           setCurrent_Column(column_tonkhoaotable);
           setReadyRender(true);
           setisLoading(false);
-          setTableTitle("TỒN KHO ẢO");
+          setTableTitle("TỒN Kho SX Main");
           if (shownotification)
             Swal.fire(
               "Thông báo",
@@ -311,7 +310,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     return checkTonTai;
   }
   const checkNextPlanFSC = async (NEXT_PLAN: string) => {
-    let checkFSC: string = "N", checkFSC_CODE='01';
+    let checkFSC: string = "N", checkFSC_CODE = '01';
     await generalQuery("checkFSC_PLAN_ID", {
       PLAN_ID: NEXT_PLAN,
     })
@@ -326,7 +325,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       .catch((error) => {
         console.log(error);
       });
-    return {FSC: checkFSC, FSC_CODE: checkFSC_CODE};
+    return { FSC: checkFSC, FSC_CODE: checkFSC_CODE };
   };
   const checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
     let checkNhapKho: string = "N";
@@ -345,7 +344,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return checkNhapKho;
   }
-  const isNextPlanClosed = async (NEXT_PLAN: string)=> {
+  const isNextPlanClosed = async (NEXT_PLAN: string) => {
     let nextPlanClosed: boolean = false;
     await generalQuery("checkNextPlanClosed", {
       PLAN_ID: NEXT_PLAN,
@@ -353,7 +352,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          nextPlanClosed = response.data.data[0].CHOTBC ==='V';
+          nextPlanClosed = response.data.data[0].CHOTBC === 'V';
         } else {
           nextPlanClosed = false;
         }
@@ -363,9 +362,15 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return nextPlanClosed;
   }
-  const checkMlotTonKhoAo = async (M_LOT_NO: string) => 
-  {
-   
+  const datediff=(date1: string, date2: string) => {
+    var d1 = moment.utc(date1);
+    var d2 = moment.utc(date2);
+    var diff: number = d1.diff(d2, "days");
+    console.log(diff);
+    return diff;
+
+  }
+  const checkMlotTonKhoAo = async (M_LOT_NO: string) => {
     let isTon: boolean = false;
     await generalQuery("checktonKhoAoMLotNo", {
       M_LOT_NO: M_LOT_NO,
@@ -373,16 +378,15 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-         isTon = response.data.data[0].USE_YN ==='Y';
+          isTon = response.data.data[0].USE_YN === 'Y';
         } else {
-         isTon = false;
+          isTon = false;
         }
       })
       .catch((error) => {
         console.log(error);
       });
     return isTon;
-
   }
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
@@ -411,6 +415,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           let isTonKhoAoMLOTNO: boolean = await checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
           let checkNextPlanClose = await isNextPlanClosed(nextPlan);
           let checkFSC: string = (await checkNextPlanFSC(nextPlan)).FSC;
+          var date1 = moment.utc().format('YYYY-MM-DD');
+          var date2 = tonkhoaodatafilter.current[i].INS_DATE;
+          var diff: number = datediff(date1,date2);
+          let isExpired: boolean = diff > 2;
+          console.log(isExpired);
+
           let checkFSC_CODE: string = (await checkNextPlanFSC(nextPlan)).FSC_CODE;
           if (
             checklieuchithi === true &&
@@ -418,8 +428,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             checkFSC === tonkhoaodatafilter.current[i].FSC &&
             checktontaikhoao &&
             checkYCSX_USE_YN === 'Y' &&
-            !checkNextPlanClose && 
-            isTonKhoAoMLOTNO
+            !checkNextPlanClose &&
+            isTonKhoAoMLOTNO &&
+            !isExpired
           ) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
@@ -479,11 +490,14 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             else if (checkYCSX_USE_YN !== 'Y') {
               err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;
             }
-            else if (checkNextPlanClose ===true) {
+            else if (checkNextPlanClose === true) {
               err_code += `| Chỉ thị next đã chốt báo cáo, không thể input liệu!`;
             }
-            else if(!isTonKhoAoMLOTNO){
+            else if (!isTonKhoAoMLOTNO) {
               err_code += `| Cuộn liệu đã được sử dụng!`;
+            }
+            else if (isExpired) {
+              err_code += `| Cuộn liệu tồn quá lâu, hãy trả kho thật rồi sử dụng!`;
             }
           }
         }
@@ -623,7 +637,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         if (check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) {
           console.log("check_2_m_code_in_kho_ao", check_2_m_code_in_kho_ao);
           console.log("check_m_lot_exist_p500", check_m_lot_exist_p500);
-          Swal.fire("Thông báo", "Xóa kho ảo thành công", "success");
+          Swal.fire("Thông báo", "Xóa Kho SX Main thành công", "success");
           await generalQuery("delete_in_kho_ao", {
             IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
           })
@@ -764,7 +778,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   handle_loadKhoAo(true);
                 }}
               >
-                TỒN KHO ẢO
+                TỒN Kho Main
               </button>
               <button
                 className="tranhatky"
@@ -800,7 +814,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   } else {
                     Swal.fire(
                       "Thông báo",
-                      "Đang không ở tab tồn kho ảo",
+                      "Đang không ở tab tồn Kho SX Main",
                       "error",
                     );
                   }
@@ -820,7 +834,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 }}
               >
                 LS OUT
-              </button>
+              </button>              
             </div>
             <div className="forminputcolumn">
               <button
@@ -864,7 +878,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               //console.log(e.data)
             }} onSelectionChange={(params: any) => {
               console.log(params)
-              tonkhoaodatafilter.current = params!.api.getSelectedRows();          
+              tonkhoaodatafilter.current = params!.api.getSelectedRows();
             }} />
         </div>
       </div>

@@ -73,7 +73,7 @@ export const vn_lang = {
   materiallotstatus: "Tình hình cuộn liệu",
   sxrolldata: "Data theo Roll",
   khothat: "Kho Thật",
-  khoao: "Kho Ảo",
+  khoao: "Kho SX Main",
   shortage: "Shortage",
   ins_status: "Tình trạng KT",
   lichsuxuatlieuthat: "Lịch sử bắn lot liệu SX",

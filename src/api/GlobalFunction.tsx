@@ -2136,7 +2136,7 @@ export const f_deleteQLSXPlan = async (planToDelete: QLSXPLANDATA[]) => {
           err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho thật";
         }
         else if (isOnOutKhoAo) {
-          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất kho ảo"
+          err_code = "Chỉ thị + " + planToDelete[i].PLAN_ID + ":  +đã xuất Kho SX Main"
         }
       }
     }

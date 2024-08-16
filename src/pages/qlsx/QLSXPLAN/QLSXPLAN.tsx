@@ -266,7 +266,7 @@ const QLSXPLAN = () => {
               color: selection.tab10 === true ? "yellow" : "yellow",
             }}
           >
-            <span className="mininavtext">KHO ẢO</span>
+            <span className="mininavtext">Kho SX Main</span>
           </div>
           <div
             className="mininavitem"

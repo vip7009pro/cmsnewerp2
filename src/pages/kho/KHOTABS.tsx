@@ -245,7 +245,7 @@ const KHOTABS = () => {
               color: selection.tab9 === true ? "yellow" : "yellow",
             }}
           >
-            <span className="mininavtext">KHO ẢO</span>
+            <span className="mininavtext">Kho SX Main</span>
           </div>
           
         </div>

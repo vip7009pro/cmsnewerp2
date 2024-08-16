@@ -1734,6 +1734,8 @@ export interface TONLIEUXUONG {
   TOTAL_IN_QTY: number;
   FSC: string;
   IN_KHO_ID: number;
+  PLAN_EQ: string;
+  INS_DATE: string;
 }
 export interface LICHSUNHAPKHOAO {
   id: string;

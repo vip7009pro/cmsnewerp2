@@ -2775,7 +2775,7 @@ const PLANTABLE = () => {
           }}
         >
           <FaWarehouse color="blue" size={20} />
-          Xuất kho ảo
+          Xuất Kho SX Main
         </IconButton>
         <IconButton
           className="buttonIcon"
@@ -2849,7 +2849,7 @@ const PLANTABLE = () => {
         </IconButton>
         <GridToolbarQuickFilter />
         <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
-          Tồn kho ảo
+          Tồn Kho SX Main
         </div>
         <IconButton
           className="buttonIcon"
@@ -2899,7 +2899,7 @@ const PLANTABLE = () => {
           }}
         >
           <AiOutlineRollback color="yellow" size={20} />
-          Nhập lại vào kho ảo
+          Nhập lại vào Kho SX Main
         </IconButton>
       </GridToolbarContainer>
     );
@@ -2921,7 +2921,7 @@ const PLANTABLE = () => {
         </IconButton>
         <GridToolbarQuickFilter />
         <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
-          Lịch sử nhập kho ảo
+          Lịch sử nhập Kho SX Main
         </div>
       </GridToolbarContainer>
     );
@@ -2943,7 +2943,7 @@ const PLANTABLE = () => {
         </IconButton>
         <GridToolbarQuickFilter />
         <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
-          Lịch sử xuất kho ảo
+          Lịch sử xuất Kho SX Main
         </div>
         <IconButton
           className="buttonIcon"
@@ -3569,7 +3569,7 @@ const PLANTABLE = () => {
                     className="khoaotieude"
                     style={{ fontSize: 25, fontWeight: "bold" }}
                   >
-                    KHO ẢO
+                    Kho SX Main
                     <Button
                       onClick={() => {
                         setShowKhoAo(!showkhoao);

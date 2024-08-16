@@ -1491,7 +1491,7 @@ const PLAN_DATATB = () => {
             }}
           >
             <FaWarehouse color='blue' size={20} />
-            KHO ẢO
+            Kho SX Main
           </IconButton>
           <IconButton
             className='buttonIcon'
