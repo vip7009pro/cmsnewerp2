@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { GridRowSelectionModel,  GridCellEditStopParams } from "@mui/x-data-grid";
+import { GridRowSelectionModel, GridCellEditStopParams } from "@mui/x-data-grid";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FcDeleteRow } from "react-icons/fc";
@@ -3444,28 +3444,23 @@ const BOM_MANAGER = () => {
                             ? ""
                             : codefullinfo?.G_NAME_KD
                         }
-                        onChange={(e) => {                          
-                          if(getCompany()==='CMS')
-                          {
+                        onChange={(e) => {
+                          if (getCompany() === 'CMS') {
                             let temp_G_NAME_KD: string = e.target.value;
-                            let final_G_NAME_KD: string=  e.target.value;
-                            if(temp_G_NAME_KD.length >=2) 
-                            {
-                              if(temp_G_NAME_KD.substring(0,2)==='GH') {
-                                if(temp_G_NAME_KD.length <=11)
-                                {
+                            let final_G_NAME_KD: string = e.target.value;
+                            if (temp_G_NAME_KD.length >= 2) {
+                              if (temp_G_NAME_KD.substring(0, 2) === 'GH') {
+                                if (temp_G_NAME_KD.length <= 11) {
                                   final_G_NAME_KD = temp_G_NAME_KD;
                                 }
-                                else
-                                {
-                                  final_G_NAME_KD = temp_G_NAME_KD.substring(0,11)
+                                else {
+                                  final_G_NAME_KD = temp_G_NAME_KD.substring(0, 11)
                                 }
                               }
                             }
                             handleSetCodeInfo("G_NAME_KD", final_G_NAME_KD);
                           }
-                          else
-                          {
+                          else {
                             handleSetCodeInfo("G_NAME_KD", e.target.value);
                           }
                         }}

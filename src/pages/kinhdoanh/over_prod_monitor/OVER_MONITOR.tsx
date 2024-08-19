@@ -1,9 +1,9 @@
 import { IconButton } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./OVER_MONITOR.scss";
 import { getUserData } from "../../../api/Api";
-import { MdRefresh } from "react-icons/md";
+import { MdCancel, MdInput, MdRefresh } from "react-icons/md";
 import { PROD_OVER_DATA } from "../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
@@ -14,6 +14,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 const OVER_MONITOR = () => {
   const [only_pending, setOnly_Pending] = useState(true)
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const sltRows = useRef<PROD_OVER_DATA[]>([]);
   const [data, setData] = useState<Array<PROD_OVER_DATA>>([]);
   const loadProdOverData = async () => {
     Swal.fire({
@@ -46,6 +47,31 @@ const OVER_MONITOR = () => {
           default:
             Swal.fire('Thông báo', 'Bạn không thuộc bộ phận kinh doanh', 'success');
         }
+      }
+    });
+  }
+  const handleNhapHuyHangLoat = (selectedRows: PROD_OVER_DATA[], updatevalue: string) => {
+    Swal.fire({
+      title: "Chắc chắn muốn update Data ?",
+      text: "Suy nghĩ kỹ trước khi hành động",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn update!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        switch (getUserData()?.MAINDEPTNAME) {
+          case 'KD':
+            for (let i = 0; i < selectedRows.length; i++) {
+              if(selectedRows[i].HANDLE_STATUS !=='C') await f_updateProdOverData(selectedRows[i], updatevalue)
+            }
+            break;
+          default:
+            Swal.fire('Thông báo', 'Bạn không thuộc bộ phận kinh doanh', 'success');
+        }
+        await loadProdOverData();
+        sltRows.current = []
       }
     });
   }
@@ -89,7 +115,7 @@ const OVER_MONITOR = () => {
     {
       field: 'AMOUNT', headerName: 'AMOUNT', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: CustomCellRendererProps) => {
         return (
-          <span style={{ color: '#7516c2', fontWeight: 'bold' }}>{params.data.AMOUNT?.toLocaleString('en-US',{style: "currency",currency:'USD'})}</span>
+          <span style={{ color: '#7516c2', fontWeight: 'bold' }}>{params.data.AMOUNT?.toLocaleString('en-US', { style: "currency", currency: 'USD' })}</span>
         )
       }
     },
@@ -191,7 +217,7 @@ const OVER_MONITOR = () => {
         showFilter={true}
         toolbar={
           <div className="headerform">
-            <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'10px'}}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
               <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>PRODUCTION OVER MONITOR</span>
               <label>
                 <span style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Only Pending</span>
@@ -213,6 +239,24 @@ const OVER_MONITOR = () => {
               <MdRefresh color="#fb6812" size={20} />
               Reload
             </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleNhapHuyHangLoat(sltRows.current, 'Y');
+              }}
+            >
+              <MdInput color="#00bba2" size={20} />
+              Nhập hàng loạt
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleNhapHuyHangLoat(sltRows.current,'N');
+              }}
+            >
+              <MdCancel color="#d42d57" size={20} />
+              Hủy hàng loạt
+            </IconButton>
           </div>}
         columns={colDefs2}
         data={data}
@@ -224,7 +268,7 @@ const OVER_MONITOR = () => {
         }}
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())
-          //selectedSample.current = params!.api.getSelectedRows()
+          sltRows.current = params!.api.getSelectedRows()
         }} />
     )
   }, [data, colDefs2])
