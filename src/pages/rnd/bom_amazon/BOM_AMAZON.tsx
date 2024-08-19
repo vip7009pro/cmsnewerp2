@@ -9,7 +9,7 @@ import {
   GridCallbackDetails,
   GridCellEditStopParams,
 } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AiFillEdit, AiFillFileExcel, AiFillSave } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
@@ -25,6 +25,7 @@ import {
   LIST_BOM_AMAZON,
   UserData,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const BOM_AMAZON = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_INFO>
@@ -139,35 +140,35 @@ const BOM_AMAZON = () => {
     { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 110, editable: enableEdit },
   ]);
   const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 60, editable: enableEdit },
-    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 110, editable: enableEdit },
-    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 230, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 30, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 60, editable: enableEdit },
+    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
     {
       field: "G_CODE_MAU",
       headerName: "G_CODE_MAU",
-      headerClassName: 'super-app-theme--header', width: 120,
+      headerClassName: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     {
       field: "TEN_MAU",
       headerName: "TEN_MAU",
-      headerClassName: 'super-app-theme--header', width: 150,
+      headerClassName: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     {
       field: "DOITUONG_NO",
       headerName: "DOITUONG_NO",
-      headerClassName: 'super-app-theme--header', width: 120,
+      headerClassName: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     {
       field: "DOITUONG_NAME",
       headerName: "DOITUONG_NAME",
-      headerClassName: 'super-app-theme--header', width: 120,
+      headerClassName: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
-    { field: "GIATRI", headerName: "GIATRI", headerClassName: 'super-app-theme--header', width: 120, editable: enableEdit },
-    { field: "REMARK", headerName: "REMARK", headerClassName: 'super-app-theme--header', width: 120, editable: enableEdit },
+    { field: "GIATRI", headerName: "GIATRI", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
+    { field: "REMARK", headerName: "REMARK", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
   ]);
   function CustomToolbarCODETable() {
     return (
@@ -223,6 +224,17 @@ const BOM_AMAZON = () => {
         >
           <AiFillSave color='blue' size={20} />
           Lưu BOM
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
+            console.log(bomamazontable)
+            //confirmSaveBOMAMAZON();
+          }}
+        >
+          <AiFillSave color='blue' size={20} />
+         Test
         </IconButton>
         <IconButton
           className='buttonIcon'
@@ -588,6 +600,64 @@ const BOM_AMAZON = () => {
     }
     handleGETLISTBOMAMAZON("");
   };
+  const bomAMZAGTable = useMemo(() =>
+    <AGTable
+      showFilter={false}
+      toolbar={
+       <>
+       <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(rows, "Code Info Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={20} />
+          EXCEL
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
+            checkBP(userData, ["RND"], ["ALL"], ["ALL"], confirmSaveBOMAMAZON);
+            //confirmSaveBOMAMAZON();
+          }}
+        >
+          <AiFillSave color='blue' size={20} />
+          Lưu BOM
+        </IconButton>      
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {            
+            checkBP(userData, ["RND"], ["ALL"], ["ALL"], () => {
+              setcolumn_bomgia(
+                column_bomgia.map((element, index: number) => {
+                  return { ...element, editable: !element.editable };
+                })
+              );
+              Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+            });
+          }}
+        >
+          <AiFillEdit color='yellow' size={15} />
+          Bật tắt sửa
+        </IconButton>
+       </>
+      }
+      columns={column_bomgia}
+      data={bomamazontable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        //bomsxdatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [bomamazontable,enableEdit, column_bomgia]);
   useEffect(() => {
     handleGETLISTBOMAMAZON("");
     loadCodePhoi();
@@ -766,49 +836,8 @@ const BOM_AMAZON = () => {
                 BOM AMAZON(
                 {column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
               </span>
-              <DataGrid
-                slots={{
-                  toolbar: CustomToolbarBOMAMAZONTable,
-                }}
-                sx={{
-                  fontSize: "0.7rem", '& .super-app-theme--header': {
-                    backgroundColor: 'rgba(125, 234, 241, 0.775)',
-                    fontSize: '0.8rem',
-                    color: 'rgba(42, 96, 197, 0.775)'
-                  },
-                }}
-                columnHeaderHeight={20}
-                loading={isLoading}
-                rowHeight={30}
-                rows={bomamazontable}
-                columns={column_bomgia}
-                onRowSelectionModelChange={(ids) => {
-                  handleBOMAMAZONSelectionforUpdate(ids);
-                }}
-                /*  rows={codeinfodatatable}
-              columns={columnDefinition} */
-                pageSizeOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                ]}
-                editMode='cell'
-                /* experimentalFeatures={{ newEditingApi: true }}  */
-                onCellEditStop={(
-                  params: GridCellEditStopParams,
-                  event: MuiEvent<MuiBaseEvent>,
-                  details: GridCallbackDetails
-                ) => {
-                  //console.log(params);
-                  let tempeditrows = editedRows;
-                  tempeditrows.push(params);
-                  setEditedBOMGIARows(tempeditrows);
-                  //console.log(editedRows);
-                  const keyvar = params.field;
-                  const newdata = bomamazontable.map((p) =>
-                    p.id === params.id ? { ...p, [keyvar]: params.value } : p
-                  );
-                  setBOMAMAZONTable(newdata);
-                }}
-              />
+              {bomAMZAGTable}
+              
             </div>
           </div>
           <div className='product_infor'>
