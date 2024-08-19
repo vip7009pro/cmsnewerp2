@@ -1888,6 +1888,15 @@ const DATASX2 = () => {
       }
     },
     {
+      field: 'NEXT_IN_QTY', headerName: 'NEXT_IN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.NEXT_IN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'SCANNED_QTY', headerName: 'SCANNED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>
@@ -1914,6 +1923,42 @@ const DATASX2 = () => {
         );
       }
     },
+    {
+      field: 'LOCK_QTY', headerName: 'LOCK_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.LOCK_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'TON_KHO_AO', headerName: 'TON_KHO_AO', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.TON_KHO_AO?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'NEXT_OUT_QTY', headerName: 'NEXT_OUT_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.NEXT_OUT_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'RETURN_QTY', headerName: 'RETURN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.RETURN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },  
     { field: 'PD', headerName: 'PD', resizable: true, width: 80 },
     { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 80 },
     {
