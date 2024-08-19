@@ -5,7 +5,6 @@ import {
   changeUserData,
   login as loginSlice,
   logout as logoutSlice,
-  setTabModeSwap,
   update_socket,
 } from "../redux/slices/globalSlice";
 /* import axios from 'axios'; */
@@ -41,7 +40,11 @@ export function getGlobalSetting() {
   return state.totalSlice.globalSetting;
 }
 export function getAuditMode() {
-  const auditMode: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'AUDIT_MODE')[0]?.CURRENT_VALUE ?? '0');  
+  const auditMode: number = parseInt(
+    getGlobalSetting()?.filter(
+      (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "AUDIT_MODE"
+    )[0]?.CURRENT_VALUE ?? "0"
+  );
   return auditMode;
 }
 console.log("company", getCompany());
@@ -297,7 +300,7 @@ export async function upload55Query(
   uploadfoldername: string,
   filenamelist?: string[]
 ) {
-  console.log('UPLOAD_URL',UPLOAD_URL);
+  console.log("UPLOAD_URL", UPLOAD_URL);
   const formData = new FormData();
   formData.append("uploadedfile", file);
   formData.append("filename", filename);

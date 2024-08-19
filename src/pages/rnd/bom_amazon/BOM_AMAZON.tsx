@@ -27,52 +27,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const BOM_AMAZON = () => {
-  const [codedatatablefilter, setCodeDataTableFilter] = useState<
-    Array<CODE_INFO>
-  >([]);
-  const [bomsxdatatablefilter, setBomSXDataTableFilter] = useState<
-    Array<LIST_BOM_AMAZON>
-  >([]);
-  const [bomgiadatatablefilter, setBomGiaDataTableFilter] = useState<
-    Array<BOM_AMAZON_DATA>
-  >([]);
   const [codephoilist, setCodePhoiList] = useState<Array<CODEPHOI>>([]);
-  const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>({
-    CUST_CD: "0000",
-    PROD_PROJECT: "",
-    PROD_MODEL: "",
-    CODE_12: "7",
-    PROD_TYPE: "TSP",
-    G_NAME_KD: "",
-    DESCR: "",
-    PROD_MAIN_MATERIAL: "",
-    G_NAME: "",
-    G_LENGTH: 0,
-    G_WIDTH: 0,
-    PD: 0,
-    G_C: 0,
-    G_C_R: 0,
-    G_CG: 0,
-    G_LG: 0,
-    G_SG_L: 0,
-    G_SG_R: 0,
-    PACK_DRT: "1",
-    KNIFE_TYPE: 0,
-    KNIFE_LIFECYCLE: 0,
-    KNIFE_PRICE: 0,
-    CODE_33: "02",
-    ROLE_EA_QTY: 0,
-    RPM: 0,
-    PIN_DISTANCE: 0,
-    PROCESS_TYPE: "",
-    EQ1: "NA",
-    EQ2: "NA",
-    PROD_DIECUT_STEP: 0,
-    PROD_PRINT_TIMES: 0,
-    REMK: "",
-    USE_YN: "N",
-    G_CODE: "-------",
-  });
   const [listamazontable, setListBomAmazonTable] = useState<LIST_BOM_AMAZON[]>(
     []
   );
@@ -85,38 +40,24 @@ const BOM_AMAZON = () => {
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);
   const [rows, setRows] = useState<CODE_INFO[]>([]);
-  const [editedRows, setEditedRows] = useState<Array<GridCellEditStopParams>>(
-    []
-  );
-  const [editedBOMSXRows, setEditedBOMSXRows] = useState<
-    Array<GridCellEditStopParams>
-  >([]);
-  const [editedBOMGIARows, setEditedBOMGIARows] = useState<
-    Array<GridCellEditStopParams>
-  >([]);
-  const handleSetCodeInfo = (keyname: string, value: any) => {
-    let tempcodefullinfo = { ...codefullinfo, [keyname]: value };
-    //console.log(tempcodefullinfo);
-    setCodeFullInfo(tempcodefullinfo);
-  };
   const [codeinfoCMS, setcodeinfoCMS] = useState<any>("");
   const [codeinfoKD, setcodeinfoKD] = useState<any>("");
   const [amz_country, setAMZ_COUNTRY] = useState<any>("");
   const [amz_prod_name, setAMZ_PROD_NAME] = useState<any>("");
   const [column_codeinfo, setcolumn_codeinfo] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 70, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 30, editable: enableEdit },
     {
       field: "G_CODE",
       headerName: "G_CODE",
       headerClassName: 'super-app-theme--header',
-      width: 80,
+      width: 100,
       editable: enableEdit,
     },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       flex: 1,
-      minWidth: 250,
+      minWidth: 120,
       headerClassName: 'super-app-theme--header',
       editable: enableEdit,
     },
@@ -129,12 +70,12 @@ const BOM_AMAZON = () => {
     },
   ]);
   const [column_listbomamazon, setcolumn_listbomamazon] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 60, editable: enableEdit },
-    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 230, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 30, editable: enableEdit },
+    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 120, editable: enableEdit },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      headerClassName: 'super-app-theme--header', width: 120,
+      headerClassName: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 110, editable: enableEdit },
@@ -170,100 +111,6 @@ const BOM_AMAZON = () => {
     { field: "GIATRI", headerName: "GIATRI", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
     { field: "REMARK", headerName: "REMARK", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
   ]);
-  function CustomToolbarCODETable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarLISTBOMAMAZONTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={20} />
-          EXCEL
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarBOMAMAZONTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={20} />
-          EXCEL
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
-            checkBP(userData, ["RND"], ["ALL"], ["ALL"], confirmSaveBOMAMAZON);
-            //confirmSaveBOMAMAZON();
-          }}
-        >
-          <AiFillSave color='blue' size={20} />
-          Lưu BOM
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
-            console.log(bomamazontable)
-            //confirmSaveBOMAMAZON();
-          }}
-        >
-          <AiFillSave color='blue' size={20} />
-         Test
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], ()=>{
-                setcolumn_bomgia(
-                  column_bomgia.map((element, index: number) => {
-                    return { ...element, editable: !element.editable };
-                  })
-                );
-                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-              }); */
-            checkBP(userData, ["RND"], ["ALL"], ["ALL"], () => {
-              setcolumn_bomgia(
-                column_bomgia.map((element, index: number) => {
-                  return { ...element, editable: !element.editable };
-                })
-              );
-              Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-            });
-          }}
-        >
-          <AiFillEdit color='yellow' size={15} />
-          Bật tắt sửa
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const handle_saveAMAZONCODEINFO = async () => {
     const { value: pass1 } = await Swal.fire({
       title: "Xác nhận",
@@ -431,54 +278,6 @@ const BOM_AMAZON = () => {
         console.log(error);
       });
   };
-  const handleCODESelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = rows.filter((element: CODE_INFO) =>
-      selectedID.has(element.id)
-    );
-    if (datafilter.length > 0) {
-      setCodeDataTableFilter(datafilter);
-      setcodeinfoCMS(datafilter[0].G_CODE);
-      setcodeinfoKD(datafilter[0].G_NAME);
-      handleGETBOMAMAZONEMPTY(
-        datafilter[0].G_CODE,
-        datafilter[0].G_NAME,
-        G_CODE_MAU
-      );
-      //handlecodefullinfo(datafilter[0].G_CODE);
-    } else {
-      setCodeDataTableFilter([]);
-    }
-  };
-  const handleLISTBOMAMAZONSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = listamazontable.filter((element: LIST_BOM_AMAZON) =>
-      selectedID.has(element.id)
-    );
-    if (datafilter.length > 0) {
-      //console.log(datafilter);
-      setcodeinfoCMS(datafilter[0]?.G_CODE);
-      setcodeinfoKD(datafilter[0]?.G_NAME);
-      handleGETBOMAMAZON(datafilter[0].G_CODE);
-      setBomSXDataTableFilter(datafilter);
-    } else {
-      setBomSXDataTableFilter([]);
-    }
-  };
-  const handleBOMAMAZONSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = bomamazontable.filter((element: BOM_AMAZON_DATA) =>
-      selectedID.has(element.id)
-    );
-    if (datafilter.length > 0) {
-      //console.log(datafilter);
-      setBomGiaDataTableFilter(datafilter);
-    } else {
-      setBomGiaDataTableFilter([]);
-    }
-  };
-  const zeroPad = (num: number, places: number) =>
-    String(num).padStart(places, "0");
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -602,46 +401,46 @@ const BOM_AMAZON = () => {
   };
   const bomAMZAGTable = useMemo(() =>
     <AGTable
-      showFilter={false}
+      showFilter={true}
       toolbar={
-       <>
-       <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(rows, "Code Info Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={20} />
-          EXCEL
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
-            checkBP(userData, ["RND"], ["ALL"], ["ALL"], confirmSaveBOMAMAZON);
-            //confirmSaveBOMAMAZON();
-          }}
-        >
-          <AiFillSave color='blue' size={20} />
-          Lưu BOM
-        </IconButton>      
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {            
-            checkBP(userData, ["RND"], ["ALL"], ["ALL"], () => {
-              setcolumn_bomgia(
-                column_bomgia.map((element, index: number) => {
-                  return { ...element, editable: !element.editable };
-                })
-              );
-              Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-            });
-          }}
-        >
-          <AiFillEdit color='yellow' size={15} />
-          Bật tắt sửa
-        </IconButton>
-       </>
+        <>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              SaveExcel(rows, "Code Info Table");
+            }}
+          >
+            <AiFillFileExcel color='green' size={20} />
+            EXCEL
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
+              checkBP(userData, ["RND"], ["ALL"], ["ALL"], confirmSaveBOMAMAZON);
+              //confirmSaveBOMAMAZON();
+            }}
+          >
+            <AiFillSave color='blue' size={20} />
+            Lưu BOM
+          </IconButton>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              checkBP(userData, ["RND"], ["ALL"], ["ALL"], () => {
+                setcolumn_bomgia(
+                  column_bomgia.map((element, index: number) => {
+                    return { ...element, editable: !element.editable };
+                  })
+                );
+                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              });
+            }}
+          >
+            <AiFillEdit color='yellow' size={15} />
+            Bật tắt sửa
+          </IconButton>
+        </>
       }
       columns={column_bomgia}
       data={bomamazontable}
@@ -657,7 +456,57 @@ const BOM_AMAZON = () => {
         //bomsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [bomamazontable,enableEdit, column_bomgia]);
+    , [bomamazontable, enableEdit, column_bomgia]);
+  const listAMZCodeAGTable = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <></>
+      }
+      columns={column_listbomamazon}
+      data={listamazontable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+        handleGETBOMAMAZON(params.data.G_CODE);
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        //bomsxdatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [column_listbomamazon, listamazontable]);
+  const listCode = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <></>
+      }
+      columns={column_codeinfo}
+      data={rows}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data)       
+        setcodeinfoCMS(params.data.G_CODE);
+        setcodeinfoKD(params.data.G_NAME);
+        handleGETBOMAMAZONEMPTY(
+          params.data.G_CODE,
+          params.data.G_NAME,
+          G_CODE_MAU
+        );
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        //bomsxdatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [rows]);
   useEffect(() => {
     handleGETLISTBOMAMAZON("");
     loadCodePhoi();
@@ -712,49 +561,7 @@ const BOM_AMAZON = () => {
             </div>
           </div>
           <div className='codeinfotable'>
-            <DataGrid
-              slots={{
-                toolbar: CustomToolbarCODETable,
-              }}
-              sx={{
-                fontSize: "0.7rem", '& .super-app-theme--header': {
-                  backgroundColor: 'rgba(125, 234, 241, 0.775)',
-                  fontSize: '0.8rem',
-                  color: 'rgba(42, 96, 197, 0.775)'
-                },
-              }}
-              columnHeaderHeight={20}
-              loading={isLoading}
-              rowHeight={30}
-              rows={rows}
-              columns={column_codeinfo}
-              onRowSelectionModelChange={(ids) => {
-                handleCODESelectionforUpdate(ids);
-              }}
-              /*  rows={codeinfodatatable}
-            columns={columnDefinition} */
-              pageSizeOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode='cell'
-              /* experimentalFeatures={{ newEditingApi: true }}  */
-              onCellEditStop={(
-                params: GridCellEditStopParams,
-                event: MuiEvent<MuiBaseEvent>,
-                details: GridCallbackDetails
-              ) => {
-                //console.log(params);
-                let tempeditrows = editedRows;
-                tempeditrows.push(params);
-                setEditedRows(tempeditrows);
-                //console.log(editedRows);
-                const keyvar = params.field;
-                const newdata = rows.map((p) =>
-                  p.id === params.id ? { ...p, [keyvar]: params.value } : p
-                );
-                setRows(newdata);
-              }}
-            />
+            {listCode}
           </div>
         </div>
       </div>
@@ -777,49 +584,7 @@ const BOM_AMAZON = () => {
               >
                 LIST CODE ĐÃ CÓ BOM AMAZON
               </span>
-              <DataGrid
-                slots={{
-                  toolbar: CustomToolbarLISTBOMAMAZONTable,
-                }}
-                sx={{
-                  fontSize: "0.7rem", '& .super-app-theme--header': {
-                    backgroundColor: 'rgba(125, 234, 241, 0.775)',
-                    fontSize: '0.8rem',
-                    color: 'rgba(42, 96, 197, 0.775)'
-                  },
-                }}
-                columnHeaderHeight={20}
-                loading={isLoading}
-                rowHeight={30}
-                rows={listamazontable}
-                columns={column_listbomamazon}
-                onRowSelectionModelChange={(ids) => {
-                  handleLISTBOMAMAZONSelectionforUpdate(ids);
-                }}
-                /*  rows={codeinfodatatable}
-              columns={columnDefinition} */
-                pageSizeOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                ]}
-                editMode='cell'
-                /* experimentalFeatures={{ newEditingApi: true }}  */
-                onCellEditStop={(
-                  params: GridCellEditStopParams,
-                  event: MuiEvent<MuiBaseEvent>,
-                  details: GridCallbackDetails
-                ) => {
-                  //console.log(params);
-                  let tempeditrows = editedRows;
-                  tempeditrows.push(params);
-                  setEditedBOMSXRows(tempeditrows);
-                  //console.log(editedRows);
-                  const keyvar = params.field;
-                  const newdata = listamazontable.map((p) =>
-                    p.id === params.id ? { ...p, [keyvar]: params.value } : p
-                  );
-                  setListBomAmazonTable(newdata);
-                }}
-              />
+              {listAMZCodeAGTable}
             </div>
           </div>
           <div className='bomgia'>
@@ -837,7 +602,6 @@ const BOM_AMAZON = () => {
                 {column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
               </span>
               {bomAMZAGTable}
-              
             </div>
           </div>
           <div className='product_infor'>
