@@ -26,7 +26,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   );
   const [tableTitle, setTableTitle] = useState("");
   const column_nhapkhoaotable = [
-    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100 },
+    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true,
+      checkboxSelection: true, },
     { field: "FACTORY", headerName: "FACTORY", width: 100 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     { field: "M_CODE", headerName: "M_CODE", width: 80 },
@@ -95,8 +96,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       const date1 = moment.utc().format('YYYY-MM-DD');
       const date2 = params.data.INS_DATE;
       var diff: number = datediff(date1,date2);
-
-      if (diff > 2) {
+      let ins_weekday = moment.utc(date2).weekday();    
+      if(ins_weekday >=5) diff = diff - 2;
+      if (diff > 1) {
         return ( 
           <span style={{ color: "red", fontWeight: "bold" }}>
             {params.data.M_LOT_NO}
@@ -380,7 +382,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     var d1 = moment.utc(date1);
     var d2 = moment.utc(date2);
     var diff: number = d1.diff(d2, "days");
-    console.log(diff);
+    //console.log(diff);
     return diff;
 
   }
@@ -432,7 +434,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
           var diff: number = datediff(date1,date2);
-          let isExpired: boolean = diff > 2;
+          let ins_weekday = moment.utc(date2).weekday();    
+          if(ins_weekday >=5) diff = diff - 2;
+          let isExpired: boolean = diff > 1;
           console.log(isExpired);
 
           let checkFSC_CODE: string = (await checkNextPlanFSC(nextPlan)).FSC_CODE;
@@ -849,6 +853,26 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               >
                 LS OUT
               </button>              
+             {/*  <button
+                className="tranhatky"
+                onClick={() => {
+                  var date1 = moment.utc().format('YYYY-MM-DD');
+                  var date2 = tonkhoaodatafilter.current[0].INS_DATE;
+                  let ins_weekday = moment.utc(date2).weekday();          
+                  console.log('2024-08-10',moment.utc('2024-08-10').weekday());
+                  console.log('2024-08-11',moment.utc('2024-08-11').weekday());
+                  console.log('2024-08-12',moment.utc('2024-08-12').weekday());
+                  console.log('2024-08-13',moment.utc('2024-08-13').weekday());
+                  console.log('2024-08-14',moment.utc('2024-08-14').weekday());
+                  console.log('2024-08-15',moment.utc('2024-08-15').weekday());
+                  console.log('2024-08-16',moment.utc('2024-08-16').weekday());
+                  console.log('2024-08-17',moment.utc('2024-08-17').weekday());
+                  console.log('ins_weekday',ins_weekday);
+                  console.log('datediff',datediff(date1,date2));
+                }}
+              >
+                Test
+              </button>    */}           
             </div>
             <div className="forminputcolumn">
               <button
