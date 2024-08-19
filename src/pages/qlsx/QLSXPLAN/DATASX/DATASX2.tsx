@@ -1897,6 +1897,15 @@ const DATASX2 = () => {
       }
     },
     {
+      field: 'NOT_SCANNED_QTY', headerName: 'NOT_SCANNED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {e.data.NOT_SCANNED_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'SCANNED_QTY', headerName: 'SCANNED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>

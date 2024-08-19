@@ -2039,6 +2039,7 @@ export interface YCSX_SX_DATA {
   PROD_REQUEST_QTY: number;
   M_NAME: string;
   M_OUTPUT: number;
+  NOT_SCANNED_QTY: number;
   SCANNED_QTY: number;
   REMAIN_QTY: number;
   USED_QTY: number;
