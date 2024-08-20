@@ -2083,6 +2083,23 @@ export interface YCSX_SX_DATA {
   TON_KHO_AO: number;
   NEXT_OUT_QTY: number;
   RETURN_QTY: number;
+  Setting1: number;
+  Setting2: number;
+  Setting3: number;
+  Setting4: number;
+  UPH1: number;
+  UPH2: number;
+  UPH3: number;
+  UPH4: number;
+  Step1: number;
+  Step2: number;
+  Step3: number;
+  Step4: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
+  LOSS_KT: number;
 }
 export interface LOSS_TABLE_DATA {
   XUATKHO_MET: number;
