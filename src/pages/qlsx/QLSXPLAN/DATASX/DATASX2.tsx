@@ -1,7 +1,7 @@
 import { IconButton } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import React, { useEffect, useRef, useState } from "react";
+import { AiFillCloseCircle, AiFillDashboard, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../../api/Api";
 import "./DATASX.scss";
@@ -9,6 +9,7 @@ import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import {
+  DAILY_YCSX_RESULT,
   LICHSUINPUTLIEU_DATA,
   LICHSUNHAPKHOAO,
   LOSS_TABLE_DATA,
@@ -50,6 +51,7 @@ const DATASX2 = () => {
       });
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const [showhideDailyYCSX, setShowHideDailyYCSX] = useState(false);
   const [inputlieudatatable, setInputLieuDataTable] = useState<
     LICHSUINPUTLIEU_DATA[]
   >([]);
@@ -85,12 +87,12 @@ const DATASX2 = () => {
     SETTING2: 0,
     SETTING3: 0,
     SETTING4: 0,
-    SCANNED_EA2:0,
-    SCANNED_EA3:0,
-    SCANNED_EA4:0,
-    SCANNED_MET2:0,
-    SCANNED_MET3:0,
-    SCANNED_MET4:0,
+    SCANNED_EA2: 0,
+    SCANNED_EA3: 0,
+    SCANNED_EA4: 0,
+    SCANNED_MET2: 0,
+    SCANNED_MET3: 0,
+    SCANNED_MET4: 0,
   });
   const [selectbutton, setSelectButton] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -105,10 +107,71 @@ const DATASX2 = () => {
   const [truSample, setTruSample] = useState(true);
   const [onlyClose, setOnlyClose] = useState(false);
   const [fullSummary, setFullSummary] = useState(false);
-  const [id, setID] = useState("");
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+  const [dailyycsx, setDailyYCSX] = useState<DAILY_YCSX_RESULT[]>([]);
+  const [trigger, setTrigger] = useState(true);
+  const selectedYCSX = useRef<YCSX_SX_DATA>({
+    YCSX_PENDING: "",
+    PHAN_LOAI: "",
+    PROD_REQUEST_NO: "",
+    G_NAME: "",
+    G_NAME_KD: "",
+    FACTORY: "",
+    EQ1: "",
+    EQ2: "",
+    EQ3: "",
+    EQ4: "",
+    PROD_REQUEST_DATE: "",
+    PROD_REQUEST_QTY: 0,
+    M_NAME: "",
+    M_OUTPUT: 0,
+    NOT_SCANNED_QTY: 0,
+    SCANNED_QTY: 0,
+    REMAIN_QTY: 0,
+    USED_QTY: 0,
+    PD: 0,
+    CAVITY: 0,
+    WAREHOUSE_ESTIMATED_QTY: 0,
+    ESTIMATED_QTY: 0,
+    CD1: 0,
+    CD2: 0,
+    CD3: 0,
+    CD4: 0,
+    ST1: 0,
+    ST2: 0,
+    ST3: 0,
+    ST4: 0,
+    NG1: 0,
+    NG2: 0,
+    NG3: 0,
+    NG4: 0,
+    INS_INPUT: 0,
+    INSPECT_TOTAL_QTY: 0,
+    INSPECT_OK_QTY: 0,
+    INSPECT_LOSS_QTY: 0,
+    INSPECT_TOTAL_NG: 0,
+    INSPECT_MATERIAL_NG: 0,
+    INSPECT_PROCESS_NG: 0,
+    INS_OUTPUT: 0,
+    LOSS_SX1: 0,
+    LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
+    LOSS_INSPECT: 0,
+    TOTAL_LOSS: 0,
+    TOTAL_LOSS2: 0,
+    LOSS_THEM_TUI: 0,
+    SX_MARKING_QTY: 0,
+    NEXT_IN_QTY: 0,
+    NOT_BEEP_QTY: 0,
+    LOCK_QTY: 0,
+    BEEP_QTY: 0,
+    TON_KHO_AO: 0,
+    NEXT_OUT_QTY: 0,
+    RETURN_QTY: 0
+  });
   const fields_datasx_chithi: any = [
     {
       caption: "PHAN_LOAI",
@@ -1505,17 +1568,17 @@ const DATASX2 = () => {
       },
     },
   ];
-  const column_datasx_chithi = [   
-    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 60, pinned:'left' },
+  const column_datasx_chithi = [
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 60, pinned: 'left' },
     { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80, pinned: 'left' },
     {
-      headerName:'PLAN_INFORMATION',
-      children: [     
+      headerName: 'PLAN_INFORMATION',
+      children: [
         { field: 'PHAN_LOAI', headerName: 'PHAN_LOAI', resizable: true, width: 80, },
-        { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 80 },    
+        { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 80 },
         { field: 'PLAN_DATE', headerName: 'PLAN_DATE', resizable: true, width: 80 },
-        { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 60,},
-        { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },    
+        { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 60, },
+        { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
         {
           field: 'PLAN_QTY', headerName: 'PLAN_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
             return (
@@ -1530,16 +1593,15 @@ const DATASX2 = () => {
         { field: 'PLAN_EQ', headerName: 'PLAN_EQ', resizable: true, width: 50 },
         { field: 'PLAN_FACTORY', headerName: 'PLAN_FACTORY', resizable: true, width: 50 },
         { field: 'PROCESS_NUMBER', headerName: 'PROCESS_NUMBER', resizable: true, width: 50 },
-        { field: 'STEP', headerName: 'STEP', resizable: true, width: 50 }, 
+        { field: 'STEP', headerName: 'STEP', resizable: true, width: 50 },
         { field: 'PD', headerName: 'PD', resizable: true, width: 50 },
         { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 50 },
-        
       ],
       headerClass: 'header'
-    }, 
+    },
     {
-      headerName:'MATERIAL_TRACKING',
-      children: [  
+      headerName: 'MATERIAL_TRACKING',
+      children: [
         { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
         {
           field: 'WAREHOUSE_OUTPUT_QTY', headerName: 'WAREHOUSE_OUTPUT_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
@@ -1581,7 +1643,7 @@ const DATASX2 = () => {
           field: 'BEEP_QTY', headerName: 'BEEP_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
             return (
               <span style={{ color: "blue", fontWeight: "bold" }}>
-                {e.data.BEEP_QTY?.toLocaleString("en-US",{
+                {e.data.BEEP_QTY?.toLocaleString("en-US", {
                   maximumFractionDigits: 0,
                   minimumFractionDigits: 0,
                 })}
@@ -1593,7 +1655,7 @@ const DATASX2 = () => {
           field: 'USED_QTY', headerName: 'USED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
             return (
               <span style={{ color: "green", fontWeight: "bold" }}>
-                {e.data.USED_QTY?.toLocaleString("en-US",{
+                {e.data.USED_QTY?.toLocaleString("en-US", {
                   maximumFractionDigits: 0,
                   minimumFractionDigits: 0,
                 })}
@@ -1636,214 +1698,218 @@ const DATASX2 = () => {
               </span>
             );
           }
-        },   
-        
+        },
       ],
       headerClass: 'header'
-    }, 
-       
+    },
     {
-      headerName:'PRODUCTION_RESULT',
-      children: [     
+      headerName: 'PRODUCTION_RESULT',
+      children: [
         { field: 'SETTING_MET_TC', headerName: 'SETTING_MET_TC', resizable: true, width: 80 },
-    { field: 'SETTING_DM_SX', headerName: 'SETTING_DM_SX', resizable: true, width: 80 },
-    { field: 'SETTING_MET', headerName: 'SETTING_MET', resizable: true, width: 80, cellRenderer: (e:CustomCellRendererProps)=> {
-      return (
-        <span style={{ color: "#d96e0a", fontWeight: "bold" }}>
-            {e.data.SETTING_MET?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-      )
-    }  },
-    { field: 'NG_MET', headerName: 'NG_MET', resizable: true, width: 80, cellRenderer: (e:CustomCellRendererProps)=> {
-      return (
-        <span style={{ color: "#ef1b1b", fontWeight: "bold" }}>
-            {e.data.NG_MET?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-      )
-    } },
-    { field: 'KETQUASX_M', headerName: 'KETQUASX_M', resizable: true, width: 80, cellRenderer: (e:CustomCellRendererProps)=> {
-      return (
-        <span style={{ color: "#059c32", fontWeight: "bold" }}>
-            {e.data.KETQUASX_M?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-      )
-    }  },
-    {
-      field: 'WAREHOUSE_ESTIMATED_QTY', headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "#1170dd", fontWeight: "bold" }}>
-            {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'ESTIMATED_QTY', headerName: 'ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "#1170dd", fontWeight: "bold" }}>
-            {e.data.ESTIMATED_QTY?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'ESTIMATED_QTY_ST', headerName: 'ESTIMATED_QTY_ST', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "#1170dd", fontWeight: "bold" }}>
-            {e.data.ESTIMATED_QTY_ST?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'SETTING_EA', headerName: 'SETTING_EA', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "gray", fontWeight: "bold" }}>
-            {e.data.SETTING_EA?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'NG_EA', headerName: 'NG_EA', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            {e.data.NG_EA?.toLocaleString("en-US", {
-              maximumFractionDigits: 0,
-              minimumFractionDigits: 0,
-            })}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'KETQUASX', headerName: 'KETQUASX', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {e.data.KETQUASX?.toLocaleString("en-US")}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'KETQUASX_TP', headerName: 'KETQUASX_TP', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "purple", fontWeight: "bold" }}>
-            {e.data.KETQUASX_TP?.toLocaleString("en-US")}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'LOSS_SX_ST', headerName: 'LOSS_SX_ST', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {
-              e.data.LOSS_SX_ST?.toLocaleString("en-US", {
-                style: 'percent',
-                maximumFractionDigits: 1,
-                minimumFractionDigits: 1,
-              })}{" "}
-          </span>
-        );
-      }
-    },
-    {
-      field: 'LOSS_SX', headerName: 'LOSS_SX', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {
-              e.data.LOSS_SX?.toLocaleString("en-US", {
-                style: 'percent',
-                maximumFractionDigits: 1,
-                minimumFractionDigits: 1,
-              })}{" "}
-          </span>
-        );
-      }
-    },
-    { field: 'INS_INPUT', headerName: 'INS_INPUT', resizable: true, width: 80 },
-    { field: 'INSPECT_TOTAL_QTY', headerName: 'INSPECT_TOTAL_QTY', resizable: true, width: 80 },
-    { field: 'INSPECT_OK_QTY', headerName: 'INSPECT_OK_QTY', resizable: true, width: 80 },
-    { field: 'INSPECT_TOTAL_NG', headerName: 'INSPECT_TOTAL_NG', resizable: true, width: 80 },
-    {
-      field: 'LOSS_SX_KT', headerName: 'LOSS_SX_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {
-              e.data.LOSS_SX_KT?.toLocaleString("en-US", {
-                style: 'percent',
-                maximumFractionDigits: 1,
-                minimumFractionDigits: 1,
-              })}{" "}
-          </span>
-        );
-      }
-    },
-    { field: 'INS_OUTPUT', headerName: 'INS_OUTPUT', resizable: true, width: 80 },
-    {
-      field: 'LOSS_KT', headerName: 'LOSS_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {
-              e.data.LOSS_KT?.toLocaleString("en-US", {
-                style: 'percent',
-                maximumFractionDigits: 1,
-                minimumFractionDigits: 1,
-              })}{" "}
-          </span>
-        );
-      }
-    },
-    { field: 'SETTING_START_TIME', headerName: 'SETTING_START_TIME', resizable: true, width: 80 },
-    { field: 'MASS_START_TIME', headerName: 'MASS_START_TIME', resizable: true, width: 80 },
-    { field: 'MASS_END_TIME', headerName: 'MASS_END_TIME', resizable: true, width: 80 },
-    { field: 'EQ_NAME_TT', headerName: 'EQ_NAME_TT', resizable: true, width: 80 },
-    { field: 'MACHINE_NAME', headerName: 'MACHINE_NAME', resizable: true, width: 80 },
-    { field: 'WORK_SHIFT', headerName: 'WORK_SHIFT', resizable: true, width: 80 },
-    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 80 },
-    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
-    { field: 'BOC_KIEM', headerName: 'BOC_KIEM', resizable: true, width: 80 },
-    { field: 'LAY_DO', headerName: 'LAY_DO', resizable: true, width: 80 },
-    { field: 'MAY_HONG', headerName: 'MAY_HONG', resizable: true, width: 80 },
-    { field: 'DAO_NG', headerName: 'DAO_NG', resizable: true, width: 80 },
-    { field: 'CHO_LIEU', headerName: 'CHO_LIEU', resizable: true, width: 80 },
-    { field: 'CHO_BTP', headerName: 'CHO_BTP', resizable: true, width: 80 },
-    { field: 'HET_LIEU', headerName: 'HET_LIEU', resizable: true, width: 80 },
-    { field: 'LIEU_NG', headerName: 'LIEU_NG', resizable: true, width: 80 },
-    { field: 'HOP_FL', headerName: 'HOP_FL', resizable: true, width: 80 },
-    { field: 'CHOT_BAOCAO', headerName: 'CHOT_BAOCAO', resizable: true, width: 80 },
-    { field: 'CHUYEN_CODE', headerName: 'CHUYEN_CODE', resizable: true, width: 80 },
-    { field: 'KHAC', headerName: 'KHAC', resizable: true, width: 80 },
-    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 80 },
+        { field: 'SETTING_DM_SX', headerName: 'SETTING_DM_SX', resizable: true, width: 80 },
+        {
+          field: 'SETTING_MET', headerName: 'SETTING_MET', resizable: true, width: 80, cellRenderer: (e: CustomCellRendererProps) => {
+            return (
+              <span style={{ color: "#d96e0a", fontWeight: "bold" }}>
+                {e.data.SETTING_MET?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            )
+          }
+        },
+        {
+          field: 'NG_MET', headerName: 'NG_MET', resizable: true, width: 80, cellRenderer: (e: CustomCellRendererProps) => {
+            return (
+              <span style={{ color: "#ef1b1b", fontWeight: "bold" }}>
+                {e.data.NG_MET?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            )
+          }
+        },
+        {
+          field: 'KETQUASX_M', headerName: 'KETQUASX_M', resizable: true, width: 80, cellRenderer: (e: CustomCellRendererProps) => {
+            return (
+              <span style={{ color: "#059c32", fontWeight: "bold" }}>
+                {e.data.KETQUASX_M?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            )
+          }
+        },
+        {
+          field: 'WAREHOUSE_ESTIMATED_QTY', headerName: 'WAREHOUSE_ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#1170dd", fontWeight: "bold" }}>
+                {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'ESTIMATED_QTY', headerName: 'ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#1170dd", fontWeight: "bold" }}>
+                {e.data.ESTIMATED_QTY?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'ESTIMATED_QTY_ST', headerName: 'ESTIMATED_QTY_ST', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#1170dd", fontWeight: "bold" }}>
+                {e.data.ESTIMATED_QTY_ST?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'SETTING_EA', headerName: 'SETTING_EA', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "gray", fontWeight: "bold" }}>
+                {e.data.SETTING_EA?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'NG_EA', headerName: 'NG_EA', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "bold" }}>
+                {e.data.NG_EA?.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'KETQUASX', headerName: 'KETQUASX', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {e.data.KETQUASX?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'KETQUASX_TP', headerName: 'KETQUASX_TP', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "purple", fontWeight: "bold" }}>
+                {e.data.KETQUASX_TP?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'LOSS_SX_ST', headerName: 'LOSS_SX_ST', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {
+                  e.data.LOSS_SX_ST?.toLocaleString("en-US", {
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}{" "}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'LOSS_SX', headerName: 'LOSS_SX', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {
+                  e.data.LOSS_SX?.toLocaleString("en-US", {
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}{" "}
+              </span>
+            );
+          }
+        },
+        { field: 'INS_INPUT', headerName: 'INS_INPUT', resizable: true, width: 80 },
+        { field: 'INSPECT_TOTAL_QTY', headerName: 'INSPECT_TOTAL_QTY', resizable: true, width: 80 },
+        { field: 'INSPECT_OK_QTY', headerName: 'INSPECT_OK_QTY', resizable: true, width: 80 },
+        { field: 'INSPECT_TOTAL_NG', headerName: 'INSPECT_TOTAL_NG', resizable: true, width: 80 },
+        {
+          field: 'LOSS_SX_KT', headerName: 'LOSS_SX_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {
+                  e.data.LOSS_SX_KT?.toLocaleString("en-US", {
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}{" "}
+              </span>
+            );
+          }
+        },
+        { field: 'INS_OUTPUT', headerName: 'INS_OUTPUT', resizable: true, width: 80 },
+        {
+          field: 'LOSS_KT', headerName: 'LOSS_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {
+                  e.data.LOSS_KT?.toLocaleString("en-US", {
+                    style: 'percent',
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}{" "}
+              </span>
+            );
+          }
+        },
+        { field: 'SETTING_START_TIME', headerName: 'SETTING_START_TIME', resizable: true, width: 80 },
+        { field: 'MASS_START_TIME', headerName: 'MASS_START_TIME', resizable: true, width: 80 },
+        { field: 'MASS_END_TIME', headerName: 'MASS_END_TIME', resizable: true, width: 80 },
+        { field: 'EQ_NAME_TT', headerName: 'EQ_NAME_TT', resizable: true, width: 80 },
+        { field: 'MACHINE_NAME', headerName: 'MACHINE_NAME', resizable: true, width: 80 },
+        { field: 'WORK_SHIFT', headerName: 'WORK_SHIFT', resizable: true, width: 80 },
+        { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 80 },
+        { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
+        { field: 'BOC_KIEM', headerName: 'BOC_KIEM', resizable: true, width: 80 },
+        { field: 'LAY_DO', headerName: 'LAY_DO', resizable: true, width: 80 },
+        { field: 'MAY_HONG', headerName: 'MAY_HONG', resizable: true, width: 80 },
+        { field: 'DAO_NG', headerName: 'DAO_NG', resizable: true, width: 80 },
+        { field: 'CHO_LIEU', headerName: 'CHO_LIEU', resizable: true, width: 80 },
+        { field: 'CHO_BTP', headerName: 'CHO_BTP', resizable: true, width: 80 },
+        { field: 'HET_LIEU', headerName: 'HET_LIEU', resizable: true, width: 80 },
+        { field: 'LIEU_NG', headerName: 'LIEU_NG', resizable: true, width: 80 },
+        { field: 'HOP_FL', headerName: 'HOP_FL', resizable: true, width: 80 },
+        { field: 'CHOT_BAOCAO', headerName: 'CHOT_BAOCAO', resizable: true, width: 80 },
+        { field: 'CHUYEN_CODE', headerName: 'CHUYEN_CODE', resizable: true, width: 80 },
+        { field: 'KHAC', headerName: 'KHAC', resizable: true, width: 80 },
+        { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 80 },
       ],
       headerClass: 'header'
-    },     
+    },
   ];
   const column_datasx_ycsx = [
-    { field: 'PROD_REQUEST_NO', headerName: 'YCSX_NO', resizable: true, width: 70, pinned:'left'  },
-    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80, pinned:'left' },
+    { field: 'PROD_REQUEST_NO', headerName: 'YCSX_NO', resizable: true, width: 70, pinned: 'left' },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80, pinned: 'left' },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
     {
       field: 'YCSX_PENDING', headerName: 'YCSX_PENDING', resizable: true, width: 80, cellRenderer: (e: any) => {
@@ -1864,8 +1930,6 @@ const DATASX2 = () => {
     },
     { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 80 },
     { field: 'PHAN_LOAI', headerName: 'PHAN_LOAI', resizable: true, width: 80 },
-   
-    
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 60 },
     { field: 'PROD_REQUEST_DATE', headerName: 'YCSX DATE', resizable: true, width: 80 },
     {
@@ -1967,7 +2031,7 @@ const DATASX2 = () => {
           </span>
         );
       }
-    },  
+    },
     { field: 'PD', headerName: 'PD', resizable: true, width: 80 },
     { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 80 },
     {
@@ -1977,7 +2041,7 @@ const DATASX2 = () => {
             {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US", {
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,
-              })}
+            })}
           </span>
         );
       }
@@ -1986,7 +2050,7 @@ const DATASX2 = () => {
       field: 'ESTIMATED_QTY', headerName: 'ESTIMATED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>
-            {e.data.ESTIMATED_QTY?.toLocaleString("en-US",{
+            {e.data.ESTIMATED_QTY?.toLocaleString("en-US", {
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,
             })}
@@ -2171,6 +2235,242 @@ const DATASX2 = () => {
     { field: 'EQ3', headerName: 'EQ3', resizable: true, width: 40 },
     { field: 'EQ4', headerName: 'EQ4', resizable: true, width: 40 },
   ];
+  const column_daily_datasx_ycsx = [
+    { field: 'PLAN_DATE', headerName: 'PLAN_DATE', resizable: true, width: 80, pinned: 'left', cellDataType: 'text' },
+    {
+      headerName: 'CD1',
+      children: [
+        {
+          field: 'TARGET1', headerName: 'TARGET1', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal", }}>
+                {e.data.TARGET1?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'INPUT1', headerName: 'INPUT1', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                {e.data.INPUT1?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'RESULT1', headerName: 'RESULT1', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                {e.data.RESULT1?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'LOSS1', headerName: 'LOSS1', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                {e.data.LOSS1?.toLocaleString("en-US", {
+                  style: "percent",
+                  maximumFractionDigits: 1,
+                  minimumFractionDigits: 1,
+                })}
+              </span>
+            );
+          }
+        },
+      ],
+      headerClass: 'header'
+    },
+    {
+      headerName: 'CD2',
+      children: [
+        {
+          field: 'TARGET2', headerName: 'TARGET2', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal" }}>
+                {e.data.TARGET2?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'INPUT2', headerName: 'INPUT2', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                {e.data.INPUT2?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'RESULT2', headerName: 'RESULT2', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                {e.data.RESULT2?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'LOSS2', headerName: 'LOSS2', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                {e.data.LOSS2?.toLocaleString("en-US", {
+                  style: "percent",
+                  maximumFractionDigits: 1,
+                  minimumFractionDigits: 1,
+                })}
+              </span>
+            );
+          }
+        },
+      ],
+      headerClass: 'header'
+    },
+    {
+      headerName: 'CD3',
+      children: [
+        {
+          field: 'TARGET3', headerName: 'TARGET3', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal" }}>
+                {e.data.TARGET3?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'INPUT3', headerName: 'INPUT3', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                {e.data.INPUT3?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'RESULT3', headerName: 'RESULT3', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                {e.data.RESULT3?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'LOSS3', headerName: 'LOSS3', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                {e.data.LOSS3?.toLocaleString("en-US", {
+                  style: "percent",
+                  maximumFractionDigits: 1,
+                  minimumFractionDigits: 1,
+                })}
+              </span>
+            );
+          }
+        },
+      ],
+      headerClass: 'header'
+    },
+    {
+      headerName: 'INSPECTION',
+      children: [
+        {
+          field: 'INSP_QTY', headerName: 'INSP_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal" }}>
+                {e.data.INSP_QTY?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'INSP_LOSS', headerName: 'INSP_LOSS', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "gray", fontWeight: "gray" }}>
+                {e.data.INSP_LOSS?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'INSP_NG', headerName: 'INSP_NG', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "red" }}>
+                {e.data.INSP_NG?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'INSP_OK', headerName: 'INSP_OK', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                {e.data.INSP_OK?.toLocaleString("en-US", {
+                  style: "decimal",
+                  maximumFractionDigits: 0,
+                  minimumFractionDigits: 0,
+                })}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'LOSS_KT', headerName: 'LOSS_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                {e.data.LOSS_KT?.toLocaleString("en-US", {
+                  style: "percent",
+                  maximumFractionDigits: 1,
+                  minimumFractionDigits: 1,
+                })}
+              </span>
+            );
+          }
+        },
+      ],
+      headerClass: 'header'
+    },
+  ];
   const column_inputlieudatatable = [
     { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
     { field: 'INPUT_QTY', headerName: 'INPUT_QTY', resizable: true, width: 80 },
@@ -2203,6 +2503,8 @@ const DATASX2 = () => {
     { field: "IN_QTY", headerName: "IN_QTY", width: 80 },
     { field: "REMARK", headerName: "REMARK", width: 90 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+    { field: "KHO_CFM_DATE", headerName: "KHO_CFM_DATE", width: 100 },
+    { field: "RETURN_STATUS", headerName: "RETURN_STATUS", width: 100 },
   ];
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
@@ -2211,6 +2513,32 @@ const DATASX2 = () => {
         store: datasxtable,
       }),
     );
+  const getRowStyle = (params: any) => {
+    if (params.data.PLAN_DATE === 'TOTAL') {
+      return { backgroundColor: '#faf878', fontWeight: 'bold' };
+    }
+    return null;
+  }
+  const datasx_dailyycsx = React.useMemo(
+    () => (
+      <AGTable
+        getRowStyle={getRowStyle}
+        toolbar={
+          <div>
+          </div>}
+        columns={column_daily_datasx_ycsx}
+        data={dailyycsx}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+      />
+    ),
+    [dailyycsx],
+  );
   const datasx_chithi2 = React.useMemo(
     () => (
       <AGTable
@@ -2247,6 +2575,16 @@ const DATASX2 = () => {
       <AGTable
         toolbar={
           <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handle_loaddailyYCSX(selectedYCSX.current.PROD_REQUEST_NO)
+                setShowHideDailyYCSX(prev => !prev);
+              }}
+            >
+              <MdOutlinePivotTableChart color="#36e945" size={15} />
+              Show Detail
+            </IconButton>
           </div>}
         columns={column_datasx_ycsx}
         data={datasxtable}
@@ -2254,6 +2592,7 @@ const DATASX2 = () => {
           //console.log(e.data)
         }} onRowClick={(e) => {
           //console.log(e.data)
+          selectedYCSX.current = e.data;
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
@@ -2267,15 +2606,13 @@ const DATASX2 = () => {
       TO_DATE: moment().format("YYYY-MM-DD"),
       FACTORY: 'ALL',
       M_LOT_NO: M_LOT_NO
-    }));    
+    }));
   };
-
   const datasx_lichsuxuatlieu2 = React.useMemo(
     () => (
       <AGTable
         toolbar={
           <div>
-            
           </div>}
         columns={column_inputlieudatatable}
         data={inputlieudatatable}
@@ -2294,21 +2631,20 @@ const DATASX2 = () => {
   const datasx_lichsukhoao = React.useMemo(
     () => (
       <AGTable
-            toolbar={
-              <div>
-                
-              </div>
-            }
-            showFilter={true}
-            columns={column_nhapkhoaotable}
-            data={khoaodata}
-            onCellEditingStopped={(params: any) => {
-            }} onRowClick={(params: any) => {
-              //console.log(e.data)
-            }} onSelectionChange={(params: any) => {
-              console.log(params)
-              //tonkhoaodatafilter.current = params!.api.getSelectedRows();          
-            }} />
+        toolbar={
+          <div>
+          </div>
+        }
+        showFilter={true}
+        columns={column_nhapkhoaotable}
+        data={khoaodata}
+        onCellEditingStopped={(params: any) => {
+        }} onRowClick={(params: any) => {
+          //console.log(e.data)
+        }} onSelectionChange={(params: any) => {
+          console.log(params)
+          //tonkhoaodatafilter.current = params!.api.getSelectedRows();          
+        }} />
     ),
     [khoaodata],
   );
@@ -2389,10 +2725,10 @@ const DATASX2 = () => {
                 LOSS_SX: (element.ESTIMATED_QTY ?? 0) !== 0 ? 1 - (element.KETQUASX ?? 0) * 1.0 / (element.ESTIMATED_QTY ?? 0) : 0,
                 LOSS_SX_KT: (element.KETQUASX ?? 0) !== 0 ? 1 - (element.INS_INPUT ?? 0) * 1.0 / (element.KETQUASX ?? 0) : 0,
                 LOSS_KT: (element.INS_INPUT ?? 0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0) * 1.0 / (element.INS_INPUT ?? 0) : 0,
-                NOT_BEEP_QTY: element.PROCESS_NUMBER !==1 ? 0 : element.NOT_BEEP_QTY,
-                KETQUASX_M:  element.PD !== null?(element.KETQUASX*element.PD*1.0/element.CAVITY/1000): null,
-                NG_MET: element.PD !== null? element.USED_QTY - (element.KETQUASX*element.PD*1.0/element.CAVITY/1000) -  element.SETTING_MET : null,
-                NG_EA: element.ESTIMATED_QTY -element.SETTING_EA - element.KETQUASX,
+                NOT_BEEP_QTY: element.PROCESS_NUMBER !== 1 ? 0 : element.NOT_BEEP_QTY,
+                KETQUASX_M: element.PD !== null ? (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) : null,
+                NG_MET: element.PD !== null ? element.USED_QTY - (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) - element.SETTING_MET : null,
+                NG_EA: element.ESTIMATED_QTY - element.SETTING_EA - element.KETQUASX,
                 id: index,
               };
             },
@@ -2428,12 +2764,12 @@ const DATASX2 = () => {
             SETTING2: 0,
             SETTING3: 0,
             SETTING4: 0,
-            SCANNED_EA2:0,
-            SCANNED_EA3:0,
-            SCANNED_EA4:0,
-            SCANNED_MET2:0,
-            SCANNED_MET3:0,
-            SCANNED_MET4:0,
+            SCANNED_EA2: 0,
+            SCANNED_EA3: 0,
+            SCANNED_EA4: 0,
+            SCANNED_MET2: 0,
+            SCANNED_MET3: 0,
+            SCANNED_MET4: 0,
           };
           for (let i = 0; i < loaded_data.length; i++) {
             temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
@@ -2446,7 +2782,6 @@ const DATASX2 = () => {
             temp_loss_info.SCANNED_EA3 += loaded_data[i].PROCESS_NUMBER === 3 ? loaded_data[i].ESTIMATED_QTY : 0;
             temp_loss_info.SCANNED_MET4 += loaded_data[i].PROCESS_NUMBER === 4 ? loaded_data[i].USED_QTY : 0;
             temp_loss_info.SCANNED_EA4 += loaded_data[i].PROCESS_NUMBER === 4 ? loaded_data[i].ESTIMATED_QTY : 0;
-
             temp_loss_info.PROCESS1_RESULT += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
             temp_loss_info.PROCESS2_RESULT += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
             temp_loss_info.PROCESS3_RESULT += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
@@ -2529,8 +2864,8 @@ const DATASX2 = () => {
                 ...element,
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                TOTAL_LOSS: 1-element.INS_OUTPUT*1.0/element.ESTIMATED_QTY,
-                TOTAL_LOSS2: 1-element.INS_OUTPUT*1.0/element.WAREHOUSE_ESTIMATED_QTY ,
+                TOTAL_LOSS: 1 - element.INS_OUTPUT * 1.0 / element.ESTIMATED_QTY,
+                TOTAL_LOSS2: 1 - element.INS_OUTPUT * 1.0 / element.WAREHOUSE_ESTIMATED_QTY,
                 PROD_REQUEST_DATE: moment
                   .utc(element.PROD_REQUEST_DATE)
                   .format("YYYY-MM-DD"),
@@ -2568,12 +2903,12 @@ const DATASX2 = () => {
             SETTING2: 0,
             SETTING3: 0,
             SETTING4: 0,
-            SCANNED_EA2:0,
-            SCANNED_EA3:0,
-            SCANNED_EA4:0,
-            SCANNED_MET2:0,
-            SCANNED_MET3:0,
-            SCANNED_MET4:0,
+            SCANNED_EA2: 0,
+            SCANNED_EA3: 0,
+            SCANNED_EA4: 0,
+            SCANNED_MET2: 0,
+            SCANNED_MET3: 0,
+            SCANNED_MET4: 0,
           };
           let maxprocess: number = 1;
           for (let i = 0; i < loaded_data.length; i++) {
@@ -2632,6 +2967,74 @@ const DATASX2 = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
+  const handle_loaddailyYCSX = async (PROD_REQUEST_NO: string) => {
+    await generalQuery("tinhhinhycsxtheongay", {
+      PROD_REQUEST_NO: PROD_REQUEST_NO
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: DAILY_YCSX_RESULT[] = response.data.data.map(
+            (element: DAILY_YCSX_RESULT, index: number) => {
+              return {
+                ...element,
+                PLAN_DATE: moment.utc(element.PLAN_DATE).format('YYYY-MM-DD'),
+                LOSS1: element.INPUT1 !== 0 ? 1 - element.RESULT1 / element.INPUT1 : 0,
+                LOSS2: element.INPUT2 !== 0 ? 1 - element.RESULT2 / element.INPUT2 : 0,
+                LOSS3: element.INPUT3 !== 0 ? 1 - element.RESULT2 / element.INPUT3 : 0,
+                LOSS_KT: element.INSP_QTY !== 0 ? 1 - element.INSP_OK / element.INSP_QTY : 0,
+                id: index,
+              };
+            },
+          );
+          let totalRow: DAILY_YCSX_RESULT = {
+            PLAN_DATE: "TOTAL",
+            TARGET1: 0,
+            INPUT1: 0,
+            RESULT1: 0,
+            LOSS1: 0,
+            TARGET2: 0,
+            INPUT2: 0,
+            RESULT2: 0,
+            LOSS2: 0,
+            TARGET3: 0,
+            INPUT3: 0,
+            RESULT3: 0,
+            LOSS3: 0,
+            INSP_QTY: 0,
+            INSP_LOSS: 0,
+            INSP_NG: 0,
+            INSP_OK: 0,
+            LOSS_KT: 0
+          }
+          for (let i = 0; i < loaded_data.length; i++) {
+            totalRow.TARGET1 += loaded_data[i].TARGET1;
+            totalRow.TARGET2 += loaded_data[i].TARGET2;
+            totalRow.TARGET3 += loaded_data[i].TARGET3;
+            totalRow.INPUT1 += loaded_data[i].INPUT1;
+            totalRow.INPUT2 += loaded_data[i].INPUT2;
+            totalRow.INPUT3 += loaded_data[i].INPUT3;
+            totalRow.RESULT1 += loaded_data[i].RESULT1;
+            totalRow.RESULT2 += loaded_data[i].RESULT2;
+            totalRow.RESULT3 += loaded_data[i].RESULT3;
+            totalRow.INSP_QTY += loaded_data[i].INSP_QTY;
+            totalRow.INSP_OK += loaded_data[i].INSP_OK;
+            totalRow.INSP_NG += loaded_data[i].INSP_NG;
+            totalRow.INSP_LOSS += loaded_data[i].INSP_LOSS;
+          }
+          totalRow.LOSS1 = totalRow.INPUT1 !== 0 ? 1 - totalRow.RESULT1 / totalRow.INPUT1 : 0;
+          totalRow.LOSS2 = totalRow.INPUT2 !== 0 ? 1 - totalRow.RESULT2 / totalRow.INPUT2 : 0;
+          totalRow.LOSS3 = totalRow.INPUT3 !== 0 ? 1 - totalRow.RESULT2 / totalRow.INPUT3 : 0;
+          totalRow.LOSS_KT = totalRow.INSP_QTY !== 0 ? 1 - totalRow.INSP_OK / totalRow.INSP_QTY : 0;
+          loaded_data.push(totalRow)
+          setDailyYCSX(loaded_data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   useEffect(() => {
     getMachineList();
   }, []);
@@ -3032,11 +3435,11 @@ const DATASX2 = () => {
         <div className="tracuuYCSXTable">
           {selectbutton && <div className="chithi">
             {datasx_chithi2}
-          </div>}          
+          </div>}
           {selectbutton && <div className="lichsuxuatlieu">
             {datasx_lichsuxuatlieu2}
             {datasx_lichsukhoao}
-          </div>}         
+          </div>}
           {!selectbutton && <div className="ycsx">
             {datasx_ycsx2}
           </div>}
@@ -3056,6 +3459,21 @@ const DATASX2 = () => {
               datasource={selectedDataSource}
               tableID="datasxtablepivot"
             />
+          </div>
+        )}
+        {showhideDailyYCSX && (
+          <div className="pivottable1">
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHideDailyYCSX(false);
+              }}
+            >
+              <AiFillDashboard color="blue" size={15} />
+              Close
+            </IconButton>
+            <div className="ycsxdetail">{selectedYCSX.current.PROD_REQUEST_NO}</div>
+            {datasx_dailyycsx}
           </div>
         )}
       </div>

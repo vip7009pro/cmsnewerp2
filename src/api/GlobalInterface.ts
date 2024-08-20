@@ -3921,3 +3921,23 @@ export interface YCSX_SLC_DATA {
   SLC_CD3: number;
   SLC_CD4: number;
 }
+export interface DAILY_YCSX_RESULT {
+  PLAN_DATE: string,
+  TARGET1: number,
+  INPUT1: number,
+  RESULT1: number,
+  LOSS1: number;
+  TARGET2: number,
+  INPUT2: number,
+  RESULT2: number,
+  LOSS2: number;
+  TARGET3: number,
+  INPUT3: number,
+  RESULT3: number,
+  LOSS3: number;
+  INSP_QTY: number,
+  INSP_LOSS: number,
+  INSP_NG: number,  
+  INSP_OK: number,
+  LOSS_KT: number;
+}
