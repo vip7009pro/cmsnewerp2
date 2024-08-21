@@ -630,6 +630,7 @@ const InvoiceManager = () => {
     { field: "PO_DATE", headerName: "PO_DATE", width: 100, },
     { field: "RD_DATE", headerName: "RD_DATE", width: 100, },
     { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 100, },
+    { field: "OVERDUE", headerName: "OVERDUE", width: 100, },
     {
       field: "DELIVERY_QTY",
       cellDataType: "number",

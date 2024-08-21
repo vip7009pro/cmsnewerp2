@@ -116,6 +116,7 @@ export interface InvoiceTableData {
   PROD_PROJECT: string;
   YEARNUM: number;
   WEEKNUM: number;
+  OVERDUE: string;
 }
 export interface InvoiceSummaryData {
   total_po_qty: number;

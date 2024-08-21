@@ -746,6 +746,14 @@ export const f_readUploadFile = (e: any, setRow: React.Dispatch<React.SetStateAc
     reader.readAsArrayBuffer(e.target.files[0]);
   }
 };
+export const datediff=(date1: string, date2: string) => {
+  var d1 = moment.utc(date1);
+  var d2 = moment.utc(date2);
+  var diff: number = d1.diff(d2, "days");
+  //console.log(diff);
+  return diff;
+
+}
 // Invoice manager function
 export const f_loadInvoiceDataFull = async (filterData: any) => {
   let invoicedata: InvoiceTableData[] = [];
@@ -755,12 +763,17 @@ export const f_loadInvoiceDataFull = async (filterData: any) => {
       if (response.data.tk_status !== "NG") {
         const loadeddata: InvoiceTableData[] = response.data.data.map(
           (element: InvoiceTableData, index: number) => {
+            let date1 = moment.utc(element.RD_DATE).format('YYYY-MM-DD');
+            let date2 = moment.utc(element.DELIVERY_DATE).format('YYYY-MM-DD');
+            let diff: number = datediff(date1,date2);
+
             return {
               ...element,
               id: index,
               DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               PO_DATE: element.PO_DATE.slice(0, 10),
               RD_DATE: element.RD_DATE.slice(0, 10),
+              OVERDUE: diff<0 ? 'OVER':'OK',
               G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
               G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
             };
