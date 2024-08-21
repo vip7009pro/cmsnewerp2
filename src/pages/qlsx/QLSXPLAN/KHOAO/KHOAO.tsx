@@ -2,7 +2,7 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { checkBP } from "../../../../api/GlobalFunction";
+import { checkBP, datediff } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -378,14 +378,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return nextPlanClosed;
   }
-  const datediff=(date1: string, date2: string) => {
-    var d1 = moment.utc(date1);
-    var d2 = moment.utc(date2);
-    var diff: number = d1.diff(d2, "days");
-    //console.log(diff);
-    return diff;
 
-  }
   const checkMlotTonKhoAo = async (M_LOT_NO: string) => {
     let isTon: boolean = false;
     await generalQuery("checktonKhoAoMLotNo", {
