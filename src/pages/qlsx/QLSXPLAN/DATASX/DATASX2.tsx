@@ -3885,7 +3885,7 @@ const DATASX2 = () => {
                         {(totalDailyYCSX.LOSS3 * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                       </td>
                       <td style={{ color: "red", fontWeight: "bold" }}>
-                        {(selectedYCSX.current.LOSS_KT).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                        {(totalDailyYCSX.LOSS_KT*100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                       </td>
                       <td style={{ color: "green", fontWeight: "bold" }}>
                         {((totalDailyYCSX.LOSS1 + totalDailyYCSX.LOSS2 + totalDailyYCSX.LOSS3 + totalDailyYCSX.LOSS_KT) * 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
