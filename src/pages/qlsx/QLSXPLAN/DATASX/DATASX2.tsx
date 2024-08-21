@@ -3620,6 +3620,9 @@ const DATASX2 = () => {
                         USED_QTY
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
+                        LOCK_QTY
+                      </th>
+                      <th style={{ color: "black", fontWeight: "normal" }}>
                         TON_KHO_SX
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
@@ -3649,6 +3652,9 @@ const DATASX2 = () => {
                       </td>
                       <td style={{ color: "#b8052c", fontWeight: "bold" }}>
                         {(selectedYCSX.current.USED_QTY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "#039e5e", fontWeight: "bold" }}>
+                        {(selectedYCSX.current.LOCK_QTY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </td>
                       <td style={{ color: "#039e5e", fontWeight: "bold" }}>
                         {(selectedYCSX.current.TON_KHO_AO).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
