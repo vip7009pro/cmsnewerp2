@@ -2279,72 +2279,68 @@ const DATASX2 = () => {
       children: [
         {
           field: 'TARGET1', headerName: 'TARGET1', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.TARGET1 !== 0)
+            if (e.data.TARGET1 !== 0)
+              return (
+                <span style={{ color: "blue", fontWeight: "normal", }}>
+                  {e.data.TARGET1?.toLocaleString("en-US")}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                {e.data.TARGET1?.toLocaleString("en-US")}
-              </span>
-            );
-            return (
-              <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'INPUT1', headerName: 'INPUT1', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INPUT1 !== 0)
-            return (
-              <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
-                {e.data.INPUT1?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INPUT1 !== 0)
+              return (
+                <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                  {e.data.INPUT1?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'RESULT1', headerName: 'RESULT1', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.RESULT1 !== 0)
-            return (
-              <span style={{ color: "#09b420", fontWeight: "normal" }}>
-                {e.data.RESULT1?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.RESULT1 !== 0)
+              return (
+                <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                  {e.data.RESULT1?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'LOSS1', headerName: 'LOSS1', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.LOSS1 !== 0)
-            return (
-              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
-                {e.data.LOSS1?.toLocaleString("en-US", {
-                  style: "percent",
-                  maximumFractionDigits: 1,
-                  minimumFractionDigits: 1,
-                })}
-              </span>
-            );
+            if (e.data.LOSS1 !== 0)
+              return (
+                <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                  {e.data.LOSS1?.toLocaleString("en-US", {
+                    style: "percent",
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
@@ -2357,72 +2353,68 @@ const DATASX2 = () => {
       children: [
         {
           field: 'TARGET2', headerName: 'TARGET2', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.TARGET2 !== 0)
-            return (
-              <span style={{ color: "blue", fontWeight: "normal" }}>
-                {e.data.TARGET2?.toLocaleString("en-US")}
-              </span>
-            );
+            if (e.data.TARGET2 !== 0)
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.TARGET2?.toLocaleString("en-US")}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'INPUT2', headerName: 'INPUT2', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INPUT2 !== 0)
-            return (
-              <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
-                {e.data.INPUT2?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INPUT2 !== 0)
+              return (
+                <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                  {e.data.INPUT2?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'RESULT2', headerName: 'RESULT2', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.RESULT2 !== 0)
-            return (
-              <span style={{ color: "#09b420", fontWeight: "normal" }}>
-                {e.data.RESULT2?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.RESULT2 !== 0)
+              return (
+                <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                  {e.data.RESULT2?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'LOSS2', headerName: 'LOSS2', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.LOSS2 !== 0)
-            return (
-              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
-                {e.data.LOSS2?.toLocaleString("en-US", {
-                  style: "percent",
-                  maximumFractionDigits: 1,
-                  minimumFractionDigits: 1,
-                })}
-              </span>
-            );
+            if (e.data.LOSS2 !== 0)
+              return (
+                <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                  {e.data.LOSS2?.toLocaleString("en-US", {
+                    style: "percent",
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
@@ -2435,72 +2427,68 @@ const DATASX2 = () => {
       children: [
         {
           field: 'TARGET3', headerName: 'TARGET3', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.TARGET3 !== 0)
-            return (
-              <span style={{ color: "blue", fontWeight: "normal" }}>
-                {e.data.TARGET3?.toLocaleString("en-US")}
-              </span>
-            );
+            if (e.data.TARGET3 !== 0)
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.TARGET3?.toLocaleString("en-US")}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'INPUT3', headerName: 'INPUT3', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INPUT3 !== 0)
-            return (
-              <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
-                {e.data.INPUT3?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INPUT3 !== 0)
+              return (
+                <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                  {e.data.INPUT3?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'RESULT3', headerName: 'RESULT3', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.RESULT3 !== 0)
-            return (
-              <span style={{ color: "#09b420", fontWeight: "normal" }}>
-                {e.data.RESULT3?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.RESULT3 !== 0)
+              return (
+                <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                  {e.data.RESULT3?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'LOSS3', headerName: 'LOSS3', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.LOSS3 !== 0)
-            return (
-              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
-                {e.data.LOSS3?.toLocaleString("en-US", {
-                  style: "percent",
-                  maximumFractionDigits: 1,
-                  minimumFractionDigits: 1,
-                })}
-              </span>
-            );
+            if (e.data.LOSS3 !== 0)
+              return (
+                <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                  {e.data.LOSS3?.toLocaleString("en-US", {
+                    style: "percent",
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
@@ -2513,95 +2501,90 @@ const DATASX2 = () => {
       children: [
         {
           field: 'INSP_QTY', headerName: 'INSP_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INSP_QTY !== 0)
-            return (
-              <span style={{ color: "blue", fontWeight: "normal" }}>
-                {e.data.INSP_QTY?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INSP_QTY !== 0)
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.INSP_QTY?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'INSP_LOSS', headerName: 'INSP_LOSS', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INSP_LOSS !== 0)
-            return (
-              <span style={{ color: "gray", fontWeight: "gray" }}>
-                {e.data.INSP_LOSS?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INSP_LOSS !== 0)
+              return (
+                <span style={{ color: "gray", fontWeight: "gray" }}>
+                  {e.data.INSP_LOSS?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'INSP_NG', headerName: 'INSP_NG', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INSP_NG !== 0)
-            return (
-              <span style={{ color: "red", fontWeight: "red" }}>
-                {e.data.INSP_NG?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INSP_NG !== 0)
+              return (
+                <span style={{ color: "red", fontWeight: "red" }}>
+                  {e.data.INSP_NG?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'INSP_OK', headerName: 'INSP_OK', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.INSP_OK !== 0)
-            return (
-              <span style={{ color: "#09b420", fontWeight: "normal" }}>
-                {e.data.INSP_OK?.toLocaleString("en-US", {
-                  style: "decimal",
-                  maximumFractionDigits: 0,
-                  minimumFractionDigits: 0,
-                })}
-              </span>
-            );
+            if (e.data.INSP_OK !== 0)
+              return (
+                <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                  {e.data.INSP_OK?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
         },
         {
           field: 'LOSS_KT', headerName: 'LOSS_KT', resizable: true, width: 80, cellRenderer: (e: any) => {
-            if(e.data.LOSS_KT !== 0)
-            return (
-              <span style={{ color: "#ff0000", fontWeight: "bold" }}>
-                {e.data.LOSS_KT?.toLocaleString("en-US", {
-                  style: "percent",
-                  maximumFractionDigits: 1,
-                  minimumFractionDigits: 1,
-                })}
-              </span>
-            );
+            if (e.data.LOSS_KT !== 0)
+              return (
+                <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                  {e.data.LOSS_KT?.toLocaleString("en-US", {
+                    style: "percent",
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                </span>
+              );
             return (
               <span style={{ color: "blue", fontWeight: "normal", }}>
-                
               </span>
             )
           }
@@ -3885,7 +3868,7 @@ const DATASX2 = () => {
                         {(totalDailyYCSX.LOSS3 * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                       </td>
                       <td style={{ color: "red", fontWeight: "bold" }}>
-                        {(totalDailyYCSX.LOSS_KT*100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
+                        {(totalDailyYCSX.LOSS_KT * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                       </td>
                       <td style={{ color: "green", fontWeight: "bold" }}>
                         {((totalDailyYCSX.LOSS1 + totalDailyYCSX.LOSS2 + totalDailyYCSX.LOSS3 + totalDailyYCSX.LOSS_KT) * 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
