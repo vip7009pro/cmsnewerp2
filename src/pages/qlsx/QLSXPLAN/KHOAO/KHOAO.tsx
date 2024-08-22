@@ -2,7 +2,7 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { checkBP, datediff } from "../../../../api/GlobalFunction";
+import { checkBP, datediff, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_isM_CODE_CHITHI, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -26,8 +26,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   );
   const [tableTitle, setTableTitle] = useState("");
   const column_nhapkhoaotable = [
-    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true,
-      checkboxSelection: true, },
+    {
+      field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true,
+      checkboxSelection: true,
+    },
     { field: "FACTORY", headerName: "FACTORY", width: 100 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     { field: "M_CODE", headerName: "M_CODE", width: 80 },
@@ -92,22 +94,24 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       },
     },
     { field: "WIDTH_CD", headerName: "SIZE", width: 50, editable: false },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false, cellRenderer: (params: any) => {
-      const date1 = moment.utc().format('YYYY-MM-DD');
-      const date2 = params.data.INS_DATE;
-      var diff: number = datediff(date1,date2);
-      let ins_weekday = moment.utc(date2).weekday();    
-      if(ins_weekday >=5) diff = diff - 2;
-      if (diff > 1) {
-        return ( 
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            {params.data.M_LOT_NO}
-          </span>
-        );
-      } else {
-        return <span style={{ color: "green" }}>{params.data.M_LOT_NO}</span>;
-      }
-    }, },
+    {
+      field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false, cellRenderer: (params: any) => {
+        const date1 = moment.utc().format('YYYY-MM-DD');
+        const date2 = params.data.INS_DATE;
+        var diff: number = datediff(date1, date2);
+        let ins_weekday = moment.utc(date2).weekday();
+        if (ins_weekday >= 5) diff = diff - 2;
+        if (diff > 1) {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.data.M_LOT_NO}
+            </span>
+          );
+        } else {
+          return <span style={{ color: "green" }}>{params.data.M_LOT_NO}</span>;
+        }
+      },
+    },
     {
       field: "ROLL_QTY",
       headerName: "ROLL_QTY",
@@ -189,261 +193,100 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "PLAN_EQ", headerName: "MACHINE", width: 70, editable: false },
     { field: "INS_DATE", headerName: "INS_DATE", width: 100, editable: false },
   ];
-  const load_nhapkhoao = () => {
-    generalQuery("lichsunhapkhoao", {
+  const load_nhapkhoao = async () => {
+    let lsnhapkhoao: LICHSUNHAPKHOAO[] = await f_load_nhapkhoao({
       FROM_DATE: fromdate,
       TO_DATE: todate,
       FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loadeddata = response.data.data.map(
-            (element: LICHSUNHAPKHOAO, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                KHO_CFM_DATE: element.KHO_CFM_DATE !== null ? moment
-                  .utc(element.KHO_CFM_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss") : '',
-                id: index,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setDataTable(loadeddata);
-          setCurrent_Column(column_nhapkhoaotable);
-          setReadyRender(true);
-          setisLoading(false);
-          setTableTitle("LỊCH SỬ NHẬP Kho SX Main");
-          Swal.fire(
-            "Thông báo",
-            "Đã load: " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          setDataTable([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
+    setDataTable(lsnhapkhoao);
+    setCurrent_Column(column_nhapkhoaotable);
+    setReadyRender(true);
+    setisLoading(false);
+    setTableTitle("LỊCH SỬ NHẬP Kho SX Main");
+    if (lsnhapkhoao.length > 0) {
+      Swal.fire(
+        "Thông báo",
+        "Đã load: " + lsnhapkhoao.length + " dòng",
+        "success",
+      );
+    }
+    else {
+      Swal.fire("Thông báo", "Không có dòng nào", "error");
+    }
   };
-  const load_xuatkhoao = () => {
-    generalQuery("lichsuxuatkhoao", {
+  const load_xuatkhoao = async () => {
+    let lsxuatkhoao: LICHSUXUATKHOAO[] = await f_load_xuatkhoao({
       FROM_DATE: fromdate,
       TO_DATE: todate,
       FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loadeddata = response.data.data.map(
-            (element: LICHSUXUATKHOAO, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          setTableTitle("LỊCH SỬ XUẤT Kho SX Main");
-          Swal.fire(
-            "Thông báo",
-            "Đã load: " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          setDataTable([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
+    setDataTable(lsxuatkhoao);
+    setReadyRender(true);
+    setisLoading(false);
+    setTableTitle("LỊCH SỬ XUẤT Kho SX Main");
+    if (lsxuatkhoao.length > 0) {
+      Swal.fire(
+        "Thông báo",
+        "Đã load: " + lsxuatkhoao.length + " dòng",
+        "success",
+      );
+    }
+    else {
+      Swal.fire("Thông báo", "Không có dòng nào", "error");
+    }
   };
-  const handle_loadKhoAo = (shownotification: boolean) => {
-    generalQuery("checktonlieutrongxuong", {
+  const handle_loadKhoAo = async (shownotification: boolean) => {
+    let tonkhoao: TONLIEUXUONG[] = await f_load_tonkhoao({
       FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: TONLIEUXUONG[] = response.data.data.map(
-            (element: TONLIEUXUONG, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
-                id: index,
-              };
-            },
-          );
-          setDataTable(loadeddata);
-          setCurrent_Column(column_tonkhoaotable);
-          setReadyRender(true);
-          setisLoading(false);
-          setTableTitle("TỒN Kho SX Main");
-          if (shownotification)
-            Swal.fire(
-              "Thông báo",
-              "Đã load: " + response.data.data.length + " dòng",
-              "success",
-            );
-        } else {
-          setDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
+    setDataTable(tonkhoao);
+    setCurrent_Column(column_tonkhoaotable);
+    setReadyRender(true);
+    setisLoading(false);
+    setTableTitle("TỒN Kho SX Main");
+    if (tonkhoao.length > 0) {
+      if (shownotification)
+        Swal.fire(
+          "Thông báo",
+          "Đã load: " + tonkhoao.length + " dòng",
+          "success",
+        );
+    }
+    else {
+      Swal.fire("Thông báo", "Không có dòng nào", "error");
+    }
   };
-  const checktontaiMlotPlanIdSuDung = async (NEXT_PLAN: string, M_LOT_NO: string) => {
-    let checkTonTai: boolean = false;
-    await generalQuery("checkTonTaiXuatKhoAo", {
-      PLAN_ID: NEXT_PLAN,
-      M_LOT_NO: M_LOT_NO
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          checkTonTai = false;
-        } else {
-          checkTonTai = true;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return checkTonTai;
-  }
-  const checkNextPlanFSC = async (NEXT_PLAN: string) => {
-    let checkFSC: string = "N", checkFSC_CODE = '01';
-    await generalQuery("checkFSC_PLAN_ID", {
-      PLAN_ID: NEXT_PLAN,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          checkFSC = response.data.data[0].FSC;
-          checkFSC_CODE = response.data.data[0].FSC_CODE;
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return { FSC: checkFSC, FSC_CODE: checkFSC_CODE };
-  };
-  const checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
-    let checkNhapKho: string = "N";
-    await generalQuery("checkYcsxStatus", {
-      PLAN_ID: NEXT_PLAN,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          checkNhapKho = response.data.data[0].USE_YN;
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return checkNhapKho;
-  }
-  const isNextPlanClosed = async (NEXT_PLAN: string) => {
-    let nextPlanClosed: boolean = false;
-    await generalQuery("checkNextPlanClosed", {
-      PLAN_ID: NEXT_PLAN,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          nextPlanClosed = response.data.data[0].CHOTBC === 'V';
-        } else {
-          nextPlanClosed = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return nextPlanClosed;
-  }
-
-  const checkMlotTonKhoAo = async (M_LOT_NO: string) => {
-    let isTon: boolean = false;
-    await generalQuery("checktonKhoAoMLotNo", {
-      M_LOT_NO: M_LOT_NO,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          isTon = response.data.data[0].USE_YN === 'Y';
-        } else {
-          isTon = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return isTon;
-  }
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
       if (tonkhoaodatafilter.current.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-          let checkYCSX_USE_YN: string = await checkNhapKhoTPDuHayChua(nextPlan);
-          let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
-          let checklieuchithi: boolean = true;
-          await generalQuery("checkM_CODE_CHITHI", {
-            PLAN_ID_OUTPUT: nextPlan,
-            M_CODE: tonkhoaodatafilter.current[i].M_CODE,
-          })
-            .then((response) => {
-              console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-                checklieuchithi = true;
-              } else {
-                checklieuchithi = false;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          let isTonKhoAoMLOTNO: boolean = await checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
-          let checkNextPlanClose = await isNextPlanClosed(nextPlan);
-          let checkFSC: string = (await checkNextPlanFSC(nextPlan)).FSC;
+          let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
+          let checktontaikhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
+          let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan,tonkhoaodatafilter.current[i].M_CODE);          
+          let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
+          let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
+          let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
-          var diff: number = datediff(date1,date2);
-          let ins_weekday = moment.utc(date2).weekday();    
-          if(ins_weekday >=5) diff = diff - 2;
+          var diff: number = datediff(date1, date2);
+          let ins_weekday = moment.utc(date2).weekday();
+          if (ins_weekday >= 5) diff = diff - 2;
           let isExpired: boolean = diff > 1;
-          console.log(isExpired);
-
-          let checkFSC_CODE: string = (await checkNextPlanFSC(nextPlan)).FSC_CODE;
+          let checkFSC_CODE: string = (await f_checkNextPlanFSC(nextPlan)).FSC_CODE;
           if (
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
             checkFSC === tonkhoaodatafilter.current[i].FSC &&
             checktontaikhoao &&
             checkYCSX_USE_YN === 'Y' &&
-            !checkNextPlanClose &&
+            !checkNextPlanClosed &&
             isTonKhoAoMLOTNO &&
             !isExpired
           ) {
-            await generalQuery("xuatkhoao", {
+            if(await f_xuatkhoao({
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
               PHANLOAI: "N",
               PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
@@ -454,37 +297,22 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               OUT_QTY: tonkhoaodatafilter.current[i].IN_QTY,
               TOTAL_OUT_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
               USE_YN: "O",
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("setUSE_YN_KHO_AO_INPUT", {
-                    FACTORY: tonkhoaodatafilter.current[i].FACTORY,
-                    PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
-                    PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-                    PLAN_ID_SUDUNG: nextPlan,
-                    M_CODE: tonkhoaodatafilter.current[i].M_CODE,
-                    M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
-                    TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
-                    USE_YN: "O",
-                    IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
-                  })
-                    .then((response) => {
-                      console.log(response.data);
-                      if (response.data.tk_status !== "NG") {
-                      } else {
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                } else {
-                  err_code += "| " + response.data.message;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            })) {
+              if(!(await f_set_YN_KHO_AO_INPUT({
+                FACTORY: tonkhoaodatafilter.current[i].FACTORY,
+                PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
+                PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
+                PLAN_ID_SUDUNG: nextPlan,
+                M_CODE: tonkhoaodatafilter.current[i].M_CODE,
+                M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
+                TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
+                USE_YN: "O",
+                IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
+              })))
+              {
+                err_code+= "| Có lỗi trong quá trình set YN IN KHO SX";
+              }
+            }           
           } else {
             if (!checklieuchithi) {
               err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} chưa được đăng ký xuất liệu`;
@@ -501,7 +329,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             else if (checkYCSX_USE_YN !== 'Y') {
               err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;
             }
-            else if (checkNextPlanClose === true) {
+            else if (checkNextPlanClosed === true) {
               err_code += `| Chỉ thị next đã chốt báo cáo, không thể input liệu!`;
             }
             else if (!isTonKhoAoMLOTNO) {
@@ -845,27 +673,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 }}
               >
                 LS OUT
-              </button>              
-             {/*  <button
-                className="tranhatky"
-                onClick={() => {
-                  var date1 = moment.utc().format('YYYY-MM-DD');
-                  var date2 = tonkhoaodatafilter.current[0].INS_DATE;
-                  let ins_weekday = moment.utc(date2).weekday();          
-                  console.log('2024-08-10',moment.utc('2024-08-10').weekday());
-                  console.log('2024-08-11',moment.utc('2024-08-11').weekday());
-                  console.log('2024-08-12',moment.utc('2024-08-12').weekday());
-                  console.log('2024-08-13',moment.utc('2024-08-13').weekday());
-                  console.log('2024-08-14',moment.utc('2024-08-14').weekday());
-                  console.log('2024-08-15',moment.utc('2024-08-15').weekday());
-                  console.log('2024-08-16',moment.utc('2024-08-16').weekday());
-                  console.log('2024-08-17',moment.utc('2024-08-17').weekday());
-                  console.log('ins_weekday',ins_weekday);
-                  console.log('datediff',datediff(date1,date2));
-                }}
-              >
-                Test
-              </button>    */}           
+              </button>     
             </div>
             <div className="forminputcolumn">
               <button

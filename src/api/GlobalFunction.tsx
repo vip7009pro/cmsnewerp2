@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData } from "./Api";
-import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, FCSTTDYCSX, InvoiceTableData, LICHSUNHAPKHOAO, MACHINE_LIST, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, TONKHOTDYCSX, UploadAmazonData, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CodeListData, CustomerListData, EQ_STATUS, EQ_STT, FCSTTDYCSX, InvoiceTableData, LICHSUNHAPKHOAO, LICHSUXUATKHOAO, MACHINE_LIST, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, TONKHOTDYCSX, TONLIEUXUONG, UploadAmazonData, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -2649,7 +2649,61 @@ export const f_load_nhapkhoao = async (filterData: any) => {
         );
         //console.log(loadeddata);
         kq = loadeddata;
-      } else {
+      } else {        
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_load_xuatkhoao = async (filterData: any) => {
+  let kq: LICHSUXUATKHOAO[] = [];
+  await generalQuery("lichsuxuatkhoao", filterData)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: LICHSUXUATKHOAO, index: number) => {
+            return {
+              ...element,
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;
+      } else {        
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_load_tonkhoao = async (filterData: any) => {
+  let kq: TONLIEUXUONG[] = [];
+  await generalQuery("checktonlieutrongxuong", filterData)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: TONLIEUXUONG, index: number) => {
+            return {
+              ...element,
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;
+      } else {        
         kq = [];
       }
     })
@@ -3383,4 +3437,173 @@ export const f_isIDCongViecExist = async (NO_IN: string, PROD_REQUEST_NO: string
       console.log(error);
     });
     return checkIDcongViecTonTai;
+}
+
+//kho ao
+export const f_checktontaiMlotPlanIdSuDung = async (NEXT_PLAN: string, M_LOT_NO: string) => {
+  let checkTonTai: boolean = false;
+  await generalQuery("checkTonTaiXuatKhoAo", {
+    PLAN_ID: NEXT_PLAN,
+    M_LOT_NO: M_LOT_NO
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        checkTonTai = false;
+      } else {
+        checkTonTai = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return checkTonTai;
+}
+export const f_checkNextPlanFSC = async (NEXT_PLAN: string) => {
+  let checkFSC: string = "N", checkFSC_CODE = '01';
+  await generalQuery("checkFSC_PLAN_ID", {
+    PLAN_ID: NEXT_PLAN,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        checkFSC = response.data.data[0].FSC;
+        checkFSC_CODE = response.data.data[0].FSC_CODE;
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return { FSC: checkFSC, FSC_CODE: checkFSC_CODE };
+};
+export const f_checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
+  let checkNhapKho: string = "N";
+  await generalQuery("checkYcsxStatus", {
+    PLAN_ID: NEXT_PLAN,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        checkNhapKho = response.data.data[0].USE_YN;
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return checkNhapKho;
+}
+export const f_isNextPlanClosed = async (NEXT_PLAN: string) => {
+  let nextPlanClosed: boolean = false;
+  await generalQuery("checkNextPlanClosed", {
+    PLAN_ID: NEXT_PLAN,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        nextPlanClosed = response.data.data[0].CHOTBC === 'V';
+      } else {
+        nextPlanClosed = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return nextPlanClosed;
+}
+export const f_checkMlotTonKhoAo = async (M_LOT_NO: string) => {
+  let isTon: boolean = false;
+  await generalQuery("checktonKhoAoMLotNo", {
+    M_LOT_NO: M_LOT_NO,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        isTon = response.data.data[0].USE_YN === 'Y';
+      } else {
+        isTon = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return isTon;
+}
+export const f_isM_CODE_CHITHI = async (PLAN_ID: string, M_CODE: string) => {
+  let checklieuchithi: boolean = false;
+  await generalQuery("checkM_CODE_CHITHI", {
+    PLAN_ID_OUTPUT: PLAN_ID,
+    M_CODE: M_CODE,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        checklieuchithi = true;
+      } else {
+        checklieuchithi = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return checklieuchithi;
+}
+
+export const f_set_YN_KHO_AO_INPUT = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("setUSE_YN_KHO_AO_INPUT", {
+    FACTORY: DATA.FACTORY ,
+    PHANLOAI: DATA.PHANLOAI ,
+    PLAN_ID_INPUT: DATA.PLAN_ID_INPUT ,
+    PLAN_ID_SUDUNG: DATA.PLAN_ID_SUDUNG ,
+    M_CODE: DATA.M_CODE ,
+    M_LOT_NO: DATA.M_LOT_NO ,
+    TOTAL_IN_QTY: DATA.TOTAL_IN_QTY ,
+    USE_YN: DATA.USE_YN ,
+    IN_KHO_ID: DATA.IN_KHO_ID ,
+  })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+export const f_xuatkhoao = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("xuatkhoao", {
+    FACTORY:DATA.FACTORY ,
+    PHANLOAI:DATA.PHANLOAI ,
+    PLAN_ID_INPUT:DATA.PLAN_ID_INPUT ,
+    PLAN_ID_OUTPUT:DATA.PLAN_ID_OUTPUT ,
+    M_CODE:DATA.M_CODE ,
+    M_LOT_NO:DATA.M_LOT_NO ,
+    ROLL_QTY:DATA.ROLL_QTY ,
+    OUT_QTY:DATA.OUT_QTY ,
+    TOTAL_OUT_QTY:DATA.TOTAL_OUT_QTY ,
+    USE_YN:DATA.USE_YN ,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq = true;        
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
+}
+
+export const f_anrackhoao = async(listRac:TONLIEUXUONG[]) => {
+  
 }

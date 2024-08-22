@@ -52,9 +52,7 @@ const DATASX2 = () => {
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [showhideDailyYCSX, setShowHideDailyYCSX] = useState(false);
-  const [inputlieudatatable, setInputLieuDataTable] = useState<
-    LICHSUINPUTLIEU_DATA[]
-  >([]);
+  const [inputlieudatatable, setInputLieuDataTable] = useState<LICHSUINPUTLIEU_DATA[]>([]);
   const [showloss, setShowLoss] = useState(false);
   const [khoaodata, setKhoAoData] = useState<LICHSUNHAPKHOAO[]>([]);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
@@ -131,7 +129,6 @@ const DATASX2 = () => {
     INSP_OK: 0,
     LOSS_KT: 0
   });
-  const [trigger, setTrigger] = useState(true);
   const selectedYCSX = useRef<YCSX_SX_DATA>({
     YCSX_PENDING: "",
     PHAN_LOAI: "",
@@ -2789,9 +2786,7 @@ const DATASX2 = () => {
             (element: LICHSUINPUTLIEU_DATA, index: number) => {
               return {
                 ...element,
-                INS_DATE: moment(element.INS_DATE)
-                  .utc()
-                  .format("YYYY-MM-DD HH:mm:ss"),
+                INS_DATE: moment(element.INS_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
             },

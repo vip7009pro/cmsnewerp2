@@ -27,7 +27,6 @@ import AGTable from "../../../components/DataTable/AGTable";
 const InvoiceManager = () => {
   const showhidesearchdiv = useRef(false);
   const [sh, setSH] = useState(true);
-  const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -42,7 +41,6 @@ const InvoiceManager = () => {
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [old_invoice_qty, setOld_Invoice_Qty] = useState(0);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
-  const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
