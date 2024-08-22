@@ -1,8 +1,7 @@
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
-import { checkBP, datediff, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_isM_CODE_CHITHI, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../../../../api/GlobalFunction";
+import { checkBP, datediff, f_anrackhoao, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_delete_IN_KHO_AO, f_delete_OUT_KHO_AO, f_is2MCODE_IN_KHO_AO, f_isM_CODE_CHITHI, f_isM_LOT_NO_in_P500, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -265,7 +264,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
           let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
           let checktontaikhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
-          let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan,tonkhoaodatafilter.current[i].M_CODE);          
+          let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
           let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
           let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
           let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
@@ -286,7 +285,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             isTonKhoAoMLOTNO &&
             !isExpired
           ) {
-            if(await f_xuatkhoao({
+            if (await f_xuatkhoao({
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
               PHANLOAI: "N",
               PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
@@ -298,7 +297,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               TOTAL_OUT_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
               USE_YN: "O",
             })) {
-              if(!(await f_set_YN_KHO_AO_INPUT({
+              if (!(await f_set_YN_KHO_AO_INPUT({
                 FACTORY: tonkhoaodatafilter.current[i].FACTORY,
                 PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
                 PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
@@ -308,11 +307,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
                 USE_YN: "O",
                 IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
-              })))
-              {
-                err_code+= "| Có lỗi trong quá trình set YN IN KHO SX";
+              }))) {
+                err_code += "| Có lỗi trong quá trình set YN IN KHO SX";
               }
-            }           
+            }
           } else {
             if (!checklieuchithi) {
               err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} chưa được đăng ký xuất liệu`;
@@ -438,79 +436,13 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     if (tonkhoaodatafilter.current.length > 0) {
       let err_code: string = "0";
       for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-        let check_2_m_code_in_kho_ao: boolean = false;
-        let check_m_lot_exist_p500: boolean = false;
-        await generalQuery("check_2_m_code_in_kho_ao", {
-          PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-        })
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              if (response.data.data[0].COUNT_M_CODE > 1) {
-                check_2_m_code_in_kho_ao = true;
-              } else {
-              }
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("check_m_lot_exist_p500", {
-          PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-          M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
-        })
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              if (response.data.data.length > 0) {
-                check_m_lot_exist_p500 = true;
-              } else {
-              }
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        let check_2_m_code_in_kho_ao: boolean = await f_is2MCODE_IN_KHO_AO(tonkhoaodatafilter.current[i].PLAN_ID_INPUT);
+        let check_m_lot_exist_p500: boolean = await f_isM_LOT_NO_in_P500(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
         if (check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) {
-          console.log("check_2_m_code_in_kho_ao", check_2_m_code_in_kho_ao);
-          console.log("check_m_lot_exist_p500", check_m_lot_exist_p500);
+          await f_delete_IN_KHO_AO(tonkhoaodatafilter.current[i].IN_KHO_ID);
+          await f_delete_OUT_KHO_AO(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
           Swal.fire("Thông báo", "Xóa Kho SX Main thành công", "success");
-          await generalQuery("delete_in_kho_ao", {
-            IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
-          })
-            .then((response) => {
-              //console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-                if (response.data.data.length > 0) {
-                  check_m_lot_exist_p500 = true;
-                }
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          await generalQuery("delete_out_kho_ao", {
-            PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-            M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
-          })
-            .then((response) => {
-              //console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-                if (response.data.data.length > 0) {
-                  check_m_lot_exist_p500 = true;
-                }
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
         } else {
-          //console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
-          //console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
           if (!check_2_m_code_in_kho_ao) {
             err_code += ` | ${tonkhoaodatafilter.current[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
           } else if (check_m_lot_exist_p500) {
@@ -527,29 +459,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     }
   };
   const handle_an_rac = async () => {
-    if (tonkhoaodatafilter.current.length > 0) {
-      let err_code: string = "0";
-      for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-        await generalQuery("an_lieu_kho_ao", {
-          IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
-        })
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      if (err_code !== "0") {
-        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
-      }
-      //handle_loadKhoAo();
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để ẩn", "error");
-    }
+    f_anrackhoao(tonkhoaodatafilter.current);
   };
   useEffect(() => {
     if (NEXT_PLAN === undefined) setNextPlan("");
@@ -673,7 +583,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 }}
               >
                 LS OUT
-              </button>     
+              </button>
             </div>
             <div className="forminputcolumn">
               <button

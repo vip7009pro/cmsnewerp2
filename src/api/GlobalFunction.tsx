@@ -2658,7 +2658,6 @@ export const f_load_nhapkhoao = async (filterData: any) => {
     });
   return kq;
 };
-
 export const f_load_xuatkhoao = async (filterData: any) => {
   let kq: LICHSUXUATKHOAO[] = [];
   await generalQuery("lichsuxuatkhoao", filterData)
@@ -2685,7 +2684,6 @@ export const f_load_xuatkhoao = async (filterData: any) => {
     });
   return kq;
 };
-
 export const f_load_tonkhoao = async (filterData: any) => {
   let kq: TONLIEUXUONG[] = [];
   await generalQuery("checktonlieutrongxuong", filterData)
@@ -3232,8 +3230,6 @@ export const f_checkG_CODE_ACTIVE = async (G_CODE: string) => {
     });
   return err_code;
 }
-
-
 export const f_checkYCSX_EXIST = async (PROD_REQUEST_NO: string) => {
   let kq: boolean = false;
   await generalQuery("checkYcsxExist", {
@@ -3253,7 +3249,6 @@ export const f_checkYCSX_EXIST = async (PROD_REQUEST_NO: string) => {
     });
     return kq;
 }
-
 export const f_updateYCSX = async (YCSXDATA: any) => {
   let err_code: string = "";
   await generalQuery("update_ycsx", {
@@ -3280,7 +3275,6 @@ export const f_updateYCSX = async (YCSXDATA: any) => {
     });
     return err_code;
 }
-
 export const f_checkYCSX_DKXL= async (PROD_REQUEST_NO: string) => {
   let kq: boolean = false;
   await generalQuery("checkYCSXQLSXPLAN", {
@@ -3299,7 +3293,6 @@ export const f_checkYCSX_DKXL= async (PROD_REQUEST_NO: string) => {
     });
     return kq;
 }
-
 export const f_deleteP500_YCSX = async (PROD_REQUEST_NO: string,EMPL_NO: string )=> {
   await generalQuery("delete_P500_YCSX", {
     PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -3315,7 +3308,6 @@ export const f_deleteP500_YCSX = async (PROD_REQUEST_NO: string,EMPL_NO: string 
       console.log(error);
     });
 }
-
 export const f_deleteP501_YCSX = async (PLAN_ID: string,EMPL_NO: string ) => {
   await generalQuery("delete_P501_YCSX", {
     PLAN_ID: PLAN_ID,
@@ -3331,7 +3323,6 @@ export const f_deleteP501_YCSX = async (PLAN_ID: string,EMPL_NO: string ) => {
       console.log(error);
     });
 }
-
 export const f_isHasInLaiCountAMZ = async (PROD_REQUEST_NO: string) => {
   let kq:boolean = true;
   await generalQuery("checkInLaiCount_AMZ", {
@@ -3352,7 +3343,6 @@ export const f_isHasInLaiCountAMZ = async (PROD_REQUEST_NO: string) => {
     });
     return kq;
 }
-
 export const f_deleteDataAMZ = async (PROD_REQUEST_NO: string)=> {
   await generalQuery("deleteAMZ_DATA", {
     PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -3367,7 +3357,6 @@ export const f_deleteDataAMZ = async (PROD_REQUEST_NO: string)=> {
       console.log(error);
     });
 }
-
 export const f_deleteYCSX = async (PROD_REQUEST_NO: string)=> {
   let err_code: boolean = false;
   await generalQuery("delete_ycsx", {
@@ -3376,7 +3365,6 @@ export const f_deleteYCSX = async (PROD_REQUEST_NO: string)=> {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {               
-       
       } else {                
         err_code = true;
       }
@@ -3418,7 +3406,6 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
     Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để xóa !", "error");
   }
 }
-
 export const f_isIDCongViecExist = async (NO_IN: string, PROD_REQUEST_NO: string) => {
   let checkIDcongViecTonTai: boolean = false;
   await generalQuery("checkIDCongViecAMZ", {
@@ -3438,7 +3425,6 @@ export const f_isIDCongViecExist = async (NO_IN: string, PROD_REQUEST_NO: string
     });
     return checkIDcongViecTonTai;
 }
-
 //kho ao
 export const f_checktontaiMlotPlanIdSuDung = async (NEXT_PLAN: string, M_LOT_NO: string) => {
   let checkTonTai: boolean = false;
@@ -3549,7 +3535,6 @@ export const f_isM_CODE_CHITHI = async (PLAN_ID: string, M_CODE: string) => {
     });
     return checklieuchithi;
 }
-
 export const f_set_YN_KHO_AO_INPUT = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("setUSE_YN_KHO_AO_INPUT", {
@@ -3603,7 +3588,103 @@ export const f_xuatkhoao = async (DATA: any) => {
     });
     return kq;
 }
-
 export const f_anrackhoao = async(listRac:TONLIEUXUONG[]) => {
-  
+  if (listRac.length > 0) {
+    let err_code: string = "0";
+    for (let i = 0; i < listRac.length; i++) {
+      await generalQuery("an_lieu_kho_ao", {
+        IN_KHO_ID: listRac[i].IN_KHO_ID,
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    if (err_code !== "0") {
+      Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+    }
+    //handle_loadKhoAo();
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để ẩn", "error");
+  }  
 }
+export const f_is2MCODE_IN_KHO_AO = async (PLAN_ID_INPUT: string) => {
+  let check_2_m_code_in_kho_ao: boolean = false;
+  await generalQuery("check_2_m_code_in_kho_ao", {
+    PLAN_ID_INPUT: PLAN_ID_INPUT,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        if (response.data.data[0].COUNT_M_CODE > 1) {
+          check_2_m_code_in_kho_ao = true;
+        } else {
+          check_2_m_code_in_kho_ao = false;
+        }
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return check_2_m_code_in_kho_ao;
+}
+export const f_isM_LOT_NO_in_P500 = async (PLAN_ID_INPUT: string, M_LOT_NO: string) => {
+  let check_m_lot_exist_p500: boolean = false;
+  await generalQuery("check_m_lot_exist_p500", {
+    PLAN_ID_INPUT: PLAN_ID_INPUT,
+    M_LOT_NO: M_LOT_NO,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        if (response.data.data.length > 0) {
+          check_m_lot_exist_p500 = true;
+        } else {
+        }
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return check_m_lot_exist_p500;
+}
+
+export const f_delete_IN_KHO_AO = async (IN_KHO_ID: number) => {
+  await generalQuery("delete_in_kho_ao", {
+    IN_KHO_ID: IN_KHO_ID,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+       
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+export const f_delete_OUT_KHO_AO = async (PLAN_ID_INPUT: string, M_LOT_NO: string) => {
+  await generalQuery("delete_out_kho_ao", {
+    PLAN_ID_INPUT: PLAN_ID_INPUT,
+    M_LOT_NO: M_LOT_NO,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+       
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
