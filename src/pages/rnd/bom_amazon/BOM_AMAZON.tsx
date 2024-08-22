@@ -1,14 +1,4 @@
 import { Button, IconButton } from "@mui/material";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-  MuiEvent,
-  MuiBaseEvent,
-  GridCallbackDetails,
-  GridCellEditStopParams,
-} from "@mui/x-data-grid";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillEdit, AiFillFileExcel, AiFillSave } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -19,7 +9,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
   BOM_AMAZON as BOM_AMAZON_DATA,
-  CODE_FULL_INFO,
   CODE_INFO,
   CODEPHOI,
   LIST_BOM_AMAZON,
@@ -197,6 +186,8 @@ const BOM_AMAZON = () => {
           setAMZ_COUNTRY(loadeddata[0].AMZ_COUNTRY);
           setAMZ_PROD_NAME(loadeddata[0].AMZ_PROD_NAME);
           setBOMAMAZONTable(loadeddata);
+          setcodeinfoCMS(loadeddata[0].G_CODE)
+          setcodeinfoKD(loadeddata[0].G_NAME)
           setisLoading(false);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -479,8 +470,8 @@ const BOM_AMAZON = () => {
       }}
     />
     , [column_listbomamazon, listamazontable]);
-  const listCode = useMemo(() =>
-    <AGTable
+  function listCode () {
+    return ( <AGTable
       showFilter={true}
       toolbar={
         <></>
@@ -505,8 +496,8 @@ const BOM_AMAZON = () => {
         //console.log(e!.api.getSelectedRows())
         //bomsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
-    />
-    , [rows]);
+    />)
+  }
   useEffect(() => {
     handleGETLISTBOMAMAZON("");
     loadCodePhoi();
@@ -561,7 +552,7 @@ const BOM_AMAZON = () => {
             </div>
           </div>
           <div className='codeinfotable'>
-            {listCode}
+            {listCode()}
           </div>
         </div>
       </div>

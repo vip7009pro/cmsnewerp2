@@ -1,14 +1,7 @@
-import {
-  Autocomplete,
-  Button,
-  IconButton,
-  LinearProgress,
-  TextField,
-  createFilterOptions,
-} from "@mui/material";
+import { Autocomplete, Button, IconButton, TextField, createFilterOptions } from "@mui/material";
 import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useEffect, useMemo, useState, useTransition } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
 import {
   AiFillAmazonCircle,
@@ -19,15 +12,39 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode, getCompany, uploadQuery } from "../../../api/Api";
-import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
+import {
+  checkBP,
+  f_batchDeleteYCSX,
+  f_checkDuplicateAMZ,
+  f_checkFCST_G_CODE,
+  f_checkG_CODE_ACTIVE,
+  f_checkG_CODE_PO_BALANCE,
+  f_checkStock_G_CODE,
+  f_checkYCSX_EXIST,
+  f_generateNextProdRequestNo,
+  f_getcodelist,
+  f_getcustomerlist,
+  f_getNextP500_IN_NO,
+  f_handleAmazonData,
+  f_insertDMYCSX,
+  f_insertP500,
+  f_insertP501,
+  f_insertYCSX,
+  f_isIDCongViecExist,
+  f_loadPONOList,
+  f_process_lot_no_generate,
+  f_traYCSX,
+  f_updateYCSX,
+  renderBanVe,
+  renderYCSX,
+  SaveExcel,
+} from "../../../api/GlobalFunction";
 import { MdLock, MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import "./YCSXManager.scss";
 import { FaArrowRight } from "react-icons/fa";
 import { ReactElement, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import YCSXComponent from "./YCSXComponent/YCSXComponent";
-import DrawComponent from "./DrawComponent/DrawComponent";
 import TraAMZ from "./TraAMZ/TraAMZ";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -51,28 +68,6 @@ const YCSXManager = () => {
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-  const renderYCSX = (ycsxlist: YCSXTableData[]) => {
-    return ycsxlist.map((element, index) => (
-      <YCSXComponent key={index} DATA={element} />
-    ));
-  };
-  const renderBanVe = (ycsxlist: YCSXTableData[]) => {
-    return ycsxlist.map((element, index) =>
-      element.BANVE === "Y" ? (
-        <DrawComponent
-          key={index}
-          G_CODE={element.G_CODE}
-          PDBV={element.PDBV}
-          PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-          PDBV_EMPL={element.PDBV_EMPL}
-          PDBV_DATE={element.PDBV_DATE}
-        />
-      ) : (
-        <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      )
-    );
-  };
-  const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -120,10 +115,8 @@ const YCSXManager = () => {
     RD_DATE: "",
     PO_QTY: 0,
   });
-  const [deliverydate, setNewDeliveryDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
-  const [newycsxqty, setNewYcsxQty] = useState("");
+  const [deliverydate, setNewDeliveryDate] = useState(moment().format("YYYY-MM-DD"));
+  const [newycsxqty, setNewYcsxQty] = useState(0);
   const [newycsxremark, setNewYcsxRemark] = useState("");
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
@@ -937,7 +930,6 @@ const YCSXManager = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
   ];
-  const [colDefs, setColDefs] = useState<Array<any>>(getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2);
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
     { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 120 },
@@ -1018,33 +1010,8 @@ const YCSXManager = () => {
       },
     },
   ];
-  const loadPONO = (G_CODE?: string, CUST_CD?: string) => {
-    if (G_CODE !== undefined && CUST_CD !== undefined) {
-      generalQuery("loadpono", {
-        G_CODE: G_CODE,
-        CUST_CD: CUST_CD,
-      })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loaded_data: PONOLIST[] = response.data.data.map(
-              (element: PONOLIST, index: number) => {
-                return element;
-              }
-            );
-            //console.log(loaded_data);
-            setPONOLIST(loaded_data);
-          } else {
-            setPONOLIST([]);
-            //console.log('Không có PO nào cho code này và khách này');
-            //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-        });
-    }
+  const loadPONO = async (G_CODE?: string, CUST_CD?: string) => {
+    setPONOLIST(await f_loadPONOList(G_CODE, CUST_CD));
   };
   function CustomToolbar() {
     return (
@@ -1094,107 +1061,6 @@ const YCSXManager = () => {
       handletraYCSX();
     }
   };
-  const monthArray = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-  ];
-  const dayArray = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-  ];
-  const createHeader = async () => {
-    //lay gio he thong
-    let giohethong: string = "";
-    await generalQuery("getSystemDateTime", {})
-      .then((response) => {
-        //console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          //giohethong = response.data.data[0].SYSTEM_DATETIME.slice(0, 10);
-          giohethong = response.data.data[0].SYSTEM_DATETIME;
-          //console.log("gio he thong", moment.utc(response.data.data[0].SYSTEM_DATETIME).format('Y'))
-        } else {
-          Swal.fire(
-            "Thông báo",
-            "Không lấy được giờ hệ thống: " + response.data.message,
-            "error"
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    //let year:number = moment(giohethong).year();
-    let month: number = moment.utc(giohethong).month();
-    let day: number = moment.utc(giohethong).date();
-    let yearstr = giohethong.substring(3, 4);
-    let monthstr = monthArray[month];
-    let daystr = dayArray[day - 1];
-    return yearstr + monthstr + daystr;
-  };
-  const zeroPad = (num: number, places: number) =>
-    String(num).padStart(places, "0");
-  const process_lot_no_generate = async (machinename: string) => {
-    let in_date: string = moment().format("YYYYMMDD");
-    let NEXT_PROCESS_LOT_NO: string = machinename + (await createHeader());
-    await generalQuery("getLastProcessLotNo", {
-      machine: machinename,
-      in_date: in_date,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          NEXT_PROCESS_LOT_NO += zeroPad(
-            Number(response.data.data[0].SEQ_NO) + 1,
-            3
-          );
-        } else {
-          NEXT_PROCESS_LOT_NO += "001";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return NEXT_PROCESS_LOT_NO;
-  };
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -1235,86 +1101,12 @@ const YCSXManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-  const handleAmazonData = async (
-    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[],
-    cavity: number,
-    G_CODE: string,
-    PROD_REQUEST_NO: string,
-    NO_IN: string
-  ) => {
-    let handled_Amazon_Table: UploadAmazonData[] = [];
-    if (amazon_data.length % cavity !== 0) {
-      Swal.fire("Thông báo", "Số dòng lẻ so với cavity", "error");
-    } else {
-      for (let i = 1; i <= amazon_data.length / cavity; i++) {
-        let temp_amazon_row: UploadAmazonData = {};
-        temp_amazon_row.G_CODE = G_CODE;
-        temp_amazon_row.PROD_REQUEST_NO = PROD_REQUEST_NO;
-        temp_amazon_row.NO_IN = NO_IN;
-        temp_amazon_row.ROW_NO = i;
-        if (cavity === 1) {
-          temp_amazon_row.DATA1 = amazon_data[i * cavity - 1].DATA;
-          temp_amazon_row.DATA2 = amazon_data[i * cavity - 1].DATA + "_NOT_USE";
-        } else if (cavity === 2) {
-          temp_amazon_row.DATA1 = amazon_data[i * cavity - 2].DATA;
-          temp_amazon_row.DATA2 = amazon_data[i * cavity - 1].DATA;
-        } else if (cavity === 3) {
-          temp_amazon_row.DATA1 = amazon_data[i * cavity - 3].DATA;
-          temp_amazon_row.DATA2 = amazon_data[i * cavity - 2].DATA;
-          temp_amazon_row.DATA3 = amazon_data[i * cavity - 1].DATA;
-        } else if (cavity === 4) {
-          temp_amazon_row.DATA1 = amazon_data[i * cavity - 4].DATA;
-          temp_amazon_row.DATA2 = amazon_data[i * cavity - 3].DATA;
-          temp_amazon_row.DATA3 = amazon_data[i * cavity - 2].DATA;
-          temp_amazon_row.DATA4 = amazon_data[i * cavity - 1].DATA;
-        }
-        temp_amazon_row.INLAI_COUNT = 0;
-        temp_amazon_row.REMARK = "";
-        handled_Amazon_Table.push(temp_amazon_row);
-      }
-    }
-    //console.log("handled_Amazon_Table", handled_Amazon_Table);
-    return handled_Amazon_Table;
-  };
-  const checkDuplicateAMZ = async () => {
-    let isDuplicated: boolean = false;
-    Swal.fire({
-      title: "Check trùng",
-      text: "Đang check trùng AMZ DATA",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    await generalQuery("checktrungAMZ_Full", {})
-      .then((response) => {
-        //console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          isDuplicated = true;
-          Swal.fire(
-            "Thông báo",
-            "Data trùng: " +
-            response.data.data[0].VALUE +
-            "______ Số lặp lại: " +
-            response.data.data[0].COUNT,
-            "error"
-          );
-        } else {
-          Swal.fire("Thông báo", "Không có dòng trùng", "success");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return isDuplicated;
-  };
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
     if (amz_PL_HANG === 'AM') {
-      isDuplicated = await checkDuplicateAMZ();
+      isDuplicated = await f_checkDuplicateAMZ();
       if (!isDuplicated) {
-        let uploadAmazonData = await handleAmazonData(
+        let uploadAmazonData = await f_handleAmazonData(
           uploadExcelJson,
           cavityAmazon,
           codeCMS,
@@ -1322,63 +1114,21 @@ const YCSXManager = () => {
           id_congviec
         );
         //console.log(uploadAmazonData);
-        let checkIDcongViecTonTai: boolean = false;
-        await generalQuery("checkIDCongViecAMZ", {
-          NO_IN: id_congviec,
-          PROD_REQUEST_NO: prodrequestno,
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              checkIDcongViecTonTai = true;
-            } else {
-              checkIDcongViecTonTai = false;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        //if (!AMZ_check_flag) {
-        if (false) {
-          Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
-        } else {
-          if (!checkIDcongViecTonTai) {
-            let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
-            let sodu: number = uploadAmazonData.length % 1000;
-            for (let i = 1; i <= songuyen; i++) {
-              await generalQuery("insertData_Amazon_SuperFast", {
-                AMZDATA: uploadAmazonData.filter(
-                  (e: UploadAmazonData, index: number) => {
-                    let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
-                    return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
-                  }
-                ),
-              })
-                .then((response) => {
-                  if (response.data.tk_status !== "NG") {
-                    setProgressValue(i * 2 * 1000);
-                  } else {
-                    console.log(response.data.message);
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-            }
+        let checkIDcongViecTonTai: boolean = await f_isIDCongViecExist(id_congviec, prodrequestno);
+        if (!checkIDcongViecTonTai) {
+          let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);         
+          for (let i = 1; i <= songuyen; i++) {
             await generalQuery("insertData_Amazon_SuperFast", {
               AMZDATA: uploadAmazonData.filter(
                 (e: UploadAmazonData, index: number) => {
                   let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
-                  return (
-                    rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
-                  );
+                  return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
                 }
               ),
             })
               .then((response) => {
-                console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
-                  setProgressValue(uploadAmazonData.length * 2);
+                  setProgressValue(i * 2 * 1000);
                 } else {
                   console.log(response.data.message);
                 }
@@ -1386,13 +1136,33 @@ const YCSXManager = () => {
               .catch((error) => {
                 console.log(error);
               });
-            setUploadExcelJSon([]);
-            checkDuplicateAMZ();
-            //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
-          } else {
-            Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
           }
-        }
+          await generalQuery("insertData_Amazon_SuperFast", {
+            AMZDATA: uploadAmazonData.filter(
+              (e: UploadAmazonData, index: number) => {
+                let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
+                return (
+                  rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
+                );
+              }
+            ),
+          })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                setProgressValue(uploadAmazonData.length * 2);
+              } else {
+                console.log(response.data.message);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          setUploadExcelJSon([]);
+          f_checkDuplicateAMZ();          
+        } else {
+          Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
+        }        
       }
     }
     else {
@@ -1464,7 +1234,7 @@ const YCSXManager = () => {
       }
     }
   };
-  const handletraYCSX = () => {
+  const handletraYCSX = async () => {
     Swal.fire({
       title: "Tra YCSX",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -1474,8 +1244,7 @@ const YCSXManager = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    setisLoading(true);
-    generalQuery("traYCSXDataFull", {
+    setYcsxDataTable(await f_traYCSX({
       alltime: alltime,
       start_date: fromdate,
       end_date: todate,
@@ -1490,78 +1259,14 @@ const YCSXManager = () => {
       prod_request_no: prodrequestno,
       material: material,
       phanloaihang: phanloaihang
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          const loadeddata: YCSXTableData[] = response.data.data.map(
-            (element: YCSXTableData, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                PO_TDYCSX: element.PO_TDYCSX ?? 0,
-                TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
-                TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
-                BTP_TDYCSX: element.BTP_TDYCSX ?? 0,
-                CK_TDYCSX: element.CK_TDYCSX ?? 0,
-                BLOCK_TDYCSX: element.BLOCK_TDYCSX ?? 0,
-                FCST_TDYCSX: element.FCST_TDYCSX ?? 0,
-                W1: element.W1 ?? 0,
-                W2: element.W2 ?? 0,
-                W3: element.W3 ?? 0,
-                W4: element.W4 ?? 0,
-                W5: element.W5 ?? 0,
-                W6: element.W6 ?? 0,
-                W7: element.W7 ?? 0,
-                W8: element.W8 ?? 0,
-                PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
-                id: index
-              };
-            }
-          );
-          setYcsxDataTable(loadeddata);
-          setShowHideSearchDiv(false);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-          setYcsxDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    }));
   };
   const handle_checkYCSXHangLoat = async () => {
     setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkGCodeVer", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-      })
-        .then((response) => {
-          //console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-            } else {
-              err_code = 3;
-            }
-          } else {
-            err_code = 4;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
       if (uploadExcelJson[i].CODE_55 === undefined) err_code = 6;
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length === 0) err_code = 7;
@@ -1598,27 +1303,7 @@ const YCSXManager = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkGCodeVer", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-      })
-        .then((response) => {
-          //console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-              //tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-              err_code = 3;
-            }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
-            err_code = 4;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
       if (uploadExcelJson[i].CODE_55 === undefined) err_code = 6;
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length = 0) err_code = 7;
@@ -1626,93 +1311,11 @@ const YCSXManager = () => {
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
       if (err_code === 0) {
         let err_code1: number = 0;
-        let last_prod_request_no: string = "";
-        let next_prod_request_no: string = "";
-        let next_header = await createHeader();
-        let pobalance_tdycsx: POBALANCETDYCSX = {
-          G_CODE: "",
-          PO_BALANCE: 0,
-        };
-        let tonkho_tdycsx: TONKHOTDYCSX = {
-          G_CODE: "",
-          CHO_KIEM: 0,
-          CHO_CS_CHECK: 0,
-          CHO_KIEM_RMA: 0,
-          TONG_TON_KIEM: 0,
-          BTP: 0,
-          TON_TP: 0,
-          BLOCK_QTY: 0,
-          GRAND_TOTAL_STOCK: 0,
-        };
-        let fcst_tdycsx: FCSTTDYCSX = {
-          G_CODE: "",
-          W1: 0,
-          W2: 0,
-          W3: 0,
-          W4: 0,
-          W5: 0,
-          W6: 0,
-          W7: 0,
-          W8: 0,
-        };
-        await generalQuery("checkLastYCSX", {})
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              last_prod_request_no = response.data.data[0].PROD_REQUEST_NO;
-              next_prod_request_no =
-                next_header +
-                moment().format("YYYY").substring(2, 3) +
-                zeroPad(Number(last_prod_request_no.substring(4, 7)) + 1, 3);
-            } else {
-              next_prod_request_no =
-                next_header + moment().format("YYYY").substring(2, 3) + "001";
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        //check PO Balance, Ton Kho, FCST tai thoi diem YCSX
-        await generalQuery("checkpobalance_tdycsx", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              pobalance_tdycsx = response.data.data[0];
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("checktonkho_tdycsx", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              tonkho_tdycsx = response.data.data[0];
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("checkfcst_tdycsx", {
-          G_CODE: uploadExcelJson[i].G_CODE,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              fcst_tdycsx = response.data.data[0];
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        //console.log(await process_lot_no_generate(phanloai));
+        let next_prod_request_no: string = await f_generateNextProdRequestNo();
+        let pobalance_tdycsx: POBALANCETDYCSX = await f_checkG_CODE_PO_BALANCE(uploadExcelJson[i].G_CODE ?? "");
+        let tonkho_tdycsx: TONKHOTDYCSX = await f_checkStock_G_CODE(uploadExcelJson[i].G_CODE ?? "");
+        let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(uploadExcelJson[i].G_CODE ?? "");
+        //console.log(await f_process_lot_no_generate(phanloai));
         if (
           uploadExcelJson[i].G_CODE === "" ||
           uploadExcelJson[i].CUST_CD === "" ||
@@ -1724,19 +1327,11 @@ const YCSXManager = () => {
         console.log("err_Code1 = " + err_code1);
         if (err_code1 === 0) {
           if (uploadExcelJson[i].PHANLOAI === "TT") {
-            await generalQuery("insertDBYCSX", {
+            await f_insertDMYCSX({
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-            await generalQuery("insert_ycsx", {
+            });
+            let kq: string = await f_insertYCSX({
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -1783,24 +1378,16 @@ const YCSXManager = () => {
               PDUYET:
                 pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  //Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
-                  tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
-                } else {
-                  //Swal.fire("Thông báo", "Thêm YCSX mới thất bại: " +response.data.message , "error");
-                  tempjson[i].CHECKSTATUS =
-                    "NG: Thêm YCSX mới thất bại" + response.data.message;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            });
+            if (kq === 'OK') {
+              tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
+            }
+            else {
+              tempjson[i].CHECKSTATUS = "NG: Thêm YCSX mới thất bại" + kq;
+            }
           } else {
-            let next_process_lot_no_p501: string = await process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
-            await generalQuery("insert_ycsx", {
+            let next_process_lot_no_p501: string = await f_process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
+            let kq: string = await f_insertYCSX({
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -1843,40 +1430,16 @@ const YCSXManager = () => {
               CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
               PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  //Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
-                  tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
-                } else {
-                  //Swal.fire("Thông báo", "Thêm YCSX mới thất bại: " +response.data.message , "error");
-                  tempjson[i].CHECKSTATUS =
-                    "NG: Thêm YCSX mới thất bại" + response.data.message;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-            let next_p500_in_no: string = "";
-            //get process_in_no P500
-            await generalQuery("checkProcessInNoP500", {})
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  console.log(response.data.data);
-                  next_p500_in_no = zeroPad(
-                    Number(response.data.data[0].PROCESS_IN_NO) + 1,
-                    3
-                  );
-                } else {
-                  next_p500_in_no = "001";
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            });
+            if (kq === 'OK') {
+              tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
+            }
+            else {
+              tempjson[i].CHECKSTATUS = "NG: Thêm YCSX mới thất bại" + kq;
+            }
+            let next_p500_in_no: string = await f_getNextP500_IN_NO();
             // them P500
-            await generalQuery("insert_p500", {
+            await f_insertP500({
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
@@ -1886,19 +1449,9 @@ const YCSXManager = () => {
               phanloai: uploadExcelJson[i].PHANLOAI,
               PLAN_ID: next_prod_request_no + "A",
               PR_NB: 0,
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  console.log(response.data.data);
-                  pobalance_tdycsx = response.data.data[0];
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            });
             // them P501
-            await generalQuery("insert_p501", {
+            await f_insertP501({
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
               EMPL_NO: userData?.EMPL_NO,
@@ -1909,17 +1462,7 @@ const YCSXManager = () => {
               PLAN_ID: next_prod_request_no + "A",
               PROCESS_NUMBER: 0,
               TEMP_QTY: uploadExcelJson[i].PROD_REQUEST_QTY
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  console.log(response.data.data);
-                  pobalance_tdycsx = response.data.data[0];
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            });
           }
         }
       } else if (err_code === 1) {
@@ -1958,7 +1501,7 @@ const YCSXManager = () => {
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành thêm", "Đang thêm YCSX hàng loạt", "success");
+        Swal.fire("Tiến hành thêm", "Đang thêm YCSX hàng loạt", "info");
         handle_upYCSXHangLoat();
       }
     });
@@ -1974,38 +1517,16 @@ const YCSXManager = () => {
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành check", "Đang check YCSX hàng loạt", "success");
+        Swal.fire("Tiến hành check", "Đang check YCSX hàng loạt", "info");
         handle_checkYCSXHangLoat();
       }
     });
   };
-  const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getcustomerlist = async () => {
+    setCustomerList(await f_getcustomerlist());
   };
-  const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          if (!isPending) {
-            startTransition(() => {
-              setCodeList(response.data.data);
-            });
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getcodelist = async (G_NAME: string) => {
+    setCodeList(await f_getcodelist(G_NAME));
   };
   const setNav = (choose: number) => {
     if (choose === 1) {
@@ -2061,119 +1582,29 @@ const YCSXManager = () => {
   };
   const handle_add_1YCSX = async () => {
     let err_code: number = 0;
-    let last_prod_request_no: string = "";
-    let next_prod_request_no: string = "";
-    let next_header = await createHeader();
-    let pobalance_tdycsx: POBALANCETDYCSX = {
-      G_CODE: "",
-      PO_BALANCE: 0,
-    };
-    let tonkho_tdycsx: TONKHOTDYCSX = {
-      G_CODE: "",
-      CHO_KIEM: 0,
-      CHO_CS_CHECK: 0,
-      CHO_KIEM_RMA: 0,
-      TONG_TON_KIEM: 0,
-      BTP: 0,
-      TON_TP: 0,
-      BLOCK_QTY: 0,
-      GRAND_TOTAL_STOCK: 0,
-    };
-    let fcst_tdycsx: FCSTTDYCSX = {
-      G_CODE: "",
-      W1: 0,
-      W2: 0,
-      W3: 0,
-      W4: 0,
-      W5: 0,
-      W6: 0,
-      W7: 0,
-      W8: 0,
-    };
-    await generalQuery("checkLastYCSX", {})
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          last_prod_request_no = response.data.data[0].PROD_REQUEST_NO;
-          next_prod_request_no =
-            next_header +
-            moment().format("YYYY").substring(2, 3) +
-            zeroPad(Number(last_prod_request_no.substring(4, 7)) + 1, 3);
-        } else {
-          next_prod_request_no =
-            next_header + moment().format("YYYY").substring(2, 3) + "001";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    //check PO Balance, Ton Kho, FCST tai thoi diem YCSX
-    await generalQuery("checkpobalance_tdycsx", {
-      G_CODE: selectedCode?.G_CODE,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          pobalance_tdycsx = response.data.data[0];
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    await generalQuery("checktonkho_tdycsx", {
-      G_CODE: selectedCode?.G_CODE,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          tonkho_tdycsx = response.data.data[0];
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    await generalQuery("checkfcst_tdycsx", {
-      G_CODE: selectedCode?.G_CODE,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          fcst_tdycsx = response.data.data[0];
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    //console.log(await process_lot_no_generate(phanloai));
+    let next_prod_request_no: string = await f_generateNextProdRequestNo();
+    let pobalance_tdycsx: POBALANCETDYCSX = await f_checkG_CODE_PO_BALANCE(selectedCode?.G_CODE ?? "");
+    let tonkho_tdycsx: TONKHOTDYCSX = await f_checkStock_G_CODE(selectedCode?.G_CODE ?? "");
+    let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(selectedCode?.G_CODE ?? "");
+    //console.log(await f_process_lot_no_generate(phanloai));
     if (selectedCode?.USE_YN === "N") {
       err_code = 3; // ver bi khoa
     }
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
-      newycsxqty === "" ||
+      newycsxqty === 0 ||
       userData?.EMPL_NO === ""
     ) {
       err_code = 4;
     }
     if (err_code === 0) {
       if (newphanloai === "TT") {
-        await generalQuery("insertDBYCSX", {
+        await f_insertDMYCSX({
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("insert_ycsx", {
+        });
+        let kq: string = await f_insertYCSX({
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
@@ -2216,27 +1647,17 @@ const YCSXManager = () => {
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
           PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Thêm YCSX mới thất bại: " + response.data.message,
-                "error"
-              );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        });
+        if (kq === 'OK') {
+          Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
+        }
+        else {
+          Swal.fire("Thông báo", "Thêm YCSX mới thất bại: " + kq, "error"
+          );
+        }
       } else {
-        let next_process_lot_no_p501: string = await process_lot_no_generate(
-          newphanloai
-        );
-        await generalQuery("insert_ycsx", {
+        let next_process_lot_no_p501: string = await f_process_lot_no_generate(newphanloai);
+        let kq: string = await f_insertYCSX({
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
@@ -2279,41 +1700,18 @@ const YCSXManager = () => {
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
           PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Thêm YCSX mới thất bại: " + response.data.message,
-                "error"
-              );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        let next_p500_in_no: string = "";
+        });
+        if (kq === 'OK') {
+          Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
+        }
+        else {
+          Swal.fire("Thông báo", "Thêm YCSX mới thất bại: " + kq, "error"
+          );
+        }
         //get process_in_no P500
-        await generalQuery("checkProcessInNoP500", {})
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              next_p500_in_no = zeroPad(
-                Number(response.data.data[0].PROCESS_IN_NO) + 1,
-                3
-              );
-            } else {
-              next_p500_in_no = "001";
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        let next_p500_in_no: string = await f_getNextP500_IN_NO();
         // them P500
-        await generalQuery("insert_p500", {
+        await f_insertP500({
           in_date: moment().format("YYYYMMDD"),
           next_process_in_no: next_p500_in_no,
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
@@ -2323,19 +1721,9 @@ const YCSXManager = () => {
           phanloai: newphanloai,
           PLAN_ID: next_prod_request_no + "A",
           PR_NB: 0,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              pobalance_tdycsx = response.data.data[0];
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        });
         // them P501
-        await generalQuery("insert_p501", {
+        await f_insertP501({
           in_date: moment().format("YYYYMMDD"),
           next_process_in_no: next_p500_in_no,
           EMPL_NO: userData?.EMPL_NO,
@@ -2346,26 +1734,12 @@ const YCSXManager = () => {
           PLAN_ID: next_prod_request_no + "A",
           PROCESS_NUMBER: 0,
           TEMP_QTY: newycsxqty
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              pobalance_tdycsx = response.data.data[0];
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        });
       }
     } else if (err_code === 1) {
       //Swal.fire("Thông báo", "NG: Đã tồn tại PO" , "error");
     } else if (err_code === 2) {
-      Swal.fire(
-        "Thông báo",
-        "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
-      );
+      Swal.fire("Thông báo", "NG: Ngày PO không được trước ngày hôm nay", "error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -2374,7 +1748,7 @@ const YCSXManager = () => {
   };
   const clearYCSXform = () => {
     setNewDeliveryDate(moment().format("YYYY-MM-DD"));
-    setNewYcsxQty("");
+    setNewYcsxQty(0);
     setNewYcsxRemark("");
     setNewPhanLoai("TT");
     setLoaiSX("01");
@@ -2416,35 +1790,10 @@ const YCSXManager = () => {
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewYcsxQty(
-        ycsxdatatablefilter.current[
-          ycsxdatatablefilter.current.length - 1
-        ].PROD_REQUEST_QTY.toString()
-      );
-      setNewYcsxRemark(
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK
-      );
-      setSelectedID(
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
-      );
-      if (
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK.substring(
-          0,
-          2
-        ) !== "RB" &&
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK.substring(
-          0,
-          2
-        ) !== "HQ"
-      ) {
-        setNewPhanLoai("TT");
-      }
-      setNewPhanLoai(
-        ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK.substring(
-          0,
-          2
-        )
-      );
+      setNewYcsxQty(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_QTY);
+      setNewYcsxRemark(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].REMARK);
+      setSelectedID(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO);
+      setNewPhanLoai(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PL_HANG ?? 'TT')
       setLoaiSX(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PHAN_LOAI);
       setLoaiXH(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].LOAIXH);
     } else if (ycsxdatatablefilter.current.length === 0) {
@@ -2455,36 +1804,18 @@ const YCSXManager = () => {
     }
   };
   const updateYCSX = async () => {
-    if (
-      userData?.EMPL_NO === "LVT1906" ||
-      userData?.EMPL_NO === "lvt1906" ||
-      userData?.EMPL_NO === "nhu1903" ||
-      userData?.EMPL_NO === "NHU1903"
-    ) {
+    if (userData?.EMPL_NO?.toUpperCase() === "LVT1906" || userData?.EMPL_NO?.toUpperCase() === "NHU1903") {
       let err_code: number = 0;
-      await generalQuery("checkYcsxExist", {
-        PROD_REQUEST_NO: selectedID,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-          } else {
-            err_code = 1;
-            //tempjson[i].CHECKSTATUS = "NG: Không tồn tại YCSX";
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      err_code = (await f_checkYCSX_EXIST(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO)) ? 0 : 1;
       if (
         selectedCode?.G_CODE === "" ||
         selectedCust_CD?.CUST_CD === "" ||
-        newycsxqty === ""
+        newycsxqty === 0
       ) {
         err_code = 4;
       }
       if (err_code === 0) {
-        await generalQuery("update_ycsx", {
+        await f_updateYCSX({
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
           PROD_REQUEST_NO: selectedID,
@@ -2494,162 +1825,21 @@ const YCSXManager = () => {
           PROD_REQUEST_QTY: newycsxqty,
           EMPL_NO: userData?.EMPL_NO,
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              Swal.fire("Thông báo", "Update YCSX thành công", "success");
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Update YCSX thất bại: " + response.data.message,
-                "error"
-              );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        });
       } else if (err_code === 1) {
         Swal.fire("Thông báo", "NG: Không tồn tại YCSX", "error");
       } else if (err_code === 4) {
-        Swal.fire(
-          "Thông báo",
-          "NG: Không để trống thông tin bắt buộc",
-          "error"
-        );
+        Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
       }
     } else {
       Swal.fire("Thông báo", "Không đủ quyền hạn để sửa !", "error");
     }
   };
   const deleteYCSX = async () => {
-    if (ycsxdatatablefilter.current.length >= 1) {
-      let err_code: boolean = false;
-      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
-        if (ycsxdatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          let checkO300: boolean = false;
-          await generalQuery("checkYCSXQLSXPLAN", {
-            PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                checkO300 = true;
-                err_code = true;
-                //Swal.fire("Thông báo", "Delete YCSX thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update YCSX thất bại: " +response.data.message , "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          console.log("O300", checkO300);
-          if (checkO300) {
-            Swal.fire(
-              "Thông báo",
-              "Xóa YCSX thất bại, ycsx đã được xuất liệu: ",
-              "error"
-            );
-          } else {
-            await generalQuery("delete_ycsx", {
-              PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  //Swal.fire("Thông báo", "Delete YCSX thành công", "success");
-                  if (ycsxdatatablefilter.current[i].PL_HANG != 'TT') {
-                    generalQuery("delete_P500_YCSX", {
-                      PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-                      INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
-                    })
-                      .then((response) => {
-                        console.log(response.data.tk_status);
-                        if (response.data.tk_status !== "NG") {
-                        } else {
-                        }
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
-                    generalQuery("delete_P501_YCSX", {
-                      PLAN_ID: ycsxdatatablefilter.current[i].PROD_REQUEST_NO + 'A',
-                      INS_EMPL: ycsxdatatablefilter.current[i].EMPL_NO
-                    })
-                      .then((response) => {
-                        console.log(response.data.tk_status);
-                        if (response.data.tk_status !== "NG") {
-                        } else {
-                        }
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
-                    if (ycsxdatatablefilter.current[i].PL_HANG === 'AM') {
-                      generalQuery("checkInLaiCount_AMZ", {
-                        PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-                      })
-                        .then((response) => {
-                          console.log(response.data.tk_status);
-                          if (response.data.tk_status !== "NG") {
-                            if (response.data.data[0].IN_LAI_QTY === 0) {
-                              generalQuery("deleteAMZ_DATA", {
-                                PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
-                              })
-                                .then((response) => {
-                                  console.log(response.data.tk_status);
-                                  if (response.data.tk_status !== "NG") {
-                                  } else {
-                                  }
-                                })
-                                .catch((error) => {
-                                  console.log(error);
-                                });
-                            }
-                          } else {
-                          }
-                        })
-                        .catch((error) => {
-                          console.log(error);
-                        });
-                    }
-                  }
-                } else {
-                  //Swal.fire("Thông báo", "Update YCSX thất bại: " +response.data.message , "error");
-                  err_code = true;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        }
-      }
-      if (!err_code) {
-        Swal.fire(
-          "Thông báo",
-          "Xóa YCSX thành công (chỉ YCSX của người đăng nhập)!",
-          "success"
-        );
-      } else {
-        Swal.fire(
-          "Thông báo",
-          "Có lỗi: Có thể ycsx này đã được đăng ký xuất liệu",
-          "error"
-        );
-      }
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để xóa !", "error");
-    }
+    await f_batchDeleteYCSX(ycsxdatatablefilter.current);
   };
   const setPDuyetYCSX = async (pduyet_value: number) => {
-    if (
-      userData?.EMPL_NO === "LVT1906" ||
-      userData?.EMPL_NO === "lvt1906" ||
-      empl_name === "pd"
-    ) {
+    if (userData?.EMPL_NO?.toUpperCase() === "LVT1906" || empl_name === "pd") {
       if (ycsxdatatablefilter.current.length >= 1) {
         let err_code: boolean = false;
         for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
@@ -2820,7 +2010,7 @@ const YCSXManager = () => {
         setOpenYCSX('N');
       }
     });
-  };  
+  };
   const handleConfirmSetClosedYCSX = () => {
     Swal.fire({
       title: "Chắc chắn muốn SET CLOSED YCSX đã chọn ?",
@@ -2878,12 +2068,8 @@ const YCSXManager = () => {
       CHECKSTATUS: "Waiting",
       id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
     };
-    if (newycsx_row.PROD_REQUEST_QTY === "" || newycsx_row.REMK === "") {
-      Swal.fire(
-        "Thông báo",
-        "Không được để trống thông tin cần thiết",
-        "error"
-      );
+    if (newycsx_row.PROD_REQUEST_QTY === 0 || newycsx_row.REMK === "") {
+      Swal.fire("Thông báo", "Không được để trống thông tin cần thiết", "error");
     } else {
       setUploadExcelJSon([...uploadExcelJson, newycsx_row]);
     }
@@ -3083,7 +2269,7 @@ const YCSXManager = () => {
                   ["ALL"],
                   ["ALL"],
                   handleConfirmLockYCSX
-                );                                
+                );
               }}
             >
               <MdLock color='#ec0303' size={15} />
@@ -3099,7 +2285,6 @@ const YCSXManager = () => {
                   ["ALL"],
                   handleConfirmOpenYCSX
                 );
-                                
               }}
             >
               <MdLock color='#245af0' size={15} />
@@ -3322,7 +2507,7 @@ const YCSXManager = () => {
                     <TextField
                       value={newycsxqty}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewYcsxQty(e.target.value)
+                        setNewYcsxQty(Number(e.target.value))
                       }
                       size='small'
                       color='success'
@@ -3374,11 +2559,7 @@ const YCSXManager = () => {
                             ? moment.utc().format("YYYY-MM-DD")
                             : newValue?.RD_DATE
                         );
-                        setNewYcsxQty(
-                          newValue?.PO_QTY === undefined
-                            ? ""
-                            : newValue?.PO_QTY.toString()
-                        );
+                        setNewYcsxQty(newValue?.PO_QTY ?? 0)
                       }}
                       isOptionEqualToValue={(option, value) =>
                         option.PO_NO === value.PO_NO
@@ -3448,7 +2629,6 @@ const YCSXManager = () => {
                   sx={{ fontSize: "0.7rem" }}
                   slots={{
                     toolbar: CustomToolbar,
-                    
                   }}
                   loading={isLoading}
                   rowHeight={35}
@@ -3801,7 +2981,7 @@ const YCSXManager = () => {
                     upAmazonDataSuperFast();
                   }}>Up</Button>
                   <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }} onClick={() => {
-                    checkDuplicateAMZ();
+                    f_checkDuplicateAMZ();
                   }}>Check</Button>
                   <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
                     setUploadExcelJSon([]);
@@ -3817,7 +2997,6 @@ const YCSXManager = () => {
                     sx={{ fontSize: "0.7rem" }}
                     slots={{
                       toolbar: CustomToolbarAmazon,
-                      
                     }}
                     loading={isLoading}
                     rowHeight={35}
