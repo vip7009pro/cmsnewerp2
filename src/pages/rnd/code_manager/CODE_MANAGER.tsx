@@ -1,5 +1,5 @@
 import { IconButton } from "@mui/material";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { FcCancel, } from "react-icons/fc";
 import {
   AiFillCheckCircle,
@@ -8,8 +8,18 @@ import {
   AiOutlineCloudUpload,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, uploadQuery } from "../../../api/Api";
-import { SaveExcel, checkBP, f_saveQLSX } from "../../../api/GlobalFunction";
+import { generalQuery, uploadQuery } from "../../../api/Api";
+import {
+  SaveExcel,
+  checkBP,
+  f_getCodeInfo,
+  f_handleSaveLossSX,
+  f_handleSaveQLSX,
+  f_pdBanVe,
+  f_resetBanVe,
+  f_setNgoaiQuan,
+  f_updateBEP,
+} from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
@@ -1751,85 +1761,7 @@ const CODE_MANAGER = () => {
   const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);
   const [columns, setColumns] = useState<Array<any>>(column_codeinfo2);
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_codeinfo2);
-  const resetBanVe = async (value: string) => {
-    if (codedatatablefilter.length >= 1) {
-      checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
-        for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("resetbanve", {
-            G_CODE: codedatatablefilter[i].G_CODE,
-            VALUE: value,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success");
-      });
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
-    }
-  };
-  const updateBEP = async () => {
-    if (codedatatablefilter.length >= 1) {
-      checkBP(userData, ["KD"], ["ALL"], ["ALL"], async () => {
-        for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("updateBEP", {
-            G_CODE: codedatatablefilter[i].G_CODE,
-            BEP: codedatatablefilter[i].BEP ?? 0,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        Swal.fire("Thông báo", "Update BEP THÀNH CÔNG", "success");
-      });
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
-    }
-  };
-  const pdBanVe = async (value: string) => {
-    if (codedatatablefilter.length >= 1) {
-      checkBP(userData, ["QC"], ["Leader", "Sub Leader"], ["ALL"], async () => {
-        for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("pdbanve", {
-            G_CODE: codedatatablefilter[i].G_CODE,
-            VALUE: value,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        Swal.fire("Thông báo", "Phê duyệt Bản Vẽ THÀNH CÔNG", "success");
-      });
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Phê Duyệt !", "error");
-    }
-  };
-  const handleCODEINFO = () => {
+  const handleCODEINFO = async () => {
     Swal.fire({
       title: "Tra data",
       text: "Đang tra data",
@@ -1841,163 +1773,12 @@ const CODE_MANAGER = () => {
     });
     setisLoading(true);
     setColumnDefinition(column_codeinfo);
-    generalQuery("codeinfo", {
+    setRows(await f_getCodeInfo({
       G_NAME: codeCMS,
       CNDB: cndb,
       ACTIVE_ONLY: activeOnly
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: CODE_FULL_INFO[] = response.data.data.map(
-            (element: CODE_FULL_INFO, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0 ? element.G_NAME : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element.G_NAME_KD : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME_KD : 'TEM_NOI_BO',
-                id: index,
-              };
-            },
-          );
-          setRows(loadeddata);
-          //setCODEINFODataTable(loadeddata);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const setNgoaiQuan = async (value: string) => {
-    if (codedatatablefilter.length >= 1) {
-      checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
-        for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("setngoaiquan", {
-            G_CODE: codedatatablefilter[i].G_CODE,
-            VALUE: value,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        Swal.fire(
-          "Thông báo",
-          "SET TRẠNG KIỂM TRA NGOẠI QUAN THÀNH CÔNG",
-          "success",
-        );
-      });
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
-    }
-  };
-  const handleSaveQLSX = async () => {
-    if (codedatatablefilter.length >= 1) {
-      checkBP(userData, ["QLSX", "KD", "RND"], ["ALL"], ["ALL"], async () => {
-        let err_code: string = "0";
-        for (let i = 0; i < codedatatablefilter.length; i++) {
-          if(!(await f_saveQLSX({
-            G_CODE: codedatatablefilter[i].G_CODE,
-            PROD_DIECUT_STEP: codedatatablefilter[i].PROD_DIECUT_STEP,
-            PROD_PRINT_TIMES: codedatatablefilter[i].PROD_PRINT_TIMES,
-            FACTORY: codedatatablefilter[i].FACTORY,
-            EQ1: codedatatablefilter[i].EQ1,
-            EQ2: codedatatablefilter[i].EQ2,
-            EQ3: codedatatablefilter[i].EQ3,
-            EQ4: codedatatablefilter[i].EQ4,
-            Setting1: codedatatablefilter[i].Setting1,
-            Setting2: codedatatablefilter[i].Setting2,
-            Setting3: codedatatablefilter[i].Setting3,
-            Setting4: codedatatablefilter[i].Setting4,
-            UPH1: codedatatablefilter[i].UPH1,
-            UPH2: codedatatablefilter[i].UPH2,
-            UPH3: codedatatablefilter[i].UPH3,
-            UPH4: codedatatablefilter[i].UPH4,
-            Step1: codedatatablefilter[i].Step1,
-            Step2: codedatatablefilter[i].Step2,
-            Step3: codedatatablefilter[i].Step3,
-            Step4: codedatatablefilter[i].Step4,
-            LOSS_SX1: codedatatablefilter[i].LOSS_SX1,
-            LOSS_SX2: codedatatablefilter[i].LOSS_SX2,
-            LOSS_SX3: codedatatablefilter[i].LOSS_SX3,
-            LOSS_SX4: codedatatablefilter[i].LOSS_SX4,
-            LOSS_SETTING1: codedatatablefilter[i].LOSS_SETTING1,
-            LOSS_SETTING2: codedatatablefilter[i].LOSS_SETTING2,
-            LOSS_SETTING3: codedatatablefilter[i].LOSS_SETTING3,
-            LOSS_SETTING4: codedatatablefilter[i].LOSS_SETTING4,
-            NOTE: codedatatablefilter[i].NOTE,
-          }))) {
-            err_code = "1";
-          }
-        }
-        if (err_code === "1") {
-          Swal.fire(
-            "Thông báo",
-            "Lưu thất bại, không được để trống đỏ ô nào",
-            "error",
-          );
-        } else {
-          Swal.fire("Thông báo", "Lưu thành công", "success");
-          setCodeDataTableFilter([]);
-        }
-      });
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
-    }
-  };
-  const handleSaveLossSX = async () => {
-    if (codedatatablefilter.length >= 1) {
-      checkBP(userData, ["SX"], ["ALL"], ["ALL"], async () => {
-        let err_code: string = "0";
-        for (let i = 0; i < codedatatablefilter.length; i++) {
-          await generalQuery("saveLOSS_SETTING_SX", {
-            G_CODE: codedatatablefilter[i].G_CODE,
-            LOSS_ST_SX1: codedatatablefilter[i].LOSS_ST_SX1,
-            LOSS_ST_SX2: codedatatablefilter[i].LOSS_ST_SX2,
-            LOSS_ST_SX3: codedatatablefilter[i].LOSS_ST_SX3,
-            LOSS_ST_SX4: codedatatablefilter[i].LOSS_ST_SX4,
-          })
-            // eslint-disable-next-line no-loop-func
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code = "1";
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        if (err_code === "1") {
-          Swal.fire(
-            "Thông báo",
-            "Lưu thất bại, không được để trống đỏ ô nào",
-            "error",
-          );
-        } else {
-          Swal.fire("Thông báo", "Lưu thành công", "success");
-          setCodeDataTableFilter([]);
-        }
-      });
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
-    }
+    }));
+    setisLoading(false);
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -2061,7 +1842,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                setNgoaiQuan("N");
+                f_setNgoaiQuan(codedatatablefilter, "N");
               }}
             >
               <AiFillCheckCircle color="blue" size={15} />
@@ -2070,7 +1851,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                setNgoaiQuan("Y");
+                f_setNgoaiQuan(codedatatablefilter, "Y");
               }}
             >
               <FcCancel color="green" size={15} />
@@ -2079,7 +1860,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                resetBanVe("N");
+                f_resetBanVe(codedatatablefilter, "N");
               }}
             >
               <BiReset color="green" size={15} />
@@ -2088,7 +1869,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                pdBanVe("Y");
+                f_pdBanVe(codedatatablefilter, "Y");
               }}
             >
               <MdOutlineDraw color="red" size={15} />
@@ -2097,7 +1878,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                handleSaveQLSX();
+                f_handleSaveQLSX(codedatatablefilter);
               }}
             >
               <MdUpdate color="blue" size={15} />
@@ -2120,7 +1901,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                handleSaveLossSX();
+                f_handleSaveLossSX(codedatatablefilter);
               }}
             >
               <MdUpdate color="blue" size={15} />
@@ -2129,7 +1910,7 @@ const CODE_MANAGER = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                updateBEP();
+                f_updateBEP(codedatatablefilter);
               }}
             >
               <MdPriceChange color="red" size={15} />

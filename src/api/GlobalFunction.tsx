@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData } from "./Api";
-import { BOMSX_DATA, CodeListData, CustomerListData, DAILY_YCSX_RESULT, EQ_STATUS, EQ_STT, FCSTTDYCSX, InvoiceTableData, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LICHSUXUATKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, SX_DATA, TEMLOTSX_DATA, TONKHOTDYCSX, TONLIEUXUONG, UploadAmazonData, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSX_SX_DATA, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CODE_FULL_INFO, CodeListData, CustomerListData, DAILY_YCSX_RESULT, EQ_STATUS, EQ_STT, FCSTTDYCSX, InvoiceTableData, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LICHSUXUATKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, SX_DATA, TEMLOTSX_DATA, TONKHOTDYCSX, TONLIEUXUONG, UploadAmazonData, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSX_SX_DATA, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -3655,7 +3655,6 @@ export const f_isM_LOT_NO_in_P500 = async (PLAN_ID_INPUT: string, M_LOT_NO: stri
     });
   return check_m_lot_exist_p500;
 }
-
 export const f_delete_IN_KHO_AO = async (IN_KHO_ID: number) => {
   await generalQuery("delete_in_kho_ao", {
     IN_KHO_ID: IN_KHO_ID,
@@ -3663,7 +3662,6 @@ export const f_delete_IN_KHO_AO = async (IN_KHO_ID: number) => {
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-       
       } else {
       }
     })
@@ -3679,7 +3677,6 @@ export const f_delete_OUT_KHO_AO = async (PLAN_ID_INPUT: string, M_LOT_NO: strin
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-       
       } else {
       }
     })
@@ -3687,7 +3684,6 @@ export const f_delete_OUT_KHO_AO = async (PLAN_ID_INPUT: string, M_LOT_NO: strin
       console.log(error);
     });
 }
-
 //data sx
 export const f_lichsuinputlieu = async (DATA: any) => {
   let kq: LICHSUINPUTLIEU_DATA[] = [];
@@ -3728,7 +3724,6 @@ export const f_lichsuinputlieu = async (DATA: any) => {
     });
     return kq;
 }
-
 export const f_loadDataSXChiThi = async (DATA: any)=> {
   let kq: {
     datasx: SX_DATA[],
@@ -3888,7 +3883,6 @@ export const f_loadDataSXChiThi = async (DATA: any)=> {
         }
         temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
         temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
-
         kq.datasx = loaded_data;
         kq.summary=temp_loss_info;       
       } else {
@@ -4049,7 +4043,6 @@ export const f_loadDataSX_YCSX = async (DATA: any)=> {
         }
         kq.summary=temp_loss_info;
         kq.datasx = loaded_data;
-       
       } else {
         Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
       }
@@ -4060,7 +4053,6 @@ export const f_loadDataSX_YCSX = async (DATA: any)=> {
     });
     return kq;
 }
-
 export const f_YCSXDailyChiThiData = async (PROD_REQUEST_NO: string) => {
   let kq: {
     datasx: DAILY_YCSX_RESULT[],
@@ -4157,10 +4149,8 @@ export const f_YCSXDailyChiThiData = async (PROD_REQUEST_NO: string) => {
     });
     return kq;
 }
-
 export const f_LichSuTemLot = async (DATA: any) => {
   let kq: TEMLOTSX_DATA[]= [];
-
  await generalQuery("tralichsutemlotsx", DATA)
   .then((response) => {
     //console.log(response.data.data);
@@ -4191,11 +4181,8 @@ export const f_LichSuTemLot = async (DATA: any) => {
   .catch((error) => {
     console.log(error);
   }); 
-
   return kq;
-
 }
-
 export const f_isBOMGIA_HAS_MAIN = async (G_CODE: string) => {
   let kq: boolean = false;
   await generalQuery("checkmainBOM2", {
@@ -4213,4 +4200,229 @@ export const f_isBOMGIA_HAS_MAIN = async (G_CODE: string) => {
     console.log(error);
   });
   return kq;
+}
+export const f_getCodeInfo = async (DATA: any) => {
+  let kq: CODE_FULL_INFO[] = [];
+  await generalQuery("codeinfo", {
+    G_NAME: DATA.G_NAME,
+    CNDB: DATA.CNDB,
+    ACTIVE_ONLY: DATA.ACTIVE_ONLY
+  })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: CODE_FULL_INFO[] = response.data.data.map(
+          (element: CODE_FULL_INFO, index: number) => {
+            return {
+              ...element,
+              G_NAME: getAuditMode() == 0 ? element.G_NAME : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element.G_NAME_KD : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+              id: index,
+            };
+          },
+        );
+        kq = loadeddata;
+        Swal.fire(
+          "Thông báo",
+          "Đã load " + response.data.data.length + " dòng",
+          "success",
+        );
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        kq = []
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+export const f_resetBanVe = async (codeList: CODE_FULL_INFO[], value: string) => {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+      for (let i = 0; i < codeList.length; i++) {
+        await generalQuery("resetbanve", {
+          G_CODE: codeList[i].G_CODE,
+          VALUE: value,
+        })
+          .then((response) => {            
+            if (response.data.tk_status !== "NG") {
+              //Swal.fire("Thông báo", "Delete Po thành công", "success");
+            } else {
+              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success");
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
+  }
+}
+export const f_setNgoaiQuan = async (codeList: CODE_FULL_INFO[], value: string) => {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+      for (let i = 0; i < codeList.length; i++) {
+        await generalQuery("setngoaiquan", {
+          G_CODE: codeList[i].G_CODE,
+          VALUE: value,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      Swal.fire(
+        "Thông báo",
+        "SET TRẠNG KIỂM TRA NGOẠI QUAN THÀNH CÔNG",
+        "success",
+      );
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
+  }
+}
+export const f_updateBEP =  async (codeList:CODE_FULL_INFO[] )=> {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], async () => {
+      for (let i = 0; i < codeList.length; i++) {
+        await generalQuery("updateBEP", {
+          G_CODE: codeList[i].G_CODE,
+          BEP: codeList[i].BEP ?? 0,
+        })
+          .then((response) => {           
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      Swal.fire("Thông báo", "Update BEP THÀNH CÔNG", "success");
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
+  }
+}
+export const f_handleSaveQLSX = async (codeList:CODE_FULL_INFO[] )=> {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["QLSX", "KD", "RND"], ["ALL"], ["ALL"], async () => {
+      let err_code: string = "0";
+      for (let i = 0; i < codeList.length; i++) {
+        if (!(await f_saveQLSX({
+          G_CODE: codeList[i].G_CODE,
+          PROD_DIECUT_STEP: codeList[i].PROD_DIECUT_STEP,
+          PROD_PRINT_TIMES: codeList[i].PROD_PRINT_TIMES,
+          FACTORY: codeList[i].FACTORY,
+          EQ1: codeList[i].EQ1,
+          EQ2: codeList[i].EQ2,
+          EQ3: codeList[i].EQ3,
+          EQ4: codeList[i].EQ4,
+          Setting1: codeList[i].Setting1,
+          Setting2: codeList[i].Setting2,
+          Setting3: codeList[i].Setting3,
+          Setting4: codeList[i].Setting4,
+          UPH1: codeList[i].UPH1,
+          UPH2: codeList[i].UPH2,
+          UPH3: codeList[i].UPH3,
+          UPH4: codeList[i].UPH4,
+          Step1: codeList[i].Step1,
+          Step2: codeList[i].Step2,
+          Step3: codeList[i].Step3,
+          Step4: codeList[i].Step4,
+          LOSS_SX1: codeList[i].LOSS_SX1,
+          LOSS_SX2: codeList[i].LOSS_SX2,
+          LOSS_SX3: codeList[i].LOSS_SX3,
+          LOSS_SX4: codeList[i].LOSS_SX4,
+          LOSS_SETTING1: codeList[i].LOSS_SETTING1,
+          LOSS_SETTING2: codeList[i].LOSS_SETTING2,
+          LOSS_SETTING3: codeList[i].LOSS_SETTING3,
+          LOSS_SETTING4: codeList[i].LOSS_SETTING4,
+          NOTE: codeList[i].NOTE,
+        }))) {
+          err_code = "1";
+        }
+      }
+      if (err_code === "1") {
+        Swal.fire(
+          "Thông báo",
+          "Lưu thất bại, không được để trống đỏ ô nào",
+          "error",
+        );
+      } else {
+        Swal.fire("Thông báo", "Lưu thành công", "success");        
+      }
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
+  }
+}
+export const f_pdBanVe = async (codeList: CODE_FULL_INFO[], value: string) => {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["QC"], ["Leader", "Sub Leader"], ["ALL"], async () => {
+      for (let i = 0; i < codeList.length; i++) {
+        await generalQuery("pdbanve", {
+          G_CODE: codeList[i].G_CODE,
+          VALUE: value,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      Swal.fire("Thông báo", "Phê duyệt Bản Vẽ THÀNH CÔNG", "success");
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Phê Duyệt !", "error");
+  }
+}
+
+export const f_handleSaveLossSX = async (codeList: CODE_FULL_INFO[]) => {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], async () => {
+      let err_code: string = "0";
+      for (let i = 0; i < codeList.length; i++) {
+        await generalQuery("saveLOSS_SETTING_SX", {
+          G_CODE: codeList[i].G_CODE,
+          LOSS_ST_SX1: codeList[i].LOSS_ST_SX1,
+          LOSS_ST_SX2: codeList[i].LOSS_ST_SX2,
+          LOSS_ST_SX3: codeList[i].LOSS_ST_SX3,
+          LOSS_ST_SX4: codeList[i].LOSS_ST_SX4,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code = "1";
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === "1") {
+        Swal.fire(
+          "Thông báo",
+          "Lưu thất bại, không được để trống đỏ ô nào",
+          "error",
+        );
+      } else {
+        Swal.fire("Thông báo", "Lưu thành công", "success");
+      }
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
+  }
 }
