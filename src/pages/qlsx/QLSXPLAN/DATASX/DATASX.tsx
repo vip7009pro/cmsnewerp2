@@ -1,9 +1,8 @@
 import { IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
-import { AiFillCloseCircle, AiFillDashboard, AiFillFileExcel } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillDashboard } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../../api/Api";
 import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
@@ -19,36 +18,18 @@ import {
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { f_checkEQvsPROCESS, f_load_nhapkhoao } from "../../../../api/GlobalFunction";
-const DATASX2 = () => {
+import {
+  f_getMachineListData,
+  f_lichsuinputlieu,
+  f_load_nhapkhoao,
+  f_loadDataSX_YCSX,
+  f_loadDataSXChiThi,
+  f_YCSXDailyChiThiData,
+} from "../../../../api/GlobalFunction";
+const DATASX = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" },
-          );
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData())
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [showhideDailyYCSX, setShowHideDailyYCSX] = useState(false);
@@ -2767,8 +2748,8 @@ const DATASX2 = () => {
     ),
     [khoaodata],
   );
-  const handle_loadlichsuinputlieu = (PLAN_ID: string) => {
-    generalQuery("lichsuinputlieusanxuat_full", {
+  const handle_loadlichsuinputlieu = async (PLAN_ID: string) => {
+    setInputLieuDataTable(await f_lichsuinputlieu({
       ALLTIME: true,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -2778,29 +2759,9 @@ const DATASX2 = () => {
       M_CODE: "",
       G_NAME: "",
       G_CODE: "",
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: LICHSUINPUTLIEU_DATA[] = response.data.data.map(
-            (element: LICHSUINPUTLIEU_DATA, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment(element.INS_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            },
-          );
-          setInputLieuDataTable(loaded_data);
-        } else {
-          setInputLieuDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    }));
   };
-  const handle_loaddatasx = () => {
+  const handle_loaddatasx = async () => {
     Swal.fire({
       title: "Tra data chỉ thị",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -2810,7 +2771,50 @@ const DATASX2 = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    generalQuery("loadDataSX", {
+    let kq: {
+      datasx: SX_DATA[],
+      summary: LOSS_TABLE_DATA
+    } = {
+      datasx: [],
+      summary: {
+        XUATKHO_MET: 0,
+        XUATKHO_EA: 0,
+        SCANNED_MET: 0,
+        SCANNED_EA: 0,
+        PROCESS1_RESULT: 0,
+        PROCESS2_RESULT: 0,
+        PROCESS3_RESULT: 0,
+        PROCESS4_RESULT: 0,
+        SX_RESULT: 0,
+        INSPECTION_INPUT: 0,
+        INSPECT_LOSS_QTY: 0,
+        INSPECT_MATERIAL_NG: 0,
+        INSPECT_OK_QTY: 0,
+        INSPECT_PROCESS_NG: 0,
+        INSPECT_TOTAL_NG: 0,
+        INSPECT_TOTAL_QTY: 0,
+        LOSS_THEM_TUI: 0,
+        SX_MARKING_QTY: 0,
+        INSPECTION_OUTPUT: 0,
+        LOSS_INS_OUT_VS_SCANNED_EA: 0,
+        LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+        NG1: 0,
+        NG2: 0,
+        NG3: 0,
+        NG4: 0,
+        SETTING1: 0,
+        SETTING2: 0,
+        SETTING3: 0,
+        SETTING4: 0,
+        SCANNED_EA2: 0,
+        SCANNED_EA3: 0,
+        SCANNED_EA4: 0,
+        SCANNED_MET2: 0,
+        SCANNED_MET3: 0,
+        SCANNED_MET4: 0,
+      }
+    }
+    kq = await f_loadDataSXChiThi({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -2823,131 +2827,21 @@ const DATASX2 = () => {
       FACTORY: factory,
       PLAN_EQ: machine,
       TRUSAMPLE: truSample
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: SX_DATA[] = response.data.data.map(
-            (element: SX_DATA, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                SETTING_START_TIME: element.SETTING_START_TIME === null ? "" : moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
-                MASS_START_TIME: element.MASS_START_TIME === null ? "" : moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
-                MASS_END_TIME: element.MASS_END_TIME === null ? "" : moment.utc(element.MASS_END_TIME).format("YYYY-MM-DD HH:mm:ss"),
-                SX_DATE: element.SX_DATE === null ? "" : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-                LOSS_SX_ST: (element.ESTIMATED_QTY_ST ?? 0) !== 0 ? 1 - (element.KETQUASX ?? 0) * 1.0 / (element.ESTIMATED_QTY_ST ?? 0) : 0,
-                LOSS_SX: (element.ESTIMATED_QTY ?? 0) !== 0 ? 1 - (element.KETQUASX ?? 0) * 1.0 / (element.ESTIMATED_QTY ?? 0) : 0,
-                LOSS_SX_KT: (element.KETQUASX ?? 0) !== 0 ? 1 - (element.INS_INPUT ?? 0) * 1.0 / (element.KETQUASX ?? 0) : 0,
-                LOSS_KT: (element.INS_INPUT ?? 0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0) * 1.0 / (element.INS_INPUT ?? 0) : 0,
-                NOT_BEEP_QTY: element.PROCESS_NUMBER !== 1 ? 0 : element.NOT_BEEP_QTY,
-                KETQUASX_M: element.PD !== null ? (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) : null,
-                NG_MET: element.PD !== null ? element.USED_QTY - (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) - element.SETTING_MET : null,
-                NG_EA: element.ESTIMATED_QTY - element.SETTING_EA - element.KETQUASX,
-                id: index,
-              };
-            },
-          );
-          //setShowLoss(false);
-          let temp_loss_info: LOSS_TABLE_DATA = {
-            XUATKHO_MET: 0,
-            XUATKHO_EA: 0,
-            SCANNED_MET: 0,
-            SCANNED_EA: 0,
-            PROCESS1_RESULT: 0,
-            PROCESS2_RESULT: 0,
-            PROCESS3_RESULT: 0,
-            PROCESS4_RESULT: 0,
-            SX_RESULT: 0,
-            INSPECTION_INPUT: 0,
-            INSPECT_LOSS_QTY: 0,
-            INSPECT_MATERIAL_NG: 0,
-            INSPECT_OK_QTY: 0,
-            INSPECT_PROCESS_NG: 0,
-            INSPECT_TOTAL_NG: 0,
-            INSPECT_TOTAL_QTY: 0,
-            LOSS_THEM_TUI: 0,
-            SX_MARKING_QTY: 0,
-            INSPECTION_OUTPUT: 0,
-            LOSS_INS_OUT_VS_SCANNED_EA: 0,
-            LOSS_INS_OUT_VS_XUATKHO_EA: 0,
-            NG1: 0,
-            NG2: 0,
-            NG3: 0,
-            NG4: 0,
-            SETTING1: 0,
-            SETTING2: 0,
-            SETTING3: 0,
-            SETTING4: 0,
-            SCANNED_EA2: 0,
-            SCANNED_EA3: 0,
-            SCANNED_EA4: 0,
-            SCANNED_MET2: 0,
-            SCANNED_MET3: 0,
-            SCANNED_MET4: 0,
-          };
-          for (let i = 0; i < loaded_data.length; i++) {
-            temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
-            temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
-            temp_loss_info.SCANNED_MET += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].USED_QTY : 0;
-            temp_loss_info.SCANNED_EA += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].ESTIMATED_QTY : 0;
-            temp_loss_info.SCANNED_MET2 += loaded_data[i].PROCESS_NUMBER === 2 ? loaded_data[i].USED_QTY : 0;
-            temp_loss_info.SCANNED_EA2 += loaded_data[i].PROCESS_NUMBER === 2 ? loaded_data[i].ESTIMATED_QTY : 0;
-            temp_loss_info.SCANNED_MET3 += loaded_data[i].PROCESS_NUMBER === 3 ? loaded_data[i].USED_QTY : 0;
-            temp_loss_info.SCANNED_EA3 += loaded_data[i].PROCESS_NUMBER === 3 ? loaded_data[i].ESTIMATED_QTY : 0;
-            temp_loss_info.SCANNED_MET4 += loaded_data[i].PROCESS_NUMBER === 4 ? loaded_data[i].USED_QTY : 0;
-            temp_loss_info.SCANNED_EA4 += loaded_data[i].PROCESS_NUMBER === 4 ? loaded_data[i].ESTIMATED_QTY : 0;
-            temp_loss_info.PROCESS1_RESULT += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
-            temp_loss_info.PROCESS2_RESULT += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
-            temp_loss_info.PROCESS3_RESULT += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
-            temp_loss_info.PROCESS4_RESULT += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].KETQUASX : 0;
-            temp_loss_info.NG1 += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
-            temp_loss_info.NG2 += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
-            temp_loss_info.NG3 += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
-            temp_loss_info.NG4 += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].NG_EA : 0;
-            temp_loss_info.SETTING1 += loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
-            temp_loss_info.SETTING2 += loaded_data[i].PROCESS_NUMBER === 2 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
-            temp_loss_info.SETTING3 += loaded_data[i].PROCESS_NUMBER === 3 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
-            temp_loss_info.SETTING4 += loaded_data[i].PROCESS_NUMBER === 4 && loaded_data[i].STEP === 0 ? loaded_data[i].SETTING_EA : 0;
-            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
-            temp_loss_info.INSPECT_TOTAL_QTY += loaded_data[i].INSPECT_TOTAL_QTY
-            temp_loss_info.INSPECT_OK_QTY += loaded_data[i].INSPECT_OK_QTY
-            temp_loss_info.LOSS_THEM_TUI += loaded_data[i].LOSS_THEM_TUI
-            temp_loss_info.INSPECT_LOSS_QTY += loaded_data[i].INSPECT_LOSS_QTY
-            temp_loss_info.INSPECT_TOTAL_NG += loaded_data[i].INSPECT_TOTAL_NG
-            temp_loss_info.INSPECT_MATERIAL_NG += loaded_data[i].INSPECT_MATERIAL_NG
-            temp_loss_info.INSPECT_PROCESS_NG += loaded_data[i].INSPECT_PROCESS_NG
-            temp_loss_info.SX_MARKING_QTY += loaded_data[i].SX_MARKING_QTY
-            temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
-            temp_loss_info.SX_RESULT += loaded_data[i].KETQUASX_TP ?? 0;
-          }
-          temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
-          temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
-          setLossTableInfo(temp_loss_info);
-          setDataSXTable(loaded_data);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fields_datasx_chithi,
-              store: loaded_data,
-            }),
-          );
-          setSelectButton(true);
-          Swal.fire(
-            "Thông báo",
-            " Đã tải: " + loaded_data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
+    setLossTableInfo(kq.summary);
+    setDataSXTable(kq.datasx);
+    setSelectedDataSource(
+      new PivotGridDataSource({
+        fields: fields_datasx_chithi,
+        store: kq.datasx,
+      }),
+    );
+    setSelectButton(true);
+    if (kq.datasx.length > 0) {
+      Swal.fire("Thông báo", " Đã tải: " + kq.datasx.length + " dòng", "success",);
+    }
   };
-  const handle_loaddatasxYCSX = () => {
+  const handle_loaddatasxYCSX = async () => {
     Swal.fire({
       title: "Tra data chỉ thị",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -2957,7 +2851,50 @@ const DATASX2 = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    generalQuery("loadDataSX_YCSX", {
+    let kq: {
+      datasx: YCSX_SX_DATA[],
+      summary: LOSS_TABLE_DATA
+    } = {
+      datasx: [],
+      summary: {
+        XUATKHO_MET: 0,
+        XUATKHO_EA: 0,
+        SCANNED_MET: 0,
+        SCANNED_EA: 0,
+        PROCESS1_RESULT: 0,
+        PROCESS2_RESULT: 0,
+        PROCESS3_RESULT: 0,
+        PROCESS4_RESULT: 0,
+        SX_RESULT: 0,
+        INSPECTION_INPUT: 0,
+        INSPECT_LOSS_QTY: 0,
+        INSPECT_MATERIAL_NG: 0,
+        INSPECT_OK_QTY: 0,
+        INSPECT_PROCESS_NG: 0,
+        INSPECT_TOTAL_NG: 0,
+        INSPECT_TOTAL_QTY: 0,
+        LOSS_THEM_TUI: 0,
+        SX_MARKING_QTY: 0,
+        INSPECTION_OUTPUT: 0,
+        LOSS_INS_OUT_VS_SCANNED_EA: 0,
+        LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+        NG1: 0,
+        NG2: 0,
+        NG3: 0,
+        NG4: 0,
+        SETTING1: 0,
+        SETTING2: 0,
+        SETTING3: 0,
+        SETTING4: 0,
+        SCANNED_EA2: 0,
+        SCANNED_EA3: 0,
+        SCANNED_EA4: 0,
+        SCANNED_MET2: 0,
+        SCANNED_MET3: 0,
+        SCANNED_MET4: 0,
+      }
+    }
+    kq = await f_loadDataSX_YCSX({
       ALLTIME: alltime,
       FROM_DATE: moment(fromdate).format('YYYYMMDD'),
       TO_DATE: moment(todate).format('YYYYMMDD'),
@@ -2971,187 +2908,51 @@ const DATASX2 = () => {
       PLAN_EQ: machine,
       TRUSAMPLE: truSample,
       ONLYCLOSE: onlyClose
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: YCSX_SX_DATA[] = response.data.data.map(
-            (element: YCSX_SX_DATA, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                TOTAL_LOSS: 1 - element.INS_OUTPUT * 1.0 / element.ESTIMATED_QTY,
-                TOTAL_LOSS2: 1 - element.INS_OUTPUT * 1.0 / element.WAREHOUSE_ESTIMATED_QTY,
-                PROD_REQUEST_DATE: moment
-                  .utc(element.PROD_REQUEST_DATE)
-                  .format("YYYY-MM-DD"),
-                id: index,
-              };
-            },
-          );
-          let temp_loss_info: LOSS_TABLE_DATA = {
-            XUATKHO_MET: 0,
-            XUATKHO_EA: 0,
-            SCANNED_MET: 0,
-            SCANNED_EA: 0,
-            PROCESS1_RESULT: 0,
-            PROCESS2_RESULT: 0,
-            PROCESS3_RESULT: 0,
-            PROCESS4_RESULT: 0,
-            SX_RESULT: 0,
-            INSPECTION_INPUT: 0,
-            INSPECT_LOSS_QTY: 0,
-            INSPECT_MATERIAL_NG: 0,
-            INSPECT_OK_QTY: 0,
-            INSPECT_PROCESS_NG: 0,
-            INSPECT_TOTAL_NG: 0,
-            INSPECT_TOTAL_QTY: 0,
-            LOSS_THEM_TUI: 0,
-            SX_MARKING_QTY: 0,
-            INSPECTION_OUTPUT: 0,
-            LOSS_INS_OUT_VS_SCANNED_EA: 0,
-            LOSS_INS_OUT_VS_XUATKHO_EA: 0,
-            NG1: 0,
-            NG2: 0,
-            NG3: 0,
-            NG4: 0,
-            SETTING1: 0,
-            SETTING2: 0,
-            SETTING3: 0,
-            SETTING4: 0,
-            SCANNED_EA2: 0,
-            SCANNED_EA3: 0,
-            SCANNED_EA4: 0,
-            SCANNED_MET2: 0,
-            SCANNED_MET3: 0,
-            SCANNED_MET4: 0,
-          };
-          let maxprocess: number = 1;
-          for (let i = 0; i < loaded_data.length; i++) {
-            maxprocess = f_checkEQvsPROCESS(loaded_data[i].EQ1, loaded_data[i].EQ2, loaded_data[i].EQ3, loaded_data[i].EQ4);
-            temp_loss_info.XUATKHO_MET += loaded_data[i].M_OUTPUT;
-            temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
-            temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;
-            temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;
-            temp_loss_info.PROCESS1_RESULT += loaded_data[i].CD1;
-            temp_loss_info.PROCESS2_RESULT += loaded_data[i].CD2;
-            temp_loss_info.PROCESS3_RESULT += loaded_data[i].CD3;
-            temp_loss_info.PROCESS4_RESULT += loaded_data[i].CD4;
-            temp_loss_info.NG1 += loaded_data[i].NG1;
-            temp_loss_info.NG2 += loaded_data[i].NG2;
-            temp_loss_info.NG3 += loaded_data[i].NG3;
-            temp_loss_info.NG4 += loaded_data[i].NG4;
-            temp_loss_info.SETTING1 += loaded_data[i].ST1;
-            temp_loss_info.SETTING2 += loaded_data[i].ST2;
-            temp_loss_info.SETTING3 += loaded_data[i].ST3;
-            temp_loss_info.SETTING4 += loaded_data[i].ST4;
-            temp_loss_info.SX_RESULT += maxprocess == 1 ? loaded_data[i].CD1 : maxprocess == 2 ? loaded_data[i].CD2 : maxprocess == 3 ? loaded_data[i].CD3 : loaded_data[i].CD4,
-              temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
-            temp_loss_info.INSPECT_TOTAL_QTY += loaded_data[i].INSPECT_TOTAL_QTY
-            temp_loss_info.INSPECT_OK_QTY += loaded_data[i].INSPECT_OK_QTY
-            temp_loss_info.LOSS_THEM_TUI += loaded_data[i].LOSS_THEM_TUI
-            temp_loss_info.INSPECT_LOSS_QTY += loaded_data[i].INSPECT_LOSS_QTY
-            temp_loss_info.INSPECT_TOTAL_NG += loaded_data[i].INSPECT_TOTAL_NG
-            temp_loss_info.INSPECT_MATERIAL_NG += loaded_data[i].INSPECT_MATERIAL_NG
-            temp_loss_info.INSPECT_PROCESS_NG += loaded_data[i].INSPECT_PROCESS_NG
-            temp_loss_info.SX_MARKING_QTY += loaded_data[i].SX_MARKING_QTY
-            temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
-            temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;
-            temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA;
-          }
-          setLossTableInfo(temp_loss_info);
-          setShowLoss(true);
-          setDataSXTable(loaded_data);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fields_datasx_ycsx,
-              store: loaded_data,
-            }),
-          );
-          setSelectButton(false);
-          Swal.fire(
-            "Thông báo",
-            " Đã tải: " + loaded_data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
+    });
+    setLossTableInfo(kq.summary);
+    setShowLoss(true);
+    setDataSXTable(kq.datasx);
+    setSelectedDataSource(
+      new PivotGridDataSource({
+        fields: fields_datasx_ycsx,
+        store: kq.datasx,
+      }),
+    );
+    setSelectButton(false);
+    if (kq.datasx.length > 0) {
+      Swal.fire("Thông báo", " Đã tải: " + kq.datasx.length + " dòng", "success",);
+    }
   };
   const handle_loaddailyYCSX = async (PROD_REQUEST_NO: string) => {
-    await generalQuery("tinhhinhycsxtheongay", {
-      PROD_REQUEST_NO: PROD_REQUEST_NO
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loaded_data: DAILY_YCSX_RESULT[] = response.data.data.map(
-            (element: DAILY_YCSX_RESULT, index: number) => {
-              return {
-                ...element,
-                PLAN_DATE: moment.utc(element.PLAN_DATE).format('YYYY-MM-DD'),
-                LOSS1: element.INPUT1 !== 0 ? 1 - element.RESULT1 / element.INPUT1 : 0,
-                LOSS2: element.INPUT2 !== 0 ? 1 - element.RESULT2 / element.INPUT2 : 0,
-                LOSS3: element.INPUT3 !== 0 ? 1 - element.RESULT2 / element.INPUT3 : 0,
-                LOSS_KT: element.INSP_QTY !== 0 ? 1 - element.INSP_OK / element.INSP_QTY : 0,
-                id: index,
-              };
-            },
-          );
-          let totalRow: DAILY_YCSX_RESULT = {
-            PLAN_DATE: "TOTAL",
-            TARGET1: 0,
-            INPUT1: 0,
-            RESULT1: 0,
-            LOSS1: 0,
-            TARGET2: 0,
-            INPUT2: 0,
-            RESULT2: 0,
-            LOSS2: 0,
-            TARGET3: 0,
-            INPUT3: 0,
-            RESULT3: 0,
-            LOSS3: 0,
-            INSP_QTY: 0,
-            INSP_LOSS: 0,
-            INSP_NG: 0,
-            INSP_OK: 0,
-            LOSS_KT: 0
-          }
-          for (let i = 0; i < loaded_data.length; i++) {
-            totalRow.TARGET1 += loaded_data[i].TARGET1;
-            totalRow.TARGET2 += loaded_data[i].TARGET2;
-            totalRow.TARGET3 += loaded_data[i].TARGET3;
-            totalRow.INPUT1 += loaded_data[i].INPUT1;
-            totalRow.INPUT2 += loaded_data[i].INPUT2;
-            totalRow.INPUT3 += loaded_data[i].INPUT3;
-            totalRow.RESULT1 += loaded_data[i].RESULT1;
-            totalRow.RESULT2 += loaded_data[i].RESULT2;
-            totalRow.RESULT3 += loaded_data[i].RESULT3;
-            totalRow.INSP_QTY += loaded_data[i].INSP_QTY;
-            totalRow.INSP_OK += loaded_data[i].INSP_OK;
-            totalRow.INSP_NG += loaded_data[i].INSP_NG;
-            totalRow.INSP_LOSS += loaded_data[i].INSP_LOSS;
-          }
-          totalRow.LOSS1 = totalRow.INPUT1 !== 0 ? 1 - totalRow.RESULT1 / totalRow.INPUT1 : 0;
-          totalRow.LOSS2 = totalRow.INPUT2 !== 0 ? 1 - totalRow.RESULT2 / totalRow.INPUT2 : 0;
-          totalRow.LOSS3 = totalRow.INPUT3 !== 0 ? 1 - totalRow.RESULT2 / totalRow.INPUT3 : 0;
-          totalRow.LOSS_KT = totalRow.INSP_QTY !== 0 ? 1 - totalRow.INSP_OK / totalRow.INSP_QTY : 0;
-          loaded_data.push(totalRow)
-          setTotalDailyYCSX(totalRow);
-          setDailyYCSX(loaded_data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let kq: {
+      datasx: DAILY_YCSX_RESULT[],
+      summary: DAILY_YCSX_RESULT
+    } = {
+      datasx: [],
+      summary: {
+        PLAN_DATE: "",
+        TARGET1: 0,
+        INPUT1: 0,
+        RESULT1: 0,
+        LOSS1: 0,
+        TARGET2: 0,
+        INPUT2: 0,
+        RESULT2: 0,
+        LOSS2: 0,
+        TARGET3: 0,
+        INPUT3: 0,
+        RESULT3: 0,
+        LOSS3: 0,
+        INSP_QTY: 0,
+        INSP_LOSS: 0,
+        INSP_NG: 0,
+        INSP_OK: 0,
+        LOSS_KT: 0
+      }
+    }
+    kq = await f_YCSXDailyChiThiData(PROD_REQUEST_NO);
+    setTotalDailyYCSX(kq.summary);
+    setDailyYCSX(kq.datasx);
   }
   useEffect(() => {
     getMachineList();
@@ -3889,4 +3690,4 @@ const DATASX2 = () => {
     </div>
   );
 };
-export default DATASX2;
+export default DATASX;

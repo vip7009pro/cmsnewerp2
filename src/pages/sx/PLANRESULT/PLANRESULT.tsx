@@ -37,39 +37,14 @@ import {
   TOTAL_TIME,
   WEEKLY_SX_DATA,
 } from "../../../api/GlobalInterface";
+import { f_getMachineListData } from "../../../api/GlobalFunction";
 
 const PLANRESULT = () => {
   const { height, width } = useWindowDimensions();
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
 
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" }
-          );
-          console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());     
   };
   function getBusinessDatesCount(st: any, ed: any) {
     const startDate = new Date(moment(st).format("YYYY-MM-DD"));

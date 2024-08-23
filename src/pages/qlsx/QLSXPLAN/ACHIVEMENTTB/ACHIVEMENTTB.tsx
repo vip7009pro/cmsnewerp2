@@ -31,6 +31,7 @@ import { UserContext } from "../../../../api/Context";
 import {
   checkBP,
   CustomResponsiveContainer,
+  f_getMachineListData,
   SaveExcel,
   zeroPad,
 } from "../../../../api/GlobalFunction";
@@ -60,39 +61,11 @@ const ACHIVEMENTTB = () => {
       console.log(dataGridRef.current);
     }
   };  
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" }
-          );
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());    
   };
   const [columns, setColumns] = useState<Array<any>>([]);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -549,66 +522,14 @@ const ACHIVEMENTTB = () => {
 
   useEffect(() => {
     getMachineList();
-    return () => {
-      /* window.clearInterval(intervalID);       */
+    return () => {     
     };
-
-    //setColumnDefinition(column_inspect_output);
   }, []);
   return (
     <div className='plan_result'>
       <div className='tracuuDataInspection'>
         <div className='tracuuYCSXTable'>
-          <div className='header'>
-            {/* <div className='lossinfo'>
-            <table>
-              <thead>
-                <tr>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
-                    FACTORY
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
-                    MACHINE
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
-                    DAY PLAN
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
-                    DAY RESULT
-                  </th>
-                  <th style={{ color: "black", fontWeight: "normal" }}>
-                    DAY RATE
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ color: "blue", fontWeight: "bold" }}>
-                    {factory}
-                  </td>
-                  <td style={{ color: "#360EEA", fontWeight: "bold" }}>
-                    {machine}
-                  </td>
-                  <td style={{ color: "#360EEA", fontWeight: "bold" }}>
-                    {summarydata.?.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </td>
-                  <td style={{ color: "green", fontWeight: "bold" }}>
-                    {summarydata.KETQUASX?.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </td>
-                  <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
-                    {summarydata.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                    })}
-                    %
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div> */}
+          <div className='header'>            
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>

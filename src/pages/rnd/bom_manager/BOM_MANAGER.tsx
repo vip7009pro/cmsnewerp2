@@ -23,7 +23,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP, f_getMachineListData } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -2600,29 +2600,8 @@ const BOM_MANAGER = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        ////console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());     
   };
   const autogenerateCodeKH = (cust_cd: string) => {
     let nextCodeKH: string = cust_cd + "-001";

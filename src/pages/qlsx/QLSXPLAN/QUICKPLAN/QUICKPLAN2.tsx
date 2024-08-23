@@ -17,6 +17,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
+  f_getMachineListData,
   f_getRecentDMData,
   f_insertDMYCSX,
   f_saveQLSX,
@@ -116,29 +117,8 @@ const QUICKPLAN2 = () => {
   const [temp_id, setTemID] = useState(0);
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());     
   };
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({

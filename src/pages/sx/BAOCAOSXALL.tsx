@@ -2,7 +2,7 @@ import { useEffect, useState, lazy, Suspense, useContext } from "react";
 import "./BAOCAOSXALL.scss";
 
 import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import DATASX2 from "../qlsx/QLSXPLAN/DATASX/DATASX2";
+import DATASX from "../qlsx/QLSXPLAN/DATASX/DATASX";
 import LICHSUTEMLOTSX from "./LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 import TINHHINHCUONLIEU from "./TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
 import BAOCAOTHEOROLL from "./BAOCAOTHEOROLL/BAOCAOTHEOROLL";
@@ -244,7 +244,7 @@ const BAOCAOSXALL = () => {
         </div>
         {selection.tab1 && (
           <div className="traiqc">
-            <DATASX2 />
+            <DATASX />
           </div>
         )}
         {selection.tab2 && (

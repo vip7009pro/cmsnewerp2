@@ -32,7 +32,7 @@ import { useSelector } from "react-redux";
 import { MACHINE_LIST, SX_ACHIVE_DATE, SX_BAOCAOROLLDATA, SX_LOSS_TREND_DATA, SX_TREND_LOSS_DATA, UserData } from "../../../api/GlobalInterface";
 import { generalQuery } from "../../../api/Api";
 import { RootState } from "../../../redux/store";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_getMachineListData, SaveExcel } from "../../../api/GlobalFunction";
 import { Chart } from "devextreme-react";
 import { ArgumentAxis, CommonSeriesSettings, Format, Label, Legend, Series, Title, ValueAxis } from "devextreme-react/chart";
 import { IconButton } from "@mui/material";
@@ -59,33 +59,8 @@ const BAOCAOTHEOROLL = () => {
       //console.log(dataGridRef.current);
     }
   };
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" }
-          );
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());     
   };
   const [columns, setColumns] = useState<Array<any>>([]);
   const [readyRender, setReadyRender] = useState(false);

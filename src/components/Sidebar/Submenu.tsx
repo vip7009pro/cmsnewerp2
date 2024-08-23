@@ -43,7 +43,7 @@ const OQC = lazy(() => import("../../pages/qc/oqc/OQC"));
 const BOM_AMAZON = lazy(() => import("../../pages/rnd/bom_amazon/BOM_AMAZON"));
 const DESIGN_AMAZON = lazy(() => import("../../pages/rnd/design_amazon/DESIGN_AMAZON"));
 const QLSXPLAN = lazy(() => import("../../pages/qlsx/QLSXPLAN/QLSXPLAN"));
-const DATASX2 = lazy(() => import("../../pages/qlsx/QLSXPLAN/DATASX/DATASX2"));
+const DATASX = lazy(() => import("../../pages/qlsx/QLSXPLAN/DATASX/DATASX"));
 const TRANGTHAICHITHI = lazy(() => import("../../pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI"));
 const KHOLIEU = lazy(() => import("../../pages/kho/kholieu/KHOLIEU"));
 const KHOAO = lazy(() => import("../../pages/qlsx/QLSXPLAN/KHOAO/KHOAO"));
@@ -357,7 +357,7 @@ const SubMenu = ({ item }: { item: any }) => {
     {
       MENU_CODE: "SX3",
       MENU_NAME: getlang("datasanxuat", lang),
-      MENU_ITEM: <DATASX2 />,
+      MENU_ITEM: <DATASX />,
     },
     {
       MENU_CODE: "SX4",

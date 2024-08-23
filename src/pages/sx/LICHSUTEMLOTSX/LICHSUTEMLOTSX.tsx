@@ -1,8 +1,4 @@
-import {
-  Button,
-  IconButton,
-  createFilterOptions,
-} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import {
   Column,
   Editing,
@@ -21,75 +17,35 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
-import Swal from "sweetalert2";
-import { UserContext } from "../../../api/Context";
-import { generalQuery, getCompany } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_LichSuTemLot, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import {
-  CustomerListData,
-  CSCONFIRM_DATA,
-  CS_RMA_DATA,
-  CS_CNDB_DATA,
-  CS_TAXI_DATA,
-  TEMLOTSX_DATA,
-} from "../../../api/GlobalInterface";
+import { TEMLOTSX_DATA } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const LICHSUTEMLOTSX = () => {
   const [option, setOption] = useState("dataconfirm");
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [lichsutemlotdata, setlichsutemlotdata] = useState<Array<TEMLOTSX_DATA>>([]);
-  const [cs_table_data, set_cs_table_data] = useState<Array<CSCONFIRM_DATA>>([]);
   const [filterData, setFilterData] = useState({
     FROM_DATE: moment().format("YYYY-MM-DD"),
     TO_DATE: moment().format("YYYY-MM-DD"),
-    PROCESS_LOT_NO: '',   
-    CUST_NAME_KD: '',   
+    PROCESS_LOT_NO: '',
+    CUST_NAME_KD: '',
     G_CODE: '',
     G_NAME: '',
-    PROD_REQUEST_NO: '',   
+    PROD_REQUEST_NO: '',
   });
-  const load_lichsutemlot_data = () => {   
-        generalQuery("tralichsutemlotsx", filterData)
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              let loadeddata = response.data.data.map(
-                (element: TEMLOTSX_DATA, index: number) => {
-                  return {
-                    ...element,                   
-                    INS_DATE: moment
-                      .utc(element.INS_DATE)
-                      .format("YYYY-MM-DD HH:mm:ss"),
-                    id: index,
-                  };
-                },
-              );
-              //console.log(loadeddata);
-              setlichsutemlotdata(loadeddata);
-              Swal.fire(
-                "Thông báo",
-                "Đã load: " + response.data.data.length + " dòng",
-                "success",
-              );
-            } else {
-              setlichsutemlotdata([]);
-              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });        
+  const load_lichsutemlot_data = async () => {
+    setlichsutemlotdata(await f_LichSuTemLot(filterData));
   };
   const setFilterFormInfo = (keyname: string, value: any) => {
     let tempCSInfo = {
       ...filterData,
       [keyname]: value,
-    };    
+    };
     setFilterData(tempCSInfo);
   };
   const handleSearchCodeKeyDown = (
@@ -700,7 +656,7 @@ const LICHSUTEMLOTSX = () => {
                 onChange={(e) => setFilterFormInfo("CUST_NAME_KD", e.target.value)}
               ></input>
             </label>
-          </FromInputColumn>          
+          </FromInputColumn>
           <FromInputColumn>
             <label>
               <b>LOT SX:</b>{" "}
@@ -713,8 +669,8 @@ const LICHSUTEMLOTSX = () => {
                 }}
                 onChange={(e) => setFilterFormInfo("PROCESS_LOT_NO", e.target.value)}
               ></input>
-            </label>           
-          </FromInputColumn>          
+            </label>
+          </FromInputColumn>
         </FromInputDiv>
         <FormButtonColumn>
           <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
@@ -723,7 +679,7 @@ const LICHSUTEMLOTSX = () => {
         </FormButtonColumn>
       </QueryFormDiv>
       <DataTBDiv>
-        {option === 'dataconfirm' && LichSuTemLotSXDataTable}   
+        {option === 'dataconfirm' && LichSuTemLotSXDataTable}
       </DataTBDiv>
       {showhidePivotTable && (
         <PivotTableDiv>

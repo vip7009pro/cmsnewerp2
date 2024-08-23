@@ -8,39 +8,14 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
-import { SaveExcel } from "../../../../api/GlobalFunction";
+import { f_getMachineListData, SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_STATUS.scss";
 import PLAN_STATUS_COMPONENTS from "./PLAN_STATUS_COMPONENTS";
 import { MACHINE_LIST, SX_DATA } from "../../../../api/GlobalInterface";
 const PLAN_STATUS = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" },
-          );
-          console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());
   };
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);

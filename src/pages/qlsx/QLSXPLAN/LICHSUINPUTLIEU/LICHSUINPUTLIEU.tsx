@@ -2,7 +2,7 @@ import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../../api/Api";
-import { SaveExcel } from "../../../../api/GlobalFunction";
+import { f_lichsuinputlieu, SaveExcel } from "../../../../api/GlobalFunction";
 import "./LICHSUINPUTLIEU.scss";
 import { LICHSUINPUTLIEU_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
@@ -39,8 +39,9 @@ const LICHSUINPUTLIEU = () => {
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
     column_lichsuinputlieusanxuat
   );
-  const handle_loadlichsuinputlieu = () => {
-    generalQuery("lichsuinputlieusanxuat_full", {
+  const handle_loadlichsuinputlieu = async () => {
+    let kq: LICHSUINPUTLIEU_DATA[] = [];
+    kq = await f_lichsuinputlieu({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -50,36 +51,17 @@ const LICHSUINPUTLIEU = () => {
       M_CODE: m_code,
       G_NAME: codeKD,
       G_CODE: codeCMS,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: LICHSUINPUTLIEU_DATA[] = response.data.data.map(
-            (element: LICHSUINPUTLIEU_DATA, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                INS_DATE: moment(element.INS_DATE)
-                  .utc()
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            }
-          );
-          setInspectionDataTable(loaded_data);
-          Swal.fire('Thông báo','Đã load '+ loaded_data.length + ' dòng','success');
-          setReadyRender(true);
-          setisLoading(false);
-        } else {
-          Swal.fire('Thông báo','Không có dữ liệu','error');
-          setReadyRender(true);
-          setisLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
+    setInspectionDataTable(kq);
+    if(kq.length > 0)
+    {      
+      Swal.fire('Thông báo', 'Đã load ' + kq.length + ' dòng', 'success');
+    }
+    else
+    {
+      Swal.fire('Thông báo', 'Không có dữ liệu', 'error');
+    }
+    setReadyRender(true);
   };
   const lichSuInputLieuDataTableAG = useMemo(() => {
     return (

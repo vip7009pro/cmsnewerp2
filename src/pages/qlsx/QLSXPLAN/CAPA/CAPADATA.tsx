@@ -1,31 +1,25 @@
 import { IconButton } from "@mui/material";
 import {
-  Column,
   Editing,
   FilterRow,
-  Pager,
   Scrolling,
   SearchPanel,
   Selection,
   DataGrid,
-  Paging,
   Toolbar,
   Item,
   Export,
   ColumnChooser,
-  Summary,
-  TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./CAPADATA.scss";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { generalQuery } from "../../../../api/Api";
-import { SaveExcel, checkBP, f_saveQLSX } from "../../../../api/GlobalFunction";
-import { UserContext } from "../../../../api/Context";
+import { SaveExcel, checkBP, f_getMachineListData, f_saveQLSX } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import { BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
@@ -38,33 +32,8 @@ import {
 } from "../../../../api/GlobalInterface";
 const CAPADATA = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" },
-          );
-          console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const userData: UserData | undefined = useSelector(
@@ -126,24 +95,20 @@ const CAPADATA = () => {
           let rowData = response.data.data[0];
           setDataDinhMuc({
             ...datadinhmuc,
-            FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
-            EQ1:
-              rowData.EQ1 === "" || rowData.EQ1 === null ? "NA" : rowData.EQ1,
-            EQ2:
-              rowData.EQ2 === "" || rowData.EQ2 === null ? "NA" : rowData.EQ2,
-            Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
-            Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
-            UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
-            UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
-            Step1: rowData.Step1 === null ? 0 : rowData.Step1,
-            Step2: rowData.Step2 === null ? 0 : rowData.Step2,
-            LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
-            LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
-            LOSS_SETTING1:
-              rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
-            LOSS_SETTING2:
-              rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
-            NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
+            FACTORY: rowData.FACTORY ?? "NA",
+            EQ1: rowData.EQ1 === "" || rowData.EQ1 === null ? "NA" : rowData.EQ1,
+            EQ2: rowData.EQ2 === "" || rowData.EQ2 === null ? "NA" : rowData.EQ2,
+            Setting1: rowData.Setting1 ?? 0,
+            Setting2: rowData.Setting2 ?? 0,
+            UPH1: rowData.UPH1 ?? 0,
+            UPH2: rowData.UPH2 ?? 0,
+            Step1: rowData.Step1 ?? 0,
+            Step2: rowData.Step2 ?? 0,
+            LOSS_SX1: rowData.LOSS_SX1 ?? 0,
+            LOSS_SX2: rowData.LOSS_SX2 ?? 0,
+            LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
+            LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
+            NOTE: rowData.NOTE ?? "",
           });
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -505,7 +470,6 @@ const CAPADATA = () => {
   });
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== "") {
-
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         let err_code: string = "0";
         console.log(datadinhmuc);
@@ -554,7 +518,6 @@ const CAPADATA = () => {
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             NOTE: datadinhmuc.NOTE,
           })) ? "0" : "1";
-          
           if (err_code === "1") {
             Swal.fire(
               "Thông báo",

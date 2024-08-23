@@ -17,17 +17,15 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { ReactNode, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./TINHHINHCUONLIEU.scss";
-import { UserContext } from "../../../api/Context";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_getMachineListData, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { esES } from "@mui/x-data-grid";
 import {
   LOSS_TABLE_DATA_ROLL,
   MACHINE_LIST,
@@ -36,36 +34,9 @@ import {
 
 const TINHHINHCUONLIEU = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-
-  const getMachineList = () => {
-    generalQuery("getmachinelist", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MACHINE_LIST[] = response.data.data.map(
-            (element: MACHINE_LIST, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          loadeddata.push(
-            { EQ_NAME: "ALL" },
-            { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" },
-          );
-          //console.log(loadeddata);
-          setMachine_List(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getMachineList = async () => {
+    setMachine_List(await f_getMachineListData());     
   };
-
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA_ROLL>({
     XUATKHO_MET: 0,
@@ -130,13 +101,7 @@ const TINHHINHCUONLIEU = () => {
                 ID: index,
                 ...element,
                 G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-                INS_DATE:
-                  element.INS_DATE === null
-                    ? ""
-                    : moment
-                        .utc(element.INS_DATE)
-                        .format("YYYY-MM-DD HH:mm:ss"),
-              };
+                INS_DATE: element.INS_DATE === null ? "" : moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),};
             },
           );
           //setShowLoss(false);

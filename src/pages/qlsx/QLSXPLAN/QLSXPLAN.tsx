@@ -3,9 +3,8 @@ import "./QLSXPLAN.scss";
 import MACHINE from "./Machine/MACHINE";
 import ACHIVEMENTTB from "./ACHIVEMENTTB/ACHIVEMENTTB";
 import LICHSUINPUTLIEU from "./LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import QUICKPLAN from "./QUICKPLAN/QUICKPLAN";
 import PLAN_DATATB from "./LICHSUCHITHITABLE/PLAN_DATATB";
-import DATASX2 from "./DATASX/DATASX2";
+import DATASX from "./DATASX/DATASX";
 import PLAN_STATUS from "./PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./EQ_STATUS/EQ_STATUS";
 import EQ_STATUS2 from "./EQ_STATUS/EQ_STATUS2";
@@ -306,7 +305,7 @@ const QLSXPLAN = () => {
         )}
         {selection.tab6 && (
           <div className="datadtc">
-            <DATASX2 />
+            <DATASX />
           </div>
         )}
         {selection.tab7 && (
