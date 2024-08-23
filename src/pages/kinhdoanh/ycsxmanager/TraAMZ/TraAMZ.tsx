@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 
 import "./TraAMZ.scss";
@@ -225,6 +225,7 @@ const TraAMZ = () => {
               <label>
                 <b>All Time:</b>
                 <input
+                  disabled={getUserData()?.EMPL_NO==='NHU1903'}
                   type="checkbox"
                   name="alltimecheckbox"
                   defaultChecked={alltime}
