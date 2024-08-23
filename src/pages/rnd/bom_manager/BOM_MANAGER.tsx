@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { GridRowSelectionModel, GridCellEditStopParams } from "@mui/x-data-grid";
+import { GridRowSelectionModel } from "@mui/x-data-grid";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FcDeleteRow } from "react-icons/fc";
@@ -2315,7 +2315,7 @@ const BOM_MANAGER = () => {
           if (response.data.tk_status !== "NG") {
             isCodeMassProd = true;
             console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
-            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) <= 20240815;
+            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) <= 20240823;
           } else {
             isNewCode = true;
             console.log(parseInt(response.data.message))
@@ -2349,7 +2349,7 @@ const BOM_MANAGER = () => {
         err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
       }
       if (getCompany() === 'CMS' && !isNewCode) {
-        err_code += "_ Code đã YCSX mass sau 15/08/2024, không thể sửa BOM";
+        err_code += "_ Code đã YCSX mass sau 23/08/2024, không thể sửa BOM";
       }
       //console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {
@@ -2507,12 +2507,6 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM GIÁ", "Đang lưu BOM", "success");
-        /* checkBP(
-          userData?.EMPL_NO,
-          userData?.MAINDEPTNAME,
-          ["RND", "QLSX","KD"],
-          handleInsertBOMGIA
-        ); */
         checkBP(
           userData,
           ["RND", "QLSX", "KD"],
@@ -2520,8 +2514,6 @@ const BOM_MANAGER = () => {
           ["ALL"],
           handleInsertBOMGIA,
         );
-        //handleInsertBOMGIA();
-        //handleInsertBOMSX_WITH_GIA();
       }
     });
   };
@@ -2601,7 +2593,7 @@ const BOM_MANAGER = () => {
     limit: 100,
   });
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());     
+    setMachine_List(await f_getMachineListData());
   };
   const autogenerateCodeKH = (cust_cd: string) => {
     let nextCodeKH: string = cust_cd + "-001";
