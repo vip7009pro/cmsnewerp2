@@ -2315,7 +2315,7 @@ const BOM_MANAGER = () => {
           if (response.data.tk_status !== "NG") {
             isCodeMassProd = true;
             console.log(parseInt(response.data.data[0].PROD_REQUEST_DATE))
-            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) <= 20240823;
+            isNewCode = parseInt(response.data.data[0].PROD_REQUEST_DATE) <= 20240824;
           } else {
             isNewCode = true;
             console.log(parseInt(response.data.message))
@@ -2349,7 +2349,7 @@ const BOM_MANAGER = () => {
         err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
       }
       if (getCompany() === 'CMS' && !isNewCode) {
-        err_code += "_ Code đã YCSX mass sau 23/08/2024, không thể sửa BOM";
+        err_code += "_ Code đã YCSX mass sau 24/08/2024, không thể sửa BOM";
       }
       //console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {

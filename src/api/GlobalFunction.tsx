@@ -4201,6 +4201,31 @@ export const f_isBOMGIA_HAS_MAIN = async (G_CODE: string) => {
   });
   return kq;
 }
+export const f_isBOM_M_CODE_MATCHING = async (G_CODE: string) => {
+  let kq: string = 'OK';
+  await generalQuery("checkmainBOM2_M140_M_CODE_MATCHING", {
+    G_CODE: G_CODE
+  })
+  .then((response) => {
+    //console.log(response.data.data);
+    if (response.data.tk_status !== "NG") {
+      let tempKQ  = response.data.data[0];
+      console.log(tempKQ);
+      if(tempKQ.BOM2_M_CODE_COUNT > tempKQ.M140_M_CODE_COUNT)
+      {
+        kq = 'NG: M_CODE trong bom Giá fai có đủ trong bom sản xuất, bom sx thiếu '+ tempKQ.THIEU+' M_CODE so với bom giá';
+      }
+     
+    } else {
+      kq = 'NG: Chưa có BOM Giá';
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+  
+  return kq;
+}
 export const f_getCodeInfo = async (DATA: any) => {
   let kq: CODE_FULL_INFO[] = [];
   await generalQuery("codeinfo", {
