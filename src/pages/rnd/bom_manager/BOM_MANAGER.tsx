@@ -3974,10 +3974,10 @@ const BOM_MANAGER = () => {
               />
             </div>
             <div className="up">
-              <div className="bomsx" style={{backgroundColor:`${pinBOM? 'blue':''}`}}>
+              <div className="bomsx" style={{ backgroundColor: `${pinBOM ? 'blue' : ''}` }}>
                 <div className="bomsxtable">
                   <span
-                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10,color:`${pinBOM? 'white':''}`, backgroundColor:`${pinBOM? 'blue':''}` }}
+                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10, color: `${pinBOM ? 'white' : ''}`, backgroundColor: `${pinBOM ? 'blue' : ''}` }}
                   >
                     BOM SẢN XUẤT (
                     {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
@@ -3989,7 +3989,7 @@ const BOM_MANAGER = () => {
               <div className="bomgia">
                 <div className="bomgiatable">
                   <span
-                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10,color:`${pinBOM? 'white':''}`, backgroundColor:`${pinBOM? 'blue':''}` }}
+                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10, color: `${pinBOM ? 'white' : ''}`, backgroundColor: `${pinBOM ? 'blue' : ''}` }}
                   >
                     BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
                     {pinBOM ? "(Đang ghim BOM)" : ""}
