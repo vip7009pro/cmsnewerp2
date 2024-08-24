@@ -8,9 +8,9 @@ import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 import Swal from "sweetalert2";
 import { LangConText, UserContext } from "../../api/Context";
 import { getlang } from "../String/String";
+const QUICKPLAN2 = React.lazy(() => import("../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2"));
 const QCReport = React.lazy(() => import("../../pages/qc/qcreport/QCReport"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
-const QUICKPLAN = lazy(() => import("../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN"));
 const PLAN_STATUS = lazy(() => import("../../pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS"));
 const QuanLyPhongBanNhanSu = lazy(() => import("../../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
 const DiemDanhNhom = lazy(() => import("../../pages/nhansu/DiemDanhNhom/DiemDanhNhom"));
@@ -322,7 +322,7 @@ const SubMenu = ({ item }: { item: any }) => {
     {
       MENU_CODE: "QL8",
       MENU_NAME: "QUICK PLAN",
-      MENU_ITEM: <QUICKPLAN />,
+      MENU_ITEM: <QUICKPLAN2 />,
     },
     {
       MENU_CODE: "QL9",

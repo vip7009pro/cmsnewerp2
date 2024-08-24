@@ -1699,6 +1699,15 @@ export interface DAO_FILM_DATA {
   SX_EMPL_NO: string;
   MA_DAO: string;
   REMARK: number;
+  CFM_GIAONHAN: number;
+  CFM_INS_EMPL: string;
+  CFM_DATE: string;
+  KNIFE_TYPE: string;
+  KNIFE_FILM_STATUS: string;
+  G_WIDTH: number;
+  G_LENGTH: number;
+  VENDOR: string;
+  TOTAL_PRESS: number;
 }
 export interface CNDB_DATA {
   CNDB_DATE: string;
@@ -3958,4 +3967,71 @@ export interface DAILY_YCSX_RESULT {
   INSP_NG: number,  
   INSP_OK: number,
   LOSS_KT: number;
+}
+
+export interface FORM_ELEMENT {
+  elementType: string,
+  element: ReactElement
+}
+
+export interface QUANLYDAOFILM_DATA {
+  KNIFE_FILM_ID: number,
+FACTORY_NAME: string,
+CUST_CD: string,
+KNIFE_TYPE: string,
+KNIFE_FILM_STEP: string,
+G_CODE: string,
+KNIFE_FILM_QTY: number,
+FULL_KNIFE_CODE: string,
+KT_KNIFE_CODE: string,
+KNIFE_BOX_NUMBER: string,
+CAVITY_NGANG: number,
+CAVITY_DOC: number,
+STANDARD_PRESS_QTY: number,
+INS_EMPL: string,
+INS_DATE: string,
+UPD_EMPL: string,
+UPD_DATE: string,
+KNIFE_STATUS: string,
+REMARK: string,
+KNIFE_FILM_NO: string,
+KNIFE_FILM_SEQ: string,
+PD: number,
+TOTAL_PRESS: number,
+BOGOC: string,
+KCTD: string,
+KNIFE_TYPE2: string,
+SONG_GIUA: number,
+TOTAL_PRESS2: number,
+G_NAME: string,
+G_NAME_KD: string,
+PROD_TYPE: string,
+REV_NO: string,
+VENDOR: string,
+}
+
+export interface XUATDAOFILM_DATA {
+  CA_LAM_VIEC: string;
+  PLAN_ID: string;
+  KNIFE_FILM_NO: string;
+  QTY_KNIFE_FILM: string;
+  CAVITY: number;
+  PD: number;
+  EQ_THUC_TE: string;
+  PRESS_QTY: number;
+  EMPL_NO: string;
+  LOAIBANGIAO_PDP: string;
+  F_WIDTH: number;
+  F_LENGTH: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  SX_EMPL_NO: string;
+  PLAN_ID2: string;
+  PRESS_QTY2: number;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PLAN_DATE: string;
+  SX_DATE: string;
 }

@@ -4451,3 +4451,11 @@ export const f_handleSaveLossSX = async (codeList: CODE_FULL_INFO[]) => {
     Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
   }
 }
+
+
+//quan ly dao film
+
+export const f_loadQuanLyDaoFilm = async (DATA: any) => {
+  
+
+}

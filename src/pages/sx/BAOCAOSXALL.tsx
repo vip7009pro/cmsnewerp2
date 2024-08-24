@@ -10,6 +10,7 @@ import ACHIVEMENTTB from "../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB";
 import PATROL from "./PATROL/PATROL";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
+import DAOFILMDATA from "./LICHSUDAOFILM/DAOFILMDATA";
 
 const BAOCAOSXALL = () => {
   const [selection, setSelection] = useState<any>({
@@ -241,6 +242,16 @@ const BAOCAOSXALL = () => {
           >
             <span className="mininavtext">PATROL</span>
           </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(8)}
+            style={{
+              backgroundColor: selection.tab8 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab8 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">DATA DAO-FILM</span>
+          </div>
         </div>
         {selection.tab1 && (
           <div className="traiqc">
@@ -275,6 +286,11 @@ const BAOCAOSXALL = () => {
         {selection.tab7 && (
           <div className="datadtc">
             <PATROL />
+          </div>
+        )}
+        {selection.tab8 && (
+          <div className="datadtc">
+            <DAOFILMDATA />
           </div>
         )}
       </Suspense>

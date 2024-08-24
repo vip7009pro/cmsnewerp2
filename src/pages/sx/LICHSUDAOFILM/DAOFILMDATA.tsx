@@ -3,16 +3,18 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import "./TRAPQC.scss";
+import "./DAOFILMDATA.scss";
 import {
   CNDB_DATA,
   DAO_FILM_DATA,
   PQC3_DATA,
+  QUANLYDAOFILM_DATA,
   TRA_PQC1_DATA,
+  XUATDAOFILM_DATA,
 } from "../../../api/GlobalInterface";
 import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 import AGTable from "../../../components/DataTable/AGTable";
-const TRAPQC = () => {
+const DAOFILMDATA = () => {
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
   const [currentDS, setCurrentDS] = useState("");
@@ -48,18 +50,6 @@ const TRAPQC = () => {
     STATUS: ''
   });
   const [readyRender, setReadyRender] = useState(true);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -67,7 +57,7 @@ const TRAPQC = () => {
   const [codeCMS, setCodeCMS] = useState("");
   const [empl_name, setEmpl_Name] = useState("");
   const [cust_name, setCustName] = useState("");
-  const [process_lot_no, setProcess_Lot_No] = useState("");
+  const [planId, setPlanId] = useState("");
   const [prod_type, setProdType] = useState("");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
@@ -377,7 +367,16 @@ const TRAPQC = () => {
     { field: "RND_EMPL_NO", headerName: "RND_EMPL_NO", width: 80 },
     { field: "SX_EMPL_NO", headerName: "SX_EMPL_NO", width: 80 },
     { field: "MA_DAO", headerName: "MA_DAO", width: 100 },
-    { field: "REMARK", headerName: "REMARK", width: 150 },
+    { field: "CFM_GIAONHAN", headerName: "CFM_GIAONHAN", width: 100 },
+    { field: "CFM_INS_EMPL", headerName: "CFM_INS_EMPL", width: 100 },
+    { field: "CFM_DATE", headerName: "CFM_DATE", width: 100 },
+    { field: "KNIFE_TYPE", headerName: "KNIFE_TYPE", width: 100 },
+    { field: "KNIFE_FILM_STATUS", headerName: "KNIFE_FILM_STATUS", width: 100 },
+    { field: "G_WIDTH", headerName: "G_WIDTH", width: 100 },
+    { field: "G_LENGTH", headerName: "G_LENGTH", width: 100 },
+    { field: "VENDOR", headerName: "VENDOR", width: 100 },
+    { field: "TOTAL_PRESS", headerName: "TOTAL_PRESS", width: 100 },
+    { field: "REMARK", headerName: "REMARK", width: 150},
   ];
   const column_cndb_data = [
     { field: "CNDB_DATE", cellDataType: "text", headerName: "CNDB_DATE", width: 120 },
@@ -432,9 +431,65 @@ const TRAPQC = () => {
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 250 },
   ];
+  const column_quanlydaofilm_data = [
+    { field: 'KNIFE_FILM_ID',headerName: 'KNIFE_FILM_ID', resizable: true,width: 100 },
+    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 100 },
+    { field: 'G_NAME_KD',headerName: 'G_NAME_KD', resizable: true,width: 100 },
+    { field: 'PROD_TYPE',headerName: 'PROD_TYPE', resizable: true,width: 100 },
+    { field: 'REV_NO',headerName: 'REV_NO', resizable: true,width: 100 },
+    { field: 'VENDOR',headerName: 'VENDOR', resizable: true,width: 100 },
+    { field: 'FACTORY_NAME',headerName: 'FACTORY_NAME', resizable: true,width: 100 },
+    { field: 'CUST_CD',headerName: 'CUST_CD', resizable: true,width: 100 },
+    { field: 'KNIFE_TYPE',headerName: 'KNIFE_TYPE', resizable: true,width: 100 },
+    { field: 'KNIFE_FILM_STEP',headerName: 'KNIFE_FILM_STEP', resizable: true,width: 100 },
+    { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 100 },
+    { field: 'KNIFE_FILM_QTY',headerName: 'KNIFE_FILM_QTY', resizable: true,width: 100 },
+    { field: 'FULL_KNIFE_CODE',headerName: 'FULL_KNIFE_CODE', resizable: true,width: 100 },
+    { field: 'KT_KNIFE_CODE',headerName: 'KT_KNIFE_CODE', resizable: true,width: 100 },
+    { field: 'KNIFE_BOX_NUMBER',headerName: 'KNIFE_BOX_NUMBER', resizable: true,width: 100 },
+    { field: 'CAVITY_NGANG',headerName: 'CAVITY_NGANG', resizable: true,width: 100 },
+    { field: 'CAVITY_DOC',headerName: 'CAVITY_DOC', resizable: true,width: 100 },
+    { field: 'STANDARD_PRESS_QTY',headerName: 'STANDARD_PRESS_QTY', resizable: true,width: 100 },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 100 },
+    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 100 },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 100 },
+    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 100 },
+    { field: 'KNIFE_STATUS',headerName: 'KNIFE_STATUS', resizable: true,width: 100 },
+    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 100 },
+    { field: 'KNIFE_FILM_NO',headerName: 'KNIFE_FILM_NO', resizable: true,width: 100 },
+    { field: 'KNIFE_FILM_SEQ',headerName: 'KNIFE_FILM_SEQ', resizable: true,width: 100 },
+    { field: 'PD',headerName: 'PD', resizable: true,width: 100 },
+    { field: 'TOTAL_PRESS',headerName: 'TOTAL_PRESS', resizable: true,width: 100 },
+    { field: 'BOGOC',headerName: 'BOGOC', resizable: true,width: 100 },
+    { field: 'KCTD',headerName: 'KCTD', resizable: true,width: 100 },
+    { field: 'KNIFE_TYPE2',headerName: 'KNIFE_TYPE2', resizable: true,width: 100 },
+    { field: 'SONG_GIUA',headerName: 'SONG_GIUA', resizable: true,width: 100 },
+    { field: 'TOTAL_PRESS2',headerName: 'TOTAL_PRESS2', resizable: true,width: 100 }, 
+  ]
+  const column_lichsuxuatdaofilm =[
+    { field: 'PLAN_DATE',headerName: 'PLAN_DATE', resizable: true,width: 100 },
+    { field: 'CA_LAM_VIEC',headerName: 'CA_LAM_VIEC', resizable: true,width: 100 },
+    { field: 'PLAN_ID',headerName: 'PLAN_ID', resizable: true,width: 100 },
+    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 100 },
+    { field: 'G_NAME_KD',headerName: 'G_NAME_KD', resizable: true,width: 100 },
+    { field: 'KNIFE_FILM_NO',headerName: 'KNIFE_FILM_NO', resizable: true,width: 100 },
+    { field: 'QTY_KNIFE_FILM',headerName: 'QTY_KNIFE_FILM', resizable: true,width: 100 },
+    { field: 'CAVITY',headerName: 'CAVITY', resizable: true,width: 100 },
+    { field: 'PD',headerName: 'PD', resizable: true,width: 100 },
+    { field: 'EQ_THUC_TE',headerName: 'EQ_THUC_TE', resizable: true,width: 100 },
+    { field: 'PRESS_QTY',headerName: 'PRESS_QTY', resizable: true,width: 100 },
+    { field: 'EMPL_NO',headerName: 'EMPL_NO', resizable: true,width: 100 },
+    { field: 'LOAIBANGIAO_PDP',headerName: 'LOAIBANGIAO_PDP', resizable: true,width: 100 },
+    { field: 'F_WIDTH',headerName: 'F_WIDTH', resizable: true,width: 100 },
+    { field: 'F_LENGTH',headerName: 'F_LENGTH', resizable: true,width: 100 },
+    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 100 },
+    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 100 },      
+    { field: 'SX_EMPL_NO',headerName: 'SX_EMPL_NO', resizable: true,width: 100 },    
+    { field: 'SX_DATE',headerName: 'SX_DATE', resizable: true,width: 100 },   
+  ]
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_TRA_PQC1_DATA);
-  const handletraInspectionInput = () => {
+  const handletraPQC1 = () => {
     setisLoading(true);
     let summaryInput: number = 0;
     generalQuery("trapqc1data", {
@@ -442,7 +497,7 @@ const TRAPQC = () => {
       FROM_DATE: fromdate,
       TO_DATE: todate,
       CUST_NAME: cust_name,
-      PROCESS_LOT_NO: process_lot_no,
+      PROCESS_LOT_NO: planId,
       G_CODE: codeCMS,
       G_NAME: codeKD,
       PROD_TYPE: prod_type,
@@ -502,60 +557,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   };
-  const handletraInspectionOutput = () => {
-    let summaryOutput: number = 0;
-    setisLoading(true);
-    generalQuery("trapqc3data", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      CUST_NAME: cust_name,
-      PROCESS_LOT_NO: process_lot_no,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name,
-      PROD_REQUEST_NO: prodrequestno,
-      ID: id,
-      FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: PQC3_DATA[] = response.data.data.map(
-            (element: PQC3_DATA, index: number) => {
-              //summaryOutput += element.OUTPUT_QTY_EA;
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-
-                OCCURR_TIME: moment
-                  .utc(element.OCCURR_TIME)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            },
-          );
-          //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
-          setPqcDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handletraInspectionNG = () => {
+  const handletraCNDB = () => {
     setSummaryInspect("");
     setisLoading(true);
     generalQuery("traCNDB", {
@@ -563,7 +565,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       FROM_DATE: fromdate,
       TO_DATE: todate,
       CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
+      PLAN_ID: planId,
       G_CODE: codeCMS,
       G_NAME: codeKD,
       PROD_TYPE: prod_type,
@@ -600,7 +602,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   };
-  const handletraInspectionInOut = () => {
+  const handletraGiaoNhanDaoFilm = () => {
     setSummaryInspect("");
     setisLoading(true);
     generalQuery("tradaofilm", {
@@ -618,6 +620,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             (element: DAO_FILM_DATA, index: number) => {
               return {
                 ...element,
+                CFM_DATE: moment.utc(element.CFM_DATE).format('YYYY-MM-DD HH:mm:ss'),
                 G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
                 id: index,
               };
@@ -640,6 +643,91 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   };
+  const handletraQuanLyDaoFilm = () => {
+    setSummaryInspect("");
+    setisLoading(true);
+    generalQuery("loadquanlydaofilm", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      G_CODE: codeCMS,
+      G_NAME: codeKD,
+      FACTORY: factory,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: QUANLYDAOFILM_DATA[] = response.data.data.map(
+            (element: QUANLYDAOFILM_DATA, index: number) => {
+              return {
+                ...element,
+                INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
+                UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                id: index,
+              };
+            },
+          );
+          setPqcDataTable(loadeddata);
+          setReadyRender(true);
+          setisLoading(false);
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success",
+          );
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setisLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handletraLichSuXuatDaoFilm = () => {
+    setSummaryInspect("");
+    setisLoading(true);
+    generalQuery("lichsuxuatdaofilm", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      G_CODE: codeCMS,
+      G_NAME: codeKD,
+      FACTORY: factory,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: XUATDAOFILM_DATA[] = response.data.data.map(
+            (element: XUATDAOFILM_DATA, index: number) => {
+              return {
+                ...element,
+                PLAN_DATE: moment.utc(element.PLAN_DATE).format('YYYY-MM-DD'),
+                INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
+                UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
+                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                id: index,
+              };
+            },
+          );
+          setPqcDataTable(loadeddata);
+          setReadyRender(true);
+          setisLoading(false);
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success",
+          );
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setisLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const updateNNDS =()=> {    
     generalQuery("updatenndspqc", {
       PQC3_ID: currentDefectRow.PQC3_ID,
@@ -662,7 +750,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       console.log(error);
     });
   }
-
   const pqcDataTableAG = useMemo(()=> {
     return (
       <AGTable
@@ -686,7 +773,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     //setColumnDefinition(column_pqc3_data);
   }, []);
   return (
-    <div className="trapqc">
+    <div className="daofilmdata">
       <div className="tracuuDataPqc">
         <div className="tracuuDataPQCform">
           <div className="forminput">
@@ -775,12 +862,12 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             </div>
             <div className="forminputcolumn">
               <label>
-                <b>LOT SX:</b>{" "}
+                <b>PLAN_ID:</b>{" "}
                 <input
                   type="text"
                   placeholder="ED2H3076"
-                  value={process_lot_no}
-                  onChange={(e) => setProcess_Lot_No(e.target.value)}
+                  value={planId}
+                  onChange={(e) => setPlanId(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -807,31 +894,32 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>
           <div className="formbutton">
             <div className="btgroup">
-              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69b1f5f' }} onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_TRA_PQC1_DATA);
-                handletraInspectionInput();
-              }}>Setting</Button>
-              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#9ddd49', color: 'black' }} onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_pqc3_data);
-                handletraInspectionOutput();
-              }}>Defect</Button>
-            </div>
-            <div className="btgroup">
-              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f396fc' }} onClick={() => {
+            <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f396fc' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_daofilm_data);
-                handletraInspectionInOut();
-              }}>Dao-film</Button>
+                handletraGiaoNhanDaoFilm();
+              }}>LS GIAO NHẬN</Button>
+             
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#9ddd49', color: 'black' }} onClick={() => {
+                setisLoading(true);
+                setReadyRender(false);
+                setColumnDefinition(column_quanlydaofilm_data);
+                handletraQuanLyDaoFilm();
+              }}>QL DAO FILM</Button>
+            </div>
+            <div className="btgroup">
+            <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69b1f5f' }} onClick={() => {
+                setisLoading(true);
+                setReadyRender(false);
+                setColumnDefinition(column_lichsuxuatdaofilm);
+                handletraLichSuXuatDaoFilm();
+              }}>LS XUẤT DF</Button>
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f7ab7e' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_cndb_data);
-                handletraInspectionNG();
+                handletraCNDB();
               }}>CNĐB</Button>
             </div>
           </div>
@@ -923,4 +1011,4 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     </div>
   );
 };
-export default TRAPQC;
+export default DAOFILMDATA;
