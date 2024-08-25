@@ -4,46 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./DAOFILMDATA.scss";
-import { DAO_FILM_DATA, PQC3_DATA, QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../api/GlobalInterface";
-import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
+import { DAO_FILM_DATA, QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { AiFillFileAdd } from "react-icons/ai";
-import { BiAddToQueue, BiLogIn, BiLogOut } from "react-icons/bi";
+import { BiAddToQueue, BiLogIn } from "react-icons/bi";
+import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 const DAOFILMDATA = () => {
-  const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
-  const [currentNN, setCurrentNN] = useState("");
-  const [currentDS, setCurrentDS] = useState("");
-  const [currentDefectRow, setCurrentDefectRow] = useState<PQC3_DATA>({
-    CUST_NAME_KD: '',
-    DEFECT_AMOUNT: 0,
-    DEFECT_IMAGE_LINK: '',
-    DEFECT_PHENOMENON: '',
-    DEFECT_QTY: 0,
-    ERR_CODE: '',
-    FACTORY: '',
-    G_CODE: '',
-    G_NAME: '',
-    G_NAME_KD: '',
-    INSPECT_QTY: 0,
-    LINE_NO: '',
-    LINEQC_PIC: '',
-    OCCURR_TIME: '',
-    PQC1_ID: 0,
-    PQC3_ID: 0,
-    PROCESS_LOT_NO: '',
-    PROD_LAST_PRICE: 0,
-    PROD_LEADER: '',
-    PROD_PIC: '',
-    PROD_REQUEST_DATE: '',
-    PROD_REQUEST_NO: '',
-    REMARK: '',
-    WORST5: '',
-    WORST5_MONTH: '',
-    YEAR_WEEK: '',
-    DOI_SACH: '',
-    NG_NHAN: "",
-    STATUS: ''
-  });
+  const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const [readyRender, setReadyRender] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -230,38 +196,42 @@ const DAOFILMDATA = () => {
     { field: 'CAVITY', headerName: 'CAVITY', resizable: true, width: 100 },
     { field: 'PD', headerName: 'PD', resizable: true, width: 100 },
     { field: 'EQ_THUC_TE', headerName: 'EQ', resizable: true, width: 40 },
-    { field: 'PRESS_QTY', headerName: 'PRESS_QTY', resizable: true, width: 70, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "blue" }}>
-          {params.data.PRESS_QTY?.toLocaleString('en-US')}
-        </span>
-      );
-    }, },
+    {
+      field: 'PRESS_QTY', headerName: 'PRESS_QTY', resizable: true, width: 70, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.PRESS_QTY?.toLocaleString('en-US')}
+          </span>
+        );
+      },
+    },
     { field: 'EMPL_NO', headerName: 'EMPL_NO', resizable: true, width: 70 },
-    { field: 'LOAIBANGIAO_PDP', headerName: 'PHANLOAI', resizable: true, width: 60,cellRenderer: (params: any) => {
-      switch (params.data.LOAIBANGIAO_PDP) {
-        case "D":
-          return <span style={{ color: "blue" }}>DAO</span>;
-          break;
-        case "F":
-          return <span style={{ color: "blue" }}>FILM</span>;
-          break;
-        case "T":
-          return <span style={{ color: "blue" }}>TAI LIEU</span>;
-          break;
-        default:
-          return <span style={{ color: "blue" }}>N/A</span>;
-          break;
-      }
-    }, },
+    {
+      field: 'LOAIBANGIAO_PDP', headerName: 'PHANLOAI', resizable: true, width: 60, cellRenderer: (params: any) => {
+        switch (params.data.LOAIBANGIAO_PDP) {
+          case "D":
+            return <span style={{ color: "blue" }}>DAO</span>;
+            break;
+          case "F":
+            return <span style={{ color: "blue" }}>FILM</span>;
+            break;
+          case "T":
+            return <span style={{ color: "blue" }}>TAI LIEU</span>;
+            break;
+          default:
+            return <span style={{ color: "blue" }}>N/A</span>;
+            break;
+        }
+      },
+    },
     { field: 'F_WIDTH', headerName: 'F_WIDTH', resizable: true, width: 70 },
-    { field: 'F_LENGTH', headerName: 'F_LENGTH', resizable: true, width: 70 },    
+    { field: 'F_LENGTH', headerName: 'F_LENGTH', resizable: true, width: 70 },
     { field: 'INS_EMPL', headerName: 'DF_EMPL', resizable: true, width: 70 },
     { field: 'SX_EMPL_NO', headerName: 'SX_EMPL', resizable: true, width: 70 },
     { field: 'SX_DATE', headerName: 'SX_DATE', resizable: true, width: 60 },
   ]
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_daofilm_data);
-  const handletraGiaoNhanDaoFilm = () => {    
+  const handletraGiaoNhanDaoFilm = () => {
     setisLoading(true);
     generalQuery("tradaofilm", {
       ALLTIME: alltime,
@@ -302,7 +272,7 @@ const DAOFILMDATA = () => {
         console.log(error);
       });
   };
-  const handletraQuanLyDaoFilm = () => {    
+  const handletraQuanLyDaoFilm = () => {
     setisLoading(true);
     generalQuery("loadquanlydaofilm", {
       ALLTIME: alltime,
@@ -345,7 +315,6 @@ const DAOFILMDATA = () => {
       });
   }
   const handletraLichSuXuatDaoFilm = () => {
-    
     setisLoading(true);
     generalQuery("lichsuxuatdaofilm", {
       ALLTIME: alltime,
@@ -388,28 +357,6 @@ const DAOFILMDATA = () => {
         console.log(error);
       });
   }
-  const updateNNDS = () => {
-    generalQuery("updatenndspqc", {
-      PQC3_ID: currentDefectRow.PQC3_ID,
-      NG_NHAN: currentNN,
-      DOI_SACH: currentDS
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          Swal.fire(
-            "Thông báo",
-            "Update thành công",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
   const daofilmAGTable = useMemo(() => {
     return (
       <AGTable
@@ -418,33 +365,28 @@ const DAOFILMDATA = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-
+                setShowGiaoNhan(true);
               }}
             >
               <BiAddToQueue color="red" size={15} />
               Thêm Giao Nhận
             </IconButton>
-
             <IconButton
               className="buttonIcon"
               onClick={() => {
-
               }}
             >
               <BiAddToQueue color="#0ecb8c" size={15} />
               Thêm Quản Lý Dao Film
             </IconButton>
-
             <IconButton
               className="buttonIcon"
               onClick={() => {
-
               }}
             >
               <BiLogIn color="#f92baa" size={15} />
               Xuất Dao Film
             </IconButton>
-
           </div>}
         columns={columnDefinition}
         data={daofilmdatatable}
@@ -459,7 +401,6 @@ const DAOFILMDATA = () => {
     )
   }, [daofilmdatatable, columnDefinition])
   useEffect(() => {
-    
   }, []);
   return (
     <div className="daofilmdata">
@@ -505,7 +446,7 @@ const DAOFILMDATA = () => {
               </label>
             </div>
             <div className="forminputcolumn">
-            <label>
+              <label>
                 <b>Phân Loại:</b>
                 <select
                   name="phanloai"
@@ -535,7 +476,7 @@ const DAOFILMDATA = () => {
                   <option value="NM2">NM2</option>
                 </select>
               </label>
-            </div>            
+            </div>
             <div className="forminputcolumn">
               <label>
                 <b>PLAN_ID:</b>{" "}
@@ -589,7 +530,7 @@ const DAOFILMDATA = () => {
                 setReadyRender(false);
                 setColumnDefinition(column_lichsuxuatdaofilm);
                 handletraLichSuXuatDaoFilm();
-              }}>LS XUẤT DF</Button>          
+              }}>LS XUẤT DF</Button>
             </div>
           </div>
         </div>
@@ -597,69 +538,14 @@ const DAOFILMDATA = () => {
           {daofilmAGTable}
         </div>
       </div>
-      {showhideupdatennds && <div className="updatenndsform">
-        <span style={{ fontWeight: 'bold' }}>Form update nguyên nhân đối sách</span>
-        <div className="inputbox">
-          1. Hiện tượng (현상)
-          <PATROL_COMPONENT data={{
-            CUST_NAME_KD: currentDefectRow.CUST_NAME_KD,
-            DEFECT: currentDefectRow.ERR_CODE + ':' + currentDefectRow.DEFECT_PHENOMENON,
-            EQ: currentDefectRow.LINE_NO,
-            FACTORY: currentDefectRow.FACTORY,
-            G_NAME_KD: currentDefectRow.G_NAME_KD,
-            INSPECT_QTY: currentDefectRow.INSPECT_QTY,
-            INSPECT_NG: currentDefectRow.DEFECT_QTY,
-            LINK: `/pqc/PQC3_${currentDefectRow.PQC3_ID + 1}.png`,
-            TIME: currentDefectRow.OCCURR_TIME,
-            EMPL_NO: currentDefectRow.LINEQC_PIC
-          }} />
-          2. Nguyên nhân (원인)
-          <textarea rows={8} style={{ width: '100%' }} value={currentNN} onChange={(e) => { setCurrentNN(e.target.value) }}></textarea>
-          3. Đối sách (대책)
-          <textarea rows={8} style={{ width: '100%' }} value={currentDS} onChange={(e) => { setCurrentDS(e.target.value) }}></textarea>
+      {
+        showGiaoNhan && <div className="updatenndsform">
+          <Button color={'primary'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69b1f5f' }} onClick={() => {
+            setShowGiaoNhan(false);
+          }}>Close</Button>
+          <QLGN />
         </div>
-        <div className="buttondiv">
-          <button onClick={() => {
-            updateNNDS();
-          }}>Update</button>
-          <button onClick={() => {
-            setShowHideUpdateNNDS(false);
-            setCurrentDS('');
-            setCurrentNN('');
-            setCurrentDefectRow({
-              CUST_NAME_KD: '',
-              DEFECT_AMOUNT: 0,
-              DEFECT_IMAGE_LINK: '',
-              DEFECT_PHENOMENON: '',
-              DEFECT_QTY: 0,
-              ERR_CODE: '',
-              FACTORY: '',
-              G_CODE: '',
-              G_NAME: '',
-              G_NAME_KD: '',
-              INSPECT_QTY: 0,
-              LINE_NO: '',
-              LINEQC_PIC: '',
-              OCCURR_TIME: '',
-              PQC1_ID: 0,
-              PQC3_ID: 0,
-              PROCESS_LOT_NO: '',
-              PROD_LAST_PRICE: 0,
-              PROD_LEADER: '',
-              PROD_PIC: '',
-              PROD_REQUEST_DATE: '',
-              PROD_REQUEST_NO: '',
-              REMARK: '',
-              WORST5: '',
-              WORST5_MONTH: '',
-              YEAR_WEEK: '',
-              DOI_SACH: '',
-              NG_NHAN: "",
-              STATUS: ''
-            });
-          }}>Close</button>
-        </div>
-      </div>}
+      }
     </div>
   );
 };

@@ -22,22 +22,13 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, {
-  startTransition,
-  useContext,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import React, { useEffect, useState, useTransition } from "react";
+import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLGN.scss";
-import { UserContext } from "../../../api/Context";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import PivotTable from "../../../components/PivotChart/PivotChart";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CodeListData, CustomerListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
 const QLGN = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([
@@ -383,36 +374,48 @@ const QLGN = () => {
       }
     });
   }
+  const checkBanGiaoData = ()=> {
+    let err_code: string ='';
+    if(rndEmpl.length<7 || qcEmpl.length <7) err_code = "NG: Mã nhân viên phải bằng 7 ký tự";
+    if(daofimltotalqty<=0) err_code = "NG: Tổng số lượng dao/film phải lớn hơn 0";
+    return err_code;
+  }
   const addBanGiao = () => {
-    generalQuery("addbangiaodaofilmtailieu", {
-      FACTORY: getUserData()?.FACTORY_CODE === 1 ? 'NM1' : 'NM2',
-      NGAYBANGIAO: moment(fromdate).format("YYYY-MM-DD"),
-      G_CODE: selectedCode?.G_CODE,
-      LOAIBANGIAO_PDP: pltl,
-      LOAIPHATHANH: plph,
-      SOLUONG: daofimltotalqty,
-      SOLUONGOHP: ohpfilmqty,
-      LYDOBANGIAO: ldph,
-      PQC_EMPL_NO: qcEmpl,
-      RND_EMPL_NO: rndEmpl,
-      SX_EMPL_NO: sxEmpl,
-      REMARK: remark,
-      MA_DAO: madaofilm,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-      G_WIDTH: g_width,
-      G_LENGTH: g_length,
-      KNIFE_TYPE: pldao
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo', 'Thêm thành công', 'success');
-        } else {
-          Swal.fire('Thông báo', 'Thất bại', 'error');
-        }
+    let err_code: string = checkBanGiaoData();
+    if (err_code === '') {
+      generalQuery("addbangiaodaofilmtailieu", {
+        FACTORY: getUserData()?.FACTORY_CODE === 1 ? 'NM1' : 'NM2',
+        NGAYBANGIAO: moment(fromdate).format("YYYY-MM-DD"),
+        G_CODE: selectedCode?.G_CODE,
+        LOAIBANGIAO_PDP: pltl,
+        LOAIPHATHANH: plph,
+        SOLUONG: daofimltotalqty,
+        SOLUONGOHP: ohpfilmqty,
+        LYDOBANGIAO: ldph,
+        PQC_EMPL_NO: qcEmpl,
+        RND_EMPL_NO: rndEmpl,
+        SX_EMPL_NO: sxEmpl,
+        REMARK: remark,
+        MA_DAO: madaofilm,
+        CUST_CD: selectedCust_CD?.CUST_CD,
+        G_WIDTH: g_width,
+        G_LENGTH: g_length,
+        KNIFE_TYPE: pldao
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            Swal.fire('Thông báo', 'Thêm thành công', 'success');
+          } else {
+            Swal.fire('Thông báo', 'Thất bại', 'error');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      Swal.fire('Thông báo', err_code, 'error');
+    }
   }
   useEffect(() => {
     getcodelist("");
@@ -608,7 +611,7 @@ const QLGN = () => {
             </div>
             <div className="forminputcolumn">
               {pltl === 'F' && <label>
-                <b>Số lượng OHP Film</b>{" "}
+                <b>OHP FILM QTY</b>{" "}
                 <input
                   type="text"
                   placeholder="Nhập số lượng OHP Film vào đây"
@@ -635,7 +638,7 @@ const QLGN = () => {
                 ></input>
               </label>}
             </div>
-            <div className="forminputcolumn">
+            {pltl !== 'T' && <div className="forminputcolumn">
               <label>
                 <b>Rộng</b>{" "}
                 <input
@@ -654,7 +657,7 @@ const QLGN = () => {
                   onChange={(e) => setG_Length(Number(e.target.value))}
                 ></input>
               </label>
-            </div>
+            </div>}
             <div className="forminputcolumn">
               <label>
                 <b>Remark</b>{" "}
@@ -682,7 +685,7 @@ const QLGN = () => {
                 confirmAddBanGiao();
               }}
             >
-              Thêm Bàn Giao
+              Thêm Giao Nhận
             </button>
           </div>
         </div>
