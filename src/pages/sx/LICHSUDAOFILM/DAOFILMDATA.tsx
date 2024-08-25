@@ -377,7 +377,7 @@ const DAOFILMDATA = () => {
               }}
             >
               <BiAddToQueue color="#0ecb8c" size={15} />
-              Thêm Quản Lý Dao Film
+              Gán Code
             </IconButton>
             <IconButton
               className="buttonIcon"
