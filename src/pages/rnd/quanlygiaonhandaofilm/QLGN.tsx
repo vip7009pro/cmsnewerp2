@@ -493,7 +493,7 @@ const QLGN = () => {
                 ></input>
               </label>
               <label>
-                <b>Phân loại phát hành:</b>{" "}
+                <b>PL phát hành:</b>{" "}
                 <select
                   name="vendor"
                   value={plph}
@@ -508,7 +508,7 @@ const QLGN = () => {
             </div>
             <div className="forminputcolumn">
               <label>
-                <b>Phân loại tài liệu:</b>{" "}
+                <b>PL tài liệu:</b>{" "}
                 <select
                   name="vendor"
                   value={pltl}
@@ -525,7 +525,7 @@ const QLGN = () => {
             </div>
             <div className="forminputcolumn">
               <label>
-                <b>Phân loại bàn giao:</b>{" "}
+                <b>PL bàn giao:</b>{" "}
                 <select
                   name="vendor"
                   value={ldph}
@@ -540,7 +540,7 @@ const QLGN = () => {
                 </select>
               </label>
               <label>
-                <b>Mã nhân viên RND:</b>{" "}
+                <b>NV RND:</b>{" "}
                 <input
                   type="text"
                   placeholder="RND"
@@ -551,7 +551,7 @@ const QLGN = () => {
             </div>
             <div className="forminputcolumn">
               <label>
-                <b>Mã nhân viên QC:</b>{" "}
+                <b>NV QC:</b>{" "}
                 <input
                   type="text"
                   placeholder="QC"
@@ -560,7 +560,7 @@ const QLGN = () => {
                 ></input>
               </label>
               <label>
-                <b>Mã nhân viên SX:</b>{" "}
+                <b>NV SX:</b>{" "}
                 <input
                   type="text"
                   placeholder="SX"
