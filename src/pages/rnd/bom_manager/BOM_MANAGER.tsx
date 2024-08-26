@@ -2151,6 +2151,7 @@ const BOM_MANAGER = () => {
             M_CODE: bomgiatable[i].M_CODE,
             M_QTY: bomgiatable[i].M_QTY,
             MAIN_M: bomgiatable[i].MAIN_M,
+            LIEUQL_SX: bomgiatable[i].MAIN_M ?? 0,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {

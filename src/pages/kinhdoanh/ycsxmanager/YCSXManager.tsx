@@ -1271,8 +1271,7 @@ const YCSXManager = () => {
       err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
       let isBOMGiaHasMain: boolean = await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE) || (getCompany() !== 'CMS')
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
-      let isBOMMatching: boolean = ( checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
-
+      let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1301,10 +1300,10 @@ const YCSXManager = () => {
       } else if (err_code === 9) {
         tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản phẩm";
       } else if (err_code === 11) {
-        tempjson[i].CHECKSTATUS = "NG: "+ checkBOM_Matching;
+        tempjson[i].CHECKSTATUS = "NG: " + checkBOM_Matching;
       } else if (err_code === 10) {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
-      } 
+      }
     }
     setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành check YCSX hàng loạt", "success");
@@ -1318,8 +1317,7 @@ const YCSXManager = () => {
       err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
       let isBOMGiaHasMain: boolean = await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE) || (getCompany() !== 'CMS')
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
-      let isBOMMatching: boolean = ( checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
-
+      let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1503,10 +1501,10 @@ const YCSXManager = () => {
       } else if (err_code === 9) {
         tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản phẩm";
       } else if (err_code === 11) {
-        tempjson[i].CHECKSTATUS = "NG: "+ checkBOM_Matching;
+        tempjson[i].CHECKSTATUS = "NG: " + checkBOM_Matching;
       } else if (err_code === 10) {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
-      } 
+      }
     }
     setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành Up YCSX hàng loạt", "success");
@@ -1610,8 +1608,7 @@ const YCSXManager = () => {
     let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(selectedCode?.G_CODE ?? "");
     let isBOMGiaHasMain: boolean = await f_isBOMGIA_HAS_MAIN(selectedCode?.G_CODE ?? "") || (getCompany() !== 'CMS')
     let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(selectedCode?.G_CODE ?? "");
-    let isBOMMatching: boolean = ( checkBOM_Matching === 'OK') || (getCompany() !== 'CMS')
-    
+    let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS')
     //console.log(await f_process_lot_no_generate(phanloai));
     if (selectedCode?.USE_YN === "N") {
       err_code = 3; // ver bi khoa
@@ -1773,10 +1770,10 @@ const YCSXManager = () => {
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
     } else if (err_code === 11) {
-      Swal.fire("Thông báo", "NG: "+ checkBOM_Matching, "error");
+      Swal.fire("Thông báo", "NG: " + checkBOM_Matching, "error");
     } else if (err_code === 10) {
       Swal.fire("Thông báo", "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1", "error");
-    } 
+    }
   };
   const clearYCSXform = () => {
     setNewDeliveryDate(moment().format("YYYY-MM-DD"));
