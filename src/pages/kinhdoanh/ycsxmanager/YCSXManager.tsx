@@ -2153,10 +2153,19 @@ const YCSXManager = () => {
     matchFrom: "any",
     limit: 100,
   });
+  const getRowStyle = (params: any) => {   
+    if (params.data.USE_YN ==='N') {
+        return { backgroundColor: '#f5e799', fontSize:'0.6rem'};
+    }
+    else {
+      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
+    }
+  };
   //console.log(userData);
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
+      getRowStyle={getRowStyle}
         showFilter={true}
         toolbar={
           <div>

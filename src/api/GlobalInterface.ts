@@ -417,6 +417,7 @@ export interface YCSXTableData {
   SLC_CD2?: number;
   SLC_CD3?: number;
   SLC_CD4?: number;
+  USE_YN?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
