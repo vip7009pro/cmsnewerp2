@@ -10,8 +10,7 @@ import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 const DAOFILMDATA = () => {
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
-  const [readyRender, setReadyRender] = useState(true);
-  const [isLoading, setisLoading] = useState(false);
+  const [btnGN_QL, setBtnGN_QL] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -232,7 +231,7 @@ const DAOFILMDATA = () => {
   ]
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_daofilm_data);
   const handletraGiaoNhanDaoFilm = () => {
-    setisLoading(true);
+    setBtnGN_QL(true);
     generalQuery("tradaofilm", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -256,8 +255,6 @@ const DAOFILMDATA = () => {
             },
           );
           setDaoFilmDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -265,7 +262,6 @@ const DAOFILMDATA = () => {
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
       .catch((error) => {
@@ -273,7 +269,7 @@ const DAOFILMDATA = () => {
       });
   };
   const handletraQuanLyDaoFilm = () => {
-    setisLoading(true);
+    setBtnGN_QL(true);
     generalQuery("loadquanlydaofilm", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -298,8 +294,6 @@ const DAOFILMDATA = () => {
             },
           );
           setDaoFilmDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -307,7 +301,6 @@ const DAOFILMDATA = () => {
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
       .catch((error) => {
@@ -315,7 +308,7 @@ const DAOFILMDATA = () => {
       });
   }
   const handletraLichSuXuatDaoFilm = () => {
-    setisLoading(true);
+    setBtnGN_QL(false);
     generalQuery("lichsuxuatdaofilm", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -323,6 +316,7 @@ const DAOFILMDATA = () => {
       G_CODE: codeCMS,
       G_NAME: codeKD,
       FACTORY: factory,
+      PLAN_ID: planId
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -333,7 +327,7 @@ const DAOFILMDATA = () => {
                 ...element,
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format('YYYY-MM-DD'),
                 INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
-                SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+                SX_DATE: element.SX_DATE !== null ? moment.utc(element.SX_DATE).format('YYYY-MM-DD') : '',
                 UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss') : '',
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 id: index,
@@ -341,8 +335,6 @@ const DAOFILMDATA = () => {
             },
           );
           setDaoFilmDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -350,7 +342,6 @@ const DAOFILMDATA = () => {
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
       .catch((error) => {
@@ -362,7 +353,7 @@ const DAOFILMDATA = () => {
       <AGTable
         toolbar={
           <div>
-            <IconButton
+            {btnGN_QL && <IconButton
               className="buttonIcon"
               onClick={() => {
                 setShowGiaoNhan(true);
@@ -370,23 +361,23 @@ const DAOFILMDATA = () => {
             >
               <BiAddToQueue color="red" size={15} />
               Thêm Giao Nhận
-            </IconButton>
-            <IconButton
+            </IconButton>}
+            {btnGN_QL && <IconButton
               className="buttonIcon"
               onClick={() => {
               }}
             >
               <BiAddToQueue color="#0ecb8c" size={15} />
               Gán Code
-            </IconButton>
-            <IconButton
+            </IconButton>}
+            {!btnGN_QL && <IconButton
               className="buttonIcon"
               onClick={() => {
               }}
             >
               <BiLogIn color="#f92baa" size={15} />
               Xuất Dao Film
-            </IconButton>
+            </IconButton>}
           </div>}
         columns={columnDefinition}
         data={daofilmdatatable}
@@ -512,22 +503,16 @@ const DAOFILMDATA = () => {
           <div className="formbutton">
             <div className="btgroup">
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f396fc' }} onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
                 setColumnDefinition(column_daofilm_data);
                 handletraGiaoNhanDaoFilm();
               }}>LS GIAO NHẬN</Button>
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#9ddd49', color: 'black' }} onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
                 setColumnDefinition(column_quanlydaofilm_data);
                 handletraQuanLyDaoFilm();
               }}>QL DAO FILM</Button>
             </div>
             <div className="btgroup">
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69b1f5f' }} onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
                 setColumnDefinition(column_lichsuxuatdaofilm);
                 handletraLichSuXuatDaoFilm();
               }}>LS XUẤT DF</Button>

@@ -234,16 +234,6 @@ const BAOCAOSXALL = () => {
           </div>
           <div
             className="mininavitem"
-            onClick={() => setNav(7)}
-            style={{
-              backgroundColor: selection.tab7 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab7 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PATROL</span>
-          </div>
-          <div
-            className="mininavitem"
             onClick={() => setNav(8)}
             style={{
               backgroundColor: selection.tab8 === true ? "#02c712" : "#abc9ae",
@@ -252,6 +242,17 @@ const BAOCAOSXALL = () => {
           >
             <span className="mininavtext">DATA DAO-FILM</span>
           </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(7)}
+            style={{
+              backgroundColor: selection.tab7 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab7 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">PATROL</span>
+          </div>
+         
         </div>
         {selection.tab1 && (
           <div className="traiqc">

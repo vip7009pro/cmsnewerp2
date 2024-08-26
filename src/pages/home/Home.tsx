@@ -73,7 +73,8 @@ import SAMPLE_MONITOR from "../rnd/sample monitor/SAMPLE_MONITOR";
 import BCSX from "../sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
 import QUICKPLAN2 from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2";
-export const current_ver: number = 456;
+import CHAT from "../chat/CHAT";
+export const current_ver: number = 457;
 interface ELE_ARRAY {     
   REACT_ELE: any;
   ELE_NAME: string;
@@ -714,9 +715,9 @@ function Home() {
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
-        {/* {userData?.EMPL_NO === 'NHU1903' && <div className="chatroom">
+        {userData?.EMPL_NO === 'NHU1903' && <div className="chatroom">
           <CHAT />
-        </div>} */}
+        </div>}
       </div>
     </div>
   );
