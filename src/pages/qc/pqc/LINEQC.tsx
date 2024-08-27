@@ -1,38 +1,13 @@
-import {
-  Button, IconButton,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import moment from "moment";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { AiFillFileExcel, AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
+import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, upload55Query, uploadQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import {
-  CustomResponsiveContainer,
-  SaveExcel,
-} from "../../../api/GlobalFunction";
+import { generalQuery, uploadQuery } from "../../../api/Api";
 import "./LINEQC.scss";
-import { BiShow } from "react-icons/bi";
-import { GrStatusGood } from "react-icons/gr";
-import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  CustomerListData,
-  PQC1_DATA,
-  SX_DATA,
-  UserData,
-} from "../../../api/GlobalInterface";
+import { PQC1_DATA, SX_DATA, UserData } from "../../../api/GlobalInterface";
 
-import html2canvas from 'html2canvas';
-import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { Html5QrcodeScanner } from 'html5-qrcode'
 
@@ -145,7 +120,7 @@ const LINEQC = () => {
           checkPlanIDP501(loaded_data);
         } else {
           setSXData([]);
-          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+          Swal.fire("Thông báo", " Có lỗi x : " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -346,7 +321,7 @@ const LINEQC = () => {
               updateIMGPQC1(planId);
             } else {
               updateIMGPQC1(planId);
-              console.log("Có lỗi: " + response.data.message);
+              console.log("Có lỗi r: " + response.data.message);
             }
           })
           .catch((error) => {
@@ -377,7 +352,7 @@ const LINEQC = () => {
             setSXData([]);
             uploadFile2(planId.toUpperCase(), stt);
           } else {
-            Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+            Swal.fire("Cảnh báo", "Có lỗi d: " + response.data.message, "error");
           }
         })
         .catch((error) => {
