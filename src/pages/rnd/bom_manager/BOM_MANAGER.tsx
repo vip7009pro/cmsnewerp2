@@ -285,23 +285,20 @@ const BOM_MANAGER = () => {
     {
       field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit, headerCheckboxSelection: true,
       checkboxSelection: true, cellRenderer: (params: any) => {
-        if(params.data.M_CODE_SX === null)
-        {
+        if (params.data.M_CODE_SX === null) {
           return (
             <span style={{ color: "red" }}>
               {params.data.M_CODE?.toLocaleString('en-US')}
             </span>
           );
         }
-        else
-        {
+        else {
           return (
             <span style={{ color: "blue" }}>
               {params.data.M_CODE?.toLocaleString('en-US')}
             </span>
           );
         }
-       
       },
     },
     { field: "M_NAME", headerName: "M_NAME", width: 150, editable: enableEdit },
