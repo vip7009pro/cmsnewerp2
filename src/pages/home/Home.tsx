@@ -74,8 +74,8 @@ import BCSX from "../sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
 import QUICKPLAN2 from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2";
 import CHAT from "../chat/CHAT";
-export const current_ver: number = 458;
-interface ELE_ARRAY {     
+export const current_ver: number = 459;
+interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
   ELE_CODE: string;

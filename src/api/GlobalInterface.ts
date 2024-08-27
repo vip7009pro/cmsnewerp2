@@ -2512,6 +2512,7 @@ export interface BOM_GIA {
   G_SEQ?: string;
   CATEGORY?: number;
   M_CODE?: string;
+  M_CODE_SX?: string;
   M_NAME?: string;
   CUST_CD?: string;
   IMPORT_CAT?: string;
