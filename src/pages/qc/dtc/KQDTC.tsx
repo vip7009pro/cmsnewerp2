@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import { CPK_DATA, DTC_DATA, XBAR_DATA } from "../../../api/GlobalInterface";
@@ -11,7 +11,7 @@ import R_CHART from "../../../components/Chart/DTC/R_CHART";
 import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 const KQDTC = () => {
   const [readyRender, setReadyRender] = useState(false);
-  const [isLoading, setisLoading] = useState(false);
+  const isLoading = useRef(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -153,7 +153,7 @@ const KQDTC = () => {
     }
   };
   const [selectedData, setSelectedData] = useState<any>(null);
-  const getXbar = (DATA: any) => {
+  const getXbar = async (DATA: any) => {
     generalQuery("loadXbarData", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -202,7 +202,7 @@ const KQDTC = () => {
         console.log(error);
       });
   }
-  const getCPK = (DATA: any) => {
+  const getCPK = async (DATA: any) => {
     generalQuery("loadCPKTrend", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -240,7 +240,6 @@ const KQDTC = () => {
       });
   }
   const handletraDTCData = () => {
-    setisLoading(true);
     generalQuery("dtcdata", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -278,7 +277,6 @@ const KQDTC = () => {
           );
           setInspectionDataTable(loadeddata);
           setReadyRender(true);
-          setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -286,7 +284,6 @@ const KQDTC = () => {
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
       .catch((error) => {
@@ -305,8 +302,17 @@ const KQDTC = () => {
           //console.log(e.data)
         }} onRowClick={(e) => {
           setSelectedData(e.data)
-          getXbar(e.data)
-          getCPK(e.data)
+          if (!isLoading.current) {
+            isLoading.current = true;
+            Promise.all([getXbar(e.data), getCPK(e.data)]).then((value) => {
+              isLoading.current = false;
+            })
+          }
+          else {
+            Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
+          }
+          /* getXbar(e.data)
+          getCPK(e.data) */
           //console.log(e.data)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
@@ -486,7 +492,6 @@ const KQDTC = () => {
             ></input>
           </label>
           <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334', color: 'white' }} onClick={() => {
-            setisLoading(true);
             setReadyRender(false);
             setColumnDefinition(column_dtc_data);
             handletraDTCData();
