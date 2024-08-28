@@ -3,10 +3,12 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { DTC_DATA } from "../../../api/GlobalInterface";
+import { CPK_DATA, DTC_DATA, XBAR_DATA } from "../../../api/GlobalInterface";
 import "./KQDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";
-
+import XBAR_CHART from "../../../components/Chart/DTC/XBAR_CHART";
+import R_CHART from "../../../components/Chart/DTC/R_CHART";
+import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 const KQDTC = () => {
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
@@ -139,6 +141,8 @@ const KQDTC = () => {
     { field: "TDS_EMPL", headerName: "TDS_EMPL", width: 80 },
     { field: "TDS_UPD_DATE", headerName: "TDS_UPD_DATE", width: 80 },
   ];
+  const [xbar, setXbar] = useState<XBAR_DATA[]>([]);
+  const [cpk, setCPK] = useState<CPK_DATA[]>([]);
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_dtc_data);
   const handleSearchCodeKeyDown = (
@@ -148,6 +152,94 @@ const KQDTC = () => {
       handletraDTCData();
     }
   };
+  const [selectedData, setSelectedData] = useState<any>(null);
+  const getXbar= (DATA: any) => {
+    generalQuery("loadXbarData", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      G_CODE: DATA.G_CODE,
+      G_NAME: codeKD,
+      M_NAME: m_name,
+      M_CODE: m_code,
+      TEST_NAME: DATA.TEST_CODE,
+      PROD_REQUEST_NO: prodrequestno,
+      TEST_TYPE: testtype,
+      POINT_CODE: DATA.POINT_CODE,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let totalXBAR: number =0, totalR: number =0, cnt: number =0, avgXBAR: number = 0, avgR: number = 0;
+          for(let i=0;i<response.data.data.length;i++)
+          {
+            totalXBAR += response.data.data[i].AVG_VALUE;
+            totalR += response.data.data[i].R_VALUE;
+          }
+          cnt = response.data.data.length;
+          avgXBAR = totalXBAR/cnt;
+          avgR = totalR/cnt;
+          const loadeddata: XBAR_DATA[] = response.data.data.map(
+            (element: XBAR_DATA, index: number) => {
+              return {
+                ...element,  
+                X_UCL: avgXBAR+ avgR*0.577,
+                X_CL: avgXBAR,
+                X_LCL: avgXBAR- avgR*0.577,
+                R_UCL: avgR*0,
+                R_CL: avgR,
+                R_LCL: avgR*2.114,                            
+                id: index,
+              };
+            }
+          );
+          //console.log(loadeddata)
+          setXbar(loadeddata);         
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const getCPK= (DATA: any) => {
+    generalQuery("loadCPKTrend", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      G_CODE: DATA.G_CODE,
+      G_NAME: codeKD,
+      M_NAME: m_name,
+      M_CODE: m_code,
+      TEST_NAME: DATA.TEST_CODE,
+      PROD_REQUEST_NO: prodrequestno,
+      TEST_TYPE: testtype,
+      POINT_CODE: DATA.POINT_CODE,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {         
+          const loadeddata: CPK_DATA[] = response.data.data.map(
+            (element: CPK_DATA, index: number) => {
+              return {
+                ...element,  
+                CPK1: 1.33,
+                CPK2: 1.67,
+                id: index,
+              };
+            }
+          );
+          //console.log(loadeddata)
+          setCPK(loadeddata);         
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const handletraDTCData = () => {  
     setisLoading(true);
     generalQuery("dtcdata", {
@@ -213,6 +305,9 @@ const KQDTC = () => {
         onCellEditingStopped={(e) => {
           //console.log(e.data)
         }} onRowClick={(e) => {
+          setSelectedData(e.data)
+          getXbar(e.data)
+          getCPK(e.data)
           //console.log(e.data)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
@@ -400,7 +495,21 @@ const KQDTC = () => {
         </div>
       </div>
       <div className='tracuuYCSXTable'>
-        {kqdtcDataTableAG}        
+        {kqdtcDataTableAG}  
+        {xbar.length > 0 &&<div className="chart">       
+          <div className="xbar">
+            <span style={{fontSize:'1.2rem', fontWeight:'bold'}}>XBAR CHART</span>
+            {xbar.length > 0 && <XBAR_CHART dldata={xbar} />}
+          </div>
+          <div className="xbar">
+            <span style={{fontSize:'1.2rem', fontWeight:'bold'}}>R CHART</span>
+            {xbar.length > 0 && <R_CHART dldata={xbar} />}
+          </div>
+          <div className="xbar">
+            <span style={{fontSize:'1.2rem', fontWeight:'bold'}}>CPK TREND</span>
+            {cpk.length > 0 && <CPK_CHART dldata={cpk} />}
+          </div>
+        </div>}
       </div>
     </div>
   );

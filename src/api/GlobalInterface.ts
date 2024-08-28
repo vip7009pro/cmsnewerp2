@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-
 //PO kinh doanh
 export interface POTableData {
   PO_ID: number;
@@ -1497,7 +1496,6 @@ export interface QC_FAIL_DATA {
   REMARK_OUT: string;
   FAIL_ID: number;
 }
-
 //error table
 export interface ERROR_TABLE {
   ERR_CODE: string;
@@ -3182,7 +3180,6 @@ export interface InspectSummary {
   INSPECT_YW?: string;
   INSPECT_MONTH?: string;
   INSPECT_WEEK?: string;
-
   ISP_TT_QTY: number;
   INSP_OK_QTY: number;
   M_NG_QTY: number;
@@ -3394,7 +3391,6 @@ export interface SX_LOSS_TREND_DATA {
   RATE1: number;
   RATE2: number;
 }
-
 export interface PATROL_HEADER_DATA {
   G_CODE: string;
   G_NAME_KD: string;
@@ -3405,7 +3401,6 @@ export interface PATROL_HEADER_DATA {
   WORST2: string;
   WORST3: string;
 }
-
 export interface PATROL_DATA {
   TIME: string;
   EQ: string;
@@ -3468,7 +3463,6 @@ export interface CHO_KIEM_DATA {
   WAIT_SORTING_RMA: number;
   TOTAL_WAIT: number;
 }
-
 export interface WH_M_INPUT_DATA {
   id: string;
   CUST_CD: string;
@@ -3552,11 +3546,9 @@ export interface DEFECT_TRENDING_DATA {
   INSPECT_DATE?: string;
   INSPECT_YW?: string;
   INSPECT_YM?: string;
-
   INSPECT_YEAR?: number;
   INSPECT_MONTH?: number;
   INSPECT_WEEK?: number;
-
   INSPECT_TOTAL_QTY: number;
   INSPECT_OK_QTY: number;
   INSPECT_NG_QTY: number;
@@ -3783,7 +3775,6 @@ export interface AUDIT_CHECKLIST_RESULT {
   UPD_DATE: string;
   UPD_EMPL: string;
 }
-
 export interface OVERDUE_DATA {
   DELIVERY_DATE?: string;
   YEARNUM?: string;
@@ -3803,12 +3794,10 @@ export interface SX_TREND_LOSS_DATA {
   PURE_OUTPUT: number;
   LOSS_RATE: number;
 }
-
 export interface MASTER_MATERIAL_HSD {
   M_NAME: string;
   EXP_DATE: number;
 }
-
 export interface RND_NEWCODE_TREND_DATA {
   CREATED_DATE?: string;
   CREATED_YW?: string;
@@ -3871,7 +3860,6 @@ export interface SAMPLE_MONITOR_DATA {
   G_LENGTH: number;
   CUST_NAME_KD: string;
 }
-
 export interface SX_ACHIVE_DATA {
   SX_DATE?: string;
   SX_YM?: string;
@@ -3881,7 +3869,6 @@ export interface SX_ACHIVE_DATA {
   PLAN_QTY: number;
   ACHIVE_RATE: number;
 }
-
 export interface SX_LOSSTIME_REASON_DATA {
   REASON: string;
   LOSS_TIME: number;
@@ -3970,12 +3957,10 @@ export interface DAILY_YCSX_RESULT {
   INSP_OK: number,
   LOSS_KT: number;
 }
-
 export interface FORM_ELEMENT {
   elementType: string,
   element: ReactElement
 }
-
 export interface QUANLYDAOFILM_DATA {
   KNIFE_FILM_ID: number,
 FACTORY_NAME: string,
@@ -4011,7 +3996,6 @@ PROD_TYPE: string,
 REV_NO: string,
 VENDOR: string,
 }
-
 export interface XUATDAOFILM_DATA {
   CA_LAM_VIEC: string;
   PLAN_ID: string;
@@ -4036,4 +4020,33 @@ export interface XUATDAOFILM_DATA {
   G_NAME_KD: string;
   PLAN_DATE: string;
   SX_DATE: string;
+}
+export interface XBAR_DATA {
+  GRP_ID: number;
+  CENTER_VALUE: number;
+  LOWER_VALUE: number;
+  UPPER_VALUE: number;
+  MIN_VALUE: number;
+  MAX_VALUE: number;
+  R_VALUE: number;
+  AVG_VALUE: number;
+  X_UCL: number;
+  X_CL: number;
+  X_LCL: number;
+  R_UCL: number;
+  R_CL: number;
+  R_LCL: number;
+}
+export interface CPK_DATA {
+  GRP_ID: number;
+  CENTER_VALUE: number;
+  LOWER_VALUE: number;
+  UPPER_VALUE: number;
+  STD_DEV_VALUE: number;
+  AVG_VALUE: number;
+  CPU: number;
+  CPL: number;
+  CPK: number;
+  CPK1: number;
+  CPK2: number;
 }

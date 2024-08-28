@@ -69,6 +69,7 @@
       }
       .formbutton {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: space-around;
         gap: 20px;
@@ -109,7 +110,19 @@
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
+      .chart {
+        display: flex;
+        height: 100%;
+        .xbar {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        }
+      }
     }
+   
   }
 }
 @media only screen and (max-width: 768px) {
