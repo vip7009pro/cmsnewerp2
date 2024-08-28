@@ -110,7 +110,7 @@ const XBAR_CHART = ({
         />
         
         <Tooltip content={<CustomTooltip />} />
-        <Legend 
+        <Legend         
         verticalAlign="top"
         align="center"
         iconSize={15}
@@ -123,6 +123,7 @@ const XBAR_CHART = ({
           type='monotone'
           dataKey='AVG_VALUE'
           stroke='green'
+          dot={false}
                   />
         <Line
           yAxisId='left-axis'
@@ -130,6 +131,7 @@ const XBAR_CHART = ({
           dataKey='X_UCL'
           stroke='red'
           strokeDasharray="5 5"
+          dot={false}
                   />
         <Line
           yAxisId='left-axis'
@@ -137,6 +139,7 @@ const XBAR_CHART = ({
           dataKey='X_LCL'
           stroke='red'
           strokeDasharray="5 5"
+          dot={false}
                   />
         <Line
           yAxisId='left-axis'
@@ -144,6 +147,7 @@ const XBAR_CHART = ({
           dataKey='X_CL'
           stroke='blue'
           strokeDasharray="5 5"
+          dot={false}
                   />
       </ComposedChart>
     </CustomResponsiveContainer>

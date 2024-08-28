@@ -107,6 +107,7 @@ const HISTOGRAM_CHART = ({
           type='monotone'
           dataKey='CNT'
           stroke='green'
+          dot={false}
         />
         <Bar
           yAxisId='left-axis'
@@ -114,7 +115,7 @@ const HISTOGRAM_CHART = ({
           dataKey='CNT'
           stroke='red'
           strokeDasharray="5 5"
-          fill="#3b58db"
+          fill="#3b58db"         
         />
       </ComposedChart>
     </CustomResponsiveContainer>

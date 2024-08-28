@@ -115,6 +115,7 @@ const R_CHART = ({
           type='monotone'
           dataKey='R_VALUE'
           stroke='green'
+          dot={false}
                   />
         <Line
           yAxisId='left-axis'
@@ -122,6 +123,7 @@ const R_CHART = ({
           dataKey='R_UCL'
           stroke='red'
           strokeDasharray="5 5"
+          dot={false}
                   />
         <Line
           yAxisId='left-axis'
@@ -129,6 +131,7 @@ const R_CHART = ({
           dataKey='R_LCL'
           stroke='red'
           strokeDasharray="5 5"
+          dot={false}
                   />
         <Line
           yAxisId='left-axis'
@@ -136,6 +139,7 @@ const R_CHART = ({
           dataKey='R_CL'
           stroke='blue'
           strokeDasharray="5 5"
+          dot={false}
                   />
       </ComposedChart>
     </CustomResponsiveContainer>

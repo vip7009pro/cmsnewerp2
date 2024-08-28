@@ -115,6 +115,7 @@ for (let i = 1; i < dldata.length; i++) {
           type='monotone'
           dataKey='CPK'
           stroke='green'
+          dot={false}
         />        
         <Line
           yAxisId='left-axis'
@@ -122,6 +123,7 @@ for (let i = 1; i < dldata.length; i++) {
           dataKey='CPK1'
           stroke='red'
           strokeDasharray="5 5"
+          dot={false}
         />        
         <Line
           yAxisId='left-axis'
@@ -129,6 +131,7 @@ for (let i = 1; i < dldata.length; i++) {
           dataKey='CPK2'
           stroke='red'
           strokeDasharray="5 5"
+          dot={false}
         />        
       </ComposedChart>
     </CustomResponsiveContainer>

@@ -197,6 +197,7 @@ const KQDTC = () => {
           //console.log(loadeddata)
           setXbar(loadeddata);
         } else {
+          setXbar([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -234,6 +235,7 @@ const KQDTC = () => {
           //console.log(loadeddata)
           setCPK(loadeddata);
         } else {
+          setCPK([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -269,6 +271,7 @@ const KQDTC = () => {
           //console.log(loadeddata)
           setHistogram(loadeddata);
         } else {
+          setHistogram([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -542,15 +545,15 @@ const KQDTC = () => {
             {histogram.length > 0 && <HISTOGRAM_CHART dldata={histogram} />}
           </div>
           <div className="xbar">
-            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>XBAR CHART</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>XBAR CHART (n=5)</span>
             {xbar.length > 0 && <XBAR_CHART dldata={xbar} />}
           </div>
           <div className="xbar">
-            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>R CHART</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>R CHART (n=5)</span>
             {xbar.length > 0 && <R_CHART dldata={xbar} />}
           </div>
           <div className="xbar">
-            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>CPK TREND</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>CPK TREND (n=25)</span>
             {cpk.length > 0 && <CPK_CHART dldata={cpk} />}
           </div>
         </div>}
