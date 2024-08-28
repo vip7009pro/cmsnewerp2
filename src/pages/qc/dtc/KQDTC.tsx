@@ -156,7 +156,7 @@ const KQDTC = () => {
   };
   const [selectedData, setSelectedData] = useState<any>(null);
   const getXbar = async (DATA: any) => {
-    generalQuery("loadXbarData", {
+    await generalQuery("loadXbarData", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -206,7 +206,7 @@ const KQDTC = () => {
       });
   }
   const getCPK = async (DATA: any) => {
-    generalQuery("loadCPKTrend", {
+    await generalQuery("loadCPKTrend", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -244,7 +244,7 @@ const KQDTC = () => {
       });
   }
   const getHistogram = async (DATA: any) => {
-    generalQuery("loadHistogram", {
+    await generalQuery("loadHistogram", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -341,7 +341,7 @@ const KQDTC = () => {
         onCellEditingStopped={(e) => {
           //console.log(e.data)
         }} onRowClick={(e) => {
-          setSelectedData(e.data)
+          /* setSelectedData(e.data)
           if (isLoading.current === false) {
             isLoading.current = true;
             Promise.all([getXbar(e.data), getCPK(e.data), getHistogram(e.data)]).then((value) => {
@@ -350,10 +350,34 @@ const KQDTC = () => {
           }
           else {
             Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
-          }
+          } */
           //console.log(e.data)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
+        }}
+        onRowDoubleClick={async (e) => {
+          Swal.fire({
+            title: "Loading data",
+            text: "Đang tải dữ liệu, hãy chờ chút",
+            icon: "info",
+            showCancelButton: false,
+            allowOutsideClick: false,
+            confirmButtonText: "OK",
+            showConfirmButton: false,
+          });
+          setSelectedData(e.data)
+          if (isLoading.current === false) {
+            isLoading.current = true;
+            
+            await Promise.all([getXbar(e.data), getCPK(e.data),getHistogram(e.data)]).then(() => {
+              isLoading.current = false;
+              Swal.fire('Thông báo','Data loaded','success')
+            })
+          }
+          else {
+            Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
+          }
+          //console.log(e.data)
         }}
       />
     )
