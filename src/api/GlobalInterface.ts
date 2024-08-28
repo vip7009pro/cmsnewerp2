@@ -4050,3 +4050,7 @@ export interface CPK_DATA {
   CPK1: number;
   CPK2: number;
 }
+export interface HISTOGRAM_DATA {
+  RESULT: string,
+  CNT: number
+}

@@ -110,6 +110,14 @@
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
+      .pointInfomation {
+        display: flex;
+        background-image: linear-gradient(0deg, #2bf33b, #e8ecee);
+        align-items: center;
+        justify-content: space-evenly;
+        font-weight: bold;
+        color: #0f5c80;
+      }
       .chart {
         display: flex;
         height: 100%;

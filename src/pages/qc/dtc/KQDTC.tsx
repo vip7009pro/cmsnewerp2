@@ -3,12 +3,13 @@ import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { CPK_DATA, DTC_DATA, XBAR_DATA } from "../../../api/GlobalInterface";
+import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, XBAR_DATA } from "../../../api/GlobalInterface";
 import "./KQDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import XBAR_CHART from "../../../components/Chart/DTC/XBAR_CHART";
 import R_CHART from "../../../components/Chart/DTC/R_CHART";
 import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
+import HISTOGRAM_CHART from "../../../components/Chart/DTC/HISTOGRAM_CHART";
 const KQDTC = () => {
   const [readyRender, setReadyRender] = useState(false);
   const isLoading = useRef<boolean>(false);
@@ -143,6 +144,7 @@ const KQDTC = () => {
   ];
   const [xbar, setXbar] = useState<XBAR_DATA[]>([]);
   const [cpk, setCPK] = useState<CPK_DATA[]>([]);
+  const [histogram, setHistogram] = useState<HISTOGRAM_DATA[]>([]);
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_dtc_data);
   const handleSearchCodeKeyDown = (
@@ -160,8 +162,8 @@ const KQDTC = () => {
       TO_DATE: todate,
       G_CODE: DATA.G_CODE,
       G_NAME: codeKD,
-      M_NAME: m_name,
-      M_CODE: m_code,
+      M_NAME: DATA.M_NAME,
+      M_CODE: DATA.M_CODE,
       TEST_NAME: DATA.TEST_CODE,
       PROD_REQUEST_NO: prodrequestno,
       TEST_TYPE: testtype,
@@ -209,8 +211,8 @@ const KQDTC = () => {
       TO_DATE: todate,
       G_CODE: DATA.G_CODE,
       G_NAME: codeKD,
-      M_NAME: m_name,
-      M_CODE: m_code,
+      M_NAME: DATA.M_NAME,
+      M_CODE: DATA.M_CODE,
       TEST_NAME: DATA.TEST_CODE,
       PROD_REQUEST_NO: prodrequestno,
       TEST_TYPE: testtype,
@@ -231,6 +233,41 @@ const KQDTC = () => {
           );
           //console.log(loadeddata)
           setCPK(loadeddata);
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const getHistogram = async (DATA: any) => {
+    generalQuery("loadHistogram", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      G_CODE: DATA.G_CODE,
+      G_NAME: codeKD,
+      M_NAME: DATA.M_NAME,
+      M_CODE: DATA.M_CODE,
+      TEST_NAME: DATA.TEST_CODE,
+      PROD_REQUEST_NO: prodrequestno,
+      TEST_TYPE: testtype,
+      POINT_CODE: DATA.POINT_CODE,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: HISTOGRAM_DATA[] = response.data.data.map(
+            (element: HISTOGRAM_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          //console.log(loadeddata)
+          setHistogram(loadeddata);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -300,17 +337,17 @@ const KQDTC = () => {
         data={inspectiondatatable}
         onCellEditingStopped={(e) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {          
+        }} onRowClick={(e) => {
           setSelectedData(e.data)
-          if (isLoading.current ===false) {
-            isLoading.current = true;           
-            Promise.all([getXbar(e.data), getCPK(e.data)]).then((value) => {
-              isLoading.current = false;              
+          if (isLoading.current === false) {
+            isLoading.current = true;
+            Promise.all([getXbar(e.data), getCPK(e.data), getHistogram(e.data)]).then((value) => {
+              isLoading.current = false;
             })
           }
           else {
             Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
-          }         
+          }
           //console.log(e.data)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
@@ -498,7 +535,12 @@ const KQDTC = () => {
       </div>
       <div className='tracuuYCSXTable'>
         {kqdtcDataTableAG}
+        <div className="pointInfomation"><span>Sản phẩm: {selectedData?.G_NAME}</span>|<span>Vật liệu: {selectedData?.M_NAME}</span>|<span>Hạng mục test: {selectedData?.TEST_NAME}</span>|<span>Test point: {selectedData?.POINT_CODE}</span></div>
         {xbar.length > 0 && <div className="chart">
+          <div className="xbar">
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>HISTOGRAM CHART</span>
+            {histogram.length > 0 && <HISTOGRAM_CHART dldata={histogram} />}
+          </div>
           <div className="xbar">
             <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>XBAR CHART</span>
             {xbar.length > 0 && <XBAR_CHART dldata={xbar} />}
