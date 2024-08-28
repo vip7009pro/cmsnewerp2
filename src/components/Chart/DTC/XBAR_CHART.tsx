@@ -16,21 +16,18 @@ import {
   nFormatter,
 } from "../../../api/GlobalFunction";
 import { XBAR_DATA } from "../../../api/GlobalInterface";
-
 const XBAR_CHART = ({
   dldata
-}: {dldata: XBAR_DATA[]}) => {
+}: { dldata: XBAR_DATA[] }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
-
   const labelFormatter = (value: number) => {
-    return formatCash(value); 
+    return formatCash(value);
   };
   const labelFormatterNumber = (value: number) => {
-    return (value.toLocaleString('en-US',{style: 'decimal'})); 
+    return (value.toLocaleString('en-US', { style: 'decimal' }));
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -40,8 +37,7 @@ const XBAR_CHART = ({
     payload?: any;
     label?: any;
   }) => {
-    if (active && payload && payload.length) {   
-      
+    if (active && payload && payload.length) {
       return (
         <div
           className='custom-tooltip'
@@ -51,27 +47,25 @@ const XBAR_CHART = ({
             borderRadius: 5,
           }}
         >
-          <p>GROUP {label}:</p>          
+          <p>GROUP {label}:</p>
           <p className='label'>
             XBAR: {`${payload[0].payload.AVG_VALUE.toLocaleString("en-US")}`}
-          </p>          
+          </p>
           <p className='label'>
             X_LCL: {`${payload[0].payload.X_LCL.toLocaleString("en-US")}`}
-          </p>          
+          </p>
           <p className='label'>
             X_CL: {`${payload[0].payload.X_CL.toLocaleString("en-US")}`}
-          </p>          
+          </p>
           <p className='label'>
             X_UCL: {`${payload[0].payload.X_UCL.toLocaleString("en-US")}`}
-          </p>          
-         
-          
+          </p>
         </div>
       );
     }
     return null;
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
@@ -87,8 +81,8 @@ const XBAR_CHART = ({
         title="XBAR_CHART"
       >
         <CartesianGrid strokeDasharray='5 5' className='chartGrid' />
-        <XAxis dataKey='GRP_ID' height={40} tick={{fontSize:'0.7rem'}}>         
-          <Label value='Sample Group' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+        <XAxis dataKey='GRP_ID' height={40} tick={{ fontSize: '0.7rem' }}>
+          <Label value='Sample Group' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -96,9 +90,9 @@ const XBAR_CHART = ({
             value: "Value",
             angle: -90,
             position: "insideLeft",
-            fontSize:'0.7rem'    
+            fontSize: '0.7rem'
           }}
-          tick={{fontSize:'0.7rem'}}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -106,25 +100,24 @@ const XBAR_CHART = ({
             }).format(value)
           }
           tickCount={7}
-          domain={[dldata[0].X_LCL, dldata[0].X_UCL]} 
+          domain={[dldata[0].X_LCL, dldata[0].X_UCL]}
         />
-        
         <Tooltip content={<CustomTooltip />} />
-        <Legend         
-        verticalAlign="top"
-        align="center"
-        iconSize={15}
-        iconType="diamond"
-        formatter={(value, entry) => (
-          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-        )}/>       
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+          )} />
         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='AVG_VALUE'
           stroke='green'
           dot={false}
-                  />
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -132,7 +125,7 @@ const XBAR_CHART = ({
           stroke='red'
           strokeDasharray="5 5"
           dot={false}
-                  />
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -140,7 +133,7 @@ const XBAR_CHART = ({
           stroke='red'
           strokeDasharray="5 5"
           dot={false}
-                  />
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -148,7 +141,7 @@ const XBAR_CHART = ({
           stroke='blue'
           strokeDasharray="5 5"
           dot={false}
-                  />
+        />
       </ComposedChart>
     </CustomResponsiveContainer>
   );
