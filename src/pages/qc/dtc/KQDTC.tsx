@@ -11,7 +11,7 @@ import R_CHART from "../../../components/Chart/DTC/R_CHART";
 import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 const KQDTC = () => {
   const [readyRender, setReadyRender] = useState(false);
-  const isLoading = useRef(false);
+  const isLoading = useRef<boolean>(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -300,26 +300,24 @@ const KQDTC = () => {
         data={inspectiondatatable}
         onCellEditingStopped={(e) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e) => {          
           setSelectedData(e.data)
-          if (!isLoading.current) {
-            isLoading.current = true;
+          if (isLoading.current ===false) {
+            isLoading.current = true;           
             Promise.all([getXbar(e.data), getCPK(e.data)]).then((value) => {
-              isLoading.current = false;
+              isLoading.current = false;              
             })
           }
           else {
             Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
-          }
-          /* getXbar(e.data)
-          getCPK(e.data) */
+          }         
           //console.log(e.data)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
     )
-  }, [inspectiondatatable, columnDefinition])
+  }, [inspectiondatatable, columnDefinition, isLoading.current])
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
