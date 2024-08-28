@@ -109,9 +109,9 @@ const KQDTC = () => {
     {
       field: "DANHGIA",
       headerName: "DANH_GIA",
-      width: 80,      
+      width: 80,
       cellRenderer: (params: any) => {
-        if (params.data.DANHGIA =='OK')
+        if (params.data.DANHGIA == 'OK')
           return (
             <span style={{ color: "green" }}>
               <b>OK</b>
@@ -153,7 +153,7 @@ const KQDTC = () => {
     }
   };
   const [selectedData, setSelectedData] = useState<any>(null);
-  const getXbar= (DATA: any) => {
+  const getXbar = (DATA: any) => {
     generalQuery("loadXbarData", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -170,40 +170,39 @@ const KQDTC = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          let totalXBAR: number =0, totalR: number =0, cnt: number =0, avgXBAR: number = 0, avgR: number = 0;
-          for(let i=0;i<response.data.data.length;i++)
-          {
+          let totalXBAR: number = 0, totalR: number = 0, cnt: number = 0, avgXBAR: number = 0, avgR: number = 0;
+          for (let i = 0; i < response.data.data.length; i++) {
             totalXBAR += response.data.data[i].AVG_VALUE;
             totalR += response.data.data[i].R_VALUE;
           }
           cnt = response.data.data.length;
-          avgXBAR = totalXBAR/cnt;
-          avgR = totalR/cnt;
+          avgXBAR = totalXBAR / cnt;
+          avgR = totalR / cnt;
           const loadeddata: XBAR_DATA[] = response.data.data.map(
             (element: XBAR_DATA, index: number) => {
               return {
-                ...element,  
-                X_UCL: avgXBAR+ avgR*0.577,
+                ...element,
+                X_UCL: avgXBAR + avgR * 0.577,
                 X_CL: avgXBAR,
-                X_LCL: avgXBAR- avgR*0.577,
-                R_UCL: avgR*0,
+                X_LCL: avgXBAR - avgR * 0.577,
+                R_UCL: avgR * 0,
                 R_CL: avgR,
-                R_LCL: avgR*2.114,                            
+                R_LCL: avgR * 2.114,
                 id: index,
               };
             }
           );
           //console.log(loadeddata)
-          setXbar(loadeddata);         
+          setXbar(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");          
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
         console.log(error);
       });
   }
-  const getCPK= (DATA: any) => {
+  const getCPK = (DATA: any) => {
     generalQuery("loadCPKTrend", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -219,11 +218,11 @@ const KQDTC = () => {
     })
       .then((response) => {
         //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {         
+        if (response.data.tk_status !== "NG") {
           const loadeddata: CPK_DATA[] = response.data.data.map(
             (element: CPK_DATA, index: number) => {
               return {
-                ...element,  
+                ...element,
                 CPK1: 1.33,
                 CPK2: 1.67,
                 id: index,
@@ -231,16 +230,16 @@ const KQDTC = () => {
             }
           );
           //console.log(loadeddata)
-          setCPK(loadeddata);         
+          setCPK(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");          
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
         console.log(error);
       });
   }
-  const handletraDTCData = () => {  
+  const handletraDTCData = () => {
     setisLoading(true);
     generalQuery("dtcdata", {
       ALLTIME: alltime,
@@ -262,17 +261,17 @@ const KQDTC = () => {
             (element: DTC_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 TEST_FINISH_TIME: moment
                   .utc(element.TEST_FINISH_TIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
                 REQUEST_DATETIME: moment
                   .utc(element.REQUEST_DATETIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
-                DANHGIA:  (
+                DANHGIA: (
                   element.RESULT >= element.CENTER_VALUE - element.LOWER_TOR &&
                   element.RESULT <= element.CENTER_VALUE + element.UPPER_TOR
-                ) ? 'OK': 'NG',
+                ) ? 'OK' : 'NG',
                 id: index,
               };
             }
@@ -294,7 +293,7 @@ const KQDTC = () => {
         console.log(error);
       });
   };
-  const kqdtcDataTableAG = useMemo(()=> {
+  const kqdtcDataTableAG = useMemo(() => {
     return (
       <AGTable
         toolbar={
@@ -314,7 +313,7 @@ const KQDTC = () => {
         }}
       />
     )
-  },[inspectiondatatable,columnDefinition])
+  }, [inspectiondatatable, columnDefinition])
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -495,18 +494,18 @@ const KQDTC = () => {
         </div>
       </div>
       <div className='tracuuYCSXTable'>
-        {kqdtcDataTableAG}  
-        {xbar.length > 0 &&<div className="chart">       
+        {kqdtcDataTableAG}
+        {xbar.length > 0 && <div className="chart">
           <div className="xbar">
-            <span style={{fontSize:'1.2rem', fontWeight:'bold'}}>XBAR CHART</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>XBAR CHART</span>
             {xbar.length > 0 && <XBAR_CHART dldata={xbar} />}
           </div>
           <div className="xbar">
-            <span style={{fontSize:'1.2rem', fontWeight:'bold'}}>R CHART</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>R CHART</span>
             {xbar.length > 0 && <R_CHART dldata={xbar} />}
           </div>
           <div className="xbar">
-            <span style={{fontSize:'1.2rem', fontWeight:'bold'}}>CPK TREND</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>CPK TREND</span>
             {cpk.length > 0 && <CPK_CHART dldata={cpk} />}
           </div>
         </div>}
