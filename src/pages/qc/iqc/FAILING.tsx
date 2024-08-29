@@ -1,25 +1,9 @@
-import {
-  Autocomplete,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import moment from "moment";
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./FAILING.scss";
 import DataGrid, {
@@ -38,7 +22,6 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
@@ -80,43 +63,42 @@ const FAILING = () => {
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
   const [cust_cd, setCust_Cd] = useState("6969");
-  const column_failing_table=[
-    { field: 'FAIL_ID',headerName: 'FAIL_ID', resizable: true,width: 80 },
-    { field: 'FACTORY',headerName: 'FACTORY', resizable: true,width: 80 },
-    { field: 'PLAN_ID_SUDUNG',headerName: 'PLAN_ID_SUDUNG', resizable: true,width: 80 },
-    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 80 },
-    { field: 'LIEUQL_SX',headerName: 'LIEUQL_SX', resizable: true,width: 80 },
-    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 80 },
-    { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
-    { field: 'VENDOR_LOT',headerName: 'VENDOR_LOT', resizable: true,width: 80 },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
-    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80 },
-    { field: 'ROLL_QTY',headerName: 'ROLL_QTY', resizable: true,width: 80 },
-    { field: 'TOTAL_IN_QTY',headerName: 'TOTAL_IN_QTY', resizable: true,width: 80 },
-    { field: 'USE_YN',headerName: 'USE_YN', resizable: true,width: 80 },
-    { field: 'PQC3_ID',headerName: 'PQC3_ID', resizable: true,width: 80 },
-    { field: 'DEFECT_PHENOMENON',headerName: 'DEFECT_PHENOMENON', resizable: true,width: 80 },
-    { field: 'OUT_DATE',headerName: 'OUT_DATE', resizable: true,width: 80 },
-    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 80 },
-    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 80 },
-    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 80 },
-    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 80 },
-    { field: 'PHANLOAI',headerName: 'PHANLOAI', resizable: true,width: 80 },
-    { field: 'QC_PASS',headerName: 'QC_PASS', resizable: true,width: 80 },
-    { field: 'QC_PASS_DATE',headerName: 'QC_PASS_DATE', resizable: true,width: 80 },
-    { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 80 },
-    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 80 },
-    { field: 'IN1_EMPL',headerName: 'IN1_EMPL', resizable: true,width: 80 },
-    { field: 'IN2_EMPL',headerName: 'IN2_EMPL', resizable: true,width: 80 },
-    { field: 'OUT1_EMPL',headerName: 'OUT1_EMPL', resizable: true,width: 80 },
-    { field: 'OUT2_EMPL',headerName: 'OUT2_EMPL', resizable: true,width: 80 },
-    { field: 'IN_CUST_CD',headerName: 'IN_CUST_CD', resizable: true,width: 80 },
-    { field: 'OUT_CUST_CD',headerName: 'OUT_CUST_CD', resizable: true,width: 80 },
-    { field: 'IN_CUST_NAME',headerName: 'IN_CUST_NAME', resizable: true,width: 80 },
-    { field: 'OUT_CUST_NAME',headerName: 'OUT_CUST_NAME', resizable: true,width: 80 },
-    { field: 'OUT_PLAN_ID',headerName: 'OUT_PLAN_ID', resizable: true,width: 80 },
-    { field: 'REMARK_OUT',headerName: 'REMARK_OUT', resizable: true,width: 80 },
-   
+  const column_failing_table = [
+    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 80 },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
+    { field: 'PLAN_ID_SUDUNG', headerName: 'PLAN_ID_SUDUNG', resizable: true, width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
+    { field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 80 },
+    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 80 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
+    { field: 'VENDOR_LOT', headerName: 'VENDOR_LOT', resizable: true, width: 80 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80 },
+    { field: 'ROLL_QTY', headerName: 'ROLL_QTY', resizable: true, width: 80 },
+    { field: 'TOTAL_IN_QTY', headerName: 'TOTAL_IN_QTY', resizable: true, width: 80 },
+    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 },
+    { field: 'PQC3_ID', headerName: 'PQC3_ID', resizable: true, width: 80 },
+    { field: 'DEFECT_PHENOMENON', headerName: 'DEFECT_PHENOMENON', resizable: true, width: 80 },
+    { field: 'OUT_DATE', headerName: 'OUT_DATE', resizable: true, width: 80 },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 80 },
+    { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 80 },
+    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 80 },
+    { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 80 },
+    { field: 'PHANLOAI', headerName: 'PHANLOAI', resizable: true, width: 80 },
+    { field: 'QC_PASS', headerName: 'QC_PASS', resizable: true, width: 80 },
+    { field: 'QC_PASS_DATE', headerName: 'QC_PASS_DATE', resizable: true, width: 80 },
+    { field: 'QC_PASS_EMPL', headerName: 'QC_PASS_EMPL', resizable: true, width: 80 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 80 },
+    { field: 'IN1_EMPL', headerName: 'IN1_EMPL', resizable: true, width: 80 },
+    { field: 'IN2_EMPL', headerName: 'IN2_EMPL', resizable: true, width: 80 },
+    { field: 'OUT1_EMPL', headerName: 'OUT1_EMPL', resizable: true, width: 80 },
+    { field: 'OUT2_EMPL', headerName: 'OUT2_EMPL', resizable: true, width: 80 },
+    { field: 'IN_CUST_CD', headerName: 'IN_CUST_CD', resizable: true, width: 80 },
+    { field: 'OUT_CUST_CD', headerName: 'OUT_CUST_CD', resizable: true, width: 80 },
+    { field: 'IN_CUST_NAME', headerName: 'IN_CUST_NAME', resizable: true, width: 80 },
+    { field: 'OUT_CUST_NAME', headerName: 'OUT_CUST_NAME', resizable: true, width: 80 },
+    { field: 'OUT_PLAN_ID', headerName: 'OUT_PLAN_ID', resizable: true, width: 80 },
+    { field: 'REMARK_OUT', headerName: 'REMARK_OUT', resizable: true, width: 80 },
   ];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -515,7 +497,6 @@ const FAILING = () => {
       <AGTable
         toolbar={
           <div>
-            
           </div>}
         columns={column_failing_table}
         data={inspectiondatatable}
@@ -523,10 +504,9 @@ const FAILING = () => {
           //console.log(e.data)
         }} onRowClick={(e) => {
           //console.log(e.data)
-          
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
-          selectedRowsDataA.current = e!.api.getSelectedRows();             
+          selectedRowsDataA.current = e!.api.getSelectedRows();
         }}
       />
     )
@@ -652,10 +632,9 @@ const FAILING = () => {
           setWidthCD(response.data.data[0].WIDTH_CD);
           setInCFMQTY(response.data.data[0].OUT_CFM_QTY);
           setRollQty(response.data.data[0].ROLL_QTY);
-          setVendorLot(response.data.data[0].LOTNCC?? "");
-          setPlanId(response.data.data[0].PLAN_ID?? "");
-
-          if((response.data.data[0].PLAN_ID ?? "").length>7) {
+          setVendorLot(response.data.data[0].LOTNCC ?? "");
+          setPlanId(response.data.data[0].PLAN_ID ?? "");
+          if ((response.data.data[0].PLAN_ID ?? "").length > 7) {
             checkPlanID(response.data.data[0].PLAN_ID);
             checkPQC3_ID(response.data.data[0].PLAN_ID);
           }
@@ -684,7 +663,7 @@ const FAILING = () => {
   const checkInput = (): boolean => {
     if (
       m_lot_no !== "" &&
-      planId !== "" &&      
+      planId !== "" &&
       request_empl !== ""
     ) {
       return true;
@@ -910,7 +889,7 @@ const FAILING = () => {
                     type="text"
                     placeholder="202304190123"
                     value={m_lot_no}
-                    onKeyDown={(e)=> {
+                    onKeyDown={(e) => {
                       handleKeyDown(e);
                     }}
                     onChange={(e) => {
@@ -1011,7 +990,6 @@ const FAILING = () => {
                   ></input>
                 </label>
               </div>
-             
               <div className="forminputcolumn">
                 <label>
                   <b>CMSV</b>
@@ -1025,56 +1003,52 @@ const FAILING = () => {
                     }}
                   ></input>
                 </label>
-                <div className="btdiv" style={{display:'flex', gap: '10px'}}>
-               
+                <div className="btdiv" style={{ display: 'flex', gap: '10px' }}>
                 </div>
-                
               </div>
             </div>
             <div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#01aa01', color: 'white' }} onClick={() => {
-                  setInspectionDataTable([]);
-                }}>New</Button>
-                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
-                  handletraFailingData();
-                }}>Tra Data</Button>
-            <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={() => {
-                  if (checkInput()) {
-                    let lotArray = inspectiondatatable.map(
-                      (element: QC_FAIL_DATA, index: number) => {
-                        return element.M_LOT_NO;
-                      },
-                    );
-                    if (pqc3Id !== 0) {
-                      if (lotArray.indexOf(m_lot_no) < 0) {
-                        addRow();
-                      } else {
-                        Swal.fire(
-                          "Thông tin",
-                          "Đã thêm cuộn này rồi",
-                          "error",
-                        );
-                      }
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#01aa01', color: 'white' }} onClick={() => {
+                setInspectionDataTable([]);
+              }}>New</Button>
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
+                handletraFailingData();
+              }}>Tra Data</Button>
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={() => {
+                if (checkInput()) {
+                  let lotArray = inspectiondatatable.map(
+                    (element: QC_FAIL_DATA, index: number) => {
+                      return element.M_LOT_NO;
+                    },
+                  );
+                  if (pqc3Id !== 0) {
+                    if (lotArray.indexOf(m_lot_no) < 0) {
+                      addRow();
                     } else {
                       Swal.fire(
                         "Thông tin",
-                        "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
+                        "Đã thêm cuộn này rồi",
                         "error",
                       );
                     }
                   } else {
                     Swal.fire(
-                      "Thông báo",
-                      "Hãy nhập đủ thông tin trước khi đăng ký",
+                      "Thông tin",
+                      "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
                       "error",
                     );
                   }
-                }}>Add</Button>
-                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
-                  saveFailingData();
-                }}>Save</Button>
-                
-
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Hãy nhập đủ thông tin trước khi đăng ký",
+                    "error",
+                  );
+                }
+              }}>Add</Button>
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
+                saveFailingData();
+              }}>Save</Button>
             </div>
           </div>
           <div className="tracuuYCSXTable">
