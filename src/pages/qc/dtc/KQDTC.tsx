@@ -368,10 +368,9 @@ const KQDTC = () => {
           setSelectedData(e.data)
           if (isLoading.current === false) {
             isLoading.current = true;
-            
-            await Promise.all([getXbar(e.data), getCPK(e.data),getHistogram(e.data)]).then(() => {
+            await Promise.all([getXbar(e.data), getCPK(e.data), getHistogram(e.data)]).then(() => {
               isLoading.current = false;
-              Swal.fire('Thông báo','Data loaded','success')
+              Swal.fire('Thông báo', 'Data loaded', 'success')
             })
           }
           else {

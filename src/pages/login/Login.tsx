@@ -82,7 +82,7 @@ const Login = () => {
       ></div>
       <div
         className="login-form"
-        style={{          
+        style={{
           backgroundImage: `${company === "CMS"
             ? theme.CMS.backgroundImage
             : theme.PVN.backgroundImage

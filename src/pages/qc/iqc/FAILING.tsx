@@ -56,7 +56,7 @@ const FAILING = () => {
     (state: RootState) => state.totalSlice.userData,
   );
   const [testtype, setTestType] = useState("NVL");
-  const [inputno, setInputNo] = useState("");
+  const [m_lot_no, setM_LOT_NO] = useState("");
   const [request_empl, setrequest_empl] = useState("");
   const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
@@ -129,7 +129,7 @@ const FAILING = () => {
           },
         );
         if (pqc3Id !== 0) {
-          if (lotArray.indexOf(inputno) < 0) {
+          if (lotArray.indexOf(m_lot_no) < 0) {
             addRow();
           } else {
             Swal.fire(
@@ -683,7 +683,7 @@ const FAILING = () => {
   };
   const checkInput = (): boolean => {
     if (
-      inputno !== "" &&
+      m_lot_no !== "" &&
       planId !== "" &&      
       request_empl !== ""
     ) {
@@ -700,7 +700,7 @@ const FAILING = () => {
       G_NAME: g_name,
       LIEUQL_SX: lieql_sx,
       M_CODE: m_code,
-      M_LOT_NO: inputno,
+      M_LOT_NO: m_lot_no,
       VENDOR_LOT: vendorLot,
       M_NAME: m_name,
       WIDTH_CD: width_cd,
@@ -735,7 +735,7 @@ const FAILING = () => {
     setInspectionDataTable((prev) => {
       return [...prev, temp_row];
     });
-    setInputNo("");
+    setM_LOT_NO("");
   };
   const saveFailingData = async () => {
     if (inspectiondatatable.length > 0) {
@@ -909,7 +909,7 @@ const FAILING = () => {
                   <input
                     type="text"
                     placeholder="202304190123"
-                    value={inputno}
+                    value={m_lot_no}
                     onKeyDown={(e)=> {
                       handleKeyDown(e);
                     }}
@@ -919,7 +919,7 @@ const FAILING = () => {
                         //console.log(e.target.value);
                         checkLotNVL(e.target.value);
                       }
-                      setInputNo(e.target.value);
+                      setM_LOT_NO(e.target.value);
                     }}
                   ></input>
                 </label>
@@ -1046,7 +1046,7 @@ const FAILING = () => {
                       },
                     );
                     if (pqc3Id !== 0) {
-                      if (lotArray.indexOf(inputno) < 0) {
+                      if (lotArray.indexOf(m_lot_no) < 0) {
                         addRow();
                       } else {
                         Swal.fire(
