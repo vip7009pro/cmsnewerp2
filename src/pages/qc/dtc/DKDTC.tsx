@@ -1,18 +1,9 @@
-import {
-  Autocomplete,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Checkbox, FormControlLabel, IconButton, Typography } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
 import "./DKDTC.scss";
 import DataGrid, {
@@ -28,20 +19,12 @@ import DataGrid, {
   Scrolling,
   SearchPanel,
   Selection,
-  Summary,
   Toolbar,
-  TotalItem,
 } from "devextreme-react/data-grid";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  CheckAddedSPECDATA,
-  DTC_REG_DATA,
-  DTC_TEST_LIST,
-  TestListTable,
-  UserData,
-} from "../../../api/GlobalInterface";
-
+import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable, UserData } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const DKDTC = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -68,149 +51,49 @@ const DKDTC = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
-
+  const dtcdatacolumn = [
+    { field: 'DTC_ID', headerName: 'DTC_ID', resizable: true, width: 50 },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
+    { field: 'TEST_FINISH_TIME', headerName: 'FINISH_TIME', resizable: true, width: 100 },
+    { field: 'TEST_EMPL_NO', headerName: 'TEST_EMPL_NO', resizable: true, width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 100 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 100 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
+    { field: 'TEST_NAME', headerName: 'TEST_NAME', resizable: true, width: 100 },
+    { field: 'TEST_TYPE_NAME', headerName: 'TEST_TYPE_NAME', resizable: true, width: 100 },
+    { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION_NAME', resizable: true, width: 100 },
+    { field: 'REQUEST_DATETIME', headerName: 'REQUEST_DATETIME', resizable: true, width: 100 },
+    { field: 'REQUEST_EMPL_NO', headerName: 'REQUEST_EMPL_NO', resizable: true, width: 100 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 100 },
+    { field: 'SIZE', headerName: 'SIZE', resizable: true, width: 100 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 100 },
+    { field: 'LOTCMS', headerName: 'LOTCMS', resizable: true, width: 100 },
+  ]
   const getTestList = async () => {
     let tempList: TestListTable[] = await f_loadDTC_TestList();
     setTestList(tempList);
   }
-
-
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            style={{ fontSize: "0.7rem" }}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={inspectiondatatable}
-            columnWidth="auto"
-            keyExpr="id"
-
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //console.log(e.selectedRowsData);
-              //setSelectedRowsData(e.selectedRowsData);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="multiple" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={false}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(inspectiondatatable, "SPEC DTC");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                  200 đăng ký test gần đây
-                </span>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooserButton" />
-              <Item name="addRowButton" />
-              <Item name="saveButton" />
-              <Item name="revertButton" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="DTC_ID" caption="DTC_ID" width={100}></Column>
-            <Column
-              dataField="REQUEST_DATETIME"
-              caption="REQUEST_DATETIME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="REQUEST_EMPL_NO"
-              caption="REQUEST_EMPL_NO"
-              width={100}
-            ></Column>
-            <Column dataField="FACTORY" caption="FACTORY" width={100}></Column>
-            <Column
-              dataField="TEST_FINISH_TIME"
-              caption="TEST_FINISH_TIME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="TEST_EMPL_NO"
-              caption="TEST_EMPL_NO"
-              width={100}
-            ></Column>
-            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
-            <Column
-              dataField="PROD_REQUEST_NO"
-              caption="PROD_REQUEST_NO"
-              width={100}
-            ></Column>
-            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
-            <Column
-              dataField="TEST_NAME"
-              caption="TEST_NAME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="TEST_TYPE_NAME"
-              caption="TEST_TYPE_NAME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="WORK_POSITION_NAME"
-              caption="WORK_POSITION_NAME"
-              width={100}
-            ></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
-            <Column dataField="SIZE" caption="SIZE" width={100}></Column>
-            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
-            <Column dataField="LOTCMS" caption="LOTCMS" width={100}></Column>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [inspectiondatatable],
-  );
+  const kqdtcDataTableAG = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={dtcdatacolumn}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+        onRowDoubleClick={async (e) => {
+          //console.log(e.data)
+        }}
+      />
+    )
+  }, [inspectiondatatable,])
   const handletraDTCData = () => {
     generalQuery("loadrecentRegisteredDTCData", {})
       .then((response) => {
@@ -220,7 +103,7 @@ const DKDTC = () => {
             (element: DTC_REG_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element.G_NAME : element.G_NAME?.search('CNDB') ==-1 ? element.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element.G_NAME : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME : 'TEM_NOI_BO',
                 TEST_FINISH_TIME:
                   element.TEST_FINISH_TIME === "1900-01-01T00:00:00.000Z" ||
                     element.TEST_FINISH_TIME === null
@@ -351,7 +234,7 @@ const DKDTC = () => {
     for (let i = 0; i < testList.length; i++) {
       if (testList[i].SELECTED) {
         let data = {
-          DTC_ID: showdkbs? oldDTC_ID: nextDTC_ID,
+          DTC_ID: showdkbs ? oldDTC_ID : nextDTC_ID,
           TEST_CODE: testList[i].TEST_CODE,
           TEST_TYPE_CODE: testtype,
           REQUEST_DEPT_CODE: reqDeptCode,
@@ -378,7 +261,7 @@ const DKDTC = () => {
       }
     }
     if (err_code === "") {
-      let final_ID: number = showdkbs? oldDTC_ID : nextDTC_ID;
+      let final_ID: number = showdkbs ? oldDTC_ID : nextDTC_ID;
       Swal.fire(
         "Thông báo",
         "Đăng ký ĐTC thành công, ID test là: " + final_ID,
@@ -389,7 +272,6 @@ const DKDTC = () => {
       setrequest_empl("");
       handletraDTCData();
     } else {
-      
       Swal.fire("Thông báo", "Đăng ký ĐTC thất bại: " + err_code, "error");
     }
   };
@@ -471,7 +353,6 @@ const DKDTC = () => {
                       } else {
                         setAddedSpec([]);
                       }
-
                       setInputNo(e.target.value);
                     }}
                   ></input>
@@ -546,7 +427,6 @@ const DKDTC = () => {
                                       );
                                     },
                                   );
-
                                 if (selected_test[0].CHECKADDED === null) {
                                   Swal.fire(
                                     "Thông báo",
@@ -596,16 +476,16 @@ const DKDTC = () => {
                   ></input>
                 </label>}
                 <label>
-                <b>Đăng ký bổ sung</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  checked={showdkbs}
-                  onChange={() => {
-                    setShowDKBS(!showdkbs);
-                  }}
-                ></input>
-              </label>
+                  <b>Đăng ký bổ sung</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    checked={showdkbs}
+                    onChange={() => {
+                      setShowDKBS(!showdkbs);
+                    }}
+                  ></input>
+                </label>
               </div>
               <div className="forminputcolumn">
                 <label>
@@ -654,14 +534,13 @@ const DKDTC = () => {
                   );
                 }
               }}>Đăng ký TEST</Button>
-
             </div>
             <div
               className="formbutton"
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
             ></div>
           </div>
-          <div className="tracuuYCSXTable">{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{kqdtcDataTableAG}</div>
         </div>
       </div>
     </div>

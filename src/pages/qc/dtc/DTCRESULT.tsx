@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, IconButton, Radio, RadioGroup, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
@@ -24,6 +24,7 @@ import {
   DTC_RESULT_INPUT,
   TestListTable,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const DTCRESULT = () => {
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
@@ -166,6 +167,42 @@ const DTCRESULT = () => {
     ),
     [inspectiondatatable],
   );
+
+  const dtcResultColumn = [    
+    { field: 'DTC_ID',headerName: 'DTC_ID', resizable: true,width: 100 },
+    { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 100 },
+    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 100 },
+    { field: 'TEST_NAME',headerName: 'TEST_NAME', resizable: true,width: 100 },
+    { field: 'TEST_CODE',headerName: 'TEST_CODE', resizable: true,width: 100 },
+    { field: 'POINT_NAME',headerName: 'POINT_NAME', resizable: true,width: 100 },
+    { field: 'POINT_CODE',headerName: 'POINT_CODE', resizable: true,width: 100 },
+    { field: 'CENTER_VALUE',headerName: 'CENTER_VALUE', resizable: true,width: 100 },
+    { field: 'UPPER_TOR',headerName: 'UPPER_TOR', resizable: true,width: 100 },
+    { field: 'LOWER_TOR',headerName: 'LOWER_TOR', resizable: true,width: 100 },
+    { field: 'RESULT',headerName: 'RESULT', resizable: true,width: 100 },
+    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 100 },   
+  ]
+  const resultDTCTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={dtcResultColumn}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+        onRowDoubleClick={async (e) => {
+          //console.log(e.data)
+        }}
+      />
+    )
+  }, [inspectiondatatable,])
   const handletraDTCData = (dtc_id: string, test_code: string) => {
     generalQuery("getinputdtcspec", {
       DTC_ID: dtc_id,
@@ -407,7 +444,7 @@ const DTCRESULT = () => {
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
             ></div>
           </div>
-          <div className="tracuuYCSXTable">{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{resultDTCTable}</div>
         </div>
       </div>
     </div>

@@ -6,17 +6,10 @@ import {
   createFilterOptions,
 } from "@mui/material";
 import moment from "moment";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
+import React, { useEffect, useMemo, useState, useTransition } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
 import DataGrid, {
@@ -46,8 +39,8 @@ import {
   MaterialListData,
   UserData,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 /* import { Autocomplete } from 'devextreme-react'; */
-
 const ADDSPECTDTC = () => {
   const [testList, setTestList] = useState<TestListTable[]>([]);
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
@@ -72,7 +65,6 @@ const ADDSPECTDTC = () => {
     PROD_LAST_PRICE: 0.318346,
     USE_YN: "Y",
   });
-
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -202,7 +194,6 @@ const ADDSPECTDTC = () => {
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
             />
-
             <Column dataField="TEST_NAME" caption="TEST_NAME"></Column>
             <Column dataField="POINT_NAME" caption="POINT_NAME"></Column>
             <Column dataField="PRI" caption="PRI"></Column>
@@ -352,7 +343,7 @@ const ADDSPECTDTC = () => {
             (element: DTC_ADD_SPEC_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 id: index,
               };
             },
@@ -407,7 +398,6 @@ const ADDSPECTDTC = () => {
                     "warning",
                   );
                 }
-
                 checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
               } else {
                 setInspectionDataTable([]);
@@ -609,7 +599,6 @@ const ADDSPECTDTC = () => {
               WIDTH_CD: ele2.WIDTH_CD,
             };
           });
-
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
           for (let i = 0; i < selectedRowsData.length; i++) {
@@ -682,10 +671,50 @@ const ADDSPECTDTC = () => {
   });
   const getTestList = async () => {
     let tempList: TestListTable[] = await f_loadDTC_TestList();
-    tempList.unshift({TEST_CODE:0,TEST_NAME:'ALL', SELECTED:false,})
+    tempList.unshift({ TEST_CODE: 0, TEST_NAME: 'ALL', SELECTED: false, })
     setTestList(tempList);
   }
-
+  const dtcSpecColumn = [
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 100 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
+    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 100 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 100 },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 100 },
+    { field: 'TEST_CODE', headerName: 'TEST_CODE', resizable: true, width: 100 },
+    { field: 'TEST_NAME', headerName: 'TEST_NAME', resizable: true, width: 100 },
+    { field: 'POINT_CODE', headerName: 'POINT_CODE', resizable: true, width: 100 },
+    { field: 'POINT_NAME', headerName: 'POINT_NAME', resizable: true, width: 100 },
+    { field: 'PRI', headerName: 'PRI', resizable: true, width: 100 },
+    { field: 'CENTER_VALUE', headerName: 'CENTER_VALUE', resizable: true, width: 100 },
+    { field: 'LOWER_TOR', headerName: 'LOWER_TOR', resizable: true, width: 100 },
+    { field: 'UPPER_TOR', headerName: 'UPPER_TOR', resizable: true, width: 100 },
+    { field: 'BARCODE_CONTENT', headerName: 'BARCODE_CONTENT', resizable: true, width: 100 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 100 },
+    { field: 'TDS', headerName: 'TDS', resizable: true, width: 100 },
+    { field: 'BANVE', headerName: 'BANVE', resizable: true, width: 100 },
+  ]
+  const spectDTCTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={dtcSpecColumn}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+        onRowDoubleClick={async (e) => {
+          //console.log(e.data)
+        }}
+      />
+    )
+  }, [inspectiondatatable,])
   useEffect(() => {
     getcodelist("");
     getmateriallist();
@@ -702,13 +731,11 @@ const ADDSPECTDTC = () => {
           </b>
           <br></br>
           <div className="forminput">
-
             <div className="forminputcolumn">
               <div className="label">
                 <b>Code/Liệu</b>
               </div>
               <div className="inputbox">
-
                 {!checkNVL && (
                   <Autocomplete
                     sx={{ fontSize: "0.7rem", width: "240px", padding: 0 }}
@@ -770,10 +797,6 @@ const ADDSPECTDTC = () => {
                 )}
               </div>
             </div>
-
-
-
-
             <div className="forminputcolumn">
               <div className="label">
                 <b>Hạng mục test</b>
@@ -791,18 +814,14 @@ const ADDSPECTDTC = () => {
                     );
                   }}
                 > {
-                  testList.map((ele: TestListTable, index: number)=> {
-                    return  (
-                      <option key={index} value={ele.TEST_CODE}>{ele.TEST_NAME}</option>
-                    )
-                  })
-                }                  
+                    testList.map((ele: TestListTable, index: number) => {
+                      return (
+                        <option key={index} value={ele.TEST_CODE}>{ele.TEST_NAME}</option>
+                      )
+                    })
+                  }
                 </select>
-
               </div>
-
-
-
             </div>
             <div className="forminputcolumn"></div>
           </div>
@@ -860,7 +879,7 @@ const ADDSPECTDTC = () => {
             </label>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{spectDTCTable}</div>
       </div>
     </div>
   );

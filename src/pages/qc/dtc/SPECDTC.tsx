@@ -1,31 +1,11 @@
-import { IconButton, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./SPECDTC.scss";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  KeyboardNavigation,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Summary,
-  Toolbar,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import { DTC_SPEC_DATA } from "../../../api/GlobalInterface";
-
+import AGTable from "../../../components/DataTable/AGTable";
 const SPECDTC = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -41,239 +21,47 @@ const SPECDTC = () => {
   );
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
-  const [selectedRows, setSelectedRows] = useState<number>(0);
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            style={{ fontSize: "0.7rem" }}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={inspectiondatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            width={"100%"}
-            height={"100%"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              setSelectedRows(e.selectedRowsData.length);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="multiple" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(inspectiondatatable, "SPEC DTC");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column
-              dataField="CUST_NAME_KD"
-              caption="CUST_NAME_KD"
-              width={100}
-            ></Column>
-            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
-            <Column dataField="G_NAME" caption="G_NAME" width={150}></Column>
-            <Column
-              dataField="TEST_NAME"
-              caption="TEST_NAME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="POINT_NAME"
-              caption="POINT_NAME"
-              width={100}
-            ></Column>
-            <Column dataField="PRI" caption="PRI" width={100}></Column>
-            <Column
-              dataField="CENTER_VALUE"
-              caption="CENTER_VALUE"
-              width={120}
-            ></Column>
-            <Column
-              dataField="UPPER_TOR"
-              caption="UPPER_TOR"
-              width={120}
-            ></Column>
-            <Column
-              dataField="LOWER_TOR"
-              caption="LOWER_TOR"
-              width={120}
-            ></Column>
-            <Column
-              dataField="MIN_SPEC"
-              caption="MIN_SPEC"
-              width={120}
-            ></Column>
-            <Column
-              dataField="MAX_SPEC"
-              caption="MAX_SPEC"
-              width={120}
-            ></Column>
-            <Column
-              dataField="BARCODE_CONTENT"
-              caption="BARCODE_CONTENT"
-              width={100}
-            ></Column>
-            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={120}></Column>
-            <Column
-              dataField="WIDTH_CD"
-              caption="WIDTH_CD"
-              width={100}
-            ></Column>
-            <Column dataField="M_CODE" caption="M_CODE" width={100}></Column>
-            <Column
-              caption="BANVE"
-              width={150}
-              cellRender={(e: any) => {
-                if (e.data.M_CODE === "B0000035") {
-                  let link: string = `/banve/${e.data.G_CODE}.pdf`;
-                  if (e.data.BANVE === "Y") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "80px",
-                          backgroundColor: "#54e00d",
-                          textAlign: "center",
-                        }}
-                      >
-                        <a
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Bản Vẽ
-                        </a>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "80px",
-                          backgroundColor: "gray",
-                          textAlign: "center",
-                        }}
-                      >
-                        Chưa có bản vẽ
-                      </div>
-                    );
-                  }
-                } else {
-                  let link: string = `/tds/${e.data.M_CODE}.pdf`;
-                  if (e.data.TDS === "Y") {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "80px",
-                          backgroundColor: "red",
-                          textAlign: "center",
-                        }}
-                      >
-                        <a
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          TDS
-                        </a>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "80px",
-                          backgroundColor: "gray",
-                          textAlign: "center",
-                        }}
-                      >
-                        Chưa có TDS
-                      </div>
-                    );
-                  }
-                }
-              }}
-            ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="G_CODE"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [inspectiondatatable],
-  );
-
+  const dtcSpecColumn = [    
+    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,width: 100 },
+    { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 100 },
+    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 100 },
+    { field: 'TEST_NAME',headerName: 'TEST_NAME', resizable: true,width: 100 },
+    { field: 'POINT_NAME',headerName: 'POINT_NAME', resizable: true,width: 100 },
+    { field: 'PRI',headerName: 'PRI', resizable: true,width: 100 },
+    { field: 'CENTER_VALUE',headerName: 'CENTER_VALUE', resizable: true,width: 100 },
+    { field: 'UPPER_TOR',headerName: 'UPPER_TOR', resizable: true,width: 100 },
+    { field: 'LOWER_TOR',headerName: 'LOWER_TOR', resizable: true,width: 100 },
+    { field: 'MIN_SPEC',headerName: 'MIN_SPEC', resizable: true,width: 100 },
+    { field: 'MAX_SPEC',headerName: 'MAX_SPEC', resizable: true,width: 100 },
+    { field: 'BARCODE_CONTENT',headerName: 'BARCODE_CONTENT', resizable: true,width: 100 },
+    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 100 },
+    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 100 },
+    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 100 },
+    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 100 },
+    { field: 'TDS',headerName: 'TDS', resizable: true,width: 100 },
+    { field: 'BANVE',headerName: 'BANVE', resizable: true,width: 100 },   
+  ]
+  const spectDTCTable = useMemo(() => {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+          </div>}
+        columns={dtcSpecColumn}
+        data={inspectiondatatable}
+        onCellEditingStopped={(e) => {
+          //console.log(e.data)
+        }} onRowClick={(e) => {
+          //console.log(e.data)
+        }} onSelectionChange={(e) => {
+          //console.log(e!.api.getSelectedRows())
+        }}
+        onRowDoubleClick={async (e) => {
+          //console.log(e.data)
+        }}
+      />
+    )
+  }, [inspectiondatatable,])
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -281,7 +69,6 @@ const SPECDTC = () => {
       handletraDTCData();
     }
   };
-
   const handletraDTCData = () => {
     Swal.fire({
       title: "Tra cứu SPEC Vật liệu - Sản phẩm",
@@ -453,7 +240,7 @@ const SPECDTC = () => {
             }}> Spec DTC</Button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{spectDTCTable}</div>
       </div>
     </div>
   );
