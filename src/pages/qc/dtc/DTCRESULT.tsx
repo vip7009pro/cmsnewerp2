@@ -1,23 +1,9 @@
-import {
-  Autocomplete,
-  Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from "@mui/material";
-import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import { Button, FormControlLabel, IconButton, Radio, RadioGroup, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
 import "./DTCRESULT.scss";
 import DataGrid, {
   Column,
@@ -31,10 +17,7 @@ import DataGrid, {
   Paging,
   Scrolling,
   SearchPanel,
-  Selection,
-  Summary,
   Toolbar,
-  TotalItem,
 } from "devextreme-react/data-grid";
 import {
   DTC_REG_DATA,
@@ -47,26 +30,11 @@ const DTCRESULT = () => {
   const [checkNVL, setCheckNVL] = useState(false);
   const [dtc_id, setDTC_ID] = useState("");
   const [remark, setReMark] = useState("");
-  const [testList, setTestList] = useState<TestListTable[]>([
-    { TEST_CODE: "1", TEST_NAME: "Kích thước", CHECKADDED: false },
-    { TEST_CODE: "2", TEST_NAME: "Kéo keo", CHECKADDED: false },
-    { TEST_CODE: "3", TEST_NAME: "XRF", CHECKADDED: false },
-    { TEST_CODE: "4", TEST_NAME: "Điện trở", CHECKADDED: false },
-    { TEST_CODE: "5", TEST_NAME: "Tĩnh điện", CHECKADDED: false },
-    { TEST_CODE: "6", TEST_NAME: "Độ bóng", CHECKADDED: false },
-    { TEST_CODE: "7", TEST_NAME: "Phtalate", CHECKADDED: false },
-    { TEST_CODE: "8", TEST_NAME: "FTIR", CHECKADDED: false },
-    { TEST_CODE: "9", TEST_NAME: "Mài mòn", CHECKADDED: false },
-    { TEST_CODE: "10", TEST_NAME: "Màu sắc", CHECKADDED: false },
-    { TEST_CODE: "11", TEST_NAME: "TVOC", CHECKADDED: false },
-    { TEST_CODE: "12", TEST_NAME: "Cân nặng", CHECKADDED: false },
-    { TEST_CODE: "13", TEST_NAME: "Scanbarcode", CHECKADDED: false },
-    { TEST_CODE: "14", TEST_NAME: "Nhiệt cao Ẩm cao", CHECKADDED: false },
-    { TEST_CODE: "15", TEST_NAME: "Shock nhiệt", CHECKADDED: false },
-    { TEST_CODE: "1002", TEST_NAME: "Kéo keo 2", CHECKADDED: false },
-    { TEST_CODE: "1003", TEST_NAME: "Ngoại Quan", CHECKADDED: false },
-    { TEST_CODE: "1005", TEST_NAME: "Độ dày", CHECKADDED: false },
-  ]);
+  const [testList, setTestList] = useState<TestListTable[]>([]);
+  const getTestList = async () => {
+    let tempList: TestListTable[] = await f_loadDTC_TestList();
+    setTestList(tempList);
+  }
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     [],
   );
@@ -314,7 +282,9 @@ const DTCRESULT = () => {
         console.log(error);
       });
   };
-  useEffect(() => { }, []);
+  useEffect(() => {
+    getTestList();
+  }, []);
   return (
     <div className="dtcresult">
       <div className="tracuuDataInspection">

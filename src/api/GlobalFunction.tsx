@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import XlsxPopulate from 'xlsx-populate';
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData } from "./Api";
-import { BOMSX_DATA, CODE_FULL_INFO, CodeListData, CustomerListData, DAILY_YCSX_RESULT, EQ_STATUS, EQ_STT, FCSTTDYCSX, InvoiceTableData, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LICHSUXUATKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, SX_DATA, TEMLOTSX_DATA, TONKHOTDYCSX, TONLIEUXUONG, UploadAmazonData, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSX_SX_DATA, YCSXTableData } from "./GlobalInterface";
+import { BOMSX_DATA, CODE_FULL_INFO, CodeListData, CustomerListData, DAILY_YCSX_RESULT, DTC_TEST_LIST, EQ_STATUS, EQ_STT, FCSTTDYCSX, InvoiceTableData, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LICHSUXUATKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM, SX_DATA, TEMLOTSX_DATA, TestListTable, TONKHOTDYCSX, TONLIEUXUONG, UploadAmazonData, UserData, WEB_SETTING_DATA, YCSX_SLC_DATA, YCSX_SX_DATA, YCSXTableData } from "./GlobalInterface";
 import moment from "moment";
 import axios from "axios";
 import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
@@ -4453,9 +4453,31 @@ export const f_handleSaveLossSX = async (codeList: CODE_FULL_INFO[]) => {
 }
 
 
-//quan ly dao film
-
-export const f_loadQuanLyDaoFilm = async (DATA: any) => {
-  
+// dtc
+export const f_loadDTC_TestList = async () => {
+  let kq: TestListTable[]=[];
+  await generalQuery("loadDtcTestList", {
+   
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: TestListTable[] = response.data.data.map(
+          (element: TestListTable, index: number) => {
+            return {
+              ...element,             
+              id: index,
+            };
+          },
+        );
+        kq = loadeddata;
+        
+        
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return kq;
 
 }

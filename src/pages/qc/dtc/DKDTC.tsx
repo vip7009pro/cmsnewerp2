@@ -13,7 +13,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
 import "./DKDTC.scss";
 import DataGrid, {
   Column,
@@ -37,6 +37,7 @@ import { RootState } from "../../../redux/store";
 import {
   CheckAddedSPECDATA,
   DTC_REG_DATA,
+  DTC_TEST_LIST,
   TestListTable,
   UserData,
 } from "../../../api/GlobalInterface";
@@ -52,26 +53,7 @@ const DKDTC = () => {
   );
   const [request_empl, setrequest_empl] = useState("");
   const [remark, setReMark] = useState("");
-  const [testList, setTestList] = useState<TestListTable[]>([
-    { TEST_CODE: "1", TEST_NAME: "Kích thước", SELECTED: false },
-    { TEST_CODE: "2", TEST_NAME: "Kéo keo", SELECTED: false },
-    { TEST_CODE: "3", TEST_NAME: "XRF", SELECTED: false },
-    { TEST_CODE: "4", TEST_NAME: "Điện trở", SELECTED: false },
-    { TEST_CODE: "5", TEST_NAME: "Tĩnh điện", SELECTED: false },
-    { TEST_CODE: "6", TEST_NAME: "Độ bóng", SELECTED: false },
-    { TEST_CODE: "7", TEST_NAME: "Phtalate", SELECTED: false },
-    { TEST_CODE: "8", TEST_NAME: "FTIR", SELECTED: false },
-    { TEST_CODE: "9", TEST_NAME: "Mài mòn", SELECTED: false },
-    { TEST_CODE: "10", TEST_NAME: "Màu sắc", SELECTED: false },
-    { TEST_CODE: "11", TEST_NAME: "TVOC", SELECTED: false },
-    { TEST_CODE: "12", TEST_NAME: "Cân nặng", SELECTED: false },
-    { TEST_CODE: "13", TEST_NAME: "Scanbarcode", SELECTED: false },
-    { TEST_CODE: "14", TEST_NAME: "Nhiệt cao Ẩm cao", SELECTED: false },
-    { TEST_CODE: "15", TEST_NAME: "Shock nhiệt", SELECTED: false },
-    { TEST_CODE: "1002", TEST_NAME: "Kéo keo 2", SELECTED: false },
-    { TEST_CODE: "1003", TEST_NAME: "Ngoại Quan", SELECTED: false },
-    { TEST_CODE: "1005", TEST_NAME: "Độ dày", SELECTED: false },
-  ]);
+  const [testList, setTestList] = useState<TestListTable[]>([]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     [],
   );
@@ -86,6 +68,13 @@ const DKDTC = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
+
+  const getTestList = async () => {
+    let tempList: TestListTable[] = await f_loadDTC_TestList();
+    setTestList(tempList);
+  }
+
+
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -432,6 +421,7 @@ const DKDTC = () => {
   };
   useEffect(() => {
     handletraDTCData();
+    getTestList();
   }, []);
   return (
     <div className="dkdtc">
@@ -538,7 +528,7 @@ const DKDTC = () => {
                           control={
                             <Checkbox
                               classes={{ root: "custom-checkbox-root" }}
-                              name={element.TEST_CODE}
+                              name={element.TEST_CODE.toString()}
                               key={element.TEST_CODE}
                               checked={element.SELECTED}
                               onChange={(
@@ -569,7 +559,7 @@ const DKDTC = () => {
                                   let temp_testList = testList.map(
                                     (element: TestListTable, index: number) => {
                                       if (
-                                        element.TEST_CODE === event.target.name
+                                        element.TEST_CODE.toString() === event.target.name
                                       ) {
                                         return {
                                           ...element,

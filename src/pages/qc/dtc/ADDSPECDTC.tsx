@@ -17,7 +17,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
 import DataGrid, {
   Column,
@@ -42,12 +42,14 @@ import {
   CheckAddedSPECDATA,
   CodeListData,
   DTC_ADD_SPEC_DATA,
+  TestListTable,
   MaterialListData,
   UserData,
 } from "../../../api/GlobalInterface";
 /* import { Autocomplete } from 'devextreme-react'; */
 
 const ADDSPECTDTC = () => {
+  const [testList, setTestList] = useState<TestListTable[]>([]);
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
     {
@@ -678,10 +680,16 @@ const ADDSPECTDTC = () => {
     matchFrom: "any",
     limit: 100,
   });
+  const getTestList = async () => {
+    let tempList: TestListTable[] = await f_loadDTC_TestList();
+    tempList.unshift({TEST_CODE:0,TEST_NAME:'ALL', SELECTED:false,})
+    setTestList(tempList);
+  }
 
   useEffect(() => {
     getcodelist("");
     getmateriallist();
+    getTestList();
   }, []);
   return (
     <div className="addspecdtc">
@@ -782,26 +790,13 @@ const ADDSPECTDTC = () => {
                       selectedCode?.G_CODE,
                     );
                   }}
-                >
-                  <option value="0">ALL</option>
-                  <option value="1">Kích thước</option>
-                  <option value="2">Kéo keo</option>
-                  <option value="3">XRF</option>
-                  <option value="4">Điện trở</option>
-                  <option value="5">Tĩnh điện</option>
-                  <option value="6">Độ bóng</option>
-                  <option value="7">Phtalate</option>
-                  <option value="8">FTIR</option>
-                  <option value="9">Mài mòn</option>
-                  <option value="10">Màu sắc</option>
-                  <option value="11">TVOC</option>
-                  <option value="12">Cân nặng</option>
-                  <option value="13">Scanbarcode</option>
-                  <option value="14">Nhiệt cao Ẩm cao</option>
-                  <option value="15">Shock nhiệt</option>
-                  <option value="1002">Kéo keo 2</option>
-                  <option value="1003">Ngoại Quan</option>
-                  <option value="1005">Độ dày</option>
+                > {
+                  testList.map((ele: TestListTable, index: number)=> {
+                    return  (
+                      <option key={index} value={ele.TEST_CODE}>{ele.TEST_NAME}</option>
+                    )
+                  })
+                }                  
                 </select>
 
               </div>

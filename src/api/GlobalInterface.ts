@@ -1131,7 +1131,7 @@ export interface DTC_REG_DATA {
   LOTCMS: string;
 }
 export interface TestListTable {
-  TEST_CODE: string;
+  TEST_CODE: number;
   TEST_NAME: string;
   SELECTED?: boolean;
   CHECKADDED?: boolean;
@@ -4053,4 +4053,8 @@ export interface CPK_DATA {
 export interface HISTOGRAM_DATA {
   RESULT: string,
   CNT: number
+}
+export interface DTC_TEST_LIST {
+TEST_CODE: number,
+TEST_NAME: string
 }
