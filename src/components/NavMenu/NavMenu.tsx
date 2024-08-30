@@ -543,6 +543,13 @@ const NavMenu = () => {
           MENU_CODE: "SX8",
           cName: "sub-nav",
         },
+        {
+          title: getlang("khosub", lang),
+          path: "sx/khosub",
+          icon: <FaWarehouse color="#04517e" size={15} />,
+          MENU_CODE: "SX15",
+          cName: "sub-nav",
+        },
        /*  {
           title: getlang("quanlycapa", lang),
           path: "sx/capamanager",

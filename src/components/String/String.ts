@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  khosub: "Kho Sub",
   overmonitor: "Tình hình SX Dư",
   baocaosx: "Báo cáo sản xuất",
   samplemonitor: "Theo dõi sample",
@@ -140,6 +141,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  khosub: "Sub Warehouse",
   overmonitor: "Over Monitor",
   baocaosx: "Production Report",
   samplemonitor: "Sample Monitor",
@@ -268,6 +270,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  khosub: "서브 창고",
   overmonitor: "과생산 모니터",
   baocaosx: "생산 보고",
   samplemonitor: "샘플 모니터링",

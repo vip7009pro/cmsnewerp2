@@ -16,6 +16,14 @@ const QLSXPLAN = () => {
     tab1: true,
     tab2: false,
     tab3: false,
+    tab4: false,
+    tab5: false,
+    tab6: false,
+    tab7: false,
+    tab8: false,
+    tab9: false,
+    tab10: false,
+    tab11: false,
   });
 
   const setNav = (choose: number) => {
@@ -32,6 +40,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 2) {
       setSelection({
@@ -46,6 +55,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 3) {
       setSelection({
@@ -60,6 +70,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 4) {
       setSelection({
@@ -74,6 +85,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 5) {
       setSelection({
@@ -88,6 +100,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 6) {
       setSelection({
@@ -102,6 +115,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 7) {
       setSelection({
@@ -116,6 +130,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 8) {
       setSelection({
@@ -130,6 +145,7 @@ const QLSXPLAN = () => {
         tab8: true,
         tab9: false,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 9) {
       setSelection({
@@ -144,6 +160,7 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: true,
         tab10: false,
+        tab11: false,
       });
     } else if (choose === 10) {
       setSelection({
@@ -158,8 +175,24 @@ const QLSXPLAN = () => {
         tab8: false,
         tab9: false,
         tab10: true,
+        tab11: false,
       });
-    }
+    } else if (choose === 11) {
+      setSelection({
+        ...selection,
+        tab1: false,
+        tab2: false,
+        tab3: false,
+        tab4: false,
+        tab5: false,
+        tab6: false,
+        tab7: false,
+        tab8: false,
+        tab9: false,
+        tab10: false,
+        tab11: true,
+      });
+    } 
   };
   useEffect(() => {}, []);
 

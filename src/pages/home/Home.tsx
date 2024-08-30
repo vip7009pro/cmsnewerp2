@@ -74,7 +74,8 @@ import BCSX from "../sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
 import QUICKPLAN2 from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2";
 import CHAT from "../chat/CHAT";
-export const current_ver: number = 463;
+import KHOSUB from "../qlsx/QLSXPLAN/KHOAO/KHOSUB";
+export const current_ver: number = 464;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -432,6 +433,11 @@ function Home() {
       MENU_CODE: "SX8",
       MENU_NAME: getlang("khoao", lang),
       MENU_ITEM: <KHOAO />,
+    },
+    {
+      MENU_CODE: "SX15",
+      MENU_NAME: getlang("khosub", lang),
+      MENU_ITEM: <KHOSUB />,
     },
     {
       MENU_CODE: "SX11",

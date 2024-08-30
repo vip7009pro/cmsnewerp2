@@ -1,0 +1,26 @@
+.testtable {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+
+  .testtable-left,
+  .testtable-right {
+    width: 50%;
+    height: 100%;
+  }
+
+  // Responsive styles for screens smaller than 768px
+  @media (max-width: 767px) {
+    flex-direction: column;
+    height: auto;
+
+    .testtable-left,
+    .testtable-right {
+      width: 100%;
+      height: auto;
+      min-height: 50vh;
+    }
+  }
+}

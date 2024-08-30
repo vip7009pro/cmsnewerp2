@@ -8,6 +8,7 @@ import {
   CodeListData,
   CustomerListData,
   DAILY_YCSX_RESULT,
+  DTC_TEST_POINT,
   EQ_STT,
   FCSTTDYCSX,
   InvoiceTableData,
@@ -2688,6 +2689,32 @@ export const f_load_nhapkhoao = async (filterData: any) => {
     });
   return kq;
 };
+export const f_load_nhapkhosub = async (filterData: any) => {
+  let kq: LICHSUNHAPKHOAO[] = [];
+  await generalQuery("lichsunhapkhosub", filterData)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: LICHSUNHAPKHOAO, index: number) => {
+            return {
+              ...element,
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
 export const f_load_xuatkhoao = async (filterData: any) => {
   let kq: LICHSUXUATKHOAO[] = [];
   await generalQuery("lichsuxuatkhoao", filterData)
@@ -2717,6 +2744,32 @@ export const f_load_xuatkhoao = async (filterData: any) => {
 export const f_load_tonkhoao = async (filterData: any) => {
   let kq: TONLIEUXUONG[] = [];
   await generalQuery("checktonlieutrongxuong", filterData)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: TONLIEUXUONG, index: number) => {
+            return {
+              ...element,
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              id: index,
+            };
+          },
+        );
+        //console.log(loadeddata);
+        kq = loadeddata;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+export const f_load_tonkhosub = async (filterData: any) => {
+  let kq: TONLIEUXUONG[] = [];
+  await generalQuery("checktonlieutrongxuong_sub", filterData)
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
@@ -3475,6 +3528,25 @@ export const f_checktontaiMlotPlanIdSuDung = async (NEXT_PLAN: string, M_LOT_NO:
     });
   return checkTonTai;
 }
+export const f_checktontaiMlotPlanIdSuDungKhoSub = async (NEXT_PLAN: string, M_LOT_NO: string) => {
+  let checkTonTai: boolean = false;
+  await generalQuery("checkTonTaiXuatKhoSub", {
+    PLAN_ID: NEXT_PLAN,
+    M_LOT_NO: M_LOT_NO
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        checkTonTai = false;
+      } else {
+        checkTonTai = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return checkTonTai;
+}
 export const f_checkNextPlanFSC = async (NEXT_PLAN: string) => {
   let checkFSC: string = "N", checkFSC_CODE = '01';
   await generalQuery("checkFSC_PLAN_ID", {
@@ -3546,6 +3618,24 @@ export const f_checkMlotTonKhoAo = async (M_LOT_NO: string) => {
     });
   return isTon;
 }
+export const f_checkMlotTonKhoSub = async (M_LOT_NO: string) => {
+  let isTon: boolean = false;
+  await generalQuery("checktonKhoSubMLotNo", {
+    M_LOT_NO: M_LOT_NO,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        isTon = response.data.data[0].USE_YN === 'Y';
+      } else {
+        isTon = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return isTon;
+}
 export const f_isM_CODE_CHITHI = async (PLAN_ID: string, M_CODE: string) => {
   let checklieuchithi: boolean = false;
   await generalQuery("checkM_CODE_CHITHI", {
@@ -3591,6 +3681,34 @@ export const f_set_YN_KHO_AO_INPUT = async (DATA: any) => {
     });
   return kq;
 }
+export const f_set_YN_KHO_SUB_INPUT = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("setUSE_YN_KHO_SUB_INPUT", {
+    FACTORY: DATA.FACTORY,
+    PHANLOAI: DATA.PHANLOAI,
+    PLAN_ID_INPUT: DATA.PLAN_ID_INPUT,
+    PLAN_ID_SUDUNG: DATA.PLAN_ID_SUDUNG,
+    M_CODE: DATA.M_CODE,
+    M_LOT_NO: DATA.M_LOT_NO,
+    TOTAL_IN_QTY: DATA.TOTAL_IN_QTY,
+    USE_YN: DATA.USE_YN,
+    IN_KHO_ID: DATA.IN_KHO_ID,
+  })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+
+
 export const f_xuatkhoao = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("xuatkhoao", {
@@ -4501,3 +4619,63 @@ export const f_loadDTC_TestList = async () => {
     });
   return kq;
 }
+//create load test point list from test code
+export const f_loadDTC_TestPointList = async (testCode: number) => {
+  let kq: DTC_TEST_POINT[] = [];
+  await generalQuery("loadDtcTestPointList", {
+    TEST_CODE: testCode
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: DTC_TEST_POINT[] = response.data.data.map(
+          (element: DTC_TEST_POINT, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          },
+        );
+        kq = loadeddata;
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+//create add test item
+export const f_addTestItem = async (testCode: number, testName: string) => {  
+  await generalQuery("addTestItem", {
+    TEST_CODE: getCompany() !=='CMS'? testCode:-1,
+    TEST_NAME: testName
+  })
+  .then((response) => {
+    if (response.data.tk_status !== "NG") {
+      Swal.fire("Thông báo", "Thêm thành công", "success");
+    } else {
+      Swal.fire("Thông báo", "Thêm thất bại", "error");
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+} 
+//create add test point
+export const f_addTestPoint = async (testCode: number, pointCode: number, pointName: string) => {
+  await generalQuery("addTestPoint", {
+    TEST_CODE: testCode,
+    POINT_CODE: pointCode,
+    POINT_NAME: pointName
+  })
+  .then((response) => {
+    if (response.data.tk_status !== "NG") {
+      Swal.fire("Thông báo", "Thêm thành công", "success");
+    } else {
+      Swal.fire("Thông báo", "Thêm thất bại", "error");
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}  

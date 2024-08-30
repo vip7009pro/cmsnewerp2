@@ -91,6 +91,7 @@ import Blank from "./components/Blank/Blank";
 import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
 import BCSX from "./pages/sx/BAOCAOSX/BCSX";
 import OVER_MONITOR from "./pages/kinhdoanh/over_prod_monitor/OVER_MONITOR";
+import KHOSUB from "./pages/qlsx/QLSXPLAN/KHOAO/KHOSUB";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -999,6 +1000,18 @@ function App() {
                               jobname='Leader'
                             >
                               <KHOAO />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='khosub'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <KHOSUB />
                             </ProtectedRoute>
                           }
                         />

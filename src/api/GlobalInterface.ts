@@ -4058,3 +4058,9 @@ export interface DTC_TEST_LIST {
 TEST_CODE: number,
 TEST_NAME: string
 }
+export interface DTC_TEST_POINT {
+  POINT_CODE: number,
+  POINT_NAME: string,
+  TEST_CODE: number,
+  TEST_NAME: string,
+}

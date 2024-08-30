@@ -422,6 +422,11 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
       MENU_ITEM: "",
     },
     {
+      MENU_CODE: "SX15",
+      MENU_NAME: getlang("khosub", lang),
+      MENU_ITEM: "",
+    },
+    {
       MENU_CODE: "KO1",
       MENU_NAME: getlang("nhapxuattontp", lang),
       MENU_ITEM: "",

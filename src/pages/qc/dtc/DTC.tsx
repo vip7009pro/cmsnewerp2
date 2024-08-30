@@ -5,6 +5,7 @@ import KQDTC from "./KQDTC";
 import SPECDTC from "./SPECDTC";
 import ADDSPECDTC from "./ADDSPECDTC";
 import DTCRESULT from "./DTCRESULT";
+import TEST_TABLE from "./TEST_TABLE";
 
 const DTC = () => {
   const [selection, setSelection] = useState<any>({
@@ -12,6 +13,8 @@ const DTC = () => {
     tab2: false,
     tab3: false,
     tab4: false,
+    tab5: false,
+    tab6: false,
   });
 
   const setNav = (choose: number) => {
@@ -23,6 +26,7 @@ const DTC = () => {
         tab3: false,
         tab4: false,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 2) {
       setSelection({
@@ -32,6 +36,7 @@ const DTC = () => {
         tab3: false,
         tab4: false,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 3) {
       setSelection({
@@ -41,6 +46,7 @@ const DTC = () => {
         tab3: true,
         tab4: false,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 4) {
       setSelection({
@@ -50,6 +56,7 @@ const DTC = () => {
         tab3: false,
         tab4: true,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 5) {
       setSelection({
@@ -59,9 +66,20 @@ const DTC = () => {
         tab3: false,
         tab4: false,
         tab5: true,
+        tab6: false,
       });
-    }
+    } else if (choose === 6) {
+      setSelection({
+        ...selection,
+        tab1: false,
+        tab2: false,
+        tab3: false,
+        tab4: false,
+        tab5: false,
+        tab6: true,
+    });
   };
+}
 
   useEffect(() => {}, []);
 
@@ -118,6 +136,16 @@ const DTC = () => {
         >
           <span className="mininavtext">NHẬP KQ ĐTC</span>
         </div>
+        <div
+          className="mininavitem"
+          onClick={() => setNav(6)}
+          style={{
+            backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab6 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">Quản lý hạng mục ĐTC</span>
+        </div>
       </div>
       {selection.tab1 && (
         <div className="trainspection">
@@ -144,7 +172,13 @@ const DTC = () => {
           <DTCRESULT />
         </div>
       )}
+      {selection.tab6 && (
+        <div className="trainspection">          
+          <TEST_TABLE />
+        </div>
+      )}
     </div>
   );
 };
+
 export default DTC;
