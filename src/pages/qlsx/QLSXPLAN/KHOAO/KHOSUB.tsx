@@ -533,7 +533,7 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   } else {
                     Swal.fire(
                       "Thông báo",
-                      "Đang không ở tab tồn Kho SX Main",
+                      "Đang không ở tab tồn Kho SX SUB",
                       "error",
                     );
                   }
