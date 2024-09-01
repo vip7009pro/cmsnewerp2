@@ -1,6 +1,6 @@
 import "devextreme/dist/css/dx.light.css";
 import { Component, useEffect, useState, Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin, generalQuery, getCompany, getSocket, getUserData } from "./api/Api";
 import Swal from "sweetalert2";
@@ -220,7 +220,14 @@ const ProtectedRoute: any = ({
     }
   }
 };
+
+
+
 function App() {
+//get full url
+const fullUrl = window.location.href;
+console.log('fullUrl', fullUrl);
+
   const loadWebSetting = () => {
     generalQuery("loadWebSetting", {
     })

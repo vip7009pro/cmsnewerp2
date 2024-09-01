@@ -11,6 +11,16 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  incominginspection: "Kiểm tra đầu vào",
+  qualityissue: "Vấn đề chất lượng",
+  audit: "Audit",
+  cmsrequest: "Yêu cầu CMS",
+  about: "Giới thiệu",
+  contact: "Liên hệ",
+  orders: "Đơn hàng",
+  delivery: "Giao hàng",
+  forecast: "Dự báo",
+  vendorquality: "Chất lượng nhà cung cấp",
   khosub: "Kho Sub",
   overmonitor: "Tình hình SX Dư",
   baocaosx: "Báo cáo sản xuất",
@@ -141,6 +151,16 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  incominginspection: "Incoming Inspection",
+  qualityissue: "Quality Issue",
+  audit: "Audit",
+  cmsrequest: "CMS Request",
+  about: "About",
+  contact: "Contact",
+  orders: "Orders",
+  delivery: "Delivery",
+  forecast: "Forecast",
+  vendorquality: "Vendor Quality",
   khosub: "Sub Warehouse",
   overmonitor: "Over Monitor",
   baocaosx: "Production Report",
@@ -270,6 +290,16 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  incominginspection: "입고 검사",
+  qualityissue: "품질 이슈",
+  audit: "감사",
+  cmsrequest: "CMS 요청",
+  about: "소개",
+  contact: "컨택",
+  orders: "발주",
+  delivery: "납품",
+  forecast: "예측",
+  vendorquality: "공급업체 품질",
   khosub: "서브 창고",
   overmonitor: "과생산 모니터",
   baocaosx: "생산 보고",

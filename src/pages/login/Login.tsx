@@ -9,6 +9,8 @@ import { RootState } from "../../redux/store";
 import {
   changeServer,
 } from "../../redux/slices/globalSlice";
+import { isValidInput } from "../../api/GlobalFunction";
+import Swal from "sweetalert2";
 const Login = () => {
   const protocol = window.location.protocol.startsWith("https") ? 'https' : 'http';
   const main_port = protocol === 'https' ? '5014' : '5013';
@@ -36,13 +38,22 @@ const Login = () => {
   const handle_setPassWordKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
+   
     if (e.key === "Enter") {
-      login(user, pass);
+      if (isValidInput(user) && isValidInput(pass)) {
+        login(user, pass);
+      } else {
+        Swal.fire("Thông báo", "Tên đăng nhập và mật khẩu không được chứa ký tự đặc biệt", "error");
+      }
     }
   };
   const login_bt = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    login(user, pass);
+      if (isValidInput(user) && isValidInput(pass)) { 
+      login(user, pass);
+    } else {
+      Swal.fire("Thông báo", "Tên đăng nhập và mật khẩu không được chứa ký tự đặc biệt", "error");
+    }
   };
   const server_ip: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.server_ip,

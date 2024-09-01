@@ -4679,3 +4679,8 @@ export const f_addTestPoint = async (testCode: number, pointCode: number, pointN
     console.log(error);
   });
 }  
+
+export const isValidInput = (input:string) => {
+  const regex = /^[a-zA-Z0-9_]*$/; // Example: allow only alphanumeric and underscores
+  return regex.test(input);
+};
