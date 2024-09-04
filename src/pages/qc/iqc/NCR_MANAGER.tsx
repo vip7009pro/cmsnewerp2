@@ -195,6 +195,8 @@ const NCR_MANAGER = () => {
       RESPONSE_REQ_DATE: "",
       CUST_CD: "",
       VENDOR: "",
+      M_CODE: "",
+      WIDTH_CD: 0,
       M_NAME: "",
       CMS_LOT: "",
       VENDOR_LOT: "", 
@@ -211,7 +213,7 @@ const NCR_MANAGER = () => {
     }
   ]);
   const [dtcDataTable, setDtcDataTable] = useState<Array<DTC_DATA>>([]);
-  const selectedRowsData= useRef<Array<IQC_INCOMMING_DATA>>([]);
+  const selectedRowsData= useRef<Array<NCR_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [m_name, setM_Name] = useState("");
   const [width_cd, setWidthCD] = useState(0);
@@ -233,73 +235,17 @@ const NCR_MANAGER = () => {
   const [defect_title, setDefect_Title] = useState("");
   const [defect_detail, setDefect_Detail] = useState(""); 
 
-  const setQCPASS = async (value: string) => {
-    console.log(selectedRowsData.current);
-    if (selectedRowsData.current.length > 0) {
-      Swal.fire({
-        title: "Set QC Pass",
-        text: "Đang set pass, hãy chờ chút",
-        icon: "info",
-        showCancelButton: false,
-        allowOutsideClick: false,
-        confirmButtonText: "OK",
-        showConfirmButton: false,
-      });
-      let err_code: string = "";
-      for (let i = 0; i < selectedRowsData.current.length; i++) {
-        await generalQuery("updateQCPASSI222", {
-          M_CODE: selectedRowsData.current[i].M_CODE,
-          LOT_CMS: selectedRowsData.current[i].LOT_CMS,
-          VALUE: value,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message}`;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        await generalQuery("updateIQC1Table", {
-          M_CODE: selectedRowsData.current[i].M_CODE,
-          LOT_CMS: selectedRowsData.current[i].LOT_CMS,
-          VALUE: value === "Y" ? "OK" : "NG",
-          IQC1_ID: selectedRowsData.current[i].IQC1_ID,
-          REMARK: selectedRowsData.current[i].REMARK,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message}`;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      if (err_code === "") {
-        Swal.fire("Thông báo", "SET thành công", "success");
-        handletraIQC1Data();
-      } else {
-        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
-      }
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
-    }
-  };
   let column_ncrdatatable = [
     { field: "NCR_ID", headerName: "NCR_ID", width: 100 },
+    { field: "FACTORY", headerName: "FACTORY", width: 100 },  
     { field: "NCR_NO", headerName: "NCR_NO", width: 100 },
     { field: "NCR_DATE", headerName: "NCR_DATE", width: 100 },
     { field: "RESPONSE_REQ_DATE", headerName: "RESPONSE_REQ_DATE", width: 100 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
     { field: "VENDOR", headerName: "VENDOR", width: 100 },
+    { field: "M_CODE", headerName: "M_CODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 100 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 100 },
     { field: "CMS_LOT", headerName: "CMS_LOT", width: 100 },
     { field: "VENDOR_LOT", headerName: "VENDOR_LOT", width: 100 },
     { field: "DEFECT_TITLE", headerName: "DEFECT_TITLE", width: 100 },
@@ -342,41 +288,7 @@ const NCR_MANAGER = () => {
             >
               <AiOutlineSearch color="red" size={15} />
               Tra Data
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {                
-                if (userData?.SUBDEPTNAME === "IQC") {
-                  setQCPASS("Y");
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error",
-                  );
-                }
-              }}
-            >
-              <GrStatusGood color="green" size={15} />
-              SET PASS
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                if (userData?.SUBDEPTNAME === "IQC") {
-                  setQCPASS("N");
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error",
-                  );
-                }
-              }}
-            >
-              <FcCancel color="red" size={15} />
-              RESET PASS
-            </IconButton>
+            </IconButton>            
           </div>}
         columns={column_ncrdatatable}
         data={ncr_data_table}
@@ -473,11 +385,7 @@ const NCR_MANAGER = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
-          setM_Name(
-            response.data.data[0].M_NAME +
-            " | " +
-            response.data.data[0].WIDTH_CD,
-          );
+          setM_Name(response.data.data[0].M_NAME);
           setVendor(response.data.data[0].CUST_NAME_KD)
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -547,6 +455,8 @@ const NCR_MANAGER = () => {
       RESPONSE_REQ_DATE: response_date,
       CUST_CD: cust_cd,
       VENDOR: vendor,
+      M_CODE: m_code,
+      WIDTH_CD: width_cd,
       M_NAME: m_name,
       CMS_LOT: cmsLot,  
       VENDOR_LOT: vendorLot,
@@ -565,15 +475,16 @@ const NCR_MANAGER = () => {
       return [...prev, temp_row];
     });
   };
-  const insertNCRTable = async () => {
+  
+  const insertNCRData = async () => {
     if (ncr_data_table.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < ncr_data_table.length; i++) {
-        await generalQuery("insertIQC1table", ncr_data_table[i])
+        await generalQuery("insertNCRData", ncr_data_table[i])
           // eslint-disable-next-line no-loop-func
           .then((response) => {
             if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
+              //console.log(response.data.data);  
             } else {
               err_code += "Lỗi : " + response.data.message + " | ";
             }
@@ -581,7 +492,7 @@ const NCR_MANAGER = () => {
           .catch((error) => {
             console.log(error);
           });
-      }
+      } 
       if (err_code === "") {
         Swal.fire("Thông báo", "Thêm data thành công", "success");
       } else {
@@ -589,8 +500,9 @@ const NCR_MANAGER = () => {
       }
     } else {
       Swal.fire("Thông báo", "Thêm ít nhất 1 dòng để lưu", "error");
-    }
+    } 
   };
+
   useEffect(() => {
     //handletraIQC1Data();
   }, []);
@@ -624,7 +536,7 @@ const NCR_MANAGER = () => {
                       color: "blue",
                     }}
                   >
-                    {m_name}
+                    {m_name} | {width_cd}
                   </span>
                 )}
                 <b>VENDOR LOT</b>
@@ -739,7 +651,7 @@ const NCR_MANAGER = () => {
               <Button fullWidth={true}  color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
                 if(isNewRegister)
                 {
-                  insertNCRTable();
+                  insertNCRData();
                 }
                 else {
                   Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');
@@ -843,7 +755,7 @@ const NCR_MANAGER = () => {
               <Button fullWidth={true}  color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
                 if(isNewRegister)
                 {
-                  insertNCRTable();
+                  insertNCRData();
                 }
                 else {
                   Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');

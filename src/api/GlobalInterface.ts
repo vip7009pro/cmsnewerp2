@@ -4073,6 +4073,8 @@ export interface NCR_DATA {
   RESPONSE_REQ_DATE: string,
   CUST_CD: string,
   VENDOR: string,
+  M_CODE: string,
+  WIDTH_CD: number,
   M_NAME: string,
   CMS_LOT: string,
   VENDOR_LOT: string,
