@@ -7,12 +7,15 @@ import ADDSPECTDTC from "../dtc/ADDSPECDTC";
 import DKDTC from "../dtc/DKDTC";
 import DTC from "../dtc/DTC";
 import HOLD_FAIL from "./HOLD_FAIL";
+import NCR_MANAGER from "./NCR_MANAGER";
 
 const IQC = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
     tab3: false,
+    tab4: false,
+    tab5: false,
   });
 
   const setNav = (choose: number) => {
@@ -99,6 +102,26 @@ const IQC = () => {
         >
           <span className="mininavtext">IN-HOLD-FAIL</span>
         </div>
+        <div
+          className="mininavitem"
+          onClick={() => setNav(4)}
+          style={{
+            backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab4 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">NCR MANAGEMENT</span>
+        </div>
+        <div
+          className="mininavitem"
+          onClick={() => setNav(5)}
+          style={{
+            backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab5 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">RMA MANAGEMENT</span>
+        </div>
       </div>
       {selection.tab1 && (
         <div className="traiqc">
@@ -113,6 +136,11 @@ const IQC = () => {
       {selection.tab3 && (
         <div className="datadtc">
           <HOLD_FAIL />
+        </div>
+      )}
+      {selection.tab4 && (
+        <div className="datadtc">
+          <NCR_MANAGER />
         </div>
       )}
     </div>

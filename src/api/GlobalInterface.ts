@@ -4064,3 +4064,26 @@ export interface DTC_TEST_POINT {
   TEST_CODE: number,
   TEST_NAME: string,
 }
+
+export interface NCR_DATA {
+  NCR_ID: number,
+  FACTORY: string,
+  NCR_NO: string,
+  NCR_DATE: string,
+  RESPONSE_REQ_DATE: string,
+  CUST_CD: string,
+  VENDOR: string,
+  M_NAME: string,
+  CMS_LOT: string,
+  VENDOR_LOT: string,
+  DEFECT_TITLE: string,
+  DEFECT_DETAIL: string,
+  DEFECT_IMAGE: string,
+  PROCESS_STATUS: string,
+  USE_YN: string,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string, 
+  REMARK: string,
+}
