@@ -17,6 +17,7 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
+import { checkHSD2 } from "../../../../api/GlobalFunction";
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;
@@ -131,13 +132,16 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       PDBV: "N",
       PDUYET:0,
       PL_HANG:"TT",
-      PROD_TYPE:""
+      PROD_TYPE:"",
+      EXP_DATE:0
     },
   ]);
   const [checklieuchinh, setCheckLieuChinh] = useState(false);
   const [isMainMaterialFSC, setIsMainMaterialFSC] = useState(false);
   const [mainMaterialFSC_CODE, setMainMaterialFSC_CODE] = useState('01');
   const [mainMaterialFSC_NAME,setMainMaterialFSC_NAME] = useState('NO_FSC');
+  const [mainMaterialEXP_DATE,setMainMaterialEXP_DATE] = useState(0);
+  const [pd_hsd,setPd_HSD] = useState('N');
 
   const initYCSX = async () => {
     let inventorydate: string = "202207";
@@ -160,11 +164,15 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           if (response.data.tk_status !== "NG") {
             if(response.data.data[0].FSC==='Y')
             {
+              
               setIsMainMaterialFSC(true);
               setMainMaterialFSC_CODE(response.data.data[0].FSC_CODE);      
               setMainMaterialFSC_NAME(response.data.data[0].FSC_NAME)        
             }
+            setMainMaterialEXP_DATE(response.data.data[0].EXP_DATE ?? 0);
+
           } else {
+            setMainMaterialEXP_DATE(0);
             setIsMainMaterialFSC(false);
             setMainMaterialFSC_CODE('01');
             setMainMaterialFSC_NAME('NO_FSC');
@@ -299,9 +307,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  console.log('isMainMaterialFSC',isMainMaterialFSC)
-  console.log('request_codeinfo[0].FSC',request_codeinfo[0].FSC ==='Y')
+  }; 
   useEffect(() => {
     initYCSX();
   }, [DATA.PROD_REQUEST_NO]);
@@ -379,7 +385,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           </div>
         </div>
       )}
-      {request_codeinfo[0].PDUYET===1 && (request_codeinfo[0].FSC !=='Y' || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE)) && (
+      {request_codeinfo[0].PDUYET===1 && (request_codeinfo[0].FSC !=='Y' || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE)) && checkHSD2(Number(mainMaterialEXP_DATE),Number(request_codeinfo[0]?.EXP_DATE ?? 0),request_codeinfo[0]?.PD_HSD ?? 'N') && (
         <div className="thongtinycsx">
           <div className="text1">
             1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: (
@@ -830,7 +836,8 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
         </div>
       )}
       {request_codeinfo[0].PDUYET!==1 && <div>YCSX chưa đươc phê duyệt, liên hệ Leader KD</div>}
-      {((!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') || ((isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') && mainMaterialFSC_CODE!==request_codeinfo[0].FSC_CODE)) && <div>Hàng FSC liệu cũng phải là FSC, và phải cùng 1 loại FSC, hãy cập nhật lại thông tin sản phẩm.</div>}      
+      {!checkHSD2(Number(mainMaterialEXP_DATE),Number(request_codeinfo[0]?.EXP_DATE ?? 0),request_codeinfo[0]?.PD_HSD ?? 'N') && <div>Hạn sử dụng của sản phẩm và của vật liệu không trùng khớp, vui lòng cập nhật lại thông tin sản phẩm.</div>} 
+      {((!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') || ((isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') && mainMaterialFSC_CODE!==request_codeinfo[0].FSC_CODE)) && <div>Hàng FSC liệu cũng phải là FSC, và phải cùng 1 loại FSC, hãy cập nhật lại thông tin sản phẩm.</div>}
     </div>
   );
 };

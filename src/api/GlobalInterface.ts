@@ -549,6 +549,8 @@ export interface FullBOM {
   PL_HANG?: string;
   FSC_CODE?: string;
   USE_YN?: string;
+  EXP_DATE?: number;
+  PD_HSD?: string;
 }
 //quan ly vat lieu
 export interface MATERIAL_TABLE_DATA {
@@ -1456,6 +1458,7 @@ export interface HOLDING_DATA {
   QC_PASS_DATE: string;
   QC_PASS_EMPL: string;
   REASON: string;
+  NCR_ID: number;
 }
 export interface QC_FAIL_DATA {
   id?: number;
@@ -1495,6 +1498,7 @@ export interface QC_FAIL_DATA {
   OUT_CUST_NAME: string;
   REMARK_OUT: string;
   FAIL_ID: number;
+  NCR_ID: number;
 }
 //error table
 export interface ERROR_TABLE {
@@ -4089,3 +4093,16 @@ export interface NCR_DATA {
   UPD_EMPL: string, 
   REMARK: string,
 }
+
+export interface HOLDDING_BY_NCR_ID {
+  NCR_ID: number,
+  VENDOR_LOT: string,
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  TOTAL_HOLDING_ROLL: number,
+  TOTAL_HOLDING_M: number,
+  TOTAL_HOLDING_SQM: number,  
+  TYPE: string,
+}
+

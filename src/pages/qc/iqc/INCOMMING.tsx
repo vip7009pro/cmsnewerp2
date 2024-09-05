@@ -461,8 +461,7 @@ const INCOMMING = () => {
     return (
       <AGTable
         toolbar={
-          <div>
-           
+          <div>           
             <IconButton
               className="buttonIcon"
               onClick={() => {

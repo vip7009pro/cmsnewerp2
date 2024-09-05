@@ -1461,10 +1461,7 @@ const BOM_MANAGER = () => {
     }
     return checkhd;
   }
-  const checkHSD2 = (): boolean => {
-    /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
-     console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
-     console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
+  const checkHSD2 = (): boolean => { 
     let checkhd: boolean = false;
     let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE ?? 0);
     let hsdSP: number = Number(codefullinfo.EXP_DATE ?? 0);
@@ -1878,8 +1875,7 @@ const BOM_MANAGER = () => {
           }
           else {
             tempInfo = { ...codefullinfo, PD_HSD: 'N', UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1, UPDATE_REASON: tempUpdateReason }
-          }
-          console.log('vao toi day')
+          }        
           await generalQuery("updateM100", tempInfo)
             .then((response) => {
               console.log(response.data);

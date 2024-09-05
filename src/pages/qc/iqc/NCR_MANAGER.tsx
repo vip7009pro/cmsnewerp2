@@ -1,219 +1,27 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
+import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineExport, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, getUserData } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import "./NCR_MANAGER.scss";
-import { GrStatusGood } from "react-icons/gr";
-import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  DTC_DATA,
-  IQC_INCOMMING_DATA,
-  NCR_DATA,
-  UserData,
-} from "../../../api/GlobalInterface";
+import { DTC_DATA, HOLDDING_BY_NCR_ID, NCR_DATA, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { checkBP } from "../../../api/GlobalFunction";
 const NCR_MANAGER = () => {
   const [isNewRegister, setNewRegister] = useState(false);
-  const column_dtc_data = [
-    { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
-    { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
-    {
-      field: "DANHGIA",
-      headerName: "DANH_GIA",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (
-          params.data.RESULT >= params.data.CENTER_VALUE - params.data.LOWER_TOR &&
-          params.data.RESULT <= params.data.CENTER_VALUE + params.data.UPPER_TOR
-        )
-          return (
-            <span style={{ color: "green" }}>
-              <b>OK</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "red" }}>
-            <b>NG</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CENTER_VALUE",
-      headerName: "CENTER_VALUE",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span>
-            <b>{params.data.CENTER_VALUE}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "UPPER_TOR",
-      headerName: "UPPER_TOR",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span>
-            <b>{params.data.UPPER_TOR}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOWER_TOR",
-      headerName: "LOWER_TOR",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span>
-            <b>{params.data.LOWER_TOR}</b>
-          </span>
-        );
-      },
-    },
-    { field: "RESULT", headerName: "RESULT", width: 80 },
-    { field: "DTC_ID", headerName: "DTC_ID", width: 80 },
-    { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 80 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 200,
-      cellRenderer: (params: any) => {
-        if (params.data.M_CODE !== "B0000035") return <span></span>;
-        return (
-          <span>
-            <b>{params.data.G_NAME}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "M_CODE",
-      headerName: "M_CODE",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.M_CODE === "B0000035") return <span></span>;
-        return (
-          <span>
-            <b>{params.data.M_CODE}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "M_NAME",
-      headerName: "TEN LIEU",
-      width: 150,
-      cellRenderer: (params: any) => {
-        if (params.data.M_CODE === "B0000035") return <span></span>;
-        return (
-          <span>
-            <b>{params.data.M_NAME}</b>
-          </span>
-        );
-      },
-    },
-    { field: "FACTORY", headerName: "FACTORY", width: 80 },
-    { field: "TEST_FINISH_TIME", headerName: "TEST_FINISH_TIME", width: 145 },
-    { field: "TEST_EMPL_NO", headerName: "NV TEST", width: 100 },
-    { field: "TEST_TYPE_NAME", headerName: "TEST_TYPE_NAME", width: 140 },
-    { field: "WORK_POSITION_NAME", headerName: "BO PHAN", width: 80 },
-    { field: "SAMPLE_NO", headerName: "SAMPLE_NO", width: 80 },
-    { field: "REQUEST_DATETIME", headerName: "NGAY YC", width: 145 },
-    { field: "REQUEST_EMPL_NO", headerName: "NV YC", width: 80 },
-    { field: "SIZE", headerName: "SIZE", width: 80 },
-    { field: "LOTCMS", headerName: "LOTCMS", width: 80 },
-    { field: "TEST_CODE", headerName: "TEST_CODE", width: 80 },
-    { field: "TDS", headerName: "TDS", width: 80 },
-    { field: "TDS_EMPL", headerName: "TDS_EMPL", width: 80 },
-    { field: "TDS_UPD_DATE", headerName: "TDS_UPD_DATE", width: 80 },
-  ];
-  const handletraDTCData = (dtc_id: number) => {
-    generalQuery("dtcdata", {
-      ALLTIME: true,
-      FROM_DATE: "",
-      TO_DATE: "",
-      G_CODE: "",
-      G_NAME: "",
-      M_NAME: "",
-      M_CODE: "",
-      TEST_NAME: "0",
-      PROD_REQUEST_NO: "",
-      TEST_TYPE: "0",
-      ID: dtc_id,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: DTC_DATA[] = response.data.data.map(
-            (element: DTC_DATA, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-                TEST_FINISH_TIME: moment
-                  .utc(element.TEST_FINISH_TIME)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                REQUEST_DATETIME: moment
-                  .utc(element.REQUEST_DATETIME)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            },
-          );
-          setDtcDataTable(loadeddata);
-        } else {
-          setDtcDataTable([])
-          /* Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error"); */
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
   const [cmsLot, setCmsLot] = useState("");
   const [iqc_empl, setIQC_Empl] = useState(getUserData()?.EMPL_NO!);
   const [remark, setReMark] = useState("");
-  const [ncr_data_table, setNCRDataTable] = useState<
-    Array<NCR_DATA>
-  >([
-    {
-      NCR_ID: 0,
-      FACTORY: "",
-      NCR_NO: "",
-      NCR_DATE: "",
-      RESPONSE_REQ_DATE: "",
-      CUST_CD: "",
-      VENDOR: "",
-      M_CODE: "",
-      WIDTH_CD: 0,
-      M_NAME: "",
-      CMS_LOT: "",
-      VENDOR_LOT: "", 
-      DEFECT_TITLE: "",
-      DEFECT_DETAIL: "",
-      DEFECT_IMAGE: "",
-      PROCESS_STATUS: "",
-      USE_YN: "",
-      INS_DATE: "",
-      INS_EMPL: "",
-      UPD_DATE: "", 
-      UPD_EMPL: "",
-      REMARK: "",
-    }
-  ]);
-  const [dtcDataTable, setDtcDataTable] = useState<Array<DTC_DATA>>([]);
+  const [ncr_data_table, setNCRDataTable] = useState<Array<NCR_DATA>>([]);
+  const [holdingdatatable, setHoldingDataTable] = useState<Array<HOLDDING_BY_NCR_ID>>([]);
   const selectedRowsData= useRef<Array<NCR_DATA>>([]);
+  const clickedrow = useRef<NCR_DATA | null>(null);
   const [empl_name, setEmplName] = useState("");
   const [m_name, setM_Name] = useState("");
   const [width_cd, setWidthCD] = useState(0);
@@ -235,36 +43,151 @@ const NCR_MANAGER = () => {
   const [defect_title, setDefect_Title] = useState("");
   const [defect_detail, setDefect_Detail] = useState(""); 
 
+
   let column_ncrdatatable = [
-    { field: "NCR_ID", headerName: "NCR_ID", width: 100 },
-    { field: "FACTORY", headerName: "FACTORY", width: 100 },  
-    { field: "NCR_NO", headerName: "NCR_NO", width: 100 },
-    { field: "NCR_DATE", headerName: "NCR_DATE", width: 100 },
-    { field: "RESPONSE_REQ_DATE", headerName: "RESPONSE_REQ_DATE", width: 100 },
-    { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
-    { field: "VENDOR", headerName: "VENDOR", width: 100 },
-    { field: "M_CODE", headerName: "M_CODE", width: 100 },
-    { field: "M_NAME", headerName: "M_NAME", width: 100 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 100 },
-    { field: "CMS_LOT", headerName: "CMS_LOT", width: 100 },
-    { field: "VENDOR_LOT", headerName: "VENDOR_LOT", width: 100 },
-    { field: "DEFECT_TITLE", headerName: "DEFECT_TITLE", width: 100 },
-    { field: "DEFECT_DETAIL", headerName: "DEFECT_DETAIL", width: 100 },  
-    { field: "PROCESS_STATUS", headerName: "PROCESS_STATUS", width: 100 },
-    { field: "USE_YN", headerName: "USE_YN", width: 100 },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 100 },
-    { field: "INS_EMPL", headerName: "INS_EMPL", width: 100 },
-    { field: "UPD_DATE", headerName: "UPD_DATE", width: 100 },
-    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 100 },
-    { field: "REMARK", headerName: "REMARK", width: 100 },
+    { field: "NCR_ID", headerName: "NCR_ID", width: 80, checkboxSelection: true, checkboxSelectionVisible: true },
+    { field: "FACTORY", headerName: "FACTORY", width: 80 },  
+    { field: "NCR_NO", headerName: "NCR_NO", width: 80 },
+    { field: "NCR_DATE", headerName: "NCR_DATE", width: 80 },
+    { field: "RESPONSE_REQ_DATE", headerName: "RESPONSE_REQ_DATE", width: 80 },
+    { field: "CUST_CD", headerName: "CUST_CD", width: 80 },
+    { field: "VENDOR", headerName: "VENDOR", width: 80 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 80 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
+    { field: "CMS_LOT", headerName: "CMS_LOT", width: 80 },
+    { field: "VENDOR_LOT", headerName: "VENDOR_LOT", width: 80 },
+    { field: "DEFECT_TITLE", headerName: "DEFECT_TITLE", width: 80 },
+    { field: "DEFECT_DETAIL", headerName: "DEFECT_DETAIL", width: 80 },  
+    { field: "DEFECT_IMAGE", headerName: "DEFECT_IMAGE", width: 80,   cellRenderer: (params: any) => {
+      let file: any = null;
+      const uploadFile2: any = async (e: any) => {
+        //console.log(file);
+        checkBP(userData, ["QC",], ["Leader","Dept Staff","Sub Leader"], ["ALL"], async () => {
+          uploadQuery(file, "NCR_" + params.data.NCR_ID + ".png", "ncrimage")
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                generalQuery("update_ncr_image", {
+                  NCR_ID: params.data.NCR_ID,
+                  imagevalue: "Y",
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload ảnh thành công",
+                        "success",
+                      );
+                      let tempcodeinfodatatable = ncr_data_table.map(
+                        (element: NCR_DATA, index: number) => {
+                          return element.NCR_ID === params.data.NCR_ID
+                            ? { ...element, DEFECT_IMAGE: "Y" }
+                            : element;
+                        },
+                      );
+                      setNCRDataTable(tempcodeinfodatatable);
+                    } else {
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload ảnh thất bại",
+                        "error",
+                      );
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              } else {
+                Swal.fire(
+                  "Thông báo",
+                  "Upload ảnh thất bại:" + response.data.message,
+                  "error",
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        });
+      };
+      let hreftlink = "/ncrimage/" + "NCR_" + params.data.NCR_ID + ".png";
+      if (params.data.DEFECT_IMAGE !== "N" && params.data.DEFECT_IMAGE !== null) {
+        return (
+          <span style={{ color: "gray" }}>
+            <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+              LINK
+            </a>
+          </span>
+        );
+      } else {
+        return (
+          <div className="uploadfile">
+            <IconButton
+              className="buttonIcon"
+              onClick={(e) => {
+                uploadFile2(e);
+              }}
+            >
+              <AiOutlineCloudUpload color="yellow" size={15} />
+              Upload
+            </IconButton>
+            <input
+              accept=".png"
+              type="file"
+              onChange={(e: any) => {
+                file = e.target.files[0];
+                console.log(file);
+              }}
+            />
+          </div>
+        );
+      }
+    },},  
+    { field: "PROCESS_STATUS", headerName: "PROCESS_STATUS", width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.PROCESS_STATUS === 'Y') {
+          return <span style={{ color: "black" }}>COMPLETED</span>;
+        } else if (params.data.PROCESS_STATUS === 'N') {
+          return <span style={{ color: "white" }}>NOT COMPLETED</span>;
+        } else {
+          return <span style={{ color: "white" }}>PENDING</span>;
+        }
+      },  
+      cellStyle: (params: any) => {
+      if (params.data.PROCESS_STATUS === 'Y') {
+        return { backgroundColor: '#77da41', color: 'white' };
+      }
+      else if (params.data.PROCESS_STATUS === 'N') {
+        return { backgroundColor: '#ff0000', color: 'white' };
+      }
+      else {
+        return { backgroundColor: '#e7a44b', color: 'white' };
+      }
+    }  },
+    { field: "USE_YN", headerName: "USE_YN", width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 80 },
+    { field: "INS_EMPL", headerName: "INS_EMPL", width: 80 },
+    { field: "UPD_DATE", headerName: "UPD_DATE", width: 80 },
+    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80 },
+    { field: "REMARK", headerName: "REMARK", width: 80 },
   ];
 
+  let column_holdingbyncridtable = [
+    { field: "NCR_ID", headerName: "NCR_ID", width: 60, checkboxSelection: true, checkboxSelectionVisible: true },
+    { field: "VENDOR_LOT", headerName: "VENDOR_LOT", width: 60 },  
+    { field: "M_CODE", headerName: "M_CODE", width: 60 },
+    { field: "M_NAME", headerName: "M_NAME", width: 60 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 60 },
+    { field: "TOTAL_HOLDING_ROLL", headerName: "TOTAL_HOLDING_ROLL", width: 60 },
+    { field: "TOTAL_HOLDING_M", headerName: "TOTAL_HOLDING_M", width: 60 },
+    { field: "TOTAL_HOLDING_SQM", headerName: "TOTAL_HOLDING_SQM", width: 60 },
+    { field: "TYPE", headerName: "TYPE", width: 60 },
+  ];  
   const ncrDataTable = useMemo(() => {
     return (
       <AGTable
         toolbar={
-          <div>
-           
+          <div>           
             <IconButton
               className="buttonIcon"
               onClick={() => {
@@ -288,7 +211,17 @@ const NCR_MANAGER = () => {
             >
               <AiOutlineSearch color="red" size={15} />
               Tra Data
-            </IconButton>            
+            </IconButton>   
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                //handletraIQC1Data();
+                
+              }}
+            >
+              <AiOutlineExport color="red" size={15} />
+              Export NCR
+            </IconButton>   
           </div>}
         columns={column_ncrdatatable}
         data={ncr_data_table}
@@ -296,7 +229,8 @@ const NCR_MANAGER = () => {
           //console.log(e.data)
         }} onRowClick={(e) => {
           //console.log(e.data)
-          handletraDTCData(e.data.DTC_ID);
+          clickedrow.current = e.data;
+          handletraHoldingData(e.data);          
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();         
@@ -304,15 +238,15 @@ const NCR_MANAGER = () => {
       />
     )
   }, [ncr_data_table]);
-  const dtc_data_table = useMemo(() => {
+  const holding_data_table = useMemo(() => {
     return (
       <AGTable
         toolbar={
           <div>
             
           </div>}
-        columns={column_dtc_data}
-        data={dtcDataTable}
+        columns={column_holdingbyncridtable}
+        data={holdingdatatable}
         onCellEditingStopped={(e) => {
           //console.log(e.data)
         }} onRowClick={(e) => {
@@ -324,10 +258,10 @@ const NCR_MANAGER = () => {
         }}
       />
     )
-  }, [dtcDataTable]);
+  }, [holdingdatatable]);
 
-  const handletraIQC1Data = () => {
-    generalQuery("loadIQC1table", {
+  const handletraNCRData = () => {
+    generalQuery("loadNCRData", {
       M_CODE: m_code.trim(),
       M_NAME: m_name.trim(),
       LOTNCC: vendorLot.trim(),
@@ -342,6 +276,8 @@ const NCR_MANAGER = () => {
             (element: NCR_DATA, index: number) => {              
               return {
                 ...element,                
+                NCR_DATE: element.NCR_DATE === null ? "" : moment(element.NCR_DATE).utc().format("YYYY-MM-DD"),
+                RESPONSE_REQ_DATE: element.RESPONSE_REQ_DATE === null ? "" : moment(element.RESPONSE_REQ_DATE).utc().format("YYYY-MM-DD"),
                 INS_DATE: element.INS_DATE === null ? "" : moment(element.INS_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE: element.UPD_DATE === null ? "" : moment(element.UPD_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),              
                 id: index,
@@ -357,6 +293,27 @@ const NCR_MANAGER = () => {
           );
         } else {
         }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handletraHoldingData = (ncrDataRow: NCR_DATA) => {
+    generalQuery("loadHoldingMaterialByNCR_ID", {
+      NCR_ID: ncrDataRow.NCR_ID,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {          
+          const loadeddata: HOLDDING_BY_NCR_ID[] = response.data.data.map(  
+            (element: HOLDDING_BY_NCR_ID, index: number) => {              
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          setHoldingDataTable(loadeddata);
+        } 
       })
       .catch((error) => {
         console.log(error);
@@ -764,14 +721,15 @@ const NCR_MANAGER = () => {
             </div>}
             {!isNewRegister && <div className="formbutton">
               <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#4959e7', color: 'white' }} onClick={() => {
-               handletraIQC1Data();
+               handletraNCRData();
               }}>Tra Data</Button>          
             </div>}
           </div>}
-          <div className="tracuuYCSXTable">{ncrDataTable}</div>
+          <div className="tracuuYCSXTable"><span style={{textAlign: 'center', fontSize: '1rem', fontWeight: 'bold', color: 'blue'}}>NCR Detail</span>
+          {ncrDataTable}</div>
           <div className="tracuuDataInspectionform2">
-            <b style={{ color: "blue" }}>Kết quả ĐTC</b>
-            {dtc_data_table}
+            <b style={{ color: "blue" }}>Holding - Failing Detail</b>
+            {holding_data_table}
           </div>
         </div>
       </div>

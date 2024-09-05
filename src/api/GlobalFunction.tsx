@@ -4684,3 +4684,43 @@ export const isValidInput = (input:string) => {
   const regex = /^[a-zA-Z0-9_]*$/; // Example: allow only alphanumeric and underscores
   return regex.test(input);
 };
+
+//update ncr id for holding material
+export const f_updateNCRIDForHolding = async (HOLD_ID: number, ncrId: number) => {
+  await generalQuery("updateNCRIDForHolding", {
+    HOLD_ID: HOLD_ID,
+    NCR_ID: ncrId
+  })
+  .then((response) => {
+    if (response.data.tk_status !== "NG") {
+      //Swal.fire("Thông báo", "Cập nhật thành công", "success"); 
+    } else {
+      Swal.fire("Thông báo", "Cập nhật thất bại", "error");
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+
+//update ncr id for failing material
+export const f_updateNCRIDForFailing = async (FAIL_ID: number, ncrId: number) => {
+  await generalQuery("updateNCRIDForFailing", {
+    FAIL_ID: FAIL_ID,
+    NCR_ID: ncrId
+  })
+  .then((response) => {
+    if (response.data.tk_status !== "NG") {
+      //Swal.fire("Thông báo", "Cập nhật thành công", "success");  
+    } else {
+      Swal.fire("Thông báo", "Cập nhật thất bại", "error");
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+
+export const checkHSD2 = (hsdVL: number, hsdSP: number, pd_hsd: string): boolean => {
+  return (hsdVL === hsdSP && hsdVL !== 0) || (pd_hsd === 'Y' && hsdVL > 0 && hsdSP > 0);
+} 

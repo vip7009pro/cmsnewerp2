@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { HOLDING_DATA, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { f_updateNCRIDForHolding } from "../../../api/GlobalFunction";
 
 const HOLDING = () => {
 
@@ -23,6 +24,7 @@ const HOLDING = () => {
   const [m_code, setM_Code] = useState("");
   const [mLotNo, setMLotNo] = useState("");
   const [mStatus, setMStatus] = useState("ALL");
+  const [ncrId, setNCRID] = useState(0);
 
   const column_holding_table = [
     { field: 'HOLD_ID',headerName: 'HOLD_ID', headerCheckboxSelection: true, checkboxSelection: true, resizable: true,width: 100 },
@@ -48,9 +50,38 @@ const HOLDING = () => {
     { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 100 },
     { field: 'QC_PASS',headerName: 'QC_PASS', resizable: true,width: 100 },
     { field: 'QC_PASS_DATE',headerName: 'QC_PASS_DATE', resizable: true,width: 100 },
-    { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 100 },
+      { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 100 },
    
   ];
+
+  const updateNCRIDHolding = async () => {  
+    if (selectedRowsData.current.length > 0) {
+      if (ncrId ===0) {
+        Swal.fire("Thông báo", "NCR ID phải khác 0", "error");
+        return;
+      }
+      Swal.fire({
+        title: "UPDATE NCR ID",
+        text: "Đang UPDATE NCR ID",
+        icon: "info",
+        showCancelButton: false,  
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsData.current.length; i++) {
+       await f_updateNCRIDForHolding(selectedRowsData.current[i].HOLD_ID, ncrId);
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "UPDATE thành công", "success"); 
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
+    }
+  };  
   const setQCPASS = async (value: string) => {
     //console.log(selectedRowsData.current);
     if (selectedRowsData.current.length > 0) {
@@ -303,6 +334,14 @@ const HOLDING = () => {
                   <option value="N">CHƯA PASS</option>
                 </select>
               </label>
+              <label>
+                <b>NCR ID:</b>
+                <input
+                  type="number"
+                  value={ncrId}
+                  onChange={(e) => setNCRID(parseInt(e.target.value))}
+                ></input>
+              </label>  
             </div>
             <div className="forminputcolumn">
               <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#fa1717' }} onClick={() => {
@@ -336,6 +375,17 @@ const HOLDING = () => {
                   );
                 }
               }}>RESET PASS</Button>
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#cc004e' }} onClick={() => {
+                if (userData?.SUBDEPTNAME === "IQC") {
+                  updateNCRIDHolding();
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Bạn không phải người bộ phận IQC",
+                    "error",
+                  );
+                }
+              }}>UPDATE NCR ID</Button>
 
 
             </div>

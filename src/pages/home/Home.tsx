@@ -75,7 +75,7 @@ import OVER_MONITOR from "../kinhdoanh/over_prod_monitor/OVER_MONITOR";
 import QUICKPLAN2 from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2";
 import CHAT from "../chat/CHAT";
 import KHOSUB from "../qlsx/QLSXPLAN/KHOAO/KHOSUB";
-export const current_ver: number = 464;
+export const current_ver: number = 465;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;

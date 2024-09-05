@@ -14,6 +14,8 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
+import { f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -45,8 +47,9 @@ const FAILING = () => {
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
   const [cust_cd, setCust_Cd] = useState("6969");
+  const [ncrId, setNCRID] = useState(0);
   const column_failing_table = [
-    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 80 },
+    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 80, checkboxSelection: true },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
     { field: 'PLAN_ID_SUDUNG', headerName: 'PLAN_ID_SUDUNG', resizable: true, width: 80 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
@@ -81,6 +84,7 @@ const FAILING = () => {
     { field: 'OUT_CUST_NAME', headerName: 'OUT_CUST_NAME', resizable: true, width: 80 },
     { field: 'OUT_PLAN_ID', headerName: 'OUT_PLAN_ID', resizable: true, width: 80 },
     { field: 'REMARK_OUT', headerName: 'REMARK_OUT', resizable: true, width: 80 },
+    { field: 'NCR_ID', headerName: 'NCR_ID', resizable: true, width: 80 },
   ];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -158,12 +162,108 @@ const FAILING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
+  const updateNCRIDFailing = async () => {
+    console.log(selectedRowsDataA.current);   
+    if (selectedRowsDataA.current.length > 0) {
+      Swal.fire({
+        title: "Tra cứu vật liệu Holding",
+        text: "Đang tải dữ liệu, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsDataA.current.length; i++) {
+        await f_updateNCRIDForFailing(selectedRowsDataA.current[i].FAIL_ID, ncrId);
+        
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "SET thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");  
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
+    }
+  };
+
   const failingDataAGTable = useMemo(() => {
     return (
       <AGTable
         toolbar={
-          <div>
-          </div>}
+          <>
+           <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setInspectionDataTable([]);
+              }}
+            >
+              <AiFillFileAdd color="green" size={15} />
+              New Failing
+            </IconButton>
+          <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                //handletraIQC1Data();
+                handletraFailingData();
+              }}
+            >
+              <AiOutlineSearch color="red" size={15} />
+              Tra Data
+            </IconButton>
+            <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    //console.log(selectedRowsDataA.current);
+                    setQCPASS("Y");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error",
+                    );
+                  }
+                }}
+              >
+                <GrStatusGood color="green" size={15} />
+                SET PASS
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    setQCPASS("N");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error",
+                    );
+                  }
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                  //setQCPASS('N');
+                }}
+              >
+                <FcCancel color="red" size={15} />
+                RESET PASS
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                  updateNCRIDFailing();
+                  }
+                }}
+              >
+                <FcCancel color="red" size={15} />
+                UPDATE NCR_ID
+              </IconButton>
+            </>
+            }
         columns={column_failing_table}
         data={inspectiondatatable}
         onCellEditingStopped={(e) => {
@@ -376,6 +476,7 @@ const FAILING = () => {
       OUT_CUST_NAME: "",
       REMARK_OUT: "",
       FAIL_ID: 0,
+      NCR_ID: 0,
     };
     setInspectionDataTable((prev) => {
       return [...prev, temp_row];
@@ -655,6 +756,17 @@ const FAILING = () => {
                     }}
                   ></input>
                 </label>
+                <label>
+                  <b>NCR_ID</b>
+                  <input
+                    type="number"
+                    placeholder={"NCR_ID"}
+                    value={ncrId}
+                    onChange={(e) => {
+                      setNCRID(parseInt(e.target.value));
+                    }}
+                  ></input>
+                </label>
               </div>
               <div className="forminputcolumn">
                 <label>
@@ -673,13 +785,7 @@ const FAILING = () => {
                 </div>
               </div>
             </div>
-            <div className="formbutton">
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#01aa01', color: 'white' }} onClick={() => {
-                setInspectionDataTable([]);
-              }}>New</Button>
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
-                handletraFailingData();
-              }}>Tra Data</Button>
+            <div className="formbutton">                         
               <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={() => {
                 if (checkInput()) {
                   let lotArray = inspectiondatatable.map(
@@ -853,44 +959,7 @@ const FAILING = () => {
               }}>Xuất</Button>
             </div>
             <div className="formbutton">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  if (userData?.SUBDEPTNAME === "IQC") {
-                    //console.log(selectedRowsDataA.current);
-                    setQCPASS("Y");
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Bạn không phải người bộ phận IQC",
-                      "error",
-                    );
-                  }
-                }}
-              >
-                <GrStatusGood color="green" size={15} />
-                SET PASS
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  if (userData?.SUBDEPTNAME === "IQC") {
-                    setQCPASS("N");
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Bạn không phải người bộ phận IQC",
-                      "error",
-                    );
-                  }
-                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                  //setQCPASS('N');
-                }}
-              >
-                <FcCancel color="red" size={15} />
-                RESET PASS
-              </IconButton>
+              
             </div>
             <div
               className="formbutton"
