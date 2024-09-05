@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import NavMenu from './components/NavMenu/NavMenu'
 import NavMenu2 from './components/NavMenu/NavMenu2'
+import axios from 'axios'
+import Cookies from 'universal-cookie'
 
 const SupplierPage = styled.div`
   max-width: 100%;
@@ -71,7 +73,26 @@ const MenuLink = styled(Link)`
   }
 `
 
-const Home = () => <h2>Suppplier Portal</h2>
+const Home = () => {
+return (
+  <div>
+    <h2>Suppplier Portal</h2>
+    <button onClick={() => generalQueryGoLang('get_supplier_list', {
+      command1: 'get_supplier_list',
+      command2: 'get_supplier_list',
+      command3: 'get_supplier_list',
+      command4: 'get_supplier_list',
+      command5: 'get_supplier_list',
+      command6: 'get_supplier_list',
+      command7: 'get_supplier_list',
+      command8: 'get_supplier_list',
+      command9: 'get_supplier_list',
+      command10: 'get_supplier_list', 
+    }).then((res) => {
+      console.log(res);
+    })}>Get Supplier List</button>
+  </div>
+)}
 const About = () => <h2>About Page</h2>
 const Contact = () => <h2>Contact Page</h2>
 const Orders = () => <h2>Orders Page</h2>
@@ -101,6 +122,19 @@ const FooterContent = styled.div`
 const FooterText = styled.p`
   margin: 0;
 `
+axios.defaults.withCredentials = true;
+const cookies = new Cookies();
+export async function generalQueryGoLang(command: string, queryData: any) {
+  console.log(queryData);
+  const CURRENT_API_URL = 'http://localhost:3002/api';
+  // console.log('API URL', CURRENT_API_URL);
+  let data = await axios.post(CURRENT_API_URL, {
+    command: command,
+    DATA: { ...queryData, token_string: cookies.get("token") },
+  });
+  console.log(data);
+  return data;
+}
 
 const Suppliers = () => {
   const supplierData = [
@@ -111,6 +145,7 @@ const Suppliers = () => {
 
   const [isVendorQualityOpen, setIsVendorQualityOpen] = useState(false);
 
+  
   return (
     <Router>
       <Header>
@@ -121,7 +156,7 @@ const Suppliers = () => {
           </Menu>
         </Navbar>
       </Header>
-      <Routes>
+      <Routes>        
         <Route path="/" element={<Home />} />
         <Route path="/suppliers" element={
           <SupplierPage>
@@ -147,6 +182,7 @@ const Suppliers = () => {
         <Route path="/forecast" element={<Forecast />} />
         <Route path="/vendorquality" element={<VendorQuality />} />
       </Routes>
+      <Home />
       <Footer>
         <FooterContent>
           <FooterText>&copy; 2024 CMS VINA. All rights reserved.</FooterText>
