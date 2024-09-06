@@ -78,7 +78,7 @@ return (
   <div>
     <h2>Suppplier Portal</h2>
     <button onClick={() => generalQueryGoLang('get_supplier_list', {
-      command1: 'get_supplier_list',
+      command1: 1,
       command2: 'get_supplier_list',
       command3: 'get_supplier_list',
       command4: 'get_supplier_list',
@@ -89,7 +89,7 @@ return (
       command9: 'get_supplier_list',
       command10: 'get_supplier_list', 
     }).then((res) => {
-      console.log(res);
+      console.log(res.data.data);
     })}>Get Supplier List</button>
   </div>
 )}
