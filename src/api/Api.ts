@@ -16,6 +16,7 @@ export function getSever(): string {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
   return state.totalSlice.server_ip;
+  //return "http://localhost:3002";
 }
 export function getCompany(): string {
   const state = store.getState();
@@ -134,12 +135,12 @@ export function login(user: string, pass: string) {
       })
       .then((response: any) => {
         console.log("ketqua");
-        //console.log(response.data);
+        console.log("ket qua tra ve",response.data);
         var Jresult = response.data;
         //console.log("Status = " + Jresult.tk_status);
         //console.log("Token content = " + Jresult.token_content);
-        if (Jresult.tk_status.toUpperCase() === "OK") {
-          //console.log(Jresult.token_content);
+        if (Jresult?.tk_status?.toUpperCase() === "OK") {
+          console.log(Jresult.token_content);
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng nhập thành công !",
@@ -150,7 +151,7 @@ export function login(user: string, pass: string) {
           checkLogin()
             .then((data) => {
               //console.log(data);
-              if (data.data.tk_status === "ng") {
+              if (data.data.tk_status.toUpperCase() === "NG") {
                 /* console.log("khong co token");
             setLoginState(false); */
                 store.dispatch(logoutSlice(false));

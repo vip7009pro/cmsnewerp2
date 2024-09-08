@@ -1103,6 +1103,16 @@ const YCSXManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
+  const testData = async () => {
+    let uploadAmazonData = await f_handleAmazonData(
+      uploadExcelJson,
+      cavityAmazon,
+      codeCMS,
+      prodrequestno,
+      id_congviec
+    );
+    console.log(uploadAmazonData);
+  }
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
     if (amz_PL_HANG === 'AM') {
@@ -1115,7 +1125,7 @@ const YCSXManager = () => {
           prodrequestno,
           id_congviec
         );
-        //console.log(uploadAmazonData);
+        //console.log(uploadAmazonData);        
         let checkIDcongViecTonTai: boolean = await f_isIDCongViecExist(id_congviec, prodrequestno);
         if (!checkIDcongViecTonTai) {
           let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
@@ -1171,7 +1181,7 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "Đây không phải là yêu cầu sản xuất AMZ", "error");
     }
   };
-  const readUploadFileAmazon = (e: any) => {
+  const readUploadFileAmazon_bk = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
       console.log(e.target.files[0].name);
@@ -1200,7 +1210,7 @@ const YCSXManager = () => {
           const newworksheet = worksheet;
           //console.log(worksheet);
           let json: any = XLSX.utils.sheet_to_json(newworksheet);
-          //console.log(json);
+          console.log(json);
           /* check trung */
           let valueArray = json.map((element: any) => element.DATA);
           //console.log(valueArray);
@@ -1226,6 +1236,60 @@ const YCSXManager = () => {
               width: 350,
             });
             setColumn_Excel(uploadexcelcolumn);
+            let newjson = json.map((element: any, index: number) => {
+              return { ...element, id: index, CHECKSTATUS: "Waiting" };
+            });
+            setUploadExcelJSon(newjson);
+          }
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+      }
+    }
+  };
+
+  const readUploadFileAmazon = (e: any) => {
+    e.preventDefault();
+    if (e.target.files) {
+      console.log(e.target.files[0].name);
+      let filename: string = e.target.files[0].name;
+      let checkmodel: boolean =
+        filename.search(prod_model) === -1 ? false : true;
+      let checkIDCV: boolean =
+        filename.search(id_congviec) === -1 ? false : true;
+      if (!checkmodel) {
+        Swal.fire("Thông báo", "Nghi vấn sai model", "error");
+        setUploadExcelJSon([]);
+      } else if (!checkIDCV) {
+        Swal.fire("Thông báo", "Không đúng ID công việc đã nhập", "error");
+        setUploadExcelJSon([]);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          
+          // Convert to JSON without using headers
+          let json: any = XLSX.utils.sheet_to_json(worksheet, { header: ["DATA"], defval: "" });
+          
+          // Manually add the "DATA" header
+         
+          
+          console.log(json);
+          
+          /* check trung */
+          let valueArray = json.slice(1).map((element: any) => element.DATA);
+          var isDuplicate = valueArray.some(function (item: any, idx: number) {
+            return valueArray.indexOf(item) !== idx;
+          });
+          console.log(isDuplicate);
+          if (isDuplicate) {
+            Swal.fire("Thông báo", "Có giá trị trùng lặp !", "error");
+            setUploadExcelJSon([]);
+          } else {
+            
+           
             let newjson = json.map((element: any, index: number) => {
               return { ...element, id: index, CHECKSTATUS: "Waiting" };
             });
@@ -3018,6 +3082,9 @@ const YCSXManager = () => {
                   <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
                     upAmazonDataSuperFast();
                   }}>Up</Button>
+                 {/*  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                    testData();
+                  }}>Test</Button> */}
                   <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }} onClick={() => {
                     f_checkDuplicateAMZ();
                   }}>Check</Button>
