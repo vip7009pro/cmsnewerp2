@@ -1,7 +1,7 @@
 import { Button, IconButton, LinearProgress } from "@mui/material";
 import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
@@ -10,23 +10,10 @@ import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./TraAMZ.scss";
 import { TbLogout } from "react-icons/tb";
 import { AMAZON_DATA } from "../../../../api/GlobalInterface";
+import AGTable from "../../../../components/DataTable/AGTable";
 
 const TraAMZ = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
-  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
-  const [readyRender, setReadyRender] = useState(true);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -37,16 +24,12 @@ const TraAMZ = () => {
   const [plan_id, setPlanID] = useState("");
   const [dataAMZ, setDataAMZ] = useState("");
   const [alltime, setAllTime] = useState(false);
-  const [id, setID] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
+  const [amzdatatable, setAMZDataTable] = useState<Array<any>>(
     [],
   );
-  const [sumaryINSPECT, setSummaryInspect] = useState("");
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
 
-  const column_lichsuinputlieusanxuat = [
-    { field: "G_NAME", headerName: "G_NAME", minWidth: 80, flex: 2 },
+  const column_amz_data = [
+    { field: "G_NAME", headerName: "G_NAME", minWidth: 80, flex: 2, checkboxSelection: true, headerCheckboxSelection: true },
     { field: "G_CODE", headerName: "G_CODE", minWidth: 80, flex: 1 },
     {
       field: "PROD_REQUEST_NO",
@@ -69,9 +52,25 @@ const TraAMZ = () => {
     { field: "INS_DATE", headerName: "INS_DATE", minWidth: 80, flex: 1.2 },
     { field: "INS_EMPL", headerName: "INS_EMPL", minWidth: 80, flex: 1 },
   ];
-  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
-    column_lichsuinputlieusanxuat,
-  );
+  const amzDataTableAG = useMemo(() => {
+    return (
+      <AGTable    
+        showFilter={true}
+        toolbar={
+          <>
+          </>         }
+        columns={column_amz_data}
+        data={amzdatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onCellClick={(params: any) => {          
+          //console.log(params)
+        }} onSelectionChange={(params: any) => {
+          //setYcsxDataTableFilter(params!.api.getSelectedRows());          
+          //console.log(e!.api.getSelectedRows())
+        }} />
+    )
+  }, [amzdatatable, isLoading])
 
   function CustomToolbarLICHSUINPUTSX() {
     return (
@@ -88,7 +87,7 @@ const TraAMZ = () => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            SaveExcel(inspectiondatatable, "LICHSU DATA AMZ");
+            SaveExcel(amzdatatable, "LICHSU DATA AMZ");
           }}
         >
           <AiFillFileExcel color="green" size={15} />
@@ -127,8 +126,7 @@ const TraAMZ = () => {
               };
             },
           );
-          setInspectionDataTable(loaded_data);
-          setReadyRender(true);
+          setAMZDataTable(loaded_data);
           Swal.fire(
             "Thông báo",
             "Đã load: " + loaded_data.length + " dòng",
@@ -233,9 +231,7 @@ const TraAMZ = () => {
                 ></input>
               </label>
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                setisLoading(true);
-                setReadyRender(true);
-                setColumnDefinition(column_lichsuinputlieusanxuat);
+                setisLoading(true);             
                 handle_traAMZ();
               }}>Tra AMZ</Button>
 
@@ -243,23 +239,7 @@ const TraAMZ = () => {
           </div>
         )}
         <div className="tracuuYCSXTable">
-          {readyRender && (
-            <DataGrid
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              slots={{
-                toolbar: CustomToolbarLICHSUINPUTSX,
-                
-              }}
-              getRowId={(row) => row.id}
-              loading={isLoading}
-              rowHeight={30}
-              rows={inspectiondatatable}
-              columns={column_lichsuinputlieusanxuat}
-              pageSizeOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-            />
-          )}
+          {amzDataTableAG}
         </div>
       </div>
     </div>)

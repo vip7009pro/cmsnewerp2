@@ -130,7 +130,7 @@ const YCSXManager = () => {
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
   const ycsxdatatablefilter = useRef<YCSXTableData[]>([]);
-  const [ycsxdatatablefilterexcel, setYcsxDataTableFilterExcel] = useState<Array<any>>([]);
+  const ycsxdatatablefilterexcel = useRef<Array<any>>([]);
   const [selectedID, setSelectedID] = useState<string | null>();
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
@@ -139,6 +139,7 @@ const YCSXManager = () => {
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState("");
   const [amz_PL_HANG, setAMZ_PL_HANG] = useState("TT");
+  const [trigger, setTrigger] = useState(false);
   const [clickedRows, setClickedRows] = useState<YCSXTableData>({
     BLOCK_TDYCSX: 0,
     BTP_TDYCSX: 0,
@@ -933,20 +934,20 @@ const YCSXManager = () => {
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
   ];
   const column_excel2 = [
-    { field: "id", headerName: "id", width: 180 },
-    { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 120 },
-    { field: "CODE_50", headerName: "CODE_50", width: 80 },
-    { field: "CODE_55", headerName: "CODE_55", width: 80 },
-    { field: "G_CODE", headerName: "G_CODE", width: 100 },
-    { field: "RIV_NO", headerName: "RIV_NO", width: 80 },
+    { field: "id", headerName: "id", width: 150, checkboxSelection: true },
+    { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 60 },
+    { field: "CODE_50", headerName: "CODE_50", width: 60 },
+    { field: "CODE_55", headerName: "CODE_55", width: 60 },
+    { field: "G_CODE", headerName: "G_CODE", width: 60 },
+    { field: "RIV_NO", headerName: "RIV_NO", width: 60 },
     {
       field: "PROD_REQUEST_QTY",
       headerName: "SL YCSX",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -961,23 +962,23 @@ const YCSXManager = () => {
       field: "CHECKSTATUS",
       headerName: "CHECKSTATUS",
       width: 200,
-      renderCell: (params: any) => {
-        if (params.row.CHECKSTATUS.slice(0, 2) === "OK") {
+      cellRenderer: (params: any) => {
+        if (params.data.CHECKSTATUS.slice(0, 2) === "OK") {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.row.CHECKSTATUS}</b>
+              <b>{params.data.CHECKSTATUS}</b>
             </span>
           );
-        } else if (params.row.CHECKSTATUS.slice(0, 2) === "NG") {
+        } else if (params.data.CHECKSTATUS.slice(0, 2) === "NG") {
           return (
             <span style={{ color: "red" }}>
-              <b>{params.row.CHECKSTATUS}</b>
+              <b>{params.data.CHECKSTATUS}</b>
             </span>
           );
         } else {
           return (
-            <span style={{ color: "yellow" }}>
-              <b>{params.row.CHECKSTATUS}</b>
+            <span style={{ color: "blue" }}>
+              <b>{params.data.CHECKSTATUS}</b>
             </span>
           );
         }
@@ -1015,16 +1016,6 @@ const YCSXManager = () => {
   const loadPONO = async (G_CODE?: string, CUST_CD?: string) => {
     setPONOLIST(await f_loadPONOList(G_CODE, CUST_CD));
   };
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#098611' }} onClick={() => {
-          SaveExcel(uploadExcelJson, "Uploaded PO");
-        }}>Save Excel</Button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   function CustomToolbarAmazon() {
     return (
       <GridToolbarContainer>
@@ -1103,16 +1094,6 @@ const YCSXManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-  const testData = async () => {
-    let uploadAmazonData = await f_handleAmazonData(
-      uploadExcelJson,
-      cavityAmazon,
-      codeCMS,
-      prodrequestno,
-      id_congviec
-    );
-    console.log(uploadAmazonData);
-  }
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
     if (amz_PL_HANG === 'AM') {
@@ -1181,72 +1162,6 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "Đây không phải là yêu cầu sản xuất AMZ", "error");
     }
   };
-  const readUploadFileAmazon_bk = (e: any) => {
-    e.preventDefault();
-    if (e.target.files) {
-      console.log(e.target.files[0].name);
-      let filename: string = e.target.files[0].name;
-      let checkmodel: boolean =
-        filename.search(prod_model) === -1 ? false : true;
-      let checkIDCV: boolean =
-        filename.search(id_congviec) === -1 ? false : true;
-      if (!checkmodel) {
-        Swal.fire("Thông báo", "Nghi vấn sai model", "error");
-        setUploadExcelJSon([]);
-      } else if (!checkIDCV) {
-        Swal.fire("Thông báo", "Không đúng ID công việc đã nhập", "error");
-        setUploadExcelJSon([]);
-      } else {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const data = e.target.result;
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          XLSX.utils.sheet_add_aoa(worksheet, [[worksheet.A1.v]], {
-            origin: -1,
-          });
-          XLSX.utils.sheet_add_aoa(worksheet, [["DATA"]], { origin: "A1" });
-          const newworksheet = worksheet;
-          //console.log(worksheet);
-          let json: any = XLSX.utils.sheet_to_json(newworksheet);
-          console.log(json);
-          /* check trung */
-          let valueArray = json.map((element: any) => element.DATA);
-          //console.log(valueArray);
-          var isDuplicate = valueArray.some(function (item: any, idx: number) {
-            return valueArray.indexOf(item) !== idx;
-          });
-          console.log(isDuplicate);
-          if (isDuplicate) {
-            Swal.fire("Thông báo", "Có giá trị trùng lặp !", "error");
-            setUploadExcelJSon([]);
-          } else {
-            const keys = Object.keys(json[0]);
-            let uploadexcelcolumn = keys.map((element, index) => {
-              return {
-                field: element,
-                headerName: element,
-                width: 450,
-              };
-            });
-            uploadexcelcolumn.push({
-              field: "CHECKSTATUS",
-              headerName: "CHECKSTATUS",
-              width: 350,
-            });
-            setColumn_Excel(uploadexcelcolumn);
-            let newjson = json.map((element: any, index: number) => {
-              return { ...element, id: index, CHECKSTATUS: "Waiting" };
-            });
-            setUploadExcelJSon(newjson);
-          }
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
-      }
-    }
-  };
-
   const readUploadFileAmazon = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -1853,10 +1768,10 @@ const YCSXManager = () => {
       selectedID.has(element.id)
     );
     //console.log(datafilter);
-    if (datafilter.length > 0) {
-      setYcsxDataTableFilterExcel(datafilter);
+    if (datafilter.length > 0) {      
+      ycsxdatatablefilterexcel.current = datafilter;
     } else {
-      setYcsxDataTableFilterExcel([]);
+      ycsxdatatablefilterexcel.current =[]      
     }
   };
   const handle_fillsuaform = () => {
@@ -2168,11 +2083,11 @@ const YCSXManager = () => {
     }
   };
   const handle_DeleteYCSX_Excel = () => {
-    if (ycsxdatatablefilterexcel.length > 0) {
+    if (ycsxdatatablefilterexcel.current.length > 0) {
       let datafilter = [...uploadExcelJson];
-      for (let i = 0; i < ycsxdatatablefilterexcel.length; i++) {
+      for (let i = 0; i < ycsxdatatablefilterexcel.current.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
-          if (ycsxdatatablefilterexcel[i].id === datafilter[j].id) {
+          if (ycsxdatatablefilterexcel.current[i].id === datafilter[j].id) {
             datafilter.splice(j, 1);
           }
         }
@@ -2201,12 +2116,17 @@ const YCSXManager = () => {
                 setCavityAmazon(response.data.data[0].CAVITY_PRINT);
               } else {
                 console.log("cavity amz NG", response.data.data);
+                setCavityAmazon(0);
               }
             })
             .catch((error) => {
               console.log(error);
             });
         } else {
+          setCodeKD("");
+          setCodeCMS("");
+          setProd_Model("");
+          setAMZ_PL_HANG("TT");
         }
       })
       .catch((error) => {
@@ -2407,6 +2327,47 @@ const YCSXManager = () => {
         }} />
     )
   }, [ycsxdatatable])
+  const ycsxUploadExcelDataTableAG = useMemo(() => {
+    return (
+      <AGTable
+      getRowStyle={getRowStyle}
+        showFilter={true}
+        toolbar={
+          <>
+          </>         }
+        columns={column_excel2}
+        data={uploadExcelJson}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onCellClick={(params: any) => {          
+          //console.log(params)
+        }} onSelectionChange={(params: any) => {
+          //setYcsxDataTableFilter(params!.api.getSelectedRows());
+          ycsxdatatablefilterexcel.current = params!.api.getSelectedRows();
+          //console.log(e!.api.getSelectedRows())
+        }} />
+    )
+  }, [uploadExcelJson, isLoading])
+  const amzDataTableAG = useMemo(() => {
+    return (
+      <AGTable
+      getRowStyle={getRowStyle}
+        showFilter={true}
+        toolbar={
+          <>
+          </>         }
+        columns={column_excel_amazon}
+        data={uploadExcelJson}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onCellClick={(params: any) => {          
+          //console.log(params)
+        }} onSelectionChange={(params: any) => {
+          //setYcsxDataTableFilter(params!.api.getSelectedRows());          
+          //console.log(e!.api.getSelectedRows())
+        }} />
+    )
+  }, [uploadExcelJson, isLoading])
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
@@ -2726,27 +2687,7 @@ const YCSXManager = () => {
               </div>
             </form>
             <div className='insertYCSXTable'>
-              {true && (
-                <DataGrid
-                  sx={{ fontSize: "0.7rem" }}
-                  slots={{
-                    toolbar: CustomToolbar,
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excel2}
-                  pageSizeOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode='row'
-                  getRowHeight={() => "auto"}
-                  checkboxSelection
-                  onRowSelectionModelChange={(ids) => {
-                    handleYCSXSelectionforUpdateExcel(ids);
-                  }}
-                />
-              )}
+              {ycsxUploadExcelDataTableAG}
             </div>
           </div>
         </div>
@@ -3097,23 +3038,7 @@ const YCSXManager = () => {
             </div>
             <div className='batchnewycsx'>
               <div className='insertYCSXTable'>
-                {true && (
-                  <DataGrid
-                    sx={{ fontSize: "0.7rem" }}
-                    slots={{
-                      toolbar: CustomToolbarAmazon,
-                    }}
-                    loading={isLoading}
-                    rowHeight={35}
-                    rows={uploadExcelJson}
-                    columns={column_excel_amazon}
-                    pageSizeOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                    ]}
-                    editMode='row'
-                    getRowHeight={() => "auto"}
-                  />
-                )}
+                {amzDataTableAG}
               </div>
             </div>
           </div>

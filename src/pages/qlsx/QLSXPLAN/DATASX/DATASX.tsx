@@ -2693,6 +2693,7 @@ const DATASX = () => {
         }} onRowClick={(e) => {
           //console.log(e.data)
           selectedYCSX.current = e.data;
+          handle_loaddailyYCSX(e.data.PROD_REQUEST_NO)
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
@@ -3362,35 +3363,8 @@ const DATASX = () => {
           {!selectbutton && <div className="ycsx">
             {datasx_ycsx2}
           </div>}
-        </div>
-        {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
-            </IconButton>
-            <PivotTable
-              datasource={selectedDataSource}
-              tableID="datasxtablepivot"
-            />
-          </div>
-        )}
-        {showhideDailyYCSX && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHideDailyYCSX(false);
-              }}
-            >
-              <AiFillDashboard color="blue" size={15} />
-              Close
-            </IconButton>
+          {!selectbutton && 
+            <div className="detailycsxdaily">          
             <div className="ycsxdetail">
               <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#2d5bd8' }}> Material Tracking</span>
               <div className="losstable">
@@ -3685,7 +3659,26 @@ const DATASX = () => {
             </div>
             {datasx_dailyycsx}
           </div>
-        )}
+         }
+
+        </div>
+        {showhidePivotTable && (
+          <div className="pivottable1">
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(false);
+              }}
+            >
+              <AiFillCloseCircle color="blue" size={15} />
+              Close
+            </IconButton>
+            <PivotTable
+              datasource={selectedDataSource}
+              tableID="datasxtablepivot"
+            />
+          </div>
+        )}       
       </div>
     </div>
   );
