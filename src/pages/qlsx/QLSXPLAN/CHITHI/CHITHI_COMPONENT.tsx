@@ -533,7 +533,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                   </tr>                  
                   <tr>
                     <td>P/D - Cavity</td>
-                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")} {`${getCompany()==='CMS'? '': request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}
+                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")} / {`${request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}
                     </td>
                   </tr>
                 </tbody>

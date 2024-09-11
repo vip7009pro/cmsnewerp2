@@ -23,7 +23,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP, f_getMachineListData } from "../../../api/GlobalFunction";
+import { checkBP, f_getMachineListData, renderElement } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -31,7 +31,6 @@ import { FaRegClone } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
-import { renderElement } from "../design_amazon/DESIGN_AMAZON";
 import { useReactToPrint } from "react-to-print";
 import {
   BOM_GIA,

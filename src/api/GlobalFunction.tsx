@@ -6,6 +6,7 @@ import {
   BOMSX_DATA,
   CODE_FULL_INFO,
   CodeListData,
+  COMPONENT_DATA,
   CustomerListData,
   DAILY_YCSX_RESULT,
   DTC_TEST_POINT,
@@ -42,6 +43,12 @@ import CHITHI_COMPONENT from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT";
 import CHITHI_COMPONENT2 from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT2";
 import YCSXComponent from "../pages/kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
+import TEXT from "../pages/rnd/design_amazon/design_components/TEXT";
+import RECTANGLE from "../pages/rnd/design_amazon/design_components/RECTANGLE";
+import DATAMATRIX from "../pages/rnd/design_amazon/design_components/DATAMATRIX";
+import BARCODE from "../pages/rnd/design_amazon/design_components/BARCODE";
+import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
+import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
 export const zeroPad = (num: number, places: number) => String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -4724,3 +4731,50 @@ export const f_updateNCRIDForFailing = async (FAIL_ID: number, ncrId: number) =>
 export const checkHSD2 = (hsdVL: number, hsdSP: number, pd_hsd: string): boolean => {
   return (hsdVL === hsdSP && hsdVL !== 0) || (pd_hsd === 'Y' && hsdVL > 0 && hsdSP > 0);
 } 
+
+export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
+  return elementList.map((ele: COMPONENT_DATA, index: number) => {
+    if (ele.PHANLOAI_DT === "TEXT") {
+      return <TEXT key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "CONTAINER") {
+      return <RECTANGLE key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "2D MATRIX") {
+      return <DATAMATRIX key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "1D BARCODE") {
+      return <BARCODE key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "IMAGE") {
+      return <IMAGE key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "QRCODE") {
+      return <QRCODE key={index} DATA={ele} />;
+    }
+  });
+};
+
+export const f_handleGETBOMAMAZON = async(G_CODE: string) => {
+  let kq: COMPONENT_DATA[] = [];
+  await generalQuery("getAMAZON_DESIGN", {
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      ////console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: COMPONENT_DATA[] = response.data.data.map(
+          (element: COMPONENT_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          },
+        );
+        ////console.log(loadeddata);
+        kq = loadeddata;
+      } else {
+        //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      //console.log(error);
+      });
+  return kq;
+};

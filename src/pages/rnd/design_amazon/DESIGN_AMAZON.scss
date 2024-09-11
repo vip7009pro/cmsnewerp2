@@ -349,6 +349,29 @@
     .designAmazon {
       display: flex;
       position: relative;
+      @media print {
+        @page {
+          size: 104mm 28mm; /* Custom paper size (A5 in this example) */
+          margin: 0; /* Define margins */
+        }
+      
+        .labelprint {
+          /* Customize print size */
+          font-size: 14px; /* Adjust font size for printing */
+          width: 100%; /* Set width to full page */
+          margin: 0; /* Ensure no additional margin is added */
+          padding: 0; /* Ensure no padding is added */
+        }
+      
+        h1 {
+          font-size: 18px; /* Customize heading size */
+        }
+      
+        p {
+          font-size: 12px; /* Customize paragraph size */
+        }
+      }
+
     }
   }
 }

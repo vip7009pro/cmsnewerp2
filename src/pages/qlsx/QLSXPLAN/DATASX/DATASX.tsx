@@ -3660,7 +3660,6 @@ const DATASX = () => {
             {datasx_dailyycsx}
           </div>
          }
-
         </div>
         {showhidePivotTable && (
           <div className="pivottable1">

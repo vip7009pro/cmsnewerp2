@@ -17,14 +17,15 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
-import { CustomResponsiveContainer, f_LichSuTemLot, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart } from "react-icons/md";
+import { CustomResponsiveContainer, f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement, SaveExcel } from "../../../api/GlobalFunction";
+import { MdOutlinePivotTableChart, MdPrint } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { TEMLOTSX_DATA } from "../../../api/GlobalInterface";
+import { COMPONENT_DATA, TEMLOTSX_DATA } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
+import { useReactToPrint } from "react-to-print";
 const LICHSUTEMLOTSX = () => {
   const [option, setOption] = useState("dataconfirm");
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -38,9 +39,143 @@ const LICHSUTEMLOTSX = () => {
     G_NAME: '',
     PROD_REQUEST_NO: '',
   });
+  const labelprintref = useRef<HTMLDivElement>(null);
+  const [componentList, setComponentList] = useState<COMPONENT_DATA[]>([
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Rectangle",
+      PHANLOAI_DT: "CONTAINER",
+      DOITUONG_STT: "A6",
+      CAVITY_PRINT: 2,
+      GIATRI: "AZ:4Z99ADOEBRABHKDMAG5UZUWF5Y",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 0,
+      POS_Y: 0,
+      SIZE_W: 23,
+      SIZE_H: 28.6,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 0,
+      DOITUONG_NAME: "Code name",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A0",
+      CAVITY_PRINT: 2,
+      GIATRI: "GH68-54619A",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 20.53,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 1,
+      DOITUONG_NAME: "Model",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A1",
+      CAVITY_PRINT: 2,
+      GIATRI: "SM-R910NZAAXJP",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 15.36,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 1,
+      DOITUONG_NAME: "EAN No 1",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A2",
+      CAVITY_PRINT: 2,
+      GIATRI: "4986773220257",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 17.97,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 4,
+      DOITUONG_NAME: "Logo AMZ 1",
+      PHANLOAI_DT: "IMAGE",
+      DOITUONG_STT: "A3",
+      CAVITY_PRINT: 2,
+      GIATRI: "http://14.160.33.94/images/logoAMAZON.png",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.28,
+      POS_Y: 2.58,
+      SIZE_W: 7.11,
+      SIZE_H: 7,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Barcode 1",
+      PHANLOAI_DT: "1D BARCODE",
+      DOITUONG_STT: "A4",
+      CAVITY_PRINT: 2,
+      GIATRI: "GH68-55104A",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 1.97,
+      POS_Y: 23.57,
+      SIZE_W: 19.05,
+      SIZE_H: 3.55,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Matrix 1",
+      PHANLOAI_DT: "2D MATRIX",
+      DOITUONG_STT: "A5",
+      CAVITY_PRINT: 2,
+      GIATRI: "AZ:4Z99ADOEBRABHKDMAG5UZUWF5Y",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 12,
+      POS_Y: 2,
+      SIZE_W: 9,
+      SIZE_H: 9,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+  ]);
+  const [showhideTemLot, setShowHideTemLot] = useState(false);
   const load_lichsutemlot_data = async () => {
-    setlichsutemlotdata(await f_LichSuTemLot(filterData));
+    let kq = await f_LichSuTemLot(filterData);    
+    setlichsutemlotdata(kq);
   };
+  const handlePrint = useReactToPrint({
+    content: () => labelprintref.current,
+  });
   const setFilterFormInfo = (keyname: string, value: any) => {
     let tempCSInfo = {
       ...filterData,
@@ -74,8 +209,40 @@ const LICHSUTEMLOTSX = () => {
           onSelectionChanged={(e) => {
             //setFilterData(e.selectedRowsData[0]);
           }}
-          onRowClick={(e) => {
+          onRowClick={(params) => {
             //console.log(e.data);
+            setComponentList(
+              componentList.map((e: COMPONENT_DATA, index: number) => {
+                let value: string = e.GIATRI;
+                if (e.DOITUONG_NAME === "G_NAME") {
+                  value = params.data.G_NAME?.substring(0, 34) ?? "";
+                } else if (e.DOITUONG_NAME === "LOTSX_BARCODE") {
+                  value = params.data.PROCESS_LOT_NO ?? "";                
+                } else if (e.DOITUONG_NAME === "LOTSX_TEXT") {
+                  value = params.data.PROCESS_LOT_NO ?? "";
+                } else if (e.DOITUONG_NAME === "LOT_QTY") {
+                  value = (params.data.TEMP_QTY?.toLocaleString('en-US') ?? "") + "(" + params.data.TEMP_MET?.toLocaleString('en-US',{maximumFractionDigits: 2}) + "m)";
+                } else if (e.DOITUONG_NAME === "LOT_NVL") {
+                  value = "Lot NVL: " + params.data.M_LOT_NO ?? "";
+                } else if (e.DOITUONG_NAME === "SETTING") {
+                  value = "SET " + (params.data.SETTING_MET?.toString() ?? "") +  "m | NG CĐ " +( params.data.PR_NG?.toString() ?? "") + "m";
+                } else if (e.DOITUONG_NAME === "NM_CD_CT") {
+                  value = (params.data.FACTORY ?? "" )+ "/" + (params.data.EQUIPMENT_CD ?? "") + "/CĐ:" + (params.data.PR_NB ?? "") + "/" + (params.data.PLAN_ID ?? "");
+                } else if (e.DOITUONG_NAME === "PLAN_QTY") {
+                    value = "SL Chỉ thị: " + (params.data.PLAN_QTY?.toLocaleString('en-US') ?? "") + "EA";
+                } else if (e.DOITUONG_NAME === "NVL") {
+                  value = "NVL: " + (params.data.M_NAME ?? "") + "| " + (params.data.WIDTH_CD ?? "") + " mm";
+                } else if (e.DOITUONG_NAME === "NHANVIEN") {
+                  value = "NV: " + (params.data.INS_EMPL ?? "") + "_Time: " + (params.data.INS_DATE ?? "");
+                } else if (e.DOITUONG_NAME === "LOTSX_BARCODE2") {
+                  value = params.data.PROCESS_LOT_NO ?? "";
+                } 
+                return {
+                  ...e,
+                  GIATRI: value,
+                };
+              }),
+            );
           }}
         >
           <Scrolling
@@ -109,11 +276,11 @@ const LICHSUTEMLOTSX = () => {
               <IconButton
                 className="buttonIcon"
                 onClick={() => {
-                  setShowHidePivotTable(!showhidePivotTable);
+                  setShowHideTemLot(prev => !prev);
                 }}
               >
-                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                Pivot
+                <MdPrint color="#611ad3" size={15} />
+                Show LOT
               </IconButton>
             </Item>
             <Item name="searchPanel" />
@@ -163,420 +330,12 @@ const LICHSUTEMLOTSX = () => {
     ),
     [lichsutemlotdata],
   );
-  const dataSource = new PivotGridDataSource({
-    fields: [
-      {
-        caption: 'YEAR_WEEK',
-        width: 80,
-        dataField: 'YEAR_WEEK',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CONFIRM_ID',
-        width: 80,
-        dataField: 'CONFIRM_ID',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CONFIRM_DATE',
-        width: 80,
-        dataField: 'CONFIRM_DATE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CONTACT_ID',
-        width: 80,
-        dataField: 'CONTACT_ID',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CS_EMPL_NO',
-        width: 80,
-        dataField: 'CS_EMPL_NO',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'EMPL_NAME',
-        width: 80,
-        dataField: 'EMPL_NAME',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'G_CODE',
-        width: 80,
-        dataField: 'G_CODE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'G_NAME',
-        width: 80,
-        dataField: 'G_NAME',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'G_NAME_KD',
-        width: 80,
-        dataField: 'G_NAME_KD',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_REQUEST_NO',
-        width: 80,
-        dataField: 'PROD_REQUEST_NO',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CUST_CD',
-        width: 80,
-        dataField: 'CUST_CD',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CUST_NAME_KD',
-        width: 80,
-        dataField: 'CUST_NAME_KD',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CONTENT',
-        width: 80,
-        dataField: 'CONTENT',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'INSPECT_QTY',
-        width: 80,
-        dataField: 'INSPECT_QTY',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'NG_QTY',
-        width: 80,
-        dataField: 'NG_QTY',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'REPLACE_RATE',
-        width: 80,
-        dataField: 'REPLACE_RATE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'REDUCE_QTY',
-        width: 80,
-        dataField: 'REDUCE_QTY',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'FACTOR',
-        width: 80,
-        dataField: 'FACTOR',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'RESULT',
-        width: 80,
-        dataField: 'RESULT',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CONFIRM_STATUS',
-        width: 80,
-        dataField: 'CONFIRM_STATUS',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'REMARK',
-        width: 80,
-        dataField: 'REMARK',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'INS_DATETIME',
-        width: 80,
-        dataField: 'INS_DATETIME',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PHANLOAI',
-        width: 80,
-        dataField: 'PHANLOAI',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'LINK',
-        width: 80,
-        dataField: 'LINK',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_TYPE',
-        width: 80,
-        dataField: 'PROD_TYPE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_MODEL',
-        width: 80,
-        dataField: 'PROD_MODEL',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_PROJECT',
-        width: 80,
-        dataField: 'PROD_PROJECT',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_LAST_PRICE',
-        width: 80,
-        dataField: 'PROD_LAST_PRICE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'REDUCE_AMOUNT',
-        width: 80,
-        dataField: 'REDUCE_AMOUNT',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      },
-    ],
-    store: lichsutemlotdata,
-  });
+  const loadLabelDesign = async() => {
+    setComponentList(await f_handleGETBOMAMAZON("6E00002A"));
+  }
   useEffect(() => {
-  }, []);
+    loadLabelDesign();
+    }, []);
   return (
     <DataDiv>
       <QueryFormDiv>
@@ -680,21 +439,29 @@ const LICHSUTEMLOTSX = () => {
       </QueryFormDiv>
       <DataTBDiv>
         {option === 'dataconfirm' && LichSuTemLotSXDataTable}
-      </DataTBDiv>
-      {showhidePivotTable && (
-        <PivotTableDiv>
-          <IconButton
-            className="buttonIcon"
-            onClick={() => {
-              setShowHidePivotTable(false);
-            }}
-          >
-            <AiFillCloseCircle color="blue" size={15} />
-            Close
-          </IconButton>
-          <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
-        </PivotTableDiv>
-      )}
+      </DataTBDiv>      
+      {showhideTemLot && 
+       <div className="labelprint" style={{position: 'absolute', top: '50%', left: '45%',  width: 'fit-content', height: 'fit-content'}}>        
+       <div style={{display: 'flex',flexDirection: 'column',  alignItems: 'center', justifyContent: 'center', marginBottom: '10px'}}>
+       
+        <div className="labeldiv" ref={labelprintref} >
+        {renderElement(componentList)}
+        </div>
+        <div className="buttondiv" style={{position: 'absolute', top: '-50px', left: '0%', backgroundColor: '#c3e7e4', border: '1px solid #000', width: '80px', height: 'fit-content'}}>
+        <IconButton
+        className="buttonIcon"
+        onClick={() => {
+          handlePrint();          
+        }}
+      >
+        <MdPrint color="#066eaa" size={15} />
+        Print lot
+      </IconButton> 
+        </div>
+       </div>
+        
+         </div>
+      }
     </DataDiv>
   );
 };

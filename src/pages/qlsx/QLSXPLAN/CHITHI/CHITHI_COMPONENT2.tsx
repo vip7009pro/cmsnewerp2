@@ -1,14 +1,8 @@
 import moment from "moment";
-import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import Swal from "sweetalert2";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generalQuery, getCompany } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-} from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT2.scss";
 import Barcode from "react-barcode";
 import {
@@ -453,7 +447,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                 </tr>                
                 <tr>
                   <td>PD/Cavity</td>                  
-                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")} {`${getCompany()==='CMS'? '': request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}</td>
+                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}/ {`${request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}</td>
                 </tr>
               </tbody>
             </table>

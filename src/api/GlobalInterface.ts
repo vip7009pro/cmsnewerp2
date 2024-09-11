@@ -3378,8 +3378,17 @@ export interface TEMLOTSX_DATA {
   EMPL_NAME: string;
   PLAN_ID: string;
   TEMP_QTY: number;
+  TEMP_MET: number;
   PROCESS_NUMBER: number;
-  LOT_STATUS: string;
+  LOT_STATUS: string;  
+  EQUIPMENT_CD: string;
+  EMPL_NO: string;
+  SETTING_MET: number;
+  PR_NG: number;
+  FACTORY: string;
+  PR_NB: number;
+  PLAN_QTY: number;
+  INS_EMPL: string;
 }
 export interface SX_LOSS_TREND_DATA {
   INPUT_DATE: string;

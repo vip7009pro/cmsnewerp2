@@ -34,7 +34,7 @@ import {
   MuiBaseEvent,
   MuiEvent,
 } from "@mui/x-data-grid";
-import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP, renderElement } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import { BiPrinter, BiSave, BiShow } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
@@ -48,23 +48,7 @@ import {
   POINT_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
-export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
-  return elementList.map((ele: COMPONENT_DATA, index: number) => {
-    if (ele.PHANLOAI_DT === "TEXT") {
-      return <TEXT key={index} DATA={ele} />;
-    } else if (ele.PHANLOAI_DT === "CONTAINER") {
-      return <RECTANGLE key={index} DATA={ele} />;
-    } else if (ele.PHANLOAI_DT === "2D MATRIX") {
-      return <DATAMATRIX key={index} DATA={ele} />;
-    } else if (ele.PHANLOAI_DT === "1D BARCODE") {
-      return <BARCODE key={index} DATA={ele} />;
-    } else if (ele.PHANLOAI_DT === "IMAGE") {
-      return <IMAGE key={index} DATA={ele} />;
-    } else if (ele.PHANLOAI_DT === "QRCODE") {
-      return <QRCODE key={index} DATA={ele} />;
-    }
-  });
-};
+
 const DESIGN_AMAZON = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -536,8 +520,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               <div className="codeinfotable">
                 <DataGrid
                   slots={{
-                    toolbar: CustomToolbarCODETable,
-                    
+                    toolbar: CustomToolbarCODETable,                    
                   }}
                   sx={{ fontSize: 12 }}
                   loading={isLoading}
@@ -554,7 +537,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   ]}
                   editMode="cell"
                   /* experimentalFeatures={{ newEditingApi: true }}  */
-                  onCellEditCommit={(
+                  onCellEditStop={(
                     params: GridCellEditStopParams,
                     event: MuiEvent<MuiBaseEvent>,
                     details: GridCallbackDetails,
@@ -1105,7 +1088,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           (mm)
         </div>
         <div id="10a" className="designAmazon" style={{ position: "relative" }}>
-          <Draggable
+          <Draggable           
+            className="print-content" 
             boundary={"#design_panel"}
             id="11a"
             data="dropArea"
@@ -1136,10 +1120,10 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             onDragEnd={(e: any) => {
               console.log(e.event.offset);
             }}
-            clone={false}
-            ref={labelprintref}
+            clone={false}           
           >
-            {renderElement(componentList)}
+            <div className="labelprint" ref={labelprintref}> {renderElement(componentList)}</div>
+           
           </Draggable>
         </div>
       </div>
