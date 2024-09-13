@@ -974,7 +974,7 @@ const PLAN_DATATB = () => {
       }
     },
     {
-      field: 'OUT_KHO_SX', headerName: 'OUT_KHO_SX', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: 'OUT_KHO_SX', headerName: 'NEXT_IN', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.OUT_KHO_SX}
@@ -983,7 +983,7 @@ const PLAN_DATATB = () => {
       }
     },
     {
-      field: 'OUT_CFM_QTY', headerName: 'OUT_CFM_QTY', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: 'OUT_CFM_QTY', headerName: 'WH_IN', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.OUT_CFM_QTY}
