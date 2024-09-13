@@ -43,6 +43,7 @@ import {
   f_handle_xuatlieu_sample,
   f_handle_xuatdao_sample,
   f_neededSXQtyByYCSX,
+  f_updateLossKT_ZTB_DM_HISTORY,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -1505,7 +1506,7 @@ const MACHINE = () => {
       }
     },
     {
-      field: 'OUT_KHO_SX', headerName: 'OUT_KHO_SX', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: 'OUT_KHO_SX', headerName: 'NEXT_IN', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.OUT_KHO_SX}
@@ -1514,7 +1515,7 @@ const MACHINE = () => {
       }
     },
     {
-      field: 'OUT_CFM_QTY', headerName: 'OUT_CFM_QTY', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: 'OUT_CFM_QTY', headerName: 'WH_IN', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.OUT_CFM_QTY}
@@ -1838,6 +1839,7 @@ const MACHINE = () => {
     );
     let err_code: string = "0";
     err_code = await f_updateBatchPlan(selectedPlanTable);
+    await f_updateLossKT_ZTB_DM_HISTORY();
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {

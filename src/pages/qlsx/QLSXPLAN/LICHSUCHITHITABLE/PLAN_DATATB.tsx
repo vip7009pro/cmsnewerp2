@@ -26,6 +26,7 @@ import {
   f_loadQLSXPLANDATA,
   f_saveChiThiMaterialTable,
   f_updateBatchPlan,
+  f_updateLossKT_ZTB_DM_HISTORY,
   f_updatePlanOrder,
   renderChiThi,
   renderChiThi2,
@@ -1386,6 +1387,7 @@ const PLAN_DATATB = () => {
     });
     let err_code: string = "0";
     err_code = await f_updateBatchPlan(qlsxplandatafilter.current);
+    await f_updateLossKT_ZTB_DM_HISTORY();
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {

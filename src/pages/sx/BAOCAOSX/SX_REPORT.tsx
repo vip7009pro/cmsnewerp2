@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./SX_REPORT.scss";
 import {
+  MACHINE_LIST,
+  PLAN_LOSS_DATA,
   PQC3_DATA,
   PRODUCTION_EFFICIENCY_DATA,
   RND_NEWCODE_BY_CUSTOMER,
@@ -14,7 +16,7 @@ import {
   SX_TREND_LOSS_DATA,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
-import { nFormatter, SaveExcel } from "../../../api/GlobalFunction";
+import { f_getMachineListData, nFormatter, SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
 import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";
@@ -33,8 +35,13 @@ import SXYearlyEffTrend from "../../../components/Chart/SX/SXYearlyEffTrend";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import SXLossTimeByReason from "../../../components/Chart/SX/SXLossTimeByReason";
 import SXLossTimeByEmpl from "../../../components/Chart/SX/SXLossTimeByEmpl";
+import SXPlanLossTrend from "../../../components/Chart/SX/SXPlanLossTrend";
 
 const SX_REPORT = () => {
+  const [planLossData, setPlanLossData] = useState<PLAN_LOSS_DATA[]>([]);
+  const [machineList, setMachineList] = useState<MACHINE_LIST[]>([]);
+  const [selectedMachine, setSelectedMachine] = useState<string>("ALL");
+
   const [dailysxloss, setDailySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [weeklysxloss, setWeeklySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
   const [monthlysxloss, setMonthlySXLoss] = useState<SX_TREND_LOSS_DATA[]>([]);
@@ -73,6 +80,40 @@ const SX_REPORT = () => {
   const [df, setDF] = useState(true);
   const [newcodebycustomer, setNewCodeByCustomer] = useState<RND_NEWCODE_BY_CUSTOMER[]>([]);
   const [newcodebyprodtype, setNewCodeByProdType] = useState<RND_NEWCODE_BY_PRODTYPE[]>([]);
+  
+  const handle_getMachineList = async (FACTORY: string) => {
+    setMachineList(await f_getMachineListData());    
+  } 
+  const handle_getPlanLossData = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("traDataPlanLossSX", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name, 
+    })
+      .then((response) => {
+        //
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PLAN_LOSS_DATA[] = response.data.data.map(
+            (element: PLAN_LOSS_DATA, index: number) => {
+              return {
+                ...element,
+                id: index
+              };
+            },
+          );
+          setPlanLossData(loadeddata)
+        } else {
+          setPlanLossData([])
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const handle_getDailyNewCodeData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
@@ -603,11 +644,13 @@ const SX_REPORT = () => {
       handle_getSXLossTimeByEmpl("ALL", searchCodeArray),
       handle_newCodeByCustomer(fromdate, todate, searchCodeArray),
       handle_newCodeByProdType(fromdate, todate, searchCodeArray),
+      handle_getPlanLossData(selectedMachine, searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
   }
   useEffect(() => {
+    handle_getMachineList("ALL");
     initFunction();
   }, []);
   return (
@@ -658,6 +701,20 @@ const SX_REPORT = () => {
               }}
               inputProps={{ "aria-label": "controlled" }}
             />
+          </label>
+          <label>
+            <b>Machine:</b>{" "}
+            <select
+              value={selectedMachine}
+              onChange={(e) => {
+                setSelectedMachine(e.target.value);
+                handle_getPlanLossData(e.target.value, searchCodeArray)
+              }}  
+            >             
+              {machineList.map((machine: MACHINE_LIST, index: number) => (
+                <option key={index} value={machine.EQ_NAME}>{machine.EQ_NAME}</option>
+              ))}
+            </select> 
           </label>
           <button
             className="searchbutton"
@@ -786,6 +843,41 @@ const SX_REPORT = () => {
                   dldata={[...yearlysxloss].reverse()}
                   processColor="#53eb34"
                   materialColor="#ff0000"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">PLAN LOSS GRAPH <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(planLossData, "SX PLan loss trend");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>    
+                <label>
+            <b>Machine:</b>{" "}
+            <select
+              value={selectedMachine}
+              onChange={(e) => {
+                setSelectedMachine(e.target.value);
+                handle_getPlanLossData(e.target.value, searchCodeArray)
+              }}  
+            >
+              {machineList.map((machine: MACHINE_LIST, index: number) => (
+                <option key={index} value={machine.EQ_NAME}>{machine.EQ_NAME}</option>
+              ))}
+            </select> 
+          </label>            
+                </span>
+                <SXPlanLossTrend
+                  dldata={planLossData}
+                  processColor="#72c7ff"
+                  materialColor="#ad9f26"
                 />
               </div>
             </div>

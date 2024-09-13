@@ -1238,6 +1238,18 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
       console.log(error);
     });
 }
+export const f_updateLossKT_ZTB_DM_HISTORY = async ()=> {
+  await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
+    .then((response)=> {
+      if(response.data.tk_status !== "NG") {
+      } else {
+        Swal.fire("Thông báo", "Lỗi update Loss KT ZTB DM History: " + response.data.message, "error"); 
+      }
+    })
+    .catch((error)=> {
+      console.log(error);
+    })  
+}
 export const f_updatePlanQLSX = async (planData: any) => {
   let kq: string = "";
   await generalQuery("updatePlanQLSX", {
@@ -3959,6 +3971,7 @@ export const f_loadDataSXChiThi = async (DATA: any) => {
               KETQUASX_M: element.PD !== null ? (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) : null,
               NG_MET: element.PD !== null ? element.USED_QTY - (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) - element.SETTING_MET : null,
               NG_EA: element.ESTIMATED_QTY - element.SETTING_EA - element.KETQUASX,
+              PLAN_LOSS: element.PLAN_ORG_MET !== 0 ? (element.PLAN_TARGET_MET - element.PLAN_ORG_MET) / element.PLAN_ORG_MET : 0 ,
               id: index,
             };
           },

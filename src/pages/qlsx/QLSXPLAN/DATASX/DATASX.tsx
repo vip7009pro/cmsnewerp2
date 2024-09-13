@@ -1603,6 +1603,33 @@ const DATASX = () => {
             );
           }
         },
+        {
+          field: 'PLAN_ORG_MET', headerName: 'PLAN_ORG_MET', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#0d7ac4ff", fontWeight: "bold" }}>
+                {e.data.PLAN_ORG_MET?.toLocaleString("en-US", {maximumFractionDigits: 0, minimumFractionDigits: 0})}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'PLAN_TARGET_MET', headerName: 'PLAN_TARGET_MET', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#0d7ac4ff", fontWeight: "bold" }}>
+                {e.data.PLAN_TARGET_MET?.toLocaleString("en-US", {maximumFractionDigits: 0, minimumFractionDigits: 0})}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'PLAN_LOSS', headerName: 'PLAN_LOSS', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "#990a75", fontWeight: "bold" }}>
+                {e.data.PLAN_LOSS?.toLocaleString("en-US", {style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1})}
+              </span>
+            );
+          }
+        },
         { field: 'EQ1', headerName: 'EQ1', resizable: true, width: 50 },
         { field: 'EQ2', headerName: 'EQ2', resizable: true, width: 50 },
         { field: 'PLAN_EQ', headerName: 'PLAN_EQ', resizable: true, width: 50 },

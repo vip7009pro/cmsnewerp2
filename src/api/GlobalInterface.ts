@@ -1543,6 +1543,9 @@ export interface SX_DATA {
   G_NAME: string;
   G_NAME_KD: string;
   PLAN_QTY: number;
+  PLAN_TARGET_MET: number;
+  PLAN_ORG_MET: number;
+  PLAN_LOSS: number;
   EQ1: string;
   EQ2: string;
   PLAN_EQ: string;
@@ -4115,3 +4118,15 @@ export interface HOLDDING_BY_NCR_ID {
   TYPE: string,
 }
 
+export interface PLAN_LOSS_DATA {
+  YW: string,
+  PLAN_ORG_MET: number,
+  PLAN_INPUT_MET: number,
+  PLAN_QTY: number,
+  SX_RESULT: number,
+  ACTUAL_INPUT_MET: number,
+  PLAN_LOSS_MET: number,
+  ACTUAL_LOSS_MET: number,
+  PLAN_LOSS_RATE: number,
+  ACTUAL_LOSS_RATE: number, 
+}
