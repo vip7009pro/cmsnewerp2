@@ -15,10 +15,11 @@ const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")? "https": "http";
 const main_port = protocol === "https" ? "5014" : "5013";
-/* const sub_port = protocol === "https" ? "3002" : "3002"; */
+/* const sub_port = protocol === "https" ? "3006" : "3006"; */
 const sub_port = protocol === "https" ? "3006" : "3007";
 const socket = io(
   startCPN === "CMS"
+    /* ? `${protocol}://localhost:${sub_port}` */
     ? `${protocol}://cms.ddns.net:${sub_port}`
     : startCPN === "PVN"
     ? `${protocol}://222.252.1.63:${sub_port}`

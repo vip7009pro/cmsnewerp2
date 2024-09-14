@@ -18,7 +18,14 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, settabIndex, resetTab } from "../../redux/slices/globalSlice";
 import { current_ver } from "../../pages/home/Home";
-import { Checkbox, FormControlLabel, IconButton, createFilterOptions } from "@mui/material";
+import {
+  Autocomplete,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  TextField,
+  createFilterOptions,
+} from "@mui/material";
 import { getlang } from "../String/String";
 import "./navbar.scss";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -26,6 +33,7 @@ import { ELE_ARRAY, MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import useOutsideClick from "../../api/customHooks";
 import { MdOutlineSettings } from "react-icons/md";
 import NavMenu from "../NavMenu/NavMenu";
+import { SelectBox } from "devextreme-react";
 import { SimplifiedSearchMode } from "devextreme/common";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
@@ -41,6 +49,11 @@ export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
+const [searchModeOption, setSearchModeOption] = useState<SimplifiedSearchMode>('contains');
+const [searchExprOption, setSearchExprOption] = useState('MENU_NAME');
+const [searchTimeoutOption, setSearchTimeoutOption] = useState(200);
+const [minSearchLengthOption, setMinSearchLengthOption] = useState(0);
+const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(false);
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
   const userData: UserData | undefined = useSelector(
@@ -610,7 +623,116 @@ export default function Navbar() {
             <b> Web Ver: {current_ver} </b>
           </div>
         </div>
-        <div className="navright">          
+        <div className="navright">
+          <div className="search">
+          <SelectBox
+                dataSource={menulist.map((ele: MENU_LIST_DATA, index: number)=>  {
+                  return {
+                    ...ele,
+                    MENU_NAME: ele.MENU_CODE+"_"+ele.MENU_NAME
+                  }
+                })}
+                displayExpr={(item: MENU_LIST_DATA)=> `${item.MENU_CODE}_${item.MENU_NAME}`}
+                valueExpr="MENU_CODE"
+                inputAttr={productLabel}
+                acceptCustomValue={true}
+                defaultValue={menulist[0].MENU_CODE}
+                onCustomItemCreating={customItemCreating}
+                onValueChanged={editBoxValueChanged}
+                style={{height:'20px', backgroundColor:'transparent', fontSize:'0.8rem',}}
+                searchEnabled={true}                
+                searchMode={searchModeOption}
+                searchExpr={searchExprOption}
+                searchTimeout={searchTimeoutOption}
+                minSearchLength={minSearchLengthOption}
+                showDataBeforeSearch={showDataBeforeSearchOption}
+              />
+          </div>
+          {/* <div className="search">
+            {tabModeSwap && (
+              <Autocomplete
+                autoComplete={false}
+                autoFocus={true}
+                sx={{
+                  height: 0,
+                  margin: "1px",
+                  position: "-moz-initial",
+                  width: "250px",
+                  marginBottom: "30px",
+                  fontSize: "0.6rem"
+                }}
+                size="small"
+                disablePortal
+                options={menulist.map((ele: MENU_LIST_DATA, index: number) => {
+                  return {
+                    MENU_CODE: ele.MENU_CODE,
+                    MENU_NAME: ele.MENU_NAME,
+                  };
+                })}
+                className="autocomplete"
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option.MENU_CODE === value.MENU_CODE
+                }
+                getOptionLabel={(option: SEARCH_LIST_DATA | any) =>
+                  `${option.MENU_CODE}${option.MENU_NAME}`
+                }
+                autoHighlight={true}
+                renderInput={(params) => {
+                  return (
+                    <div className="listitem">
+                      <TextField {...params} label="Quick Search" />
+                    </div>
+                  );
+                }}
+                defaultValue={{
+                  MENU_CODE: "NS2",
+                  MENU_NAME: getlang("diemdanhnhom", lang),
+                }}
+                value={selectedTab}
+                onChange={(event: any, newValue: SEARCH_LIST_DATA | any) => {
+                  //console.log(newValue);
+                  if (newValue !== null) {
+                    setSelectedTab(newValue);
+                    if (
+                      userData?.JOB_NAME === "ADMIN" ||
+                      userData?.JOB_NAME === "Leader" ||
+                      userData?.JOB_NAME === "Sub Leader" ||
+                      userData?.JOB_NAME === "Dept Staff"
+                    ) {                      
+                      if (tabModeSwap) {
+                        let ele_code_array: string[] = tabs.map(
+                          (ele: ELE_ARRAY, index: number) => {
+                            return ele.ELE_CODE;
+                          },
+                        );
+                        let tab_index: number = ele_code_array.indexOf(
+                          newValue.MENU_CODE,
+                        );
+                        //console.log(tab_index);
+                        if (tab_index !== -1) {
+                          //console.log('co tab roi');
+                          dispatch(settabIndex(tab_index));
+                        } else {
+                          //console.log('chua co tab');
+                          dispatch(
+                            addTab({
+                              ELE_NAME: newValue.MENU_NAME,
+                              ELE_CODE: newValue.MENU_CODE,
+                              REACT_ELE: "",
+                            }),
+                          );
+                          dispatch(settabIndex(tabs.length));
+                        }
+                      }
+                    } else {
+                      Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+                    }
+                  }
+                }}
+              />
+            )}
+          </div> */}
           <div className="items">
             <div className="item" onClick={showhideLangMenu}>
               <LanguageIcon className="icon" />

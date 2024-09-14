@@ -133,9 +133,7 @@ export function login(user: string, pass: string) {
         user: user,
         pass: pass,
       })
-      .then((response: any) => {
-        console.log("ketqua");
-        console.log("ket qua tra ve",response.data);
+      .then((response: any) => {        
         var Jresult = response.data;
         //console.log("Status = " + Jresult.tk_status);
         //console.log("Token content = " + Jresult.token_content);

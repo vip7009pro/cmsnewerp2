@@ -1,5 +1,5 @@
 import "devextreme/dist/css/dx.light.css";
-import { Component, useEffect, useState, Suspense } from "react";
+import React, { Component, useEffect, useState, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin, generalQuery, getCompany, getSocket, getUserData } from "./api/Api";
@@ -22,77 +22,77 @@ import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import Home, { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
-import KHOTABS from "./pages/kho/KHOTABS";
-import KHOTP from "./pages/kho/khotp/KHOTP";
+
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
-import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
-import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
-import KinhDoanh from "./pages/kinhdoanh/KinhDoanh";
-import KinhDoanhReport from "./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
-import PoManager from "./pages/kinhdoanh/pomanager/PoManager";
-import InvoiceManager from "./pages/kinhdoanh/invoicemanager/InvoiceManager";
-import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
-import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
-import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
-import Login from "./pages/login/Login";
-import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
-import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
-import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
-import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
-import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
-import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
-import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
-import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
-import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
-import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
-import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
-import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
-import QLSX from "./pages/qlsx/QLSX";
-import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
-import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
-import TINHLIEU from "./pages/muahang/tinhlieu/TINHLIEU";
-import MUAHANG from "./pages/muahang/MUAHANG";
-import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
-import KHOTOTAL from "./pages/kho/KHOTOTAL";
-import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
-import KHOLIEU from "./pages/kho/kholieu/KHOLIEU";
-import SettingPage from "./pages/setting/SettingPage";
-import DTC from "./pages/qc/dtc/DTC";
-import QC from "./pages/qc/QC";
-import IQC from "./pages/qc/iqc/IQC";
-import PQC from "./pages/qc/pqc/PQC";
-import OQC from "./pages/qc/oqc/OQC";
-import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
-import CSTOTAL from "./pages/qc/cs/CSTOTAL";
-import ISO from "./pages/qc/iso/ISO";
-import QCReport from "./pages/qc/qcreport/QCReport";
-import BAOCAOSXALL from "./pages/sx/BAOCAOSXALL";
-import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
-import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import LICHSUTEMLOTSX from "./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
-import TINHHINHCUONLIEU from "./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
-import BAOCAOTHEOROLL from "./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
-import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
-import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
-import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
-import NhanSu from "./pages/nhansu/NhanSu";
-import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
-import DieuChuyenTeam from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
-import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
-import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
-import LichSu from "./pages/nhansu/LichSu/LichSu";
-import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
-import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
-import RND_REPORT from "./pages/rnd/rnd_report/RND_REPORT";
-import Blank from "./components/Blank/Blank";
-import SAMPLE_MONITOR from "./pages/rnd/sample monitor/SAMPLE_MONITOR";
-import BCSX from "./pages/sx/BAOCAOSX/BCSX";
-import OVER_MONITOR from "./pages/kinhdoanh/over_prod_monitor/OVER_MONITOR";
-import KHOSUB from "./pages/qlsx/QLSXPLAN/KHOAO/KHOSUB";
-
+const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
+const KHOTP = React.lazy(() => import("./pages/kho/khotp/KHOTP"));
+const BulletinBoard = React.lazy(() => import("./components/BulletinBoard/BulletinBoard"));
+const DiemDanhNhom = React.lazy(() => import("./pages/nhansu/DiemDanhNhom/DiemDanhNhom"));
+const AccountInfo = React.lazy(() => import("./components/Navbar/AccountInfo/AccountInfo"));
+const KinhDoanh = React.lazy(() => import("./pages/kinhdoanh/KinhDoanh"));
+const KinhDoanhReport = React.lazy(() => import("./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport"));
+const PoManager = React.lazy(() => import("./pages/kinhdoanh/pomanager/PoManager"));
+const InvoiceManager = React.lazy(() => import("./pages/kinhdoanh/invoicemanager/InvoiceManager"));
+const PlanManager = React.lazy(() => import("./pages/kinhdoanh/planmanager/PlanManager"));
+const FCSTManager = React.lazy(() => import("./pages/kinhdoanh/fcstmanager/FCSTManager"));
+const YCSXManager = React.lazy(() => import("./pages/kinhdoanh/ycsxmanager/YCSXManager"));
+const Login = React.lazy(() => import("./pages/login/Login"));
+const BOM_MANAGER = React.lazy(() => import("./pages/rnd/bom_manager/BOM_MANAGER"));
+const POandStockFull = React.lazy(() => import("./pages/kinhdoanh/poandstockfull/POandStockFull"));
+const CODE_MANAGER = React.lazy(() => import("./pages/rnd/code_manager/CODE_MANAGER"));
+const CUST_MANAGER = React.lazy(() => import("./pages/kinhdoanh/custManager/CUST_MANAGER"));
+const QuotationTotal = React.lazy(() => import("./pages/kinhdoanh/quotationmanager/QuotationTotal"));
+const EQ_STATUS = React.lazy(() => import("./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS"));
+const INSPECT_STATUS = React.lazy(() => import("./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS"));
+const ShortageKD = React.lazy(() => import("./pages/kinhdoanh/shortageKD/ShortageKD"));
+const BOM_AMAZON = React.lazy(() => import("./pages/rnd/bom_amazon/BOM_AMAZON"));
+const DESIGN_AMAZON = React.lazy(() => import("./pages/rnd/design_amazon/DESIGN_AMAZON"));
+const PRODUCT_BARCODE_MANAGER = React.lazy(() => import("./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER"));
+const QLGN = React.lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
+const QLSX = React.lazy(() => import("./pages/qlsx/QLSX"));
+const QLSXPLAN = React.lazy(() => import("./pages/qlsx/QLSXPLAN/QLSXPLAN"));
+const CAPASX = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX"));
+const TINHLIEU = React.lazy(() => import("./pages/muahang/tinhlieu/TINHLIEU"));
+const MUAHANG = React.lazy(() => import("./pages/muahang/MUAHANG"));
+const QLVL = React.lazy(() => import("./pages/muahang/quanlyvatlieu/QLVL"));
+const KHOTOTAL = React.lazy(() => import("./pages/kho/KHOTOTAL"));
+const KHOTPNEW = React.lazy(() => import("./pages/kho/khotp_new/KHOTPNEW"));
+const KHOLIEU = React.lazy(() => import("./pages/kho/kholieu/KHOLIEU"));
+const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
+const DTC = React.lazy(() => import("./pages/qc/dtc/DTC"));
+const QC = React.lazy(() => import("./pages/qc/QC"));
+const IQC = React.lazy(() => import("./pages/qc/iqc/IQC"));
+const PQC = React.lazy(() => import("./pages/qc/pqc/PQC"));
+const OQC = React.lazy(() => import("./pages/qc/oqc/OQC"));
+const KIEMTRA = React.lazy(() => import("./pages/qc/inspection/KIEMTRA"));
+const CSTOTAL = React.lazy(() => import("./pages/qc/cs/CSTOTAL"));
+const ISO = React.lazy(() => import("./pages/qc/iso/ISO"));
+const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
+const BAOCAOSXALL = React.lazy(() => import("./pages/sx/BAOCAOSXALL"));
+const TRANGTHAICHITHI = React.lazy(() => import("./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI"));
+const LICHSUINPUTLIEU = React.lazy(() => import("./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
+const LICHSUTEMLOTSX = React.lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
+const TINHHINHCUONLIEU = React.lazy(() => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
+const BAOCAOTHEOROLL = React.lazy(() => import("./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
+const KHOAO = React.lazy(() => import("./pages/qlsx/QLSXPLAN/KHOAO/KHOAO"));
+const CAPA_MANAGER = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER"));
+const PLANRESULT = React.lazy(() => import("./pages/sx/PLANRESULT/PLANRESULT"));
+const NhanSu = React.lazy(() => import("./pages/nhansu/NhanSu"));
+const QuanLyPhongBanNhanSu = React.lazy(() => import("./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
+const DieuChuyenTeam = React.lazy(() => import("./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam"));
+const TabDangKy = React.lazy(() => import("./pages/nhansu/DangKy/TabDangKy"));
+const PheDuyetNghi = React.lazy(() => import("./pages/nhansu/PheDuyetNghi/PheDuyetNghi"));
+const LichSu = React.lazy(() => import("./pages/nhansu/LichSu/LichSu"));
+const BaoCaoNhanSu = React.lazy(() => import("./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu"));
+const QuanLyCapCao = React.lazy(() => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao"));
+const BANGCHAMCONG = React.lazy(() => import("./pages/nhansu/BangChamCong/BangChamCong"));
+const RND_REPORT = React.lazy(() => import("./pages/rnd/rnd_report/RND_REPORT"));
+const Blank = React.lazy(() => import("./components/Blank/Blank"));
+const SAMPLE_MONITOR = React.lazy(() => import("./pages/rnd/sample monitor/SAMPLE_MONITOR"));
+const BCSX = React.lazy(() => import("./pages/sx/BAOCAOSX/BCSX"));
+const OVER_MONITOR = React.lazy(() => import("./pages/kinhdoanh/over_prod_monitor/OVER_MONITOR"));
+const KHOSUB = React.lazy(() => import("./pages/qlsx/QLSXPLAN/KHOAO/KHOSUB"));
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -220,14 +220,9 @@ const ProtectedRoute: any = ({
     }
   }
 };
-
-
-
 function App() {
 //get full url
 const fullUrl = window.location.href;
-console.log('fullUrl', fullUrl);
-
   const loadWebSetting = () => {
     generalQuery("loadWebSetting", {
     })
@@ -444,8 +439,7 @@ console.log('fullUrl', fullUrl);
           //console.log(data.data.data);
           /* checkERPLicense(); */
           setUserData(data.data.data);
-          dispatch(changeUserData(data.data.data));
-          console.log('data.data.data.POSITION_CODE', data.data.data.POSITION_CODE)
+          dispatch(changeUserData(data.data.data));          
           if (data.data.data.POSITION_CODE === 4) {
             dispatch(setTabModeSwap(false));
           }
@@ -650,7 +644,6 @@ console.log('fullUrl', fullUrl);
                         <Route path='quanlygiaonhan' element={<QLGN />} />
                         <Route path='samplemonitor' element={<SAMPLE_MONITOR />} />
                         <Route path='baocaornd' element={getCompany() ==='CMS' ?  <RND_REPORT /> : <Blank/>} />
-                        
                       </Route>
                       <Route
                         path='qlsx'
