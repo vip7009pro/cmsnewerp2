@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { forwardRef, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
@@ -17,7 +17,7 @@ interface AGInterface {
   onCellEditingStopped?: (e: any) => void,
   getRowStyle?: (e: any) => any
 }
-const AGTable = (ag_data: AGInterface) => {
+const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
   const [selectedrow, setSelectedrow] = useState(0);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
@@ -25,18 +25,30 @@ const AGTable = (ag_data: AGInterface) => {
   };
   const onRowdoubleClick = (params: any) => {
   }
-  const gridRef = useRef<AgGridReact<any>>(null);
+  const gridRefDefault = useRef<AgGridReact<any>>(null);
   const tableSelectionChange = useCallback(() => {
-    const selectedrows = gridRef.current!.api.getSelectedRows().length;
-    setSelectedrow(selectedrows);
+      if (gridRef !== null) {
+      const selectedrows = gridRef.current!.api.getSelectedRows().length;
+      setSelectedrow(selectedrows);
+    }
+    else {
+      const selectedrows = gridRefDefault.current!.api.getSelectedRows().length;
+      setSelectedrow(selectedrows);
+    }
   }, []);
   /*   function setIdText(id: string, value: string | number | undefined) {
       document.getElementById(id)!.textContent =
         value == undefined ? "undefined" : value + "";
     } */
   const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    //setIdText("headerHeight", value);
+    if (gridRef !== null) {
+      gridRef.current!.api.setGridOption("headerHeight", value);
+      //setIdText("headerHeight", value);
+    }
+    else {
+      gridRefDefault.current!.api.setGridOption("headerHeight", value);
+      //setIdText("headerHeight", value);
+    }
   }, []);
   const defaultColDef = useMemo(() => {
     return {
@@ -50,7 +62,12 @@ const AGTable = (ag_data: AGInterface) => {
     };
   }, []);
   const onExportClick = () => {
-    gridRef.current!.api.exportDataAsCsv();
+    if (gridRef !== null) {
+      gridRef.current!.api.exportDataAsCsv();
+    }
+    else {
+      gridRefDefault.current!.api.exportDataAsCsv();
+    }
   };
 
   useEffect(() => {
@@ -80,11 +97,11 @@ const AGTable = (ag_data: AGInterface) => {
       </div>}
       <div className="ag-theme-quartz">
         <AgGridReact
-          rowData={ag_data.data}
-          columnDefs={ag_data.columns}
+          rowData={ag_data.data ?? []}
+          columnDefs={ag_data.columns ?? []}
           rowHeight={25}
           defaultColDef={defaultColDef}
-          ref={gridRef}
+          ref={gridRef ?? gridRefDefault}
           onGridReady={() => {
             setHeaderHeight(20);
           }}
@@ -126,5 +143,5 @@ const AGTable = (ag_data: AGInterface) => {
       </div>
     </div>
   )
-}
+});
 export default AGTable

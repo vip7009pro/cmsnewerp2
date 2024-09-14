@@ -9,10 +9,11 @@ import {
   AiFillSave,
   AiOutlineArrowRight,
   AiOutlineBarcode,
+  AiOutlineCheck,
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getCompany } from "../../../../api/Api";
 import {
   checkBP,
   f_deleteChiThiMaterialLine,
@@ -177,7 +178,14 @@ const PLAN_DATATB = () => {
     gridRef.current!.api.deselectAll();
     qlsxplandatafilter.current = [];
   }, []);
+  const clearSelectedMaterialRows = useCallback(() => {
+    if (gridMaterialRef.current) {  
+      gridMaterialRef.current!.api.deselectAll();
+      qlsxchithidatafilter.current = [];
+    }
+  }, []); 
   const gridRef = useRef<AgGridReact<QLSXPLANDATA>>(null);
+  const gridMaterialRef = useRef<AgGridReact<QLSXCHITHIDATA>>(null);
   const defaultColDef = useMemo(() => {
     return {
       initialWidth: 100,
@@ -196,6 +204,17 @@ const PLAN_DATATB = () => {
       console.log(dataGridRef.current);
     }
   };
+  const selectMaterialRow = async () => {
+    const api = gridMaterialRef.current?.api; // Access the grid API   
+    api?.forEachNode((node) => {      
+      if (node.data?.M_STOCK && node.data.M_STOCK > 0) {
+        node.setSelected(true);
+      } else {
+        node.setSelected(false);
+      }
+    });
+  };
+  
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1095,7 +1114,7 @@ const PLAN_DATATB = () => {
     setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
   };
   const handleDangKyXuatLieu = async () => {
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, chithidatatable);
+    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -1402,8 +1421,18 @@ const PLAN_DATATB = () => {
   };
   const planMaterialTableAG = useMemo(() =>
     <AGTable
+      ref={gridMaterialRef}
       toolbar={
         <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              selectMaterialRow();
+            }}            
+          >
+            <AiOutlineCheck color='green' size={20} />
+            Select
+          </IconButton> 
           <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -1593,6 +1622,7 @@ const PLAN_DATATB = () => {
             clickedRow.current = params.data;
             setSelectedPlan(params.data);
             setChiThiDataTable(await f_handleGetChiThiTable(params.data));
+            clearSelectedMaterialRows();
           }}
           onRowDoubleClicked={
             (params: any) => {
@@ -1895,6 +1925,7 @@ const PLAN_DATATB = () => {
             <Button
               onClick={() => {
                 setShowHideM(false);
+                clearSelectedMaterialRows(); 
                 loadQLSXPlan(fromdate);
               }}
               size='small'

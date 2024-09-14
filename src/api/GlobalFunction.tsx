@@ -1565,11 +1565,11 @@ export const f_calcMaterialMet = async (PLAN_QTY: number, PD: number, CAVITY: nu
   }
   M_MET_NEEDED = ((PLAN_QTY ?? 0) * (PD ?? 0) * 1.0) / ((CAVITY ?? 0) * 1.0) / 1000;
   M_MET_NEEDED = ((M_MET_NEEDED + (M_MET_NEEDED * FINAL_LOSS_SX) * 1.0 / 100 + FINAL_LOSS_SETTING))
-  console.log('PLAN_QTY', PLAN_QTY);
+  /* console.log('PLAN_QTY', PLAN_QTY);
   console.log('PD', PD);
   console.log('CAVITY', CAVITY);
   console.log('FINAL_LOSS_SX', FINAL_LOSS_SX)
-  console.log('FINAL_LOSS_SETTING', FINAL_LOSS_SETTING)
+  console.log('FINAL_LOSS_SETTING', FINAL_LOSS_SETTING) */
   return M_MET_NEEDED;
 }
 export const f_calcMaterialMet2 = async (PLAN_QTY: number, PD: number, CAVITY: number, PROCESS_NUMBER: number, LOSS_SX1: number, LOSS_SX2: number, LOSS_SX3: number, LOSS_SX4: number, LOSS_SETTING1: number, LOSS_SETTING2: number, LOSS_SETTING3: number, LOSS_SETTING4: number, LOSS_KT: number, IS_SETTING: string) => {
@@ -1954,6 +1954,10 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
   let checkPlanIdO300: boolean = true;
   let NEXT_OUT_NO: string = "001";
   let NEXT_OUT_DATE: string = moment().format("YYYYMMDD");
+  if(chithidatatable.length <= 0){
+    err_code = "Chọn ít nhất một liệu để đăng ký";
+    return err_code;  
+  }
   await generalQuery("checkPLANID_O300", { PLAN_ID: selectedPlan.PLAN_ID })
     .then((response) => {
       console.log(response.data);
@@ -2059,6 +2063,17 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
     checkchithimettotal += chithidatatable[i].M_MET_QTY;
   }
   if (checkchithimettotal > 0) {
+    //delete all M_CODE in O301 which not exist in chithidatatable
+    await generalQuery("deleteM_CODE_O301", {
+      PLAN_ID: selectedPlan.PLAN_ID,
+      M_CODE_LIST: chithidatatable.map(x => "'" + x.M_CODE + "'").join(','),
+    })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     for (let i = 0; i < chithidatatable.length; i++) {
       if (chithidatatable[i].M_MET_QTY > 0) {
         console.log("M_MET", chithidatatable[i].M_MET_QTY);

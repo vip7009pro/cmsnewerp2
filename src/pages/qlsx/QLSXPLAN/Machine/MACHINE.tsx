@@ -11,6 +11,7 @@ import {
   AiFillSave,
   AiOutlineArrowRight,
   AiOutlineBarcode,
+  AiOutlineCheck,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
@@ -1848,7 +1849,7 @@ const MACHINE = () => {
     }
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, chithidatatable);
+    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, qlsxchithidatafilter.current);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -2021,7 +2022,7 @@ const MACHINE = () => {
     }
   };
   const handleDangKyXuatLieu = async () => {
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, chithidatatable);
+    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -2208,6 +2209,7 @@ const MACHINE = () => {
     }
   };
   const gridRef = useRef<AgGridReact<any>>(null);
+  const gridMaterialRef = useRef<AgGridReact<any>>(null);
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
     //setIdText("headerHeight", value);
@@ -2231,6 +2233,23 @@ const MACHINE = () => {
     gridRef.current!.api.deselectAll();
     qlsxplandatafilter.current = [];
   }, []);
+  const clearSelectedMaterialRows = useCallback(() => {
+    gridMaterialRef.current!.api.deselectAll();
+    qlsxchithidatafilter.current = [];
+  }, []);
+  const selectMaterialRow = async () => {
+    const api = gridMaterialRef.current?.api; // Access the grid API   
+    api?.forEachNode((node) => {      
+      if (node.data.M_STOCK > 0) {
+        node.setSelected(true);
+      }
+      else {
+        node.setSelected(false);
+      }
+    });
+  };
+
+
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -2399,7 +2418,10 @@ const MACHINE = () => {
               });
               getRecentDM(rowData.G_CODE);
               if (params.column.colId !== 'IS_SETTING') {
+                clearSelectedMaterialRows();
                 setChiThiDataTable(await f_handleGetChiThiTable(rowData));
+                
+                //await selectMaterialRow();
               }
               //setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
             }}
@@ -2443,9 +2465,19 @@ const MACHINE = () => {
   }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
   const planMaterialTableAG = useMemo(() =>
     <AGTable
+      ref={gridMaterialRef}
       showFilter={false}
       toolbar={
         <div>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              selectMaterialRow();
+            }}
+          >
+            <AiOutlineCheck color='green' size={20} />
+            Select
+          </IconButton> 
           <IconButton
             className='buttonIcon'
             onClick={() => {
