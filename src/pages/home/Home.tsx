@@ -489,6 +489,7 @@ function Home() {
   const failCount = useRef(0);
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = () => {
+
     generalQuery("updatechamcongdiemdanhauto", {})
       .then((response) => {
         //console.log(response.data.data);
@@ -693,7 +694,7 @@ function Home() {
                 if (ele.ELE_CODE !== "-1")
                   return (
                     <div
-                      key={index}
+                      key={index}                    
                       className='component_element'
                       style={{
                         visibility: index === tabIndex ? "visible" : "hidden",
@@ -713,8 +714,8 @@ function Home() {
                 style={{
                   fontSize: 35,
                   backgroundColor: "red",
-                  width: "800px",
-                  height: "500px",
+                  width: "100%",
+                  height: "100%",
                   zIndex: 1000,
                 }}
               >

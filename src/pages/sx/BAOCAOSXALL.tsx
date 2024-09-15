@@ -1,16 +1,16 @@
-import { useEffect, useState, lazy, Suspense, useContext } from "react";
+import React, { useEffect, useState, lazy, Suspense, useContext } from "react";
 import "./BAOCAOSXALL.scss";
 
-import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import DATASX from "../qlsx/QLSXPLAN/DATASX/DATASX";
-import LICHSUTEMLOTSX from "./LICHSUTEMLOTSX/LICHSUTEMLOTSX";
-import TINHHINHCUONLIEU from "./TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
-import BAOCAOTHEOROLL from "./BAOCAOTHEOROLL/BAOCAOTHEOROLL";
-import ACHIVEMENTTB from "../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB";
-import PATROL from "./PATROL/PATROL";
+const LICHSUINPUTLIEU = React.lazy(() => import("../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
+const DATASX = React.lazy(() => import("../qlsx/QLSXPLAN/DATASX/DATASX"));
+const LICHSUTEMLOTSX = React.lazy(() => import("./LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
+const TINHHINHCUONLIEU = React.lazy(() => import("./TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
+const BAOCAOTHEOROLL = React.lazy(() => import("./BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
+const ACHIVEMENTTB = React.lazy(() => import("../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB"));
+const PATROL = React.lazy(() => import("./PATROL/PATROL"));
+const DAOFILMDATA = React.lazy(() => import("./LICHSUDAOFILM/DAOFILMDATA"));
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import DAOFILMDATA from "./LICHSUDAOFILM/DAOFILMDATA";
 
 const BAOCAOSXALL = () => {
   const [selection, setSelection] = useState<any>({

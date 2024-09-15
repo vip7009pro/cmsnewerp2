@@ -1,15 +1,15 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import "./QLSXPLAN.scss";
-import MACHINE from "./Machine/MACHINE";
-import ACHIVEMENTTB from "./ACHIVEMENTTB/ACHIVEMENTTB";
-import LICHSUINPUTLIEU from "./LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import PLAN_DATATB from "./LICHSUCHITHITABLE/PLAN_DATATB";
-import DATASX from "./DATASX/DATASX";
-import PLAN_STATUS from "./PLAN_STATUS/PLAN_STATUS";
-import EQ_STATUS from "./EQ_STATUS/EQ_STATUS";
-import EQ_STATUS2 from "./EQ_STATUS/EQ_STATUS2";
-import KHOAO from "./KHOAO/KHOAO";
-import QUICKPLAN2 from "./QUICKPLAN/QUICKPLAN2";
+const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
+const ACHIVEMENTTB = React.lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
+const LICHSUINPUTLIEU = React.lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
+const PLAN_DATATB = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB"));
+const DATASX = React.lazy(() => import("./DATASX/DATASX"));
+const PLAN_STATUS = React.lazy(() => import("./PLAN_STATUS/PLAN_STATUS"));
+const EQ_STATUS = React.lazy(() => import("./EQ_STATUS/EQ_STATUS"));
+const EQ_STATUS2 = React.lazy(() => import("./EQ_STATUS/EQ_STATUS2"));
+const KHOAO = React.lazy(() => import("./KHOAO/KHOAO"));
+const QUICKPLAN2 = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2"));
 
 const QLSXPLAN = () => {
   const [selection, setSelection] = useState<any>({

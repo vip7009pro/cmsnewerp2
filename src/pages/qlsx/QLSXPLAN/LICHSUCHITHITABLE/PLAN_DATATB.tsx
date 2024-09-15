@@ -206,7 +206,7 @@ const PLAN_DATATB = () => {
   };
   const selectMaterialRow = async () => {
     const api = gridMaterialRef.current?.api; // Access the grid API   
-    api?.forEachNode((node) => {      
+    api?.forEachNode((node: { data: { M_STOCK: number; }; setSelected: (arg0: boolean) => void; }) => {      
       if (node.data?.M_STOCK && node.data.M_STOCK > 0) {
         node.setSelected(true);
       } else {
