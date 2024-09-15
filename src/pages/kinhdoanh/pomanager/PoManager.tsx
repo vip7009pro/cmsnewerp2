@@ -1,4 +1,4 @@
-import { Button, Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
+import { Button, Autocomplete, IconButton, TextField, createFilterOptions, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
@@ -43,7 +43,17 @@ import {
   WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { FormButtonColumn, FormInputDiv, FormInputDiv2, FromInputDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const PoManager = () => {
+  const [openSearchDialog, setOpenSearchDialog] = useState(false);
+  
+  const handleOpenSearchDialog = () => {
+    setOpenSearchDialog(true);
+  };
+
+  const handleCloseSearchDialog = () => {
+    setOpenSearchDialog(false);
+  };
   const dataGridRef = useRef<any>(null);
   const showhidesearchdiv = useRef(false);
   const [selection, setSelection] = useState<any>({
@@ -1490,17 +1500,15 @@ const PoManager = () => {
     <AGTable
       showFilter={true}
       toolbar={
-        <div>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
           <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              showhidesearchdiv.current = !showhidesearchdiv.current;
-              setSH(!showhidesearchdiv.current);
-            }}
-          >
-            <TbLogout color='green' size={15} />
-            Show/Hide
-          </IconButton>
+              className='buttonIcon'
+              onClick={handleOpenSearchDialog}
+            >
+              <FcSearch color='green' size={15} />
+              Search
+            </IconButton>
+          
           <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -1565,6 +1573,64 @@ const PoManager = () => {
             <MdOutlinePivotTableChart color='#ff33bb' size={15} />
             Pivot
           </IconButton>
+
+          <div className='formsummary'>
+              <table>
+                <thead>
+                  <tr>
+                    <td>PO QTY</td>
+                    <td>DELIVERED QTY</td>
+                    <td>PO BALANCE QTY</td>
+                    <td>PO AMOUNT</td>
+                    <td>DELIVERED AMOUNT</td>
+                    <td>PO BALANCE AMOUNT</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {poSummary.total_po_qty.toLocaleString("en-US")} EA
+                    </td>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
+                    </td>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
+                    </td>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_po_amount.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </td>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_delivered_amount.toLocaleString(
+                        "en-US",
+                        {
+                          style: "currency",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        }
+                      )}
+                    </td>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_pobalance_amount.toLocaleString(
+                        "en-US",
+                        {
+                          style: "currency",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        }
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
         </div>
       }
       columns={getCompany()!=='CMS'?column_potable: column_potable_cms}
@@ -1678,11 +1744,13 @@ const PoManager = () => {
         </div>
       )}
       {selection.trapo && (
-        <div className='tracuuPO'>
-          {sh && (
-            <div className='tracuuPOform'>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
+        <div className='tracuuPO'>          
+          <Dialog open={openSearchDialog} onClose={handleCloseSearchDialog} fullWidth maxWidth="sm">
+          <DialogTitle sx={{textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', backgroundColor: '#b7d4ec'}}>Search PO</DialogTitle>
+          <DialogContent sx={{backgroundColor: '#b7d4ec'}}>          
+            <div className="tracuuPOform">
+              <FormInputDiv2>                
+                <FormInputDiv>
                   <label>
                     <b>Từ ngày:</b>
                     <input
@@ -1705,8 +1773,6 @@ const PoManager = () => {
                       onChange={(e) => setToDate(e.target.value)}
                     ></input>
                   </label>
-                </div>
-                <div className='forminputcolumn'>
                   <label>
                     <b>Code KD:</b>{" "}
                     <input
@@ -1731,8 +1797,6 @@ const PoManager = () => {
                       onChange={(e) => setCodeCMS(e.target.value)}
                     ></input>
                   </label>
-                </div>
-                <div className='forminputcolumn'>
                   <label>
                     <b>Tên nhân viên:</b>{" "}
                     <input
@@ -1757,9 +1821,10 @@ const PoManager = () => {
                       onChange={(e) => setCust_Name(e.target.value)}
                     ></input>
                   </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
+                  
+                </FormInputDiv>
+                <FormInputDiv>
+                <label>
                     <b>Loại sản phẩm:</b>{" "}
                     <input
                       onKeyDown={(e) => {
@@ -1783,8 +1848,6 @@ const PoManager = () => {
                       onChange={(e) => setID(e.target.value)}
                     ></input>
                   </label>
-                </div>
-                <div className='forminputcolumn'>
                   <label>
                     <b>PO NO:</b>{" "}
                     <input
@@ -1809,8 +1872,6 @@ const PoManager = () => {
                       onChange={(e) => setMaterial(e.target.value)}
                     ></input>
                   </label>
-                </div>
-                <div className='forminputcolumn'>
                   <label>
                     <b>Over/OK:</b>{" "}
                     <input
@@ -1835,9 +1896,10 @@ const PoManager = () => {
                       onChange={(e) => setInvoice_No(e.target.value)}
                     ></input>
                   </label>
-                </div>
-              </div>
-              <div className='formbutton'>
+                  
+                </FormInputDiv>               
+              </FormInputDiv2>
+              <FormButtonColumn>
                 <div className='checkboxdiv'>
                   <label>
                     <b>All Time:</b>
@@ -1863,84 +1925,28 @@ const PoManager = () => {
                       onChange={() => setJustPOBalance(!justpobalance)}
                     ></input>
                   </label>
-                </div>
-                <div className='searchbuttondiv'>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      handletraPO();
-                    }}
-                  >
-                    <FcSearch color='green' size={30} />
-                    Search
-                  </IconButton>
-                </div>
-              </div>
-            </div>
-          )}
+                </div>                
+              </FormButtonColumn>
+            </div>      
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center', backgroundColor: '#b7d4ec'}}>
+              <Button onClick={handleCloseSearchDialog}>Cancel</Button>
+              <Button onClick={() => {
+                handletraPO();
+                handleCloseSearchDialog();
+              }}>
+                Search
+              </Button>
+            </DialogActions>
+          </Dialog>
           <div className='tracuuPOTable'>
-            <div className='formsummary'>
-              <table>
-                <thead>
-                  <tr>
-                    <td>PO QTY</td>
-                    <td>DELIVERED QTY</td>
-                    <td>PO BALANCE QTY</td>
-                    <td>PO AMOUNT</td>
-                    <td>DELIVERED AMOUNT</td>
-                    <td>PO BALANCE AMOUNT</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {poSummary.total_po_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_po_amount.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_delivered_amount.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_pobalance_amount.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            
             <div className='tablegrid'>
               {poDataAGTable}
             </div>
           </div>
         </div>
-      )}
+      )}      
       {selection.them1po && (
         <div className='them1po'>
           <div className='formnho'>

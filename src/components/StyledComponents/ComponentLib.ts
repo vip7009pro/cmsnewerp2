@@ -1060,6 +1060,28 @@ export const FromInputDiv = styled.div`
   padding: 2px;
   font-size: 0.6rem;
 `;
+export const FormInputDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 2px;
+  font-size: 0.8rem;
+  input {
+    width: 150px;
+    height: 15px;
+    font-size: 0.6rem;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    margin-left: 5px;
+    background-image: linear-gradient(0deg, #ececec, #9dee95);  
+  }
+`;
 export const FromInputColumn = styled.div`
   display: flex;
   flex-direction: column;
@@ -1109,6 +1131,14 @@ export const FromInputColumn = styled.div`
 export const FormButtonColumn = styled.div`
   display: flex;  
   flex-direction: column;
+  align-items: center;
   font-size: 0.6rem;
   gap: 20px;
+`;
+export const FormInputDiv2 = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;  
+  gap: 10px;
 `;
