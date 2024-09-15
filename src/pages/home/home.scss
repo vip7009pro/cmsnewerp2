@@ -59,11 +59,11 @@
         .animated_div {
           display: flex;
           flex-direction: column;
-          margin-top: 80px;
+          margin-top: 35px;
           width: 100%;
           .component_element {
             position: absolute;
-            top: 102px;
+            top: 60px;
           }
         }
       }
@@ -86,7 +86,7 @@
         .animated_div {
           display: flex;
           flex-direction: column;
-          margin-top: 100px;
+          margin-top: 35px;
           .component_element {
             position: absolute;
             top: "25px";
