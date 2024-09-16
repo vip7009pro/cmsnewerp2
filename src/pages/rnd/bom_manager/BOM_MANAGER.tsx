@@ -1506,6 +1506,8 @@ const BOM_MANAGER = () => {
           k !== "NOTE" &&
           k !== "PD_HSD" &&
           k !== "UPDATE_REASON" &&
+          k !== "UPD_DATE" &&
+          k !== "UPD_EMPL" &&
           k !== "PDBV"
         ) {
           Swal.fire("Thông báo", "Không được để trống: " + k, "error");
