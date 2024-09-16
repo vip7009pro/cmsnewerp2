@@ -1583,62 +1583,7 @@ const PoManager = () => {
             Pivot
           </IconButton>
 
-          <div className='formsummary'>
-              <table>
-                <thead>
-                  <tr>
-                    <td>PO QTY</td>
-                    <td>DELIVERED QTY</td>
-                    <td>PO BALANCE QTY</td>
-                    <td>PO AMOUNT</td>
-                    <td>DELIVERED AMOUNT</td>
-                    <td>PO BALANCE AMOUNT</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {poSummary.total_po_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_po_amount.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_delivered_amount.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_pobalance_amount.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          
             
         </div>
       }
@@ -1948,7 +1893,63 @@ const PoManager = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          <div className='tracuuPOTable'>            
+          <div className='tracuuPOTable'>     
+          <div className='formsummary'>
+              <table>
+                <thead>
+                  <tr>
+                    <td>PO QTY</td>
+                    <td>DELIVERED QTY</td>
+                    <td>PO BALANCE QTY</td>
+                    <td>PO AMOUNT</td>
+                    <td>DELIVERED AMOUNT</td>
+                    <td>PO BALANCE AMOUNT</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {poSummary.total_po_qty.toLocaleString("en-US")} EA
+                    </td>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
+                    </td>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
+                    </td>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_po_amount.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </td>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_delivered_amount.toLocaleString(
+                        "en-US",
+                        {
+                          style: "currency",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        }
+                      )}
+                    </td>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {" "}
+                      {poSummary.total_pobalance_amount.toLocaleString(
+                        "en-US",
+                        {
+                          style: "currency",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        }
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>       
             <div className='tablegrid'>
               {poDataAGTable}
             </div>
