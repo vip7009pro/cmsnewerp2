@@ -11,7 +11,7 @@ import {
 import { GridRowSelectionModel } from "@mui/x-data-grid";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FcDeleteRow } from "react-icons/fc";
+import { FcAdvertising, FcDeleteRow } from "react-icons/fc";
 import {
   AiFillDelete,
   AiFillEdit,
