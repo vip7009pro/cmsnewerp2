@@ -206,7 +206,7 @@ const PLAN_DATATB = () => {
   };
   const selectMaterialRow = async () => {
     const api = gridMaterialRef.current?.api; // Access the grid API   
-    api?.forEachNode((node: { data: { M_STOCK: number; }; setSelected: (arg0: boolean) => void; }) => {      
+    api?.forEachNode((node: any) => {      
       if (node.data?.M_STOCK && node.data.M_STOCK > 0) {
         node.setSelected(true);
       } else {
@@ -1097,7 +1097,7 @@ const PLAN_DATATB = () => {
     setChiThiDataTable(kq);
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, chithidatatable);
+    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -1110,10 +1110,11 @@ const PLAN_DATATB = () => {
     } else {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
-    setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-    setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
+    
   };
   const handleDangKyXuatLieu = async () => {
+    console.log(qlsxchithidatafilter.current);
+    console.log(getCompany());
     let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
@@ -1133,19 +1134,31 @@ const PLAN_DATATB = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Đăng ký xuất liệu Kho NVL",
-          text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
-          icon: "info",
-          showCancelButton: false,
-          allowOutsideClick: false,
-          confirmButtonText: "OK",
-          showConfirmButton: false,
-        });
+      if (result.isConfirmed) {        
         if (selectedPlan !== undefined) {
+          Swal.fire({
+            title: "Đang lưu chỉ thị",
+            text: "Đang lưu chỉ thị, hay chờ cho tới khi hoàn thành",
+            icon: "info",
+            showCancelButton: false,
+            allowOutsideClick: false,
+            confirmButtonText: "OK",
+            showConfirmButton: false,
+          });
           await hanlde_SaveChiThi();
+          Swal.fire({
+            title: "Đang đăng ký xuất liệu",
+            text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
+            icon: "info",
+            showCancelButton: false,
+            allowOutsideClick: false,
+            confirmButtonText: "OK",
+            showConfirmButton: false,
+          });
           await handleDangKyXuatLieu();
+          clearSelectedMaterialRows();
+          setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+          setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
         } else {
           Swal.fire(
             "Thông báo",
@@ -1433,6 +1446,15 @@ const PLAN_DATATB = () => {
             <AiOutlineCheck color='green' size={20} />
             Select
           </IconButton> 
+          {/* <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              console.log('qlsxchithidatafilter.current',qlsxchithidatafilter.current);
+            }}            
+          >
+            <AiOutlineCheck color='green' size={20} />
+            Check
+          </IconButton>  */}
           <IconButton
             className='buttonIcon'
             onClick={() => {

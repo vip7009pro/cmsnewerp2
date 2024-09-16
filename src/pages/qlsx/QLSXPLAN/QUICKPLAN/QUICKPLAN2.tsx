@@ -172,13 +172,13 @@ const QUICKPLAN2 = () => {
         if (params.row.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
-              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+              {params.row.PROD_REQUEST_NO}
             </span>
           );
         } else {
           return (
             <span style={{ color: "green" }}>
-              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+              <b>{params.row.PROD_REQUEST_NO}</b>
             </span>
           );
         }
@@ -193,7 +193,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
+            <b>{params.row.PO_BALANCE?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -206,7 +206,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
-            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
+            <b>{params.row.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -218,7 +218,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD1?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -230,7 +230,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD2?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -242,7 +242,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD3?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -254,7 +254,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
+            <b>{params.row.CD4?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -267,7 +267,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -280,7 +280,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -292,7 +292,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD1?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -304,7 +304,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD2?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -316,7 +316,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD3?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -328,7 +328,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
+            <b>{params.row.TON_CD4?.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -341,7 +341,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+            <b>{params.row.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -386,7 +386,7 @@ const QUICKPLAN2 = () => {
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
+            <b>{params.row.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -609,7 +609,7 @@ const QUICKPLAN2 = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.PROD_REQUEST_QTY.toLocaleString("en", "US")}
+            {params.data.PROD_REQUEST_QTY?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -674,7 +674,7 @@ const QUICKPLAN2 = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD1.toLocaleString("en", "US")}
+            {params.data.TON_CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -687,7 +687,7 @@ const QUICKPLAN2 = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD2.toLocaleString("en", "US")}
+            {params.data.TON_CD2?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -700,7 +700,7 @@ const QUICKPLAN2 = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD3.toLocaleString("en", "US")}
+            {params.data.TON_CD3?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -713,7 +713,7 @@ const QUICKPLAN2 = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.data.TON_CD4.toLocaleString("en", "US")}
+            {params.data.TON_CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -729,7 +729,7 @@ const QUICKPLAN2 = () => {
         } else {
           return (
             <span style={{ color: "green" }}>
-              {params.data.PLAN_QTY.toLocaleString("en", "US")}
+              {params.data.PLAN_QTY?.toLocaleString("en", "US")}
             </span>
           );
         }
@@ -2372,7 +2372,7 @@ const QUICKPLAN2 = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
+                    <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 1"
@@ -2386,7 +2386,7 @@ const QUICKPLAN2 = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
+                    <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 2"
@@ -2402,7 +2402,7 @@ const QUICKPLAN2 = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS SETTING1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
+                    <b>LOSS SETTING1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 1"
@@ -2416,7 +2416,7 @@ const QUICKPLAN2 = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS SETTING2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
+                    <b>LOSS SETTING2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 2"
@@ -2599,7 +2599,7 @@ const QUICKPLAN2 = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
+                    <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 3"
@@ -2613,7 +2613,7 @@ const QUICKPLAN2 = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
+                    <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 4"
@@ -2629,7 +2629,7 @@ const QUICKPLAN2 = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS SETTING3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
+                    <b>LOSS SETTING3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 3"
@@ -2643,7 +2643,7 @@ const QUICKPLAN2 = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS SETTING4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
+                    <b>LOSS SETTING4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 4"

@@ -46,6 +46,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { FormButtonColumn, FormInputDiv, FormInputDiv2, FromInputDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const PoManager = () => {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
+  const [openNewPODialog, setOpenNewPODialog] = useState(false);
   
   const handleOpenSearchDialog = () => {
     setOpenSearchDialog(true);
@@ -53,6 +54,13 @@ const PoManager = () => {
 
   const handleCloseSearchDialog = () => {
     setOpenSearchDialog(false);
+  };
+  const handleOpenNewPODialog = () => {
+    console.log('open new po dialog');
+    setOpenNewPODialog(true);
+  };
+  const handleCloseNewPODialog = () => {
+    setOpenNewPODialog(false);
   };
   const dataGridRef = useRef<any>(null);
   const showhidesearchdiv = useRef(false);
@@ -433,6 +441,7 @@ const PoManager = () => {
       });
       if (kq === "OK") {
         Swal.fire("Thông báo", "Thêm PO mới thành công", "success");
+        handleCloseNewPODialog();
       } else {
         Swal.fire(
           "Thông báo",
@@ -1507,12 +1516,12 @@ const PoManager = () => {
             >
               <FcSearch color='green' size={15} />
               Search
-            </IconButton>
-          
+            </IconButton>          
           <IconButton
             className='buttonIcon'
             onClick={() => {
               checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
+              handleOpenNewPODialog();
               clearPOform();
             }}
           >
@@ -1747,7 +1756,7 @@ const PoManager = () => {
         <div className='tracuuPO'>          
           <Dialog open={openSearchDialog} onClose={handleCloseSearchDialog} fullWidth maxWidth="sm">
           <DialogTitle sx={{textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', backgroundColor: '#b7d4ec'}}>Search PO</DialogTitle>
-          <DialogContent sx={{backgroundColor: '#b7d4ec'}}>          
+          <DialogContent sx={{backgroundColor: '#b7d4ec', alignItems: 'center', justifyContent: 'center'}}>          
             <div className="tracuuPOform">
               <FormInputDiv2>                
                 <FormInputDiv>
@@ -1939,14 +1948,13 @@ const PoManager = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          <div className='tracuuPOTable'>
-            
+          <div className='tracuuPOTable'>            
             <div className='tablegrid'>
               {poDataAGTable}
             </div>
           </div>
         </div>
-      )}      
+      )}   
       {selection.them1po && (
         <div className='them1po'>
           <div className='formnho'>

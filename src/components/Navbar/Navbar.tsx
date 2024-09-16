@@ -12,7 +12,8 @@ import {
   toggleSidebar,
   setTabModeSwap,
   closeTab,
-  changeGLBLanguage
+  changeGLBLanguage,
+  switchTheme
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -67,6 +68,30 @@ export default function Navbar() {
     },
     () => { },
   );
+
+  const themeOptions = [
+    { value: "linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)", label: "Green-Blue" },
+    { value: "linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)", label: "Pink-Orange" },
+    { value: "linear-gradient(90deg, #FEE140 0%, #FA709A 100%)", label: "Yellow-Pink" },
+    { value: "linear-gradient(90deg, #8EC5FC 0%, #E0C3FC 100%)", label: "Light Blue-Purple" },
+    { value: "linear-gradient(90deg, #FBAB7E 0%, #F7CE68 100%)", label: "Orange-Yellow" },
+    { value: "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(56,204,255,1) 0%, rgba(17,218,189,1) 100%)", label: "Green-Blue" },
+    { value: "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 100%)", label: "White" },
+    { value: "linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1))", label: "Blue" },
+  ];
+
+
+  const switchRandomTheme = () => {
+    const randomIndex = Math.floor(Math.random() * themeOptions.length);
+    const randomTheme = themeOptions[randomIndex].value;
+    dispatch(switchTheme(randomTheme));
+  };
+  let intervalId: NodeJS.Timeout;
+  useEffect(() => {
+    switchRandomTheme();    
+  }, []);
+
+
   const menulist: MENU_LIST_DATA[] = [
     {
       MENU_CODE: "NS0",
@@ -609,6 +634,19 @@ export default function Navbar() {
           <div className="webver" style={{ fontSize: "8pt" }}>
             <b> Web Ver: {current_ver} </b>
           </div>
+        </div>
+        <div className="item">
+          <select
+            onChange={(e) => {
+              dispatch(switchTheme(e.target.value))
+              localStorage.setItem('theme', e.target.value);              
+            }}
+            style={{ padding: '0px', border: 'none', backgroundColor: 'transparent', color: 'gray' }}
+          >
+            {themeOptions.map((theme, index) => (
+              <option key={index} value={theme.value}>{theme.label}</option>
+            ))}            
+          </select>
         </div>
         <div className="navright">          
           <div className="items">

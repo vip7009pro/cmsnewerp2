@@ -31,8 +31,9 @@
     }
     nav ul li ul.submenu {
       display: none;
-      position: absolute;
-      background: linear-gradient(to bottom, #abebf0, #66ccff);
+      position: absolute;     
+background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(236, 241, 234) 0%, rgba(208, 248, 244, 0.785) 61%, rgb(169, 240, 247) 100%);
+      /* background: linear-gradient(to bottom, #abebf0, #66ccff); */
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 5px;

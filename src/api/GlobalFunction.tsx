@@ -1709,6 +1709,7 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
     check_num_lieuql_sx === 1 &&
     check_lieu_qlsx_khac1 === 0
   ) {
+
     await generalQuery("deleteMCODEExistIN_O302", {
       //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
       PLAN_ID: selectedPlan?.PLAN_ID,
@@ -1740,6 +1741,18 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
         });
       if (chithidatatable[i].M_MET_QTY > 0) {
         let checktontaiM_CODE: boolean = false;
+
+        await generalQuery("deleteM_CODE_ZTB_QLSXCHITHI", {
+          PLAN_ID: selectedPlan.PLAN_ID,
+          M_CODE_LIST: chithidatatable.map(x => "'" + x.M_CODE + "'").join(','),
+        })
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
         await generalQuery("checkM_CODE_PLAN_ID_Exist", {
           //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
           PLAN_ID: selectedPlan?.PLAN_ID,
@@ -1954,6 +1967,7 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
   let checkPlanIdO300: boolean = true;
   let NEXT_OUT_NO: string = "001";
   let NEXT_OUT_DATE: string = moment().format("YYYYMMDD");
+ 
   if(chithidatatable.length <= 0){
     err_code = "Chọn ít nhất một liệu để đăng ký";
     return err_code;  
@@ -2075,6 +2089,7 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
         console.log(error);
       });
     for (let i = 0; i < chithidatatable.length; i++) {
+      console.log('chithidatatable[i]',chithidatatable[i]);
       if (chithidatatable[i].M_MET_QTY > 0) {
         console.log("M_MET", chithidatatable[i].M_MET_QTY);
         let TonTaiM_CODE_O301: boolean = false;
@@ -2094,7 +2109,7 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
             console.log(error);
           });
         if (chithidatatable[i].LIEUQL_SX === 1) {
-          f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
+          await f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
         }
         if (!TonTaiM_CODE_O301) {
           console.log("Next Out NO", NEXT_OUT_NO);

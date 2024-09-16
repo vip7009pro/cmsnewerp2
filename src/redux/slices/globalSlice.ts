@@ -147,8 +147,10 @@ const initialState: GlobalInterface = {
   loginState: false,
   theme: {
     CMS: {
-      backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1))`,
-      outletBackground: `rgba(159, 212, 254,1)`,
+      backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,
+      /* backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1))`, */
+      outletBackground: `rgb(2,0,36)`,
+      /* outletBackground: `rgba(159, 212, 254,1)`, */
     },
     PVN: {
       /* backgroundImage: `linear-gradient(90deg, rgba(254,255,23,1) 0%, rgba(235,242,144,0.9920343137254902) 47%, rgba(255,241,134,1) 100%)`, */
@@ -366,6 +368,11 @@ export const glbSlice = createSlice({
     changeGLBSetting: (state, action: PayloadAction<WEB_SETTING_DATA[]>) => {
       state.globalSetting = action.payload;
     },
+    switchTheme: (state, action: PayloadAction<string>) => {
+      state.theme['CMS'].backgroundImage = action.payload;
+      state.theme['PVN'].backgroundImage = action.payload;
+    } 
+
   },
 });
 export const {
@@ -388,5 +395,6 @@ export const {
   login,
   changeGLBLanguage,
   changeGLBSetting,
+  switchTheme
 } = glbSlice.actions;
 export default glbSlice.reducer;

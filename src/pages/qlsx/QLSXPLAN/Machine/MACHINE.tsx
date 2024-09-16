@@ -1733,7 +1733,7 @@ const MACHINE = () => {
       }
     });
   };
-  const handleConfirmDKXL = () => {
+  const handleConfirmDKXL = async () => {
     Swal.fire({
       title: "Chắc chắn muốn Đăng ký xuất liệu ?",
       text: "Sẽ bắt đầu ĐK liệu",
@@ -1742,25 +1742,34 @@ const MACHINE = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn ĐK liệu!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Đăng ký xuất liệu Kho NVL",
-          text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
-          icon: "info",
-          showCancelButton: false,
-          allowOutsideClick: false,
-          confirmButtonText: "OK",
-          showConfirmButton: false,
-        });
-        /*  Swal.fire(
-          "Tiến hành ĐK liệu",
-          "Đang ĐK liệu, hãy chờ cho tới khi hoàn thành",
-          "info"
-        ); */
+             
         if (selectedPlan.PLAN_ID !== 'XXX') {
-          hanlde_SaveChiThi();
-          handleDangKyXuatLieu();
+          Swal.fire({
+            title: "Đang lưu chỉ thị",
+            text: "Đang lưu chỉ thị, hay chờ cho tới khi hoàn thành",
+            icon: "info",
+            showCancelButton: false,
+            allowOutsideClick: false,
+            confirmButtonText: "OK",
+            showConfirmButton: false,
+          }); 
+            await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+            //await hanlde_SaveChiThi();
+            Swal.fire({
+              title: "Đang đăng ký xuất liệu",
+              text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
+              icon: "info",
+              showCancelButton: false,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              showConfirmButton: false,
+            });
+            await handleDangKyXuatLieu();
+            clearSelectedMaterialRows();
+            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+            setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
         } else {
           Swal.fire(
             "Thông báo",
@@ -1849,7 +1858,7 @@ const MACHINE = () => {
     }
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, qlsxchithidatafilter.current);
+    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",

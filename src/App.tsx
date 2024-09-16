@@ -221,8 +221,15 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
-//get full url
-const fullUrl = window.location.href;
+  // Get full URL
+  const fullUrl = window.location.href;
+
+  // Set z-index for Swal container
+  const swalContainer = document.querySelector('.swal2-container');
+  if (swalContainer instanceof HTMLElement) {
+    swalContainer.style.zIndex = '9999';
+  }
+
   const loadWebSetting = () => {
     generalQuery("loadWebSetting", {
     })

@@ -15,6 +15,8 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
+export const current_ver: number = 2479;
+
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
@@ -76,7 +78,7 @@ const OVER_MONITOR = React.lazy(() => import("../kinhdoanh/over_prod_monitor/OVE
 const QUICKPLAN2 = React.lazy(() => import("../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2"));
 const CHAT = React.lazy(() => import("../chat/CHAT"));
 const KHOSUB = React.lazy(() => import("../qlsx/QLSXPLAN/KHOAO/KHOSUB"));
-export const current_ver: number = 2475;
+
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
