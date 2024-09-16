@@ -1962,38 +1962,32 @@ export const f_updateXUAT_DAO_FILM_PLAN = async (PLAN_ID: string) => {
       console.log(error);
     });
 }
-export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
-  let err_code: string = "0";
+export const f_checkPlanIdO300 = async (PLAN_ID: string) => {
   let checkPlanIdO300: boolean = true;
-  let NEXT_OUT_NO: string = "001";
   let NEXT_OUT_DATE: string = moment().format("YYYYMMDD");
- 
-  if(chithidatatable.length <= 0){
-    err_code = "Chọn ít nhất một liệu để đăng ký";
-    return err_code;  
-  }
-  await generalQuery("checkPLANID_O300", { PLAN_ID: selectedPlan.PLAN_ID })
+  await generalQuery("checkPLANID_O300", { PLAN_ID: PLAN_ID })
     .then((response) => {
       console.log(response.data);
       if (response.data.tk_status !== "NG") {
         checkPlanIdO300 = true;
         NEXT_OUT_DATE = response.data.data[0].OUT_DATE;
       } else {
-        checkPlanIdO300 = false;
+        checkPlanIdO300 = false;  
       }
     })
     .catch((error) => {
       console.log(error);
     });
-  //kiem tra xem  dang ky xuat lieu hay chua
+  return {checkPlanIdO300, NEXT_OUT_DATE};
+}
+export const f_checkPlanIdO301 = async (PLAN_ID: string) => {
   let checkPlanIdO301: boolean = true;
   let Last_O301_OUT_SEQ: number = 0;
-  await generalQuery("checkPLANID_O301", { PLAN_ID: selectedPlan.PLAN_ID })
+  await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID })
     .then((response) => {
-      //console.log(response.data);
+      console.log(response.data);
       if (response.data.tk_status !== "NG") {
-        Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);
-        checkPlanIdO301 = true;
+        Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);  
       } else {
         checkPlanIdO301 = false;
       }
@@ -2001,25 +1995,40 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
     .catch((error) => {
       console.log(error);
     });
-  //console.log(checkPlanIdO302 +' _ '+checkPlanIdO301)
-  //get Next_ out_ no
-  console.log("check plan id o300", checkPlanIdO300);
+  return {checkPlanIdO301, Last_O301_OUT_SEQ};
+} 
+export const f_getO300_LAST_OUT_NO = async () => {
+  let LAST_OUT_NO: string = "001";
+  await generalQuery("getO300_LAST_OUT_NO", {})
+    .then((response) => {
+      console.log(response.data);
+      LAST_OUT_NO = zeroPad(parseInt(response.data.data[0].OUT_NO) + 1,  3);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return LAST_OUT_NO;
+}
+export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
+  let err_code: string = "0";
+  let NEXT_OUT_NO: string = "001"; 
+  if(chithidatatable.length <= 0){
+    err_code = "Chọn ít nhất một liệu để đăng ký";
+    return err_code;  
+  }
+  let {checkPlanIdO300, NEXT_OUT_DATE} = await f_checkPlanIdO300(selectedPlan.PLAN_ID);
+  if(checkPlanIdO300){
+    err_code = "Chỉ thị đã được đăng ký xuất liệu";
+    return err_code;
+  }
+  let {checkPlanIdO301, Last_O301_OUT_SEQ} = await f_checkPlanIdO301(selectedPlan.PLAN_ID);
+  //kiem tra xem  dang ky xuat lieu hay chua
+  if(checkPlanIdO301){
+    err_code = "Chỉ thị đã được đăng ký xuất liệu";
+    return err_code;
+  }
   if (!checkPlanIdO300) {
-    await generalQuery("getO300_LAST_OUT_NO", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          NEXT_OUT_NO = zeroPad(
-            parseInt(response.data.data[0].OUT_NO) + 1,
-            3
-          );
-          console.log("nextoutno_o300", NEXT_OUT_NO);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    NEXT_OUT_NO = await f_getO300_LAST_OUT_NO(); 
     // get code_50 phan loai giao hang GC, SK, KD
     let CODE_50: string = "";
     await generalQuery("getP400", {
