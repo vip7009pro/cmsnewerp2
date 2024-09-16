@@ -97,6 +97,8 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
       </div>}
       <div className="ag-theme-quartz">
         <AgGridReact
+          rowDragManaged={true} // Bật tính năng kéo hàng
+          animateRows={true}
           rowData={ag_data.data ?? []}
           columnDefs={ag_data.columns ?? []}
           rowHeight={25}

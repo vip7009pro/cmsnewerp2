@@ -1829,6 +1829,15 @@ const MACHINE = () => {
       loadQLSXPlan(selectedPlanDate);
     }
   };
+  const handle_AddPlan2 = async (data: YCSXTableData[]) => {
+    let err_code: string = await f_addQLSXPLAN(data, selectedPlanDate, selectedMachine, selectedFactory);
+    if (err_code !== '0') {
+      Swal.fire("Thông báo", err_code, "error");
+    }
+    else {
+      loadQLSXPlan(selectedPlanDate);
+    }
+  };  
   const handle_UpdatePlan = async () => {
     Swal.fire({
       title: "Lưu Plan",
@@ -2350,7 +2359,12 @@ const MACHINE = () => {
         }} onSelectionChange={(params: any) => {
           //console.log(params!.api.getSelectedRows())
           //ycsxdatatablefilter.current = params!.api.getSelectedRows();
-        }} />
+        }} 
+        onRowDoubleClick={(params: any) => {
+          console.log([params.data])
+          handle_AddPlan2([params.data])
+        }}
+        />
     )
   }, [ycsxdatatable, selectedMachine, selectedPlanDate])
   const planDataTableAG = useMemo(() => {
