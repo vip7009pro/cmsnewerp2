@@ -44,10 +44,12 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { FormButtonColumn, FormInputDiv, FormInputDiv2, FromInputDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
+import CustomDialog from "../../../components/Dialog/CustomDialog";
 const PoManager = () => {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
   const [openNewPODialog, setOpenNewPODialog] = useState(false);
-  
+  const [openNewInvoiceDialog, setOpenNewInvoiceDialog] = useState(false);
+
   const handleOpenSearchDialog = () => {
     setOpenSearchDialog(true);
   };
@@ -56,12 +58,17 @@ const PoManager = () => {
     setOpenSearchDialog(false);
   };
   const handleOpenNewPODialog = () => {
-    console.log('open new po dialog');
     setOpenNewPODialog(true);
   };
   const handleCloseNewPODialog = () => {
     setOpenNewPODialog(false);
   };
+  const handleOpenNewInvoiceDialog = () => {
+    setOpenNewInvoiceDialog(true);
+  };
+  const handleCloseNewInvoiceDialog = () => {
+    setOpenNewInvoiceDialog(false);
+  };  
   const dataGridRef = useRef<any>(null);
   const showhidesearchdiv = useRef(false);
   const [selection, setSelection] = useState<any>({
@@ -139,11 +146,11 @@ const PoManager = () => {
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
-      podatatablefilter.current = [];      
+      podatatablefilter.current = [];
     }
   };
   const loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
-    setNewCodePrice(await f_loadprice(G_CODE,CUST_NAME)); 
+    setNewCodePrice(await f_loadprice(G_CODE, CUST_NAME));
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
@@ -175,7 +182,7 @@ const PoManager = () => {
     });
   };
   const loadFile = (e: any) => {
-    f_readUploadFile(e,setUploadExcelJSon,setColumnsExcel);    
+    f_readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
   };
 
   const handletraPO = async () => {
@@ -310,7 +317,7 @@ const PoManager = () => {
           BEP: uploadExcelJson[i].BEP ?? 0,
           REMARK: uploadExcelJson[i].REMARK,
         });
-        
+
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
       } else if (err_code === 2) {
@@ -363,7 +370,7 @@ const PoManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         Swal.fire({
           title: "Check PO",
           text: "Đang check PO hàng loạt",
@@ -412,9 +419,9 @@ const PoManager = () => {
   };
   const handle_add_1PO = async () => {
     let err_code: number = 0;
-    err_code = (await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono)) ? 1 : 0;
-    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;   
-    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 1 : 0;
+    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newpono === "" || userData?.EMPL_NO === "" || newpoprice === "") {
       err_code = 4;
     }
@@ -427,7 +434,7 @@ const PoManager = () => {
       if (recheckPrice === 0) err_code = 5;
     }
     if (err_code === 0) {
-      let kq = await f_insertPO( {
+      let kq = await f_insertPO({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -441,18 +448,23 @@ const PoManager = () => {
       });
       if (kq === "OK") {
         Swal.fire("Thông báo", "Thêm PO mới thành công", "success");
-        handleCloseNewPODialog();
+        setSelection({
+          ...selection,
+          trapo: true,
+          thempohangloat: false,
+          them1po: false,
+        });
       } else {
         Swal.fire(
           "Thông báo",
           "Thêm PO mới thất bại: " + kq,
           "error"
         );
-      }    
+      }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Đã tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire( "Thông báo", "NG: Ngày PO không được trước ngày hôm nay", "error");
+      Swal.fire("Thông báo", "NG: Ngày PO không được trước ngày hôm nay", "error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
@@ -463,11 +475,11 @@ const PoManager = () => {
   };
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
-    err_code = (await f_checkPOExist(selectedCode?.G_CODE??"", selectedCust_CD?.CUST_CD??"", newpono)) ? 0 : 1;
-    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;   
-    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate,newpodate.substring(0, 10));
-    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code; 
-    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
+    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
+    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate, newpodate.substring(0, 10));
+    err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
@@ -502,7 +514,7 @@ const PoManager = () => {
       if (kq === "OK") {
         Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
       } else {
-        Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq,  "error");
+        Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq, "error");
       }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
@@ -537,12 +549,7 @@ const PoManager = () => {
   };
   const handle_fillsuaform = () => {
     if (clickedRow.current !== null) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: !selection.them1po,
-      });
+      handleOpenNewPODialog();
       const selectedCodeFilter: CodeListData = {
         G_CODE: clickedRow.current?.G_CODE ?? "",
         G_NAME: clickedRow.current?.G_NAME ?? "",
@@ -573,24 +580,18 @@ const PoManager = () => {
   };
   const handle_fillsuaformInvoice = () => {
     if (clickedRow.current !== null) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: true,
-      });
+      handleOpenNewInvoiceDialog();      
       const selectedCodeFilter: CodeListData = {
-        G_CODE:clickedRow.current?.G_CODE ?? "",
-        G_NAME:clickedRow.current?.G_NAME ?? "",
-        G_NAME_KD:clickedRow.current?.G_NAME_KD ?? "",
+        G_CODE: clickedRow.current?.G_CODE ?? "",
+        G_NAME: clickedRow.current?.G_NAME ?? "",
+        G_NAME_KD: clickedRow.current?.G_NAME_KD ?? "",
         PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
         PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD:clickedRow.current?.CUST_CD ?? "",
-        CUST_NAME_KD:clickedRow.current?.CUST_NAME_KD ?? "",
+        CUST_CD: clickedRow.current?.CUST_CD ?? "",
+        CUST_NAME_KD: clickedRow.current?.CUST_NAME_KD ?? "",
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
@@ -612,7 +613,7 @@ const PoManager = () => {
     let err_code: number = 0;
     err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
     err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
-    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;   
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
@@ -626,12 +627,12 @@ const PoManager = () => {
       err_code = 5;
     }
     if (getCompany() !== 'CMS') {
-      if (Number(newpoprice) !== clickedRow.current.PROD_PRICE) {       
+      if (Number(newpoprice) !== clickedRow.current.PROD_PRICE) {
         err_code = 6;
       }
     }
     if (err_code === 0) {
-      let kq =  await f_updatePO({
+      let kq = await f_updatePO({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -648,7 +649,7 @@ const PoManager = () => {
         Swal.fire("Thông báo", "Update Po thành công", "success");
       } else {
         Swal.fire("Thông báo", "Update PO thất bại: " + kq, "error");
-      }    
+      }
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
@@ -671,8 +672,8 @@ const PoManager = () => {
       let err_code: boolean = false;
       for (let i = 0; i < podatatablefilter.current.length; i++) {
         if (podatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          let kq =  await f_deletePO(podatatablefilter.current[i].PO_ID);
-          if(kq  !=='OK') err_code = true;               
+          let kq = await f_deletePO(podatatablefilter.current[i].PO_ID);
+          if (kq !== 'OK') err_code = true;
         }
       }
       if (!err_code) {
@@ -1507,16 +1508,17 @@ const PoManager = () => {
   ];
   const poDataAGTable = useMemo(() =>
     <AGTable
+    suppressRowClickSelection={false}
       showFilter={true}
       toolbar={
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <IconButton
-              className='buttonIcon'
-              onClick={handleOpenSearchDialog}
-            >
-              <FcSearch color='green' size={15} />
-              Search
-            </IconButton>          
+            className='buttonIcon'
+            onClick={handleOpenSearchDialog}
+          >
+            <FcSearch color='green' size={15} />
+            Search
+          </IconButton>       
           <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -1583,11 +1585,11 @@ const PoManager = () => {
             Pivot
           </IconButton>
 
-          
-            
+
+
         </div>
       }
-      columns={getCompany()!=='CMS'?column_potable: column_potable_cms}
+      columns={getCompany() !== 'CMS' ? column_potable : column_potable_cms}
       data={podatatable}
       onCellEditingStopped={(params: any) => {
         //console.log(e.data)
@@ -1653,7 +1655,7 @@ const PoManager = () => {
         </div>
         <div
           className='mininavitem'
-          onClick={() =>            
+          onClick={() =>
             checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
@@ -1698,192 +1700,192 @@ const PoManager = () => {
         </div>
       )}
       {selection.trapo && (
-        <div className='tracuuPO'>          
-          <Dialog open={openSearchDialog} onClose={handleCloseSearchDialog} fullWidth maxWidth="sm">
-          <DialogTitle sx={{textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', backgroundColor: '#b7d4ec'}}>Search PO</DialogTitle>
-          <DialogContent sx={{backgroundColor: '#b7d4ec', alignItems: 'center', justifyContent: 'center'}}>          
-            <div className="tracuuPOform">
-              <FormInputDiv2>                
-                <FormInputDiv>
-                  <label>
-                    <b>Từ ngày:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='date'
-                      value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Tới ngày:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='date'
-                      value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Code KD:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='GH63-xxxxxx'
-                      value={codeKD}
-                      onChange={(e) => setCodeKD(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Code ERP:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='7C123xxx'
-                      value={codeCMS}
-                      onChange={(e) => setCodeCMS(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Tên nhân viên:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='Trang'
-                      value={empl_name}
-                      onChange={(e) => setEmpl_Name(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Khách:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='SEVT'
-                      value={cust_name}
-                      onChange={(e) => setCust_Name(e.target.value)}
-                    ></input>
-                  </label>
-                  
-                </FormInputDiv>
-                <FormInputDiv>
-                <label>
-                    <b>Loại sản phẩm:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='TSP'
-                      value={prod_type}
-                      onChange={(e) => setProdType(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>ID:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='12345'
-                      value={id}
-                      onChange={(e) => setID(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>PO NO:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='123abc'
-                      value={po_no}
-                      onChange={(e) => setPo_No(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Vật liệu:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='SJ-203020HC'
-                      value={material}
-                      onChange={(e) => setMaterial(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Over/OK:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='OVER'
-                      value={over}
-                      onChange={(e) => setOver(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Invoice No:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='số invoice'
-                      value={invoice_no}
-                      onChange={(e) => setInvoice_No(e.target.value)}
-                    ></input>
-                  </label>
-                  
-                </FormInputDiv>               
-              </FormInputDiv2>
-              <FormButtonColumn>
-                <div className='checkboxdiv'>
-                  <label>
-                    <b>All Time:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='checkbox'
-                      name='alltimecheckbox'
-                      defaultChecked={alltime}
-                      onChange={() => setAllTime(!alltime)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Chỉ PO Tồn:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='checkbox'
-                      name='pobalancecheckbox'
-                      defaultChecked={justpobalance}
-                      onChange={() => setJustPOBalance(!justpobalance)}
-                    ></input>
-                  </label>
-                </div>                
-              </FormButtonColumn>
-            </div>      
-          </DialogContent>
-          <DialogActions sx={{justifyContent: 'center', backgroundColor: '#b7d4ec'}}>
+        <div className='tracuuPO'>
+          {/* <Dialog open={openSearchDialog} onClose={handleCloseSearchDialog} fullWidth maxWidth="sm">
+            <DialogTitle sx={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', backgroundColor: '#b7d4ec' }}>Search PO</DialogTitle>
+            <DialogContent sx={{ backgroundColor: '#b7d4ec', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="tracuuPOform">
+                <FormInputDiv2>
+                  <FormInputDiv>
+                    <label>
+                      <b>Từ ngày:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='date'
+                        value={fromdate.slice(0, 10)}
+                        onChange={(e) => setFromDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tới ngày:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='date'
+                        value={todate.slice(0, 10)}
+                        onChange={(e) => setToDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code KD:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='GH63-xxxxxx'
+                        value={codeKD}
+                        onChange={(e) => setCodeKD(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code ERP:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='7C123xxx'
+                        value={codeCMS}
+                        onChange={(e) => setCodeCMS(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tên nhân viên:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='Trang'
+                        value={empl_name}
+                        onChange={(e) => setEmpl_Name(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Khách:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='SEVT'
+                        value={cust_name}
+                        onChange={(e) => setCust_Name(e.target.value)}
+                      ></input>
+                    </label>
+
+                  </FormInputDiv>
+                  <FormInputDiv>
+                    <label>
+                      <b>Loại sản phẩm:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='TSP'
+                        value={prod_type}
+                        onChange={(e) => setProdType(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>ID:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='12345'
+                        value={id}
+                        onChange={(e) => setID(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>PO NO:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='123abc'
+                        value={po_no}
+                        onChange={(e) => setPo_No(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Vật liệu:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='SJ-203020HC'
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Over/OK:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='OVER'
+                        value={over}
+                        onChange={(e) => setOver(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Invoice No:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='số invoice'
+                        value={invoice_no}
+                        onChange={(e) => setInvoice_No(e.target.value)}
+                      ></input>
+                    </label>
+
+                  </FormInputDiv>
+                </FormInputDiv2>
+                <FormButtonColumn>
+                  <div className='checkboxdiv'>
+                    <label>
+                      <b>All Time:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        defaultChecked={alltime}
+                        onChange={() => setAllTime(!alltime)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Chỉ PO Tồn:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='pobalancecheckbox'
+                        defaultChecked={justpobalance}
+                        onChange={() => setJustPOBalance(!justpobalance)}
+                      ></input>
+                    </label>
+                  </div>
+                </FormButtonColumn>
+              </div>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: 'center', backgroundColor: '#b7d4ec' }}>
               <Button onClick={handleCloseSearchDialog}>Cancel</Button>
               <Button onClick={() => {
                 handletraPO();
@@ -1892,9 +1894,218 @@ const PoManager = () => {
                 Search
               </Button>
             </DialogActions>
-          </Dialog>
-          <div className='tracuuPOTable'>     
-          <div className='formsummary'>
+          </Dialog> */}
+
+
+
+
+          <CustomDialog
+            isOpen={openSearchDialog}
+            onClose={handleCloseSearchDialog}
+            title="Search PO"
+            content={<>
+              <div className="tracuuPOform">
+                <div className="forminput">
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Từ ngày:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='date'
+                        value={fromdate.slice(0, 10)}
+                        onChange={(e) => setFromDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tới ngày:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='date'
+                        value={todate.slice(0, 10)}
+                        onChange={(e) => setToDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code KD:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='GH63-xxxxxx'
+                        value={codeKD}
+                        onChange={(e) => setCodeKD(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code ERP:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='7C123xxx'
+                        value={codeCMS}
+                        onChange={(e) => setCodeCMS(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tên nhân viên:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='Trang'
+                        value={empl_name}
+                        onChange={(e) => setEmpl_Name(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Khách:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='SEVT'
+                        value={cust_name}
+                        onChange={(e) => setCust_Name(e.target.value)}
+                      ></input>
+                    </label>
+
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Loại sản phẩm:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='TSP'
+                        value={prod_type}
+                        onChange={(e) => setProdType(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>ID:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='12345'
+                        value={id}
+                        onChange={(e) => setID(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>PO NO:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='123abc'
+                        value={po_no}
+                        onChange={(e) => setPo_No(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Vật liệu:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='SJ-203020HC'
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Over/OK:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='OVER'
+                        value={over}
+                        onChange={(e) => setOver(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Invoice No:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='số invoice'
+                        value={invoice_no}
+                        onChange={(e) => setInvoice_No(e.target.value)}
+                      ></input>
+                    </label>
+
+                  </div>
+                </div>
+                <div className="formbutton">
+                  <div className='checkboxdiv'>
+                    <label>
+                      <b>All Time:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        defaultChecked={alltime}
+                        onChange={() => setAllTime(!alltime)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Chỉ PO Tồn:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='pobalancecheckbox'
+                        defaultChecked={justpobalance}
+                        onChange={() => setJustPOBalance(!justpobalance)}
+                      ></input>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </>}
+            actions={<>
+              <Button onClick={handleCloseSearchDialog}>Cancel</Button>
+              <Button onClick={() => {
+                handletraPO();
+                handleCloseSearchDialog();
+              }}>
+                Search
+              </Button>
+
+            </>}
+          />
+
+
+
+
+
+
+
+          <div className='tracuuPOTable'>
+            <div className='formsummary'>
               <table>
                 <thead>
                   <tr>
@@ -1949,418 +2160,402 @@ const PoManager = () => {
                   </tr>
                 </tbody>
               </table>
-            </div>       
+            </div>
             <div className='tablegrid'>
               {poDataAGTable}
             </div>
           </div>
         </div>
-      )}   
-      {selection.them1po && (
-        <div className='them1po'>
-          <div className='formnho'>
-            <div className='dangkyform'>
-              <h3>Thêm PO mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>Khách hàng:</b>{" "}
-                    <Autocomplete
-                      size='small'
-                      disablePortal
-                      options={customerList}
-                      className='autocomplete'
-                      filterOptions={filterOptions1}
-                      isOptionEqualToValue={(option: any, value: any) =>
-                        option.CUST_CD === value.CUST_CD
-                      }
-                      getOptionLabel={(option: CustomerListData | any) =>
-                        `${option.CUST_CD}: ${option.CUST_NAME_KD}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
-                      )}
-                      value={selectedCust_CD}
-                      onChange={(
-                        event: any,
-                        newValue: CustomerListData | any
-                      ) => {
-                        (async () => {
-                          if (company !== "CMS") {
-                            setNewPoNo(
-                              await f_autogeneratePO_NO(newValue.CUST_CD)
-                            );
-                          }
-                          //console.log(await autogeneratePO_NO(newValue.CUST_CD));
-                        })();
-                        console.log(newValue);
-                        loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);
-                        setSelectedCust_CD(newValue);
-                      }}
-                    />
-                  </label>
-                  <label>
-                    <b>Code hàng:</b>{" "}
-                    <Autocomplete
-                      size='small'
-                      disablePortal
-                      options={codeList}
-                      className='autocomplete'
-                      filterOptions={filterOptions1}
-                      isOptionEqualToValue={(option: any, value: any) =>
-                        option.G_CODE === value.G_CODE
-                      }
-                      getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
-                      )}
-                      onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);
-                        loadprice(
-                          newValue.G_CODE,
-                          selectedCust_CD?.CUST_NAME_KD
-                        );
-                        setSelectedCode(newValue);
-                      }}
-                      value={selectedCode}
-                    />
-                  </label>
-                  <label>
-                    <b>PO Date:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      className='inputdata'
-                      type='date'
-                      value={newpodate.slice(0, 10)}
-                      onChange={(e) => setNewPoDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>RD Date:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      className='inputdata'
-                      type='date'
-                      value={newrddate.slice(0, 10)}
-                      onChange={(e) => setNewRdDate(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>PO NO:</b>{" "}
-                    <TextField
-                      value={newpono}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoNo(e.target.value)
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
-                    />
-                  </label>
-                  <label>
-                    <b>PO QTY:</b>{" "}
-                    <TextField
-                      value={newpoqty}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        let tempQTY: number = Number(e.target.value);
-                        let tempprice: number = newcodeprice.filter(
-                          (e: PRICEWITHMOQ, index: number) => {
-                            return tempQTY >= e.MOQ;
-                          }
-                        )[0]?.PROD_PRICE ?? 0;
-                        if (tempprice !== undefined) setNewPoPrice(tempprice.toString());
-                        let tempBEP: number = newcodeprice.filter(
-                          (e: PRICEWITHMOQ, index: number) => {
-                            return tempQTY >= e.MOQ;
-                          }
-                        )[0]?.BEP ?? 0;
-                        if (tempBEP !== undefined) setNewPoBEP(tempBEP.toString());
-                        setNewPoQty(e.target.value);
-                      }}
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='PO QTY'
-                      variant='outlined'
-                    />
-                  </label>
-                  <label>
-                    <b>Price:</b>{" "}
-                    <TextField
-                      style={{ width: '150px' }}
-                      value={newpoprice}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoPrice(e.target.value)
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Price'
-                      variant='outlined'
-                    />
-                    <TextField
-                      style={{ width: '150px' }}
-                      value={newpoBEP}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoBEP(e.target.value)
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='BEP'
-                      variant='outlined'
-                    />
-                  </label>
-                  <label>
-                    <b>Remark:</b>{" "}
-                    <TextField
-                      value={newporemark}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoRemark(e.target.value)
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className='dangkybutton'>
-                <button
-                  className='thembutton'
-                  onClick={() => {
-                    handle_add_1PO();
-                  }}
-                >
-                  Thêm PO
-                </button>
-                <button
-                  className='suabutton'
-                  onClick={() => {
-                    updatePO();
-                  }}
-                >
-                  Sửa PO
-                </button>
-                <button
-                  className='xoabutton'
-                  onClick={() => {
-                    clearPOform();
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  className='closebutton'
-                  onClick={() => {
-                    setSelection({
-                      ...selection,
-                      trapo: true,
-                      thempohangloat: false,
-                      them1po: false,
-                    });
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+      )}
+      <CustomDialog
+        isOpen={openNewPODialog}
+        onClose={handleCloseNewPODialog}
+        title="Thêm PO mới"
+        content={<> <div className='dangkyinput'>
+          <div className='dangkyinputbox'>
+            <label>
+              <b>Khách hàng:</b>{" "}
+              <Autocomplete
+                size='small'
+                disablePortal
+                options={customerList}
+                className='autocomplete'
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option.CUST_CD === value.CUST_CD
+                }
+                getOptionLabel={(option: CustomerListData | any) =>
+                  `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label='Select customer' />
+                )}
+                value={selectedCust_CD}
+                onChange={(
+                  event: any,
+                  newValue: CustomerListData | any
+                ) => {
+                  (async () => {
+                    if (company !== "CMS") {
+                      setNewPoNo(
+                        await f_autogeneratePO_NO(newValue.CUST_CD)
+                      );
+                    }
+                    //console.log(await autogeneratePO_NO(newValue.CUST_CD));
+                  })();
+                  console.log(newValue);
+                  loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);
+                  setSelectedCust_CD(newValue);
+                }}
+              />
+            </label>
+            <label>
+              <b>Code hàng:</b>{" "}
+              <Autocomplete
+                size='small'
+                disablePortal
+                options={codeList}
+                className='autocomplete'
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option.G_CODE === value.G_CODE
+                }
+                getOptionLabel={(option: CodeListData | any) =>
+                  `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label='Select code' />
+                )}
+                onChange={(event: any, newValue: CodeListData | any) => {
+                  console.log(newValue);
+                  loadprice(
+                    newValue.G_CODE,
+                    selectedCust_CD?.CUST_NAME_KD
+                  );
+                  setSelectedCode(newValue);
+                }}
+                value={selectedCode}
+              />
+            </label>
+            <label>
+              <b>PO Date:</b>
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                className='inputdata'
+                type='date'
+                value={newpodate.slice(0, 10)}
+                onChange={(e) => setNewPoDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>RD Date:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                className='inputdata'
+                type='date'
+                value={newrddate.slice(0, 10)}
+                onChange={(e) => setNewRdDate(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className='dangkyinputbox'>
+            <label>
+              <b>PO NO:</b>{" "}
+              <TextField
+                value={newpono}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPoNo(e.target.value)
+                }
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='Số PO'
+                variant='outlined'
+              />
+            </label>
+            <label>
+              <b>PO QTY:</b>{" "}
+              <TextField
+                value={newpoqty}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  let tempQTY: number = Number(e.target.value);
+                  let tempprice: number = newcodeprice.filter(
+                    (e: PRICEWITHMOQ, index: number) => {
+                      return tempQTY >= e.MOQ;
+                    }
+                  )[0]?.PROD_PRICE ?? 0;
+                  if (tempprice !== undefined) setNewPoPrice(tempprice.toString());
+                  let tempBEP: number = newcodeprice.filter(
+                    (e: PRICEWITHMOQ, index: number) => {
+                      return tempQTY >= e.MOQ;
+                    }
+                  )[0]?.BEP ?? 0;
+                  if (tempBEP !== undefined) setNewPoBEP(tempBEP.toString());
+                  setNewPoQty(e.target.value);
+                }}
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='PO QTY'
+                variant='outlined'
+              />
+            </label>
+            <label>
+              <b>Price:</b>{" "}
+              <TextField
+                style={{ width: '150px' }}
+                value={newpoprice}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPoPrice(e.target.value)
+                }
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='Price'
+                variant='outlined'
+              />
+              <TextField
+                style={{ width: '150px' }}
+                value={newpoBEP}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPoBEP(e.target.value)
+                }
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='BEP'
+                variant='outlined'
+              />
+            </label>
+            <label>
+              <b>Remark:</b>{" "}
+              <TextField
+                value={newporemark}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPoRemark(e.target.value)
+                }
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='Remark'
+                variant='outlined'
+              />
+            </label>
           </div>
         </div>
-      )}
-      {selection.them1invoice && (
-        <div className='them1invoice'>
-          <div className='formnho'>
-            <div className='dangkyform'>
-              <h3>Thêm Invoice mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>Khách hàng:</b>{" "}
-                    <Autocomplete
-                      size='small'
-                      disablePortal
-                      options={customerList}
-                      className='autocomplete'
-                      getOptionLabel={(option: CustomerListData) =>
-                        `${option.CUST_CD}: ${option.CUST_NAME_KD}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
-                      )}
-                      value={selectedCust_CD}
-                      onChange={(
-                        event: any,
-                        newValue: CustomerListData | null
-                      ) => {
-                        console.log(newValue);
-                        setSelectedCust_CD(newValue);
-                      }}
-                    />
-                  </label>
-                  <label>
-                    <b>Code hàng:</b>{" "}
-                    <Autocomplete
-                      size='small'
-                      disablePortal
-                      options={codeList}
-                      className='autocomplete'
-                      filterOptions={filterOptions1}
-                      getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
-                      )}
-                      onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);
-                        setNewPoPrice(
-                          newValue === null
-                            ? ""
-                            : newValue.PROD_LAST_PRICE.toString()
-                        );
-                        setSelectedCode(newValue);
-                      }}
-                      value={selectedCode}
-                    />
-                  </label>
-                  <label>
-                    <b>PO Date:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      className='inputdata'
-                      type='date'
-                      value={newpodate.slice(0, 10)}
-                      onChange={(e) => setNewPoDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>RD Date:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      className='inputdata'
-                      type='date'
-                      value={newrddate.slice(0, 10)}
-                      onChange={(e) => setNewRdDate(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>PO NO:</b>{" "}
-                    <TextField
-                      value={newpono}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoNo(e.target.value)
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
-                    />
-                  </label>
-                  <label>
-                    <b>Invoice QTY:</b>{" "}
-                    <TextField
-                      value={newinvoiceQTY}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewInvoiceQty(Number(e.target.value))
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='INVOICE QTY'
-                      variant='outlined'
-                    />
-                  </label>
-                  <label>
-                    <b>Invoice Date:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      className='inputdata'
-                      type='date'
-                      value={newinvoicedate.slice(0, 10)}
-                      onChange={(e) => setNewInvoiceDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Remark:</b>{" "}
-                    <TextField
-                      value={newinvoiceRemark}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewInvoiceRemark(e.target.value)
-                      }
-                      size='small'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className='dangkybutton'>
-                <button
-                  className='thembutton'
-                  onClick={() => {
-                    handle_add_1Invoice();
-                  }}
-                >
-                  Thêm Invoice
-                </button>
-                <button
-                  className='suabutton'
-                  onClick={() => {
-                    clearInvoiceform();
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  className='closebutton'
-                  onClick={() => {
-                    setSelection({
-                      ...selection,
-                      trapo: true,
-                      thempohangloat: false,
-                      them1po: false,
-                      them1invoice: false,
-                    });
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+        </>}
+        actions={<div className='dangkybutton'>
+          <button
+            className='thembutton'
+            onClick={() => {
+              handle_add_1PO();
+            }}
+          >
+            Thêm PO
+          </button>
+          <button
+            className='suabutton'
+            onClick={() => {
+              updatePO();
+            }}
+          >
+            Sửa PO
+          </button>
+          <button
+            className='xoabutton'
+            onClick={() => {
+              clearPOform();
+            }}
+          >
+            Clear
+          </button>
+          <button
+            className='closebutton'
+            onClick={() => {
+              handleCloseNewPODialog();              
+            }}
+          >
+            Close
+          </button>
+        </div>}
+      />
+      <CustomDialog
+        isOpen={openNewInvoiceDialog}
+        onClose={handleCloseNewInvoiceDialog}
+        title="Thêm Invoice mới"
+        content={ <div className='dangkyinput'>
+          <div className='dangkyinputbox'>
+            <label>
+              <b>Khách hàng:</b>{" "}
+              <Autocomplete
+                size='small'
+                disablePortal
+                options={customerList}
+                className='autocomplete'
+                getOptionLabel={(option: CustomerListData) =>
+                  `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label='Select customer' />
+                )}
+                value={selectedCust_CD}
+                onChange={(
+                  event: any,
+                  newValue: CustomerListData | null
+                ) => {
+                  console.log(newValue);
+                  setSelectedCust_CD(newValue);
+                }}
+              />
+            </label>
+            <label>
+              <b>Code hàng:</b>{" "}
+              <Autocomplete
+                size='small'
+                disablePortal
+                options={codeList}
+                className='autocomplete'
+                filterOptions={filterOptions1}
+                getOptionLabel={(option: CodeListData | any) =>
+                  `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label='Select code' />
+                )}
+                onChange={(event: any, newValue: CodeListData | any) => {
+                  console.log(newValue);
+                  setNewPoPrice(
+                    newValue === null
+                      ? ""
+                      : newValue.PROD_LAST_PRICE.toString()
+                  );
+                  setSelectedCode(newValue);
+                }}
+                value={selectedCode}
+              />
+            </label>
+            <label>
+              <b>PO Date:</b>
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                className='inputdata'
+                type='date'
+                value={newpodate.slice(0, 10)}
+                onChange={(e) => setNewPoDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>RD Date:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                className='inputdata'
+                type='date'
+                value={newrddate.slice(0, 10)}
+                onChange={(e) => setNewRdDate(e.target.value)}
+              ></input>
+            </label>
           </div>
-        </div>
-      )}
+          <div className='dangkyinputbox'>
+            <label>
+              <b>PO NO:</b>{" "}
+              <TextField
+                value={newpono}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPoNo(e.target.value)
+                }
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='Số PO'
+                variant='outlined'
+              />
+            </label>
+            <label>
+              <b>Invoice QTY:</b>{" "}
+              <TextField
+                value={newinvoiceQTY}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewInvoiceQty(Number(e.target.value))
+                }
+                size='small'
+                color='success'
+                className='autocomplete'
+                id='outlined-basic'
+                label='INVOICE QTY'
+                variant='outlined'
+              />
+            </label>
+            <label>
+              <b>Invoice Date:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                className='inputdata'
+                type='date'
+                value={newinvoicedate.slice(0, 10)}
+                onChange={(e) => setNewInvoiceDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Remark:</b>{" "}
+              <TextField
+                value={newinvoiceRemark}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewInvoiceRemark(e.target.value)
+                }
+                size='small'
+                className='autocomplete'
+                id='outlined-basic'
+                label='Remark'
+                variant='outlined'
+              />
+            </label>
+          </div>
+        </div>}
+        actions={<div className='dangkybutton'>
+          <button
+            className='thembutton'
+            onClick={() => {
+              handle_add_1Invoice();
+            }}
+          >
+            Thêm Invoice
+          </button>
+          <button
+            className='suabutton'
+            onClick={() => {
+              clearInvoiceform();
+            }}
+          >
+            Clear
+          </button>
+          <button
+            className='closebutton'
+            onClick={() => {
+              handleCloseNewInvoiceDialog();             
+            }}
+          >
+            Close
+          </button>
+        </div>}
+        />      
+
+     
       {showhidePivotTable && (
         <div className='pivottable1'>
           <IconButton

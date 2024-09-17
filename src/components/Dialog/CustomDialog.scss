@@ -1,0 +1,187 @@
+.custom-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.custom-dialog {
+  background-color: white;
+  border-radius: 8px;  
+  box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  background-image: linear-gradient(to bottom, #5deea5, #ffffff);
+  width: 90%;
+  max-width: fit-content;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &-title {
+    padding: 16px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+  }
+
+  &-content {
+    padding: 16px;
+    overflow-y: auto;
+    flex-grow: 1;
+    text-align: center;
+    width: 100%;
+    .dangkyinput {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-around;
+      justify-self: center;
+      width: 100%;
+
+      .maindeptinputlabel {
+        display: flex;
+      }
+      .dangkyinputbox {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+
+        .autocomplete {
+          width: 320px;
+          margin-left: 20px;
+        }
+        select {
+          width: 200px;
+          height: 24px;
+        }
+        .inputdata {
+          padding-left: 5px;
+          margin-left: 2px;
+          width: 310px;
+          height: 35px;
+          background-color: transparent;
+          outline: none;
+          border: solid 0.5px;
+          border-color: rgba(0, 0, 0, 0.3);
+          border-radius: 5px;
+          font-size: 16px;
+          margin-left: 20px;
+          color: black;
+        }
+        label {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-end;
+        }
+      }
+    }  
+  }
+
+  &-actions {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .dangkybutton {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      .thembutton {
+        background-color: #21a73e;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        outline: none;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        &:hover {
+          background-color: #22fd7e;
+        }
+      }
+      .suabutton {
+        background-color: #ddff19;
+        /* Green */
+        border: none;
+        color: rgb(7, 32, 255);
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        outline: none;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        &:hover {
+          background-color: #22fd7e;
+        }
+      }
+      .closebutton {
+        background-color: #be19ff;
+
+        /* Green */
+        border: none;
+        color: rgb(255, 255, 255);
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        outline: none;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        &:hover {
+          background-color: #22fd7e;
+        }
+      }
+      .xoabutton {
+        background-color: #3633f7;
+        /* Green */
+        border: none;
+        color: rgb(194, 255, 28);
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        outline: none;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        &:hover {
+          background-color: #dde020;
+          color: #35a9f7;
+        }
+      }
+    }
+    
+
+    button {
+      margin: 0 4px;
+    }
+  }
+}

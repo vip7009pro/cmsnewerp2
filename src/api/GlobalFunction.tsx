@@ -1238,17 +1238,17 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
       console.log(error);
     });
 }
-export const f_updateLossKT_ZTB_DM_HISTORY = async ()=> {
+export const f_updateLossKT_ZTB_DM_HISTORY = async () => {
   await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
-    .then((response)=> {
-      if(response.data.tk_status !== "NG") {
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
       } else {
-        Swal.fire("Thông báo", "Lỗi update Loss KT ZTB DM History: " + response.data.message, "error"); 
+        Swal.fire("Thông báo", "Lỗi update Loss KT ZTB DM History: " + response.data.message, "error");
       }
     })
-    .catch((error)=> {
+    .catch((error) => {
       console.log(error);
-    })  
+    })
 }
 export const f_updatePlanQLSX = async (planData: any) => {
   let kq: string = "";
@@ -1972,13 +1972,13 @@ export const f_checkPlanIdO300 = async (PLAN_ID: string) => {
         checkPlanIdO300 = true;
         NEXT_OUT_DATE = response.data.data[0].OUT_DATE;
       } else {
-        checkPlanIdO300 = false;  
+        checkPlanIdO300 = false;
       }
     })
     .catch((error) => {
       console.log(error);
     });
-  return {checkPlanIdO300, NEXT_OUT_DATE};
+  return { checkPlanIdO300, NEXT_OUT_DATE };
 }
 export const f_checkPlanIdO301 = async (PLAN_ID: string) => {
   let checkPlanIdO301: boolean = true;
@@ -1987,7 +1987,7 @@ export const f_checkPlanIdO301 = async (PLAN_ID: string) => {
     .then((response) => {
       console.log(response.data);
       if (response.data.tk_status !== "NG") {
-        Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);  
+        Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);
       } else {
         checkPlanIdO301 = false;
       }
@@ -1995,58 +1995,168 @@ export const f_checkPlanIdO301 = async (PLAN_ID: string) => {
     .catch((error) => {
       console.log(error);
     });
-  return {checkPlanIdO301, Last_O301_OUT_SEQ};
-} 
+  return { checkPlanIdO301, Last_O301_OUT_SEQ };
+}
 export const f_getO300_LAST_OUT_NO = async () => {
   let LAST_OUT_NO: string = "001";
   await generalQuery("getO300_LAST_OUT_NO", {})
     .then((response) => {
       console.log(response.data);
-      LAST_OUT_NO = zeroPad(parseInt(response.data.data[0].OUT_NO) + 1,  3);
+      LAST_OUT_NO = zeroPad(parseInt(response.data.data[0].OUT_NO) + 1, 3);
     })
     .catch((error) => {
       console.log(error);
     });
   return LAST_OUT_NO;
 }
+export const f_getP400 = async (PROD_REQUEST_NO: string, PROD_REQUEST_DATE: string) => {
+  let P400: Array<any> = [];
+  await generalQuery("getP400", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+    PROD_REQUEST_DATE: PROD_REQUEST_DATE,
+  })
+    .then((response) => {
+      console.log(response.data);
+      P400 = response.data.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return P400;
+}
+export const f_insertO300 = async (DATA: any) => {
+  await generalQuery("insertO300", {
+    OUT_DATE: DATA.OUT_DATE,
+    OUT_NO: DATA.OUT_NO,
+    CODE_03: DATA.CODE_03,
+    CODE_52: DATA.CODE_52,
+    CODE_50: DATA.CODE_50,
+    USE_YN: DATA.USE_YN,
+    PROD_REQUEST_DATE: DATA.PROD_REQUEST_DATE,
+    PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
+    FACTORY: DATA.FACTORY,
+    PLAN_ID: DATA.PLAN_ID,
+  })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+
+}
+
+export const f_getO300_OUT_NO = async (PLAN_ID: string) => {
+  let O300_OUT_NO: string = "001";
+  await generalQuery("getO300_ROW", { PLAN_ID: PLAN_ID })
+    .then((response) => {
+      console.log(response.data);
+      O300_OUT_NO = response.data.data[0].OUT_NO;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return O300_OUT_NO;
+}
+
+
+export const f_deleteM_CODE_O301 = async (PLAN_ID: string, M_CODE_LIST: string) => {
+  await generalQuery("deleteM_CODE_O301", {
+    PLAN_ID: PLAN_ID,
+    M_CODE_LIST: M_CODE_LIST
+  })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const f_checkM_CODE_PLAN_ID_Exist_in_O301 = async (PLAN_ID: string, M_CODE: string) => {
+  let TonTaiM_CODE_O301: boolean = false;
+  await generalQuery("checkM_CODE_PLAN_ID_Exist_in_O301", {
+    PLAN_ID: PLAN_ID,
+    M_CODE: M_CODE,
+  })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        TonTaiM_CODE_O301 = true;
+      } else {
+        TonTaiM_CODE_O301 = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return TonTaiM_CODE_O301;
+}
+
+export const f_insertO301 = async (DATA: any) => {
+  await generalQuery("insertO301", {
+    OUT_DATE: DATA.OUT_DATE,
+    OUT_NO: DATA.OUT_NO,
+    CODE_03: DATA.CODE_03,
+    OUT_SEQ: DATA.OUT_SEQ,
+    USE_YN: "Y",
+    M_CODE: DATA.M_CODE,
+    OUT_PRE_QTY: DATA.OUT_PRE_QTY,
+    PLAN_ID: DATA.PLAN_ID,
+  })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const f_updateO301 = async (DATA: any) => {
+  await generalQuery("updateO301", {
+    M_CODE: DATA.M_CODE,
+    OUT_PRE_QTY: DATA.OUT_PRE_QTY,
+    PLAN_ID: DATA.PLAN_ID,
+  })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
   let err_code: string = "0";
-  let NEXT_OUT_NO: string = "001"; 
-  if(chithidatatable.length <= 0){
+  let NEXT_OUT_NO: string = "001";
+  if (chithidatatable.length <= 0) {
     err_code = "Chọn ít nhất một liệu để đăng ký";
-    return err_code;  
-  }
-  let {checkPlanIdO300, NEXT_OUT_DATE} = await f_checkPlanIdO300(selectedPlan.PLAN_ID);
-  if(checkPlanIdO300){
-    err_code = "Chỉ thị đã được đăng ký xuất liệu";
     return err_code;
   }
-  let {checkPlanIdO301, Last_O301_OUT_SEQ} = await f_checkPlanIdO301(selectedPlan.PLAN_ID);
-  //kiem tra xem  dang ky xuat lieu hay chua
-  if(checkPlanIdO301){
-    err_code = "Chỉ thị đã được đăng ký xuất liệu";
-    return err_code;
-  }
+  let { checkPlanIdO300, NEXT_OUT_DATE } = await f_checkPlanIdO300(selectedPlan.PLAN_ID); 
   if (!checkPlanIdO300) {
-    NEXT_OUT_NO = await f_getO300_LAST_OUT_NO(); 
+    NEXT_OUT_NO = await f_getO300_LAST_OUT_NO();
     // get code_50 phan loai giao hang GC, SK, KD
-    let CODE_50: string = "";
-    await generalQuery("getP400", {
-      PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
-      PROD_REQUEST_DATE: selectedPlan.PROD_REQUEST_DATE,
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          CODE_50 = response.data.data[0].CODE_50;
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log(CODE_50);
-    await generalQuery("insertO300", {
+    let CODE_50: string = '';
+    const p400Data = await f_getP400(selectedPlan.PROD_REQUEST_NO, selectedPlan.PROD_REQUEST_DATE);
+    if (p400Data.length > 0) {
+      CODE_50 = p400Data[0].CODE_50;
+    }
+    if (CODE_50 === '') {
+      err_code = "Không tìm thấy mã phân loại giao hàng";
+      return err_code;
+    }
+    await f_insertO300({
       OUT_DATE: NEXT_OUT_DATE,
       OUT_NO: NEXT_OUT_NO,
       CODE_03: "01",
@@ -2057,125 +2167,52 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
       PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
       FACTORY: selectedFactory,
       PLAN_ID: selectedPlan.PLAN_ID,
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    });
   } else {
-    await generalQuery("getO300_ROW", { PLAN_ID: selectedPlan.PLAN_ID })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          NEXT_OUT_NO = zeroPad(parseInt(response.data.data[0].OUT_NO), 3);
-          console.log("nextoutno_o300", NEXT_OUT_NO);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    NEXT_OUT_NO = await f_getO300_OUT_NO(selectedPlan.PLAN_ID);
   }
   let checkchithimettotal: number = 0;
   for (let i = 0; i < chithidatatable.length; i++) {
     checkchithimettotal += chithidatatable[i].M_MET_QTY;
   }
-  if (checkchithimettotal > 0) {
+  if (checkchithimettotal <= 0) {
+    err_code = "Tổng số liệu phải lớn hơn 0";
+    return err_code;
+  }
     //delete all M_CODE in O301 which not exist in chithidatatable
-    await generalQuery("deleteM_CODE_O301", {
-      PLAN_ID: selectedPlan.PLAN_ID,
-      M_CODE_LIST: chithidatatable.map(x => "'" + x.M_CODE + "'").join(','),
-    })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    for (let i = 0; i < chithidatatable.length; i++) {
-      console.log('chithidatatable[i]',chithidatatable[i]);
-      if (chithidatatable[i].M_MET_QTY > 0) {
-        console.log("M_MET", chithidatatable[i].M_MET_QTY);
-        let TonTaiM_CODE_O301: boolean = false;
-        await generalQuery("checkM_CODE_PLAN_ID_Exist_in_O301", {
-          PLAN_ID: selectedPlan.PLAN_ID,
+  let M_CODE_LIST: string = chithidatatable.map(x => "'" + x.M_CODE + "'").join(',');
+  await f_deleteM_CODE_O301(selectedPlan.PLAN_ID, M_CODE_LIST);
+  for (let i = 0; i < chithidatatable.length; i++) {
+    //console.log('chithidatatable[i]',chithidatatable[i]);
+    if (chithidatatable[i].M_MET_QTY > 0) {
+      //console.log("M_MET", chithidatatable[i].M_MET_QTY);
+      let TonTaiM_CODE_O301: boolean = await f_checkM_CODE_PLAN_ID_Exist_in_O301(selectedPlan.PLAN_ID, chithidatatable[i].M_CODE);
+      if (chithidatatable[i].LIEUQL_SX === 1) {
+        await f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
+      }
+      if (!TonTaiM_CODE_O301) {
+        //console.log("Next Out NO", NEXT_OUT_NO);
+        let { checkPlanIdO301, Last_O301_OUT_SEQ } = await f_checkPlanIdO301(selectedPlan.PLAN_ID);
+        //console.log("outseq", Last_O301_OUT_SEQ);
+        await f_insertO301({
+          OUT_DATE: NEXT_OUT_DATE,
+          OUT_NO: NEXT_OUT_NO,
+          CODE_03: "01",
+          OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
+          USE_YN: "Y",
           M_CODE: chithidatatable[i].M_CODE,
-        })
-          .then((response) => {
-            console.log(response.data);
-            if (response.data.tk_status !== "NG") {
-              TonTaiM_CODE_O301 = true;
-            } else {
-              TonTaiM_CODE_O301 = false;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        if (chithidatatable[i].LIEUQL_SX === 1) {
-          await f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
-        }
-        if (!TonTaiM_CODE_O301) {
-          console.log("Next Out NO", NEXT_OUT_NO);
-          await generalQuery("checkPLANID_O301", { PLAN_ID: selectedPlan.PLAN_ID })
-            .then((response) => {
-              //console.log(response.data);
-              if (response.data.tk_status !== "NG") {
-                Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          console.log("outseq", Last_O301_OUT_SEQ);
-          await generalQuery("insertO301", {
-            OUT_DATE: NEXT_OUT_DATE,
-            OUT_NO: NEXT_OUT_NO,
-            CODE_03: "01",
-            OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
-            USE_YN: "Y",
-            M_CODE: chithidatatable[i].M_CODE,
-            OUT_PRE_QTY:
-              chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
-            PLAN_ID: selectedPlan.PLAN_ID,
-          })
-            .then((response) => {
-              //console.log(response.data);
-              if (response.data.tk_status !== "NG") {
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
-          await generalQuery("updateO301", {
-            M_CODE: chithidatatable[i].M_CODE,
-            OUT_PRE_QTY:
-              chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
-            PLAN_ID: selectedPlan.PLAN_ID,
-          })
-            .then((response) => {
-              console.log(response.data);
-              if (response.data.tk_status !== "NG") {
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
+          OUT_PRE_QTY: chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
+          PLAN_ID: selectedPlan.PLAN_ID,
+        });
+      } else {
+        await f_updateO301({
+          M_CODE: chithidatatable[i].M_CODE,
+          OUT_PRE_QTY: chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
+          PLAN_ID: selectedPlan.PLAN_ID,
+        });
       }
     }
-  } else {
-    err_code = "Cần đăng ký ít nhất 1 met lòng";
-  }
+  }  
   return err_code;
 }
 export const f_deleteQLSXPlan = async (planToDelete: QLSXPLANDATA[]) => {
@@ -4010,7 +4047,7 @@ export const f_loadDataSXChiThi = async (DATA: any) => {
               KETQUASX_M: element.PD !== null ? (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) : null,
               NG_MET: element.PD !== null ? element.USED_QTY - (element.KETQUASX * element.PD * 1.0 / element.CAVITY / 1000) - element.SETTING_MET : null,
               NG_EA: element.ESTIMATED_QTY - element.SETTING_EA - element.KETQUASX,
-              PLAN_LOSS: element.PLAN_ORG_MET !== 0 ? (element.PLAN_TARGET_MET - element.PLAN_ORG_MET) / element.PLAN_ORG_MET : 0 ,
+              PLAN_LOSS: element.PLAN_ORG_MET !== 0 ? (element.PLAN_TARGET_MET - element.PLAN_ORG_MET) / element.PLAN_ORG_MET : 0,
               id: index,
             };
           },
@@ -4704,22 +4741,22 @@ export const f_loadDTC_TestPointList = async (testCode: number) => {
   return kq;
 }
 //create add test item
-export const f_addTestItem = async (testCode: number, testName: string) => {  
+export const f_addTestItem = async (testCode: number, testName: string) => {
   await generalQuery("addTestItem", {
-    TEST_CODE: getCompany() !=='CMS'? testCode:-1,
+    TEST_CODE: getCompany() !== 'CMS' ? testCode : -1,
     TEST_NAME: testName
   })
-  .then((response) => {
-    if (response.data.tk_status !== "NG") {
-      Swal.fire("Thông báo", "Thêm thành công", "success");
-    } else {
-      Swal.fire("Thông báo", "Thêm thất bại", "error");
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-} 
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire("Thông báo", "Thêm thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Thêm thất bại", "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 //create add test point
 export const f_addTestPoint = async (testCode: number, pointCode: number, pointName: string) => {
   await generalQuery("addTestPoint", {
@@ -4727,19 +4764,19 @@ export const f_addTestPoint = async (testCode: number, pointCode: number, pointN
     POINT_CODE: pointCode,
     POINT_NAME: pointName
   })
-  .then((response) => {
-    if (response.data.tk_status !== "NG") {
-      Swal.fire("Thông báo", "Thêm thành công", "success");
-    } else {
-      Swal.fire("Thông báo", "Thêm thất bại", "error");
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-}  
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire("Thông báo", "Thêm thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Thêm thất bại", "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
-export const isValidInput = (input:string) => {
+export const isValidInput = (input: string) => {
   const regex = /^[a-zA-Z0-9_]*$/; // Example: allow only alphanumeric and underscores
   return regex.test(input);
 };
@@ -4750,16 +4787,16 @@ export const f_updateNCRIDForHolding = async (HOLD_ID: number, ncrId: number) =>
     HOLD_ID: HOLD_ID,
     NCR_ID: ncrId
   })
-  .then((response) => {
-    if (response.data.tk_status !== "NG") {
-      //Swal.fire("Thông báo", "Cập nhật thành công", "success"); 
-    } else {
-      Swal.fire("Thông báo", "Cập nhật thất bại", "error");
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //Swal.fire("Thông báo", "Cập nhật thành công", "success"); 
+      } else {
+        Swal.fire("Thông báo", "Cập nhật thất bại", "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 //update ncr id for failing material
@@ -4768,21 +4805,21 @@ export const f_updateNCRIDForFailing = async (FAIL_ID: number, ncrId: number) =>
     FAIL_ID: FAIL_ID,
     NCR_ID: ncrId
   })
-  .then((response) => {
-    if (response.data.tk_status !== "NG") {
-      //Swal.fire("Thông báo", "Cập nhật thành công", "success");  
-    } else {
-      Swal.fire("Thông báo", "Cập nhật thất bại", "error");
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //Swal.fire("Thông báo", "Cập nhật thành công", "success");  
+      } else {
+        Swal.fire("Thông báo", "Cập nhật thất bại", "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 export const checkHSD2 = (hsdVL: number, hsdSP: number, pd_hsd: string): boolean => {
   return (hsdVL === hsdSP && hsdVL !== 0) || (pd_hsd === 'Y' && hsdVL > 0 && hsdSP > 0);
-} 
+}
 
 export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
   return elementList.map((ele: COMPONENT_DATA, index: number) => {
@@ -4802,7 +4839,7 @@ export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
   });
 };
 
-export const f_handleGETBOMAMAZON = async(G_CODE: string) => {
+export const f_handleGETBOMAMAZON = async (G_CODE: string) => {
   let kq: COMPONENT_DATA[] = [];
   await generalQuery("getAMAZON_DESIGN", {
     G_CODE: G_CODE,
@@ -4827,6 +4864,6 @@ export const f_handleGETBOMAMAZON = async(G_CODE: string) => {
     })
     .catch((error) => {
       //console.log(error);
-      });
+    });
   return kq;
 };

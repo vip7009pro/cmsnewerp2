@@ -24,7 +24,15 @@ import {
   XUATKHOPODATA,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import CustomDialog from "../../../components/Dialog/CustomDialog";
 const InvoiceManager = () => {
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   const showhidesearchdiv = useRef(false);
   const [sh, setSH] = useState(true);
   const [selection, setSelection] = useState<any>({
@@ -160,13 +168,13 @@ const InvoiceManager = () => {
     }
   };
   const handle_checkInvoiceHangLoat = async () => {
-    if (uploadExcelJson.length > 0) {      
+    if (uploadExcelJson.length > 0) {
       let tempjson = uploadExcelJson;
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
         let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE ?? "", uploadExcelJson[i].CUST_CD ?? "", uploadExcelJson[i].PO_NO);
         err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
-        let checkCompareIVDatevsPODate: number = po_info.length > 0 ?  f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0]?.PO_DATE.substring(0, 10)) : err_code;
+        let checkCompareIVDatevsPODate: number = po_info.length > 0 ? f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0]?.PO_DATE.substring(0, 10)) : err_code;
         err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
         err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
         let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
@@ -201,7 +209,7 @@ const InvoiceManager = () => {
       let err_code: number = 0;
       let po_info: Array<any> = await f_checkPOInfo(uploadExcelJson[i].G_CODE ?? "", uploadExcelJson[i].CUST_CD ?? "", uploadExcelJson[i].PO_NO);
       err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
-      let checkCompareIVDatevsPODate: number = po_info.length >  0 ?  f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0].PO_DATE.substring(0, 10)): err_code;
+      let checkCompareIVDatevsPODate: number = po_info.length > 0 ? f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0].PO_DATE.substring(0, 10)) : err_code;
       err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
       err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
       let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
@@ -301,7 +309,7 @@ const InvoiceManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
-      if (result.isConfirmed) {       
+      if (result.isConfirmed) {
         Swal.fire({
           title: "Up Invoice",
           text: "Đang up invoice hàng loạt",
@@ -325,7 +333,7 @@ const InvoiceManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         Swal.fire({
           title: "Check Invoice",
           text: "Đang up invoice hàng loạt",
@@ -349,7 +357,7 @@ const InvoiceManager = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         Swal.fire({
           title: "Check Invoice",
           text: "Đang check Invoice hàng loạt",
@@ -406,7 +414,7 @@ const InvoiceManager = () => {
     let err_code: number = 0;
     let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
     err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE) ? 5 : err_code : 1;
-    let checkCompareIVDatevsPODate: number = po_info.length > 0 ?  f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10)): err_code;
+    let checkCompareIVDatevsPODate: number = po_info.length > 0 ? f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10)) : err_code;
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
     err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
@@ -461,13 +469,7 @@ const InvoiceManager = () => {
   };
   const handle_fillsuaformInvoice = () => {
     if (invoicedatatablefilter.current.length === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: true,
-      });
+      handleOpenDialog();
       const selectedCodeFilter: CodeListData = {
         G_CODE: clickedRow.current?.G_CODE ?? "",
         G_NAME: clickedRow.current?.G_NAME ?? "",
@@ -583,7 +585,7 @@ const InvoiceManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const updateInvoiceNo = async (invoice_no: string) => {    
+  const updateInvoiceNo = async (invoice_no: string) => {
     if (invoicedatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
       for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
@@ -1059,6 +1061,7 @@ const InvoiceManager = () => {
   });
   const invoiceDataAGTable = useMemo(() =>
     <AGTable
+      suppressRowClickSelection={false}
       showFilter={true}
       toolbar={
         <div>
@@ -1095,13 +1098,7 @@ const InvoiceManager = () => {
                 clearInvoiceform();
               }); */
               checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-                setSelection({
-                  ...selection,
-                  trapo: true,
-                  thempohangloat: false,
-                  them1po: false,
-                  them1invoice: true,
-                });
+                handleOpenDialog();
                 clearInvoiceform();
               });
             }}
@@ -1562,166 +1559,156 @@ const InvoiceManager = () => {
           </div>
         </div>
       )}
-      {selection.them1invoice && (
-        <div className="them1invoice">
-          <div className="formnho">
-            <div className="dangkyform">
-              <h3>Thêm Invoice mới</h3>
-              <div className="dangkyinput">
-                <div className="dangkyinputbox">
-                  <label>
-                    <b>Khách hàng:</b>{" "}
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      options={customerList}
-                      className="autocomplete"
-                      getOptionLabel={(option: CustomerListData) =>
-                        `${option.CUST_CD}: ${option.CUST_NAME_KD}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label="Select customer" />
-                      )}
-                      value={selectedCust_CD}
-                      onChange={(
-                        event: any,
-                        newValue: CustomerListData | null,
-                      ) => {
-                        console.log(newValue);
-                        setSelectedCust_CD(newValue);
-                      }}
-                    />
-                  </label>
-                  <label>
-                    <b>Code hàng:</b>{" "}
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      options={codeList}
-                      className="autocomplete"
-                      filterOptions={filterOptions1}
-                      getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label="Select code" />
-                      )}
-                      onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);
-                        setNewPoPrice(
-                          newValue === null
-                            ? ""
-                            : newValue.PROD_LAST_PRICE.toString(),
-                        );
-                        setSelectedCode(newValue);
-                      }}
-                      value={selectedCode}
-                    />
-                  </label>
-                  <label>
-                    <b>PO NO:</b>{" "}
-                    <TextField
-                      value={newpono}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoNo(e.target.value)
-                      }
-                      size="small"
-                      color="success"
-                      className="autocomplete"
-                      id="outlined-basic"
-                      label="Số PO"
-                      variant="outlined"
-                    />
-                  </label>
-                </div>
-                <div className="dangkyinputbox">
-                  <label>
-                    <b>Invoice QTY:</b>{" "}
-                    <TextField
-                      value={newinvoiceQTY}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewInvoiceQty(Number(e.target.value))
-                      }
-                      size="small"
-                      color="success"
-                      className="autocomplete"
-                      id="outlined-basic"
-                      label="INVOICE QTY"
-                      variant="outlined"
-                    />
-                  </label>
-                  <label>
-                    <b>Invoice Date:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      className="inputdata"
-                      type="date"
-                      value={newinvoicedate.slice(0, 10)}
-                      onChange={(e) => setNewInvoiceDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Remark:</b>{" "}
-                    <TextField
-                      value={newinvoiceRemark}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewInvoiceRemark(e.target.value)
-                      }
-                      size="small"
-                      className="autocomplete"
-                      id="outlined-basic"
-                      label="Remark"
-                      variant="outlined"
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className="dangkybutton">
-                <button
-                  className="thembutton"
-                  onClick={() => {
-                    handle_add_1Invoice();
-                  }}
-                >
-                  Thêm Invoice
-                </button>
-                <button
-                  className="closebutton"
-                  onClick={() => {
-                    updateInvoice();
-                  }}
-                >
-                  Sửa Invoice
-                </button>
-                <button
-                  className="suabutton"
-                  onClick={() => {
-                    clearInvoiceform();
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  className="closebutton"
-                  onClick={() => {
-                    setSelection({
-                      ...selection,
-                      trapo: true,
-                      thempohangloat: false,
-                      them1po: false,
-                      them1invoice: false,
-                    });
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+      <CustomDialog
+        isOpen={openDialog}
+        onClose={handleCloseDialog}
+        title="Thêm Invoice mới"
+        content={<div className="dangkyinput">
+          <div className="dangkyinputbox">
+            <label>
+              <b>Khách hàng:</b>{" "}
+              <Autocomplete
+                size="small"
+                disablePortal
+                options={customerList}
+                className="autocomplete"
+                getOptionLabel={(option: CustomerListData) =>
+                  `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Select customer" />
+                )}
+                value={selectedCust_CD}
+                onChange={(
+                  event: any,
+                  newValue: CustomerListData | null,
+                ) => {
+                  console.log(newValue);
+                  setSelectedCust_CD(newValue);
+                }}
+              />
+            </label>
+            <label>
+              <b>Code hàng:</b>{" "}
+              <Autocomplete
+                size="small"
+                disablePortal
+                options={codeList}
+                className="autocomplete"
+                filterOptions={filterOptions1}
+                getOptionLabel={(option: CodeListData | any) =>
+                  `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Select code" />
+                )}
+                onChange={(event: any, newValue: CodeListData | any) => {
+                  console.log(newValue);
+                  setNewPoPrice(
+                    newValue === null
+                      ? ""
+                      : newValue.PROD_LAST_PRICE.toString(),
+                  );
+                  setSelectedCode(newValue);
+                }}
+                value={selectedCode}
+              />
+            </label>
+            <label>
+              <b>PO NO:</b>{" "}
+              <TextField
+                value={newpono}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewPoNo(e.target.value)
+                }
+                size="small"
+                color="success"
+                className="autocomplete"
+                id="outlined-basic"
+                label="Số PO"
+                variant="outlined"
+              />
+            </label>
           </div>
-        </div>
-      )}
+          <div className="dangkyinputbox">
+            <label>
+              <b>Invoice QTY:</b>{" "}
+              <TextField
+                value={newinvoiceQTY}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewInvoiceQty(Number(e.target.value))
+                }
+                size="small"
+                color="success"
+                className="autocomplete"
+                id="outlined-basic"
+                label="INVOICE QTY"
+                variant="outlined"
+              />
+            </label>
+            <label>
+              <b>Invoice Date:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                className="inputdata"
+                type="date"
+                value={newinvoicedate.slice(0, 10)}
+                onChange={(e) => setNewInvoiceDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Remark:</b>{" "}
+              <TextField
+                value={newinvoiceRemark}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewInvoiceRemark(e.target.value)
+                }
+                size="small"
+                className="autocomplete"
+                id="outlined-basic"
+                label="Remark"
+                variant="outlined"
+              />
+            </label>
+          </div>
+        </div>}
+        actions={<div className="dangkybutton">
+          <button
+            className="thembutton"
+            onClick={() => {
+              handle_add_1Invoice();
+            }}
+          >
+            Thêm Invoice
+          </button>
+          <button
+            className="closebutton"
+            onClick={() => {
+              updateInvoice();
+            }}
+          >
+            Sửa Invoice
+          </button>
+          <button
+            className="suabutton"
+            onClick={() => {
+              clearInvoiceform();
+            }}
+          >
+            Clear
+          </button>
+          <button
+            className="closebutton"
+            onClick={() => {
+              handleCloseDialog();
+            }}
+          >
+            Close
+          </button>
+        </div>}
+      />
       {showhidePivotTable && (
         <div className="pivottable1">
           <IconButton

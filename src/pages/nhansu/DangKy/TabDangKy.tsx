@@ -11,6 +11,8 @@ const TabDangKy = () => {
     (state: RootState) => state.totalSlice.lang,
   );
 
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+
   const [canghi, setCanNghi] = useState(1);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -122,7 +124,7 @@ const TabDangKy = () => {
   return (
     <div className="tabdangky">
       <div className="formdangkys">
-        <div className="formnho">
+        <div className="formnho" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <h3>{getlang("dangkynghi",glbLang!)}</h3>
           <div className="dangkyform">
             <div className="dangkyinput">
@@ -190,7 +192,7 @@ const TabDangKy = () => {
             </div>
           </div>
         </div>
-        <div className="formnho">
+        <div className="formnho" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <h3>{getlang("dangkytangca",glbLang!)}</h3>
           <div className="dangkyform">
             <div className="dangkyinput">
@@ -225,7 +227,7 @@ const TabDangKy = () => {
             </div>
           </div>
         </div>
-        <div className="formnho">
+        <div className="formnho" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <h3>{getlang("xacnhanchamcong",glbLang!)}</h3>
           <div className="dangkyform">
             <div className="dangkyinput">

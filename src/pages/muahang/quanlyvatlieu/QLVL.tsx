@@ -11,7 +11,7 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
 import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { MdOutlinePivotTableChart } from "react-icons/md";
+import { MdAdd, MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
@@ -19,12 +19,24 @@ import {
   FSC_LIST_DATA,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
-import {CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
+import { CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
 import { checkBP } from "../../../api/GlobalFunction";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { BiLoaderCircle } from "react-icons/bi";
+import CustomDialog from "../../../components/Dialog/CustomDialog";
 const QLVL = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const [showdialog, setShowDialog] = useState(false);
+  const handleOpenDialog = () => {
+    setShowDialog(true);
+  }
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+  }
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [m_name, setM_Name] = useState("");
@@ -134,13 +146,11 @@ const QLVL = () => {
       Swal.fire("Thông báo", "Vật liệu đã tồn tại", "error");
     }
   };
-
   const updateMaterial = async () => {
     await generalQuery("updateMaterial", clickedRows)
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-
           generalQuery("updateM090FSC", clickedRows)
             .then((response) => {
               //console.log(response.data.data);
@@ -159,8 +169,6 @@ const QLVL = () => {
       .catch((error) => {
         console.log(error);
       });
-
-      
   };
   const uploadTDS = async (M_ID: number, up_file: any) => {
     if (up_file !== null && up_file !== undefined) {
@@ -229,17 +237,17 @@ const QLVL = () => {
   };
   const getFSCList = () => {
     generalQuery("getFSCList", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data)
-        setFSCList(response.data.data);
-      } else {
-        setFSCList([])
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data)
+          setFSCList(response.data.data);
+        } else {
+          setFSCList([])
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -878,7 +886,7 @@ const QLVL = () => {
   });
   const [colDefs, setColDefs] = useState<Array<any>>([
     {
-      field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, floatingFilter: true, /* cellStyle: (params:any) => {     
+      field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, floatingFilter: true, rowDrag: true, /* cellStyle: (params:any) => {     
        if (params.data.M_ID%2==0 ) {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
@@ -889,9 +897,27 @@ const QLVL = () => {
     { field: 'DESCR', headerName: 'DESCR', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'CUST_CD', headerName: 'CUST_CD', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'SSPRICE', headerName: 'OPEN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
-    { field: 'CMSPRICE', headerName: 'ORIGIN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
-    { field: 'SLITTING_PRICE', headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    {
+      field: 'SSPRICE', headerName: 'OPEN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
+        return (
+          <span>{params.data.SSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        );
+      }
+    },
+    {
+      field: 'CMSPRICE', headerName: 'ORIGIN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
+        return (
+          <span>{params.data.CMSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        );
+      }
+    },
+    {
+      field: 'SLITTING_PRICE', headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
+        return (
+          <span>{params.data.SLITTING_PRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        );
+      }
+    },
     { field: 'MASTER_WIDTH', headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
     { field: 'ROLL_LENGTH', headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
     { field: 'FSC', headerName: 'FSC', width: 90, resizable: true, floatingFilter: true, filter: true, },
@@ -934,17 +960,27 @@ const QLVL = () => {
   const material_data_ag_table = useMemo(() => {
     return (
       <AGTable
+        suppressRowClickSelection={false}
         showFilter={true}
         toolbar={
           <div>
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                setShowHidePivotTable(!showhidePivotTable);
+                load_material_table();
               }}
             >
-              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-              Pivot
+              <BiLoaderCircle color="#06cc70" size={15} />
+              Load Data
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleOpenDialog();
+              }}
+            >
+              <MdAdd color="#1c44f5" size={15} />
+              Add/Update
             </IconButton>
           </div>}
         columns={colDefs}
@@ -956,7 +992,11 @@ const QLVL = () => {
         }}
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())
-        }} />
+        }}
+        onRowDragEnd={(params: any) => {
+          console.log(params);
+        }}
+      />
     )
   }, [data, colDefs])
   useEffect(() => {
@@ -967,232 +1007,236 @@ const QLVL = () => {
   return (
     <div className="qlvl">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>Mã Vật Liệu:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mã Vật Liệu"
-                  value={clickedRows?.M_NAME}
-                  onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
-                ></input>
-              </label>
-              <label style={{ display: "flex", alignItems: "center" }}>
-                <b>Vendor:</b>{" "}
-                <Autocomplete
-                  sx={{
-                    height: 10,
-                    width: "160px",
-                    margin: "1px",
-                    fontSize: "0.7rem",
-                    marginBottom: "20px",
-                    backgroundColor: "white",
-                  }}
-                  size="small"
-                  disablePortal
-                  options={customerList}
-                  className="autocomplete"
-                  filterOptions={filterOptions1}
-                  isOptionEqualToValue={(option: any, value: any) =>
-                    option.CUST_CD === value.CUST_CD
-                  }
-                  getOptionLabel={(option: any) =>
-                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : "SSJ"}${option.CUST_CD !== null ? option.CUST_CD : "0049"
-                    }`
-                  }
-                  renderInput={(params) => (
-                    <TextField {...params} style={{ height: "10px" }} />
-                  )}
-                  defaultValue={{
-                    CUST_CD: getCompany() === "CMS" ? "0049" : "KH000",
-                    CUST_NAME: getCompany() === "CMS" ? "SSJ" : "PVN",
-                    CUST_NAME_KD: getCompany() === "CMS" ? "SSJ" : "PVN",
-                  }}
-                  value={{
-                    CUST_CD: clickedRows?.CUST_CD,
-                    CUST_NAME: customerList.filter(
-                      (e: CustomerListData, index: number) =>
-                        e.CUST_CD === clickedRows?.CUST_CD,
-                    )[0]?.CUST_NAME,
-                    CUST_NAME_KD:
-                      customerList.filter(
-                        (e: CustomerListData, index: number) =>
-                          e.CUST_CD === clickedRows?.CUST_CD,
-                      )[0]?.CUST_NAME_KD === undefined
-                        ? ""
-                        : customerList.filter(
-                          (e: CustomerListData, index: number) =>
-                            e.CUST_CD === clickedRows?.CUST_CD,
-                        )[0]?.CUST_NAME_KD,
-                  }}
-                  onChange={(event: any, newValue: any) => {
-                    console.log(newValue);
-                    seMaterialInfo(
-                      "CUST_CD",
-                      newValue === null ? "" : newValue.CUST_CD,
-                    );
-                  }}
-                />
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Mô tả:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={clickedRows?.DESCR}
-                  onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Open Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={clickedRows?.SSPRICE}
-                  onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Origin Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={clickedRows?.CMSPRICE}
-                  onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Slitting Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={clickedRows?.SLITTING_PRICE}
-                  onChange={(e) =>
-                    seMaterialInfo("SLITTING_PRICE", e.target.value)
-                  }
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Master Width:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Master width"
-                  value={clickedRows?.MASTER_WIDTH}
-                  onChange={(e) =>
-                    seMaterialInfo("MASTER_WIDTH", e.target.value)
-                  }
-                ></input>
-              </label>
-              <label>
-                <b>Roll Length:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Roll length"
-                  value={clickedRows?.ROLL_LENGTH}
-                  onChange={(e) =>
-                    seMaterialInfo("ROLL_LENGTH", e.target.value)
-                  }
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>HSD:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Master width"
-                  value={clickedRows?.EXP_DATE}
-                  onChange={(e) => seMaterialInfo("EXP_DATE", e.target.value)}
-                ></input>
-              </label>
-              <div className="forminputcolumn">
-              <label>
-                    <b>FSC:</b>
-                    <select
-                      name='fsc'
-                      value={clickedRows?.FSC}
-                      onChange={(e) => {
-                        let tempMaterialInfo: MATERIAL_TABLE_DATA = {
-                          ...clickedRows,
-                          FSC: e.target.value,
-                          FSC_CODE: e.target.value ==='N' ? '01': clickedRows.FSC_CODE
-                        };
-                        setClickedRows(tempMaterialInfo);                       
-                      }}
-                    >
-                      <option value='Y'> Y </option>
-                      <option value='N'> N </option>                      
-                    </select>
-              </label>
-              <label>
-                    <b>Loại FSC:</b>
-                    <select
-                    disabled={clickedRows?.FSC ==='N'}
-                      name='fsc'
-                      value={clickedRows?.FSC_CODE}
-                      onChange={(e) => {
-                        seMaterialInfo(
-                          "FSC_CODE", e.target.value,
-                        );                       
-
-                      }}
-                    >
-                      {
-                        fscList.map((ele: FSC_LIST_DATA,index: number )=> {
-                          return (
-                            <option key={index} value={ele.FSC_CODE}> {ele.FSC_NAME} </option>
-                          )
-                        })
-                      }
-                                         
-                    </select>
-              </label>
-
-            </div>
-              <label>
-                <b>Mở/Khóa:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='checkbox'
-                  name='pobalancecheckbox'
-                  checked={clickedRows?.USE_YN === "Y"}
-                  onChange={(e) => {
-                    seMaterialInfo(
-                      "USE_YN", e.target.checked === true ? "Y" : "N",
-                    );
-                  }}
-                ></input>
-              </label>
-            </div>
-            
-          </div>
-          <div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
-              load_material_table();
-            }}>Refresh</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-               checkBP(getUserData(), ["MUA","KETOAN"], ["ALL"], ["ALL"], () => {                
-                addMaterial();
-              })
-              
-            }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              checkBP(getUserData(), ["MUA","KETOAN"], ["ALL"], ["ALL"], () => {
-                updateMaterial();
-              })
-              
-            }}>Update</Button>
-          </div>
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+          <CustomDialog
+            isOpen={showdialog}
+            onClose={handleCloseDialog}
+            title={`Add/Update Material (M_ID: ${clickedRows?.M_ID})`}
+            content={
+              <div className="forminput" >
+                <div className="left">
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Mã Vật Liệu:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Mã Vật Liệu"
+                        value={clickedRows?.M_NAME}
+                        onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
+                      ></input>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center" }}>
+                      <b>Vendor:</b>{" "}
+                      <Autocomplete
+                        sx={{
+                          height: 10,
+                          width: "160px",
+                          margin: "1px",
+                          fontSize: "0.7rem",
+                          marginBottom: "20px",
+                          backgroundColor: "white",
+                        }}
+                        size="small"
+                        disablePortal
+                        options={customerList}
+                        className="autocomplete"
+                        filterOptions={filterOptions1}
+                        isOptionEqualToValue={(option: any, value: any) =>
+                          option.CUST_CD === value.CUST_CD
+                        }
+                        getOptionLabel={(option: any) =>
+                          `${option.CUST_CD !== null ? option.CUST_NAME_KD : "SSJ"}${option.CUST_CD !== null ? option.CUST_CD : "0049"
+                          }`
+                        }
+                        renderInput={(params) => (
+                          <TextField {...params} style={{ height: "10px" }} />
+                        )}
+                        defaultValue={{
+                          CUST_CD: getCompany() === "CMS" ? "0049" : "KH000",
+                          CUST_NAME: getCompany() === "CMS" ? "SSJ" : "PVN",
+                          CUST_NAME_KD: getCompany() === "CMS" ? "SSJ" : "PVN",
+                        }}
+                        value={{
+                          CUST_CD: clickedRows?.CUST_CD,
+                          CUST_NAME: customerList.filter(
+                            (e: CustomerListData, index: number) =>
+                              e.CUST_CD === clickedRows?.CUST_CD,
+                          )[0]?.CUST_NAME,
+                          CUST_NAME_KD:
+                            customerList.filter(
+                              (e: CustomerListData, index: number) =>
+                                e.CUST_CD === clickedRows?.CUST_CD,
+                            )[0]?.CUST_NAME_KD === undefined
+                              ? ""
+                              : customerList.filter(
+                                (e: CustomerListData, index: number) =>
+                                  e.CUST_CD === clickedRows?.CUST_CD,
+                              )[0]?.CUST_NAME_KD,
+                        }}
+                        onChange={(event: any, newValue: any) => {
+                          console.log(newValue);
+                          seMaterialInfo(
+                            "CUST_CD",
+                            newValue === null ? "" : newValue.CUST_CD,
+                          );
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Mô tả:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Mô tả"
+                        value={clickedRows?.DESCR}
+                        onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Open Price:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Mô tả"
+                        value={clickedRows?.SSPRICE}
+                        onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Origin Price:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Mô tả"
+                        value={clickedRows?.CMSPRICE}
+                        onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Slitting Price:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Mô tả"
+                        value={clickedRows?.SLITTING_PRICE}
+                        onChange={(e) =>
+                          seMaterialInfo("SLITTING_PRICE", e.target.value)
+                        }
+                      ></input>
+                    </label>
+                  </div>
+                </div>
+                <div className="right">
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Master Width:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Master width"
+                        value={clickedRows?.MASTER_WIDTH}
+                        onChange={(e) =>
+                          seMaterialInfo("MASTER_WIDTH", e.target.value)
+                        }
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Roll Length:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Roll length"
+                        value={clickedRows?.ROLL_LENGTH}
+                        onChange={(e) =>
+                          seMaterialInfo("ROLL_LENGTH", e.target.value)
+                        }
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>HSD:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Master width"
+                        value={clickedRows?.EXP_DATE}
+                        onChange={(e) => seMaterialInfo("EXP_DATE", e.target.value)}
+                      ></input>
+                    </label>
+                    <div className="forminputcolumn">
+                      <label>
+                        <b>FSC:</b>
+                        <select
+                          name='fsc'
+                          value={clickedRows?.FSC}
+                          onChange={(e) => {
+                            let tempMaterialInfo: MATERIAL_TABLE_DATA = {
+                              ...clickedRows,
+                              FSC: e.target.value,
+                              FSC_CODE: e.target.value === 'N' ? '01' : clickedRows.FSC_CODE
+                            };
+                            setClickedRows(tempMaterialInfo);
+                          }}
+                        >
+                          <option value='Y'> Y </option>
+                          <option value='N'> N </option>
+                        </select>
+                      </label>
+                      <label>
+                        <b>Loại FSC:</b>
+                        <select
+                          disabled={clickedRows?.FSC === 'N'}
+                          name='fsc'
+                          value={clickedRows?.FSC_CODE}
+                          onChange={(e) => {
+                            seMaterialInfo(
+                              "FSC_CODE", e.target.value,
+                            );
+                          }}
+                        >
+                          {
+                            fscList.map((ele: FSC_LIST_DATA, index: number) => {
+                              return (
+                                <option key={index} value={ele.FSC_CODE}> {ele.FSC_NAME} </option>
+                              )
+                            })
+                          }
+                        </select>
+                      </label>
+                    </div>
+                    <label>
+                      <b>Mở/Khóa:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='pobalancecheckbox'
+                        checked={clickedRows?.USE_YN === "Y"}
+                        onChange={(e) => {
+                          seMaterialInfo(
+                            "USE_YN", e.target.checked === true ? "Y" : "N",
+                          );
+                        }}
+                      ></input>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            }
+            actions={
+              <div className="formbutton">
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
+                  checkBP(getUserData(), ["MUA", "KETOAN"], ["ALL"], ["ALL"], () => {
+                    addMaterial();
+                  })
+                }}>Add</Button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
+                  checkBP(getUserData(), ["MUA", "KETOAN"], ["ALL"], ["ALL"], () => {
+                    updateMaterial();
+                  })
+                }}>Update</Button>
+              </div>
+            }
+          />
         </div>
         <div className="tracuuYCSXTable">
           {material_data_ag_table}

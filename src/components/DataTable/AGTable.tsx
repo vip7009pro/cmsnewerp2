@@ -15,6 +15,7 @@ interface AGInterface {
   onRowDoubleClick?: (e: any) => void,
   onSelectionChange: (e: any) => void,
   onCellEditingStopped?: (e: any) => void,
+  onRowDragEnd?: (e: any) => void,
   getRowStyle?: (e: any) => any
 }
 const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
@@ -24,6 +25,8 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
     return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
   };
   const onRowdoubleClick = (params: any) => {
+  }
+  const onRowDragEnd = (params: any) => {
   }
   const gridRefDefault = useRef<AgGridReact<any>>(null);
   const tableSelectionChange = useCallback(() => {
@@ -127,6 +130,8 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
           }}
           onRowClicked={ag_data.onRowClick}
           onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
+          onRowDragMove={ (e) => {}}
+          onRowDragEnd={ag_data.onRowDragEnd ?? onRowDragEnd}
           onCellEditingStopped={ag_data.onCellEditingStopped}
           onCellClicked={ag_data.onCellClick}                 
         />

@@ -2,12 +2,11 @@
   font-size: 13px !important;
   color: rgb(59, 45, 182) !important;
 }
-
 @media only screen and (max-width: 5000px) {
   .pomanager {
     display: flex;
     flex-direction: column;
-    width: 100%;    
+    width: 100%;
     .mininavbar {
       display: flex;
       flex-direction: row;
@@ -22,7 +21,6 @@
         border-radius: 5px;
         font-size: 0.7rem;
         padding: 5px;
-
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
         &:hover {
@@ -31,12 +29,10 @@
         }
       }
     }
-    
     .newpo {
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
-
       .batchnewpo {
         display: flex;
         flex-direction: column;
@@ -45,7 +41,6 @@
         box-sizing: border-box;
         align-items: center;
         justify-items: center;
-
         .formupload {
           display: flex;
           gap: 20px;
@@ -58,7 +53,6 @@
           margin-left: 20px;
           margin-right: 20px;
           border-radius: 5px;
-
           .checkpobutton {
             display: flex;
             align-items: center;
@@ -97,7 +91,6 @@
             }
           }
         }
-
         .insertPOTable {
           display: flex;
           box-sizing: border-box;
@@ -105,47 +98,38 @@
           width: 100%;
           margin-top: 10px;
           background-image: linear-gradient(0deg, #afd3d1, #a0d898);
-
           border-radius: 5px;
           .datatb {
             justify-items: center;
             width: 99%;
             height: 100%;
             padding: 5px;
-            .dx-datagrid-rowsview
-              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
-              > td {
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
               background-color: orange;
               color: unset;
             }
-
-            .dx-datagrid-rowsview
-              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
-              > td {
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
               background-color: orange;
               color: unset;
             }
-            .dx-datagrid-borders > .dx-datagrid-header-panel {
+            .dx-datagrid-borders>.dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
             }
-
             .dx-toolbar .dx-toolbar-items-container {
               height: 25px;
               overflow: visible;
               background-color: #b5f398;
             }
-
             //toan bo bang
-            .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
               display: -ms-flexbox;
               display: flex;
               background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
               font-size: 0.7rem;
             }
-
-            .dx-datagrid-borders > .dx-datagrid-filter-panel,
-            .dx-datagrid-borders > .dx-datagrid-headers {
+            .dx-datagrid-borders>.dx-datagrid-filter-panel,
+            .dx-datagrid-borders>.dx-datagrid-headers {
               border-top: 1px solid #ddd;
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
               color: black;
@@ -153,14 +137,8 @@
               font-size: 0.7rem;
             }
             //filter row input
-            .dx-datagrid-filter-row
-              .dx-editor-cell
-              .dx-editor-with-menu
-              .dx-placeholder::before,
-            .dx-datagrid-filter-row
-              .dx-editor-cell
-              .dx-editor-with-menu
-              .dx-texteditor-input {
+            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
               padding-left: 32px;
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
               color: black;
@@ -170,20 +148,17 @@
             .dx-editor-cell .dx-texteditor .dx-texteditor-input {
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
             }
-
             .dx-searchbox .dx-placeholder::before,
             .dx-searchbox .dx-texteditor-input {
               padding-left: 34px;
               background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
             }
-
             .dx-button-mode-contained {
               background-color: #a0f87e;
               border-color: #cacafa;
               color: #430fff;
             }
-
-            .dx-datagrid-total-footer > .dx-datagrid-content {
+            .dx-datagrid-total-footer>.dx-datagrid-content {
               padding-top: 0px;
               padding-bottom: 0px;
             }
@@ -191,7 +166,6 @@
         }
       }
     }
-    
     .tracuuPO {
       width: 100%;
       height: 92vh;
@@ -199,14 +173,11 @@
       gap: 10px;
       .tracuuPOform {
         display: flex;
-        width: 260px;   
-        height: 100%;     
+        height: 100%;
         flex-direction: column;
         align-items: flex-end;
         font-size: 0.8rem;
-        background-image: linear-gradient(0deg, #afd3d1, #54ca45);
-        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        align-items: center;
         border-radius: 8px;
         padding: 5px;
         span {
@@ -215,10 +186,9 @@
           margin: auto;
         }
         box-sizing: border-box;
-
         .forminput {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           width: 100%;
           gap: 5px;
           flex-wrap: wrap;
@@ -226,7 +196,6 @@
           justify-content: space-around;
           padding: 2px;
           font-size: 0.6rem;
-
           .forminputcolumn {
             display: flex;
             flex-direction: column;
@@ -257,15 +226,12 @@
             align-items: center;
             align-self: center;
             align-content: center;
-
             justify-content: center;
             justify-items: center;
             justify-self: center;
-
             font-size: 0.6rem;
           }
-          .searchbuttondiv {
-          }
+          .searchbuttondiv {}
         }
         .formsummary {
           display: flex;
@@ -276,7 +242,6 @@
           gap: 20px;
           border-radius: 5px;
           margin-top: 5px;
-
           table {
             border: 3px solid gray;
             width: 100%;
@@ -296,7 +261,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 100%;     
+        width: 100%;
         height: 100%;
         background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
         border-radius: 5px;
@@ -343,34 +308,28 @@
             width: 99%;
             height: 100%;
             padding: 5px;
-            .dx-datagrid-rowsview
-              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
-              > td {
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
               background-color: orange;
               color: unset;
             }
-
-            .dx-datagrid-borders > .dx-datagrid-header-panel {
+            .dx-datagrid-borders>.dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
             }
-
             .dx-toolbar .dx-toolbar-items-container {
               height: 25px;
               overflow: visible;
               background-color: #b5f398;
             }
-
             //toan bo bang
-            .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
               display: -ms-flexbox;
               display: flex;
               background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
               font-size: 0.7rem;
             }
-
-            .dx-datagrid-borders > .dx-datagrid-filter-panel,
-            .dx-datagrid-borders > .dx-datagrid-headers {
+            .dx-datagrid-borders>.dx-datagrid-filter-panel,
+            .dx-datagrid-borders>.dx-datagrid-headers {
               border-top: 1px solid #ddd;
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
               color: black;
@@ -378,14 +337,8 @@
               font-size: 0.7rem;
             }
             //filter row input
-            .dx-datagrid-filter-row
-              .dx-editor-cell
-              .dx-editor-with-menu
-              .dx-placeholder::before,
-            .dx-datagrid-filter-row
-              .dx-editor-cell
-              .dx-editor-with-menu
-              .dx-texteditor-input {
+            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
               padding-left: 32px;
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
               color: black;
@@ -395,20 +348,17 @@
             .dx-editor-cell .dx-texteditor .dx-texteditor-input {
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
             }
-
             .dx-searchbox .dx-placeholder::before,
             .dx-searchbox .dx-texteditor-input {
               padding-left: 34px;
               background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
             }
-
             .dx-button-mode-contained {
               background-color: #a0f87e;
               border-color: #cacafa;
               color: #430fff;
             }
-
-            .dx-datagrid-total-footer > .dx-datagrid-content {
+            .dx-datagrid-total-footer>.dx-datagrid-content {
               padding-top: 0px;
               padding-bottom: 0px;
             }
@@ -434,7 +384,6 @@
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         padding-right: 30px;
-
         h3 {
           align-self: center;
           padding: 10px;
@@ -468,7 +417,6 @@
             justify-content: space-around;
             justify-self: center;
             width: 100%;
-
             .maindeptinputlabel {
               display: flex;
             }
@@ -477,7 +425,6 @@
               flex-direction: column;
               align-items: flex-end;
               gap: 10px;
-
               .autocomplete {
                 width: 320px;
                 margin-left: 20px;
@@ -552,7 +499,6 @@
             }
             .closebutton {
               background-color: #be19ff;
-
               /* Green */
               border: none;
               color: rgb(255, 255, 255);
@@ -611,7 +557,6 @@
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         padding-right: 30px;
-
         h3 {
           align-self: center;
           padding: 10px;
@@ -645,7 +590,6 @@
             justify-content: space-around;
             justify-self: center;
             width: 100%;
-
             .maindeptinputlabel {
               display: flex;
             }
@@ -654,7 +598,6 @@
               flex-direction: column;
               align-items: flex-end;
               gap: 10px;
-
               .autocomplete {
                 width: 320px;
                 margin-left: 20px;
@@ -729,7 +672,6 @@
             }
             .closebutton {
               background-color: #be19ff;
-
               /* Green */
               border: none;
               color: rgb(255, 255, 255);
@@ -802,7 +744,6 @@
     * {
       font-size: 12px;
     }
-
     .mininavbar {
       display: flex;
       flex-direction: row;
@@ -810,7 +751,6 @@
       margin-bottom: 5px;
       margin-top: 5px;
       width: 100%;
-
       .mininavitem {
         padding: 5px;
         background-color: aquamarine;
@@ -824,63 +764,52 @@
         }
       }
     }
-
     .newpo {
       display: flex;
       flex-direction: column;
-
       .batchnewpo {
         display: flex;
         flex-direction: column;
         gap: 10px;
         box-sizing: border-box;
-
         .formupload {
           display: flex;
           gap: 10px;
         }
-
         .insertPOTable {
           display: flex;
           width: 100%;
           height: 80vh;
           margin-top: 10px;
           background-image: linear-gradient(0deg, #afd3d1, #a0d898);
-
           border-radius: 5px;
           .datatb {
             justify-items: center;
             width: 99%;
             height: 100%;
             padding: 5px;
-            .dx-datagrid-rowsview
-              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
-              > td {
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
               background-color: orange;
               color: unset;
             }
-
-            .dx-datagrid-borders > .dx-datagrid-header-panel {
+            .dx-datagrid-borders>.dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
             }
-
             .dx-toolbar .dx-toolbar-items-container {
               height: 25px;
               overflow: visible;
               background-color: #b5f398;
             }
-
             //toan bo bang
-            .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
               display: -ms-flexbox;
               display: flex;
               background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
               font-size: 0.7rem;
             }
-
-            .dx-datagrid-borders > .dx-datagrid-filter-panel,
-            .dx-datagrid-borders > .dx-datagrid-headers {
+            .dx-datagrid-borders>.dx-datagrid-filter-panel,
+            .dx-datagrid-borders>.dx-datagrid-headers {
               border-top: 1px solid #ddd;
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
               color: black;
@@ -888,14 +817,8 @@
               font-size: 0.7rem;
             }
             //filter row input
-            .dx-datagrid-filter-row
-              .dx-editor-cell
-              .dx-editor-with-menu
-              .dx-placeholder::before,
-            .dx-datagrid-filter-row
-              .dx-editor-cell
-              .dx-editor-with-menu
-              .dx-texteditor-input {
+            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
               padding-left: 32px;
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
               color: black;
@@ -905,20 +828,17 @@
             .dx-editor-cell .dx-texteditor .dx-texteditor-input {
               background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
             }
-
             .dx-searchbox .dx-placeholder::before,
             .dx-searchbox .dx-texteditor-input {
               padding-left: 34px;
               background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
             }
-
             .dx-button-mode-contained {
               background-color: #a0f87e;
               border-color: #cacafa;
               color: #430fff;
             }
-
-            .dx-datagrid-total-footer > .dx-datagrid-content {
+            .dx-datagrid-total-footer>.dx-datagrid-content {
               padding-top: 0px;
               padding-bottom: 0px;
             }
@@ -926,7 +846,6 @@
         }
       }
     }
-
     .tracuuPO {
       display: flex;
       flex-direction: column;
@@ -948,7 +867,6 @@
           margin: auto;
         }
         box-sizing: border-box;
-
         .forminput {
           display: flex;
           width: 100%;
@@ -956,7 +874,6 @@
           flex-wrap: wrap;
           align-items: flex-end;
           justify-content: space-evenly;
-
           .forminputcolumn {
             display: flex;
             flex-direction: row;
@@ -1023,7 +940,6 @@
         }
       }
     }
-
     .them1po {
       display: flex;
       position: fixed;
@@ -1042,7 +958,6 @@
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         padding-right: 30px;
-
         h3 {
           align-self: center;
           padding: 10px;
@@ -1076,7 +991,6 @@
             justify-content: space-around;
             justify-self: center;
             width: 100%;
-
             .maindeptinputlabel {
               display: flex;
             }
@@ -1085,7 +999,6 @@
               flex-direction: column;
               align-items: flex-end;
               gap: 10px;
-
               .autocomplete {
                 width: 320px;
                 margin-left: 20px;
@@ -1160,7 +1073,6 @@
             }
             .closebutton {
               background-color: #be19ff;
-
               /* Green */
               border: none;
               color: rgb(255, 255, 255);
@@ -1202,7 +1114,6 @@
         }
       }
     }
-
     .them1invoice {
       display: flex;
       position: fixed;
@@ -1220,7 +1131,6 @@
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         padding-right: 30px;
-
         h3 {
           align-self: center;
           padding: 10px;
@@ -1254,7 +1164,6 @@
             justify-content: space-around;
             justify-self: center;
             width: 100%;
-
             .maindeptinputlabel {
               display: flex;
             }
@@ -1263,7 +1172,6 @@
               flex-direction: column;
               align-items: flex-end;
               gap: 10px;
-
               .autocomplete {
                 width: 320px;
                 margin-left: 20px;
@@ -1338,7 +1246,6 @@
             }
             .closebutton {
               background-color: #be19ff;
-
               /* Green */
               border: none;
               color: rgb(255, 255, 255);
@@ -1382,5 +1289,4 @@
     }
   }
 }
-@media only screen and (max-width: 320px) {
-}
+@media only screen and (max-width: 320px) {}
