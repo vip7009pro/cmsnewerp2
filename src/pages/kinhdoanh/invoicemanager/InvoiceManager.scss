@@ -186,7 +186,7 @@
       width: 100%;
       height: 92vh;
       display: flex;
-      gap: 10px;
+      gap: 1px;
       .tracuuInvoiceform {
         display: flex;
         flex-direction: column;
@@ -197,7 +197,7 @@
         background-image: linear-gradient(0deg, #afd3d1, #c663da);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        border-radius: 8px;
+        
         padding: 5px;
         &:hover {
           background-image: linear-gradient(0deg, #afd3d1, #df4fe4);

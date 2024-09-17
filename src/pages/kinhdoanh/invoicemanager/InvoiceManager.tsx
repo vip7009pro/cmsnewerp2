@@ -26,6 +26,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 const InvoiceManager = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -1338,7 +1339,7 @@ const InvoiceManager = () => {
       {selection.trapo && (
         <div className="tracuuInvoice">
           {sh && (
-            <div className="tracuuInvoiceform">
+            <div className="tracuuInvoiceform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <div className="forminput">
                 <div className="forminputcolumn">
                   <label>

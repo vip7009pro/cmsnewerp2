@@ -53,7 +53,6 @@ const PoManager = () => {
   const handleOpenSearchDialog = () => {
     setOpenSearchDialog(true);
   };
-
   const handleCloseSearchDialog = () => {
     setOpenSearchDialog(false);
   };

@@ -26,6 +26,7 @@ import { TbLogout } from "react-icons/tb";
 import { PlanTableData, UserData } from "../../../api/GlobalInterface";
 
 const PlanManager = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -1427,7 +1428,7 @@ const PlanManager = () => {
       {selection.trapo && (
         <div className="tracuuPlan">
           {showhidesearchdiv && (
-            <div className="tracuuPlanform">
+            <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <div className="forminput">
                 <div className="forminputcolumn">
                   <label>
@@ -1550,7 +1551,7 @@ const PlanManager = () => {
               </div>
               <div className="formbutton">
                 <label>
-                  <b>All Time:</b>
+                  <span style={{fontSize: "0.7rem"}}>All Time:</span>
                   <input
                     type="checkbox"
                     name="alltimecheckbox"
