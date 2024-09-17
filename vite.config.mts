@@ -14,4 +14,15 @@ export default defineConfig({
       algorithm: 'gzip', // Use 'brotli' for Brotli compression
     }),  
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Tùy chỉnh tên file, chỉ lấy id mà không có tên file gốc
+        entryFileNames: 'assets/[hash].js',
+        chunkFileNames: 'assets/[hash].js',
+        assetFileNames: 'assets/[hash][extname]',
+
+      },
+    },
+  },
 });
