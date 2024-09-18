@@ -174,31 +174,31 @@ console.log(endDate)
 
   // Dữ liệu đầu vào
   const orders: ProductOrder[] = [
-    { poNo: 'PO1', productCode: 'P1', poQty: 100, deliveryRequestDate: '2024-10-01', moldWidth: 10, moldLength: 20, productionTime: 650, material: 'A' },
-    { poNo: 'PO1', productCode: 'P2', poQty: 200, deliveryRequestDate: '2024-10-02', moldWidth: 10, moldLength: 20, productionTime: 120, material: 'B' },
-    { poNo: 'PO2', productCode: 'P1', poQty: 150, deliveryRequestDate: '2024-10-01', moldWidth: 10, moldLength: 20, productionTime: 600, material: 'A' },
-    { poNo: 'PO3', productCode: 'P3', poQty: 150, deliveryRequestDate: '2024-10-01', moldWidth: 10, moldLength: 20, productionTime: 900, material: 'C' },
-    { poNo: 'PO4', productCode: 'P4', poQty: 120, deliveryRequestDate: '2024-10-03', moldWidth: 12, moldLength: 22, productionTime: 750, material: 'C' },
-    { poNo: 'PO5', productCode: 'P5', poQty: 180, deliveryRequestDate: '2024-10-04', moldWidth: 11, moldLength: 21, productionTime: 190, material: 'C' },
-    { poNo: 'PO6', productCode: 'P6', poQty: 130, deliveryRequestDate: '2024-10-05', moldWidth: 13, moldLength: 23, productionTime: 480, material: 'A' },
-    { poNo: 'PO7', productCode: 'P7', poQty: 160, deliveryRequestDate: '2024-10-06', moldWidth: 13, moldLength: 23, productionTime: 100, material: 'A' },
-    { poNo: 'PO8', productCode: 'P8', poQty: 140, deliveryRequestDate: '2024-10-07', moldWidth: 16, moldLength: 26, productionTime: 385, material: 'B' },
-    { poNo: 'PO9', productCode: 'P9', poQty: 190, deliveryRequestDate: '2024-10-08', moldWidth: 13, moldLength: 23, productionTime: 110, material: 'B' },
-    { poNo: 'PO10', productCode: 'P1', poQty: 110, deliveryRequestDate: '2024-10-09', moldWidth: 13, moldLength: 23, productionTime: 570, material: 'A' },
-    { poNo: 'PO11', productCode: 'P11', poQty: 170, deliveryRequestDate: '2024-10-10', moldWidth: 19, moldLength: 29, productionTime: 295, material: 'C' },
-    { poNo: 'PO12', productCode: 'P12', poQty: 125, deliveryRequestDate: '2024-10-11', moldWidth: 20, moldLength: 30, productionTime: 278, material: 'C' },
-    { poNo: 'PO13', productCode: 'P3', poQty: 185, deliveryRequestDate: '2024-10-12', moldWidth: 21, moldLength: 31, productionTime: 305, material: 'D' },
-    { poNo: 'PO14', productCode: 'P4', poQty: 135, deliveryRequestDate: '2024-10-13', moldWidth: 22, moldLength: 32, productionTime: 482, material: 'A' },
-    { poNo: 'PO15', productCode: 'P1', poQty: 165, deliveryRequestDate: '2024-10-14', moldWidth: 23, moldLength: 33, productionTime: 298, material: 'A' },
-    { poNo: 'PO16', productCode: 'P6', poQty: 145, deliveryRequestDate: '2024-10-15', moldWidth: 23, moldLength: 33, productionTime: 388, material: 'B' },
-    { poNo: 'PO17', productCode: 'P7', poQty: 195, deliveryRequestDate: '2024-10-16', moldWidth: 23, moldLength: 33, productionTime: 515, material: 'B' },
-    { poNo: 'PO18', productCode: 'P8', poQty: 115, deliveryRequestDate: '2024-10-17', moldWidth: 26, moldLength: 36, productionTime: 372, material: 'A' },
-    { poNo: 'PO19', productCode: 'P9', poQty: 175, deliveryRequestDate: '2024-10-18', moldWidth: 27, moldLength: 37, productionTime: 300, material: 'C' },
-    { poNo: 'PO20', productCode: 'P2', poQty: 130, deliveryRequestDate: '2024-10-19', moldWidth: 28, moldLength: 38, productionTime: 140, material: 'B' },
-    { poNo: 'PO100', productCode: 'P1', poQty: 150, deliveryRequestDate: '2024-12-08', moldWidth: 108, moldLength: 118, productionTime: 192, material: 'A' },
-    { poNo: 'PO101', productCode: 'P1', poQty: 140, deliveryRequestDate: '2024-12-09', moldWidth: 108, moldLength: 118, productionTime: 286, material: 'A' },
-    { poNo: 'PO102', productCode: 'P2', poQty: 160, deliveryRequestDate: '2024-12-10', moldWidth: 110, moldLength: 120, productionTime: 397, material: 'B' },
-    { poNo: 'PO103', productCode: 'P3', poQty: 170, deliveryRequestDate: '2024-12-11', moldWidth: 108, moldLength: 118, productionTime: 403, material: 'A' },
+    { poNo: 'PO1', productCode: 'Product1', poQty: 100, deliveryRequestDate: '2024-10-01', moldWidth: 10, moldLength: 20, productionTime: 650, material: 'A' },
+    { poNo: 'PO2', productCode: 'Product2', poQty: 200, deliveryRequestDate: '2024-10-02', moldWidth: 10, moldLength: 20, productionTime: 120, material: 'B' },
+    { poNo: 'PO3', productCode: 'Product1', poQty: 150, deliveryRequestDate: '2024-10-01', moldWidth: 10, moldLength: 20, productionTime: 600, material: 'A' },
+    { poNo: 'PO4', productCode: 'Product3', poQty: 150, deliveryRequestDate: '2024-10-01', moldWidth: 10, moldLength: 20, productionTime: 900, material: 'C' },
+    { poNo: 'PO4', productCode: 'Product4', poQty: 120, deliveryRequestDate: '2024-10-03', moldWidth: 12, moldLength: 22, productionTime: 750, material: 'C' },
+    { poNo: 'PO5', productCode: 'Product5', poQty: 180, deliveryRequestDate: '2024-10-04', moldWidth: 11, moldLength: 21, productionTime: 190, material: 'C' },
+    { poNo: 'PO6', productCode: 'Product6', poQty: 130, deliveryRequestDate: '2024-10-05', moldWidth: 13, moldLength: 23, productionTime: 480, material: 'A' },
+    { poNo: 'PO7', productCode: 'Product7', poQty: 160, deliveryRequestDate: '2024-10-06', moldWidth: 13, moldLength: 23, productionTime: 100, material: 'A' },
+    { poNo: 'PO8', productCode: 'Product8', poQty: 140, deliveryRequestDate: '2024-10-07', moldWidth: 16, moldLength: 26, productionTime: 385, material: 'B' },
+    { poNo: 'PO9', productCode: 'Product9', poQty: 190, deliveryRequestDate: '2024-10-08', moldWidth: 13, moldLength: 23, productionTime: 110, material: 'B' },
+    { poNo: 'PO10', productCode: 'Product1', poQty: 110, deliveryRequestDate: '2024-10-09', moldWidth: 13, moldLength: 23, productionTime: 570, material: 'A' },
+    { poNo: 'PO11', productCode: 'Product11', poQty: 170, deliveryRequestDate: '2024-10-10', moldWidth: 19, moldLength: 29, productionTime: 295, material: 'C' },
+    { poNo: 'PO12', productCode: 'Product12', poQty: 125, deliveryRequestDate: '2024-10-11', moldWidth: 20, moldLength: 30, productionTime: 278, material: 'C' },
+    { poNo: 'PO13', productCode: 'Product3', poQty: 185, deliveryRequestDate: '2024-10-12', moldWidth: 21, moldLength: 31, productionTime: 305, material: 'D' },
+    { poNo: 'PO14', productCode: 'Product4', poQty: 135, deliveryRequestDate: '2024-10-13', moldWidth: 22, moldLength: 32, productionTime: 482, material: 'A' },
+    { poNo: 'PO15', productCode: 'Product1', poQty: 165, deliveryRequestDate: '2024-10-14', moldWidth: 23, moldLength: 33, productionTime: 298, material: 'A' },
+    { poNo: 'PO16', productCode: 'Product6', poQty: 145, deliveryRequestDate: '2024-10-15', moldWidth: 23, moldLength: 33, productionTime: 388, material: 'B' },
+    { poNo: 'PO17', productCode: 'Product7', poQty: 195, deliveryRequestDate: '2024-10-16', moldWidth: 23, moldLength: 33, productionTime: 515, material: 'B' },
+    { poNo: 'PO18', productCode: 'Product8', poQty: 115, deliveryRequestDate: '2024-10-17', moldWidth: 26, moldLength: 36, productionTime: 372, material: 'A' },
+    { poNo: 'PO19', productCode: 'Product9', poQty: 175, deliveryRequestDate: '2024-10-18', moldWidth: 27, moldLength: 37, productionTime: 300, material: 'C' },
+    { poNo: 'PO20', productCode: 'Product2', poQty: 130, deliveryRequestDate: '2024-10-19', moldWidth: 28, moldLength: 38, productionTime: 140, material: 'B' },
+    { poNo: 'PO100', productCode: 'Product1', poQty: 150, deliveryRequestDate: '2024-12-08', moldWidth: 108, moldLength: 118, productionTime: 192, material: 'A' },
+    { poNo: 'PO101', productCode: 'Product1', poQty: 140, deliveryRequestDate: '2024-12-09', moldWidth: 108, moldLength: 118, productionTime: 286, material: 'A' },
+    { poNo: 'PO102', productCode: 'Product2', poQty: 160, deliveryRequestDate: '2024-12-10', moldWidth: 110, moldLength: 120, productionTime: 397, material: 'B' },
+    { poNo: 'PO103', productCode: 'Product3', poQty: 170, deliveryRequestDate: '2024-12-11', moldWidth: 108, moldLength: 118, productionTime: 403, material: 'A' },
     // Thêm các đơn hàng khác
   ];
 
@@ -208,11 +208,6 @@ console.log(endDate)
     { eqName: 'Machine03', eqQty: 1 },
     { eqName: 'Machine04', eqQty: 1 },
     { eqName: 'Machine05', eqQty: 1 },
-    { eqName: 'Machine06', eqQty: 1 },
-    { eqName: 'Machine07', eqQty: 1 },
-    { eqName: 'Machine08', eqQty: 1 },
-    { eqName: 'Machine09', eqQty: 1 },
-    { eqName: 'Machine10', eqQty: 1 },
     // Thêm các thiết bị khác
   ];
 
@@ -220,7 +215,7 @@ console.log(endDate)
     <div><button onClick={() => {
       console.log(orders)
       const plans = createProductionPlan(orders, equipments)
-      console.log(plans)
+      console.table(plans)
       setPlans(plans)
       
       /* SaveExcel(orders, 'Đơn hàng')
@@ -228,17 +223,13 @@ console.log(endDate)
 
     }}>Tạo kế hoạch sản xuất</button>
       <div className="timeline-container">
-        <DateMarkers startDate={startDate} endDate={endDate} />
+        {/* <DateMarkers startDate={startDate} endDate={endDate} /> */}
         <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine01')} />        
         <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine02')} />        
         <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine03')} />
         <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine04')} />
         <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine05')} />
-        <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine06')} />
-        <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine07')} />
-        <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine08')} />
-        <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine09')} />
-        <MachineTimeLine plans={plans.filter(plan => plan.eqName === 'Machine10')} />
+        
       </div>
 
 

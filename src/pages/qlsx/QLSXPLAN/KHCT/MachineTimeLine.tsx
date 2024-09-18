@@ -20,7 +20,7 @@ interface MachineTimeLineProps {
   plans: ProductionPlan[];
 }
 
-const colors = ['#FF9999', '#66B2FF', '#99FF99', '#FFCC99', '#FF99CC']; // Màu sắc cho các kế hoạch
+const colors = ['#FF9999', '#66B2FF', '#58d858', '#FFCC99', '#FF99CC']; // Màu sắc cho các kế hoạch
 
 const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans }) => {
   const totalPlanTime = plans.reduce((total, plan) => total + plan.productionPlanTime, 0);
@@ -41,7 +41,7 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans }) => {
             style={{ width: `${planWidth}%`, backgroundColor: color }}
           >
             <div className="plan-content">
-              <div>{moment.utc(plan.productionPlanDate).format('HH:mm')}</div>
+              <div>{moment.utc(plan.productionPlanDate).format('YYYY-MM-DD HH:mm')}</div>
               <div>{plan.productCode}</div>
               <div>{plan.productionPlanTime} mins</div>
             </div>
