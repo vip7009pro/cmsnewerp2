@@ -891,40 +891,56 @@ const QLVL = () => {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
         return { backgroundColor: '#f8d7da', color: '#721c24' };
-      } 
+        } 
     } */},
-    { field: 'M_NAME', headerName: 'M_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, editable: false },
+    { field: 'M_NAME', headerName: 'M_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+      return (
+        
+          <span style={{color:'blue'}}>{params.data.M_NAME}</span>
+       
+      )
+    } },
     { field: 'DESCR', headerName: 'DESCR', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'CUST_CD', headerName: 'CUST_CD', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 90, resizable: true, floatingFilter: true, filter: true, },
     {
       field: 'SSPRICE', headerName: 'OPEN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
         return (
-          <span>{params.data.SSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span style={{color:'green'}}>{params.data.SSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         );
       }
     },
     {
       field: 'CMSPRICE', headerName: 'ORIGIN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
         return (
-          <span>{params.data.CMSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span style={{color:'green'}}>{params.data.CMSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         );
       }
     },
     {
       field: 'SLITTING_PRICE', headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
         return (
-          <span>{params.data.SLITTING_PRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span style={{color:'green'}}>{params.data.SLITTING_PRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         );
       }
     },
     { field: 'MASTER_WIDTH', headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
     { field: 'ROLL_LENGTH', headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
-    { field: 'FSC', headerName: 'FSC', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'FSC_CODE', headerName: 'FSC_CODE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'FSC', headerName: 'FSC', width: 50, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'FSC_CODE', headerName: 'FSC_CODE', width: 60, resizable: true, floatingFilter: true, filter: true, },
     { field: 'FSC_NAME', headerName: 'FSC_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'USE_YN', headerName: 'USE_YN', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'USE_YN', headerName: 'USE_YN', width: 60, resizable: true, floatingFilter: true, filter: true, cellRenderer: (params: any) => {
+      if (params.data.USE_YN === 'N') {
+        return (
+          <span style={{color:'red'}}>{params.data.USE_YN}</span>
+        )
+      } else {
+        return (
+          <span style={{color:'green'}}>{params.data.USE_YN}</span>
+        )
+      } 
+    } },
+    { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 60, resizable: true, floatingFilter: true, filter: true, },
     {
       field: 'TDS', headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
         let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;
