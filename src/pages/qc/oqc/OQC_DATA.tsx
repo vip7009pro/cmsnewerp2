@@ -35,7 +35,10 @@ import {
   OQC_DATA,
 } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const OQC_DATA_TB = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -569,9 +572,9 @@ const OQC_DATA_TB = () => {
   }, []);
   return (
     <DataDiv>
-      <QueryFormDiv>
+      <QueryFormDiv style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <FromInputDiv>
-          <FromInputColumn>
+          <FromInputColumn >
             <label>
               <b>Từ ngày:</b>
               <input

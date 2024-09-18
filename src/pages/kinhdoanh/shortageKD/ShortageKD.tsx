@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ShortageData } from "../../../api/GlobalInterface";
 const ShortageKD = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -869,7 +870,7 @@ const ShortageKD = () => {
       )}
       {selection.trapo && (
         <div className="tracuuPlan">
-          <div className="tracuuPlanform">
+          <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className="forminput">
               <div className="forminputcolumn">
                 <label>
@@ -1011,7 +1012,7 @@ const ShortageKD = () => {
               </IconButton>
             </div>
           </div>
-          <div className="tracuuPlanTable">
+          <div className="tracuuPlanTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <DataGrid
               slots={{
                 toolbar: CustomToolbarPOTable,

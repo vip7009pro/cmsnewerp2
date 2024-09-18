@@ -1,14 +1,10 @@
 import {
   Button,
   Autocomplete,
-  Checkbox,
-  FormControlLabel,
   IconButton,
   TextField,
   createFilterOptions,
   Typography,
-  AutocompleteRenderOptionState,
-  AutocompleteOwnerState,
 } from "@mui/material";
 import {
   Column,
@@ -28,14 +24,14 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany } from "../../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './XUATLIEU.scss';
 const XUATLIEU = () => {
@@ -68,6 +64,10 @@ const XUATLIEU = () => {
     UPD_DATE: "",
     UPD_EMPL: "",
     EXP_DATE: "",
+    TDS: "",
+    FSC: "",
+    FSC_CODE: "",
+    FSC_NAME: "",
   });
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [materialList, setMaterialList] = useState<MaterialListData[]>([

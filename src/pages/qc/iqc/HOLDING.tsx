@@ -11,7 +11,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { f_updateNCRIDForHolding } from "../../../api/GlobalFunction";
 
 const HOLDING = () => {
-
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const selectedRowsData = useRef<Array<HOLDING_DATA>>([],);
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData,);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -254,8 +254,8 @@ const HOLDING = () => {
   }, []);
   return (
     <div className="holding">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+      <div className="tracuuDataInspection" >
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

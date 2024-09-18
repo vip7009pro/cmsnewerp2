@@ -1,4 +1,4 @@
-import { Button, IconButton } from "@mui/material";
+import { Button, Icon, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -17,10 +17,12 @@ import {
 import NHAPLIEU from "./nhaplieu/NHAPLIEU";
 import XUATLIEU from "./xuatlieu/XUATLIEU";
 import AGTable from "../../../components/DataTable/AGTable";
+import { MdInput, MdOutput } from "react-icons/md";
 const KHOLIEU = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -407,7 +409,44 @@ const KHOLIEU = () => {
     return (
       <AGTable
         toolbar={
-          <div>            
+          <div>  
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["KHO"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    setShowNhapLieu(true);
+                    setShowXuatLieu(false);
+                  },
+                );   
+              }}
+            >
+              <MdInput color="green" size={15} />
+              Nhập Liệu
+            </IconButton>     
+
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["KHO"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    setShowNhapLieu(false);
+                    setShowXuatLieu(true);
+                  },
+                );     
+              }}
+            >
+              <MdOutput color="red" size={15} />
+              Xuất liệu
+            </IconButton>      
           </div>}
         columns={columnDefinition}
         data={whdatatable}
@@ -425,7 +464,7 @@ const KHOLIEU = () => {
   useEffect(() => { }, []);
   return (
     <div className="kholieu">
-      <div className="tracuuDataWHform">
+      <div className="tracuuDataWHform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <div className="forminput">
           <div className="forminputcolumn">
             <label>
@@ -569,38 +608,12 @@ const KHOLIEU = () => {
             setColumnDefinition(column_STOCK_LIEU);
             handletraWHSTOCKLIEU();
           }}>Tồn Liệu</Button>
-        </div>
-        {/* <div className="toolbardiv" style={{display:'flex', gap:'10px'}}>        
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#e6d53c', color:'black' }} onClick={() => { 
-              checkBP(
-                userData,
-                ["KHO"],
-                ["ALL"],
-                ["ALL"],
-                ()=> {
-                  setShowNhapLieu(true);
-                  setShowXuatLieu(false);
-                },
-              );            
-          }}>Nhập</Button>
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#db3823', color:'white' }} onClick={() => { 
-              checkBP(
-                userData,
-                ["KHO"],
-                ["ALL"],
-                ["ALL"],
-                ()=> {
-                  setShowNhapLieu(false);
-                  setShowXuatLieu(true);
-                },
-              );            
-          }}>Xuất</Button>
-      </div> */}
+        </div>        
       </div>
       <div className="tracuuWHTable">        
         {warehouseDataTableAG}
       </div>
-      {shownhaplieu &&<div className="nhaplieudiv">     
+      {shownhaplieu &&<div className="nhaplieudiv" >     
        <div>
         Nhập vật liệu vào kho
         <IconButton

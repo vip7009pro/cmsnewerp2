@@ -13,7 +13,10 @@ import {
   XUATPACK_DATA,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const KHOTP = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -703,7 +706,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   return (
     <div className="khotp">
       <div className="tracuuDataWH">
-        <div className="tracuuDataWHform">
+        <div className="tracuuDataWHform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

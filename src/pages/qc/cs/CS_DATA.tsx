@@ -39,7 +39,10 @@ import {
   WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NNDSDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const CS_DATA_TB = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
   const [currentDS, setCurrentDS] = useState("");
@@ -1452,7 +1455,7 @@ const CS_DATA_TB = () => {
   }, []);
   return (
     <DataDiv>
-      <QueryFormDiv>
+      <QueryFormDiv style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <FromInputDiv>
           <FromInputColumn>
             <label>

@@ -11,6 +11,7 @@ import { DTC_DATA, HOLDDING_BY_NCR_ID, NCR_DATA, UserData } from "../../../api/G
 import AGTable from "../../../components/DataTable/AGTable";
 import { checkBP } from "../../../api/GlobalFunction";
 const NCR_MANAGER = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [isNewRegister, setNewRegister] = useState(false);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -467,7 +468,7 @@ const NCR_MANAGER = () => {
     <div className="ncr_management">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          {isNewRegister && <div className="tracuuDataInspectionform">
+          {isNewRegister && <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <b style={{ color: "blue" }}>INPUT DATA NCR</b>
             <div className="forminput">              
               <div className="forminputcolumn">
@@ -616,7 +617,7 @@ const NCR_MANAGER = () => {
               }}>Save</Button>
             </div>
           </div>}
-          {!isNewRegister && <div className="tracuuDataInspectionform">
+          {!isNewRegister && <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <b style={{ color: "blue" }}>TRA DATA NCR</b>
             <div className="forminput">
           <div className="forminputcolumn">

@@ -38,7 +38,10 @@ import { generalQuery, getCompany } from "../../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './NHAPLIEU.scss';
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 const NHAPLIEU = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<Array<WH_M_INPUT_DATA>>([]);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
@@ -63,7 +66,11 @@ const NHAPLIEU = () => {
     INS_EMPL: "",
     UPD_DATE: "",
     UPD_EMPL: "",
-    EXP_DATE:""
+    EXP_DATE:"",
+    FSC_CODE:"",
+    FSC_NAME:"",
+    TDS:"", 
+    FSC:""   
   });
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
@@ -1074,7 +1081,7 @@ const NHAPLIEU = () => {
   return (
     <div className="nhaplieu">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <div className="chonvatlieu" style={{ display: 'flex', alignItems: 'center' }}>

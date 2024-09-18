@@ -17,6 +17,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
 import { f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
 const FAILING = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
@@ -589,7 +590,7 @@ const FAILING = () => {
     <div className="failing">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          <div className="tracuuDataInspectionform">
+          <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className="forminput">
               <div className="forminputcolumn">
                 <label>
@@ -826,7 +827,7 @@ const FAILING = () => {
           <div className="tracuuYCSXTable">
             {failingDataAGTable}
           </div>
-          <div className="tracuuDataInspectionform2">
+          <div className="tracuuDataInspectionform2" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
             <div className="forminput">
               <div className="forminputcolumn">

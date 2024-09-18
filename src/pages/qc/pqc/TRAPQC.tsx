@@ -12,7 +12,10 @@ import {
 } from "../../../api/GlobalInterface";
 import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 import AGTable from "../../../components/DataTable/AGTable";
+import { RootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
 const TRAPQC = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
   const [currentDS, setCurrentDS] = useState("");
@@ -688,8 +691,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   return (
     <div className="trapqc">
       <div className="tracuuDataPqc">
-        <div className="tracuuDataPQCform">
-          <div className="forminput">
+        <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+          <div className="forminput" >
             <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>

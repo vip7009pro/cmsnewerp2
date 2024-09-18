@@ -168,7 +168,7 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
             fontSize: '0.7rem'
           }}
           tick={{ fontSize: '0.7rem' }}
-          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE==='USD'? ' $' : ' đ') ?? "$"}
+          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE==='USD'? ' $' : ' đ')}
         />
         <Tooltip content={<CustomTooltip />} />
         <Legend

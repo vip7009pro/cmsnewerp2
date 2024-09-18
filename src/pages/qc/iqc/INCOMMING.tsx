@@ -16,6 +16,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const INCOMMING = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [isNewRegister, setNewRegister] = useState(false);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
@@ -762,9 +763,9 @@ const INCOMMING = () => {
     <div className="incomming">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          {isNewRegister && <div className="tracuuDataInspectionform">
+          {isNewRegister && <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <b style={{ color: "blue" }}>INPUT DATA KIỂM TRA INCOMMING</b>
-            <div className="forminput">
+            <div className="forminput" >
               <div className="forminputcolumn">
                 <b>LOT NVL ERP</b>
                 <label>
@@ -905,7 +906,7 @@ const INCOMMING = () => {
               }}>Save</Button>
             </div>
           </div>}
-          {!isNewRegister && <div className="tracuuDataInspectionform">
+          {!isNewRegister && <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <b style={{ color: "blue" }}>TRA DATA INCOMMING</b>
             <div className="forminput">
           <div className="forminputcolumn">

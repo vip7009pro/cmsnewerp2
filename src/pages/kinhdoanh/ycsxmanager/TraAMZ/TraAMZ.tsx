@@ -11,8 +11,11 @@ import "./TraAMZ.scss";
 import { TbLogout } from "react-icons/tb";
 import { AMAZON_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 const TraAMZ = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -149,7 +152,7 @@ const TraAMZ = () => {
     (<div className="traAMZ">
       <div className="tracuuDataInspection">
         {showhidesearchdiv && (
-          <div className="tracuuDataInspectionform">
+          <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className="forminput">
               <div className="forminputcolumn">
                 <label>

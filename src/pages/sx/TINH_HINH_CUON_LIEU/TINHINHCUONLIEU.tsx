@@ -31,8 +31,11 @@ import {
   MACHINE_LIST,
   MATERIAL_STATUS,
 } from "../../../api/GlobalInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const TINHHINHCUONLIEU = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());     
@@ -250,7 +253,7 @@ const TINHHINHCUONLIEU = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
-        <div className="losstable">
+        <div className="losstable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <table>
             <thead>
               <tr>
@@ -1146,7 +1149,7 @@ const TINHHINHCUONLIEU = () => {
   return (
     <div className="tinhinhcuonlieu">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

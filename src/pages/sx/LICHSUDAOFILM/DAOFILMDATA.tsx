@@ -8,7 +8,10 @@ import { DAO_FILM_DATA, QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../ap
 import AGTable from "../../../components/DataTable/AGTable";
 import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const DAOFILMDATA = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const [btnGN_QL, setBtnGN_QL] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -396,7 +399,7 @@ const DAOFILMDATA = () => {
   return (
     <div className="daofilmdata">
       <div className="tracuuDataPqc">
-        <div className="tracuuDataPQCform">
+        <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

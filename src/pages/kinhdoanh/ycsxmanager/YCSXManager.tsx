@@ -64,6 +64,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const YCSXManager = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -2169,7 +2170,7 @@ const YCSXManager = () => {
                   ...selection,
                   trapo: true,
                   thempohangloat: false,
-                  them1po: !selection.them1po,
+                  them1po: true,
                   them1invoice: false,
                   themycsx: true,
                   suaycsx: false,
@@ -2421,7 +2422,7 @@ const YCSXManager = () => {
       </div>
       {selection.them1po && (
         <div className='them1ycsx'>
-          <div className='formnho'>
+          <div className='formnho'  style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className='dangkyform'>
               <div className='dangkyinput'>
                 <div className='dangkyinputbox'>
@@ -2659,7 +2660,7 @@ const YCSXManager = () => {
         </div>
       )}
       {selection.thempohangloat && (
-        <div className='newycsx'>
+        <div className='newycsx' style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className='batchnewycsx'>
             <form className='formupload'>
               <label htmlFor='upload'>
@@ -2695,7 +2696,7 @@ const YCSXManager = () => {
       {selection.trapo && (
         <div className='tracuuYCSX'>
           {showhidesearchdiv && (
-            <div className='tracuuYCSXform'>
+            <div className='tracuuYCSXform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <div className='forminput'>
                 <div className='forminputcolumn'>
                   <label>

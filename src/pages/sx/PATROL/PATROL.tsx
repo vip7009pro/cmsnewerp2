@@ -8,7 +8,10 @@ import { Button, Checkbox } from '@mui/material'
 import moment from 'moment'
 import { FromInputColumn } from '../../../components/StyledComponents/ComponentLib'
 import Swal from 'sweetalert2'
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const PATROL = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
   const [fullScreen, setFullScreen] = useState(false);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
@@ -153,7 +156,7 @@ const PATROL = () => {
       left: fullScreen ? `0` : `0`,
       zIndex: fullScreen ? `99999` : '9'
     }}>
-      <div className="header">
+      <div className="header" style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <img alt="running" src="/blink.gif" width={120} height={50}></img>
        {/*  <PATROL_HEADER data={patrolheaderdata} /> */}
         <div className="control">

@@ -26,7 +26,10 @@ import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { COMPONENT_DATA, TEMLOTSX_DATA } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 import { useReactToPrint } from "react-to-print";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const LICHSUTEMLOTSX = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [option, setOption] = useState("dataconfirm");
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [lichsutemlotdata, setlichsutemlotdata] = useState<Array<TEMLOTSX_DATA>>([]);
@@ -338,7 +341,7 @@ const LICHSUTEMLOTSX = () => {
     }, []);
   return (
     <DataDiv>
-      <QueryFormDiv>
+      <QueryFormDiv style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <FromInputDiv>
           <FromInputColumn>
             <label>

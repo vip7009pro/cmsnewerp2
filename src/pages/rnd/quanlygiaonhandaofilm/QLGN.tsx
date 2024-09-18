@@ -30,7 +30,10 @@ import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import { CodeListData, CustomerListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const QLGN = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([
     {
       CUST_CD: "6969",
@@ -426,7 +429,7 @@ const QLGN = () => {
   return (
     <div className="qlgn">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

@@ -3803,6 +3803,36 @@ export const f_set_YN_KHO_SUB_INPUT = async (DATA: any) => {
   return kq;
 }
 
+export const f_nhapkhoao = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("nhapkhoao", {
+    FACTORY: DATA.FACTORY,
+    PHANLOAI: DATA.PHANLOAI,
+    PLAN_ID_INPUT: DATA.PLAN_ID_INPUT,
+    PLAN_ID_SUDUNG: DATA.PLAN_ID_SUDUNG,
+    M_CODE: DATA.M_CODE,
+    M_LOT_NO: DATA.M_LOT_NO,
+    ROLL_QTY: DATA.ROLL_QTY,
+    IN_QTY: DATA.IN_QTY,
+    TOTAL_IN_QTY: DATA.TOTAL_IN_QTY,
+    USE_YN: DATA.USE_YN,
+    FSC: DATA.FSC,
+    FSC_MCODE: DATA.FSC_MCODE,
+    FSC_GCODE: DATA.FSC_GCODE,
+  })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => { 
+      console.log(error);
+    });
+  return kq;
+}
 
 export const f_xuatkhoao = async (DATA: any) => {
   let kq: boolean = false;

@@ -6,7 +6,10 @@ import { f_lichsuinputlieu, SaveExcel } from "../../../../api/GlobalFunction";
 import "./LICHSUINPUTLIEU.scss";
 import { LICHSUINPUTLIEU_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 const LICHSUINPUTLIEU = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -94,7 +97,7 @@ const LICHSUINPUTLIEU = () => {
   return (
     <div className='lichsuinputlieu'>
       <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
+        <div className='tracuuDataInspectionform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className='forminput'>
             <div className='forminputcolumn'>
               <label>

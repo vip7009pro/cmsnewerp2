@@ -6,7 +6,10 @@ import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./SPECDTC.scss";
 import { DTC_SPEC_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const SPECDTC = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -124,7 +127,7 @@ const SPECDTC = () => {
   return (
     <div className="specdtc">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

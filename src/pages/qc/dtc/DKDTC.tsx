@@ -26,6 +26,7 @@ import { RootState } from "../../../redux/store";
 import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 const DKDTC = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -309,7 +310,7 @@ const DKDTC = () => {
     <div className="dkdtc">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          <div className="tracuuDataInspectionform">
+          <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <b style={{ color: "blue" }}>
               {checkNVL
                 ? "ĐĂNG KÝ TEST LIỆU (IQC)"

@@ -25,14 +25,17 @@ import "./RNR.scss";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import { generalQuery } from "../../../../api/Api";
 import { RNR_DATA, RNR_DATA_EMPL } from "../../../../api/GlobalInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 const RNR = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [testID, setTestID] = useState("");
   const [empl_name, setEmpl_Name] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [factory, setFactory] = useState("ALL");
   const [testType, setTestType] = useState("ALL");
   const [selectedData, setSelectedData] = useState("detail");
@@ -300,7 +303,7 @@ const RNR = () => {
   return (
     (<div className="rnr">
       <div className="tracuuDataPqc">
-        <div className="tracuuDataPQCform">
+        <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>
@@ -408,7 +411,7 @@ const RNR = () => {
             </div>
           </div>
         </div>
-        <div className="tracuuPQCTable">
+        <div className="tracuuPQCTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}

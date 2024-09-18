@@ -42,6 +42,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 /* import { Autocomplete } from 'devextreme-react'; */
 const ADDSPECTDTC = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [testList, setTestList] = useState<TestListTable[]>([]);
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
@@ -722,8 +723,8 @@ const ADDSPECTDTC = () => {
   }, []);
   return (
     <div className="addspecdtc">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+      <div className="tracuuDataInspection" >
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <b style={{ color: "blue" }}>
             {checkNVL
               ? "ADD SPEC ĐTC NVL (IQC)"

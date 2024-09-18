@@ -10,7 +10,10 @@ import XBAR_CHART from "../../../components/Chart/DTC/XBAR_CHART";
 import R_CHART from "../../../components/Chart/DTC/R_CHART";
 import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 import HISTOGRAM_CHART from "../../../components/Chart/DTC/HISTOGRAM_CHART";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const KQDTC = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);
   const isLoading = useRef<boolean>(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -386,7 +389,7 @@ const KQDTC = () => {
   }, []);
   return (
     <div className='kqdtc'>
-      <div className='tracuuDataInspectionform'>
+      <div className='tracuuDataInspectionform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <div className='forminput'>
           <div className='forminputcolumn'>
             <label>

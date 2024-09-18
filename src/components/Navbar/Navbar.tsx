@@ -70,6 +70,7 @@ export default function Navbar() {
   );
 
   const themeOptions = [
+    { value: "linear-gradient(90deg, #7efbbc 0%, #ace95c 100%)", label: "Orange-Yellow" },
     { value: "linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)", label: "Green-Blue" },
     { value: "linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)", label: "Pink-Orange" },
     { value: "linear-gradient(90deg, #FEE140 0%, #FA709A 100%)", label: "Yellow-Pink" },
@@ -78,6 +79,7 @@ export default function Navbar() {
     { value: "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(56,204,255,1) 0%, rgba(17,218,189,1) 100%)", label: "Green-Blue" },
     { value: "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 100%)", label: "White" },
     { value: "linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1))", label: "Blue" },
+
   ];
 
 
@@ -88,10 +90,16 @@ export default function Navbar() {
   };
   let intervalId: NodeJS.Timeout;
   useEffect(() => {
-    switchRandomTheme();    
+    //switchRandomTheme();    
+    //  getTheme from local storage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      dispatch(switchTheme(savedTheme));
+    }
+    else {
+      dispatch(switchTheme(themeOptions[0].value));
+    }
   }, []);
-
-
   const menulist: MENU_LIST_DATA[] = [
     {
       MENU_CODE: "NS0",

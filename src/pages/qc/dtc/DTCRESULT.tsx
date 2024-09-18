@@ -25,10 +25,11 @@ import {
   TestListTable,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const DTCRESULT = () => {
-  const [testtype, setTestType] = useState("3");
-  const [inputno, setInputNo] = useState("");
-  const [checkNVL, setCheckNVL] = useState(false);
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+
   const [dtc_id, setDTC_ID] = useState("");
   const [remark, setReMark] = useState("");
   const [testList, setTestList] = useState<TestListTable[]>([]);
@@ -44,129 +45,6 @@ const DTCRESULT = () => {
     [],
   );
   const [empl_name, setEmplName] = useState("");
-  const [reqDeptCode, setReqDeptCode] = useState("");
-  const [g_name, setGName] = useState("");
-  const [g_code, setGCode] = useState("");
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [prodreqdate, setProdReqDate] = useState("");
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            style={{ fontSize: "0.7rem" }}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={inspectiondatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"85vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //console.log(e.selectedRowsData);
-              //setSelectedRowsData(e.selectedRowsData);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
-            <Editing
-              allowUpdating={true}
-              allowAdding={false}
-              allowDeleting={false}
-              mode="cell"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(inspectiondatatable, "SPEC DTC");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <span style={{ fontSize: '0.8rem', fontWeight: "bold" }}>
-                  Bảng nhập kết quả độ tin cậy
-                </span>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooserButton" />
-              <Item name="addRowButton" />
-              <Item name="saveButton" />
-              <Item name="revertButton" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="DTC_ID" caption="DTC_ID" width={100}></Column>
-            <Column
-              dataField="TEST_NAME"
-              caption="TEST_NAME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="POINT_NAME"
-              caption="POINT_NAME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CENTER_VALUE"
-              caption="CENTER_VALUE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPPER_TOR"
-              caption="UPPER_TOR"
-              width={100}
-            ></Column>
-            <Column
-              dataField="LOWER_TOR"
-              caption="LOWER_TOR"
-              width={100}
-            ></Column>
-            <Column dataField="RESULT" caption="RESULT" width={100}></Column>
-            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [inspectiondatatable],
-  );
 
   const dtcResultColumn = [    
     { field: 'DTC_ID',headerName: 'DTC_ID', resizable: true,width: 100 },
@@ -326,7 +204,7 @@ const DTCRESULT = () => {
     <div className="dtcresult">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          <div className="tracuuDataInspectionform">
+          <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className="forminput">
               <div className="forminputcolumn">
                 <label>

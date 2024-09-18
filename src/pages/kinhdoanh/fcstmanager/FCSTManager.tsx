@@ -27,6 +27,7 @@ import { TbLogout } from "react-icons/tb";
 import { FCSTTableData } from "../../../api/GlobalInterface";
 
 const FCSTManager = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -2652,7 +2653,7 @@ const FCSTManager = () => {
       {selection.trapo && (
         <div className="tracuuFcst">
           {showhidesearchdiv && (
-            <div className="tracuuFcstform">
+            <div className="tracuuFcstform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <div className="forminput">
                 <div className="forminputcolumn">
                   <label>
@@ -2834,7 +2835,7 @@ const FCSTManager = () => {
               </div>
             </div>
           )}
-          <div className="tracuuFcstTable">
+          <div className="tracuuFcstTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <DataGrid
               slots={{
                 toolbar: CustomToolbarPOTable,

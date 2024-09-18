@@ -2,12 +2,25 @@ import { IconButton, Button } from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import "./CUST_MANAGER2.scss";
+import "./CUST_MANAGER.scss";
 import { generalQuery } from "../../../api/Api";
 import { CUST_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { zeroPad } from "../../../api/GlobalFunction";
+import { BiLoaderCircle } from "react-icons/bi";
+import { MdAdd } from "react-icons/md";
+import CustomDialog from "../../../components/Dialog/CustomDialog";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const CUST_MANAGER = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
   const [selectedRows, setSelectedRows] = useState<CUST_INFO>({
     id: "1",
@@ -199,8 +212,27 @@ const CUST_MANAGER = () => {
   const customerDataTableAG = useMemo(() => {
     return (
       <AGTable
+        suppressRowClickSelection={false}
         toolbar={
           <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleCUSTINFO();
+              }}
+            >
+              <BiLoaderCircle color="#06cc70" size={15} />
+              Load Data
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleOpenDialog();
+              }}
+            >
+              <MdAdd color="#1c44f5" size={15} />
+              Add/Update
+            </IconButton>
           </div>}
         columns={columns}
         data={custinfodatatable}
@@ -221,180 +253,173 @@ const CUST_MANAGER = () => {
     handleCUSTINFO();    
   }, []);
   return (
-    <div className="cust_manager2">
+    <div className="cust_manager">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>Mã KH:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mã khách hàng"
-                  value={selectedRows?.CUST_CD}
-                  onChange={(e) => setCustInfo("CUST_CD", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tên KH(KD):</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Tên khách hàng"
-                  value={selectedRows?.CUST_NAME_KD}
-                  onChange={(e) => setCustInfo("CUST_NAME_KD", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tên KH(FULL):</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Tên khách hàng"
-                  value={selectedRows?.CUST_NAME}
-                  onChange={(e) => setCustInfo("CUST_NAME", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Địa chỉ chính:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Địa chỉ"
-                  value={selectedRows?.CUST_ADDR1}
-                  onChange={(e) => setCustInfo("CUST_ADDR1", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Địa chỉ 2:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Địa chỉ"
-                  value={selectedRows?.CUST_ADDR2}
-                  onChange={(e) => setCustInfo("CUST_ADDR2", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Địa chỉ 3:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Địa chỉ"
-                  value={selectedRows?.CUST_ADDR3}
-                  onChange={(e) => setCustInfo("CUST_ADDR3", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>MST</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mã số thuế"
-                  value={selectedRows?.TAX_NO}
-                  onChange={(e) => setCustInfo("TAX_NO", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Số ĐT:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Số điện thoại"
-                  value={selectedRows?.CUST_NUMBER}
-                  onChange={(e) => setCustInfo("CUST_NUMBER", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tên chủ:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Tên chủ"
-                  value={selectedRows?.BOSS_NAME}
-                  onChange={(e) => setCustInfo("BOSS_NAME", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Số phone:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Số phone"
-                  value={selectedRows?.TEL_NO1}
-                  onChange={(e) => setCustInfo("TEL_NO1", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Fax:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="FAX"
-                  value={selectedRows?.FAX_NO}
-                  onChange={(e) => setCustInfo("FAX_NO", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Mã bưu điện:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mã bưu điện"
-                  value={selectedRows?.CUST_POSTAL}
-                  onChange={(e) => setCustInfo("CUST_POSTAL", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Remark:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Ghi chú"
-                  value={selectedRows?.REMK}
-                  onChange={(e) => setCustInfo("REMK", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Email:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Email"
-                  value={selectedRows?.EMAIL}
-                  onChange={(e) => setCustInfo("REMK", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Phân loại:</b>{" "}
-                <select
-                  name="plvendor"
-                  value={selectedRows?.CUST_TYPE}
-                  onChange={(e) => {
-                    setCustInfo("CUST_TYPE", e.target.value);
-                  }}
-                >
-                  <option value="KH">Khách Hàng</option>
-                  <option value="NCC">Nhà Cung Cấp</option>
-                </select>
-              </label>
-            </div>
-          </div>
-          <div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#afc016' }} onClick={() => {
-              handleCUSTINFO();
-            }}>Load</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
+          <CustomDialog
+            isOpen={openDialog}
+            onClose={handleCloseDialog}
+            title={`Add/Update Customer (CUST_CD: ${selectedRows?.CUST_CD})`}
+            content={<div className="forminput" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Mã KH:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Mã khách hàng"
+                    value={selectedRows?.CUST_CD}
+                    onChange={(e) => setCustInfo("CUST_CD", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Tên KH(KD):</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Tên khách hàng"
+                    value={selectedRows?.CUST_NAME_KD}
+                    onChange={(e) => setCustInfo("CUST_NAME_KD", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Tên KH(FULL):</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Tên khách hàng"
+                    value={selectedRows?.CUST_NAME}
+                    onChange={(e) => setCustInfo("CUST_NAME", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Địa chỉ chính:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Địa chỉ"
+                    value={selectedRows?.CUST_ADDR1}
+                    onChange={(e) => setCustInfo("CUST_ADDR1", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Địa chỉ 2:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Địa chỉ"
+                    value={selectedRows?.CUST_ADDR2}
+                    onChange={(e) => setCustInfo("CUST_ADDR2", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Địa chỉ 3:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Địa chỉ"
+                    value={selectedRows?.CUST_ADDR3}
+                    onChange={(e) => setCustInfo("CUST_ADDR3", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>MST</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Mã số thuế"
+                    value={selectedRows?.TAX_NO}
+                    onChange={(e) => setCustInfo("TAX_NO", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Số ĐT:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Số điện thoại"
+                    value={selectedRows?.CUST_NUMBER}
+                    onChange={(e) => setCustInfo("CUST_NUMBER", e.target.value)}
+                  ></input>
+                </label>
+              </div>           
+              
+              <div className="forminputcolumn">
+                
+                <label>
+                  <b>Tên chủ:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Tên chủ"
+                    value={selectedRows?.BOSS_NAME}
+                    onChange={(e) => setCustInfo("BOSS_NAME", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Số phone:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Số phone"
+                    value={selectedRows?.TEL_NO1}
+                    onChange={(e) => setCustInfo("TEL_NO1", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Fax:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="FAX"
+                    value={selectedRows?.FAX_NO}
+                    onChange={(e) => setCustInfo("FAX_NO", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Mã bưu điện:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Mã bưu điện"
+                    value={selectedRows?.CUST_POSTAL}
+                    onChange={(e) => setCustInfo("CUST_POSTAL", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Remark:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Ghi chú"
+                    value={selectedRows?.REMK}
+                    onChange={(e) => setCustInfo("REMK", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Email:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    value={selectedRows?.EMAIL}
+                    onChange={(e) => setCustInfo("REMK", e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Phân loại:</b>{" "}
+                  <select
+                    name="plvendor"
+                    value={selectedRows?.CUST_TYPE}
+                    onChange={(e) => {
+                      setCustInfo("CUST_TYPE", e.target.value);
+                    }}
+                  >
+                    <option value="KH">Khách Hàng</option>
+                    <option value="NCC">Nhà Cung Cấp</option>
+                  </select>
+                </label>
+              </div>
+            </div>}
+            actions={<div className="formbutton">
+               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
               createNewCustomer(selectedRows.CUST_TYPE);
-            }}>New</Button>
-          </div>
-          <div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
-              handle_addCustomer();
-            }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={() => {
-              handle_editCustomer();
-            }}>Update</Button>
-          </div>
+            }}>Clear</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
+                handle_addCustomer();
+              }}>Add</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={() => {
+                handle_editCustomer();
+              }}>Update</Button>
+            </div>}
+            />
+             
         </div>
         <div className="tracuuYCSXTable">{customerDataTableAG}</div>
       </div>
