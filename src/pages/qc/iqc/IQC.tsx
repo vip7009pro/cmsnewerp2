@@ -8,6 +8,7 @@ import DKDTC from "../dtc/DKDTC";
 import DTC from "../dtc/DTC";
 import HOLD_FAIL from "./HOLD_FAIL";
 import NCR_MANAGER from "./NCR_MANAGER";
+import KHCT from "../../qlsx/QLSXPLAN/KHCT/KHCT";
 
 const IQC = () => {
   const [selection, setSelection] = useState<any>({
@@ -141,6 +142,11 @@ const IQC = () => {
       {selection.tab4 && (
         <div className="datadtc">
           <NCR_MANAGER />
+        </div>
+      )}
+      {selection.tab5 && (
+        <div className="datadtc">
+          <KHCT />
         </div>
       )}
     </div>

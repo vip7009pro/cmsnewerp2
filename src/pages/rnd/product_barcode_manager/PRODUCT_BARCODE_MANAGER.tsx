@@ -47,7 +47,10 @@ import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const PRODUCT_BARCODE_MANAGER = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<
     Array<MATERIAL_TABLE_DATA>
@@ -1122,12 +1125,12 @@ const PRODUCT_BARCODE_MANAGER = () => {
   return (
     <div className="product_barcode_mamanger">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>
                 <Autocomplete
-                  sx={{ fontSize: "0.6rem" }}
+                  sx={{ fontSize: "0.6rem", border: "none" }}
                   ListboxProps={{ style: { fontSize: "0.7rem" } }}
                   size="small"
                   disablePortal
