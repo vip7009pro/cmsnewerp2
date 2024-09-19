@@ -30,14 +30,19 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, width }) => {
             className="plan-block"
             style={{ width: `${planWidth}%`, backgroundColor: color,}}
           >
-            <div className="plan-content">
+            {plan.PROD_REQUEST_NO !=='' && <div className="plan-content">
               <div>{moment.utc(plan.productionPlanDate).format('YYYY-MM-DD HH:mm')}</div>              
               <div>{plan.G_NAME_KD}</div>
               <div>{plan.PROD_REQUEST_NO} / {plan.G_CODE}</div>
               <div>{plan.productionPlanTime?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} mins</div>
               <div>{plan.PROD_MAIN_MATERIAL}</div>
               <div>{plan.DELIVERY_DT}/{plan.G_WIDTH} x {plan.G_LENGTH} mm</div>              
-            </div>
+            </div>}
+            {plan.PROD_REQUEST_NO ==='' && <div className="plan-content">
+              OFF        
+              <div>{moment.utc(plan.productionPlanDate).format('YYYY-MM-DD HH:mm')}</div>
+              <div>{plan.productionPlanTime?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} mins</div>    
+            </div>}
           </div>
         );
       })}
