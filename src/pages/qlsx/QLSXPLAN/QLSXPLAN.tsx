@@ -1,5 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import "./QLSXPLAN.scss";
+import KHCT from "./KHCT/KHCT";
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
 const ACHIVEMENTTB = React.lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
 const LICHSUINPUTLIEU = React.lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
@@ -209,12 +210,7 @@ const QLSXPLAN = () => {
             }}
           >
             <span className="mininavtext">PLAN VISUAL</span>
-          </div>
-          {/*  <div className='mininavitem'  onClick={() => setNav(9)} style={{backgroundColor:selection.tab9 === true ? '#02c712':'#abc9ae', color: selection.tab9 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-            KH-CT
-          </span>
-        </div>   */}
+          </div>         
           <div
             className="mininavitem"
             onClick={() => setNav(4)}
@@ -224,12 +220,17 @@ const QLSXPLAN = () => {
             }}
           >
             <span className="mininavtext">QUICK PLAN</span>
-          </div>
-          {/*  <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#02c712':'#abc9ae', color: selection.tab2 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-            PLAN YCSX
-          </span>
-        </div>   */}
+          </div>        
+          <div
+            className="mininavitem"
+            onClick={() => setNav(11)}
+            style={{
+              backgroundColor: selection.tab11 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab11 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">AUTO PLAN</span>
+          </div>        
           <div
             className="mininavitem"
             onClick={() => setNav(5)}
@@ -359,6 +360,11 @@ const QLSXPLAN = () => {
         {selection.tab10 && (
           <div className="datadtc">
             <KHOAO />
+          </div>
+        )}
+        {selection.tab11 && (
+          <div className="datadtc">
+            <KHCT />
           </div>
         )}
       </Suspense>

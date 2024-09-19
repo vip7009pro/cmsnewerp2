@@ -13,6 +13,7 @@ import {
   EQ_STT,
   FCSTTDYCSX,
   InvoiceTableData,
+  LEADTIME_DATA,
   LICHSUINPUTLIEU_DATA,
   LICHSUNHAPKHOAO,
   LICHSUXUATKHOAO,
@@ -4897,3 +4898,28 @@ export const f_handleGETBOMAMAZON = async (G_CODE: string) => {
     });
   return kq;
 };
+
+export const f_loadLeadtimeData = async () => {
+  let kq: LEADTIME_DATA[] = [];
+  await generalQuery("loadLeadtimeData", {
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: LEADTIME_DATA[] = response.data.data.map(
+          (element: LEADTIME_DATA, index: number) => {
+            return {
+              ...element,
+              DELIVERY_DT: moment.utc(element.DELIVERY_DT).format("YYYY-MM-DD"),  
+              id: index,
+            };
+          },
+        );
+        kq = loadeddata;  
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error); 
+    });
+  return kq;
+}

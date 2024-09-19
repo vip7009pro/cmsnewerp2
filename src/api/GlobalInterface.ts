@@ -4130,3 +4130,66 @@ export interface PLAN_LOSS_DATA {
   PLAN_LOSS_RATE: number,
   ACTUAL_LOSS_RATE: number, 
 }
+
+export interface LEADTIME_DATA {
+  MACHINE: string,
+  FACTORY: string,
+  Setting1: number,
+  Setting2: number,
+  Step1 : number,
+  Step2 : number,
+  UPH1 : number,
+  UPH2 : number,
+  Step3 : number,
+  Step4 : number,
+  DELIVERY_DT: string,
+  EQ1: string,
+  EQ2: string,
+  EQ3: string,
+  EQ4: string,
+  UPH3 : number,
+  UPH4 : number,
+  Setting3 : number,
+  Setting4 : number,
+  G_CODE: string,
+  PROD_MAIN_MATERIAL: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  G_WIDTH: number,
+  G_LENGTH: number,
+  PROD_REQUEST_NO: string,
+  CD1: number,
+  CD2: number,
+  CD3: number,
+  CD4: number,
+  SLC_CD1: number,
+  SLC_CD2: number,
+  SLC_CD3: number,
+  SLC_CD4: number,
+  TCD1: number,
+  TCD2: number,
+  TCD3: number,
+  TCD4: number,
+  LT1: number,
+  LT2: number,
+  LT3: number,
+  LT4: number,
+  LEADTIME: number,
+  TCD: number
+
+}
+
+export interface ProductionPlan {
+  PROD_REQUEST_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  G_CODE: string;
+  EQ_NAME: string;
+  productionPlanDate: string;
+  productionPlanQty: number;
+  productionPlanTime: number; // Đơn vị: phút
+  PROD_MAIN_MATERIAL: string;
+  G_WIDTH: number;
+  G_LENGTH: number;
+  DELIVERY_DT: string; 
+}
