@@ -232,7 +232,7 @@ const KHCT = () => {
     return plans;
   }
   // Hàm lập kế hoạch sản xuất
-  function createProductionPlan3(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
+  function createProductionPlan(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
       // Sắp xếp đơn hàng theo ngày giao hàng
       orders.sort((a, b) => new Date(a.DELIVERY_DT).getTime() - new Date(b.DELIVERY_DT).getTime());
       // Gom nhóm đơn hàng theo kích thước khuôn
@@ -322,83 +322,75 @@ const KHCT = () => {
 
 
 // Hàm lập kế hoạch sản xuất
-  function createProductionPlan(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
-    // Sắp xếp đơn hàng theo ngày giao hàng
-    orders.sort((a, b) => moment(a.DELIVERY_DT).diff(moment(b.DELIVERY_DT)));
+function createProductionPlan3(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
+  // Sắp xếp đơn hàng theo ngày giao hàng
+  orders.sort((a, b) => moment(a.DELIVERY_DT).diff(moment(b.DELIVERY_DT)));
 
-    // Gom nhóm đơn hàng theo kích thước khuôn
-    const groupedByMold = groupBy(orders, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
+  // Gom nhóm đơn hàng theo kích thước khuôn
+  const groupedByMold = groupBy(orders, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
 
-    const plans: ProductionPlan[] = [];
-    const availableMachines = equipments.flatMap(eq => Array(8).fill(eq.EQ_NAME));
+  const plans: ProductionPlan[] = [];
+  const availableMachines = equipments.flatMap(eq => Array(1).fill(eq.EQ_NAME));
 
-    // Duyệt qua từng nhóm kích thước khuôn
-    for (const moldGroup of groupedByMold.values()) {
-      // Gom nhóm theo vật liệu
-      const groupedByMaterial = groupBy(moldGroup, order => order.PROD_MAIN_MATERIAL);
+  // Duyệt qua từng nhóm kích thước khuôn
+  for (const moldGroup of groupedByMold.values()) {
+    // Gom nhóm theo vật liệu
+    const groupedByMaterial = groupBy(moldGroup, order => order.PROD_MAIN_MATERIAL);
 
-      for (const materialGroup of groupedByMaterial.values()) {
-        for (const order of materialGroup) {
-          let remainingQty = order.TCD;
-          let currentDate = moment();
+    for (const materialGroup of groupedByMaterial.values()) {
+      for (const order of materialGroup) {
+        let currentDate = moment();
 
-          while (remainingQty > 0) {
-            for (const machine of availableMachines) {
-              if (remainingQty <= 0) break;
-
-              // Nếu không trong giờ làm việc, thêm kế hoạch rỗng và điều chỉnh thời gian
-              if (!isWorkingTime(currentDate)) {
-                let nextWorkingStart = currentDate.clone();
-                if (currentDate.hour() >= DAY_SHIFT_END_HOUR && currentDate.hour() < NIGHT_SHIFT_START_HOUR) {
-                  nextWorkingStart = currentDate.clone().hour(NIGHT_SHIFT_START_HOUR).minute(0);
-                } else {
-                  nextWorkingStart = nextWorkingStart.add(1, 'day').hour(DAY_SHIFT_START_HOUR).minute(0);
-                }
-                plans.push({
-                  PROD_REQUEST_NO: '',
-                  G_CODE: '',
-                  G_NAME: '',
-                  G_NAME_KD: '',
-                  EQ_NAME: machine,
-                  productionPlanDate: currentDate.format('YYYY-MM-DD HH:mm'),
-                  productionPlanQty: 0,
-                  productionPlanTime: 0,
-                  PROD_MAIN_MATERIAL: '',
-                  G_WIDTH: 0,
-                  G_LENGTH: 0,
-                  DELIVERY_DT: ''
-                });
-                currentDate = nextWorkingStart;
-                continue;
-              }
-
-              const productionPlanQty = Math.min(remainingQty, order.TCD);
-              plans.push({
-                PROD_REQUEST_NO: order.PROD_REQUEST_NO,
-                G_CODE: order.G_CODE,
-                G_NAME: order.G_NAME,
-                G_NAME_KD: order.G_NAME_KD,
-                EQ_NAME: machine,
-                productionPlanDate: currentDate.format('YYYY-MM-DD HH:mm'),
-                productionPlanQty: productionPlanQty,
-                productionPlanTime: order.LEADTIME,
-                PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
-                G_WIDTH: order.G_WIDTH,
-                G_LENGTH: order.G_LENGTH,
-                DELIVERY_DT: order.DELIVERY_DT
-              });
-
-              remainingQty -= productionPlanQty;
-              currentDate = currentDate.add(order.LEADTIME, 'minutes');
+        for (const machine of availableMachines) {
+          // Nếu không trong giờ làm việc, thêm kế hoạch rỗng và điều chỉnh thời gian
+          if (!isWorkingTime(currentDate)) {
+            let nextWorkingStart = currentDate.clone();
+            if (currentDate.hour() >= DAY_SHIFT_END_HOUR && currentDate.hour() < NIGHT_SHIFT_START_HOUR) {
+              nextWorkingStart = currentDate.clone().hour(NIGHT_SHIFT_START_HOUR).minute(0);
+            } else {
+              nextWorkingStart = nextWorkingStart.add(1, 'day').hour(DAY_SHIFT_START_HOUR).minute(0);
             }
+            plans.push({
+              PROD_REQUEST_NO: '',
+              G_CODE: '',
+              G_NAME: '',
+              G_NAME_KD: '',
+              EQ_NAME: machine,
+              productionPlanDate: currentDate.format('YYYY-MM-DD HH:mm'),
+              productionPlanTime: nextWorkingStart.diff(currentDate, 'minutes'),
+              DELIVERY_DT: '',
+              G_WIDTH: 0,
+              G_LENGTH: 0,
+              PROD_MAIN_MATERIAL: '',
+              productionPlanQty: 0
+            });
+            currentDate = nextWorkingStart;
+            continue;
           }
+
+          plans.push({
+            PROD_REQUEST_NO: order.PROD_REQUEST_NO,
+            G_CODE: order.G_CODE,
+            G_NAME: order.G_NAME,
+            G_NAME_KD: order.G_NAME_KD,
+            EQ_NAME: machine,
+            productionPlanDate: currentDate.format('YYYY-MM-DD HH:mm'),
+            productionPlanQty: order.TCD,
+            productionPlanTime: order.LEADTIME,
+            DELIVERY_DT: order.DELIVERY_DT,
+            G_WIDTH: order.G_WIDTH,
+            G_LENGTH: order.G_LENGTH,
+            PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,           
+          });
+
+          currentDate = currentDate.add(order.LEADTIME, 'minutes');
         }
       }
     }
-
-    return plans;
   }
 
+  return plans;
+}
 
 
 
