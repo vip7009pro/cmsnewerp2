@@ -85,7 +85,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
   const [stepnumber, setStepNumber] = useState(0);
   const [plan_date, setPlanDate] = useState(moment().format("YYYY-MM-DD"));
   const [plan_factory, setPlanFactory] = useState("NM1");
-  const [planeq, setPlanEq] = useState("");
+  const [planeq, setPlanEq] = useState(EQ_NAME);
   const [nextplan, setNextPlan] = useState("");
   const [isSetting, setIsSetting] = useState(true);
   const [tempYCSX, setTempYCSX] = useState<YCSXTableData[]>([]);
@@ -1895,7 +1895,48 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
               </label>
               <label>
                 <b>PROCESS_NUMBER:</b>
-                <input style={{ color: 'black', fontWeight: 'bold' }} type="text" value={processnumber} onChange={(e) => setProcessNumber(Number(e.target.value))}></input>
+                <input style={{ color: 'black', fontWeight: 'bold' }} type="text" value={processnumber} onChange={(e) => {
+                  const temp_processnumber = Number(e.target.value)
+                  if (temp_processnumber > 0 && temp_processnumber < 5) {
+                    setProcessNumber(temp_processnumber)
+                    let UPH1: number = tempYCSX[0].UPH1 ?? 999999999;
+                    let UPH2: number = tempYCSX[0].UPH2 ?? 999999999;
+                    let UPH3: number = tempYCSX[0].UPH3 ?? 999999999;
+                    let UPH4: number = tempYCSX[0].UPH4 ?? 999999999;
+                    if(temp_processnumber === 1)
+                    {
+                      setTempSLC(tempYCSX[0].SLC_CD1 ?? 0)
+                      setTempCD(tempYCSX[0].CD1 ?? 0)
+                      setTempTON_CD(tempYCSX[0].TON_CD1 ?? 0)
+                      setPlanQty(tempYCSX[0].TON_CD1 <= 0 ? 0 : tempYCSX[0].TON_CD1 < UPH1 * qtyFactor ? tempYCSX[0].TON_CD1 : UPH1 * qtyFactor)
+                    }
+                    else if(temp_processnumber === 2)
+                    {
+                      setTempSLC(tempYCSX[0].SLC_CD2 ?? 0)
+                      setTempCD(tempYCSX[0].CD2 ?? 0)
+                      setTempTON_CD(tempYCSX[0].TON_CD2 ?? 0)
+                      setPlanQty(tempYCSX[0].TON_CD2 <= 0 ? 0 : tempYCSX[0].TON_CD2 < UPH2 * qtyFactor ? tempYCSX[0].TON_CD2 : UPH2 * qtyFactor)
+                    }
+                    else if(temp_processnumber === 3)
+                    {
+                      setTempSLC(tempYCSX[0].SLC_CD3 ?? 0)
+                      setTempCD(tempYCSX[0].CD3 ?? 0)
+                      setTempTON_CD(tempYCSX[0].TON_CD3 ?? 0)
+                      setPlanQty(tempYCSX[0].TON_CD3 <= 0 ? 0 : tempYCSX[0].TON_CD3 < UPH3 * qtyFactor ? tempYCSX[0].TON_CD3 : UPH3 * qtyFactor)
+                    } 
+                    else if(temp_processnumber === 4)
+                    {
+                      setTempSLC(tempYCSX[0].SLC_CD4 ?? 0)
+                      setTempCD(tempYCSX[0].CD4 ?? 0)
+                      setTempTON_CD(tempYCSX[0].TON_CD4 ?? 0)
+                      setPlanQty(tempYCSX[0].TON_CD4 <= 0 ? 0 : tempYCSX[0].TON_CD4 < UPH4 * qtyFactor ? tempYCSX[0].TON_CD4 : UPH4 * qtyFactor)
+                    } 
+
+                  }
+                  else {
+                    setProcessNumber(0)
+                  }
+                  }}></input>
               </label>
               <label>
                 <b>STEP:</b>
@@ -1903,7 +1944,45 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
               </label>
               <label>
                 <b>PLAN_EQ:</b>
-                <input style={{ color: 'black', fontWeight: 'bold' }} type="text" value={planeq} onChange={(e) => setPlanEq(e.target.value)}></input>
+                <input style={{ color: 'black', fontWeight: 'bold' }} type="text" value={planeq} onChange={(e) =>{ 
+                  setPlanEq(e.target.value.toUpperCase())
+                  if(e.target.value.length > 3)
+                  {
+                    let plan_temp = e.target.value.substring(0, 2).toUpperCase();
+                    let UPH1: number = tempYCSX[0].UPH1 ?? 999999999;
+                  let UPH2: number = tempYCSX[0].UPH2 ?? 999999999;
+                  let UPH3: number = tempYCSX[0].UPH3 ?? 999999999;
+                  let UPH4: number = tempYCSX[0].UPH4 ?? 999999999;
+                  if (plan_temp === tempYCSX[0]?.EQ1) {
+                    setTempSLC(tempYCSX[0].SLC_CD1 ?? 0)
+                    setTempTON_CD(tempYCSX[0].TON_CD1 ?? 0)
+                    setTempCD(tempYCSX[0].CD1 ?? 0)
+                    setProcessNumber(1)
+                    setPlanQty(tempYCSX[0].TON_CD1 <= 0 ? 0 : tempYCSX[0].TON_CD1 < UPH1 * qtyFactor ? tempYCSX[0].TON_CD1 : UPH1 * qtyFactor)
+                  }
+                  else if (plan_temp === tempYCSX[0]?.EQ2) {
+                    setTempSLC(tempYCSX[0].SLC_CD2 ?? 0)
+                    setTempTON_CD(tempYCSX[0].TON_CD2 ?? 0)
+                    setTempCD(tempYCSX[0].CD2 ?? 0)
+                    setProcessNumber(2)
+                    setPlanQty(tempYCSX[0].TON_CD2 <= 0 ? 0 : tempYCSX[0].TON_CD2 < UPH2 * qtyFactor ? tempYCSX[0].TON_CD2 : UPH2 * qtyFactor)
+                  }
+                  else if (plan_temp === tempYCSX[0]?.EQ3) {
+                    setTempSLC(tempYCSX[0].SLC_CD3 ?? 0)
+                    setTempTON_CD(tempYCSX[0].TON_CD3 ?? 0)
+                    setTempCD(tempYCSX[0].CD3 ?? 0)
+                    setProcessNumber(3)
+                    setPlanQty(tempYCSX[0].TON_CD3 <= 0 ? 0 : tempYCSX[0].TON_CD3 < UPH3 * qtyFactor ? tempYCSX[0].TON_CD3 : UPH3 * qtyFactor)
+                  }
+                  else if (plan_temp === tempYCSX[0]?.EQ4) {
+                    setTempSLC(tempYCSX[0].SLC_CD4 ?? 0)
+                    setTempTON_CD(tempYCSX[0].TON_CD4 ?? 0)
+                    setTempCD(tempYCSX[0].CD4 ?? 0)
+                    setProcessNumber(4)
+                    setPlanQty(tempYCSX[0].TON_CD4 <= 0 ? 0 : tempYCSX[0].TON_CD4 < UPH4 * qtyFactor ? tempYCSX[0].TON_CD4 : UPH4 * qtyFactor)
+                  }
+                }
+                  }}></input>
               </label>
               <label>
                 <b>NEXT PLAN:</b>

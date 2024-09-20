@@ -13,7 +13,7 @@ interface MachineTimeLineProps {
   searchProduct: string;
 }
 
-const colors = ['#FF9999', '#66B2FF', '#58d858', '#FFCC99', '#FF99CC']; // Màu sắc cho các kế hoạch
+const colors = ['#edbaba', '#66B2FF', '#58d858', '#FFCC99', '#FF99CC']; // Màu sắc cho các kế hoạch
 
 const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick, width, searchProduct }) => {
   const totalPlanTime = plans.reduce((total, plan) => total + plan.productionPlanTime, 0);
@@ -46,10 +46,10 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
           >
             {plan.PROD_REQUEST_NO !=='' && <div className="plan-content">
               <div>{moment.utc(plan.productionPlanDate).format('YYYY-MM-DD HH:mm')}</div>              
-              <div>{plan.G_NAME_KD}</div>
+              <div style={{fontSize: '12px', fontWeight: 'bold', color: '#4039ac'}}>{plan.G_NAME_KD}</div>
               <div>{plan.PROD_REQUEST_NO} / {plan.G_CODE}</div>
               <div>{plan.productionPlanTime?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} mins / TCD: {plan.productionPlanQty.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} EA</div>
-              <div>{plan.PROD_MAIN_MATERIAL}</div>
+              <div style={{fontSize: '12px', fontWeight: 'normal', color: '#0d5624'}}>{plan.PROD_MAIN_MATERIAL}</div>
               <div>RQ: {plan.PROD_REQUEST_DATE} / GH: {plan.DELIVERY_DT} / {plan.G_WIDTH} x {plan.G_LENGTH} mm</div>              
             </div>}
             {plan.PROD_REQUEST_NO ==='' && <div className="plan-content">
