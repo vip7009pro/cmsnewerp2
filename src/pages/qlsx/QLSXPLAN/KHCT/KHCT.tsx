@@ -7,14 +7,17 @@ import MachineTimeLine from './MachineTimeLine';
 import DateMarkers from './DateMarkers';
 import { EQ_STT, LEADTIME_DATA, ProductionPlan } from '../../../../api/GlobalInterface';
 import Swal from 'sweetalert2';
-import { IconButton } from '@mui/material';
+import { Button, FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, TextField } from '@mui/material';
 import { MdCreate } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
-
+import { MinPriorityQueue } from '@datastructures-js/priority-queue';
+import CustomDialog from '../../../../components/Dialog/CustomDialog';
+import AddPlanDialog from '../QUICKPLAN/AddPlanDialog';
 
 const KHCT = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
   const [plans, setPlans] = useState<ProductionPlan[]>([])
   const [FRplans, setFRPlans] = useState<ProductionPlan[]>([])
   const [SRplans, setSRPlans] = useState<ProductionPlan[]>([])
@@ -29,17 +32,41 @@ const KHCT = () => {
   const [EDleadtimeData, EDsetLeadtimeData] = useState<LEADTIME_DATA[]>([])
   const [eq_series, setEqSeries] = useState<string[]>([])
   const [eq_status, setEqStatus] = useState<EQ_STT[]>([])
+  const [FReq_status, setFReqStatus] = useState<EQ_STT[]>([])
+  const [SReq_status, setSReqStatus] = useState<EQ_STT[]>([])
+  const [DCeq_status, setDCeqStatus] = useState<EQ_STT[]>([])
+  const [EDeq_status, setEDeqStatus] = useState<EQ_STT[]>([])
   const [overtimeday, setOvertimeDay] = useState<boolean>(false)
   const [overtimenight, setOvertimeNight] = useState<boolean>(false)
   const [showFR, setShowFR] = useState<boolean>(true)
   const [showSR, setShowSR] = useState<boolean>(true)
   const [showDC, setShowDC] = useState<boolean>(true)
   const [showED, setShowED] = useState<boolean>(true)
-  const [createPlanMethod, setCreatePlanMethod] = useState<string>('method1')
+  const [createPlanMethod, setCreatePlanMethod] = useState<string>('method8')
+  const [PROD_REQUEST_NO  , setPROD_REQUEST_NO] = useState<string>('')
+  const [G_CODE, setG_CODE] = useState<string>('')  
+  const [EQ_NAME, setEQ_NAME] = useState<string>('')
+  const [searchProduct, setSearchProduct] = useState<string>('')
+  const handleOpenDialog = () => {
+    setOpenDialog(true)
+  }
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
+  }
   const handleLoadEQ_STATUS = async () => {
     const data = await f_handle_loadEQ_STATUS()
     setEqSeries(data.EQ_SERIES)
     setEqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK'))
+    setFReqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('FR')))
+    setSReqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('SR')))
+    setDCeqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('DC')))
+    setEDeqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('ED'))) 
+    return {
+      FReq_status: data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('FR')),
+      SReq_status: data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('SR')),
+      DCeq_status: data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('DC')),
+      EDeq_status: data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('ED'))
+    }
   }
   const handleLoadLeadtimeData = async () => {
     Swal.fire({
@@ -50,6 +77,7 @@ const KHCT = () => {
       }
     })
     const data = await f_loadLeadtimeData();
+    const {FReq_status, SReq_status, DCeq_status, EDeq_status} = await handleLoadEQ_STATUS()
     const FRdata = data.filter(item => item.MACHINE === 'FR' && item.LEADTIME>0)
     const SRdata = data.filter(item => item.MACHINE === 'SR' && item.LEADTIME>0)
     const DCdata = data.filter(item => item.MACHINE === 'DC' && item.LEADTIME>0)
@@ -59,6 +87,12 @@ const KHCT = () => {
     SRsetLeadtimeData(SRdata)
     DCsetLeadtimeData(DCdata)
     EDsetLeadtimeData(EDdata)
+    let plans = await handleCreatePlan(FRdata, SRdata, DCdata, EDdata, FReq_status, SReq_status, DCeq_status, EDeq_status);
+    
+    setFRPlans(plans.FRplans)
+    setSRPlans(plans.SRplans)
+    setDCPlans(plans.DCplans)
+    setEDPlans(plans.EDplans)
     Swal.close()
   }
   // Hàm kiểm tra xem thời gian có trong giờ hành chính hay không
@@ -146,7 +180,8 @@ const KHCT = () => {
               PROD_MAIN_MATERIAL: '',
               G_WIDTH: 0,
               G_LENGTH: 0,
-              DELIVERY_DT: ''
+              DELIVERY_DT: '',
+              PROD_REQUEST_DATE: ''
             });
             machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
             continue;
@@ -164,7 +199,8 @@ const KHCT = () => {
               PROD_MAIN_MATERIAL: '',
               G_WIDTH: 0,
               G_LENGTH: 0,
-              DELIVERY_DT: ''
+              DELIVERY_DT: '',
+              PROD_REQUEST_DATE: ''
             });
             machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
             continue;
@@ -183,7 +219,8 @@ const KHCT = () => {
           PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
           G_WIDTH: order.G_WIDTH,
           G_LENGTH: order.G_LENGTH,
-          DELIVERY_DT: order.DELIVERY_DT
+          DELIVERY_DT: order.DELIVERY_DT,
+          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
         });
         machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + productionTime);
         remainingProductionTime -= productionTime;
@@ -201,7 +238,8 @@ const KHCT = () => {
             PROD_MAIN_MATERIAL: '',
             G_WIDTH: 0,
             G_LENGTH: 0,
-            DELIVERY_DT: ''
+            DELIVERY_DT: '',
+            PROD_REQUEST_DATE: ''
           });
           machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
         } else if (remainingProductionTime > 0 && (planStartTime + productionTime) >= workingHoursEndNight && planStartTime >= workingHoursStartNight) {
@@ -218,7 +256,8 @@ const KHCT = () => {
             PROD_MAIN_MATERIAL: '',
             G_WIDTH: 0,
             G_LENGTH: 0,
-            DELIVERY_DT: ''
+            DELIVERY_DT: '',
+            PROD_REQUEST_DATE: ''
           });
           machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
         }
@@ -270,7 +309,8 @@ const KHCT = () => {
                   PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
                   G_WIDTH: order.G_WIDTH,
                   G_LENGTH: order.G_LENGTH,
-                  DELIVERY_DT: order.DELIVERY_DT
+                  DELIVERY_DT: order.DELIVERY_DT,
+                  PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
                 });
                 remainingQty -= productionPlanQty;
                 machine.availableFrom = productionEndDate;
@@ -300,13 +340,10 @@ const KHCT = () => {
     });
     return map;
   }
-  const [width, setWidth] = useState(20);
+  const [width, setWidth] = useState(120);
   const handleWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWidth(Number(event.target.value));
   };
-
-
-
   const DAY_SHIFT_START_HOUR = 8;
   const DAY_SHIFT_END_HOUR = 17;
   const NIGHT_SHIFT_START_HOUR = 20;
@@ -324,15 +361,29 @@ const KHCT = () => {
   // Hàm lấy thời gian bắt đầu làm việc tiếp theo
   function getNextWorkingTime(date: moment.Moment): moment.Moment {
     const hour = date.hour();
-    if (hour >= DAY_SHIFT_END_HOUR && hour < NIGHT_SHIFT_START_HOUR) {
-        return date.clone().hour(NIGHT_SHIFT_START_HOUR).minute(0).second(0);
-    } else if (hour >= NIGHT_SHIFT_END_HOUR && hour < DAY_SHIFT_START_HOUR) {
-        return date.clone().hour(DAY_SHIFT_START_HOUR).minute(0).second(0);
-    } else if (hour >= NIGHT_SHIFT_START_HOUR) {
-        return date.clone().add(1, 'day').hour(DAY_SHIFT_START_HOUR).minute(0).second(0);
+    if (hour >= DAY_SHIFT_START_HOUR && hour < DAY_SHIFT_END_HOUR) {
+      return date;
+    } else if (hour >= NIGHT_SHIFT_START_HOUR || hour < NIGHT_SHIFT_END_HOUR) {
+      return date;
+    } else if (hour >= DAY_SHIFT_END_HOUR && hour < NIGHT_SHIFT_START_HOUR) {
+      return date.clone().hour(NIGHT_SHIFT_START_HOUR).minute(0);
+    } else {
+      return date.clone().add(1, 'day').hour(DAY_SHIFT_START_HOUR).minute(0);
     }
-    return date;
-}
+  }
+
+  function getWorkingEndTime(date: moment.Moment): moment.Moment {
+    const hour = date.hour();
+    if (hour >= DAY_SHIFT_START_HOUR && hour < DAY_SHIFT_END_HOUR) {
+      return date.clone().hour(DAY_SHIFT_END_HOUR).minute(0);
+    } else if (hour >= NIGHT_SHIFT_START_HOUR || hour < NIGHT_SHIFT_END_HOUR) {
+      return date.clone().hour(NIGHT_SHIFT_END_HOUR).minute(0);
+    } else {
+      return getNextWorkingTime(date);
+    }
+  }
+
+
 
 // Hàm lấy thời gian kết thúc ca làm việc
 function getWorkingTimeEnd(date: moment.Moment): moment.Moment {
@@ -344,7 +395,6 @@ function getWorkingTimeEnd(date: moment.Moment): moment.Moment {
   }
   return date;
 }
-
 // Hàm lập kế hoạch sản xuất
 function createProductionPlan4(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
   // Sắp xếp đơn hàng theo ngày giao hàng
@@ -390,7 +440,8 @@ function createProductionPlan4(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                           G_WIDTH: 0,
                           G_LENGTH: 0,
                           PROD_MAIN_MATERIAL: '',
-                          productionPlanQty: 0
+                          productionPlanQty: 0,
+                          PROD_REQUEST_DATE: ''
                       });
                       currentDate = nextWorkingStart;
                       machineCurrentDateTimes[machine] = currentDate;
@@ -413,7 +464,8 @@ function createProductionPlan4(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                       G_WIDTH: order.G_WIDTH,
                       G_LENGTH: order.G_LENGTH,
                       PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
-                      productionPlanQty: order.TCD
+                      productionPlanQty: order.TCD,
+                      PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
                   });
 
                   currentDate = currentDate.add(productionTimeForThisSlot, 'minutes');
@@ -470,7 +522,8 @@ function createProductionPlan3(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
               G_WIDTH: 0,
               G_LENGTH: 0,
               PROD_MAIN_MATERIAL: '',
-              productionPlanQty: 0
+              productionPlanQty: 0,
+              PROD_REQUEST_DATE: ''
             });
             currentDate = nextWorkingStart;
             continue;
@@ -488,7 +541,8 @@ function createProductionPlan3(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
             DELIVERY_DT: order.DELIVERY_DT,
             G_WIDTH: order.G_WIDTH,
             G_LENGTH: order.G_LENGTH,
-            PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,           
+            PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
+            PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,           
           });
 
           currentDate = currentDate.add(order.LEADTIME, 'minutes');
@@ -545,7 +599,8 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                               G_WIDTH: 0,
                               G_LENGTH: 0,
                               PROD_MAIN_MATERIAL: '',
-                              productionPlanQty: 0
+                              productionPlanQty: 0,
+                              PROD_REQUEST_DATE: ''
                           });
                           currentDate = nextWorkingStart;
                       }
@@ -567,7 +622,8 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                           G_WIDTH: order.G_WIDTH,
                           G_LENGTH: order.G_LENGTH,
                           PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
-                          productionPlanQty: order.TCD
+                          productionPlanQty: order.TCD,
+                          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
                       });
 
                       currentDate = currentDate.add(productionTimeForThisSlot, 'minutes');
@@ -586,57 +642,324 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
 
   return plans.sort((a, b) => a.EQ_NAME.localeCompare(b.EQ_NAME) || moment(a.productionPlanDate).diff(moment(b.productionPlanDate)));
 }
+// Tạo kế hoạch sản xuất sử dụng lý thuyết đồ thị
+function createProductionPlan6(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
+  // Sắp xếp đơn hàng theo ngày giao hàng
+  orders.sort((a, b) => moment(a.DELIVERY_DT).diff(moment(b.DELIVERY_DT)));
 
-  const handleCreatePlan = () => {
-    const startDate = new Date(Math.min(...plans.map(plan => new Date(plan.productionPlanDate).getTime())) - 7 * 60 * 60 * 1000);
-    const endDate = new Date(Math.max(...plans.map(plan => addMinutes(new Date(plan.productionPlanDate), plan.productionPlanTime).
-      getTime())) - 7 * 60 * 60 * 1000);
-      let tempFRPlan: ProductionPlan[] = []
-      let tempSRPlan: ProductionPlan[] = []
-      let tempDCPlan: ProductionPlan[] = []
-      let tempEDPlan: ProductionPlan[] = []
-      switch (createPlanMethod) {
-        case 'method1':
-          tempFRPlan = createProductionPlan(FRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'FR' && item.EQ_ACTIVE === 'OK'))
-          tempSRPlan = createProductionPlan(SRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'SR' && item.EQ_ACTIVE === 'OK'))
-          tempDCPlan = createProductionPlan(DCleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'DC' && item.EQ_ACTIVE === 'OK'))
-          tempEDPlan = createProductionPlan(EDleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'ED' && item.EQ_ACTIVE === 'OK'))
-          break;
-        case 'method2':
-          tempFRPlan = createProductionPlan2(FRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'FR' && item.EQ_ACTIVE === 'OK'))
-          tempSRPlan = createProductionPlan2(SRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'SR' && item.EQ_ACTIVE === 'OK'))
-          tempDCPlan = createProductionPlan2(DCleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'DC' && item.EQ_ACTIVE === 'OK'))
-          tempEDPlan = createProductionPlan2(EDleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'ED' && item.EQ_ACTIVE === 'OK'))
-          break;
-        case 'method3':
-          tempFRPlan = createProductionPlan3(FRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'FR' && item.EQ_ACTIVE === 'OK'))
-          tempSRPlan = createProductionPlan3(SRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'SR' && item.EQ_ACTIVE === 'OK'))
-          tempDCPlan = createProductionPlan3(DCleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'DC' && item.EQ_ACTIVE === 'OK'))
-          tempEDPlan = createProductionPlan3(EDleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'ED' && item.EQ_ACTIVE === 'OK'))
-          break;
-        case 'method4':
-          tempFRPlan = createProductionPlan4(FRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'FR' && item.EQ_ACTIVE === 'OK'))
-          tempSRPlan = createProductionPlan4(SRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'SR' && item.EQ_ACTIVE === 'OK'))
-          tempDCPlan = createProductionPlan4(DCleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'DC' && item.EQ_ACTIVE === 'OK'))
-          tempEDPlan = createProductionPlan4(EDleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'ED' && item.EQ_ACTIVE === 'OK'))
-          break;  
-        case 'method5':
-          tempFRPlan = createProductionPlan5(FRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'FR' && item.EQ_ACTIVE === 'OK'))
-          tempSRPlan = createProductionPlan5(SRleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'SR' && item.EQ_ACTIVE === 'OK'))
-          tempDCPlan = createProductionPlan5(DCleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'DC' && item.EQ_ACTIVE === 'OK'))
-          tempEDPlan = createProductionPlan5(EDleadtimeData, eq_status.filter(item => item.EQ_SERIES === 'ED' && item.EQ_ACTIVE === 'OK'))
-          break;  
+  // Gom nhóm đơn hàng theo kích thước khuôn
+  const groupedByMold = groupBy(orders, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
+  const plans: ProductionPlan[] = [];
+  const availableMachines = equipments.flatMap(eq => Array(1).fill(eq.EQ_NAME));
+
+  const machineQueue = new MinPriorityQueue<{ eqName: string, availableTime: moment.Moment }>();
+  availableMachines.forEach(machine => machineQueue.enqueue({ eqName: machine, availableTime: moment() }));
+
+  for (const moldGroup of groupedByMold.values()) {
+    const groupedByMaterial = groupBy(moldGroup, order => order.PROD_MAIN_MATERIAL);
+
+    for (const materialGroup of groupedByMaterial.values()) {
+      for (const order of materialGroup) {
+        const { eqName, availableTime } = machineQueue.dequeue();
+
+        // Điều chỉnh thời gian nếu không trong giờ làm việc
+        let currentDate = availableTime;
+        if (!isWorkingTime(currentDate)) {
+          if (currentDate.hour() >= DAY_SHIFT_END_HOUR && currentDate.hour() < NIGHT_SHIFT_START_HOUR) {
+            currentDate = currentDate.clone().hour(NIGHT_SHIFT_START_HOUR).minute(0);
+          } else {
+            currentDate = currentDate.add(1, 'day').hour(DAY_SHIFT_START_HOUR).minute(0);
+          }
+        }
+
+        // Thêm kế hoạch sản xuất
+        plans.push({
+          PROD_REQUEST_NO: order.PROD_REQUEST_NO,
+          G_CODE: order.G_CODE,
+          G_NAME: order.G_NAME,
+          G_NAME_KD: order.G_NAME_KD,
+          EQ_NAME: eqName,
+          productionPlanDate: currentDate.format('YYYY-MM-DD HH:mm'),
+          productionPlanTime: order.LEADTIME,
+          DELIVERY_DT: order.DELIVERY_DT,
+          G_WIDTH: order.G_WIDTH,
+          G_LENGTH: order.G_LENGTH,
+          PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
+          productionPlanQty: order.TCD,
+          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+        });
+
+        // Cập nhật thời gian khả dụng của máy
+        currentDate = currentDate.add(order.LEADTIME, 'minutes');
+        machineQueue.enqueue({ eqName, availableTime: currentDate });
       }
-    console.table(tempFRPlan)
-    setStartDate(startDate)
-    setEndDate(endDate)
-    setFRPlans(tempFRPlan)
-    setSRPlans(tempSRPlan)
-    setDCPlans(tempDCPlan)
-    setEDPlans(tempEDPlan)
+    }
   }
+
+  return plans;
+}
+function createProductionPlan7(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
+  // Sắp xếp đơn hàng theo ngày giao hàng
+  orders.sort((a, b) => moment(a.DELIVERY_DT).diff(moment(b.DELIVERY_DT)));
+
+  // Gom nhóm đơn hàng theo kích thước khuôn
+  const groupedByMold = groupBy(orders, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
+  const plans: ProductionPlan[] = [];
+  const machineAvailability = new Map<string, moment.Moment>();
+
+  equipments.forEach(eq => machineAvailability.set(eq.EQ_NAME??'', moment()));
+
+  for (const moldGroup of groupedByMold.values()) {
+    const groupedByMaterial = groupBy(moldGroup, order => order.PROD_MAIN_MATERIAL);
+
+    for (const materialGroup of groupedByMaterial.values()) {
+      for (const order of materialGroup) {
+        let earliestMachine = null;
+        let earliestTime = moment();
+
+        for (const [machine, availableTime] of machineAvailability) {
+          const adjustedTime = getNextWorkingTime(availableTime.clone());
+          if (earliestMachine === null || adjustedTime.isBefore(earliestTime)) {
+            earliestMachine = machine;
+            earliestTime = adjustedTime;
+          }
+        }
+
+        if (earliestMachine) {
+          plans.push({
+            G_CODE: order.G_CODE,
+            EQ_NAME: earliestMachine,
+            productionPlanDate: earliestTime.format('YYYY-MM-DD HH:mm'),
+            productionPlanTime: order.LEADTIME,
+            DELIVERY_DT: order.DELIVERY_DT,
+            G_WIDTH: order.G_WIDTH,
+            G_LENGTH: order.G_LENGTH,
+            PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
+            productionPlanQty: order.TCD,
+            PROD_REQUEST_NO: order.PROD_REQUEST_NO,
+            G_NAME: order.G_NAME,
+            G_NAME_KD: order.G_NAME_KD, 
+            PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+          });
+
+          const nextAvailableTime = earliestTime.clone().add(order.LEADTIME, 'minutes');
+          machineAvailability.set(earliestMachine, nextAvailableTime);
+        }
+      }
+    }
+  }
+
+  return plans;
+}
+function createProductionPlan8(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
+  // Sắp xếp đơn hàng theo ngày giao hàng
+  orders.sort((a, b) => moment(a.DELIVERY_DT).diff(moment(b.DELIVERY_DT)));
+
+  // Gom nhóm đơn hàng theo mã sản phẩm
+  const groupedByProductCode = groupBy(orders, order => order.G_CODE);
+
+  const plans: ProductionPlan[] = [];
+  const machineAvailability = new Map<string, moment.Moment>();
+
+  equipments.forEach(eq => machineAvailability.set(eq.EQ_NAME ?? '', moment()));
+
+  for (const productGroup of groupedByProductCode.values()) {
+    // Gom nhóm theo kích thước khuôn
+    const groupedByMold = groupBy(productGroup, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
+    
+    for (const moldGroup of groupedByMold.values()) {
+      // Gom nhóm theo vật liệu
+      const groupedByMaterial = groupBy(moldGroup, order => order.PROD_MAIN_MATERIAL);
+
+      for (const materialGroup of groupedByMaterial.values()) {
+        for (const order of materialGroup) {
+          let earliestMachine = null;
+          let earliestTime = moment();
+
+          for (const [machine, availableTime] of machineAvailability) {
+            const adjustedTime = getNextWorkingTime(availableTime.clone());
+            if (earliestMachine === null || adjustedTime.isBefore(earliestTime)) {
+              earliestMachine = machine;
+              earliestTime = adjustedTime;
+            }
+          }
+
+          if (earliestMachine) {
+            plans.push({
+              G_CODE: order.G_CODE,
+              EQ_NAME: earliestMachine,
+              productionPlanDate: earliestTime.format('YYYY-MM-DD HH:mm'),
+              productionPlanTime: order.LEADTIME,
+              DELIVERY_DT: order.DELIVERY_DT,
+              G_WIDTH: order.G_WIDTH,
+              G_LENGTH: order.G_LENGTH,
+              PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
+              productionPlanQty: order.TCD,
+              PROD_REQUEST_NO: order.PROD_REQUEST_NO,
+              G_NAME: order.G_NAME,
+              G_NAME_KD: order.G_NAME_KD,
+              PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+            });
+
+            const nextAvailableTime = earliestTime.clone().add(order.LEADTIME, 'minutes');
+            machineAvailability.set(earliestMachine, nextAvailableTime);
+          }
+        }
+      }
+    }
+  }
+
+  return plans;
+}
+function createProductionPlan9(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
+  // Sắp xếp đơn hàng theo ngày giao hàng
+  orders.sort((a, b) => moment(a.DELIVERY_DT).diff(moment(b.DELIVERY_DT)));
+
+  // Gom nhóm đơn hàng theo mã sản phẩm
+  const groupedByProductCode = groupBy(orders, order => order.G_CODE);
+
+  const plans: ProductionPlan[] = [];
+  const machineAvailability = new Map<string, moment.Moment>();
+
+  equipments.forEach(eq => machineAvailability.set(eq.EQ_NAME??"", moment()));
+
+  for (const productGroup of groupedByProductCode.values()) {
+    // Gom nhóm theo kích thước khuôn
+    const groupedByMold = groupBy(productGroup, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
+    
+    for (const moldGroup of groupedByMold.values()) {
+      // Gom nhóm theo vật liệu
+      const groupedByMaterial = groupBy(moldGroup, order => order.PROD_MAIN_MATERIAL);
+
+      for (const materialGroup of groupedByMaterial.values()) {
+        for (const order of materialGroup) {
+          let remainingTime = order.LEADTIME;
+
+          while (remainingTime > 0) {
+            let earliestMachine = null;
+            let earliestTime = moment();
+
+            for (const [machine, availableTime] of machineAvailability) {
+              const adjustedTime = getNextWorkingTime(availableTime.clone());
+              if (earliestMachine === null || adjustedTime.isBefore(earliestTime)) {
+                earliestMachine = machine;
+                earliestTime = adjustedTime;
+              }
+            }
+
+            if (earliestMachine) {
+              const workEndTime = getWorkingEndTime(earliestTime);
+              const availableMinutes = workEndTime.diff(earliestTime, 'minutes');
+              const productionMinutes = Math.min(remainingTime, availableMinutes);
+
+              plans.push({
+                G_CODE: order.G_CODE,
+                EQ_NAME: earliestMachine,
+                productionPlanDate: earliestTime.format('YYYY-MM-DD HH:mm'),
+                productionPlanTime: productionMinutes,
+                DELIVERY_DT: order.DELIVERY_DT,
+                G_WIDTH: order.G_WIDTH,
+                G_LENGTH: order.G_LENGTH,
+                PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
+                productionPlanQty: order.TCD,
+                PROD_REQUEST_NO: order.PROD_REQUEST_NO,
+                G_NAME: order.G_NAME,
+                G_NAME_KD: order.G_NAME_KD,
+                PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+              });
+
+              remainingTime -= productionMinutes;
+              machineAvailability.set(earliestMachine, earliestTime.clone().add(productionMinutes, 'minutes'));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return plans;
+}
+
+const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData: LEADTIME_DATA[], DCleadtimeData: LEADTIME_DATA[], EDleadtimeData: LEADTIME_DATA[], eq_statusFR: EQ_STT[], eq_statusSR: EQ_STT[], eq_statusDC: EQ_STT[], eq_statusED: EQ_STT[]) => {
+  const startDate = new Date(Math.min(...plans.map(plan => new Date(plan.productionPlanDate).getTime())) - 7 * 60 * 60 * 1000);
+  const endDate = new Date(Math.max(...plans.map(plan => addMinutes(new Date(plan.productionPlanDate), plan.productionPlanTime).
+    getTime())) - 7 * 60 * 60 * 1000);
+    let tempFRPlan: ProductionPlan[] = []
+    let tempSRPlan: ProductionPlan[] = []
+    let tempDCPlan: ProductionPlan[] = []
+    let tempEDPlan: ProductionPlan[] = []
+    switch (createPlanMethod) {
+      case 'method1':
+        tempFRPlan = createProductionPlan(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan(EDleadtimeData, eq_statusED)
+        break;
+      case 'method2':
+        tempFRPlan = createProductionPlan2(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan2(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan2(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan2(EDleadtimeData, eq_statusED)
+        break;
+      case 'method3':
+        tempFRPlan = createProductionPlan3(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan3(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan3(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan3(EDleadtimeData, eq_statusED)
+        break;
+      case 'method4':
+        tempFRPlan = createProductionPlan4(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan4(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan4(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan4(EDleadtimeData, eq_statusED)
+        break;  
+      case 'method5':
+        tempFRPlan = createProductionPlan5(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan5(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan5(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan5(EDleadtimeData, eq_statusED)
+        break;  
+      case 'method6':
+        tempFRPlan = createProductionPlan6(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan6(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan6(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan6(EDleadtimeData, eq_statusED)
+        break;  
+      case 'method7':
+        tempFRPlan = createProductionPlan7(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan7(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan7(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan7(EDleadtimeData, eq_statusED)
+        break;    
+      case 'method8':
+        tempFRPlan = createProductionPlan8(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan8(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan8(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan8(EDleadtimeData, eq_statusED)
+        break;      
+      case 'method9':
+        tempFRPlan = createProductionPlan9(FRleadtimeData, eq_statusFR)
+        tempSRPlan = createProductionPlan9(SRleadtimeData, eq_statusSR)
+        tempDCPlan = createProductionPlan9(DCleadtimeData, eq_statusDC)
+        tempEDPlan = createProductionPlan9(EDleadtimeData, eq_statusED)
+        break;        
+    }    
+  setStartDate(startDate)
+  setEndDate(endDate)    
+  setFRPlans(tempFRPlan)
+  setSRPlans(tempSRPlan)
+  setDCPlans(tempDCPlan)
+  setEDPlans(tempEDPlan)
+  return {
+    FRplans: tempFRPlan,
+    SRplans: tempSRPlan,
+    DCplans: tempDCPlan,
+    EDplans: tempEDPlan
+  }
+}
+
   useEffect(() => {
-    handleLoadEQ_STATUS();
+    //handleLoadEQ_STATUS();
     handleLoadLeadtimeData();
   }, []);
   return (
@@ -655,7 +978,7 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
             <span style={{fontSize: '12px'}}>{width}X</span>
           </div>
           <div style={{ display: 'flex', width: 'fit-content', gap: '10px', alignItems: 'center', justifyContent: 'center' }}>          
-            <select
+            {/* <select
               style={{fontSize: '12px'}}
               value={createPlanMethod}
               onChange={(e) => setCreatePlanMethod(e.target.value)}
@@ -665,12 +988,18 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
               <option value="method3">Method 3</option>
               <option value="method4">Method 4</option>
               <option value="method5">Method 5</option>
-            </select>
-            <IconButton onClick={() => { handleCreatePlan() }}><MdCreate size={15}/><span style={{fontSize: '12px'}}>Create Plan</span></IconButton>       
-            <input type="checkbox" id="morningShift" checked={overtimeday} onChange={(e) => setOvertimeDay(e.target.checked)} />
+              <option value="method6">Method 6</option>
+              <option value="method7">Method 7</option>
+              <option value="method8">Method 8</option>
+              <option value="method9">Method 9</option>
+            </select> */}
+            <IconButton onClick={() => { /* handleCreatePlan(FRleadtimeData, SRleadtimeData, DCleadtimeData, EDleadtimeData, FReq_status, SReq_status, DCeq_status, EDeq_status) */ handleLoadLeadtimeData(); }}><MdCreate size={15}/><span style={{fontSize: '12px'}}>Reload Plan</span></IconButton>       
+                
+         {/*    <input type="checkbox" id="morningShift" checked={overtimeday} onChange={(e) => setOvertimeDay(e.target.checked)} />
             <label htmlFor="morningShift">Tăng ca sáng</label>         
             <input type="checkbox" id="nightShift" checked={overtimenight} onChange={(e) => setOvertimeNight(e.target.checked)} />
-            <label htmlFor="nightShift">Tăng ca tối</label>
+            <label htmlFor="nightShift">Tăng ca tối</label> */}
+            <input type="text" placeholder="Search Product"  value={searchProduct} onChange={(e) => setSearchProduct(e.target.value)} />
             <input type="checkbox" id="showFR" checked={showFR} onChange={(e) => setShowFR(e.target.checked)} />
             <label htmlFor="showFR">FR</label>
             <input type="checkbox" id="showSR" checked={showSR} onChange={(e) => setShowSR(e.target.checked)} />
@@ -685,31 +1014,64 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
         {showFR && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
           {
             eq_status.filter(item => item.EQ_SERIES === 'FR').map(equipment => (
-              <MachineTimeLine key={equipment.EQ_NAME} plans={FRplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} />
+              <MachineTimeLine key={equipment.EQ_NAME} plans={FRplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {
+                console.log(plan)
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}/>
             ))
           }
         </div>}
         {showSR && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
           {
             eq_status.filter(item => item.EQ_SERIES === 'SR').map(equipment => (
-              <MachineTimeLine key={equipment.EQ_NAME} plans={SRplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} />
+              <MachineTimeLine key={equipment.EQ_NAME} plans={SRplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {
+                console.log(plan)
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}/>
             ))
           }
         </div>}
         {showDC && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
           {
             eq_status.filter(item => item.EQ_SERIES === 'DC').map(equipment => (
-              <MachineTimeLine key={equipment.EQ_NAME} plans={DCplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} />
+              <MachineTimeLine key={equipment.EQ_NAME} plans={DCplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {
+                console.log(plan)
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}/>
             ))
           }
         </div>}
         {showED && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
           {
             eq_status.filter(item => item.EQ_SERIES === 'ED').map(equipment => (
-              <MachineTimeLine key={equipment.EQ_NAME} plans={EDplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} />
+              <MachineTimeLine key={equipment.EQ_NAME} plans={EDplans.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {
+                console.log(plan)
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}/>
             ))
           }
         </div>}
+        <CustomDialog
+          isOpen={openDialog}
+          onClose={handleCloseDialog}
+          title="Create Production Order"
+          content={<AddPlanDialog PROD_REQUEST_NO={PROD_REQUEST_NO} G_CODE={G_CODE} EQ_NAME={EQ_NAME}/>}
+          actions={<></>}  
+        />
+          
+       
       </div>
   )
 }

@@ -9,6 +9,7 @@ import {
   COMPONENT_DATA,
   CustomerListData,
   DAILY_YCSX_RESULT,
+  DINHMUC_QSLX,
   DTC_TEST_POINT,
   EQ_STT,
   FCSTTDYCSX,
@@ -4909,6 +4910,7 @@ export const f_loadLeadtimeData = async () => {
           (element: LEADTIME_DATA, index: number) => {
             return {
               ...element,
+              PROD_REQUEST_DATE: moment.utc(element.PROD_REQUEST_DATE).format("YYYY-MM-DD"),    
               DELIVERY_DT: moment.utc(element.DELIVERY_DT).format("YYYY-MM-DD"),  
               id: index,
             };
@@ -4923,3 +4925,27 @@ export const f_loadLeadtimeData = async () => {
     });
   return kq;
 }
+
+export const f_loadDMSX = async (G_CODE: string) => {
+  let kq: DINHMUC_QSLX[] = [];
+  await generalQuery("loadDMSX", {
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {      
+        const loadeddata: DINHMUC_QSLX[] = response.data.data.map(
+          (element: DINHMUC_QSLX, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          },
+        );
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+} 

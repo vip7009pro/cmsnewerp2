@@ -16,6 +16,12 @@
   align-items: center;
   position: relative;
   flex-shrink: 0;
+  //create shadow on mouse hover
+  //change mouse cursor to pointer when hover
+  &:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  } 
 }
 
 .plan-content {

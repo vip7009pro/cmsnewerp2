@@ -4158,6 +4158,7 @@ export interface LEADTIME_DATA {
   G_WIDTH: number,
   G_LENGTH: number,
   PROD_REQUEST_NO: string,
+  PROD_REQUEST_DATE: string,
   CD1: number,
   CD2: number,
   CD3: number,
@@ -4176,7 +4177,6 @@ export interface LEADTIME_DATA {
   LT4: number,
   LEADTIME: number,
   TCD: number
-
 }
 
 export interface ProductionPlan {
@@ -4191,5 +4191,6 @@ export interface ProductionPlan {
   PROD_MAIN_MATERIAL: string;
   G_WIDTH: number;
   G_LENGTH: number;
+  PROD_REQUEST_DATE: string;
   DELIVERY_DT: string; 
 }
