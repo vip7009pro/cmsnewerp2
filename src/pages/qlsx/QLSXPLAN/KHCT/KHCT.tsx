@@ -1070,8 +1070,6 @@ const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData:
           content={<AddPlanDialog PROD_REQUEST_NO={PROD_REQUEST_NO} G_CODE={G_CODE} EQ_NAME={EQ_NAME}/>}
           actions={<></>}  
         />
-          
-       
       </div>
   )
 }
