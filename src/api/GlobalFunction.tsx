@@ -4949,3 +4949,34 @@ export const f_loadDMSX = async (G_CODE: string) => {
     });
   return kq;
 } 
+
+
+export const f_updateO301_OUT_CFM_QTY = async (PLAN_ID: string) => {
+  await generalQuery("updateO301_OUT_CFM_QTY_FROM_O302", {
+    PLAN_ID: PLAN_ID,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error); 
+    });
+}
+
+export const f_updateUSE_YN_I222_RETURN_NVL = async (M_LOT_NO: string, PLAN_ID: string, UPD_EMPL: string) => {
+  await generalQuery("updateUSE_YN_I222_RETURN_NVL", {
+    M_LOT_NO: M_LOT_NO,
+    PLAN_ID: PLAN_ID,
+    UPD_EMPL: UPD_EMPL,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error); 
+    }); 
+}

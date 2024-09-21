@@ -30,8 +30,8 @@ import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
-import { generalQuery, getCompany } from "../../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../../api/GlobalFunction";
+import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
+import { checkBP, CustomResponsiveContainer, f_updateO301_OUT_CFM_QTY, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './XUATLIEU.scss';
 const XUATLIEU = () => {
@@ -93,16 +93,9 @@ const XUATLIEU = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [m_lot_no, setM_LOT_NO] = useState("");
   const [m_name, setM_Name] = useState("");
-  const [width_cd, setWidthCD] = useState(0);
-  const [in_cfm_qty, setInCFMQTY] = useState(0);
-  const [roll_qty, setRollQty] = useState(0);
-  const [m_code, setM_Code] = useState("");
-  const [lieql_sx, setLieuQL_SX] = useState(0);
-  const [out_date, setOut_Date] = useState("");
-  const [wahs_cd, setWAHS_CD] = useState("");
-  const [loc_cd, setLOC_CD] = useState("");
+ 
   const [solanout, setSoLanOut] = useState(1);
-  const [fsc, setFSC] = useState('N');
+ 
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
     generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
       .then((response) => {
@@ -136,8 +129,7 @@ const XUATLIEU = () => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
           setPlanId(PLAN_ID);
-          setGName(response.data.data[0].G_NAME);
-          setFSC(response.data.data[0].G_NAME ?? 'N')
+          setGName(response.data.data[0].G_NAME);          
         } else {
           setGName("");
         }
@@ -146,29 +138,7 @@ const XUATLIEU = () => {
         console.log(error);
       });
   };
-  const addMaterial = async () => {
-    let temp_m_invoie: WH_M_INPUT_DATA = {
-      id: moment().format("YYYYMMDD_HHmmsss") + material_table_data.length.toString(),
-      CUST_CD: selectedCustomer?.CUST_CD ?? "",
-      CUST_NAME_KD: selectedCustomer?.CUST_NAME_KD ?? "",
-      M_NAME: selectedMaterial?.M_NAME ?? "",
-      M_CODE: selectedMaterial?.M_CODE ?? "",
-      WIDTH_CD: selectedMaterial?.WIDTH_CD!,
-      INVOICE_NO: invoice_no,
-      EXP_DATE: todate,
-      PROD_REQUEST_NO: "",
-      REMARK: "",
-      MET_PER_ROLL: 0,
-      LOT_QTY: 0,
-      ROLL_PER_LOT: 1,
-    }
-    if (temp_m_invoie.CUST_CD === '' || temp_m_invoie.M_CODE === '' || temp_m_invoie.INVOICE_NO === '' || temp_m_invoie.EXP_DATE === '') {
-      Swal.fire("Thông báo", "Không được để trống thông tin cần thiết", "error");
-    }
-    else {
-      set_material_table_data([...material_table_data, temp_m_invoie]);
-    }
-  };
+
   const xuatkho = async () => {
     if (prepareOutData.length > 0) {
       let err_code: string = '';
@@ -182,18 +152,24 @@ const XUATLIEU = () => {
           M_CODE: prepareOutData[i].M_CODE,
           OUT_CFM_QTY: prepareOutData[i].TOTAL_QTY,
           WAHS_CD: prepareOutData[i].WAHS_CD,
+          REMARK:  '',
+          USE_YN: 'Y',
+          INS_EMPL: giao_empl,
           FACTORY: selectedFactory,
           CUST_CD: selectedCustomer?.CUST_CD,
           ROLL_QTY: prepareOutData[i].ROLL_QTY,
+          OUT_DATE_THUCTE: moment.utc().format("YYYYMMDD"),
           IN_DATE_O302: prepareOutData[i].IN_DATE,
           PLAN_ID: planId,
           SOLANOUT: solanout,
           LIEUQL_SX: prepareOutData[i].LIEUQL_SX,
           INS_RECEPTION: nhan_empl,
-          FSC_O302: fsc,
+          FSC_O302: prepareOutData[i].FSC_O302,
         })
-          .then((response) => {
+          .then(async (response) => {
             if (response.data.tk_status !== "NG") {
+              console.log('vaoday')
+              await f_updateUSE_YN_I222_RETURN_NVL(prepareOutData[i].M_LOT_NO, planId, giao_empl);
             } else {
               err_code += `Lỗi: ${response.data.message} | `;
             }
@@ -203,11 +179,12 @@ const XUATLIEU = () => {
           });
       }
       if (err_code !== '') {
-        Swal.fire('Thông báo', 'Nhập kho vật liệu thất bại: ' + err_code, 'error');
+        Swal.fire('Thông báo', 'Xuất kho vật liệu thất bại: ' + err_code, 'error');
       }
       else {
-        set_material_table_data([]);
-        Swal.fire('Thông báo', 'Nhập kho vật liệu thành công', 'success');
+        setPrepareOutData([]);
+        f_updateO301_OUT_CFM_QTY(planId);
+        Swal.fire('Thông báo', 'Xuất kho vật liệu thành công', 'success');
       }
     }
     else {
@@ -223,15 +200,7 @@ const XUATLIEU = () => {
             response.data.data[0].M_NAME +
             " | " +
             response.data.data[0].WIDTH_CD,
-          );
-          setM_Code(response.data.data[0].M_CODE);
-          setWidthCD(response.data.data[0].WIDTH_CD);
-          setInCFMQTY(response.data.data[0].IN_CFM_QTY);
-          setRollQty(response.data.data[0].ROLL_QTY);
-          setLieuQL_SX(response.data.data[0].LIEUQL_SX ?? 0);
-          setOut_Date(response.data.data[0].OUT_DATE);
-          setWAHS_CD(response.data.data[0].WAHS_CD);
-          setLOC_CD(response.data.data[0].LOC_CD);
+          );          
           let IN_DATE: string = response.data.data[0].IN_DATE;
           let USE_YN: string = response.data.data[0].USE_YN;
           let M_CODE: string = response.data.data[0].M_CODE;
@@ -242,6 +211,7 @@ const XUATLIEU = () => {
           let LIEUQL_SX: number = response.data.data[0].LIEUQL_SX;
           let WAHS_CD: string = response.data.data[0].WAHS_CD;
           let LOC_CD: string = response.data.data[0].LOC_CD;
+          let FSC_O302: string = response.data.data[0].FSC ?? "N";
           let lot_info: DKXL_DATA = dangkyxuatlieutable.filter((ele: DKXL_DATA, index: number) => {
             return ele.M_CODE === M_CODE;
           })[0] ?? "NG";
@@ -265,7 +235,8 @@ const XUATLIEU = () => {
             OUT_NO: OUT_NO,
             OUT_SEQ: OUT_SEQ,
             IN_DATE: IN_DATE,
-            USE_YN: USE_YN
+            USE_YN: USE_YN,
+            FSC_O302: FSC_O302,
           }
           let checkExist_lot: boolean = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number) => {
             return ele.M_LOT_NO === M_LOT_NO;
@@ -284,15 +255,7 @@ const XUATLIEU = () => {
           }
           setM_LOT_NO("");
         } else {
-          setM_Name("");
-          setM_Code("");
-          setWidthCD(0);
-          setRollQty(0);
-          setInCFMQTY(0);
-          setLieuQL_SX(0);
-          setOut_Date("");
-          setWAHS_CD("");
-          setLOC_CD("");
+          setM_Name("");         
         }
       })
       .catch((error) => {
@@ -301,16 +264,18 @@ const XUATLIEU = () => {
   };
   const handleConfirmXuatKho = () => {
     Swal.fire({
-      title: "Nhập liệu vào kho",
-      text: "Chắc chắn muốn nhập kho các liệu đã nhập ?",
+      title: "Xuất liệu",
+      text: "Chắc chắn muốn xuất kho các liệu đã beep ?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Vẫn Nhập!",
+      confirmButtonText: "Vẫn Xuất!",
     }).then((result) => {
       if (result.isConfirmed) {
-        xuatkho();
+        checkBP(getUserData(), ["KHO"], ["ALL"], ["ALL"], async () => { 
+          xuatkho();
+        });
       }
     });
   };
@@ -333,8 +298,10 @@ const XUATLIEU = () => {
     await generalQuery("checksolanout_O302", { PLAN_ID: PLAN_ID })
       .then((response) => {
         //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          setSoLanOut((response.data.data[0].SOLANOUT ?? 0) + 1);
+        if (response.data.tk_status !== "NG") {          
+          let current_solanout: number = ((response.data.data[0].SOLANOUT !== '' && response.data.data[0].SOLANOUT !== null) ? parseInt(response.data.data[0].SOLANOUT) : 0);          
+          let temp_solanout: number = current_solanout + 1;
+          setSoLanOut(temp_solanout);
         } else {
           setSoLanOut(1);
         }
@@ -1369,11 +1336,8 @@ const XUATLIEU = () => {
               )}
             </div>
           </div>
-          <div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-              addMaterial();
-            }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
+          <div className="formbutton">            
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#6952ec' }} onClick={() => {
               handleConfirmXuatKho();
             }}>Xuất kho</Button>
           </div>

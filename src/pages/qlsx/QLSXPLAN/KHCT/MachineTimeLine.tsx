@@ -53,8 +53,8 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
             </div>}
             </div>
             <div className="materialinfo" style={{ backgroundColor: plan.M_STOCK_QTY < plan.NEEDED_M ? 'red' : 'green' }}>
-              <div style={{ fontSize: '0.6rem', fontWeight: 'normal', color: '#ffffff' }}>{plan.M_STOCK_QTY.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MET</div> /
-              <div style={{ fontSize: '0.6rem', fontWeight: 'normal', color: '#ffffff' }}>{plan.NEEDED_M.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MET</div>
+              <div style={{ fontSize: '0.6rem', fontWeight: 'normal', color: '#ffffff' }}>{plan.M_STOCK_QTY?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MET</div> /
+              <div style={{ fontSize: '0.6rem', fontWeight: 'normal', color: '#ffffff' }}>{plan.NEEDED_M?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MET</div>
             </div>
           </div>
         );
