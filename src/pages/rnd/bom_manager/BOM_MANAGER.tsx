@@ -1939,10 +1939,10 @@ const BOM_MANAGER = () => {
       for (let i = 0; i < bomsxdatatablefilter.current.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
           if (bomsxdatatablefilter.current[i].id === datafilter[j].id) {
-            if(bomgiatable.find((ele: BOM_GIA, index: number) => ele.M_CODE === bomsxdatatablefilter.current[i].M_CODE) === undefined){
+            if (bomgiatable.find((ele: BOM_GIA, index: number) => ele.M_CODE === bomsxdatatablefilter.current[i].M_CODE) === undefined) {
               datafilter.splice(j, 1);
             }
-            else{
+            else {
               Swal.fire("Thông báo", "Liệu đã có trong BOM giá, không thể xóa", "error");
             }
           }
