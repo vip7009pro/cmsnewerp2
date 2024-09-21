@@ -181,7 +181,9 @@ const KHCT = () => {
               G_WIDTH: 0,
               G_LENGTH: 0,
               DELIVERY_DT: '',
-              PROD_REQUEST_DATE: ''
+              PROD_REQUEST_DATE: '',
+              NEEDED_M: 0,
+              M_STOCK_QTY: 0
             });
             machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
             continue;
@@ -200,7 +202,9 @@ const KHCT = () => {
               G_WIDTH: 0,
               G_LENGTH: 0,
               DELIVERY_DT: '',
-              PROD_REQUEST_DATE: ''
+              PROD_REQUEST_DATE: '',
+              NEEDED_M: 0,
+              M_STOCK_QTY: 0
             });
             machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
             continue;
@@ -220,7 +224,9 @@ const KHCT = () => {
           G_WIDTH: order.G_WIDTH,
           G_LENGTH: order.G_LENGTH,
           DELIVERY_DT: order.DELIVERY_DT,
-          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+          NEEDED_M: order.NEEDED_M,
+          M_STOCK_QTY: order.M_STOCK_QTY
         });
         machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + productionTime);
         remainingProductionTime -= productionTime;
@@ -239,7 +245,9 @@ const KHCT = () => {
             G_WIDTH: 0,
             G_LENGTH: 0,
             DELIVERY_DT: '',
-            PROD_REQUEST_DATE: ''
+            PROD_REQUEST_DATE: '',
+            NEEDED_M: 0,
+            M_STOCK_QTY: 0
           });
           machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
         } else if (remainingProductionTime > 0 && (planStartTime + productionTime) >= workingHoursEndNight && planStartTime >= workingHoursStartNight) {
@@ -257,7 +265,9 @@ const KHCT = () => {
             G_WIDTH: 0,
             G_LENGTH: 0,
             DELIVERY_DT: '',
-            PROD_REQUEST_DATE: ''
+            PROD_REQUEST_DATE: '',
+            NEEDED_M: 0,
+            M_STOCK_QTY: 0
           });
           machineCurrentDateTime.setMinutes(machineCurrentDateTime.getMinutes() + gapTime);
         }
@@ -273,8 +283,8 @@ const KHCT = () => {
   }
   // Hàm lập kế hoạch sản xuất
   function createProductionPlan(orders: LEADTIME_DATA[], equipments: EQ_STT[]): ProductionPlan[] {
-      // Sắp xếp đơn hàng theo ngày giao hàng
-      orders.sort((a, b) => new Date(a.DELIVERY_DT).getTime() - new Date(b.DELIVERY_DT).getTime());
+    // Sắp xếp đơn hàng theo ngày giao hàng
+    orders.sort((a, b) => new Date(a.DELIVERY_DT).getTime() - new Date(b.DELIVERY_DT).getTime());
       // Gom nhóm đơn hàng theo kích thước khuôn
       const groupedByMold = groupBy(orders, order => `${order.G_WIDTH}x${order.G_LENGTH}`);
       const plans: ProductionPlan[] = [];
@@ -310,7 +320,9 @@ const KHCT = () => {
                   G_WIDTH: order.G_WIDTH,
                   G_LENGTH: order.G_LENGTH,
                   DELIVERY_DT: order.DELIVERY_DT,
-                  PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+                  PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+                  NEEDED_M: order.NEEDED_M,
+                  M_STOCK_QTY: order.M_STOCK_QTY
                 });
                 remainingQty -= productionPlanQty;
                 machine.availableFrom = productionEndDate;
@@ -441,7 +453,9 @@ function createProductionPlan4(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                           G_LENGTH: 0,
                           PROD_MAIN_MATERIAL: '',
                           productionPlanQty: 0,
-                          PROD_REQUEST_DATE: ''
+                          PROD_REQUEST_DATE: '',
+                          NEEDED_M: 0,
+                          M_STOCK_QTY: 0
                       });
                       currentDate = nextWorkingStart;
                       machineCurrentDateTimes[machine] = currentDate;
@@ -465,7 +479,9 @@ function createProductionPlan4(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                       G_LENGTH: order.G_LENGTH,
                       PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
                       productionPlanQty: order.TCD,
-                      PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+                      PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+                      NEEDED_M: order.NEEDED_M,
+                      M_STOCK_QTY: order.M_STOCK_QTY
                   });
 
                   currentDate = currentDate.add(productionTimeForThisSlot, 'minutes');
@@ -523,7 +539,9 @@ function createProductionPlan3(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
               G_LENGTH: 0,
               PROD_MAIN_MATERIAL: '',
               productionPlanQty: 0,
-              PROD_REQUEST_DATE: ''
+              PROD_REQUEST_DATE: '',
+              NEEDED_M: 0,
+              M_STOCK_QTY: 0
             });
             currentDate = nextWorkingStart;
             continue;
@@ -542,7 +560,9 @@ function createProductionPlan3(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
             G_WIDTH: order.G_WIDTH,
             G_LENGTH: order.G_LENGTH,
             PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
-            PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,           
+            PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+            NEEDED_M: order.NEEDED_M,
+            M_STOCK_QTY: order.M_STOCK_QTY
           });
 
           currentDate = currentDate.add(order.LEADTIME, 'minutes');
@@ -600,7 +620,9 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                               G_LENGTH: 0,
                               PROD_MAIN_MATERIAL: '',
                               productionPlanQty: 0,
-                              PROD_REQUEST_DATE: ''
+                              PROD_REQUEST_DATE: '',
+                              NEEDED_M: 0,
+                              M_STOCK_QTY: 0
                           });
                           currentDate = nextWorkingStart;
                       }
@@ -623,7 +645,9 @@ function createProductionPlan5(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                           G_LENGTH: order.G_LENGTH,
                           PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
                           productionPlanQty: order.TCD,
-                          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+                          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+                          NEEDED_M: order.NEEDED_M,
+                          M_STOCK_QTY: order.M_STOCK_QTY
                       });
 
                       currentDate = currentDate.add(productionTimeForThisSlot, 'minutes');
@@ -686,7 +710,9 @@ function createProductionPlan6(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
           G_LENGTH: order.G_LENGTH,
           PROD_MAIN_MATERIAL: order.PROD_MAIN_MATERIAL,
           productionPlanQty: order.TCD,
-          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+          PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+          NEEDED_M: order.NEEDED_M,
+          M_STOCK_QTY: order.M_STOCK_QTY
         });
 
         // Cập nhật thời gian khả dụng của máy
@@ -739,7 +765,9 @@ function createProductionPlan7(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
             PROD_REQUEST_NO: order.PROD_REQUEST_NO,
             G_NAME: order.G_NAME,
             G_NAME_KD: order.G_NAME_KD, 
-            PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+            PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+            NEEDED_M: order.NEEDED_M,
+            M_STOCK_QTY: order.M_STOCK_QTY
           });
 
           const nextAvailableTime = earliestTime.clone().add(order.LEADTIME, 'minutes');
@@ -798,7 +826,9 @@ function createProductionPlan8(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
               PROD_REQUEST_NO: order.PROD_REQUEST_NO,
               G_NAME: order.G_NAME,
               G_NAME_KD: order.G_NAME_KD,
-              PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+              PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+              NEEDED_M: order.NEEDED_M,
+              M_STOCK_QTY: order.M_STOCK_QTY
             });
 
             const nextAvailableTime = earliestTime.clone().add(order.LEADTIME, 'minutes');
@@ -865,7 +895,9 @@ function createProductionPlan9(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
                 PROD_REQUEST_NO: order.PROD_REQUEST_NO,
                 G_NAME: order.G_NAME,
                 G_NAME_KD: order.G_NAME_KD,
-                PROD_REQUEST_DATE: order.PROD_REQUEST_DATE
+                PROD_REQUEST_DATE: order.PROD_REQUEST_DATE,
+                NEEDED_M: order.NEEDED_M,
+                M_STOCK_QTY: order.M_STOCK_QTY
               });
 
               remainingTime -= productionMinutes;

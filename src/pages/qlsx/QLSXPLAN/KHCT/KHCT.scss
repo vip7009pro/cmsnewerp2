@@ -1,19 +1,39 @@
 .timeline-container {
   display: flex;
   flex-direction: column;
-  .headercontrol {
-    position: fixed;
-    padding: 0 10px;
-    border-radius: 10px;
-    top: 55px;
-    left: 38%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-    box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
-    margin-bottom: 10px;
-    z-index: 1000;
-  }
 
+  @media only screen and (max-width: 5000px) {
+    .headercontrol {
+      position: fixed;
+      padding: 0 10px;
+      border-radius: 10px;
+      top: 55px;
+      left: 38%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 10px 5px rgba(151, 117, 117, 0.27);
+      margin-bottom: 10px;
+      z-index: 1000;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .headercontrol {
+      display: flex;
+      flex-wrap: wrap;
+      position: fixed;
+      padding: 0 10px;
+      top: 95px;
+      left: 1%;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+      margin-bottom: 10px;
+      z-index: 1000;      
+    }
+  }
 }

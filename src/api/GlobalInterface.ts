@@ -4176,7 +4176,9 @@ export interface LEADTIME_DATA {
   LT3: number,
   LT4: number,
   LEADTIME: number,
-  TCD: number
+  TCD: number,
+  NEEDED_M: number,
+  M_STOCK_QTY: number,
 }
 
 export interface ProductionPlan {
@@ -4193,4 +4195,6 @@ export interface ProductionPlan {
   G_LENGTH: number;
   PROD_REQUEST_DATE: string;
   DELIVERY_DT: string; 
+  NEEDED_M: number,
+  M_STOCK_QTY: number,
 }

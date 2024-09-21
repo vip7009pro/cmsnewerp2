@@ -3,23 +3,17 @@ import './MachineTimeLine.scss'; // Import file CSS để định dạng
 import { addMinutes } from 'date-fns';
 import moment from 'moment';
 import { ProductionPlan } from '../../../../api/GlobalInterface';
-
-
-
 interface MachineTimeLineProps {
   plans: ProductionPlan[];
   onDoubleClick?: (plan: ProductionPlan) => void;
   width: number;
   searchProduct: string;
 }
-
 const colors = ['#edbaba', '#66B2FF', '#58d858', '#FFCC99', '#FF99CC']; // Màu sắc cho các kế hoạch
-
 const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick, width, searchProduct }) => {
   const totalPlanTime = plans.reduce((total, plan) => total + plan.productionPlanTime, 0);
   const startDate = new Date(Math.min(...plans.map(plan => new Date(plan.productionPlanDate).getTime())));
   const endDate = new Date(Math.max(...plans.map(plan => addMinutes(new Date(plan.productionPlanDate), plan.productionPlanTime).getTime())));
- 
   return (
     <div className="machine-timeline" >
       <div className="eq-name" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px', fontWeight: 'bold'}}>{plans[0]?.EQ_NAME}</div>
@@ -28,7 +22,6 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
         const color = plan.PROD_REQUEST_NO !=='' ? colors[index % colors.length] : '#383838'; // Chọn màu sắc cho từng hình chữ nhật
         let checkSearchProduct: boolean = false;
         checkSearchProduct = plan.PROD_REQUEST_NO.toUpperCase().includes(searchProduct) === true || plan.G_NAME_KD.toUpperCase().includes(searchProduct) === true || plan.G_CODE.toUpperCase().includes(searchProduct) === true || plan.PROD_MAIN_MATERIAL.toUpperCase().includes(searchProduct) === true
-
         return (
           <div
             key={index}
@@ -44,12 +37,13 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
             }
             }}
           >
+            <div className="planinfo">
             {plan.PROD_REQUEST_NO !=='' && <div className="plan-content">
               <div>{moment.utc(plan.productionPlanDate).format('YYYY-MM-DD HH:mm')}</div>              
-              <div style={{fontSize: '12px', fontWeight: 'bold', color: '#4039ac'}}>{plan.G_NAME_KD}</div>
+              <div style={{fontSize: '0.75rem', fontWeight: 'bold', color: '#4039ac'}}>{plan.G_NAME_KD}</div>
               <div>{plan.PROD_REQUEST_NO} / {plan.G_CODE}</div>
               <div>{plan.productionPlanTime?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} mins / TCD: {plan.productionPlanQty.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} EA</div>
-              <div style={{fontSize: '12px', fontWeight: 'normal', color: '#0d5624'}}>{plan.PROD_MAIN_MATERIAL}</div>
+              <div style={{fontSize: '0.75rem', fontWeight: 'normal', color: '#0d5624'}}>{plan.PROD_MAIN_MATERIAL}</div>
               <div>RQ: {plan.PROD_REQUEST_DATE} / GH: {plan.DELIVERY_DT} / {plan.G_WIDTH} x {plan.G_LENGTH} mm</div>              
             </div>}
             {plan.PROD_REQUEST_NO ==='' && <div className="plan-content">
@@ -57,11 +51,15 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
               <div>{moment.utc(plan.productionPlanDate).format('YYYY-MM-DD HH:mm')}</div>
               <div>{plan.productionPlanTime?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} mins</div>    
             </div>}
+            </div>
+            <div className="materialinfo" style={{ backgroundColor: plan.M_STOCK_QTY < plan.NEEDED_M ? 'red' : 'green' }}>
+              <div style={{ fontSize: '0.6rem', fontWeight: 'normal', color: '#ffffff' }}>{plan.M_STOCK_QTY.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MET</div> /
+              <div style={{ fontSize: '0.6rem', fontWeight: 'normal', color: '#ffffff' }}>{plan.NEEDED_M.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MET</div>
+            </div>
           </div>
         );
       })}
     </div>
   );
 };
-
 export default MachineTimeLine;
