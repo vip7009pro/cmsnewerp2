@@ -1477,6 +1477,7 @@ export interface QC_FAIL_DATA {
   USE_YN: string;
   PQC3_ID: number;
   DEFECT_PHENOMENON: string;
+  SX_DEFECT: string;
   OUT_DATE: string;
   INS_EMPL?: string;
   INS_DATE: string;

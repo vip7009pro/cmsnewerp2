@@ -374,8 +374,8 @@ const FAILING = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
-          setPQC3ID(response.data.data[0].PQC3_ID);
-          setDefectPhenomenon(response.data.data[0].DEFECT_PHENOMENON);
+          setPQC3ID(response.data.data[0].PQC3_ID ?? 0);
+          setDefectPhenomenon(response.data.data[0].DEFECT_PHENOMENON ?? "");
         } else {
           setPQC3ID(0);
           setDefectPhenomenon("");
@@ -456,6 +456,7 @@ const FAILING = () => {
       USE_YN: "Y",
       PQC3_ID: pqc3Id,
       DEFECT_PHENOMENON: defect_phenomenon,
+      SX_DEFECT: defect_phenomenon,
       OUT_DATE: out_date,
       INS_EMPL: userData?.EMPL_NO,
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -483,6 +484,9 @@ const FAILING = () => {
       return [...prev, temp_row];
     });
     setM_LOT_NO("");
+    setM_Name("");
+    setWidthCD(0);
+    setVendorLot("");
   };
   const saveFailingData = async () => {
     if (inspectiondatatable.length > 0) {
@@ -500,6 +504,7 @@ const FAILING = () => {
           TOTAL_IN_QTY: inspectiondatatable[i].TOTAL_IN_QTY,
           USE_YN: inspectiondatatable[i].USE_YN,
           PQC3_ID: inspectiondatatable[i].PQC3_ID,
+          DEFECT_PHENOMENON: inspectiondatatable[i].DEFECT_PHENOMENON,
           OUT_DATE: inspectiondatatable[i].OUT_DATE,
           INS_EMPL: inspectiondatatable[i].INS_EMPL,
           INS_DATE: inspectiondatatable[i].INS_DATE,
@@ -695,6 +700,17 @@ const FAILING = () => {
                   ></input>
                 </label>
                 <label>
+                  <b>DEFECT PHENOMENON:</b>
+                  <input
+                    type="text"
+                    placeholder={"Defect content"}
+                    value={defect_phenomenon}
+                    onChange={(e) => {
+                      setDefectPhenomenon(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                <label>
                   <b>Mã nhân viên giao:</b>
                   <input
                     type="text"
@@ -793,30 +809,14 @@ const FAILING = () => {
                     (element: QC_FAIL_DATA, index: number) => {
                       return element.M_LOT_NO;
                     },
-                  );
-                  if (pqc3Id !== 0) {
+                  );                  
                     if (lotArray.indexOf(m_lot_no) < 0) {
                       addRow();
                     } else {
-                      Swal.fire(
-                        "Thông tin",
-                        "Đã thêm cuộn này rồi",
-                        "error",
-                      );
-                    }
-                  } else {
-                    Swal.fire(
-                      "Thông tin",
-                      "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
-                      "error",
-                    );
-                  }
+                      Swal.fire( "Thông tin", "Đã thêm cuộn này rồi", "error");
+                    }                  
                 } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Hãy nhập đủ thông tin trước khi đăng ký",
-                    "error",
-                  );
+                  Swal.fire("Thông báo", "Hãy nhập đủ thông tin trước khi đăng ký", "error");
                 }
               }}>Add</Button>
               <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
