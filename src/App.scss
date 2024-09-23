@@ -1,4 +1,18 @@
-
+.tabs {
+  font-size: 0.6rem !important;
+  width: 100% !important;    
+  .tablist {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: left !important;
+    color: gray !important;   
+    .mininavtext {
+      font-size: 0.6rem !important;
+      color: gray !important;
+    }
+  }
+}
 .buttonIcon {
   font-size: 0.7rem !important;
   color: rgb(59, 45, 182) !important;

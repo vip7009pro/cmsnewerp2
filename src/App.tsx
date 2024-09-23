@@ -5,6 +5,7 @@ import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin, generalQuery, getCompany, getSocket, getUserData } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
+import 'react-tabs/style/react-tabs.css';
 import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,

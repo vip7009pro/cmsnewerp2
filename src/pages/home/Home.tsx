@@ -84,6 +84,13 @@ interface ELE_ARRAY {
   ELE_NAME: string;
   ELE_CODE: string;
 }
+export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
+  // Tùy chỉnh kiểu cho tab tại đây
+  color: "gray", // Ví dụ: đặt màu chữ là màu xanh
+  fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
+  // Thêm các kiểu tùy chỉnh khác tại đây...
+});
+
 function Home() {
   const [lang, setLang] = useContext(LangConText);
   const cookies = new Cookies();
@@ -502,12 +509,7 @@ function Home() {
         console.log(error);
       });
   };
-  const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
-    // Tùy chỉnh kiểu cho tab tại đây
-    color: "gray", // Ví dụ: đặt màu chữ là màu xanh
-    fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
-    // Thêm các kiểu tùy chỉnh khác tại đây...
-  });
+
   const CustomTabLabel = styled(Typography)({
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...

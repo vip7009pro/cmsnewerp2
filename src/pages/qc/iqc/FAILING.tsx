@@ -49,6 +49,7 @@ const FAILING = () => {
   const [out_date, setOut_Date] = useState("");
   const [cust_cd, setCust_Cd] = useState("6969");
   const [ncrId, setNCRID] = useState(0);
+  const [isNewFailing, setIsNewFailing] = useState(false);
   const column_failing_table = [
     { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 80, checkboxSelection: true },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
@@ -65,6 +66,7 @@ const FAILING = () => {
     { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 },
     { field: 'PQC3_ID', headerName: 'PQC3_ID', resizable: true, width: 80 },
     { field: 'DEFECT_PHENOMENON', headerName: 'DEFECT_PHENOMENON', resizable: true, width: 80 },
+    { field: 'SX_DEFECT', headerName: 'SX_DEFECT', resizable: true, width: 80 },
     { field: 'OUT_DATE', headerName: 'OUT_DATE', resizable: true, width: 80 },
     { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 80 },
     { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 80 },
@@ -199,6 +201,7 @@ const FAILING = () => {
               className="buttonIcon"
               onClick={() => {
                 setInspectionDataTable([]);
+                setIsNewFailing(true);
               }}
             >
               <AiFillFileAdd color="green" size={15} />
@@ -207,7 +210,7 @@ const FAILING = () => {
           <IconButton
               className="buttonIcon"
               onClick={() => {
-                //handletraIQC1Data();
+                setIsNewFailing(false);
                 handletraFailingData();
               }}
             >
@@ -431,7 +434,8 @@ const FAILING = () => {
     if (
       m_lot_no !== "" &&
       planId !== "" &&
-      request_empl !== ""
+      request_empl !== "" &&
+      request_empl2 !== ""
     ) {
       return true;
     } else {
@@ -657,7 +661,7 @@ const FAILING = () => {
                   </span>
                 )}
                 <label>
-                  <b>LOT NVL CMS:</b>
+                  <b>LOT NVL ERP:</b>
                   <input
                     type="text"
                     placeholder="202304190123"
@@ -804,7 +808,7 @@ const FAILING = () => {
             </div>
             <div className="formbutton">                         
               <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={() => {
-                if (checkInput()) {
+                if (checkInput() && isNewFailing) {
                   let lotArray = inspectiondatatable.map(
                     (element: QC_FAIL_DATA, index: number) => {
                       return element.M_LOT_NO;
@@ -816,11 +820,15 @@ const FAILING = () => {
                       Swal.fire( "Thông tin", "Đã thêm cuộn này rồi", "error");
                     }                  
                 } else {
-                  Swal.fire("Thông báo", "Hãy nhập đủ thông tin trước khi đăng ký", "error");
+                  Swal.fire("Thông báo", "Hãy chọn New Failing rồi nhập đủ thông tin trước bấm lưu", "error");
                 }
               }}>Add</Button>
               <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
-                saveFailingData();
+                if (isNewFailing) {
+                  saveFailingData();
+                } else {
+                  Swal.fire("Thông báo", "Hãy chọn New Failing rồi nhập đủ thông tin trước khi bấm lưu", "error");
+                }
               }}>Save</Button>
             </div>
           </div>
