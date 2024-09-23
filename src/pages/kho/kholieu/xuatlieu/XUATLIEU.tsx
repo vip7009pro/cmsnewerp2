@@ -229,7 +229,7 @@ const XUATLIEU = () => {
           let OUT_DATE: string = lot_info.OUT_DATE ?? 'NG';
           let OUT_NO: string = lot_info.OUT_NO ?? "NG";
           let OUT_SEQ: string = lot_info.OUT_SEQ ?? "NG";
-          let FSC_MCODE: string = response.data.data[0].FSC_CODE ?? "01";          
+          let FSC_MCODE: string = response.data.data[0].FSC_CODE ?? "01";
           let temp_row: WH_M_OUTPUT_DATA = {
             id: moment().format("YYYYMMDD_HHmmsss" + prepareOutData.length),
             M_CODE: M_CODE,
