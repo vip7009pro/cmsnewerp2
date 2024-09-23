@@ -31,7 +31,7 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
-import { checkBP, CustomResponsiveContainer, f_updateO301_OUT_CFM_QTY, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
+import { checkBP, CustomResponsiveContainer, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './XUATLIEU.scss';
 const XUATLIEU = () => {
@@ -43,7 +43,9 @@ const XUATLIEU = () => {
   const [giao_empl_name, setGiao_Empl_Name] = useState("");
   const [nhan_empl_name, setNhan_Empl_Name] = useState("");
   const [planId, setPlanId] = useState("");
+  const [fsc_GCODE, setFSC_GCODE] = useState("01");
   const [g_name, setGName] = useState("");
+  const [FSC_M100, setFSC_M100] = useState("N");
   const [invoice_no, setInvoiceNo] = useState("");
   const [loaink, setloaiNK] = useState("03");
   const [prepareOutData, setPrepareOutData] = useState<WH_M_OUTPUT_DATA[]>([]);
@@ -93,9 +95,7 @@ const XUATLIEU = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [m_lot_no, setM_LOT_NO] = useState("");
   const [m_name, setM_Name] = useState("");
- 
   const [solanout, setSoLanOut] = useState(1);
- 
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
     generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
       .then((response) => {
@@ -129,60 +129,70 @@ const XUATLIEU = () => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
           setPlanId(PLAN_ID);
-          setGName(response.data.data[0].G_NAME);          
+          setGName(response.data.data[0].G_NAME);
+          setFSC_GCODE(response.data.data[0].FSC_CODE ?? '01');
+          setFSC_M100(response.data.data[0].FSC ?? 'N');
         } else {
           setGName("");
+          setFSC_GCODE("01");
+          setFSC_M100('N');
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
   const xuatkho = async () => {
     if (prepareOutData.length > 0) {
+      Swal.fire({
+        title: 'Đang xuất kho...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       let err_code: string = '';
       for (let i = 0; i < prepareOutData.length; i++) {
-        await generalQuery("insert_O302", {
-          OUT_DATE: prepareOutData[i].OUT_DATE,
-          OUT_NO: prepareOutData[i].OUT_NO,
-          OUT_SEQ: prepareOutData[i].OUT_SEQ,
-          M_LOT_NO: prepareOutData[i].M_LOT_NO,
-          LOC_CD: prepareOutData[i].LOC_CD,
-          M_CODE: prepareOutData[i].M_CODE,
-          OUT_CFM_QTY: prepareOutData[i].TOTAL_QTY,
-          WAHS_CD: prepareOutData[i].WAHS_CD,
-          REMARK:  '',
-          USE_YN: 'Y',
-          INS_EMPL: giao_empl,
-          FACTORY: selectedFactory,
-          CUST_CD: selectedCustomer?.CUST_CD,
-          ROLL_QTY: prepareOutData[i].ROLL_QTY,
-          OUT_DATE_THUCTE: moment.utc().format("YYYYMMDD"),
-          IN_DATE_O302: prepareOutData[i].IN_DATE,
-          PLAN_ID: planId,
-          SOLANOUT: solanout,
-          LIEUQL_SX: prepareOutData[i].LIEUQL_SX,
-          INS_RECEPTION: nhan_empl,
-          FSC_O302: prepareOutData[i].FSC_O302,
-        })
-          .then(async (response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log('vaoday')
-              await f_updateUSE_YN_I222_RETURN_NVL(prepareOutData[i].M_LOT_NO, planId, giao_empl);
-            } else {
-              err_code += `Lỗi: ${response.data.message} | `;
-            }
+        let temp_err_code: string = '';
+        if ((prepareOutData[i].FSC_O302 === 'N' && FSC_M100 === 'N') || (prepareOutData[i].FSC_O302 === 'Y' && FSC_M100 === 'Y') || (prepareOutData[i].FSC_O302 === 'Y' && FSC_M100 === 'N')) {
+          err_code += temp_err_code = await f_insertO302({
+            OUT_DATE: prepareOutData[i].OUT_DATE,
+            OUT_NO: prepareOutData[i].OUT_NO,
+            OUT_SEQ: prepareOutData[i].OUT_SEQ,
+            M_LOT_NO: prepareOutData[i].M_LOT_NO,
+            LOC_CD: prepareOutData[i].LOC_CD,
+            M_CODE: prepareOutData[i].M_CODE,
+            OUT_CFM_QTY: prepareOutData[i].TOTAL_QTY,
+            WAHS_CD: prepareOutData[i].WAHS_CD,
+            REMARK: '',
+            USE_YN: 'Y',
+            INS_EMPL: giao_empl,
+            FACTORY: selectedFactory,
+            CUST_CD: selectedCustomer?.CUST_CD,
+            ROLL_QTY: prepareOutData[i].ROLL_QTY,
+            OUT_DATE_THUCTE: moment.utc().format("YYYYMMDD"),
+            IN_DATE_O302: prepareOutData[i].IN_DATE,
+            PLAN_ID: planId,
+            SOLANOUT: solanout,
+            LIEUQL_SX: prepareOutData[i].LIEUQL_SX,
+            INS_RECEPTION: nhan_empl,
+            FSC_O302: prepareOutData[i].FSC_O302,
+            FSC_GCODE: fsc_GCODE,
+            FSC_MCODE: prepareOutData[i].FSC_MCODE,
           })
-          .catch((error) => {
-            //console.log(error);
-          });
+        }
+        else {
+          err_code += 'Lỗi: Code FSC thì chỉ dùng liệu FSC';
+        }
       }
       if (err_code !== '') {
         Swal.fire('Thông báo', 'Xuất kho vật liệu thất bại: ' + err_code, 'error');
       }
       else {
         setPrepareOutData([]);
+        setPlanId("");
+        setGName("");
+        setFSC_GCODE("N");
         f_updateO301_OUT_CFM_QTY(planId);
         Swal.fire('Thông báo', 'Xuất kho vật liệu thành công', 'success');
       }
@@ -200,7 +210,7 @@ const XUATLIEU = () => {
             response.data.data[0].M_NAME +
             " | " +
             response.data.data[0].WIDTH_CD,
-          );          
+          );
           let IN_DATE: string = response.data.data[0].IN_DATE;
           let USE_YN: string = response.data.data[0].USE_YN;
           let M_CODE: string = response.data.data[0].M_CODE;
@@ -219,6 +229,7 @@ const XUATLIEU = () => {
           let OUT_DATE: string = lot_info.OUT_DATE ?? 'NG';
           let OUT_NO: string = lot_info.OUT_NO ?? "NG";
           let OUT_SEQ: string = lot_info.OUT_SEQ ?? "NG";
+          let FSC_MCODE: string = response.data.data[0].FSC_CODE ?? "01";          
           let temp_row: WH_M_OUTPUT_DATA = {
             id: moment().format("YYYYMMDD_HHmmsss" + prepareOutData.length),
             M_CODE: M_CODE,
@@ -237,6 +248,8 @@ const XUATLIEU = () => {
             IN_DATE: IN_DATE,
             USE_YN: USE_YN,
             FSC_O302: FSC_O302,
+            FSC_MCODE: FSC_MCODE,
+            FSC_GCODE: fsc_GCODE,
           }
           let checkExist_lot: boolean = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number) => {
             return ele.M_LOT_NO === M_LOT_NO;
@@ -255,7 +268,7 @@ const XUATLIEU = () => {
           }
           setM_LOT_NO("");
         } else {
-          setM_Name("");         
+          setM_Name("");
         }
       })
       .catch((error) => {
@@ -273,7 +286,7 @@ const XUATLIEU = () => {
       confirmButtonText: "Vẫn Xuất!",
     }).then((result) => {
       if (result.isConfirmed) {
-        checkBP(getUserData(), ["KHO"], ["ALL"], ["ALL"], async () => { 
+        checkBP(getUserData(), ["KHO"], ["ALL"], ["ALL"], async () => {
           xuatkho();
         });
       }
@@ -298,8 +311,8 @@ const XUATLIEU = () => {
     await generalQuery("checksolanout_O302", { PLAN_ID: PLAN_ID })
       .then((response) => {
         //console.log(response.data);
-        if (response.data.tk_status !== "NG") {          
-          let current_solanout: number = ((response.data.data[0].SOLANOUT !== '' && response.data.data[0].SOLANOUT !== null) ? parseInt(response.data.data[0].SOLANOUT) : 0);          
+        if (response.data.tk_status !== "NG") {
+          let current_solanout: number = ((response.data.data[0].SOLANOUT !== '' && response.data.data[0].SOLANOUT !== null) ? parseInt(response.data.data[0].SOLANOUT) : 0);
           let temp_solanout: number = current_solanout + 1;
           setSoLanOut(temp_solanout);
         } else {
@@ -1240,6 +1253,9 @@ const XUATLIEU = () => {
                     if (e.target.value.length >= 7) {
                       checkEMPL_NAME(1, e.target.value);
                     }
+                    else {
+                      setGiao_Empl_Name('')
+                    }
                     setGiao_Empl(e.target.value);
                   }}
                 ></input>
@@ -1264,6 +1280,9 @@ const XUATLIEU = () => {
                   onChange={(e) => {
                     if (e.target.value.length >= 7) {
                       checkEMPL_NAME(2, e.target.value);
+                    }
+                    else {
+                      setNhan_Empl_Name('')
                     }
                     setNhan_Empl(e.target.value);
                   }}
@@ -1295,6 +1314,10 @@ const XUATLIEU = () => {
                       checkSoLanOutO302(e.target.value);
                       loadDKXLTB(e.target.value);
                     }
+                    else {
+                      setGName('');
+                      setM_Name('');
+                    }
                   }}
                 ></input>
               </label>
@@ -1318,7 +1341,13 @@ const XUATLIEU = () => {
                   onChange={(e) => {
                     setM_LOT_NO(e.target.value)
                     if (e.target.value.length >= 10) {
-                      checkLotNVL(e.target.value, planId);
+                      if (planId.length >= 7 && g_name !== '' && giao_empl_name !== '' && nhan_empl_name !== '') {
+                        checkLotNVL(e.target.value, planId);
+                      }
+                      else {
+                        setM_LOT_NO('')
+                        Swal.fire('Lỗi', 'Vui lòng nhập đầy đủ thông tin', 'error');
+                      }
                     }
                   }}
                 ></input>
@@ -1336,7 +1365,7 @@ const XUATLIEU = () => {
               )}
             </div>
           </div>
-          <div className="formbutton">            
+          <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#6952ec' }} onClick={() => {
               handleConfirmXuatKho();
             }}>Xuất kho</Button>

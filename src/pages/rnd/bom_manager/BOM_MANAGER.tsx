@@ -3182,7 +3182,7 @@ const BOM_MANAGER = () => {
                             let temp_G_NAME_KD: string = e.target.value;
                             let final_G_NAME_KD: string = e.target.value;
                             if (temp_G_NAME_KD.length >= 2) {
-                              if (temp_G_NAME_KD.substring(0, 2) === 'GH') {
+                              if (temp_G_NAME_KD.substring(0, 2) === 'GH' && ["0014", "0025", "0456", "0052", "0053", "2611", "0054"].includes(codefullinfo.CUST_CD ?? "")) {
                                 if (temp_G_NAME_KD.length <= 11) {
                                   final_G_NAME_KD = temp_G_NAME_KD;
                                 }

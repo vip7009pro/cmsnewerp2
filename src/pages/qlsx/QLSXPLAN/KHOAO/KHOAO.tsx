@@ -296,6 +296,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               OUT_QTY: tonkhoaodatafilter.current[i].IN_QTY,
               TOTAL_OUT_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
               USE_YN: "O",
+              REMARK: "WEB_OUT"
             })) {
               if (!(await f_set_YN_KHO_AO_INPUT({
                 FACTORY: tonkhoaodatafilter.current[i].FACTORY,

@@ -1711,7 +1711,6 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
     check_num_lieuql_sx === 1 &&
     check_lieu_qlsx_khac1 === 0
   ) {
-
     await generalQuery("deleteMCODEExistIN_O302", {
       //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
       PLAN_ID: selectedPlan?.PLAN_ID,
@@ -1743,7 +1742,6 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
         });
       if (chithidatatable[i].M_MET_QTY > 0) {
         let checktontaiM_CODE: boolean = false;
-
         await generalQuery("deleteM_CODE_ZTB_QLSXCHITHI", {
           PLAN_ID: selectedPlan.PLAN_ID,
           M_CODE_LIST: chithidatatable.map(x => "'" + x.M_CODE + "'").join(','),
@@ -1754,7 +1752,6 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
           .catch((error) => {
             console.log(error);
           });
-
         await generalQuery("checkM_CODE_PLAN_ID_Exist", {
           //PLAN_ID: qlsxplandatafilter.current[0].PLAN_ID,
           PLAN_ID: selectedPlan?.PLAN_ID,
@@ -2048,10 +2045,7 @@ export const f_insertO300 = async (DATA: any) => {
     .catch((error) => {
       console.log(error);
     });
-
-
 }
-
 export const f_getO300_OUT_NO = async (PLAN_ID: string) => {
   let O300_OUT_NO: string = "001";
   await generalQuery("getO300_ROW", { PLAN_ID: PLAN_ID })
@@ -2064,8 +2058,6 @@ export const f_getO300_OUT_NO = async (PLAN_ID: string) => {
     });
   return O300_OUT_NO;
 }
-
-
 export const f_deleteM_CODE_O301 = async (PLAN_ID: string, M_CODE_LIST: string) => {
   await generalQuery("deleteM_CODE_O301", {
     PLAN_ID: PLAN_ID,
@@ -2078,7 +2070,6 @@ export const f_deleteM_CODE_O301 = async (PLAN_ID: string, M_CODE_LIST: string) 
       console.log(error);
     });
 }
-
 export const f_checkM_CODE_PLAN_ID_Exist_in_O301 = async (PLAN_ID: string, M_CODE: string) => {
   let TonTaiM_CODE_O301: boolean = false;
   await generalQuery("checkM_CODE_PLAN_ID_Exist_in_O301", {
@@ -2098,7 +2089,6 @@ export const f_checkM_CODE_PLAN_ID_Exist_in_O301 = async (PLAN_ID: string, M_COD
     });
   return TonTaiM_CODE_O301;
 }
-
 export const f_insertO301 = async (DATA: any) => {
   await generalQuery("insertO301", {
     OUT_DATE: DATA.OUT_DATE,
@@ -2120,7 +2110,6 @@ export const f_insertO301 = async (DATA: any) => {
       console.log(error);
     });
 }
-
 export const f_updateO301 = async (DATA: any) => {
   await generalQuery("updateO301", {
     M_CODE: DATA.M_CODE,
@@ -2137,7 +2126,6 @@ export const f_updateO301 = async (DATA: any) => {
       console.log(error);
     });
 }
-
 export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selectedFactory: string, chithidatatable: QLSXCHITHIDATA[]) => {
   let err_code: string = "0";
   let NEXT_OUT_NO: string = "001";
@@ -2145,7 +2133,7 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
     err_code = "Chọn ít nhất một liệu để đăng ký";
     return err_code;
   }
-  let { checkPlanIdO300, NEXT_OUT_DATE } = await f_checkPlanIdO300(selectedPlan.PLAN_ID); 
+  let { checkPlanIdO300, NEXT_OUT_DATE } = await f_checkPlanIdO300(selectedPlan.PLAN_ID);
   if (!checkPlanIdO300) {
     NEXT_OUT_NO = await f_getO300_LAST_OUT_NO();
     // get code_50 phan loai giao hang GC, SK, KD
@@ -2181,7 +2169,7 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
     err_code = "Tổng số liệu phải lớn hơn 0";
     return err_code;
   }
-    //delete all M_CODE in O301 which not exist in chithidatatable
+  //delete all M_CODE in O301 which not exist in chithidatatable
   let M_CODE_LIST: string = chithidatatable.map(x => "'" + x.M_CODE + "'").join(',');
   await f_deleteM_CODE_O301(selectedPlan.PLAN_ID, M_CODE_LIST);
   for (let i = 0; i < chithidatatable.length; i++) {
@@ -2214,7 +2202,7 @@ export const f_handleDangKyXuatLieu = async (selectedPlan: QLSXPLANDATA, selecte
         });
       }
     }
-  }  
+  }
   return err_code;
 }
 export const f_deleteQLSXPlan = async (planToDelete: QLSXPLANDATA[]) => {
@@ -2500,7 +2488,7 @@ export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA) => {
     if (check_ycsx_sample) {
       if (checkPLANID_EXIST_OUT_KHO_SX === false) {
         //nhap kho ao
-        await generalQuery("nhapkhoao", {
+        await f_nhapkhoao({
           FACTORY: selectedPlan.PLAN_FACTORY,
           PHANLOAI: "N",
           PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
@@ -2511,18 +2499,12 @@ export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA) => {
           IN_QTY: 1,
           TOTAL_IN_QTY: 1,
           USE_YN: "O",
+          FSC: 'N',
+          FSC_MCODE: 'N',
+          FSC_GCODE: 'N',
         })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
         //xuat kho ao
-        await generalQuery("xuatkhoao", {
+        let kq_xuatkhoao = await f_xuatkhoao({
           FACTORY: selectedPlan.PLAN_FACTORY,
           PHANLOAI: "N",
           PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
@@ -2533,21 +2515,11 @@ export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA) => {
           OUT_QTY: 1,
           TOTAL_OUT_QTY: 1,
           USE_YN: "O",
+          REMARK: "WEB_OUT"
         })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              f_updateXUATLIEUCHINHPLAN(
-                selectedPlan?.PLAN_ID === undefined
-                  ? "xxx"
-                  : selectedPlan?.PLAN_ID
-              );
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        if (kq_xuatkhoao) {
+          f_updateXUATLIEUCHINHPLAN(selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID);
+        }
         Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
       } else {
         f_updateXUATLIEUCHINHPLAN(selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID);
@@ -3804,7 +3776,36 @@ export const f_set_YN_KHO_SUB_INPUT = async (DATA: any) => {
     });
   return kq;
 }
-
+export const f_nhapkhosubao = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("nhapkhosubao", {
+    FACTORY: DATA.FACTORY,
+    PHANLOAI: DATA.PHANLOAI,
+    PLAN_ID_INPUT: DATA.PLAN_ID_INPUT,
+    PLAN_ID_SUDUNG: DATA.PLAN_ID_SUDUNG,
+    M_CODE: DATA.M_CODE,
+    M_LOT_NO: DATA.M_LOT_NO,
+    ROLL_QTY: DATA.ROLL_QTY,
+    IN_QTY: DATA.IN_QTY,
+    TOTAL_IN_QTY: DATA.TOTAL_IN_QTY,
+    USE_YN: DATA.USE_YN,
+    FSC: DATA.FSC,
+    FSC_MCODE: DATA.FSC_MCODE,
+    FSC_GCODE: DATA.FSC_GCODE,
+  })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
 export const f_nhapkhoao = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("nhapkhoao", {
@@ -3830,12 +3831,11 @@ export const f_nhapkhoao = async (DATA: any) => {
         kq = false;
       }
     })
-    .catch((error) => { 
+    .catch((error) => {
       console.log(error);
     });
   return kq;
 }
-
 export const f_xuatkhoao = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("xuatkhoao", {
@@ -3849,6 +3849,7 @@ export const f_xuatkhoao = async (DATA: any) => {
     OUT_QTY: DATA.OUT_QTY,
     TOTAL_OUT_QTY: DATA.TOTAL_OUT_QTY,
     USE_YN: DATA.USE_YN,
+    REMARK: DATA.REMARK,
   })
     .then((response) => {
       console.log(response.data.tk_status);
@@ -4807,12 +4808,10 @@ export const f_addTestPoint = async (testCode: number, pointCode: number, pointN
       console.log(error);
     });
 }
-
 export const isValidInput = (input: string) => {
   const regex = /^[a-zA-Z0-9_]*$/; // Example: allow only alphanumeric and underscores
   return regex.test(input);
 };
-
 //update ncr id for holding material
 export const f_updateNCRIDForHolding = async (HOLD_ID: number, ncrId: number) => {
   await generalQuery("updateNCRIDForHolding", {
@@ -4830,7 +4829,6 @@ export const f_updateNCRIDForHolding = async (HOLD_ID: number, ncrId: number) =>
       console.log(error);
     });
 }
-
 //update ncr id for failing material
 export const f_updateNCRIDForFailing = async (FAIL_ID: number, ncrId: number) => {
   await generalQuery("updateNCRIDForFailing", {
@@ -4848,11 +4846,9 @@ export const f_updateNCRIDForFailing = async (FAIL_ID: number, ncrId: number) =>
       console.log(error);
     });
 }
-
 export const checkHSD2 = (hsdVL: number, hsdSP: number, pd_hsd: string): boolean => {
   return (hsdVL === hsdSP && hsdVL !== 0) || (pd_hsd === 'Y' && hsdVL > 0 && hsdSP > 0);
 }
-
 export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
   return elementList.map((ele: COMPONENT_DATA, index: number) => {
     if (ele.PHANLOAI_DT === "TEXT") {
@@ -4870,7 +4866,6 @@ export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
     }
   });
 };
-
 export const f_handleGETBOMAMAZON = async (G_CODE: string) => {
   let kq: COMPONENT_DATA[] = [];
   await generalQuery("getAMAZON_DESIGN", {
@@ -4899,7 +4894,6 @@ export const f_handleGETBOMAMAZON = async (G_CODE: string) => {
     });
   return kq;
 };
-
 export const f_loadLeadtimeData = async () => {
   let kq: LEADTIME_DATA[] = [];
   await generalQuery("loadLeadtimeData", {
@@ -4910,29 +4904,28 @@ export const f_loadLeadtimeData = async () => {
           (element: LEADTIME_DATA, index: number) => {
             return {
               ...element,
-              PROD_REQUEST_DATE: moment.utc(element.PROD_REQUEST_DATE).format("YYYY-MM-DD"),    
-              DELIVERY_DT: moment.utc(element.DELIVERY_DT).format("YYYY-MM-DD"),  
+              PROD_REQUEST_DATE: moment.utc(element.PROD_REQUEST_DATE).format("YYYY-MM-DD"),
+              DELIVERY_DT: moment.utc(element.DELIVERY_DT).format("YYYY-MM-DD"),
               id: index,
             };
           },
         );
-        kq = loadeddata;  
+        kq = loadeddata;
       } else {
       }
     })
     .catch((error) => {
-      console.log(error); 
+      console.log(error);
     });
   return kq;
 }
-
 export const f_loadDMSX = async (G_CODE: string) => {
   let kq: DINHMUC_QSLX[] = [];
   await generalQuery("loadDMSX", {
     G_CODE: G_CODE,
   })
     .then((response) => {
-      if (response.data.tk_status !== "NG") {      
+      if (response.data.tk_status !== "NG") {
         const loadeddata: DINHMUC_QSLX[] = response.data.data.map(
           (element: DINHMUC_QSLX, index: number) => {
             return {
@@ -4948,9 +4941,7 @@ export const f_loadDMSX = async (G_CODE: string) => {
       console.log(error);
     });
   return kq;
-} 
-
-
+}
 export const f_updateO301_OUT_CFM_QTY = async (PLAN_ID: string) => {
   await generalQuery("updateO301_OUT_CFM_QTY_FROM_O302", {
     PLAN_ID: PLAN_ID,
@@ -4961,11 +4952,11 @@ export const f_updateO301_OUT_CFM_QTY = async (PLAN_ID: string) => {
       }
     })
     .catch((error) => {
-      console.log(error); 
+      console.log(error);
     });
 }
-
 export const f_updateUSE_YN_I222_RETURN_NVL = async (M_LOT_NO: string, PLAN_ID: string, UPD_EMPL: string) => {
+  let kq: string = '';
   await generalQuery("updateUSE_YN_I222_RETURN_NVL", {
     M_LOT_NO: M_LOT_NO,
     PLAN_ID: PLAN_ID,
@@ -4974,9 +4965,113 @@ export const f_updateUSE_YN_I222_RETURN_NVL = async (M_LOT_NO: string, PLAN_ID: 
     .then((response) => {
       if (response.data.tk_status !== "NG") {
       } else {
+        kq = response.data.message;
       }
     })
     .catch((error) => {
-      console.log(error); 
-    }); 
+      console.log(error);
+      kq = error;
+    });
+  return kq;
+}
+export const f_insertO302 = async (DATA: any) => {
+  let err_code: string = '';
+  await generalQuery("insert_O302", {
+    OUT_DATE: DATA.OUT_DATE,
+    OUT_NO: DATA.OUT_NO,
+    OUT_SEQ: DATA.OUT_SEQ,
+    M_LOT_NO: DATA.M_LOT_NO,
+    LOC_CD: DATA.LOC_CD,
+    M_CODE: DATA.M_CODE,
+    OUT_CFM_QTY: DATA.OUT_CFM_QTY,
+    WAHS_CD: DATA.WAHS_CD,
+    REMARK: DATA.REMARK,
+    USE_YN: DATA.USE_YN,
+    INS_EMPL: DATA.INS_EMPL,
+    FACTORY: DATA.FACTORY,
+    CUST_CD: DATA.CUST_CD,
+    ROLL_QTY: DATA.ROLL_QTY,
+    OUT_DATE_THUCTE: DATA.OUT_DATE_THUCTE,
+    IN_DATE_O302: DATA.IN_DATE_O302,
+    PLAN_ID: DATA.PLAN_ID,
+    SOLANOUT: DATA.SOLANOUT,
+    LIEUQL_SX: DATA.LIEUQL_SX,
+    INS_RECEPTION: DATA.INS_RECEPTION,
+    FSC_O302: DATA.FSC_O302,
+    FSC_GCODE: DATA.FSC_GCODE,
+    FSC_MCODE: DATA.FSC_MCODE,    
+  })
+    .then(async (response) => {
+      if (response.data.tk_status !== "NG") {
+        let kq_update_use_yn_i222_return_nvl = await f_updateUSE_YN_I222_RETURN_NVL(DATA.M_LOT_NO, DATA.PLAN_ID, DATA.INS_EMPL);
+        if(DATA.LIEUQL_SX === 1){
+          if (kq_update_use_yn_i222_return_nvl !== '') {
+            return kq_update_use_yn_i222_return_nvl;
+          }
+          let kq_nhapkhoao = await f_nhapkhoao({
+            FACTORY: DATA.FACTORY,
+            PHANLOAI: 'N',
+            PLAN_ID_INPUT: DATA.PLAN_ID,
+            PLAN_ID_SUDUNG: null,
+            M_CODE: DATA.M_CODE,
+            M_LOT_NO: DATA.M_LOT_NO,
+            ROLL_QTY: DATA.ROLL_QTY,
+            IN_QTY: DATA.OUT_CFM_QTY,
+            TOTAL_IN_QTY: DATA.OUT_CFM_QTY,
+            USE_YN: 'O',
+            FSC: DATA.FSC_O302,
+            FSC_MCODE: DATA.FSC_MCODE,
+            FSC_GCODE: DATA.FSC_GCODE,
+          });
+          if (!kq_nhapkhoao) {
+            return 'Lỗi: Nhập kho main bị lỗi';
+          }
+          let kq_xuatkhoao = await f_xuatkhoao({
+            FACTORY: DATA.FACTORY,
+            PHANLOAI: 'N',
+            PLAN_ID_INPUT: DATA.PLAN_ID,
+            PLAN_ID_OUTPUT: DATA.PLAN_ID,
+            M_CODE: DATA.M_CODE,
+            M_LOT_NO: DATA.M_LOT_NO,
+            ROLL_QTY: DATA.ROLL_QTY,
+            OUT_QTY: DATA.OUT_CFM_QTY,
+            TOTAL_OUT_QTY: DATA.OUT_CFM_QTY,
+            USE_YN: 'O',
+            REMARK: "WEB_OUT"
+          });
+          if (!kq_xuatkhoao) {
+            return 'Lỗi: Xuất kho main bị lỗi';
+          }
+          await f_updateDKXLPLAN(DATA.PLAN_ID);
+        }
+        else {
+          let kq_nhapkhoao = await f_nhapkhosubao({
+            FACTORY: DATA.FACTORY,
+            PHANLOAI: 'N',
+            PLAN_ID_INPUT: DATA.PLAN_ID,
+            PLAN_ID_SUDUNG: DATA.PLAN_ID,
+            M_CODE: DATA.M_CODE,
+            M_LOT_NO: DATA.M_LOT_NO,
+            ROLL_QTY: DATA.ROLL_QTY,
+            IN_QTY: DATA.OUT_CFM_QTY,
+            TOTAL_IN_QTY: DATA.OUT_CFM_QTY,
+            USE_YN: 'X',
+            FSC: DATA.FSC_O302,
+            FSC_MCODE: DATA.FSC_MCODE,
+            FSC_GCODE: DATA.FSC_GCODE,
+          });
+          if (!kq_nhapkhoao) {
+            return 'Lỗi: Nhập kho main bị lỗi';
+          }
+
+        }
+        
+      } else {
+        err_code += `Lỗi: ${response.data.message} | `;
+      }
+    })
+    .catch((error) => {
+      //console.log(error);
+    });
+  return err_code;
 }

@@ -3512,6 +3512,8 @@ export interface WH_M_OUTPUT_DATA {
   IN_DATE: string;
   USE_YN: string;
   FSC_O302: string;
+  FSC_MCODE: string;
+  FSC_GCODE: string;
 }
 export interface DKXL_DATA {
   OUT_DATE: string;
