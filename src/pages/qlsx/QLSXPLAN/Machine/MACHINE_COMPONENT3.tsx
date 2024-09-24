@@ -80,12 +80,18 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
           }`,
           borderRadius: "4px",
         }}
-        onDoubleClick={machine_data.onClick}
+        onClick={machine_data.onClick}
         onMouseEnter={() => {
           setShowHideDetail(true);
         }}
         onMouseLeave={() => {
           setShowHideDetail(false);
+        }}
+        onDoubleClick={()=> {
+          if (machine_data.onDoubleClick) {
+            console.log(machine_data)
+            machine_data.onDoubleClick(machine_data);
+          }          
         }}
       >
         <div

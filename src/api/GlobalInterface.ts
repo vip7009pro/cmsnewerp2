@@ -1976,9 +1976,12 @@ export interface MachineInterface2 {
   eq_status?: string;
   upd_time?: string;
   upd_empl?: string;
+  eq_code?: string;
+  eq_active?: string;
   onClick?: (ev: any) => void;
   onMouseEnter?: (ev: any) => void;
   onMouseLeave?: (ev: any) => void;
+  onDoubleClick?: (ev: any) => void;
 }
 //capa sx
 export interface DATA_DIEM_DANH {

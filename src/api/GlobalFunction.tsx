@@ -5075,3 +5075,20 @@ export const f_insertO302 = async (DATA: any) => {
     });
   return err_code;
 }
+
+export const f_handle_toggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACTIVE: string) => {
+  let kq: boolean = false;
+  await generalQuery("toggleMachineActiveStatus", {
+    EQ_CODE: EQ_CODE,    
+    EQ_ACTIVE: EQ_ACTIVE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
