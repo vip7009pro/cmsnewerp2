@@ -14,7 +14,7 @@ import { AiFillCloseCircle, AiFillFileAdd } from "react-icons/ai";
 import AGTable from "../../../../components/DataTable/AGTable";
 const EQ_STATUS2 = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [showHideEQManager, setShowHideEQManager] = useState(true);
+  const [showHideEQManager, setShowHideEQManager] = useState(false);
   const openDialogEQManager = () => {
     setShowHideEQManager(true);
   }
