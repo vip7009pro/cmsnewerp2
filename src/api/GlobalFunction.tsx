@@ -5092,3 +5092,38 @@ export const f_handle_toggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACT
     });
   return kq;
 }
+
+export const f_addMachine = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("addMachine", {
+    FACTORY: DATA.FACTORY,
+    EQ_CODE: DATA.EQ_CODE,
+    EQ_NAME: DATA.EQ_NAME,
+    EQ_ACTIVE: DATA.EQ_ACTIVE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+} 
+
+export const f_deleteMachine = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("deleteMachine", {    
+    EQ_CODE: DATA.EQ_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}   
