@@ -551,6 +551,7 @@ export interface FullBOM {
   USE_YN?: string;
   EXP_DATE?: number;
   PD_HSD?: string;
+  QL_HSD?: string;
 }
 //quan ly vat lieu
 export interface MATERIAL_TABLE_DATA {

@@ -385,7 +385,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           </div>
         </div>
       )}
-      {request_codeinfo[0].PDUYET===1 && (request_codeinfo[0].FSC !=='Y' || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE)) && checkHSD2(Number(mainMaterialEXP_DATE),Number(request_codeinfo[0]?.EXP_DATE ?? 0),request_codeinfo[0]?.PD_HSD ?? 'N') && (
+      {request_codeinfo[0].PDUYET===1 && (request_codeinfo[0].FSC !=='Y' || (isMainMaterialFSC && request_codeinfo[0].FSC ==='Y' && mainMaterialFSC_CODE===request_codeinfo[0].FSC_CODE)) && checkHSD2(Number(mainMaterialEXP_DATE),Number(request_codeinfo[0]?.EXP_DATE ?? 0),request_codeinfo[0]?.PD_HSD ?? 'N', request_codeinfo[0]?.QL_HSD ?? 'Y') && (
         <div className="thongtinycsx">
           <div className="text1">
             1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: (
@@ -836,7 +836,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
         </div>
       )}
       {request_codeinfo[0].PDUYET!==1 && <div>YCSX chưa đươc phê duyệt, liên hệ Leader KD</div>}
-      {!checkHSD2(Number(mainMaterialEXP_DATE),Number(request_codeinfo[0]?.EXP_DATE ?? 0),request_codeinfo[0]?.PD_HSD ?? 'N') && <div>Hạn sử dụng của sản phẩm và của vật liệu không trùng khớp, vui lòng cập nhật lại thông tin sản phẩm.</div>} 
+      {!checkHSD2(Number(mainMaterialEXP_DATE),Number(request_codeinfo[0]?.EXP_DATE ?? 0),request_codeinfo[0]?.PD_HSD ?? 'N', request_codeinfo[0]?.QL_HSD ?? 'Y') && <div>Hạn sử dụng của sản phẩm và của vật liệu không trùng khớp, vui lòng cập nhật lại thông tin sản phẩm.</div>} 
       {((!isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') || ((isMainMaterialFSC && request_codeinfo[0].FSC ==='Y') && mainMaterialFSC_CODE!==request_codeinfo[0].FSC_CODE)) && <div>Hàng FSC liệu cũng phải là FSC, và phải cùng 1 loại FSC, hãy cập nhật lại thông tin sản phẩm.</div>}
     </div>
   );

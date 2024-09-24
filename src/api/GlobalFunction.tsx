@@ -4846,8 +4846,8 @@ export const f_updateNCRIDForFailing = async (FAIL_ID: number, ncrId: number) =>
       console.log(error);
     });
 }
-export const checkHSD2 = (hsdVL: number, hsdSP: number, pd_hsd: string): boolean => {
-  return (hsdVL === hsdSP && hsdVL !== 0) || (pd_hsd === 'Y' && hsdVL > 0 && hsdSP > 0);
+export const checkHSD2 = (hsdVL: number, hsdSP: number, pd_hsd: string, ql_hsd: string): boolean => {
+  return (hsdVL === hsdSP && hsdVL !== 0) || (pd_hsd === 'Y' && hsdVL > 0 && hsdSP > 0) || (ql_hsd === 'N');
 }
 export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
   return elementList.map((ele: COMPONENT_DATA, index: number) => {

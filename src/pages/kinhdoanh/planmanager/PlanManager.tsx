@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
 import { PlanTableData, UserData } from "../../../api/GlobalInterface";
-
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const PlanManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
@@ -51,7 +51,6 @@ const PlanManager = () => {
   const [id, setID] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
-
   const [po_no, setPo_No] = useState("");
   const [material, setMaterial] = useState("");
   const [over, setOver] = useState("");
@@ -61,7 +60,6 @@ const PlanManager = () => {
     Array<PlanTableData>
   >([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-
   const column_plantable:any = [
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 180 },
@@ -284,7 +282,6 @@ const PlanManager = () => {
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
-
   const column_excelplan2:any = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
@@ -884,7 +881,6 @@ const PlanManager = () => {
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };
-
   const confirmUpPlanHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn thêm Plan hàng loạt ?",
@@ -916,39 +912,7 @@ const PlanManager = () => {
         handle_checkPlanHangLoat();
       }
     });
-  };
-
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: true,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: true,
-      });
-    }
-  };
-
+  }; 
   const handlePlanSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
@@ -960,7 +924,6 @@ const PlanManager = () => {
       setPlanDataTableFilter([]);
     }
   };
-
   const deletePlan = async () => {
     if (plandatatablefilter.length >= 1) {
       let err_code: boolean = false;
@@ -1014,602 +977,243 @@ const PlanManager = () => {
       }
     });
   };
-  const dataSource = new PivotGridDataSource({
-    fields: [
-      {
-        caption: "PLAN_ID",
-        width: 80,
-        dataField: "PLAN_ID",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "EMPL_NAME",
-        width: 80,
-        dataField: "EMPL_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "EMPL_NO",
-        width: 80,
-        dataField: "EMPL_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CUST_NAME_KD",
-        width: 80,
-        dataField: "CUST_NAME_KD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CUST_CD",
-        width: 80,
-        dataField: "CUST_CD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_CODE",
-        width: 80,
-        dataField: "G_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_NAME_KD",
-        width: 80,
-        dataField: "G_NAME_KD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_NAME",
-        width: 80,
-        dataField: "G_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PROD_TYPE",
-        width: 80,
-        dataField: "PROD_TYPE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PROD_MAIN_MATERIAL",
-        width: 80,
-        dataField: "PROD_MAIN_MATERIAL",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_DATE",
-        width: 80,
-        dataField: "PLAN_DATE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "date",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D1",
-        width: 80,
-        dataField: "D1",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D2",
-        width: 80,
-        dataField: "D2",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D3",
-        width: 80,
-        dataField: "D3",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D4",
-        width: 80,
-        dataField: "D4",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D5",
-        width: 80,
-        dataField: "D5",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D6",
-        width: 80,
-        dataField: "D6",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D7",
-        width: 80,
-        dataField: "D7",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "D8",
-        width: 80,
-        dataField: "D8",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "REMARK",
-        width: 80,
-        dataField: "REMARK",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "",
-        width: 80,
-        dataField: "",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-    ],
-    store: plandatatable,
-  });
+
   useEffect(() => { }, []);
   return (
     <div className="planmanager">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
-            color: selection.trapo === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Tra PLAN</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() =>
-            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setNav(2);
-            }) */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setNav(2);
-            })
-          }
-          style={{
-            backgroundColor:
-              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
-            color: selection.thempohangloat === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Thêm PLAN</span>
-        </div>
-      </div>
-      {selection.thempohangloat && (
-        <div className="newplan">
-          <div className="batchnewplan">
-            <h3>Thêm Plan Hàng Loạt</h3>
-            <form className="formupload">
-              <label htmlFor="upload">
-                <b>Chọn file Excel: </b>
-                <input
-                  className="selectfilebutton"
-                  type="file"
-                  name="upload"
-                  id="upload"
-                  onChange={(e: any) => {
-                    readUploadFile(e);
-                  }}
-                />
-              </label>
-              <div
-                className="checkpobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckPlanHangLoat();
-                }}
-              >
-                Check Plan
+      <Tabs className="tabs">
+        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
+          <Tab><span className="mininavtext">Tra PLAN</span></Tab>
+          <Tab><span className="mininavtext">Thêm PLAN</span></Tab>
+        </TabList>
+        <TabPanel>
+          <div className="tracuuPlan">
+            {showhidesearchdiv && (
+              <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+                <div className="forminput">
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Từ ngày:</b>
+                      <input
+                        type="date"
+                        value={fromdate.slice(0, 10)}
+                        onChange={(e) => setFromDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tới ngày:</b>{" "}
+                      <input
+                        type="date"
+                        value={todate.slice(0, 10)}
+                        onChange={(e) => setToDate(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Code KD:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="GH63-xxxxxx"
+                        value={codeKD}
+                        onChange={(e) => setCodeKD(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code ERP:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="7C123xxx"
+                        value={codeCMS}
+                        onChange={(e) => setCodeCMS(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Tên nhân viên:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="Trang"
+                        value={empl_name}
+                        onChange={(e) => setEmpl_Name(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Khách:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="SEVT"
+                        value={cust_name}
+                        onChange={(e) => setCust_Name(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Loại sản phẩm:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="TSP"
+                        value={prod_type}
+                        onChange={(e) => setProdType(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>ID:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="12345"
+                        value={id}
+                        onChange={(e) => setID(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>PO NO:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="123abc"
+                        value={po_no}
+                        onChange={(e) => setPo_No(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Vật liệu:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="SJ-203020HC"
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Over/OK:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="OVER"
+                        value={over}
+                        onChange={(e) => setOver(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Invoice No:</b>{" "}
+                      <input
+                        type="text"
+                        placeholder="số invoice"
+                        value={invoice_no}
+                        onChange={(e) => setInvoice_No(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                </div>
+                <div className="formbutton">
+                  <label>
+                    <span style={{ fontSize: "0.7rem" }}>All Time:</span>
+                    <input
+                      type="checkbox"
+                      name="alltimecheckbox"
+                      defaultChecked={alltime}
+                      onChange={() => setAllTime(!alltime)}
+                    ></input>
+                  </label>
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      handletraPlan();
+                    }}
+                  >
+                    <FcSearch color="green" size={30} />
+                    Search
+                  </IconButton>
+                </div>
               </div>
-              <div
-                className="uppobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpPlanHangLoat();
+            )}
+            <div className="tracuuPlanTable">
+              <DataGrid
+                sx={{ fontSize: "0.7rem" }}
+                slots={{
+                  toolbar: CustomToolbarPOTable,
                 }}
-              >
-                Up Plan
-              </div>
-            </form>
-            <div className="insertPlanTable">
-              {true && (
-                <DataGrid
-                  sx={{ fontSize: "0.7rem" }}
-                  slots={{
-                    toolbar: CustomToolbar,
-                    
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excelplan2}
-                  pageSizeOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode="row"
-                />
-              )}
+                loading={isLoading}
+                rowHeight={30}
+                rows={plandatatable}
+                columns={column_plantable}
+                pageSizeOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                ]}
+                editMode="row"
+                getRowId={(row) => row.PLAN_ID}
+                checkboxSelection
+                disableRowSelectionOnClick
+                onRowSelectionModelChange={(ids) => {
+                  handlePlanSelectionforUpdate(ids);
+                }}
+              />
             </div>
           </div>
-        </div>
-      )}
-      {selection.trapo && (
-        <div className="tracuuPlan">
-          {showhidesearchdiv && (
-            <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-              <div className="forminput">
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Từ ngày:</b>
-                    <input
-                      type="date"
-                      value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Tới ngày:</b>{" "}
-                    <input
-                      type="date"
-                      value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Code KD:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="GH63-xxxxxx"
-                      value={codeKD}
-                      onChange={(e) => setCodeKD(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Code ERP:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="7C123xxx"
-                      value={codeCMS}
-                      onChange={(e) => setCodeCMS(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Tên nhân viên:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Trang"
-                      value={empl_name}
-                      onChange={(e) => setEmpl_Name(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Khách:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="SEVT"
-                      value={cust_name}
-                      onChange={(e) => setCust_Name(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Loại sản phẩm:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="TSP"
-                      value={prod_type}
-                      onChange={(e) => setProdType(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>ID:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="12345"
-                      value={id}
-                      onChange={(e) => setID(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>PO NO:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="123abc"
-                      value={po_no}
-                      onChange={(e) => setPo_No(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Vật liệu:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="SJ-203020HC"
-                      value={material}
-                      onChange={(e) => setMaterial(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Over/OK:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="OVER"
-                      value={over}
-                      onChange={(e) => setOver(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Invoice No:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="số invoice"
-                      value={invoice_no}
-                      onChange={(e) => setInvoice_No(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className="formbutton">
-                <label>
-                  <span style={{fontSize: "0.7rem"}}>All Time:</span>
+        </TabPanel>
+        <TabPanel>
+          <div className="newplan">
+            <div className="batchnewplan">
+              <h3>Thêm Plan Hàng Loạt</h3>
+              <form className="formupload">
+                <label htmlFor="upload">
+                  <b>Chọn file Excel: </b>
                   <input
-                    type="checkbox"
-                    name="alltimecheckbox"
-                    defaultChecked={alltime}
-                    onChange={() => setAllTime(!alltime)}
-                  ></input>
+                    className="selectfilebutton"
+                    type="file"
+                    name="upload"
+                    id="upload"
+                    onChange={(e: any) => {
+                      readUploadFile(e);
+                    }}
+                  />
                 </label>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    handletraPlan();
+                <div
+                  className="checkpobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmCheckPlanHangLoat();
                   }}
                 >
-                  <FcSearch color="green" size={30} />
-                  Search
-                </IconButton>
+                  Check Plan
+                </div>
+                <div
+                  className="uppobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmUpPlanHangLoat();
+                  }}
+                >
+                  Up Plan
+                </div>
+              </form>
+              <div className="insertPlanTable">
+                {true && (
+                  <DataGrid
+                    sx={{ fontSize: "0.7rem" }}
+                    slots={{
+                      toolbar: CustomToolbar,
+                    }}
+                    loading={isLoading}
+                    rowHeight={35}
+                    rows={uploadExcelJson}
+                    columns={column_excelplan2}
+                    pageSizeOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                    ]}
+                    editMode="row"
+                  />
+                )}
               </div>
             </div>
-          )}
-          <div className="tracuuPlanTable">
-            <DataGrid
-              sx={{ fontSize: "0.7rem" }}
-              slots={{
-                toolbar: CustomToolbarPOTable,
-                
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={plandatatable}
-              columns={column_plantable}
-              pageSizeOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode="row"
-              getRowId={(row) => row.PLAN_ID}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(ids) => {
-                handlePlanSelectionforUpdate(ids);
-              }}
-            />
           </div>
-        </div>
-      )}
-      {showhidePivotTable && (
-        <div className="pivottable1">
-          <IconButton
-            className="buttonIcon"
-            onClick={() => {
-              setShowHidePivotTable(false);
-            }}
-          >
-            <AiFillCloseCircle color="blue" size={15} />
-            Close
-          </IconButton>
-          <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
-        </div>
-      )}
+        </TabPanel>
+      </Tabs>
     </div>
   );
 };

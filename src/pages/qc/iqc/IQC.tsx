@@ -1,154 +1,50 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
-import KQDTC from "../dtc/KQDTC";
 import "./IQC.scss";
-import SPECDTC from "../dtc/SPECDTC";
-import ADDSPECTDTC from "../dtc/ADDSPECDTC";
-import DKDTC from "../dtc/DKDTC";
 import DTC from "../dtc/DTC";
 import HOLD_FAIL from "./HOLD_FAIL";
 import NCR_MANAGER from "./NCR_MANAGER";
-import KHCT from "../../qlsx/QLSXPLAN/KHCT/KHCT";
-
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const IQC = () => {
-  const [selection, setSelection] = useState<any>({
-    tab1: true,
-    tab2: false,
-    tab3: false,
-    tab4: false,
-    tab5: false,
-  });
-
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        tab1: true,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: true,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: true,
-        tab4: false,
-        tab5: false,
-      });
-    } else if (choose === 4) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: true,
-        tab5: false,
-      });
-    } else if (choose === 5) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: true,
-      });
-    }
-  };
-
-  useEffect(() => {}, []);
-
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  useEffect(() => { }, []);
   return (
     <div className="iqc">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab1 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Kho Liệu</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(2)}
-          style={{
-            backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab2 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">ĐỘ TIN CẬY</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(3)}
-          style={{
-            backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab3 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">IN-HOLD-FAIL</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(4)}
-          style={{
-            backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab4 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">NCR MANAGEMENT</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(5)}
-          style={{
-            backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab5 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">RMA MANAGEMENT</span>
-        </div>
-      </div>
-      {selection.tab1 && (
-        <div className="traiqc">
+      <Tabs className="tabs" style={{
+        fontSize: "0.6rem",
+        width: "100%",
+      }}>
+        <TabList className="tablist" style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "left",
+          backgroundImage: theme.CMS.backgroundImage,
+          color: 'gray'
+        }}>
+          <Tab><span className="mininavtext">Kho Liệu</span></Tab>
+          <Tab><span className="mininavtext">ĐỘ TIN CẬY</span></Tab>
+          <Tab><span className="mininavtext">IN-HOLD-FAIL</span></Tab>
+          <Tab><span className="mininavtext">NCR MANAGEMENT</span></Tab>
+          <Tab><span className="mininavtext">RMA MANAGEMENT</span></Tab>
+        </TabList>
+        <TabPanel>
           <KHOLIEU />
-        </div>
-      )}
-      {selection.tab2 && (
-        <div className="datadtc">
+        </TabPanel>
+        <TabPanel>
           <DTC />
-        </div>
-      )}
-      {selection.tab3 && (
-        <div className="datadtc">
+        </TabPanel>
+        <TabPanel>
           <HOLD_FAIL />
-        </div>
-      )}
-      {selection.tab4 && (
-        <div className="datadtc">
+        </TabPanel>
+        <TabPanel>
           <NCR_MANAGER />
-        </div>
-      )}
-      {selection.tab5 && (
-        <div className="datadtc">
-          <KHCT />
-        </div>
-      )}
+        </TabPanel>
+        <TabPanel>
+        </TabPanel>
+      </Tabs>
     </div>
   );
 };

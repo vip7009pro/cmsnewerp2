@@ -50,7 +50,9 @@ import {
 import UpHangLoat from "./UpHangLoat";
 import BOM_DESIGN from "./BOM_DESIGN";
 import AGTable from "../../../components/DataTable/AGTable";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const BOM_MANAGER = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [activeOnly, setActiveOnly] = useState(true)
   const [cndb, setCNDB] = useState(false)
   const labelprintref = useRef(null);
@@ -1374,24 +1376,6 @@ const BOM_MANAGER = () => {
       .catch((error) => {
         //console.log(error);
       });
-  };
-  const handleCODESelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = rows.filter((element: CODE_INFO) =>
-      selectedID.has(element.id),
-    );
-    if (datafilter.length > 0) {
-      ////console.log(datafilter);
-      codedatatablefilter.current = datafilter;
-      if (!pinBOM) {
-        handleGETBOMSX(datafilter[0].G_CODE);
-        handleGETBOMGIA(datafilter[0].G_CODE);
-      }
-      ////console.log(datafilter[0]);
-      handlecodefullinfo(datafilter[0].G_CODE);
-    } else {
-      codedatatablefilter.current = [];
-    }
   };
   const handleClearInfo = () => {
     setCodeFullInfo({
@@ -2805,35 +2789,17 @@ const BOM_MANAGER = () => {
     handleGETBOMAMAZON("6E00004A");
   }, []);
   return (
-    <div className="bom_manager">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
-            color: selection.trapo === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Thông tin code</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() =>
-            checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], () => {
-              setNav(2);
-            })
-          }
-          style={{
-            backgroundColor:
-              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
-            color: selection.thempohangloat === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Up hàng loạt</span>
-        </div>
-      </div>
-      {selection.trapo && (
+    <div className="bom_manager">      
+      <Tabs className="tabs">
+        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
+          <Tab>
+            <span className="mininavtext">Thông tin code</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">Up hàng loạt</span>
+          </Tab>
+        </TabList>
+        <TabPanel>
         <div className="bom_manager_wrapper">
           <div className="left">
             <div className="bom_manager_button">
@@ -4018,8 +3984,15 @@ const BOM_MANAGER = () => {
             </div>
             <div className="bottom"></div>
           </div>
+        </div>          
+        </TabPanel>
+        <TabPanel>
+        <div className="uphangloat">
+          <UpHangLoat />
         </div>
-      )}
+
+        </TabPanel>
+      </Tabs>      
       {showHideDesignBom &&
         <div className="design_panel">
           <div className="closediv">
@@ -4035,12 +4008,7 @@ const BOM_MANAGER = () => {
           </div>
           <BOM_DESIGN />
         </div>
-      }
-      {selection.thempohangloat && (
-        <div className="uphangloat">
-          <UpHangLoat />
-        </div>
-      )}
+      }      
     </div>
   );
 };

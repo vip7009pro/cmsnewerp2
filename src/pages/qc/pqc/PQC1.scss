@@ -1,7 +1,7 @@
 @media only screen and (max-width: 5000px) {
   .pqc1 {
     width: 100%;
-    height: 100%;
+    height: 92vh;
     display: flex;
     flex-direction: column;
     .tracuuDataInspection {
@@ -19,7 +19,7 @@
         .tracuuDataInspectionform {
           display: flex;
           width: 100%;
-          /* width: 15vw; */
+          height: 100%;
           flex: 1;          
           flex-direction: column;
           align-items: center;
@@ -198,12 +198,12 @@
         flex-direction: row;
         gap: 5px;
         width: 100%;
-        height: 90vh; 
+        height: 100%; 
        
         .tracuuDataInspectionform2 {
           display: flex;          
           flex: 1;
-          height: 95vh;
+          height: 100%;
           gap: 10px;
           flex-direction: column;
           align-items: center;

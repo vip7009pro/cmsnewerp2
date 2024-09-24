@@ -23,6 +23,7 @@ import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ShortageData } from "../../../api/GlobalInterface";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const ShortageKD = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
@@ -644,36 +645,6 @@ const ShortageKD = () => {
       }
     });
   };
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: true,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: true,
-      });
-    }
-  };
   const handleShortageSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = shortagedatatable.filter((element: any) =>
@@ -779,96 +750,17 @@ const ShortageKD = () => {
   };
   useEffect(() => {}, []);
   return (
-    (<div className="shortage">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
-            color: selection.trapo === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Tra Shortage</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() =>
-            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
-              setNav(2);
-            }) */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setNav(2);
-            })
-          }
-          style={{
-            backgroundColor:
-              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
-            color: selection.thempohangloat === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Thêm Shortage</span>
-        </div>
-      </div>
-      {selection.thempohangloat && (
-        <div className="newplan">
-          <div className="batchnewplan">
-            <h3>Thêm Shortage Hàng Loạt</h3>
-            <form className="formupload">
-              <label htmlFor="upload">
-                <b>Chọn file Excel: </b>
-                <input
-                  className="selectfilebutton"
-                  type="file"
-                  name="upload"
-                  id="upload"
-                  onChange={(e: any) => {
-                    readUploadFile(e);
-                  }}
-                />
-              </label>
-              <div
-                className="checkpobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckShortageHangLoat();
-                }}
-              >
-                Check
-              </div>
-              <div
-                className="uppobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpShortageHangLoat();
-                }}
-              >
-                Up Shortage
-              </div>
-            </form>
-            <div className="insertPlanTable">
-              {true && (
-                <DataGrid
-                  sx={{ fontSize: "0.7rem" }}
-                  slots={{
-                    toolbar: CustomToolbar,
-                    
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excel_shortage}
-                  pageSizeOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode="row"
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-      {selection.trapo && (
+    (<div className="shortage">      
+      <Tabs className="tabs">
+        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
+          <Tab>
+            <span className="mininavtext">Tra Shortage</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">Thêm Shortage</span>
+          </Tab>
+        </TabList>
+        <TabPanel>
         <div className="tracuuPlan">
           <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className="forminput">
@@ -1036,7 +928,67 @@ const ShortageKD = () => {
             />
           </div>
         </div>
-      )}
+        </TabPanel>
+        <TabPanel>
+        <div className="newplan">
+          <div className="batchnewplan">
+            <h3>Thêm Shortage Hàng Loạt</h3>
+            <form className="formupload">
+              <label htmlFor="upload">
+                <b>Chọn file Excel: </b>
+                <input
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
+                  onChange={(e: any) => {
+                    readUploadFile(e);
+                  }}
+                />
+              </label>
+              <div
+                className="checkpobutton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmCheckShortageHangLoat();
+                }}
+              >
+                Check
+              </div>
+              <div
+                className="uppobutton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmUpShortageHangLoat();
+                }}
+              >
+                Up Shortage
+              </div>
+            </form>
+            <div className="insertPlanTable">
+              {true && (
+                <DataGrid
+                  sx={{ fontSize: "0.7rem" }}
+                  slots={{
+                    toolbar: CustomToolbar,
+                    
+                  }}
+                  loading={isLoading}
+                  rowHeight={35}
+                  rows={uploadExcelJson}
+                  columns={column_excel_shortage}
+                  pageSizeOptions={[
+                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                  ]}
+                  editMode="row"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        </TabPanel>
+      </Tabs>     
     </div>)
   );
 };

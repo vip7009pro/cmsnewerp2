@@ -16,6 +16,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import FAILING from "../qc/iqc/FAILING";
 
 const BAOCAOSXALL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -28,7 +29,7 @@ const BAOCAOSXALL = () => {
           fontSize: "0.6rem",
           width: "100%",          
         }}
-        forceRenderTabPanel={true}
+        forceRenderTabPanel={false}
         >
           <TabList className="tablist" style={{
             display: "flex",
@@ -60,6 +61,9 @@ const BAOCAOSXALL = () => {
               <span className="mininavtext">DATA DAO-FILM</span>
             </Tab>
             <Tab>
+              <span className="mininavtext">FAILING</span>
+            </Tab>
+            <Tab>
               <span className="mininavtext">PATROL</span>
             </Tab>    
           </TabList>
@@ -82,11 +86,14 @@ const BAOCAOSXALL = () => {
             <ACHIVEMENTTB />
           </TabPanel>
           <TabPanel>
-            <PATROL />
-          </TabPanel>
-          <TabPanel>
             <DAOFILMDATA />
           </TabPanel>
+          <TabPanel>
+            <FAILING />
+          </TabPanel>
+          <TabPanel>
+            <PATROL />
+          </TabPanel>          
         </Tabs>        
       </Suspense>
     </div>

@@ -9,8 +9,12 @@ import DTC from "../dtc/DTC";
 import HOLDING from "./HOLDING";
 import FAILING from "./FAILING";
 import INCOMMING from "./INCOMMING";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
 const HOLD_FAIL = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
     tab1: false,
     tab2: false,
@@ -69,55 +73,41 @@ const HOLD_FAIL = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="hold_fail">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(3)}
-          style={{
-            backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab3 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">INCOMMING</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab1 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">HOLDING</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(2)}
-          style={{
-            backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab2 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">FAILING</span>
-        </div>
-      </div>
-      {selection.tab1 && (
-        <div className="traiqc">
-          <HOLDING />
-        </div>
-      )}
-      {selection.tab2 && (
-        <div className="datadtc">
-          <FAILING />
-        </div>
-      )}
-      {selection.tab3 && (
-        <div className="datadtc">
-          <INCOMMING />
-        </div>
-      )}
+    <div className="hold_fail">  
+      <Tabs className="tabs" style={{
+        fontSize: "0.6rem",
+        width: "100%",          
+      }}> 
+      <TabList className="tablist" style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "left",
+            backgroundImage: theme.CMS.backgroundImage,
+            color: 'gray'
+          }}>
+            <Tab>
+              <span className="mininavtext">HOLDING</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">FAILING</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">INCOMMING</span>
+            </Tab>
+          </TabList>
+          <TabPanel>
+            <HOLDING />
+          </TabPanel>
+          <TabPanel>
+            <FAILING />
+          </TabPanel>
+          <TabPanel>
+            <INCOMMING /> 
+          </TabPanel>
+      </Tabs> 
     </div>
   );
 };
 export default HOLD_FAIL;
+      

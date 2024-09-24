@@ -1,43 +1,15 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-} from "@mui/material";
-import {
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-  Column,
-} from "devextreme-react/data-grid";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./TINHLIEU.scss";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart } from "react-icons/md";
-import PivotTable from "../../../components/PivotChart/PivotChart";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import {
-  CustomerListData,
-  MaterialPOData,
-  MaterialPOSumData,
-} from "../../../api/GlobalInterface";
+import { MaterialPOData, MaterialPOSumData } from "../../../api/GlobalInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 const TINHLIEU = () => {
-  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
   const [formdata, setFormData] = useState<any>({
@@ -65,8 +37,8 @@ const TINHLIEU = () => {
             let loadeddata = response.data.data.map(
               (element: MaterialPOData, index: number) => {
                 return {
-                  ...element,           
-G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CNDB') ==-1 ? element.G_NAME_KD : 'TEM_NOI_BO',
+                  ...element,
+                  G_NAME_KD: getAuditMode() == 0 ? element.G_NAME_KD : element.G_NAME_KD.search('CNDB') == -1 ? element.G_NAME_KD : 'TEM_NOI_BO',
                   NEED_M_QTY: Number(element.NEED_M_QTY),
                   id: index,
                 };
@@ -75,41 +47,9 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CN
             //console.log(loadeddata);
             //set_material_table_data(loadeddata);
             setCurrentTable(loadeddata);
-            let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-            let column_map = keysArray.map((e, index) => {
-              return {
-                dataField: e,
-                caption: e,
-                width: 100,
-                cellRender: (ele: any) => {
-                  //console.log(ele);
-                  if (['M_NAME', 'id'].indexOf(e) > -1) {
-                    return <span style={{ fontWeight: 'bold' }}>{ele.data[e]}</span>;
-                  }
-                  else if (["PO_QTY", "DELIVERY_QTY", "PO_BALANCE"].indexOf(e) > -1) {
-                    return <span style={{ color: "#F633EA", fontWeight: "normal" }}>
-                      {ele.data[e]?.toLocaleString("en-US",)}
-                    </span>
-                  }
-                  else if (["NEED_M_QTY"].indexOf(e) > -1) {
-                    return <span style={{ color: "#2300e9", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US",)}
-                    </span>
-                  }
-                  else {
-                    return <span style={{ color: "black", fontWeight: "normal" }}>
-                      {ele.data[e]?.toLocaleString("en-US",)}
-                    </span>
-                  }
-                },
-              };
-            });
-            setColumns(column_map);
+            setColumns(getCompany() !== 'CMS' ? column_mrp_table2 : column_mrp_tableCMS);
             Swal.fire(
-              "Thông báo",
-              "Đã load: " + response.data.data.length + " dòng",
-              "success",
-            );
+              "Thông báo", "Đã load: " + response.data.data.length + " dòng", "success",);
           } else {
             //set_material_table_data([]);
             setCurrentTable([]);
@@ -138,41 +78,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CN
             //console.log(loadeddata);
             //set_material_table_data(loadeddata);
             setCurrentTable(loadeddata);
-            let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-            let column_map = keysArray.map((e, index) => {
-              return {
-                dataField: e,
-                caption: e,
-                width: 100,
-                cellRender: (ele: any) => {
-                  //console.log(ele);
-                  if (['M_NAME', 'id'].indexOf(e) > -1) {
-                    return <span style={{ fontWeight: 'bold' }}>{ele.data[e]}</span>;
-                  }
-                  else if (["STOCK_M", "HOLDING_M", "NEED_M_QTY"].indexOf(e) > -1) {
-                    return <span style={{ color: "#6e21ff", fontWeight: "normal" }}>
-                      {ele.data[e]?.toLocaleString("en-US",)}
-                    </span>
-                  }
-                  else if (["M_SHORTAGE"].indexOf(e) > -1) {
-                    return <span style={{ color: "#ff0000", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US",)}
-                    </span>
-                  }
-                  else {
-                    return <span style={{ color: "black", fontWeight: "normal" }}>
-                      {ele.data[e]?.toLocaleString("en-US",)}
-                    </span>
-                  }
-                },
-              };
-            });
-            setColumns(column_map);
-            Swal.fire(
-              "Thông báo",
-              "Đã load: " + response.data.data.length + " dòng",
-              "success",
-            );
+            setColumns(column_mrp_all);
+            Swal.fire("Thông báo", "Đã load: " + response.data.data.length + " dòng", "success",);
           } else {
             //set_material_table_data([]);
             setCurrentTable([]);
@@ -184,736 +91,125 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CN
         });
     }
   };
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={currentTable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //setFormData(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(currentTable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            {columns.map((column, index) => {
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [currentTable, columns],
-  );
-  const dataSource = new PivotGridDataSource({
-    fields: [
-      {
-        caption: "INS_DATE",
-        width: 80,
-        dataField: "INS_DATE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "date",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_LOT_NO",
-        width: 80,
-        dataField: "M_LOT_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_CODE",
-        width: 80,
-        dataField: "M_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_NAME",
-        width: 80,
-        dataField: "M_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "WIDTH_CD",
-        width: 80,
-        dataField: "WIDTH_CD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "XUAT_KHO",
-        width: 80,
-        dataField: "XUAT_KHO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_FR",
-        width: 80,
-        dataField: "VAO_FR",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_SR",
-        width: 80,
-        dataField: "VAO_SR",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_DC",
-        width: 80,
-        dataField: "VAO_DC",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_ED",
-        width: 80,
-        dataField: "VAO_ED",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CONFIRM_GIAONHAN",
-        width: 80,
-        dataField: "CONFIRM_GIAONHAN",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_KIEM",
-        width: 80,
-        dataField: "VAO_KIEM",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "NHATKY_KT",
-        width: 80,
-        dataField: "NHATKY_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "RA_KIEM",
-        width: 80,
-        dataField: "RA_KIEM",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_QTY",
-        width: 80,
-        dataField: "ROLL_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "OUT_CFM_QTY",
-        width: 80,
-        dataField: "OUT_CFM_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_QTY",
-        width: 80,
-        dataField: "TOTAL_OUT_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_RESULT",
-        width: 80,
-        dataField: "FR_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_RESULT",
-        width: 80,
-        dataField: "SR_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_RESULT",
-        width: 80,
-        dataField: "DC_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_RESULT",
-        width: 80,
-        dataField: "ED_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_QTY",
-        width: 80,
-        dataField: "INSPECT_TOTAL_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_QTY",
-        width: 80,
-        dataField: "INSPECT_OK_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUT",
-        width: 80,
-        dataField: "INS_OUT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PD",
-        width: 80,
-        dataField: "PD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CAVITY",
-        width: 80,
-        dataField: "CAVITY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_EA",
-        width: 80,
-        dataField: "TOTAL_OUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_EA",
-        width: 80,
-        dataField: "FR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_EA",
-        width: 80,
-        dataField: "SR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_EA",
-        width: 80,
-        dataField: "DC_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_EA",
-        width: 80,
-        dataField: "ED_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_EA",
-        width: 80,
-        dataField: "INSPECT_TOTAL_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_EA",
-        width: 80,
-        dataField: "INSPECT_OK_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUTPUT_EA",
-        width: 80,
-        dataField: "INS_OUTPUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS_KT",
-        width: 80,
-        dataField: "ROLL_LOSS_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS",
-        width: 80,
-        dataField: "ROLL_LOSS",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PROD_REQUEST_NO",
-        width: 80,
-        dataField: "PROD_REQUEST_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_ID",
-        width: 80,
-        dataField: "PLAN_ID",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_EQ",
-        width: 80,
-        dataField: "PLAN_EQ",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_CODE",
-        width: 80,
-        dataField: "G_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_NAME",
-        width: 80,
-        dataField: "G_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FACTORY",
-        width: 80,
-        dataField: "FACTORY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-    ],
-    store: currentTable,
-  });
+  const column_mrp_tableCMS = [
+    { field: "CUST_CD", headerName: "CUST_CD", width: 90 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
+    { field: "G_CODE", headerName: "G_CODE", width: 90 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90 },
+    { field: "M_CODE", headerName: "M_CODE", width: 90 },
+    { field: "M_NAME", headerName: "M_NAME", width: 90 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "PO_NO", headerName: "PO_NO", width: 90 },
+    {
+      field: "PO_QTY", headerName: "PO_QTY", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.PO_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.PO_QTY?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    {
+      field: "DELIVERY_QTY", headerName: "DELIVERY_QTY", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.DELIVERY_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.DELIVERY_QTY?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    {
+      field: "PO_BALANCE", headerName: "PO_BALANCE", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.PO_BALANCE < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.PO_BALANCE?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    { field: "PD", headerName: "PD", width: 90 },
+    { field: "CAVITY_COT", headerName: "CAVITY_COT", width: 90 },
+    { field: "CAVITY_HANG", headerName: "CAVITY_HANG", width: 90 },
+    { field: "CAVITY", headerName: "CAVITY", width: 90 },
+    {
+      field: "NEED_M_QTY", headerName: "NEED_M_QTY", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.NEED_M_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.NEED_M_QTY?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+  ]
+  const column_mrp_table2 = [
+    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 150 },
+    { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 150 },
+    { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },
+    { field: "G_CODE", headerName: "G_CODE", width: 100 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
+    { field: "M_CODE", headerName: "M_CODE", width: 100 },
+    { field: "M_NAME", headerName: "M_NAME", width: 150 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 100 },
+    {
+      field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 150, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.PROD_REQUEST_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.PROD_REQUEST_QTY?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    { field: "PD", headerName: "PD", width: 80 },
+    { field: "CAVITY_COT", headerName: "CAVITY_COT", width: 120 },
+    { field: "CAVITY_HANG", headerName: "CAVITY_HANG", width: 120 },
+    { field: "CAVITY", headerName: "CAVITY", width: 100 },
+    {
+      field: "NEED_M_QTY", headerName: "NEED_M_QTY", width: 120, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.NEED_M_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.NEED_M_QTY?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+  ]
+  const column_mrp_all = [
+    { field: "M_CODE", headerName: "M_CODE", width: 90 },
+    { field: "M_NAME", headerName: "M_NAME", width: 90 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "NEED_M_QTY", headerName: "NEED_M_QTY", width: 90 },
+    {
+      field: "STOCK_M", headerName: "STOCK_M", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.STOCK_M < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.STOCK_M?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    {
+      field: "HOLDING_M", headerName: "HOLDING_M", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.HOLDING_M < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.HOLDING_M?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    {
+      field: "M_SHORTAGE", headerName: "M_SHORTAGE", width: 90, cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.M_SHORTAGE < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.M_SHORTAGE?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+  ]
+  const materialDataTable2 = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <></>
+      }
+      columns={columns}
+      data={currentTable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+      }}
+    />
+    , [currentTable, columns]);
   useEffect(() => {
     load_material_table('PO');
     //setColumnDefinition(column_inspect_output);
@@ -921,28 +217,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CN
   return (
     <div className="tinhlieu">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
-            {/*  <div className="forminputcolumn">
-              <label>
-                <b>Mã Vật Liệu:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mã Vật Liệu"
-                  value={formdata?.M_NAME}
-                  onChange={(e) => setFormInfo("M_NAME", e.target.value)}
-                ></input>
-              </label>
-              <label style={{ display: "flex", alignItems: "center" }}>
-                <b>Customer:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Tên khách hàng"
-                  value={formdata?.CUST_NAME_KD}
-                  onChange={(e) => setFormInfo("M_NAME", e.target.value)}
-                ></input>
-              </label>
-            </div> */}
             <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
@@ -1020,21 +296,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD.search('CN
             }}>MRP SUMMARY</Button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
-        {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
-            </IconButton>
-            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
-          </div>
-        )}
+        <div className="tracuuYCSXTable">{materialDataTable2}</div>
       </div>
     </div>
   );

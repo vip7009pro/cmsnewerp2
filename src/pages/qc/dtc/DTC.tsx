@@ -6,8 +6,12 @@ import SPECDTC from "./SPECDTC";
 import ADDSPECDTC from "./ADDSPECDTC";
 import DTCRESULT from "./DTCRESULT";
 import TEST_TABLE from "./TEST_TABLE";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
 const DTC = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -85,100 +89,59 @@ const DTC = () => {
 
   return (
     <div className="dtc">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab1 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">TRA KQ ĐTC</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(2)}
-          style={{
-            backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab2 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">TRA SPEC ĐTC</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(3)}
-          style={{
-            backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab3 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">ADD SPEC ĐTC</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(4)}
-          style={{
-            backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab4 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">ĐKÝ TEST ĐTC</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(5)}
-          style={{
-            backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab5 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">NHẬP KQ ĐTC</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(6)}
-          style={{
-            backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab6 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Quản lý hạng mục ĐTC</span>
-        </div>
-      </div>
-      {selection.tab1 && (
-        <div className="trainspection">
-          <KQDTC />
-        </div>
-      )}
-      {selection.tab2 && (
-        <div className="trainspection">
-          <SPECDTC />
-        </div>
-      )}
-      {selection.tab3 && (
-        <div className="trainspection">
-          <ADDSPECDTC />
-        </div>
-      )}
-      {selection.tab4 && (
-        <div className="trainspection">
-          <DKDTC />
-        </div>
-      )}
-      {selection.tab5 && (
-        <div className="trainspection">
-          <DTCRESULT />
-        </div>
-      )}
-      {selection.tab6 && (
-        <div className="trainspection">          
-          <TEST_TABLE />
-        </div>
-      )}
+      <Tabs className="tabs" style={{
+        fontSize: "0.6rem",
+        width: "100%",          
+      }}> 
+      <TabList className="tablist" style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "left",
+            backgroundImage: theme.CMS.backgroundImage,
+            color: 'gray'
+          }}>
+            <Tab>
+              <span className="mininavtext">TRA KQ ĐTC</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">TRA SPEC ĐTC</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">ADD SPEC ĐTC</span>
+            </Tab>  
+            <Tab>
+              <span className="mininavtext">ĐKÝ TEST ĐTC</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">NHẬP KQ ĐTC</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">Quản lý hạng mục ĐTC</span> 
+            </Tab>
+          </TabList>
+          <TabPanel>
+            <KQDTC />
+          </TabPanel>
+          <TabPanel>
+            <SPECDTC />
+          </TabPanel>
+          <TabPanel>
+            <ADDSPECDTC />
+          </TabPanel>
+          <TabPanel>
+            <DKDTC />
+          </TabPanel>
+          <TabPanel>
+            <DTCRESULT />
+          </TabPanel>
+          <TabPanel>
+            <TEST_TABLE />
+          </TabPanel>
+      </Tabs> 
     </div>
   );
 };
+
 
 export default DTC;

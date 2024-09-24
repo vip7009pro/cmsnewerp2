@@ -15,7 +15,8 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { checkBP, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { GiConfirmed } from "react-icons/gi";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [cmsvcheck, setCMSVCheck] = useState(true);
@@ -165,6 +166,44 @@ const FAILING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
+  const setIQCConfirm = async (confirmEMPL: string) => {
+    if (selectedRowsDataA.current.length > 0) {
+      Swal.fire({
+        title: "Tra cứu vật liệu Holding",
+        text: "Đang tải dữ liệu, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsDataA.current.length; i++) {
+        await generalQuery("updateIQCConfirm_FAILING", {
+          FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
+          IN2_EMPL: confirmEMPL,
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += ` Lỗi: ${response.data.message}`;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Confirm thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
+    }
+  };
   const updateNCRIDFailing = async () => {
     console.log(selectedRowsDataA.current);   
     if (selectedRowsDataA.current.length > 0) {
@@ -259,6 +298,27 @@ const FAILING = () => {
                 className="buttonIcon"
                 onClick={() => {
                   if (userData?.SUBDEPTNAME === "IQC") {
+                    if (request_empl2 === "") {
+                      Swal.fire("Thông báo", "Hãy nhập mã người xác nhận", "error");
+                    } else {
+                      setIQCConfirm(request_empl2);
+                    }
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error",
+                    );
+                  }                  
+                }}
+              >
+                <GiConfirmed color="green" size={15} />
+                IQC CONFIRM
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
                   updateNCRIDFailing();
                   }
                 }}
@@ -280,7 +340,7 @@ const FAILING = () => {
         }}
       />
     )
-  }, [inspectiondatatable]);
+  }, [inspectiondatatable, request_empl2]);
   const handletraFailingData = () => {
     generalQuery("loadQCFailData", {})
       .then((response) => {
@@ -434,8 +494,7 @@ const FAILING = () => {
     if (
       m_lot_no !== "" &&
       planId !== "" &&
-      request_empl !== "" &&
-      request_empl2 !== ""
+      request_empl !== ""      
     ) {
       return true;
     } else {
@@ -964,12 +1023,9 @@ const FAILING = () => {
             </div>
             <div className="formbutton">
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#efff0c', color: 'black' }} onClick={() => {
-                updateQCFailTable();
+                checkBP(userData, ["QC"], ["ALL"], ["ALL"], updateQCFailTable);
               }}>Xuất</Button>
-            </div>
-            <div className="formbutton">
-              
-            </div>
+            </div>            
             <div
               className="formbutton"
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}

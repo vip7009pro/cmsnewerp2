@@ -1,6 +1,9 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, Suspense } from "react";
 import "./QLSXPLAN.scss";
 import KHCT from "./KHCT/KHCT";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
 const ACHIVEMENTTB = React.lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
 const LICHSUINPUTLIEU = React.lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
@@ -13,360 +16,69 @@ const KHOAO = React.lazy(() => import("./KHOAO/KHOAO"));
 const QUICKPLAN2 = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2"));
 
 const QLSXPLAN = () => {
-  const [selection, setSelection] = useState<any>({
-    tab1: true,
-    tab2: false,
-    tab3: false,
-    tab4: false,
-    tab5: false,
-    tab6: false,
-    tab7: false,
-    tab8: false,
-    tab9: false,
-    tab10: false,
-    tab11: false,
-  });
-
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        tab1: true,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: true,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: true,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 4) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: true,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 5) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: true,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 6) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: true,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 7) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: true,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 8) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: true,
-        tab9: false,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 9) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: true,
-        tab10: false,
-        tab11: false,
-      });
-    } else if (choose === 10) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: true,
-        tab11: false,
-      });
-    } else if (choose === 11) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-        tab7: false,
-        tab8: false,
-        tab9: false,
-        tab10: false,
-        tab11: true,
-      });
-    } 
-  };
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme); 
   useEffect(() => {}, []);
-
   return (
     <div className="qlsxplan">
-      <Suspense fallback={<div> Loading...</div>}>
-        <div className="mininavbar">
-          <div
-            className="mininavitem"
-            onClick={() => setNav(1)}
-            style={{
-              backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab1 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN VISUAL</span>
-          </div>         
-          <div
-            className="mininavitem"
-            onClick={() => setNav(4)}
-            style={{
-              backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab4 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">QUICK PLAN</span>
-          </div>        
-          <div
-            className="mininavitem"
-            onClick={() => setNav(11)}
-            style={{
-              backgroundColor: selection.tab11 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab11 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">AUTO PLAN</span>
-          </div>        
-          <div
-            className="mininavitem"
-            onClick={() => setNav(5)}
-            style={{
-              backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab5 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN TABLE</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(3)}
-            style={{
-              backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab3 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">LỊCH SỬ</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(6)}
-            style={{
-              backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab6 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">DATA SX</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(7)}
-            style={{
-              backgroundColor: selection.tab7 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab7 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN STATUS</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(8)}
-            style={{
-              backgroundColor: selection.tab8 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab8 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">TV SHOW</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(9)}
-            style={{
-              backgroundColor: selection.tab9 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab9 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">EQ STATUS</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(10)}
-            style={{
-              backgroundColor: selection.tab10 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab10 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">Kho SX Main</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(2)}
-            style={{
-              backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab2 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN_RESULT</span>
-          </div>
-        </div>
-        {selection.tab1 && (
-          <div className="traiqc">
+      <Suspense fallback={<div> Loading...</div>}>       
+        <Tabs className="tabs" style={{
+          fontSize: "0.6rem",
+          width: "100%",
+        }}>
+          <TabList className="tablist" style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "left",
+            backgroundImage: theme.CMS.backgroundImage, 
+            color: 'gray'
+          }}> 
+            <Tab>PLAN VISUAL</Tab>
+            <Tab>QUICK PLAN</Tab>
+            <Tab>AUTO PLAN</Tab>
+            <Tab>PLAN TABLE</Tab>
+            <Tab>LỊCH SỬ</Tab>
+            <Tab>DATA SX</Tab>
+            <Tab>PLAN STATUS</Tab>
+            <Tab>TV SHOW</Tab>
+            <Tab>EQ STATUS</Tab>  
+            <Tab>Kho SX Main</Tab>
+            <Tab>PLAN_RESULT</Tab>
+          </TabList>
+          <TabPanel>
             <MACHINE />
-          </div>
-        )}
-        {selection.tab2 && (
-          <div className="datadtc">
-            <ACHIVEMENTTB />
-          </div>
-        )}
-        {selection.tab3 && (
-          <div className="datadtc">
-            <LICHSUINPUTLIEU />
-          </div>
-        )}
-        {selection.tab4 && (
-          <div className="datadtc">
+          </TabPanel>
+          <TabPanel>
             <QUICKPLAN2 />
-          </div>
-        )}
-        {selection.tab5 && (
-          <div className="datadtc">
+          </TabPanel>    
+          <TabPanel>  
+            <KHCT /> 
+          </TabPanel>   
+          <TabPanel>
             <PLAN_DATATB />
-          </div>
-        )}
-        {selection.tab6 && (
-          <div className="datadtc">
+          </TabPanel>      
+          <TabPanel>
+            <LICHSUINPUTLIEU />
+          </TabPanel>
+          <TabPanel>
             <DATASX />
-          </div>
-        )}
-        {selection.tab7 && (
-          <div className="datadtc">
+          </TabPanel> 
+          <TabPanel>
             <PLAN_STATUS />
-          </div>
-        )}
-        {selection.tab8 && (
-          <div className="datadtc">
-            <EQ_STATUS />
-          </div>
-        )}
-        {selection.tab9 && (
-          <div className="datadtc">
-            <EQ_STATUS2 />
-          </div>
-        )}       
-        {selection.tab10 && (
-          <div className="datadtc">
-            <KHOAO />
-          </div>
-        )}
-        {selection.tab11 && (
-          <div className="datadtc">
-            <KHCT />
-          </div>
-        )}
+          </TabPanel>           
+          <TabPanel>
+            <EQ_STATUS /> 
+          </TabPanel>   
+          <TabPanel>
+            <EQ_STATUS2 /> 
+          </TabPanel>         
+          <TabPanel>
+            <KHOAO /> 
+          </TabPanel>          
+          <TabPanel>
+            <ACHIVEMENTTB />
+          </TabPanel> 
+        </Tabs>
       </Suspense>
     </div>
   );

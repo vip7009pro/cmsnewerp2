@@ -2,7 +2,7 @@ import { Button, Autocomplete, IconButton, TextField, createFilterOptions } from
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
-import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd, AiOutlineClose } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { getCompany, getGlobalSetting, getSever } from "../../../api/Api";
 import {
@@ -44,19 +44,10 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
 const PoManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [openSearchDialog, setOpenSearchDialog] = useState(false);
   const [openNewPODialog, setOpenNewPODialog] = useState(false);
   const [openNewInvoiceDialog, setOpenNewInvoiceDialog] = useState(false);
-
-  const handleOpenSearchDialog = () => {
-    setOpenSearchDialog(true);
-  };
-  const handleCloseSearchDialog = () => {
-    setOpenSearchDialog(false);
-  };
   const handleOpenNewPODialog = () => {
     setOpenNewPODialog(true);
   };
@@ -68,9 +59,8 @@ const PoManager = () => {
   };
   const handleCloseNewInvoiceDialog = () => {
     setOpenNewInvoiceDialog(false);
-  };  
+  };
   const dataGridRef = useRef<any>(null);
-  const showhidesearchdiv = useRef(false);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -184,7 +174,6 @@ const PoManager = () => {
   const loadFile = (e: any) => {
     f_readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
   };
-
   const handletraPO = async () => {
     if (getCompany() === 'CMS') {
       f_autopheduyetgia();
@@ -236,6 +225,7 @@ const PoManager = () => {
       }
       setPoSummary(po_summary_temp);
       setPoDataTable(loadeddata);
+      setSH(false);
       Swal.fire("Thông báo", "Đã load " + loadeddata.length + " dòng", "success");
     }
     else {
@@ -317,7 +307,6 @@ const PoManager = () => {
           BEP: uploadExcelJson[i].BEP ?? 0,
           REMARK: uploadExcelJson[i].REMARK,
         });
-
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
       } else if (err_code === 2) {
@@ -389,33 +378,6 @@ const PoManager = () => {
   };
   const getcodelist = async (G_NAME: string) => {
     setCodeList(await f_getcodelist(G_NAME));
-  };
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: true,
-        them1po: false,
-        them1invoice: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: false,
-        them1po: true,
-        them1invoice: false,
-      });
-    }
   };
   const handle_add_1PO = async () => {
     let err_code: number = 0;
@@ -580,7 +542,7 @@ const PoManager = () => {
   };
   const handle_fillsuaformInvoice = () => {
     if (clickedRow.current !== null) {
-      handleOpenNewInvoiceDialog();      
+      handleOpenNewInvoiceDialog();
       const selectedCodeFilter: CodeListData = {
         G_CODE: clickedRow.current?.G_CODE ?? "",
         G_NAME: clickedRow.current?.G_NAME ?? "",
@@ -1508,17 +1470,19 @@ const PoManager = () => {
   ];
   const poDataAGTable = useMemo(() =>
     <AGTable
-    suppressRowClickSelection={false}
+      suppressRowClickSelection={false}
       showFilter={true}
       toolbar={
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <IconButton
             className='buttonIcon'
-            onClick={handleOpenSearchDialog}
+            onClick={() => {
+              setSH(prev => !prev);
+            }}
           >
-            <FcSearch color='green' size={15} />
-            Search
-          </IconButton>       
+            <AiOutlineClose color='green' size={15} />
+            Show/Hide
+          </IconButton>
           <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -1584,9 +1548,6 @@ const PoManager = () => {
             <MdOutlinePivotTableChart color='#ff33bb' size={15} />
             Pivot
           </IconButton>
-
-
-
         </div>
       }
       columns={getCompany() !== 'CMS' ? column_potable : column_potable_cms}
@@ -1643,312 +1604,291 @@ const PoManager = () => {
   return (
     <div className="pomanager">
       <Tabs className="tabs">
-        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
+        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
           <Tab><span className="mininavtext">Tra PO</span></Tab>
           <Tab><span className="mininavtext">Thêm PO</span></Tab>
         </TabList>
         <TabPanel>
-        <div className='tracuuPO'>
-          <CustomDialog
-            isOpen={openSearchDialog}
-            onClose={handleCloseSearchDialog}
-            title="Search PO"
-            content={<>
-              <div className="tracuuPOform">
-                <div className="forminput">
-                  <div className="forminputcolumn">
-                    <label>
-                      <b>Từ ngày:</b>
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='date'
-                        value={fromdate.slice(0, 10)}
-                        onChange={(e) => setFromDate(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Tới ngày:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='date'
-                        value={todate.slice(0, 10)}
-                        onChange={(e) => setToDate(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Code KD:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='GH63-xxxxxx'
-                        value={codeKD}
-                        onChange={(e) => setCodeKD(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Code ERP:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='7C123xxx'
-                        value={codeCMS}
-                        onChange={(e) => setCodeCMS(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Tên nhân viên:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='Trang'
-                        value={empl_name}
-                        onChange={(e) => setEmpl_Name(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Khách:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='SEVT'
-                        value={cust_name}
-                        onChange={(e) => setCust_Name(e.target.value)}
-                      ></input>
-                    </label>
-
-                  </div>
-                  <div className="forminputcolumn">
-                    <label>
-                      <b>Loại sản phẩm:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='TSP'
-                        value={prod_type}
-                        onChange={(e) => setProdType(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>ID:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='12345'
-                        value={id}
-                        onChange={(e) => setID(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>PO NO:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='123abc'
-                        value={po_no}
-                        onChange={(e) => setPo_No(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Vật liệu:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='SJ-203020HC'
-                        value={material}
-                        onChange={(e) => setMaterial(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Over/OK:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='OVER'
-                        value={over}
-                        onChange={(e) => setOver(e.target.value)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Invoice No:</b>{" "}
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='text'
-                        placeholder='số invoice'
-                        value={invoice_no}
-                        onChange={(e) => setInvoice_No(e.target.value)}
-                      ></input>
-                    </label>
-
-                  </div>
+          <div className='tracuuPO'>
+            {sh && <div className="tracuuPOform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='date'
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='date'
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='GH63-xxxxxx'
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='7C123xxx'
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='Trang'
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='SEVT'
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
                 </div>
-                <div className="formbutton">
-                  <div className='checkboxdiv'>
-                    <label>
-                      <b>All Time:</b>
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='checkbox'
-                        name='alltimecheckbox'
-                        defaultChecked={alltime}
-                        onChange={() => setAllTime(!alltime)}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Chỉ PO Tồn:</b>
-                      <input
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
-                        }}
-                        type='checkbox'
-                        name='pobalancecheckbox'
-                        defaultChecked={justpobalance}
-                        onChange={() => setJustPOBalance(!justpobalance)}
-                      ></input>
-                    </label>
-                  </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='TSP'
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>ID:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='12345'
+                      value={id}
+                      onChange={(e) => setID(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>PO NO:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='123abc'
+                      value={po_no}
+                      onChange={(e) => setPo_No(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='SJ-203020HC'
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Over/OK:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='OVER'
+                      value={over}
+                      onChange={(e) => setOver(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Invoice No:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='số invoice'
+                      value={invoice_no}
+                      onChange={(e) => setInvoice_No(e.target.value)}
+                    ></input>
+                  </label>
                 </div>
               </div>
-
-            </>}
-            actions={<>
-              <Button onClick={handleCloseSearchDialog}>Cancel</Button>
-              <Button onClick={() => {
-                handletraPO();
-                handleCloseSearchDialog();
-              }}>
-                Search
-              </Button>
-
-            </>}
-          />
-
-
-
-
-
-
-
-          <div className='tracuuPOTable'>
-            <div className='formsummary'>
-              <table>
-                <thead>
-                  <tr>
-                    <td>PO QTY</td>
-                    <td>DELIVERED QTY</td>
-                    <td>PO BALANCE QTY</td>
-                    <td>PO AMOUNT</td>
-                    <td>DELIVERED AMOUNT</td>
-                    <td>PO BALANCE AMOUNT</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {poSummary.total_po_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_po_amount.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_delivered_amount.toLocaleString(
-                        "en-US",
-                        {
+              <div className="formbutton">
+                <div className='checkboxdiv'>
+                  <label>
+                    <b>All Time:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={alltime}
+                      onChange={() => setAllTime(!alltime)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Chỉ PO Tồn:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='checkbox'
+                      name='pobalancecheckbox'
+                      defaultChecked={justpobalance}
+                      onChange={() => setJustPOBalance(!justpobalance)}
+                    ></input>
+                  </label>
+                </div>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => { handletraPO(); }}
+                >
+                  <FcSearch color='green' size={15} />
+                  Show/Hide
+                </IconButton>
+              </div>
+            </div>}
+            <div className='tracuuPOTable'>
+              <div className='formsummary'>
+                <table>
+                  <thead>
+                    <tr>
+                      <td>PO QTY</td>
+                      <td>DELIVERED QTY</td>
+                      <td>PO BALANCE QTY</td>
+                      <td>PO AMOUNT</td>
+                      <td>DELIVERED AMOUNT</td>
+                      <td>PO BALANCE AMOUNT</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{ color: "purple", fontWeight: "bold" }}>
+                        {poSummary.total_po_qty.toLocaleString("en-US")} EA
+                      </td>
+                      <td style={{ color: "purple", fontWeight: "bold" }}>
+                        {" "}
+                        {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
+                      </td>
+                      <td style={{ color: "purple", fontWeight: "bold" }}>
+                        {" "}
+                        {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
+                      </td>
+                      <td style={{ color: "blue", fontWeight: "bold" }}>
+                        {" "}
+                        {poSummary.total_po_amount.toLocaleString("en-US", {
                           style: "currency",
                           currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}
-                    </td>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {" "}
-                      {poSummary.total_pobalance_amount.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className='tablegrid'>
-              {poDataAGTable}
+                        })}
+                      </td>
+                      <td style={{ color: "blue", fontWeight: "bold" }}>
+                        {" "}
+                        {poSummary.total_delivered_amount.toLocaleString(
+                          "en-US",
+                          {
+                            style: "currency",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          }
+                        )}
+                      </td>
+                      <td style={{ color: "blue", fontWeight: "bold" }}>
+                        {" "}
+                        {poSummary.total_pobalance_amount.toLocaleString(
+                          "en-US",
+                          {
+                            style: "currency",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          }
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className='tablegrid'>
+                {poDataAGTable}
+              </div>
             </div>
           </div>
-        </div>
         </TabPanel>
         <TabPanel>
-        <div className='newpo'>
-          <div className='batchnewpo'>
-            <h3>Thêm PO Hàng Loạt</h3>
-            <div className='formupload'>
-              <input
-                onKeyDown={(e) => {
-                  handleSearchCodeKeyDown(e);
-                }}
-                className='selectfilebutton'
-                type='file'
-                name='upload'
-                id='upload'
-                onChange={(e: any) => {
-                  loadFile(e);
-                }}
-              />
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
-                confirmCheckPoHangLoat();
-              }}>CheckPO</Button>
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                confirmUpPoHangLoat();
-              }}>Up PO</Button>
-            </div>
-            <div className='insertPOTable'>
-              {excelDataAGTable}
+          <div className='newpo'>
+            <div className='batchnewpo'>
+              <h3>Thêm PO Hàng Loạt</h3>
+              <div className='formupload'>
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  className='selectfilebutton'
+                  type='file'
+                  name='upload'
+                  id='upload'
+                  onChange={(e: any) => {
+                    loadFile(e);
+                  }}
+                />
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
+                  confirmCheckPoHangLoat();
+                }}>CheckPO</Button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                  confirmUpPoHangLoat();
+                }}>Up PO</Button>
+              </div>
+              <div className='insertPOTable'>
+                {excelDataAGTable}
+              </div>
             </div>
           </div>
-        </div>
-        </TabPanel>        
+        </TabPanel>
       </Tabs>
-     
       <CustomDialog
         isOpen={openNewPODialog}
         onClose={handleCloseNewPODialog}
@@ -2163,7 +2103,7 @@ const PoManager = () => {
           <button
             className='closebutton'
             onClick={() => {
-              handleCloseNewPODialog();              
+              handleCloseNewPODialog();
             }}
           >
             Close
@@ -2174,7 +2114,7 @@ const PoManager = () => {
         isOpen={openNewInvoiceDialog}
         onClose={handleCloseNewInvoiceDialog}
         title="Thêm Invoice mới"
-        content={ <div className='dangkyinput'>
+        content={<div className='dangkyinput'>
           <div className='dangkyinputbox'>
             <label>
               <b>Khách hàng:</b>{" "}
@@ -2329,15 +2269,13 @@ const PoManager = () => {
           <button
             className='closebutton'
             onClick={() => {
-              handleCloseNewInvoiceDialog();             
+              handleCloseNewInvoiceDialog();
             }}
           >
             Close
           </button>
         </div>}
-        />      
-
-     
+      />
       {showhidePivotTable && (
         <div className='pivottable1'>
           <IconButton

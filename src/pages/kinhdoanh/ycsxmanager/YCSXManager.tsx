@@ -1,5 +1,4 @@
 import { Autocomplete, Button, IconButton, TextField, createFilterOptions } from "@mui/material";
-import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
@@ -40,7 +39,6 @@ import {
   f_updateYCSX,
   renderBanVe,
   renderYCSX,
-  SaveExcel,
 } from "../../../api/GlobalFunction";
 import { MdLock, MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import "./YCSXManager.scss";
@@ -63,6 +61,7 @@ import {
   YCSXTableData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
@@ -1017,16 +1016,6 @@ const YCSXManager = () => {
   const loadPONO = async (G_CODE?: string, CUST_CD?: string) => {
     setPONOLIST(await f_loadPONOList(G_CODE, CUST_CD));
   };
-  function CustomToolbarAmazon() {
-    return (
-      <GridToolbarContainer>
-        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#098611' }} onClick={() => {
-          SaveExcel(uploadExcelJson, "Uploaded Amazon");
-        }}>Save Excel</Button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const handleGoToAmazon = () => {
     console.log(ycsxdatatablefilter.current.length);
     if (ycsxdatatablefilter.current.length === 1) {
@@ -1185,15 +1174,10 @@ const YCSXManager = () => {
           const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
-          
           // Convert to JSON without using headers
           let json: any = XLSX.utils.sheet_to_json(worksheet, { header: ["DATA"], defval: "" });
-          
           // Manually add the "DATA" header
-         
-          
           console.log(json);
-          
           /* check trung */
           let valueArray = json.slice(1).map((element: any) => element.DATA);
           var isDuplicate = valueArray.some(function (item: any, idx: number) {
@@ -1204,8 +1188,6 @@ const YCSXManager = () => {
             Swal.fire("Thông báo", "Có giá trị trùng lặp !", "error");
             setUploadExcelJSon([]);
           } else {
-            
-           
             let newjson = json.map((element: any, index: number) => {
               return { ...element, id: index, CHECKSTATUS: "Waiting" };
             });
@@ -1249,7 +1231,7 @@ const YCSXManager = () => {
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
-      let isBOMGiaHasMain: boolean = await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE) || (getCompany() !== 'CMS')
+      let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       if (!isBOMGiaHasMain) err_code = 10;
@@ -1295,7 +1277,7 @@ const YCSXManager = () => {
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
-      let isBOMGiaHasMain: boolean = await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE) || (getCompany() !== 'CMS')
+      let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       if (!isBOMGiaHasMain) err_code = 10;
@@ -1586,7 +1568,7 @@ const YCSXManager = () => {
     let pobalance_tdycsx: POBALANCETDYCSX = await f_checkG_CODE_PO_BALANCE(selectedCode?.G_CODE ?? "");
     let tonkho_tdycsx: TONKHOTDYCSX = await f_checkStock_G_CODE(selectedCode?.G_CODE ?? "");
     let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(selectedCode?.G_CODE ?? "");
-    let isBOMGiaHasMain: boolean = await f_isBOMGIA_HAS_MAIN(selectedCode?.G_CODE ?? "") || (getCompany() !== 'CMS')
+    let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(selectedCode?.G_CODE ?? "")) || (getCompany() !== 'CMS')
     let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(selectedCode?.G_CODE ?? "");
     let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS')
     //console.log(await f_process_lot_no_generate(phanloai));
@@ -1763,25 +1745,13 @@ const YCSXManager = () => {
     setLoaiSX("01");
     setLoaiXH("02");
   };
-  const handleYCSXSelectionforUpdateExcel = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = uploadExcelJson.filter((element: any) =>
-      selectedID.has(element.id)
-    );
-    //console.log(datafilter);
-    if (datafilter.length > 0) {      
-      ycsxdatatablefilterexcel.current = datafilter;
-    } else {
-      ycsxdatatablefilterexcel.current =[]      
-    }
-  };
   const handle_fillsuaform = () => {
     if (ycsxdatatablefilter.current.length === 1) {
       setSelection({
         ...selection,
         trapo: true,
         thempohangloat: false,
-        them1po: !selection.them1po,
+        them1po: true,
         themycsx: false,
         suaycsx: true,
         inserttableycsx: false,
@@ -2138,19 +2108,19 @@ const YCSXManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const getRowStyle = (params: any) => {   
-    if (params.data.USE_YN ==='N') {
-        return { backgroundColor: '#f5e799', fontSize:'0.6rem'};
+  const getRowStyle = (params: any) => {
+    if (params.data.USE_YN === 'N') {
+      return { backgroundColor: '#f5e799', fontSize: '0.6rem' };
     }
     else {
-      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
+      return { backgroundColor: '#fbfbfb', fontSize: '0.6rem' };
     }
   };
   //console.log(userData);
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
-      getRowStyle={getRowStyle}
+        getRowStyle={getRowStyle}
         showFilter={true}
         toolbar={
           <div>
@@ -2331,16 +2301,16 @@ const YCSXManager = () => {
   const ycsxUploadExcelDataTableAG = useMemo(() => {
     return (
       <AGTable
-      getRowStyle={getRowStyle}
+        getRowStyle={getRowStyle}
         showFilter={true}
         toolbar={
           <>
-          </>         }
+          </>}
         columns={column_excel2}
         data={uploadExcelJson}
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
-        }} onCellClick={(params: any) => {          
+        }} onCellClick={(params: any) => {
           //console.log(params)
         }} onSelectionChange={(params: any) => {
           //setYcsxDataTableFilter(params!.api.getSelectedRows());
@@ -2352,16 +2322,16 @@ const YCSXManager = () => {
   const amzDataTableAG = useMemo(() => {
     return (
       <AGTable
-      getRowStyle={getRowStyle}
+        getRowStyle={getRowStyle}
         showFilter={true}
         toolbar={
           <>
-          </>         }
+          </>}
         columns={column_excel_amazon}
         data={uploadExcelJson}
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
-        }} onCellClick={(params: any) => {          
+        }} onCellClick={(params: any) => {
           //console.log(params)
         }} onSelectionChange={(params: any) => {
           //setYcsxDataTableFilter(params!.api.getSelectedRows());          
@@ -2375,552 +2345,829 @@ const YCSXManager = () => {
   }, []);
   return (
     (<div className='ycsxmanager'>
-      <div className='mininavbar'>
-        <div
-          className='mininavitem'
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
-            color: selection.trapo === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className='mininavtext'>Tra YCSX</span>
-        </div>
-        <div
-          className='mininavitem'
-          onClick={() => setNav(2)}
-          style={{
-            backgroundColor:
-              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
-            color: selection.thempohangloat === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className='mininavtext'>ADD YCSX</span>
-        </div>
-        <div
-          className='mininavitem'
-          onClick={() => setNav(3)}
-          style={{
-            backgroundColor:
-              selection.amazontab === true ? "#02c712" : "#abc9ae",
-            color: selection.amazontab === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className='mininavtext'>Add AMZ Data</span>
-        </div>
-        <div
-          className='mininavitem'
-          onClick={() => setNav(4)}
-          style={{
-            backgroundColor:
-              selection.traamazdata === true ? "#02c712" : "#abc9ae",
-            color: selection.traamazdata === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className='mininavtext'>TRA AMZ Data</span>
-        </div>
-      </div>
-      {selection.them1po && (
-        <div className='them1ycsx'>
-          <div className='formnho'  style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            <div className='dangkyform'>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>Khách hàng:</b>{" "}
-                    <Autocomplete
-                      sx={{ fontSize: "0.6rem" }}
-                      ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                      size='small'
-                      disablePortal
-                      options={customerList}
-                      className='autocomplete1'
-                      getOptionLabel={(option: CustomerListData) => {
-                        return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth={true}
-                          label='Select customer'
-                        />
-                      )}
-                      value={selectedCust_CD}
-                      onChange={(
-                        event: any,
-                        newValue: CustomerListData | null
-                      ) => {
-                        console.log(newValue);
-                        setSelectedCust_CD(newValue);
-                        loadPONO(selectedCode?.G_CODE, newValue?.CUST_CD);
-                      }}
-                      isOptionEqualToValue={(option, value) =>
-                        option.CUST_CD === value.CUST_CD
-                      }
-                    />
-                  </label>
-                  <label>
-                    <b>Code hàng:</b>{" "}
-                    <Autocomplete
-                      sx={{ fontSize: "0.6rem" }}
-                      ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                      size='small'
-                      disablePortal
-                      options={codeList}
-                      className='autocomplete1'
-                      filterOptions={filterOptions1}
-                      getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
-                      )}
-                      onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);
-                        setSelectedCode(newValue);
-                        loadPONO(newValue?.G_CODE, selectedCust_CD?.CUST_CD);
-                      }}
-                      value={selectedCode}
-                      isOptionEqualToValue={(option: any, value: any) =>
-                        option.G_CODE === value.G_CODE
-                      }
-                    />
-                  </label>
+      <Tabs className="tabs">
+        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
+          <Tab>
+            <span className="mininavtext">Tra YCSX</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">Thêm YCSX</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">Add AMZ Data</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">Tra AMZ Data</span>
+          </Tab>
+        </TabList>
+        <TabPanel>
+          <div className='tracuuYCSX'>
+            {showhidesearchdiv && (
+              <div className='tracuuYCSXform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
+                <div className='forminput'>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>Từ ngày:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='date'
+                        value={fromdate.slice(0, 10)}
+                        onChange={(e) => setFromDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tới ngày:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='date'
+                        value={todate.slice(0, 10)}
+                        onChange={(e) => setToDate(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>Code KD:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='GH63-xxxxxx'
+                        value={codeKD}
+                        onChange={(e) => setCodeKD(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code ERP:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='7C123xxx'
+                        value={codeCMS}
+                        onChange={(e) => setCodeCMS(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>Tên nhân viên:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='Trang'
+                        value={empl_name}
+                        onChange={(e) => setEmpl_Name(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Khách:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='SEVT'
+                        value={cust_name}
+                        onChange={(e) => setCust_Name(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>Loại sản phẩm:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='TSP'
+                        value={prod_type}
+                        onChange={(e) => setProdType(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Số YCSX:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='12345'
+                        value={prodrequestno}
+                        onChange={(e) => setProdRequestNo(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>Phân loại:</b>
+                      <select
+                        name='phanloai'
+                        value={phanloai}
+                        onChange={(e) => {
+                          setPhanLoai(e.target.value);
+                        }}
+                      >
+                        <option value='00'>ALL</option>
+                        <option value='01'>Thông thường</option>
+                        <option value='02'>SDI</option>
+                        <option value='03'>GC</option>
+                        <option value='04'>SAMPLE</option>
+                        <option value='22'>NOT SAMPLE</option>
+                      </select>
+                    </label>
+                    <label>
+                      <b>Vật liệu:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='text'
+                        placeholder='SJ-203020HC'
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Loại hàng:</b>
+                      <select
+                        name='phanloaihang'
+                        value={phanloaihang}
+                        onChange={(e) => {
+                          setPhanLoaiHang(e.target.value);
+                        }}
+                      >
+                        <option value='ALL'>ALL</option>
+                        <option value='TT'>Hàng Thường (TT)</option>
+                        <option value='SP'>Sample sang FL (SP)</option>
+                        <option value='RB'>Ribbon (RB)</option>
+                        <option value='HQ'>Hàn Quốc (HQ)</option>
+                        <option value='VN'>Việt Nam (VN)</option>
+                        <option value='AM'>Amazon (AM)</option>
+                        <option value='DL'>Đổi LOT (DL)</option>
+                        <option value='M4'>NM4 (M4)</option>
+                        <option value='GC'>Hàng Gia Công (GC)</option>
+                        <option value='TM'>Hàng Thương Mại (TM)</option>
+                        {getCompany() !== 'CMS' && <>
+                          <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                          <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                          <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                          <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                          <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                          <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                          <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                          <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                          <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                        </>}
+                        {/* <option value='SL'>Slitting (SL)</option> */}
+                      </select>
+                    </label>
+                    <label>
+                      <b>All Time:</b>
+                      <input
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        defaultChecked={alltime}
+                        onChange={() => setAllTime(!alltime)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>YCSX Pending:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        defaultChecked={ycsxpendingcheck}
+                        onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Vào kiểm:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        defaultChecked={inspectInputcheck}
+                        onChange={() => setInspectInputCheck(!inspectInputcheck)}
+                      ></input>
+                    </label>
+                  </div>
                 </div>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>Delivery Date:</b>
-                    <input
-                      className='inputdata'
-                      type='date'
-                      value={deliverydate.slice(0, 10)}
-                      onChange={(e) => setNewDeliveryDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Loại hàng:</b>
-                    <select
-                      name='phanloaihang'
-                      value={newphanloai}
-                      onChange={(e) => {
-                        setNewPhanLoai(e.target.value);
-                      }}
-                    >
-                      <option value='TT'>Hàng Thường (TT)</option>
-                      <option value='SP'>Sample sang FL (SP)</option>
-                      <option value='RB'>Ribbon (RB)</option>
-                      <option value='HQ'>Hàn Quốc (HQ)</option>
-                      <option value='VN'>Việt Nam (VN)</option>
-                      <option value='AM'>Amazon (AM)</option>
-                      <option value='DL'>Đổi LOT (DL)</option>
-                      <option value='M4'>NM4 (M4)</option>
-                      <option value='GC'>Hàng Gia Công (GC)</option>
-                      <option value='TM'>Hàng Thương Mại (TM)</option>
-                      {getCompany() !== 'CMS' && <>
-                        <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                        <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                        <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                        <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                        <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                        <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                        <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                        <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                        <option value='I9'>Hàng In Nhanh 9 (I9)</option>
-                      </>}
-                    </select>
-                  </label>
-                </div>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>Loại sản xuất:</b>
-                    <select
-                      name='loasx'
-                      value={loaisx}
-                      onChange={(e) => {
-                        setLoaiSX(e.target.value);
-                      }}
-                    >
-                      <option value='01'>Thông Thường</option>
-                      <option value='02'>SDI</option>
-                      <option value='03'>ETC</option>
-                      <option value='04'>SAMPLE</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>Loại xuất hàng</b>
-                    <select
-                      name='loaixh'
-                      value={loaixh}
-                      onChange={(e) => {
-                        setLoaiXH(e.target.value);
-                      }}
-                    >
-                      <option value='01'>GC</option>
-                      <option value='02'>SK</option>
-                      <option value='03'>KD</option>
-                      <option value='04'>VN</option>
-                      <option value='05'>SAMPLE</option>
-                      <option value='06'>Vai bac 4</option>
-                      <option value='07'>ETC</option>
-                    </select>
-                  </label>
-                </div>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>YCSX QTY:</b>{" "}
-                    <TextField
-                      value={newycsxqty}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewYcsxQty(Number(e.target.value))
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='YCSX QTY'
-                      variant='outlined'
-                    />
-                  </label>
-                  <label>
-                    <b>Remark:</b>{" "}
-                    <TextField
-                      value={newycsxremark}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewYcsxRemark(e.target.value)
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
-                    />
-                  </label>
-                </div>
-                <div className='dangkyinputbox'>
-                  <label>
-                    <b>PO NO:</b>
-                    <Autocomplete
-                      size='small'
-                      disablePortal
-                      options={ponolist}
-                      className='pono_autocomplete'
-                      getOptionLabel={(option: PONOLIST | any) => {
-                        return `${moment.utc(option.PO_DATE).isValid()
-                          ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
-                          : ""
-                          }| ${option.PO_NO}`;
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select PO NO' />
-                      )}
-                      value={selectedPoNo}
-                      onChange={(event: any, newValue: PONOLIST | null) => {
-                        console.log(newValue);
-                        setSelectedPoNo(newValue);
-                        setNewDeliveryDate(
-                          newValue?.RD_DATE === undefined
-                            ? moment.utc().format("YYYY-MM-DD")
-                            : newValue?.RD_DATE
-                        );
-                        setNewYcsxQty(newValue?.PO_QTY ?? 0)
-                      }}
-                      isOptionEqualToValue={(option, value) =>
-                        option.PO_NO === value.PO_NO
-                      }
-                    />
-                  </label>
+                <div className='formbutton'>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handletraYCSX();
+                    }}
+                  >
+                    <FcSearch color='green' size={30} />
+                    Search
+                  </IconButton>
                 </div>
               </div>
-              <div className='dangkybutton'>
-                {selection.themycsx && (
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                    handle_add_1YCSX();
-                  }}>Add</Button>
-                )}
-                {selection.inserttableycsx && (
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
-                    handle_InsertYCSXTable();
-                  }}>Insert</Button>
-                )}
-                {selection.suaycsx && (
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
-                    updateYCSX();
-                  }}>Update</Button>
-                )}
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                  clearYCSXform();
-                }}>Clear</Button>
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
-                  setSelection({ ...selection, them1po: false });
-                }}>Close</Button>
+            )}
+            <div className='tracuuYCSXTable'>
+              {selection.them1po && (
+                <div className='them1ycsx'>
+                  <div className='formnho' style={{ backgroundImage: theme.CMS.backgroundImage }}>
+                    <div className='dangkyform'>
+                      <div className='dangkyinput'>
+                        <div className='dangkyinputbox'>
+                          <label>
+                            <b>Khách hàng:</b>{" "}
+                            <Autocomplete
+                              sx={{ fontSize: "0.6rem" }}
+                              ListboxProps={{ style: { fontSize: "0.7rem" } }}
+                              size='small'
+                              disablePortal
+                              options={customerList}
+                              className='autocomplete1'
+                              getOptionLabel={(option: CustomerListData) => {
+                                return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  fullWidth={true}
+                                  label='Select customer'
+                                />
+                              )}
+                              value={selectedCust_CD}
+                              onChange={(
+                                event: any,
+                                newValue: CustomerListData | null
+                              ) => {
+                                console.log(newValue);
+                                setSelectedCust_CD(newValue);
+                                loadPONO(selectedCode?.G_CODE, newValue?.CUST_CD);
+                              }}
+                              isOptionEqualToValue={(option, value) =>
+                                option.CUST_CD === value.CUST_CD
+                              }
+                            />
+                          </label>
+                          <label>
+                            <b>Code hàng:</b>{" "}
+                            <Autocomplete
+                              sx={{ fontSize: "0.6rem" }}
+                              ListboxProps={{ style: { fontSize: "0.7rem" } }}
+                              size='small'
+                              disablePortal
+                              options={codeList}
+                              className='autocomplete1'
+                              filterOptions={filterOptions1}
+                              getOptionLabel={(option: CodeListData | any) =>
+                                `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
+                              }
+                              renderInput={(params) => (
+                                <TextField {...params} label='Select code' />
+                              )}
+                              onChange={(event: any, newValue: CodeListData | any) => {
+                                console.log(newValue);
+                                setSelectedCode(newValue);
+                                loadPONO(newValue?.G_CODE, selectedCust_CD?.CUST_CD);
+                              }}
+                              value={selectedCode}
+                              isOptionEqualToValue={(option: any, value: any) =>
+                                option.G_CODE === value.G_CODE
+                              }
+                            />
+                          </label>
+                        </div>
+                        <div className='dangkyinputbox'>
+                          <label>
+                            <b>Delivery Date:</b>
+                            <input
+                              className='inputdata'
+                              type='date'
+                              value={deliverydate.slice(0, 10)}
+                              onChange={(e) => setNewDeliveryDate(e.target.value)}
+                            ></input>
+                          </label>
+                          <label>
+                            <b>Loại hàng:</b>
+                            <select
+                              name='phanloaihang'
+                              value={newphanloai}
+                              onChange={(e) => {
+                                setNewPhanLoai(e.target.value);
+                              }}
+                            >
+                              <option value='TT'>Hàng Thường (TT)</option>
+                              <option value='SP'>Sample sang FL (SP)</option>
+                              <option value='RB'>Ribbon (RB)</option>
+                              <option value='HQ'>Hàn Quốc (HQ)</option>
+                              <option value='VN'>Việt Nam (VN)</option>
+                              <option value='AM'>Amazon (AM)</option>
+                              <option value='DL'>Đổi LOT (DL)</option>
+                              <option value='M4'>NM4 (M4)</option>
+                              <option value='GC'>Hàng Gia Công (GC)</option>
+                              <option value='TM'>Hàng Thương Mại (TM)</option>
+                              {getCompany() !== 'CMS' && <>
+                                <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                                <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                                <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                                <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                                <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                                <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                                <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                                <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                                <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                              </>}
+                            </select>
+                          </label>
+                        </div>
+                        <div className='dangkyinputbox'>
+                          <label>
+                            <b>Loại sản xuất:</b>
+                            <select
+                              name='loasx'
+                              value={loaisx}
+                              onChange={(e) => {
+                                setLoaiSX(e.target.value);
+                              }}
+                            >
+                              <option value='01'>Thông Thường</option>
+                              <option value='02'>SDI</option>
+                              <option value='03'>ETC</option>
+                              <option value='04'>SAMPLE</option>
+                            </select>
+                          </label>
+                          <label>
+                            <b>Loại xuất hàng</b>
+                            <select
+                              name='loaixh'
+                              value={loaixh}
+                              onChange={(e) => {
+                                setLoaiXH(e.target.value);
+                              }}
+                            >
+                              <option value='01'>GC</option>
+                              <option value='02'>SK</option>
+                              <option value='03'>KD</option>
+                              <option value='04'>VN</option>
+                              <option value='05'>SAMPLE</option>
+                              <option value='06'>Vai bac 4</option>
+                              <option value='07'>ETC</option>
+                            </select>
+                          </label>
+                        </div>
+                        <div className='dangkyinputbox'>
+                          <label>
+                            <b>YCSX QTY:</b>{" "}
+                            <TextField
+                              value={newycsxqty}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setNewYcsxQty(Number(e.target.value))
+                              }
+                              size='small'
+                              color='success'
+                              className='autocomplete'
+                              id='outlined-basic'
+                              label='YCSX QTY'
+                              variant='outlined'
+                            />
+                          </label>
+                          <label>
+                            <b>Remark:</b>{" "}
+                            <TextField
+                              value={newycsxremark}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setNewYcsxRemark(e.target.value)
+                              }
+                              size='small'
+                              color='success'
+                              className='autocomplete'
+                              id='outlined-basic'
+                              label='Remark'
+                              variant='outlined'
+                            />
+                          </label>
+                        </div>
+                        <div className='dangkyinputbox'>
+                          <label>
+                            <b>PO NO:</b>
+                            <Autocomplete
+                              size='small'
+                              disablePortal
+                              options={ponolist}
+                              className='pono_autocomplete'
+                              getOptionLabel={(option: PONOLIST | any) => {
+                                return `${moment.utc(option.PO_DATE).isValid()
+                                  ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
+                                  : ""
+                                  }| ${option.PO_NO}`;
+                              }}
+                              renderInput={(params) => (
+                                <TextField {...params} label='Select PO NO' />
+                              )}
+                              value={selectedPoNo}
+                              onChange={(event: any, newValue: PONOLIST | null) => {
+                                console.log(newValue);
+                                setSelectedPoNo(newValue);
+                                setNewDeliveryDate(
+                                  newValue?.RD_DATE === undefined
+                                    ? moment.utc().format("YYYY-MM-DD")
+                                    : newValue?.RD_DATE
+                                );
+                                setNewYcsxQty(newValue?.PO_QTY ?? 0)
+                              }}
+                              isOptionEqualToValue={(option, value) =>
+                                option.PO_NO === value.PO_NO
+                              }
+                            />
+                          </label>
+                        </div>
+                      </div>
+                      <div className='dangkybutton'>
+                        {selection.themycsx && (
+                          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                            handle_add_1YCSX();
+                          }}>Add</Button>
+                        )}
+                        {selection.inserttableycsx && (
+                          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                            handle_InsertYCSXTable();
+                          }}>Insert</Button>
+                        )}
+                        {selection.suaycsx && (
+                          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
+                            updateYCSX();
+                          }}>Update</Button>
+                        )}
+                        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+                          clearYCSXform();
+                        }}>Clear</Button>
+                        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
+                          setSelection({ ...selection, them1po: false });
+                        }}>Close</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {ycsxDataTableAG}
+            </div>
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className='newycsx' style={{ backgroundImage: theme.CMS.backgroundImage }}>
+            <div className='batchnewycsx'>
+              <div className='them1ycsx'>
+                <div className='formnho' style={{ backgroundImage: theme.CMS.backgroundImage }}>
+                  <div className='dangkyform'>
+                    <div className='dangkyinput'>
+                      <div className='dangkyinputbox'>
+                        <label>
+                          <b>Khách hàng:</b>{" "}
+                          <Autocomplete
+                            sx={{ fontSize: "0.6rem" }}
+                            ListboxProps={{ style: { fontSize: "0.7rem" } }}
+                            size='small'
+                            disablePortal
+                            options={customerList}
+                            className='autocomplete1'
+                            getOptionLabel={(option: CustomerListData) => {
+                              return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                fullWidth={true}
+                                label='Select customer'
+                              />
+                            )}
+                            value={selectedCust_CD}
+                            onChange={(
+                              event: any,
+                              newValue: CustomerListData | null
+                            ) => {
+                              console.log(newValue);
+                              setSelectedCust_CD(newValue);
+                              loadPONO(selectedCode?.G_CODE, newValue?.CUST_CD);
+                            }}
+                            isOptionEqualToValue={(option, value) =>
+                              option.CUST_CD === value.CUST_CD
+                            }
+                          />
+                        </label>
+                        <label>
+                          <b>Code hàng:</b>{" "}
+                          <Autocomplete
+                            sx={{ fontSize: "0.6rem" }}
+                            ListboxProps={{ style: { fontSize: "0.7rem" } }}
+                            size='small'
+                            disablePortal
+                            options={codeList}
+                            className='autocomplete1'
+                            filterOptions={filterOptions1}
+                            getOptionLabel={(option: CodeListData | any) =>
+                              `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
+                            }
+                            renderInput={(params) => (
+                              <TextField {...params} label='Select code' />
+                            )}
+                            onChange={(event: any, newValue: CodeListData | any) => {
+                              console.log(newValue);
+                              setSelectedCode(newValue);
+                              loadPONO(newValue?.G_CODE, selectedCust_CD?.CUST_CD);
+                            }}
+                            value={selectedCode}
+                            isOptionEqualToValue={(option: any, value: any) =>
+                              option.G_CODE === value.G_CODE
+                            }
+                          />
+                        </label>
+                      </div>
+                      <div className='dangkyinputbox'>
+                        <label>
+                          <b>Delivery Date:</b>
+                          <input
+                            className='inputdata'
+                            type='date'
+                            value={deliverydate.slice(0, 10)}
+                            onChange={(e) => setNewDeliveryDate(e.target.value)}
+                          ></input>
+                        </label>
+                        <label>
+                          <b>Loại hàng:</b>
+                          <select
+                            name='phanloaihang'
+                            value={newphanloai}
+                            onChange={(e) => {
+                              setNewPhanLoai(e.target.value);
+                            }}
+                          >
+                            <option value='TT'>Hàng Thường (TT)</option>
+                            <option value='SP'>Sample sang FL (SP)</option>
+                            <option value='RB'>Ribbon (RB)</option>
+                            <option value='HQ'>Hàn Quốc (HQ)</option>
+                            <option value='VN'>Việt Nam (VN)</option>
+                            <option value='AM'>Amazon (AM)</option>
+                            <option value='DL'>Đổi LOT (DL)</option>
+                            <option value='M4'>NM4 (M4)</option>
+                            <option value='GC'>Hàng Gia Công (GC)</option>
+                            <option value='TM'>Hàng Thương Mại (TM)</option>
+                            {getCompany() !== 'CMS' && <>
+                              <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                              <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                              <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                              <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                              <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                              <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                              <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                              <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                              <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                            </>}
+                          </select>
+                        </label>
+                      </div>
+                      <div className='dangkyinputbox'>
+                        <label>
+                          <b>Loại sản xuất:</b>
+                          <select
+                            name='loasx'
+                            value={loaisx}
+                            onChange={(e) => {
+                              setLoaiSX(e.target.value);
+                            }}
+                          >
+                            <option value='01'>Thông Thường</option>
+                            <option value='02'>SDI</option>
+                            <option value='03'>ETC</option>
+                            <option value='04'>SAMPLE</option>
+                          </select>
+                        </label>
+                        <label>
+                          <b>Loại xuất hàng</b>
+                          <select
+                            name='loaixh'
+                            value={loaixh}
+                            onChange={(e) => {
+                              setLoaiXH(e.target.value);
+                            }}
+                          >
+                            <option value='01'>GC</option>
+                            <option value='02'>SK</option>
+                            <option value='03'>KD</option>
+                            <option value='04'>VN</option>
+                            <option value='05'>SAMPLE</option>
+                            <option value='06'>Vai bac 4</option>
+                            <option value='07'>ETC</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div className='dangkyinputbox'>
+                        <label>
+                          <b>YCSX QTY:</b>{" "}
+                          <TextField
+                            value={newycsxqty}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              setNewYcsxQty(Number(e.target.value))
+                            }
+                            size='small'
+                            color='success'
+                            className='autocomplete'
+                            id='outlined-basic'
+                            label='YCSX QTY'
+                            variant='outlined'
+                          />
+                        </label>
+                        <label>
+                          <b>Remark:</b>{" "}
+                          <TextField
+                            value={newycsxremark}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              setNewYcsxRemark(e.target.value)
+                            }
+                            size='small'
+                            color='success'
+                            className='autocomplete'
+                            id='outlined-basic'
+                            label='Remark'
+                            variant='outlined'
+                          />
+                        </label>
+                      </div>
+                      <div className='dangkyinputbox'>
+                        <label>
+                          <b>PO NO:</b>
+                          <Autocomplete
+                            size='small'
+                            disablePortal
+                            options={ponolist}
+                            className='pono_autocomplete'
+                            getOptionLabel={(option: PONOLIST | any) => {
+                              return `${moment.utc(option.PO_DATE).isValid()
+                                ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
+                                : ""
+                                }| ${option.PO_NO}`;
+                            }}
+                            renderInput={(params) => (
+                              <TextField {...params} label='Select PO NO' />
+                            )}
+                            value={selectedPoNo}
+                            onChange={(event: any, newValue: PONOLIST | null) => {
+                              console.log(newValue);
+                              setSelectedPoNo(newValue);
+                              setNewDeliveryDate(
+                                newValue?.RD_DATE === undefined
+                                  ? moment.utc().format("YYYY-MM-DD")
+                                  : newValue?.RD_DATE
+                              );
+                              setNewYcsxQty(newValue?.PO_QTY ?? 0)
+                            }}
+                            isOptionEqualToValue={(option, value) =>
+                              option.PO_NO === value.PO_NO
+                            }
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <div className='dangkybutton'>
+                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                        handle_InsertYCSXTable();
+                      }}>Insert</Button>
+                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+                        clearYCSXform();
+                      }}>Clear</Button>
+                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
+                        setSelection({ ...selection, them1po: false });
+                      }}>Close</Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <form className='formupload'>
+                <label htmlFor='upload'>
+                  <b>Chọn file Excel: </b>
+                  <input
+                    className='selectfilebutton'
+                    type='file'
+                    name='upload'
+                    id='upload'
+                    onChange={(e: any) => {
+                      readUploadFile(e);
+                    }}
+                  />
+                </label>
+                <div className='ycsxbutton'>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue' }} onClick={() => {
+                    confirmCheckYcsxHangLoat();
+                  }}>Check YCSX</Button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#3EAF45' }} onClick={() => {
+                    confirmUpYcsxHangLoat();
+                  }}>Up YCSX</Button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+                    handle_DeleteYCSX_Excel();
+                  }}>Clear YCSX</Button>
+                </div>
+              </form>
+              <div className='insertYCSXTable'>
+                {ycsxUploadExcelDataTableAG}
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {selection.thempohangloat && (
-        <div className='newycsx' style={{ backgroundImage: theme.CMS.backgroundImage }}>
-          <div className='batchnewycsx'>
-            <form className='formupload'>
-              <label htmlFor='upload'>
-                <b>Chọn file Excel: </b>
-                <input
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
-                  onChange={(e: any) => {
-                    readUploadFile(e);
-                  }}
-                />
-              </label>
-              <div className='ycsxbutton'>
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue' }} onClick={() => {
-                  confirmCheckYcsxHangLoat();
-                }}>Check YCSX</Button>
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#3EAF45' }} onClick={() => {
-                  confirmUpYcsxHangLoat();
-                }}>Up YCSX</Button>
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                  handle_DeleteYCSX_Excel();
-                }}>Clear YCSX</Button>
+        </TabPanel>
+        <TabPanel>
+          <div className='amazonetab'>
+            <div className='newamazon'>
+              <div className='amazonInputform'>
+                <div className='forminput'>
+                  <div className='forminputcolumn'>
+                    <label>
+                      <b>Số Yêu Cầu:</b>
+                      <input
+                        type='text'
+                        placeholder='1F80008'
+                        value={prodrequestno}
+                        onChange={(e) => {
+                          setProdRequestNo(e.target.value);
+                          handle_findAmazonCodeInfo(e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>ID Công việc:</b>
+                      <input
+                        type='text'
+                        placeholder='CG7607845474986040938'
+                        value={id_congviec}
+                        onChange={(e) => setID_CongViec(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='prod_request_info'>
+                    <div style={{ color: "green" }}>Code KD: {codeKD}</div>
+                    <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
+                    <div style={{ color: "blue" }}>
+                      Cavity Amazon: {cavityAmazon}
+                    </div>
+                    <div style={{ color: "black" }}>Model: {prod_model}</div>
+                  </div>
+                </div>
+                <form className='formupload'>
+                  <div className="uploadfile">
+                    <label htmlFor='upload'>
+                      <input
+                        className='selectfilebutton'
+                        type='file'
+                        name='upload'
+                        id='upload'
+                        onChange={(e: any) => {
+                          readUploadFileAmazon(e);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="uploadbutton">
+                    <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                      upAmazonDataSuperFast();
+                    }}>Up</Button>
+                    {/*  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                    testData();
+                  }}>Test</Button> */}
+                    <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }} onClick={() => {
+                      f_checkDuplicateAMZ();
+                    }}>Check</Button>
+                    <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+                      setUploadExcelJSon([]);
+                    }}>Clear</Button>
+                  </div>
+                  {progressvalue}/{uploadExcelJson.length}
+                </form>
               </div>
-            </form>
-            <div className='insertYCSXTable'>
-              {ycsxUploadExcelDataTableAG}
-            </div>
-          </div>
-        </div>
-      )}
-      {selection.trapo && (
-        <div className='tracuuYCSX'>
-          {showhidesearchdiv && (
-            <div className='tracuuYCSXform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Từ ngày:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='date'
-                      value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Tới ngày:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='date'
-                      value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
-                    ></input>
-                  </label>
+              <div className='batchnewycsx'>
+                <div className='insertYCSXTable'>
+                  {amzDataTableAG}
                 </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Code KD:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='GH63-xxxxxx'
-                      value={codeKD}
-                      onChange={(e) => setCodeKD(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Code ERP:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='7C123xxx'
-                      value={codeCMS}
-                      onChange={(e) => setCodeCMS(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Tên nhân viên:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='Trang'
-                      value={empl_name}
-                      onChange={(e) => setEmpl_Name(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Khách:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='SEVT'
-                      value={cust_name}
-                      onChange={(e) => setCust_Name(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Loại sản phẩm:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='TSP'
-                      value={prod_type}
-                      onChange={(e) => setProdType(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Số YCSX:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='12345'
-                      value={prodrequestno}
-                      onChange={(e) => setProdRequestNo(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Phân loại:</b>
-                    <select
-                      name='phanloai'
-                      value={phanloai}
-                      onChange={(e) => {
-                        setPhanLoai(e.target.value);
-                      }}
-                    >
-                      <option value='00'>ALL</option>
-                      <option value='01'>Thông thường</option>
-                      <option value='02'>SDI</option>
-                      <option value='03'>GC</option>
-                      <option value='04'>SAMPLE</option>
-                      <option value='22'>NOT SAMPLE</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>Vật liệu:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='text'
-                      placeholder='SJ-203020HC'
-                      value={material}
-                      onChange={(e) => setMaterial(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Loại hàng:</b>
-                    <select
-                      name='phanloaihang'
-                      value={phanloaihang}
-                      onChange={(e) => {
-                        setPhanLoaiHang(e.target.value);
-                      }}
-                    >
-                      <option value='ALL'>ALL</option>
-                      <option value='TT'>Hàng Thường (TT)</option>
-                      <option value='SP'>Sample sang FL (SP)</option>
-                      <option value='RB'>Ribbon (RB)</option>
-                      <option value='HQ'>Hàn Quốc (HQ)</option>
-                      <option value='VN'>Việt Nam (VN)</option>
-                      <option value='AM'>Amazon (AM)</option>
-                      <option value='DL'>Đổi LOT (DL)</option>
-                      <option value='M4'>NM4 (M4)</option>
-                      <option value='GC'>Hàng Gia Công (GC)</option>
-                      <option value='TM'>Hàng Thương Mại (TM)</option>
-                      {getCompany() !== 'CMS' && <>
-                        <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                        <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                        <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                        <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                        <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                        <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                        <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                        <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                        <option value='I9'>Hàng In Nhanh 9 (I9)</option>
-                      </>}
-                      {/* <option value='SL'>Slitting (SL)</option> */}
-                    </select>
-                  </label>
-                  <label>
-                    <b>All Time:</b>
-                    <input
-                      type='checkbox'
-                      name='alltimecheckbox'
-                      defaultChecked={alltime}
-                      onChange={() => setAllTime(!alltime)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>YCSX Pending:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='checkbox'
-                      name='alltimecheckbox'
-                      defaultChecked={ycsxpendingcheck}
-                      onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Vào kiểm:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type='checkbox'
-                      name='alltimecheckbox'
-                      defaultChecked={inspectInputcheck}
-                      onChange={() => setInspectInputCheck(!inspectInputcheck)}
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className='formbutton'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    handletraYCSX();
-                  }}
-                >
-                  <FcSearch color='green' size={30} />
-                  Search
-                </IconButton>
               </div>
             </div>
-          )}
-          <div className='tracuuYCSXTable'>
-            {ycsxDataTableAG}
           </div>
-        </div>
-      )}
+        </TabPanel>
+        <TabPanel>
+          <div className='traamazdata'>
+            <TraAMZ />
+          </div>
+        </TabPanel>
+      </Tabs>
       {selection.renderycsx && (
         <div className='printycsxpage'>
           <div className='buttongroup'>
@@ -2967,87 +3214,6 @@ const YCSXManager = () => {
           <div className='ycsxrender' ref={ycsxprintref}>
             {ycsxlistrender}
           </div>
-        </div>
-      )}
-      {selection.amazontab && (
-        <div className='amazonetab'>
-          <div className='newamazon'>
-            <div className='amazonInputform'>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Số Yêu Cầu:</b>
-                    <input
-                      type='text'
-                      placeholder='1F80008'
-                      value={prodrequestno}
-                      onChange={(e) => {
-                        setProdRequestNo(e.target.value);
-                        handle_findAmazonCodeInfo(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>ID Công việc:</b>
-                    <input
-                      type='text'
-                      placeholder='CG7607845474986040938'
-                      value={id_congviec}
-                      onChange={(e) => setID_CongViec(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className='prod_request_info'>
-                  <div style={{ color: "green" }}>Code KD: {codeKD}</div>
-                  <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
-                  <div style={{ color: "blue" }}>
-                    Cavity Amazon: {cavityAmazon}
-                  </div>
-                  <div style={{ color: "black" }}>Model: {prod_model}</div>
-                </div>
-              </div>
-              <form className='formupload'>
-                <div className="uploadfile">
-                  <label htmlFor='upload'>
-                    <input
-                      className='selectfilebutton'
-                      type='file'
-                      name='upload'
-                      id='upload'
-                      onChange={(e: any) => {
-                        readUploadFileAmazon(e);
-                      }}
-                    />
-                  </label>
-                </div>
-                <div className="uploadbutton">
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                    upAmazonDataSuperFast();
-                  }}>Up</Button>
-                 {/*  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                    testData();
-                  }}>Test</Button> */}
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }} onClick={() => {
-                    f_checkDuplicateAMZ();
-                  }}>Check</Button>
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                    setUploadExcelJSon([]);
-                  }}>Clear</Button>
-                </div>
-                {progressvalue}/{uploadExcelJson.length}
-              </form>
-            </div>
-            <div className='batchnewycsx'>
-              <div className='insertYCSXTable'>
-                {amzDataTableAG}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {selection.traamazdata && (
-        <div className='traamazdata'>
-          <TraAMZ />
         </div>
       )}
     </div>)

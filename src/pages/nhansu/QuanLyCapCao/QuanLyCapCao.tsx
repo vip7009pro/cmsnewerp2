@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
-import DiemDanhNhomBP from "../DiemDanhNhom/DiemDanhBP";
-import DieuChuyenTeamBP from "../DieuChuyenTeam/DieuChuyenTeamBP";
-import PheDuyetNghiBP from "../PheDuyetNghi/PheDuyetNghiBP";
+import React, { Suspense, useEffect, useState } from "react";
+const DiemDanhNhomBP = React.lazy(() => import("../DiemDanhNhom/DiemDanhBP"));
+const DieuChuyenTeamBP = React.lazy(() => import("../DieuChuyenTeam/DieuChuyenTeamBP"));
+const PheDuyetNghiBP = React.lazy(() => import("../PheDuyetNghi/PheDuyetNghiBP"));
 import "./QuanLyCapCao.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getlang } from "../../../components/String/String";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const QuanLyCapCao = () => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang,
   );
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -27,53 +29,39 @@ const QuanLyCapCao = () => {
   useEffect(() => { }, []);
   return (
     <div className="quanlycapcao">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab1 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext"> {getlang("diemdanhtoanbophan", glbLang!)}</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(2)}
-          style={{
-            backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab2 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">{getlang("pheduyetnghitoanbophan", glbLang!)}</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() => setNav(3)}
-          style={{
-            backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab3 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">{getlang("dieuchuyentoanbophan", glbLang!)}</span>
-        </div>
-      </div>
-      {selection.tab1 && (
-        <div className="diemdanhbp">
+      <Suspense fallback={<div> Loading...</div>}>
+      <Tabs className="tabs" style={{
+        fontSize: "0.6rem",
+        width: "100%",
+      }}>
+        <TabList className="tablist" style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundImage: theme.CMS.backgroundImage,
+          justifyContent: "left", 
+        }}>
+          <Tab>
+            <span className="mininavtext"> {getlang("diemdanhtoanbophan", glbLang!)}</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">{getlang("pheduyetnghitoanbophan", glbLang!)}</span>
+          </Tab>
+          <Tab>
+            <span className="mininavtext">{getlang("dieuchuyentoanbophan", glbLang!)}</span>  
+          </Tab>
+        </TabList>
+        <TabPanel>
           <DiemDanhNhomBP />
-        </div>
-      )}
-      {selection.tab2 && (
-        <div className="pheduyetbp">
+        </TabPanel>
+        <TabPanel>
           <PheDuyetNghiBP />
-        </div>
-      )}
-      {selection.tab3 && (
-        <div className="dieuchuyenbp">
+        </TabPanel>
+        <TabPanel>  
           <DieuChuyenTeamBP />
-        </div>
-      )}
+          </TabPanel>
+        </Tabs>
+      </Suspense>
     </div>
   );
 };

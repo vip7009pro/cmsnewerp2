@@ -1,17 +1,14 @@
 @media only screen and (max-width: 5000px) {
   .kiemtra {
     width: 100%;
-    height: 500px;
     display: flex;
     flex-direction: column;
-
     .mininavbar {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       margin-bottom: 5px;
       margin-top: 5px;
-
       .mininavitem {
         padding: 10px;
         background-color: rgb(240, 53, 100);

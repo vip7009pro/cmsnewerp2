@@ -1,63 +1,20 @@
-import {
-  Autocomplete,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import moment from "moment";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import {
-  CustomResponsiveContainer,
-  SaveExcel,
-} from "../../../api/GlobalFunction";
 import "./PQC1.scss";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  KeyboardNavigation,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Summary,
-  Toolbar,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import { BiShow } from "react-icons/bi";
-import { GrStatusGood } from "react-icons/gr";
-import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  CustomerListData,
-  PQC1_DATA,
-  SX_DATA,
-  UserData,
-} from "../../../api/GlobalInterface";
+import { PQC1_DATA, SX_DATA, UserData } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const PQC1 = () => {
-  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-  const [testtype, setTestType] = useState("NVL");
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [inputno, setInputNo] = useState("");
   const [lineqc_empl, setLineqc_empl] = useState("");
   const [prod_leader_empl, setprod_leader_empl] = useState("");
@@ -65,9 +22,7 @@ const PQC1 = () => {
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
   );
-  const [selectedRowsDataA, setSelectedRowsData] = useState<Array<PQC1_DATA>>(
-    []
-  );
+  const selectedRowsDataA = useRef<Array<PQC1_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
@@ -79,11 +34,8 @@ const PQC1 = () => {
   const [m_code, setM_Code] = useState("");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [planId, setPlanId] = useState("");
-  const [pqc3Id, setPQC3ID] = useState(0);
-  const [defect_phenomenon, setDefectPhenomenon] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [process_lot_no, setProcessLotNo] = useState("");
-  const [vendorLot, setVendorLot] = useState("");
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
   const [showhideinput, setShowHideInput] = useState(true);
@@ -180,11 +132,185 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-  const pqc1DataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <div className="menubar">
-          <IconButton
+  const column_TRA_PQC1_DATA = [
+    { field: "PQC1_ID", headerName: "PQC1_ID", width: 80 },
+    { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
+    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
+    { field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
+    { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 250 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+    { field: "LINEQC_PIC", headerName: "LINEQC_PIC", width: 80 },
+    { field: "PROD_PIC", headerName: "PROD_PIC", width: 80 },
+    { field: "PROD_LEADER", headerName: "PROD_LEADER", width: 80 },
+    { field: "LINE_NO", headerName: "LINE_NO", width: 80 },
+    { field: "STEPS", headerName: "STEPS", width: 80 },
+    { field: "CAVITY", headerName: "CAVITY", width: 80 },
+    {
+      field: "SETTING_OK_TIME",
+      cellDataType: "text",
+      headerName: "SETTING_OK_TIME",
+      width: 180,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {moment
+              .utc(params.data.SETTING_OK_TIME)
+              .format("YYYY-MM-DD HH:mm:ss")}
+          </span>
+        );
+      },
+    },
+    { field: "FACTORY", headerName: "FACTORY", width: 80 },
+    { field: "INSPECT_SAMPLE_QTY", headerName: "SAMPLE_QTY", width: 100 },
+    { field: "PROD_LAST_PRICE", headerName: "PRICE", width: 80 },
+    {
+      field: "SAMPLE_AMOUNT",
+      headerName: "SAMPLE_AMOUNT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.data.SAMPLE_AMOUNT?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    { field: "REMARK", headerName: "REMARK", width: 80 },
+    { field: "PQC3_ID", headerName: "PQC3_ID", width: 80 },
+    { field: "OCCURR_TIME", headerName: "OCCURR_TIME", width: 150 },
+    { field: "INSPECT_QTY", headerName: "INSPECT_QTY", width: 120 },
+    { field: "DEFECT_QTY", headerName: "DEFECT_QTY", width: 120 },
+    {
+      field: "DEFECT_RATE",
+      headerName: "DEFECT_RATE",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.data.DEFECT_RATE?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+            })}
+            %
+          </span>
+        );
+      },
+    },
+    { field: "DEFECT_PHENOMENON", headerName: "DEFECT_PHENOMENON", width: 150 },
+    {
+      field: "INS_DATE",
+      cellDataType: "text",
+      headerName: "INS_DATE",
+      width: 180,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {moment.utc(params.data.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "UPD_DATE",
+      cellDataType: "text",
+      headerName: "UPD_DATE",
+      width: 180,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {moment.utc(params.data.UPD_DATE).format("YYYY-MM-DD HH:mm:ss")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "IMG_1",
+      headerName: "IMG_1",
+      width: 100,
+      cellRenderer: (params: any) => {
+        let href_link = `/lineqc/${params.data.PLAN_ID}_1.jpg`
+        if (params.data.IMG_1 ?? false) {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "IMG_2",
+      headerName: "IMG_2",
+      width: 100,
+      cellRenderer: (params: any) => {
+        let href_link = `/lineqc/${params.data.PLAN_ID}_2.jpg`
+        if (params.data.IMG_2 ?? false) {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "IMG_3",
+      headerName: "IMG_3",
+      width: 100,
+      cellRenderer: (params: any) => {
+        let href_link = `/lineqc/${params.data.PLAN_ID}_3.jpg`
+        if (params.data.IMG_3 ?? false) {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }
+      },
+    },
+  ];
+  const pqc1DataTable2 = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <>
+        <IconButton
             className="buttonIcon"
             onClick={() => {
               setShowHideInput((pre) => !pre);
@@ -204,130 +330,24 @@ const PQC1 = () => {
             <AiOutlineSearch color="red" size={15} />
             Tra Data
           </IconButton>
-        </div>
-        <CustomResponsiveContainer>
-          <DataGrid
-            style={{ fontSize: "0.7rem" }}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={pqc1datatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"100%"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //console.log(e.selectedRowsData);
-              //setselecterowfunction(e.selectedRowsData);
-              setSelectedRowsData(e.selectedRowsData);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-            onRowUpdated={(e) => {
-              //console.log(e);
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={false}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="multiple" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={true}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="cell"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(inspectiondatatable, "SPEC DTC");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooserButton" />
-              <Item name="addRowButton" />
-              <Item name="saveButton" />
-              <Item name="revertButton" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField='FACTORY' caption='FACTORY' allowEditing={false} width={50}></Column>
-            <Column dataField='PQC1_ID' caption='PQC1_ID' allowEditing={false} width={60}></Column>
-            <Column dataField='PLAN_ID' caption='PLAN_ID' allowEditing={false} width={70}></Column>
-            <Column dataField='SETTING_OK_TIME' caption='SETTING_OK_TIME' allowEditing={false} width={130}></Column>
-            <Column dataField='INSPECT_SAMPLE_QTY' caption='INSPECT_SAMPLE_QTY' allowEditing={true} width={150}></Column>
-            <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' allowEditing={false} width={100}></Column>
-            <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' allowEditing={false} width={100}></Column>
-            <Column dataField='G_NAME_KD' caption='G_NAME_KD' allowEditing={false} width={100}></Column>
-            <Column dataField='LINEQC_PIC' caption='LINEQC_PIC' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_PIC' caption='PROD_PIC' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_LEADER' caption='PROD_LEADER' allowEditing={false} width={100}></Column>
-            <Column dataField='LINE_NO' caption='LINE_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='STEPS' caption='STEPS' allowEditing={false} width={70}></Column>
-            <Column dataField='CAVITY' caption='CAVITY' allowEditing={false} width={60}></Column>
-            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' allowEditing={false} width={100}></Column>
-            <Column dataField='SAMPLE_AMOUNT' caption='SAMPLE_AMOUNT' allowEditing={false} width={100}></Column>
-            <Column dataField='CNDB_ENCODES' caption='CNDB_ENCODES' allowEditing={false} width={100}></Column>
-            <Column dataField='REMARK' caption='REMARK' allowEditing={false} width={100}></Column>
-            <Column dataField='INS_DATE' caption='INS_DATE' allowEditing={false} width={100}></Column>
-            <Column dataField='UPD_DATE' caption='UPD_DATE' allowEditing={false} width={100}></Column>
-            <Column dataField='PQC3_ID' caption='PQC3_ID' allowEditing={false} width={100}></Column>
-            <Column dataField='OCCURR_TIME' caption='OCCURR_TIME' allowEditing={false} width={100}></Column>
-            <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' allowEditing={false} width={100}></Column>
-            <Column dataField='DEFECT_QTY' caption='DEFECT_QTY' allowEditing={false} width={100}></Column>
-            <Column dataField='DEFECT_PHENOMENON' caption='DEFECT_PHENOMENON' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' allowEditing={false} width={100}></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="PQC1_ID"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [pqc1datatable]
-  );
+        </>
+      }
+      columns={column_TRA_PQC1_DATA}
+      data={pqc1datatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        selectedRowsDataA.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [pqc1datatable]);
+
   const traPQC1Data = () => {
     generalQuery("trapqc1data", {
       ALLTIME: false,
@@ -558,12 +578,12 @@ const PQC1 = () => {
     }
   };
   const updateSampleQty = async () => {
-    if (selectedRowsDataA.length > 0) {
+    if (selectedRowsDataA.current.length > 0) {
       let err_code: string = '';
-      for (let i = 0; i < selectedRowsDataA.length; i++) {
+      for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         await generalQuery("updatepqc1sampleqty", {
-          PQC1_ID: selectedRowsDataA[i].PQC1_ID,
-          INSPECT_SAMPLE_QTY: selectedRowsDataA[i].INSPECT_SAMPLE_QTY
+          PQC1_ID: selectedRowsDataA.current[i].PQC1_ID,
+          INSPECT_SAMPLE_QTY: selectedRowsDataA.current[i].INSPECT_SAMPLE_QTY
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -594,9 +614,8 @@ const PQC1 = () => {
   return (
     <div className="pqc1">
       <div className="tracuuDataInspection">
-        <div className="inputform">
-          {true && (
-            <div className="tracuuDataInspectionform">
+        <div className="inputform">         
+            <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <b style={{ color: "blue" }}> {lineqc_empl && (
                 <span
                   style={{
@@ -760,12 +779,11 @@ const PQC1 = () => {
                   </Button>
                 </div>
               </div>
-            </div>
-          )}
+            </div>         
         </div>
         <div className="maintable">
           {showhideinput && (
-            <div className="tracuuDataInspectionform2">
+            <div className="tracuuDataInspectionform2" style={{ backgroundImage: theme.CMS.backgroundImage }} >
               <b style={{ color: "blue" }}>THÔNG TIN CHỈ THỊ</b>
               <div className="forminput">
                 <div className="forminputcolumn">
@@ -908,7 +926,7 @@ const PQC1 = () => {
               </div>
             </div>
           )}
-          <div className="tracuuYCSXTable">{pqc1DataTable}</div>
+          <div className="tracuuYCSXTable">{pqc1DataTable2}</div>
         </div>
       </div>
     </div>

@@ -25,6 +25,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const InvoiceManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
@@ -1242,101 +1243,13 @@ const InvoiceManager = () => {
     getcodelist("");
   }, []);
   return (
-    <div className="invoicemanager">
-      <div className="mininavbar">
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
-            color: selection.trapo === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Tra Invoice</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() =>
-            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setNav(2);
-            }) */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setNav(2);
-            })
-          }
-          style={{
-            backgroundColor:
-              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
-            color: selection.thempohangloat === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Thêm Invoice</span>
-        </div>
-        <div
-          className="mininavitem"
-          onClick={() =>
-            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setNav(2);
-            }) */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setNav(3);
-            })
-          }
-          style={{
-            backgroundColor:
-              selection.checkkho === true ? "#02c712" : "#abc9ae",
-            color: selection.checkkho === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">Check Xuất Kho</span>
-        </div>
-      </div>
-      {selection.thempohangloat && (
-        <div className="newinvoice">
-          <div className="batchnewinvoice">
-            <h3>Thêm Invoice Hàng Loạt</h3>
-            <form className="formupload">
-              <label htmlFor="upload">
-                <b>Chọn file Excel: </b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  className="selectfilebutton"
-                  type="file"
-                  name="upload"
-                  id="upload"
-                  onChange={(e: any) => {
-                    loadFile(e);
-                  }}
-                />
-              </label>
-              <div
-                className="checkpobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckInvoiceHangLoat();
-                }}
-              >
-                Check Invoice
-              </div>
-              <div
-                className="uppobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpInvoiceHangLoat();
-                }}
-              >
-                Up Invoice
-              </div>
-            </form>
-            <div className="insertInvoiceTable">
-              {excelDataAGTable}
-            </div>
-          </div>
-        </div>
-      )}
-      {selection.trapo && (
+    <div className="invoicemanager">     
+      <Tabs className="tabs">
+        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
+          <Tab><span className="mininavtext">Tra Invoice</span></Tab>
+          <Tab><span className="mininavtext">Thêm Invoice</span></Tab>
+        </TabList>
+        <TabPanel>
         <div className="tracuuInvoice">
           {sh && (
             <div className="tracuuInvoiceform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
@@ -1559,7 +1472,54 @@ const InvoiceManager = () => {
             {invoiceDataAGTable}
           </div>
         </div>
-      )}
+        </TabPanel>
+        <TabPanel>
+        <div className="newinvoice">
+          <div className="batchnewinvoice">
+            <h3>Thêm Invoice Hàng Loạt</h3>
+            <form className="formupload">
+              <label htmlFor="upload">
+                <b>Chọn file Excel: </b>
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
+                  onChange={(e: any) => {
+                    loadFile(e);
+                  }}
+                />
+              </label>
+              <div
+                className="checkpobutton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmCheckInvoiceHangLoat();
+                }}
+              >
+                Check Invoice
+              </div>
+              <div
+                className="uppobutton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmUpInvoiceHangLoat();
+                }}
+              >
+                Up Invoice
+              </div>
+            </form>
+            <div className="insertInvoiceTable">
+              {excelDataAGTable}
+            </div>
+          </div>
+        </div>          
+        </TabPanel>        
+        </Tabs>
+     
       <CustomDialog
         isOpen={openDialog}
         onClose={handleCloseDialog}
