@@ -345,6 +345,7 @@ export const glbSlice = createSlice({
             state.tabIndex++;
           }
         }
+        console.log('state.tabIndex',state.tabIndex);
       } else {
         state.tabs = [];
       }

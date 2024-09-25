@@ -140,8 +140,8 @@ export default function AccountInfo() {
     generalQuery("countthuongphat", insertData)
       .then((response) => {
         setThuongPhat({
-          count_thuong: response.data.data[0]?.THUONG,
-          count_phat: response.data.data[0]?.PHAT,
+          count_thuong: response.data.data !== undefined ? response.data.data[0]?.THUONG : 0,
+          count_phat: response.data.data !== undefined ? response.data.data[0]?.PHAT : 0,
         });
       })
       .catch((error) => {

@@ -4,7 +4,7 @@ import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
 import { generalQuery, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
-import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
+import { Box, IconButton,  TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,6 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import KHOSX from "../sx/KHOSX/KHOSX";
+import { Tab } from "react-tabs";
 export const current_ver: number = 2498;
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
@@ -82,13 +83,13 @@ interface ELE_ARRAY {
   ELE_NAME: string;
   ELE_CODE: string;
 }
-export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
+/* export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
   // Tùy chỉnh kiểu cho tab tại đây
   color: "gray", // Ví dụ: đặt màu chữ là màu xanh
   fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
   // Thêm các kiểu tùy chỉnh khác tại đây...
-});
-function Home() {
+}); */
+function Home2() {
   const [lang, setLang] = useContext(LangConText);
   const cookies = new Cookies();
   const company: string = useSelector(
@@ -497,6 +498,8 @@ function Home() {
       MENU_ITEM: <AccountInfo />,
     },
   ];
+  const [currentTabPanelList,setCurrentTabPanelList] = useState<MENU_LIST_DATA[]>([]);
+
   const dispatch = useDispatch();
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -558,6 +561,14 @@ function Home() {
         });
     }
   }
+  const CustomTab = React.memo(({ label, value, onClose, onSelect }:{label:string,value:number,onClose:()=>void, onSelect:()=>void}) => (
+    <Tab onClick={onSelect} style={{fontSize:'0.7rem'}}>    
+      <span style={{color: tabIndex === value ? `blue` : `gray`}}>{label}</span>
+      <IconButton onClick={onClose}>
+        <AiOutlineCloseCircle color={tabIndex === value ? `blue` : `gray`} size={15} />
+      </IconButton> 
+    </Tab>
+  )); 
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
@@ -625,10 +636,7 @@ function Home() {
         <Navbar />
         {/* <PrimarySearchAppBar /> */}
       </div>
-      <div className='homeContainer'>
-        {/* <div className='sidebardiv'>
-          <Sidebar />
-        </div> */}
+      <div className='homeContainer'>       
         <div className='outletdiv'>
           <animated.div
             className='animated_div'
@@ -672,30 +680,15 @@ function Home() {
                         return (
                           <div>
                           <CustomTab
-                            key={index}
-                            label={
-                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}>
-                                <CustomTabLabel style={{ fontSize: "0.7rem", }}>
-                                  {index + 1}.{ele.ELE_NAME}
-                                  <IconButton key={index+'A'} onClick={() => {
-                                    dispatch(closeTab(index));
-                                  }}>
-                                    <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={15} />
-                                  </IconButton>
-                                  
-                                </CustomTabLabel>
-                               
-                              </div>
-                            }
+                            key={index} 
                             value={index}
-                            style={{
-                              minHeight: "2px",
-                              height: "5px",
-                              boxSizing: "border-box",
-                              borderRadius: "3px",
+                            onSelect={()=> {
+                              dispatch(settabIndex(index));
                             }}
-                          ></CustomTab>
-                           
+                            onClose={()=> {
+                              dispatch(closeTab(index));
+                            }}
+                            label={`${index + 1}.${ele.ELE_NAME}`}/>                           
                           </div>
                         );
                       }
@@ -746,4 +739,4 @@ function Home() {
     </div>
   );
 }
-export default Home;
+export default Home2;

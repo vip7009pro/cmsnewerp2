@@ -26,6 +26,7 @@ import { Notifications } from 'react-push-notification';
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+const Home2 = React.lazy(() => import("./pages/home/Home2"));
 const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
 const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
 const KHOTP = React.lazy(() => import("./pages/kho/khotp/KHOTP"));
@@ -565,7 +566,7 @@ function App() {
                               /*...springs,*/
                             }}
                           >
-                            <Home />
+                            <Home2 />
                           </animated.div>
                         </ProtectedRoute>
                       }
