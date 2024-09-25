@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import KHOTP from "../../kho/khotp/KHOTP";
-import "./OQC.scss";
-import OQC_DATA from "./OQC_DATA";
-import OQC_REPORT from "./OQC_REPORT";
+import "./KHOSX.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-const OQC = () => {
+import KHOAO from "../../qlsx/QLSXPLAN/KHOAO/KHOAO";
+import KHOSUB from "../../qlsx/QLSXPLAN/KHOAO/KHOSUB";
+import KHOLIEU from "../../kho/kholieu/KHOLIEU";
+const KHOSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
-     <div className="oqc">
+    <div className="khosx">
       <Tabs className="tabs" style={{
         fontSize: "0.6rem",
         width: "100%",
@@ -20,40 +20,36 @@ const OQC = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "left",
-          backgroundImage: theme.CMS.backgroundImage, 
+          backgroundImage: theme.CMS.backgroundImage,
           color: 'gray'
         }}>
           <Tab>
-            <span className="mininavtext">Data Kho Thành Phẩm</span>
+            <span className="mininavtext">KHO MAIN</span>
           </Tab>
           <Tab>
-            <span className="mininavtext">Data OQC</span>
+            <span className="mininavtext">KHO SUB</span>
           </Tab>
           <Tab>
-            <span className="mininavtext">Báo Cáo</span>
+            <span className="mininavtext">KHO VL</span>
           </Tab>
         </TabList>
         <TabPanel>
           <div className="trainspection">
-            <KHOTP />
+            <KHOAO />
           </div>
         </TabPanel>
         <TabPanel>
           <div className="trainspection">
-            <OQC_DATA />
+            <KHOSUB />
           </div>
         </TabPanel>
         <TabPanel>
           <div className="trainspection">
-            <OQC_REPORT />
+            <KHOLIEU />
           </div>
         </TabPanel>
       </Tabs>
     </div>
   );
 };
-
-
-export default OQC;
-
- 
+export default KHOSX;

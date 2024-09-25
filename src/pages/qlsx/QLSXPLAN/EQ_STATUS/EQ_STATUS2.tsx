@@ -135,8 +135,10 @@ const EQ_STATUS2 = () => {
               className="buttonIcon"
               onClick={() => {
                 checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
-                  openDialogAddMachine();
-                  selectedMachine.current = null;
+                 
+                      openDialogAddMachine();
+                    
+                  
                 })
               }}
             >
@@ -148,7 +150,19 @@ const EQ_STATUS2 = () => {
               className="buttonIcon"
               onClick={() => {
                 checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
-                  handleDeleteMachine();
+                  Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      handleDeleteMachine();
+                    }
+                  })
                 })
               }}
             >
@@ -305,8 +319,8 @@ const EQ_STATUS2 = () => {
         )}
       </div>
       {showHideEQManager &&
-        <div className="eq_manager" style={{ position: 'absolute', top: '45%', left: '50%', transform: 'translate(-50%, -50%)', width: '70vw', height: '80vh', backgroundColor: '#86c4d3', padding: '10px' }}>
-          <div className="eq_manager_title" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20px', fontSize: '1rem', fontWeight: 'bold' }}>
+        <div className="eq_manager" >
+          <div className="eq_manager_title">
             <span>EQ Manager</span>
             <IconButton
               className="buttonIcon"
@@ -377,7 +391,22 @@ const EQ_STATUS2 = () => {
         actions={<>
           <IconButton
             className="buttonIcon"
-            onClick={handleAddMachine}
+            onClick={()=> {
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',    
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, add it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  handleAddMachine();
+                  closeDialogAddMachine();
+                }
+              })
+            }}
           >
             <AiFillPlusCircle color="green" size={15} />
             Add Machine

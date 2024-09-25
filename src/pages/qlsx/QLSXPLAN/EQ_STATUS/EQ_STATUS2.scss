@@ -112,6 +112,24 @@
         }
       }
     }
+    .eq_manager {
+      position: fixed;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70vw;
+      height: 80vh;
+      background-color: #86c4d3;
+      padding: 10px;
+      .eq_manager_title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 20px;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+    }
   }
 }
 @media only screen and (max-width: 768px) {

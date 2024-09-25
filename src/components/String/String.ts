@@ -11,6 +11,8 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  khosx: "Kho SX",
+  eq_manager: "Quản lý máy",
   incominginspection: "Kiểm tra đầu vào",
   qualityissue: "Vấn đề chất lượng",
   audit: "Audit",
@@ -151,6 +153,8 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  khosx: "Production Warehouse",
+  eq_manager: "Machine Manager",
   incominginspection: "Incoming Inspection",
   qualityissue: "Quality Issue",
   audit: "Audit",
@@ -290,6 +294,8 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  khosx: "생산 창고",
+  eq_manager: "기계 관리",
   incominginspection: "입고 검사",
   qualityissue: "품질 이슈",
   audit: "감사",

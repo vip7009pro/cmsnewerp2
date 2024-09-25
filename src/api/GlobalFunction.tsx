@@ -5127,3 +5127,19 @@ export const f_deleteMachine = async (DATA: any) => {
     });
   return kq;
 }   
+
+export const f_updateStockM090 = async () => {
+  let kq: boolean = false;
+  await generalQuery("updateStockM090", {
+    
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}

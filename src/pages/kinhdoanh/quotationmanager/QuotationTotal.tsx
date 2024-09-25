@@ -2,8 +2,12 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import "./QuotationTotal.scss";
 import QuotationManager from "./QuotationManager";
 import CalcQuotation from "./CalcQuotation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
 const QuotationTotal = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -157,39 +161,30 @@ const QuotationTotal = () => {
 
   return (
     <div className="quotationtotal">
-      <Suspense fallback={<div> Loading...</div>}>
-        <div className="mininavbar">
-          <div
-            className="mininavitem"
-            onClick={() => setNav(1)}
-            style={{
-              backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab1 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">Quản lý giá</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(2)}
-            style={{
-              backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab2 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">Tính báo giá</span>
-          </div>
-        </div>
-        {selection.tab1 && (
-          <div className="capastatus">
+      <Suspense fallback={<div> Loading...</div>}>       
+        <Tabs className="tabs">
+          <TabList className="tablist" style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "left",
+            backgroundImage: theme.CMS.backgroundImage,
+            color: 'gray'
+          }}>
+            <Tab>
+              <span className="mininavtext">Quản lý giá</span>
+            </Tab>
+            <Tab>
+              <span className="mininavtext">Tính báo giá</span>
+            </Tab>
+          </TabList>
+          <TabPanel>
             <QuotationManager />
-          </div>
-        )}
-        {selection.tab2 && (
-          <div className="capadata">
+          </TabPanel>
+          <TabPanel>
             <CalcQuotation />
-          </div>
-        )}
+          </TabPanel>
+        </Tabs>       
       </Suspense>
     </div>
   );

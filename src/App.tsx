@@ -26,6 +26,7 @@ import { Notifications } from 'react-push-notification';
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
 const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
 const KHOTP = React.lazy(() => import("./pages/kho/khotp/KHOTP"));
 const BulletinBoard = React.lazy(() => import("./components/BulletinBoard/BulletinBoard"));
@@ -996,6 +997,18 @@ function App() {
                               jobname='Leader'
                             >
                               <BAOCAOTHEOROLL />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='khosx'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <KHOSX />
                             </ProtectedRoute>
                           }
                         />

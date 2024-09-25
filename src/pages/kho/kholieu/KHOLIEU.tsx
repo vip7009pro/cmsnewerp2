@@ -116,7 +116,7 @@ const KHOLIEU = () => {
           </span>
         );
       },
-    },
+    },    
     {
       field: "TDS",
       headerName: "TDS",
@@ -208,6 +208,17 @@ const KHOLIEU = () => {
         );
       },
     },
+    { field: "USE_YN", headerName: "USE_YN", width: 90, cellStyle: (params: any) => {
+      if (params.data.USE_YN !== "X") { 
+        return (
+          {backgroundColor: "green", color: "white", textAlign: "center"}
+        );
+      } else {
+        return (
+          {backgroundColor: "red", color: "white", textAlign: "center"}
+        );
+      }
+    } },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
     { field: "QC_PASS", headerName: "QC_PASS", width: 180 },
     { field: "QC_PASS_EMPL", headerName: "QC_PASS_EMPL", width: 180 },

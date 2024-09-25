@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
@@ -15,7 +14,8 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-export const current_ver: number = 2496;
+import KHOSX from "../sx/KHOSX/KHOSX";
+export const current_ver: number = 2497;
 
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
@@ -450,6 +450,16 @@ function Home() {
       MENU_ITEM: <KHOSUB />,
     },
     {
+      MENU_CODE: "SX16",
+      MENU_NAME: getlang("eqstatus", lang),
+      MENU_ITEM: <EQ_STATUS2 />,
+    },
+    {
+      MENU_CODE: "SX17",
+      MENU_NAME: getlang("khosx", lang),
+      MENU_ITEM: <KHOSX />,
+    },
+    {
       MENU_CODE: "SX11",
       MENU_NAME: getlang("quanlycapa", lang),
       MENU_ITEM: <CAPA_MANAGER />,
@@ -668,7 +678,7 @@ function Home() {
                           <CustomTab
                             key={index}
                             label={
-                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0 }}>
+                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}>
                                 <CustomTabLabel style={{ fontSize: "0.7rem", }}>
                                   {index + 1}.{ele.ELE_NAME}
                                   <IconButton onClick={() => {

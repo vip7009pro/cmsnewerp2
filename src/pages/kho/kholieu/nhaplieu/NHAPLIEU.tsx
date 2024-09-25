@@ -1,14 +1,10 @@
 import {
   Button,
   Autocomplete,
-  Checkbox,
-  FormControlLabel,
   IconButton,
   TextField,
   createFilterOptions,
   Typography,
-  AutocompleteRenderOptionState,
-  AutocompleteOwnerState,
 } from "@mui/material";
 import {
   Column,
@@ -28,14 +24,14 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA } from "../../../../api/GlobalInterface";
-import { generalQuery, getCompany } from "../../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../../api/GlobalFunction";
+import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
+import { checkBP, CustomResponsiveContainer, f_updateStockM090, SaveExcel, zeroPad } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './NHAPLIEU.scss';
 import { useSelector } from "react-redux";
@@ -257,6 +253,7 @@ const NHAPLIEU = () => {
      else {
       Swal.fire('Thông báo','Nhập kho vật liệu thành công','success');
      }
+     f_updateStockM090();
 
     }
     else {
@@ -275,7 +272,9 @@ const NHAPLIEU = () => {
       confirmButtonText: "Vẫn Nhập!",
     }).then((result) => {
       if (result.isConfirmed) {        
-        nhapkho();
+        checkBP(getUserData(), ["KHO"], ["ALL"], ["ALL"], async () => {
+          nhapkho();
+        });
       }
     });
   };

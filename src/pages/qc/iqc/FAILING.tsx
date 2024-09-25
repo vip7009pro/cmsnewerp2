@@ -230,7 +230,6 @@ const FAILING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
-
   const failingDataAGTable = useMemo(() => {
     return (
       <AGTable

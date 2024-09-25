@@ -1,6 +1,5 @@
 .quotationtotal {
   width: 100%;
-  height: 500px;
   display: flex;
   flex-direction: column;
   .mininavbar {
@@ -9,7 +8,7 @@
     flex-wrap: wrap;
     margin-bottom: 5px;
     margin-top: 5px;
-
+    
     .mininavitem {
       padding: 10px;
       background-color: rgb(240, 53, 100);

@@ -31,12 +31,11 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
-import { checkBP, CustomResponsiveContainer, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
+import { checkBP, CustomResponsiveContainer, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateStockM090, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './XUATLIEU.scss';
 const XUATLIEU = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [material_table_data, set_material_table_data] = useState<Array<WH_M_INPUT_DATA>>([]);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [giao_empl, setGiao_Empl] = useState("");
   const [nhan_empl, setNhan_Empl] = useState("");
@@ -45,32 +44,8 @@ const XUATLIEU = () => {
   const [planId, setPlanId] = useState("");
   const [fsc_GCODE, setFSC_GCODE] = useState("01");
   const [g_name, setGName] = useState("");
-  const [FSC_M100, setFSC_M100] = useState("N");
-  const [invoice_no, setInvoiceNo] = useState("");
-  const [loaink, setloaiNK] = useState("03");
+  const [FSC_M100, setFSC_M100] = useState("N"); 
   const [prepareOutData, setPrepareOutData] = useState<WH_M_OUTPUT_DATA[]>([]);
-  const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
-    M_ID: 0,
-    M_NAME: "",
-    DESCR: "",
-    CUST_CD: "",
-    CUST_NAME_KD: "",
-    SSPRICE: 0,
-    CMSPRICE: 0,
-    SLITTING_PRICE: 0,
-    MASTER_WIDTH: 0,
-    ROLL_LENGTH: 0,
-    USE_YN: "Y",
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
-    EXP_DATE: "",
-    TDS: "",
-    FSC: "",
-    FSC_CODE: "",
-    FSC_NAME: "",
-  });
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
     {
@@ -79,12 +54,6 @@ const XUATLIEU = () => {
       WIDTH_CD: 1200,
     },
   ]);
-  const [selectedMaterial, setSelectedMaterial] =
-    useState<MaterialListData | null>({
-      M_CODE: "A0000001",
-      M_NAME: "#200",
-      WIDTH_CD: 1200,
-    });
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerListData | null>({
       CUST_CD: getCompany() === "CMS" ? "6969" : "KH000",
@@ -92,7 +61,6 @@ const XUATLIEU = () => {
       CUST_NAME_KD: getCompany() === "CMS" ? "CMSVINA" : "PVN",
     });
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [m_lot_no, setM_LOT_NO] = useState("");
   const [m_name, setM_Name] = useState("");
   const [solanout, setSoLanOut] = useState(1);
@@ -196,6 +164,7 @@ const XUATLIEU = () => {
         f_updateO301_OUT_CFM_QTY(planId);
         Swal.fire('Thông báo', 'Xuất kho vật liệu thành công', 'success');
       }
+      f_updateStockM090();
     }
     else {
       Swal.fire("Thông báo", "Chưa có dòng nào", 'error');

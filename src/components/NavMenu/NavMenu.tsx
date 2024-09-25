@@ -50,6 +50,7 @@ import {
   MdOutlineProductionQuantityLimits,
   MdOutlineSignalWifiStatusbarNull,
   MdPrecisionManufacturing,
+  MdTv,
 } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import { SiStatuspal } from "react-icons/si";
@@ -523,13 +524,27 @@ const NavMenu = () => {
           cName: "sub-nav",
         },
         {
-          title: getlang("eqstatus", lang),
+          title: 'TV Show',
           path: "sx/eqstatus",
-          icon: <MdOutlineSignalWifiStatusbarNull color="#cc00ff" size={15} />,
+          icon: <MdTv color="#119edf" size={15} />,
           MENU_CODE: "SX6",
           cName: "sub-nav",
         },
         {
+          title: getlang("eq_manager", lang),
+          path: "sx/eqstatus",
+          icon: <MdOutlineSignalWifiStatusbarNull color="#cc00ff" size={15} />,
+          MENU_CODE: "SX16",
+          cName: "sub-nav",
+        },
+        {
+          title: getlang("khosx", lang),
+          path: "sx/khosx",
+          icon: <FaWarehouse color="#4144f7" size={15} />,
+          MENU_CODE: "SX17",
+          cName: "sub-nav",
+        },
+        /* {
           title: getlang("khothat", lang),
           path: "sx/khothat",
           icon: <FaWarehouse color="#2BFC27" size={15} />,
@@ -549,7 +564,7 @@ const NavMenu = () => {
           icon: <FaWarehouse color="#04517e" size={15} />,
           MENU_CODE: "SX15",
           cName: "sub-nav",
-        },
+        }, */
        /*  {
           title: getlang("quanlycapa", lang),
           path: "sx/capamanager",
