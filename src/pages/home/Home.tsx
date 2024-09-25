@@ -15,8 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import KHOSX from "../sx/KHOSX/KHOSX";
-export const current_ver: number = 2497;
-
+export const current_ver: number = 2498;
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
@@ -78,7 +77,6 @@ const OVER_MONITOR = React.lazy(() => import("../kinhdoanh/over_prod_monitor/OVE
 const QUICKPLAN2 = React.lazy(() => import("../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2"));
 const CHAT = React.lazy(() => import("../chat/CHAT"));
 const KHOSUB = React.lazy(() => import("../qlsx/QLSXPLAN/KHOAO/KHOSUB"));
-
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -90,7 +88,6 @@ export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
   fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
   // Thêm các kiểu tùy chỉnh khác tại đây...
 });
-
 function Home() {
   const [lang, setLang] = useContext(LangConText);
   const cookies = new Cookies();
@@ -508,7 +505,6 @@ function Home() {
   const failCount = useRef(0);
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = () => {
-
     generalQuery("updatechamcongdiemdanhauto", {})
       .then((response) => {
         //console.log(response.data.data);
@@ -519,7 +515,6 @@ function Home() {
         console.log(error);
       });
   };
-
   const CustomTabLabel = styled(Typography)({
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
@@ -708,7 +703,7 @@ function Home() {
                 if (ele.ELE_CODE !== "-1")
                   return (
                     <div
-                      key={index}                    
+                      key={index}
                       className='component_element'
                       style={{
                         visibility: index === tabIndex ? "visible" : "hidden",

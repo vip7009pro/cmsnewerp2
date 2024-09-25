@@ -1,32 +1,13 @@
-import {
-  Autocomplete,
-  Button,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Button } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import {
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./RNR.scss";
-import { SaveExcel } from "../../../../api/GlobalFunction";
 import { generalQuery } from "../../../../api/Api";
 import { RNR_DATA, RNR_DATA_EMPL } from "../../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import AGTable from "../../../../components/DataTable/AGTable";
 const RNR = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(true);
@@ -51,8 +32,8 @@ const RNR = () => {
     { field: 'TEST_TYPE', headerName: 'TEST_TYPE', width: 80 },
     { field: 'TEST_NUMBER', headerName: 'TEST_NUMBER', width: 110 },
     {
-      field: 'TEST_RESULT1', headerName: 'TEST_RESULT1', width: 100, renderCell: (params: any) => {
-        if (params.row.TEST_RESULT1 === params.row.RESULT_OK_NG) {
+      field: 'TEST_RESULT1', headerName: 'TEST_RESULT1', width: 100, cellRenderer: (params: any) => {
+        if (params.data?.TEST_RESULT1 === params.data?.RESULT_OK_NG) {
           return (
             <span style={{ color: "green", fontWeight: 'bold' }}>TRUE</span>
           );
@@ -66,9 +47,9 @@ const RNR = () => {
     },
     { field: 'TEST_NUMBER2', headerName: 'TEST_NUMBER2', width: 110 },
     {
-      field: 'TEST_REUST2', headerName: 'TEST_RESULT2', width: 100, renderCell: (params: any) => {
-        if (params.row.TEST_REUST2 !== null) {
-          if (params.row.TEST_REUST2 === params.row.RESULT_OK_NG) {
+      field: 'TEST_REUST2', headerName: 'TEST_RESULT2', width: 100, cellRenderer: (params: any) => {
+        if (params.data?.TEST_REUST2 !== null) {
+          if (params.data?.TEST_REUST2 === params.data?.RESULT_OK_NG) {
             return (
               <span style={{ color: "green", fontWeight: 'bold' }}>TRUE</span>
             );
@@ -88,6 +69,10 @@ const RNR = () => {
     },
     { field: 'MIX1', headerName: 'MIX1', width: 80 },
     { field: 'MIX2', headerName: 'MIX2', width: 80 },
+    { field: 'BAT_NHAM1', headerName: 'BAT_NHAM1', width: 80 },
+    { field: 'BO_SOT1', headerName: 'BO_SOT1', width: 80 },
+    { field: 'BAT_NHAM2', headerName: 'BAT_NHAM2', width: 80 },
+    { field: 'BO_SOT2', headerName: 'BO_SOT2', width: 80 },
     { field: 'RESULT_OK_NG', headerName: 'RESULT_OK_NG', width: 150 },
     { field: 'RESULT_DETAIL', headerName: 'RESULT_DETAIL', width: 150 },
     { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 150 },
@@ -104,9 +89,9 @@ const RNR = () => {
     { field: 'COUNT2', headerName: 'COUNT2', width: 80 },
     { field: 'SO_CAU', headerName: 'SO_CAU', width: 80 },
     {
-      field: 'SCORE1', headerName: 'SCORE1', width: 80, renderCell: (params: any) => {
+      field: 'SCORE1', headerName: 'SCORE1', width: 80, cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue", fontWeight: 'normal' }}>{params.row.SCORE1.toLocaleString('en-US', {
+          <span style={{ color: "blue", fontWeight: 'normal' }}>{params.data?.SCORE1?.toLocaleString('en-US', {
             style: "decimal",
             maximumFractionDigits: 0,
             minimumFractionDigits: 0,
@@ -115,8 +100,30 @@ const RNR = () => {
       },
     },
     {
-      field: 'SCORE2', headerName: 'SCORE2', width: 80, renderCell: (params: any) => {
-        if(params.row.SCORE2 == -1)
+      field: 'BN_RATE1', headerName: 'BN_RATE1', width: 80, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: 'normal' }}>{params.data?.BN_RATE1?.toLocaleString('en-US', {
+            style: "percent",
+            maximumFractionDigits: 0,
+            minimumFractionDigits: 0,
+          })}</span>
+        );
+      },
+    },
+    {
+      field: 'BS_RATE1', headerName: 'BS_RATE1', width: 80, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: 'normal' }}>{params.data?.BS_RATE1?.toLocaleString('en-US', {
+            style: "percent",
+            maximumFractionDigits: 0,
+            minimumFractionDigits: 0,
+          })}</span>
+        );
+      },
+    },
+    {
+      field: 'SCORE2', headerName: 'SCORE2', width: 80, cellRenderer: (params: any) => {
+        if(params.data?.SCORE2 == -1)
         {
           return (
             <span style={{ color: "gray", fontWeight: 'normal' }}>N/A</span>
@@ -124,7 +131,7 @@ const RNR = () => {
         }
         else {
           return (
-            <span style={{ color: "blue", fontWeight: 'normal' }}>{params.row.SCORE2.toLocaleString('en-US', {
+            <span style={{ color: "green", fontWeight: 'normal' }}>{params.data?.SCORE2?.toLocaleString('en-US', {
               style: "decimal",
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,
@@ -133,10 +140,48 @@ const RNR = () => {
         }
         
       },
-    },    
+    },  
+    {
+      field: 'BN_RATE2', headerName: 'BN_RATE2', width: 80, cellRenderer: (params: any) => {
+        if(params.data?.BN_RATE2 == -1)
+        {
+          return (
+            <span style={{ color: "gray", fontWeight: 'normal' }}>N/A</span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "green", fontWeight: 'normal' }}>{params.data?.BN_RATE2?.toLocaleString('en-US', {
+              style: "percent",
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}</span>
+          );
+        }
+      },
+    },  
+    {
+      field: 'BS_RATE2', headerName: 'BS_RATE2', width: 80, cellRenderer: (params: any) => {
+        if(params.data?.BS_RATE2 == -1)
+        {
+          return (
+            <span style={{ color: "gray", fontWeight: 'normal' }}>N/A</span>
+          );
+        }
+        else {  
+          return (
+            <span style={{ color: "green", fontWeight: 'normal' }}>{params.data?.BS_RATE2?.toLocaleString('en-US', {
+              style: "percent",
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}</span>
+          );
+        }
+      },  
+    },
     { field: 'MIX1', headerName: 'MIX1', width: 80 },
-    { field: 'MIX2', headerName: 'MIX2', width: 80 , renderCell: (params: any) => {
-      if(params.row.MIX2 == -1)
+    { field: 'MIX2', headerName: 'MIX2', width: 80 , cellRenderer: (params: any) => {
+      if(params.data?.MIX2 == -1)
       {
         return (
           <span style={{ color: "gray", fontWeight: 'normal' }}>N/A</span>
@@ -144,7 +189,7 @@ const RNR = () => {
       }
       else {
         return (
-          <span>{params.row.MIX2.toLocaleString('en-US', {
+          <span>{params.data?.MIX2.toLocaleString('en-US', {
             style: "decimal",
             maximumFractionDigits: 0,
             minimumFractionDigits: 0,
@@ -153,9 +198,13 @@ const RNR = () => {
       }
       
     },}, 
+    { field: 'BAT_NHAM1', headerName: 'BAT_NHAM1', width: 80 },
+    { field: 'BO_SOT1', headerName: 'BO_SOT1', width: 80 },
+    { field: 'BAT_NHAM2', headerName: 'BAT_NHAM2', width: 80 },
+    { field: 'BO_SOT2', headerName: 'BO_SOT2', width: 80 },
     {
-      field: 'JUDGE1', headerName: 'JUDGE1', width: 80, renderCell: (params: any) => {
-        if (params.row.JUDGE1 === "PASS") {
+      field: 'JUDGE1', headerName: 'JUDGE1', width: 80, cellRenderer: (params: any) => {
+        if (params.data?.JUDGE1 === "PASS") {
           return (
             <span style={{ color: "green", fontWeight: 'bold' }}>PASS</span>
           );
@@ -168,13 +217,13 @@ const RNR = () => {
       },
     },
     {
-      field: 'JUDGE2', headerName: 'JUDGE2', width: 80, renderCell: (params: any) => {
-        if (params.row.JUDGE2 === "PASS") {
+      field: 'JUDGE2', headerName: 'JUDGE2', width: 80, cellRenderer: (params: any) => {
+        if (params.data?.JUDGE2 === "PASS") {
           return (
             <span style={{ color: "green", fontWeight: 'bold' }}>PASS</span>
           );
         }
-        else if (params.row.JUDGE2 === "FAIL") {
+        else if (params.data?.JUDGE2 === "FAIL") {
           return (
             <span style={{ color: "red", fontWeight: 'bold' }}>FAIL</span>
           );
@@ -189,22 +238,6 @@ const RNR = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_TRA_RNR_DATA);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(rnrdatatable, "Inspection Data Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const handletraRNRData = (selection: string) => {
     setisLoading(true);
     switch (selection) {
@@ -272,8 +305,12 @@ const RNR = () => {
                     ...element,
                     SCORE2: element.TEST_TYPE !=='G_RNR'? -1 : element.SCORE2,
                     MIX2: element.TEST_TYPE !=='G_RNR'? -1 : element.MIX2,
-                    JUDGE1: element.TEST_TYPE ==='G_RNR'? element.SCORE1 >= 80 && element.MIX1 ===0 ? 'PASS' : 'FAIL' :  element.SCORE1 >= 80 ? 'PASS' : 'FAIL',
-                    JUDGE2: element.TEST_TYPE ==='G_RNR'? (element.SCORE2 >= 80 && element.MIX2 ===0? 'PASS' : 'FAIL') :'N/A',                    
+                    JUDGE1: element.TEST_TYPE ==='G_RNR'? element.SCORE1 >= 80 && element.BAT_NHAM1 ===0 ? 'PASS' : 'FAIL' :  element.SCORE1 >= 80 ? 'PASS' : 'FAIL',
+                    JUDGE2: element.TEST_TYPE ==='G_RNR'? (element.SCORE2 >= 80 && element.BAT_NHAM2 ===0? 'PASS' : 'FAIL') :'N/A',    
+                    BN_RATE1: element.TEST_TYPE ==='G_RNR'? element.BAT_NHAM1/element.SO_CAU : -1,
+                    BN_RATE2: element.TEST_TYPE ==='G_RNR'? element.BAT_NHAM2/element.SO_CAU : -1,
+                    BS_RATE1: element.TEST_TYPE ==='G_RNR'? element.BO_SOT1/element.SO_CAU : -1,
+                    BS_RATE2: element.TEST_TYPE ==='G_RNR'? element.BO_SOT2/element.SO_CAU : -1,
                     id: index,
                   };
                 },
@@ -298,6 +335,25 @@ const RNR = () => {
         break;
     }
   };
+  const rnrDataTableAG = useMemo(() => {
+    return (
+      <AGTable        
+        showFilter={true}
+        toolbar={
+          <>
+          </>}
+        columns={columnDefinition}
+        data={rnrdatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onCellClick={(params: any) => {
+          //console.log(params)
+        }} onSelectionChange={(params: any) => {
+          //setYcsxDataTableFilter(params!.api.getSelectedRows());          
+          //console.log(e!.api.getSelectedRows())
+        }} />
+    )
+  }, [rnrdatatable, columnDefinition])
   useEffect(() => {
   }, []);
   return (
@@ -412,23 +468,7 @@ const RNR = () => {
           </div>
         </div>
         <div className="tracuuPQCTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-          {readyRender && (
-            <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
-              slots={{
-                toolbar: CustomToolbarPOTable,
-                
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={rnrdatatable}
-              columns={columnDefinition}
-              pageSizeOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode="row"
-            />
-          )}
+          {rnrDataTableAG}
         </div>
       </div>
     </div>)

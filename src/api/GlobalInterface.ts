@@ -3738,6 +3738,14 @@ export interface RNR_DATA_EMPL {
   MIX2: number;
   JUDGE1: string;
   JUDGE2: string;
+  BAT_NHAM1: number;
+  BAT_NHAM2: number;
+  BO_SOT1: number;
+  BO_SOT2: number;
+  BN_RATE1: number;
+  BN_RATE2: number;
+  BS_RATE1: number;
+  BS_RATE2: number;
 }
 export interface AUDIT_LIST {
   AUDIT_ID: number;

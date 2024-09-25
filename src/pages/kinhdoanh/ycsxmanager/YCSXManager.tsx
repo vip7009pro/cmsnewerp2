@@ -64,6 +64,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const [tabIndex, setTabIndex] = useState(0);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -1027,6 +1028,7 @@ const YCSXManager = () => {
           ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
         );
         setNav(3);
+        setTabIndex(2);
       }
       else {
         Swal.fire("Thông báo", "Đây không phải YCSX AMZ", "error");
@@ -1088,6 +1090,15 @@ const YCSXManager = () => {
     let isDuplicated: boolean = false;
     if (amz_PL_HANG === 'AM') {
       isDuplicated = await f_checkDuplicateAMZ();
+      Swal.fire({
+        title: "Checking",
+        text: "Đang upload data, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
       if (!isDuplicated) {
         let uploadAmazonData = await f_handleAmazonData(
           uploadExcelJson,
@@ -1146,6 +1157,8 @@ const YCSXManager = () => {
         } else {
           Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
         }
+      } else {
+        Swal.fire("Thông báo", "Dữ liệu trùng, vui lòng kiểm tra lại", "error");
       }
     }
     else {
@@ -2120,6 +2133,7 @@ const YCSXManager = () => {
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
+        suppressRowClickSelection={false}
         getRowStyle={getRowStyle}
         showFilter={true}
         toolbar={
@@ -2345,7 +2359,7 @@ const YCSXManager = () => {
   }, []);
   return (
     (<div className='ycsxmanager'>
-      <Tabs className="tabs">
+      <Tabs className="tabs" selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
         <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
           <Tab>
             <span className="mininavtext">Tra YCSX</span>
