@@ -113,7 +113,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
           columnHoverHighlight={true}
           rowStyle={rowStyle}
           getRowStyle={ag_data.getRowStyle ?? getRowStyle}
-          getRowId={(params: any) => params.data.id.toString()}
+          getRowId={(params: any) => params.data.id}
           rowSelection={"multiple"}
           rowMultiSelectWithClick={false}
           suppressRowClickSelection={ag_data.suppressRowClickSelection ?? true}
