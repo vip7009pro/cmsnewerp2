@@ -15,6 +15,7 @@ import {
   f_insertDMYCSX,
   f_loadDMSX,
   f_saveQLSX,
+  f_updateDMSX_LOSS_KT,
   PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
@@ -755,6 +756,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
           .catch((error) => {
             console.log(error);
           });
+          await f_updateDMSX_LOSS_KT();
       } else {
         err_code +=
           "__Yc này đã chạy hệ thống cũ, chạy nốt bằng hệ thống cũ nhé";

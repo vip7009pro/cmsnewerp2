@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import KHOSX from "../sx/KHOSX/KHOSX";
-export const current_ver: number = 2498;
+export const current_ver: number = 2499;
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
@@ -674,7 +674,11 @@ function Home() {
                           <CustomTab
                             key={index}
                             label={
-                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}>
+                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}
+                              onClick={() => {
+                                dispatch(settabIndex(index));
+                              }}
+                              >
                                 <CustomTabLabel style={{ fontSize: "0.7rem", }}>
                                   {index + 1}.{ele.ELE_NAME}
                                   <IconButton key={index+'A'} onClick={() => {

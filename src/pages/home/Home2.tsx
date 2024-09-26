@@ -4,7 +4,7 @@ import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
 import { generalQuery, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
-import { Box, IconButton,  TabProps, Tabs, Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import KHOSX from "../sx/KHOSX/KHOSX";
-import { Tab } from "react-tabs";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 export const current_ver: number = 2498;
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
@@ -498,8 +498,7 @@ function Home2() {
       MENU_ITEM: <AccountInfo />,
     },
   ];
-  const [currentTabPanelList,setCurrentTabPanelList] = useState<MENU_LIST_DATA[]>([]);
-
+  const [currentTabPanelList, setCurrentTabPanelList] = useState<MENU_LIST_DATA[]>([]);
   const dispatch = useDispatch();
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -561,14 +560,14 @@ function Home2() {
         });
     }
   }
-  const CustomTab = React.memo(({ label, value, onClose, onSelect }:{label:string,value:number,onClose:()=>void, onSelect:()=>void}) => (
-    <Tab onClick={onSelect} style={{fontSize:'0.7rem'}}>    
-      <span style={{color: tabIndex === value ? `blue` : `gray`}}>{label}</span>
+  const CustomTab = React.memo(({ label, value, onClose, onSelect }: { label: string, value: number, onClose: () => void, onSelect: () => void }) => (
+    <Tab onClick={onSelect} style={{ fontSize: '0.7rem' }}>
+      <span style={{ color: tabIndex === value ? `blue` : `gray` }}>{label}</span>
       <IconButton onClick={onClose}>
         <AiOutlineCloseCircle color={tabIndex === value ? `blue` : `gray`} size={15} />
-      </IconButton> 
+      </IconButton>
     </Tab>
-  )); 
+  ));
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
@@ -636,7 +635,7 @@ function Home2() {
         <Navbar />
         {/* <PrimarySearchAppBar /> */}
       </div>
-      <div className='homeContainer'>       
+      <div className='homeContainer'>
         <div className='outletdiv'>
           <animated.div
             className='animated_div'
@@ -646,74 +645,75 @@ function Home2() {
               borderRadius: 8,
             }}
           >
-            {tabModeSwap &&
-              tabs.filter(
-                (ele: ELE_ARRAY, index: number) =>
-                  ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
-              ).length > 0 && (
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <Tabs                    
-                    value={tabIndex}
-                    onChange={(
-                      event: React.SyntheticEvent,
-                      newValue: number
-                    ) => {
-                      dispatch(settabIndex(newValue));
-                    }}
-                    variant='scrollable'
-                    aria-label='ERP TABS'
-                    scrollButtons
-                    allowScrollButtonsMobile
-                    style={{
-                      backgroundImage: `${company === "CMS"
-                        ? theme.CMS.backgroundImage
-                        : theme.PVN.backgroundImage
-                        }`,
-                      border: "none",
-                      minHeight: "2px",
-                      boxSizing: "border-box",
-                      borderRadius: "2px",
-                    }}
-                  >
-                    {tabs.map((ele: ELE_ARRAY, index: number) => {
-                      if (ele.ELE_CODE !== "-1") {
-                        return (
-                          <div>
-                          <CustomTab
-                            key={index} 
-                            value={index}
-                            onSelect={()=> {
-                              dispatch(settabIndex(index));
-                            }}
-                            onClose={()=> {
-                              dispatch(closeTab(index));
-                            }}
-                            label={`${index + 1}.${ele.ELE_NAME}`}/>                           
-                          </div>
-                        );
-                      }
-                    })}
-                  </Tabs>
-                </Box>
-              )}
-            {tabModeSwap &&
-              tabs.map((ele: ELE_ARRAY, index: number) => {
-                if (ele.ELE_CODE !== "-1")
+            <Tabs defaultIndex={1} onSelect={(index) => console.log(index)}>
+              <TabList>
+                {tabModeSwap &&
+                  tabs.filter(
+                    (ele: ELE_ARRAY, index: number) =>
+                      ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
+                  ).length > 0 && (
+                    <div                     
+                      aria-label='ERP TABS'
+                      style={{
+                        backgroundImage: `${company === "CMS"
+                          ? theme.CMS.backgroundImage
+                          : theme.PVN.backgroundImage
+                          }`,
+                        border: "none",
+                        minHeight: "2px",
+                        boxSizing: "border-box",
+                        borderRadius: "2px",
+                      }}
+                    >
+                      {tabs.map((ele: ELE_ARRAY, index: number) => {
+                        if (ele.ELE_CODE !== "-1") {
+                          return (
+                            <Tab>{`${index + 1}.${ele.ELE_NAME}`}</Tab>
+                           /*  <CustomTab
+                              key={index}
+                              value={index}
+                              onSelect={() => {
+                                console.log('index', index);
+                                dispatch(settabIndex(index));
+                              }}
+                              onClose={() => {
+                                dispatch(closeTab(index));
+                              }}
+                              label={`${index + 1}.${ele.ELE_NAME}`} /> */
+                          );
+                        }
+                      })}
+                    </div>
+                  )}
+              </TabList>
+              {tabModeSwap &&
+                menulist.map((ele: MENU_LIST_DATA, index: number) => {
                   return (
-                    <div
+                    <TabPanel
                       key={index}
                       className='component_element'
-                      style={{
-                        visibility: index === tabIndex ? "visible" : "hidden",
-                        width: sidebarStatus ? "100%" : "100%",
-                      }}
+                      style={{ width: '100%', height: '100%' }}
+                    >
+                      <Suspense fallback={<div>Loading...</div>}>
+                        {ele.MENU_ITEM}
+                      </Suspense>
+                    </TabPanel>
+                  );
+                })}
+                {/* tabs.filter((ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0").map((ele: ELE_ARRAY, index: number) => {
+                  return (
+                    <TabPanel
+                      key={index}
+                      className='component_element'
+                      style={{ width: '100%', height: '100%' }}
                     >
                       <Suspense fallback={<div>Loading...</div>}>
                         {menulist.filter((menu: MENU_LIST_DATA, index: number) => menu.MENU_CODE === ele.ELE_CODE)[0].MENU_ITEM}
                       </Suspense>
-                    </div>
+                    </TabPanel>
                   );
-              })}
+                })} */}
+            </Tabs>
             {current_ver >= checkVerWeb ? (
               !tabModeSwap && <Outlet />
             ) : (

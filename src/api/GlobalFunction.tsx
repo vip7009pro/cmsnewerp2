@@ -2377,6 +2377,7 @@ export const f_addPLANRaw = async (planData: any) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
+        
       } else {
         err_code = response.data.message;
       }
@@ -2429,6 +2430,7 @@ export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], select
         err_code += "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này | ";
       }
     }
+    await f_updateDMSX_LOSS_KT();
   } else {
     err_code = "Chọn ít nhất 1 YCSX để Add !";
   }
@@ -3509,6 +3511,17 @@ export const f_deleteDataAMZ = async (PROD_REQUEST_NO: string) => {
       console.log(error);
     });
 }
+export const f_deleteDMYCSX = async (PROD_REQUEST_NO: string) => {
+  await generalQuery("deleteDMYCSX", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+} 
 export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
   let err_code: boolean = false;
   await generalQuery("delete_ycsx", {
@@ -3516,7 +3529,8 @@ export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
   })
     .then((response) => {
       console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
+      if (response.data.tk_status !== "NG") {       
+        f_deleteDMYCSX(PROD_REQUEST_NO); 
       } else {
         err_code = true;
       }
@@ -5143,3 +5157,18 @@ export const f_updateStockM090 = async () => {
     });
   return kq;
 }
+
+export const f_updateDMSX_LOSS_KT = async () => {
+  let kq: boolean = false;
+  await generalQuery("updateDMLOSSKT_ZTB_DM_HISTORY", {
+   
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+

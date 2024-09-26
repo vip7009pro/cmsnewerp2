@@ -1,8 +1,8 @@
 import "devextreme/dist/css/dx.light.css";
-import React, { Component, useEffect, useState, Suspense } from "react";
+import React, { Component, useEffect, useState, Suspense, useRef } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery, getCompany, getSocket, getUserData } from "./api/Api";
+import { checkLogin, generalQuery, getCompany, getGlobalSetting, getSocket, getUserData } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import 'react-tabs/style/react-tabs.css';
@@ -224,6 +224,25 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
+  const full_screen: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'FULL_SCREEN')[0]?.CURRENT_VALUE ?? '0');
+  const elementRef = useRef(null);
+  const requestFullScreen = () => {
+    if (elementRef.current && full_screen === 1) {
+      const element = elementRef.current as HTMLElement;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if ('mozRequestFullScreen' in element) { // Firefox
+        (element as any).mozRequestFullScreen();
+      } else if ('webkitRequestFullscreen' in element) { // Chrome, Safari and Opera
+        (element as any).webkitRequestFullscreen();
+      } else if ('msRequestFullscreen' in element) { // IE/Edge
+        (element as any).msRequestFullscreen();
+      }
+    }
+  };
+
+
+
   // Get full URL
   const fullUrl = window.location.href;
 
@@ -337,8 +356,7 @@ function App() {
   );
   const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
-  useEffect(() => {
-    console.log("check login");
+  useEffect(() => {     
     checkLogin()
       .then((data) => {
         //console.log(data);
@@ -544,7 +562,7 @@ function App() {
   return (
     <>
       {globalLoginState && (
-        <div className='App'>
+        <div className='App' ref={elementRef} onClick={requestFullScreen}>          
           <Suspense fallback={<FallBackComponent />}>
             <LangConText.Provider value={[lang, setLang]}>
               <UserContext.Provider value={[userData, setUserData]}>
@@ -566,7 +584,7 @@ function App() {
                               /*...springs,*/
                             }}
                           >
-                            <Home2 />
+                            <Home />
                           </animated.div>
                         </ProtectedRoute>
                       }

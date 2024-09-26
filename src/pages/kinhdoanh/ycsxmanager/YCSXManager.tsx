@@ -36,6 +36,7 @@ import {
   f_loadPONOList,
   f_process_lot_no_generate,
   f_traYCSX,
+  f_updateDMSX_LOSS_KT,
   f_updateYCSX,
   renderBanVe,
   renderYCSX,
@@ -1483,6 +1484,7 @@ const YCSXManager = () => {
     }
     setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành Up YCSX hàng loạt", "success");
+    await f_updateDMSX_LOSS_KT();
     setUploadExcelJSon(tempjson);
   };
   const confirmUpYcsxHangLoat = () => {
@@ -1649,6 +1651,7 @@ const YCSXManager = () => {
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
         });
         if (kq === 'OK') {
+          await f_updateDMSX_LOSS_KT();
           Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
         }
         else {
