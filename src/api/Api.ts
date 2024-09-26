@@ -48,6 +48,10 @@ export function getAuditMode() {
   );
   return auditMode;
 }
+export function getCtrCd() {
+  const state = store.getState();
+  return state.totalSlice.ctr_cd;
+}
 console.log("company", getCompany());
 let API_URL = getSever() + "/api";
 let UPLOAD_URL = getSever() + "/uploadfile";
@@ -132,6 +136,7 @@ export function login(user: string, pass: string) {
         command: "login",
         user: user,
         pass: pass,
+        ctr_cd: getCtrCd(),
       })
       .then((response: any) => {        
         var Jresult = response.data;
@@ -261,7 +266,7 @@ export async function checkLogin() {
   let UPLOAD_URL = getSever() + "/uploadfile";
   let data = await axios.post(API_URL, {
     command: "checklogin",
-    DATA: { token_string: cookies.get("token") },
+    DATA: { CTR_CD: getCtrCd(), token_string: cookies.get("token") },
   });
   return data;
 }
@@ -270,7 +275,7 @@ export async function generalQuery(command: string, queryData: any) {
   // console.log('API URL', CURRENT_API_URL);
   let data = await axios.post(CURRENT_API_URL, {
     command: command,
-    DATA: { ...queryData, token_string: cookies.get("token") },
+    DATA: { ...queryData, token_string: cookies.get("token"), CTR_CD: getCtrCd() },
   });
   return data;
 }
@@ -285,6 +290,7 @@ export async function uploadQuery(
   formData.append("filename", filename);
   formData.append("uploadfoldername", uploadfoldername);
   formData.append("token_string", cookies.get("token"));
+  formData.append("CTR_CD", getCtrCd());
   if (filenamelist)
     formData.append("newfilenamelist", JSON.stringify(filenamelist));
   //console.log("filenamelist", filenamelist);
@@ -305,6 +311,7 @@ export async function upload55Query(
   formData.append("filename", filename);
   formData.append("uploadfoldername", uploadfoldername);
   formData.append("token_string", cookies.get("token"));
+  formData.append("CTR_CD", getCtrCd());
   if (filenamelist)
     formData.append("newfilenamelist", JSON.stringify(filenamelist));
   let data = await axios.post(getSever() + "/uploadfile55", formData);

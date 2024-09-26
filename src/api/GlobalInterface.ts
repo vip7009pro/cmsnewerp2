@@ -2759,6 +2759,7 @@ export interface GlobalInterface {
   tabIndex: number;
   tabModeSwap: boolean;
   loginState: boolean;
+  ctr_cd: string;
   company: string;
   theme: {
     CMS: any;

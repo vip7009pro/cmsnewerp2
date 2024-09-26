@@ -145,6 +145,7 @@ const initialState: GlobalInterface = {
   tabIndex: 0,
   tabModeSwap: true,
   loginState: false,
+  ctr_cd: "002",
   theme: {
     CMS: {
       backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,
@@ -372,7 +373,10 @@ export const glbSlice = createSlice({
     switchTheme: (state, action: PayloadAction<string>) => {
       state.theme['CMS'].backgroundImage = action.payload;
       state.theme['PVN'].backgroundImage = action.payload;
-    } 
+    } ,
+    changeCtrCd: (state, action: PayloadAction<string>) => {
+      state.ctr_cd = action.payload;
+    }
 
   },
 });
@@ -396,6 +400,7 @@ export const {
   login,
   changeGLBLanguage,
   changeGLBSetting,
-  switchTheme
+  switchTheme,
+  changeCtrCd
 } = glbSlice.actions;
 export default glbSlice.reducer;

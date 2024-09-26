@@ -7,6 +7,7 @@ import { login } from "../../api/Api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
+  changeCtrCd,
   changeServer,
 } from "../../redux/slices/globalSlice";
 import { isValidInput } from "../../api/GlobalFunction";
@@ -23,6 +24,9 @@ const Login = () => {
   const [server_string, setServer_String] = useState("");
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
+  );
+  const ctr_cd: string = useSelector(
+    (state: RootState) => state.totalSlice.ctr_cd,
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +98,9 @@ const Login = () => {
       <div
         className="login-form"
         style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           backgroundImage: `${company === "CMS"
             ? theme.CMS.backgroundImage
             : theme.PVN.backgroundImage
@@ -130,7 +137,7 @@ const Login = () => {
           {getlang("dangnhap", lang)}
           {/*Sign In*/}
         </span>
-        <div className="login-input">
+        <div className="login-input" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <input
             id="login_input"
             type="text"
@@ -155,7 +162,7 @@ const Login = () => {
             onChange={(e) => setPass(e.target.value)}
           ></input>
           <label>
-            Chọn Server:
+            Server:
             <select
               name="select_server"
               value={server_string}
@@ -190,8 +197,21 @@ const Login = () => {
               <option value={protocol + "://localhost:" + sub_port}>TEST_SERVER</option>
             </select>
           </label>
+          <label>
+            Branch:
+            <select
+              name="select_ctr_cd"
+              value={ctr_cd}
+              onChange={(e) => {
+                dispatch(changeCtrCd(e.target.value));
+              }}
+            >
+              <option value="001">BR1</option>
+              <option value="002">BR2</option>             
+            </select>
+          </label>
         </div>
-        <div className="submit">
+        <div className="submit" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <button className="login_button" onClick={login_bt}>
             {getlang("dangnhap", lang)}
             {/*Login*/}
