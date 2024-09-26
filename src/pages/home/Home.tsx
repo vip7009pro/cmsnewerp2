@@ -685,10 +685,8 @@ function Home() {
                                     dispatch(closeTab(index));
                                   }}>
                                     <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={15} />
-                                  </IconButton>
-                                  
-                                </CustomTabLabel>
-                               
+                                  </IconButton>                                  
+                                </CustomTabLabel>                               
                               </div>
                             }
                             value={index}
