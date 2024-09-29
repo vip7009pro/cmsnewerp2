@@ -584,7 +584,7 @@ function App() {
                               /*...springs,*/
                             }}
                           >
-                            <Home />
+                            <Home2 />
                           </animated.div>
                         </ProtectedRoute>
                       }

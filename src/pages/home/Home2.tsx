@@ -16,7 +16,7 @@ import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import KHOSX from "../sx/KHOSX/KHOSX";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-export const current_ver: number = 2498;
+export const current_ver: number = 2500;
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
@@ -668,8 +668,8 @@ function Home2() {
                       {tabs.map((ele: ELE_ARRAY, index: number) => {
                         if (ele.ELE_CODE !== "-1") {
                           return (
-                            <Tab>{`${index + 1}.${ele.ELE_NAME}`}</Tab>
-                           /*  <CustomTab
+                       /*      <Tab>{`${index + 1}.${ele.ELE_NAME}`}</Tab> */
+                            <CustomTab
                               key={index}
                               value={index}
                               onSelect={() => {
@@ -679,7 +679,7 @@ function Home2() {
                               onClose={() => {
                                 dispatch(closeTab(index));
                               }}
-                              label={`${index + 1}.${ele.ELE_NAME}`} /> */
+                              label={`${index + 1}.${ele.ELE_NAME}`} />
                           );
                         }
                       })}
@@ -687,11 +687,11 @@ function Home2() {
                   )}
               </TabList>
               {tabModeSwap &&
-                menulist.map((ele: MENU_LIST_DATA, index: number) => {
+                /* menulist.filter((ele: MENU_LIST_DATA, index: number) =>ele.MENU_CODE !== "-1" &&  ele.MENU_CODE !== "NS0") .map((ele: MENU_LIST_DATA, index: number) => {
                   return (
                     <TabPanel
                       key={index}
-                      className='component_element'
+                      className='component_element1'
                       style={{ width: '100%', height: '100%' }}
                     >
                       <Suspense fallback={<div>Loading...</div>}>
@@ -699,12 +699,14 @@ function Home2() {
                       </Suspense>
                     </TabPanel>
                   );
-                })}
-                {/* tabs.filter((ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0").map((ele: ELE_ARRAY, index: number) => {
+                }
+                
+ */
+                tabs.filter((ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0").map((ele: ELE_ARRAY, index: number) => {
                   return (
                     <TabPanel
                       key={index}
-                      className='component_element'
+                      /* className='component_element' */
                       style={{ width: '100%', height: '100%' }}
                     >
                       <Suspense fallback={<div>Loading...</div>}>
@@ -712,7 +714,11 @@ function Home2() {
                       </Suspense>
                     </TabPanel>
                   );
-                })} */}
+                }
+
+
+                
+                )}
             </Tabs>
             {current_ver >= checkVerWeb ? (
               !tabModeSwap && <Outlet />

@@ -143,7 +143,7 @@ export function login(user: string, pass: string) {
         //console.log("Status = " + Jresult.tk_status);
         //console.log("Token content = " + Jresult.token_content);
         if (Jresult?.tk_status?.toUpperCase() === "OK") {
-          console.log(Jresult.token_content);
+         // console.log(Jresult.token_content);
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng nhập thành công !",

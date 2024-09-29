@@ -2377,7 +2377,6 @@ export const f_addPLANRaw = async (planData: any) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        
       } else {
         err_code = response.data.message;
       }
@@ -5077,9 +5076,7 @@ export const f_insertO302 = async (DATA: any) => {
           if (!kq_nhapkhoao) {
             return 'Lỗi: Nhập kho main bị lỗi';
           }
-
         }
-        
       } else {
         err_code += `Lỗi: ${response.data.message} | `;
       }
@@ -5089,7 +5086,6 @@ export const f_insertO302 = async (DATA: any) => {
     });
   return err_code;
 }
-
 export const f_handle_toggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACTIVE: string) => {
   let kq: boolean = false;
   await generalQuery("toggleMachineActiveStatus", {
@@ -5106,7 +5102,6 @@ export const f_handle_toggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACT
     });
   return kq;
 }
-
 export const f_addMachine = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("addMachine", {
@@ -5125,7 +5120,6 @@ export const f_addMachine = async (DATA: any) => {
     });
   return kq;
 } 
-
 export const f_deleteMachine = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("deleteMachine", {    
@@ -5141,11 +5135,9 @@ export const f_deleteMachine = async (DATA: any) => {
     });
   return kq;
 }   
-
 export const f_updateStockM090 = async () => {
   let kq: boolean = false;
   await generalQuery("updateStockM090", {
-    
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
@@ -5157,11 +5149,9 @@ export const f_updateStockM090 = async () => {
     });
   return kq;
 }
-
 export const f_updateDMSX_LOSS_KT = async () => {
   let kq: boolean = false;
   await generalQuery("updateDMLOSSKT_ZTB_DM_HISTORY", {
-   
   })
     .then((response) => {
       console.log(response.data.tk_status);
@@ -5171,4 +5161,3 @@ export const f_updateDMSX_LOSS_KT = async () => {
     });
   return kq;
 }
-
