@@ -191,7 +191,16 @@ const LichSu = () => {
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 120,headerClassName: 'super-app-theme--header',    
+      width: 120,headerClassName: 'super-app-theme--header',  
+      renderCell: (params: any) => {
+        return (
+         
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.REQUEST_DATE}
+            </span>
+          
+        );
+      },  
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClassName: 'super-app-theme--header' },
   ];
@@ -224,6 +233,9 @@ const LichSu = () => {
                 ...element,
                 EMPL_NO: userData?.EMPL_NO,
                 DATE_COLUMN: moment(element.DATE_COLUMN)
+                  .utc()
+                  .format("YYYY-MM-DD"),
+                  REQUEST_DATE: element.REQUEST_DATE === null ? "" :  moment(element.REQUEST_DATE)
                   .utc()
                   .format("YYYY-MM-DD"),
                 APPLY_DATE:
