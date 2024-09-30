@@ -3520,7 +3520,7 @@ export const f_deleteDMYCSX = async (PROD_REQUEST_NO: string) => {
     .catch((error) => {
       console.log(error);
     });
-} 
+}
 export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
   let err_code: boolean = false;
   await generalQuery("delete_ycsx", {
@@ -3528,8 +3528,8 @@ export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
   })
     .then((response) => {
       console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {       
-        f_deleteDMYCSX(PROD_REQUEST_NO); 
+      if (response.data.tk_status !== "NG") {
+        f_deleteDMYCSX(PROD_REQUEST_NO);
       } else {
         err_code = true;
       }
@@ -5012,12 +5012,12 @@ export const f_insertO302 = async (DATA: any) => {
     INS_RECEPTION: DATA.INS_RECEPTION,
     FSC_O302: DATA.FSC_O302,
     FSC_GCODE: DATA.FSC_GCODE,
-    FSC_MCODE: DATA.FSC_MCODE,    
+    FSC_MCODE: DATA.FSC_MCODE,
   })
     .then(async (response) => {
       if (response.data.tk_status !== "NG") {
         let kq_update_use_yn_i222_return_nvl = await f_updateUSE_YN_I222_RETURN_NVL(DATA.M_LOT_NO, DATA.PLAN_ID, DATA.INS_EMPL);
-        if(DATA.LIEUQL_SX === 1){
+        if (DATA.LIEUQL_SX === 1) {
           if (kq_update_use_yn_i222_return_nvl !== '') {
             return kq_update_use_yn_i222_return_nvl;
           }
@@ -5089,7 +5089,7 @@ export const f_insertO302 = async (DATA: any) => {
 export const f_handle_toggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACTIVE: string) => {
   let kq: boolean = false;
   await generalQuery("toggleMachineActiveStatus", {
-    EQ_CODE: EQ_CODE,    
+    EQ_CODE: EQ_CODE,
     EQ_ACTIVE: EQ_ACTIVE,
   })
     .then((response) => {
@@ -5119,10 +5119,10 @@ export const f_addMachine = async (DATA: any) => {
       console.log(error);
     });
   return kq;
-} 
+}
 export const f_deleteMachine = async (DATA: any) => {
   let kq: boolean = false;
-  await generalQuery("deleteMachine", {    
+  await generalQuery("deleteMachine", {
     EQ_CODE: DATA.EQ_CODE,
   })
     .then((response) => {
@@ -5134,7 +5134,7 @@ export const f_deleteMachine = async (DATA: any) => {
       console.log(error);
     });
   return kq;
-}   
+}
 export const f_updateStockM090 = async () => {
   let kq: boolean = false;
   await generalQuery("updateStockM090", {
