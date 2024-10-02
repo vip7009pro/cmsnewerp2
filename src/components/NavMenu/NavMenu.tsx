@@ -434,7 +434,7 @@ const NavMenu = () => {
         },
       ],
     },
-    {
+    /* {
       title: getlang("phongqlsx", lang),
       path: "#",
       icon: <MdOutlineProductionQuantityLimits color="#00cc00" size={15} />,
@@ -461,13 +461,7 @@ const NavMenu = () => {
           icon: <FcAbout color="#cc00ff" size={15} />,
           MENU_CODE: "QL3",
           cName: "sub-nav",
-        },
-        {
-          title: getlang("quanlyplansx", lang),
-          path: "qlsx/qlsxplan",
-          icon: <FaPaperPlane color="#ff33cc" size={15} />,
-          MENU_CODE: "QL4",
-        },
+        },        
         {
           title: getlang("quanlycapa", lang),
           path: "qlsx/capamanager",
@@ -481,7 +475,7 @@ const NavMenu = () => {
           MENU_CODE: "QL6",
         },
       ],
-    },
+    }, */
     {
       title: getlang("phongsanxuat", lang),
       path: "#",
@@ -502,6 +496,12 @@ const NavMenu = () => {
           icon: <FcAbout color="#cc00ff" size={15} />,
           MENU_CODE: "SX2",
           cName: "sub-nav",
+        },
+        {
+          title: getlang("quanlyplansx", lang),
+          path: "qlsx/qlsxplan",
+          icon: <FaPaperPlane color="#ff33cc" size={15} />,
+          MENU_CODE: "QL4",
         },
         {
           title: getlang("datasanxuat", lang),

@@ -14,6 +14,7 @@ import { RootState } from '../../../../redux/store';
 import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 import CustomDialog from '../../../../components/Dialog/CustomDialog';
 import AddPlanDialog from '../QUICKPLAN/AddPlanDialog';
+import { BiSave } from 'react-icons/bi';
 
 const KHCT = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -23,19 +24,1060 @@ const KHCT = () => {
   const [SRplans, setSRPlans] = useState<ProductionPlan[]>([])
   const [DCplans, setDCPlans] = useState<ProductionPlan[]>([])
   const [EDplans, setEDPlans] = useState<ProductionPlan[]>([])
+
+  const [FRplans_Manual, setFRPlans_Manual] = useState<ProductionPlan[]>([//create one example plan
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR01',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR02',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR03',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR04',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR05',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR06',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'FR07',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    
+
+  ]);
+  const [SRplans_Manual, setSRPlans_Manual] = useState<ProductionPlan[]>([  
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR01',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR02',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR03',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR04',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR05',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR06',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR07',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'SR08',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    }
+  ]);   
+  const [DCplans_Manual, setDCPlans_Manual] = useState<ProductionPlan[]>([
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC01',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC02',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC03',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC04',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC05',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC06',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'DC07',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    }
+  ]);
+  const [EDplans_Manual, setEDPlans_Manual] = useState<ProductionPlan[]>([
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED01',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED02',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED03',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED04',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED05',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED06',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED07',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED08',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED09',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED10',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED11',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED12',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED13',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED14',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED15',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED16',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED17',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED18',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED19',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED20',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED21',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED22',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED23',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED24',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED25',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED26',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED27',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED28',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED29',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED30',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED31',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED32',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED33',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED34',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED35',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED36',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED37',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED38',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    },
+    {
+      PROD_REQUEST_NO: '-',
+      G_NAME: '-',
+      G_NAME_KD: '-',
+      G_CODE: '-',
+      EQ_NAME: 'ED39',
+      productionPlanDate: '-',
+      productionPlanQty: 0,
+      productionPlanTime: 70,
+      PROD_MAIN_MATERIAL: '-',
+      G_WIDTH: 0,
+      G_LENGTH: 0,
+      DELIVERY_DT: '-',
+      PROD_REQUEST_DATE: '-',
+      NEEDED_M: 0,
+      M_STOCK_QTY: 0
+    }
+    ]);
+
   const [startDate, setStartDate] = useState<Date>(new Date())
   const [endDate, setEndDate] = useState<Date>(new Date())
-  const [leadtimeData, setLeadtimeData] = useState<LEADTIME_DATA[]>([])
-  const [FRleadtimeData, FRsetLeadtimeData] = useState<LEADTIME_DATA[]>([])
-  const [SRleadtimeData, SRsetLeadtimeData] = useState<LEADTIME_DATA[]>([])
-  const [DCleadtimeData, DCsetLeadtimeData] = useState<LEADTIME_DATA[]>([])
-  const [EDleadtimeData, EDsetLeadtimeData] = useState<LEADTIME_DATA[]>([])
+
   const [eq_series, setEqSeries] = useState<string[]>([])
   const [eq_status, setEqStatus] = useState<EQ_STT[]>([])
-  const [FReq_status, setFReqStatus] = useState<EQ_STT[]>([])
-  const [SReq_status, setSReqStatus] = useState<EQ_STT[]>([])
-  const [DCeq_status, setDCeqStatus] = useState<EQ_STT[]>([])
-  const [EDeq_status, setEDeqStatus] = useState<EQ_STT[]>([])
   const [overtimeday, setOvertimeDay] = useState<boolean>(false)
   const [overtimenight, setOvertimeNight] = useState<boolean>(false)
   const [showFR, setShowFR] = useState<boolean>(true)
@@ -57,10 +1099,6 @@ const KHCT = () => {
     const data = await f_handle_loadEQ_STATUS()
     setEqSeries(data.EQ_SERIES)
     setEqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK'))
-    setFReqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('FR')))
-    setSReqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('SR')))
-    setDCeqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('DC')))
-    setEDeqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('ED'))) 
     return {
       FReq_status: data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('FR')),
       SReq_status: data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK' && item.EQ_NAME?.includes('SR')),
@@ -81,14 +1119,8 @@ const KHCT = () => {
     const FRdata = data.filter(item => item.MACHINE === 'FR' && item.LEADTIME>0)
     const SRdata = data.filter(item => item.MACHINE === 'SR' && item.LEADTIME>0)
     const DCdata = data.filter(item => item.MACHINE === 'DC' && item.LEADTIME>0)
-    const EDdata = data.filter(item => item.MACHINE === 'ED' && item.LEADTIME>0)
-    setLeadtimeData(data);
-    FRsetLeadtimeData(FRdata)
-    SRsetLeadtimeData(SRdata)
-    DCsetLeadtimeData(DCdata)
-    EDsetLeadtimeData(EDdata)
-    let plans = await handleCreatePlan(FRdata, SRdata, DCdata, EDdata, FReq_status, SReq_status, DCeq_status, EDeq_status);
-    
+    const EDdata = data.filter(item => item.MACHINE === 'ED' && item.LEADTIME>0)  
+    let plans = await handleCreatePlan(FRdata, SRdata, DCdata, EDdata, FReq_status, SReq_status, DCeq_status, EDeq_status);    
     setFRPlans(plans.FRplans)
     setSRPlans(plans.SRplans)
     setDCPlans(plans.DCplans)
@@ -995,7 +2027,8 @@ const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData:
     handleLoadLeadtimeData();
   }, []);
   return (
-      <div className="timeline-container" style={{ width: '100%', backgroundColor: '#ca9f9f333', overflow: 'scroll', padding: '10px' }}>
+    <div style={{display: 'flex', flexDirection: 'row', gap: '10px', height: '88vh'}}>
+    <div className="timeline-container" style={{ width: '100%', backgroundColor: '#ca9f9f333', overflow: 'scroll', padding: '10px' }}>
         <div className="headercontrol" style={{ display: 'flex',  gap: '10px', backgroundImage: theme.CMS.backgroundImage}}>
           <div className='slider' style={{ display: 'flex', width: 'fit-content', gap: '10px', alignItems: 'center', justifyContent: 'center' }}>
             <label htmlFor="widthSlider" style={{fontSize: '12px'}}>Zoom: </label>
@@ -1025,7 +2058,8 @@ const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData:
               <option value="method8">Method 8</option>
               <option value="method9">Method 9</option>
             </select> */}
-            <IconButton onClick={() => { /* handleCreatePlan(FRleadtimeData, SRleadtimeData, DCleadtimeData, EDleadtimeData, FReq_status, SReq_status, DCeq_status, EDeq_status) */ handleLoadLeadtimeData(); }}><MdCreate size={15}/><span style={{fontSize: '12px'}}>Reload Plan</span></IconButton>       
+            <IconButton onClick={() => {handleLoadLeadtimeData(); }}><MdCreate size={15}/><span style={{fontSize: '12px'}}>Reload Plan</span></IconButton>       
+             
                 
          {/*    <input type="checkbox" id="morningShift" checked={overtimeday} onChange={(e) => setOvertimeDay(e.target.checked)} />
             <label htmlFor="morningShift">Tăng ca sáng</label>         
@@ -1040,6 +2074,7 @@ const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData:
             <label htmlFor="showDC">DC</label>
             <input type="checkbox" id="showED" checked={showED} onChange={(e) => setShowED(e.target.checked)} />
             <label htmlFor="showED">ED</label>
+            <IconButton onClick={() => {}}><BiSave size={15}/><span style={{fontSize: '12px'}}>Save Plan</span></IconButton>     
           </div>
         </div>
        {/*  <DateMarkers startDate={startDate} endDate={endDate} width={width} /> */}
@@ -1103,6 +2138,224 @@ const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData:
           actions={<></>}  
         />
       </div>
+      <div className="timeline-container" style={{ width: '100%', backgroundColor: '#ca9f9f333', overflow: 'scroll', padding: '10px' }}>
+        <div className="headercontrol" style={{ display: 'flex',  gap: '10px', backgroundImage: theme.CMS.backgroundImage}}>
+          <div className='slider' style={{ display: 'flex', width: 'fit-content', gap: '10px', alignItems: 'center', justifyContent: 'center' }}>
+            <label htmlFor="widthSlider" style={{fontSize: '12px'}}>Zoom: </label>
+            <input
+              id="widthSlider"
+              type="range"
+              min="1"
+              max="500"
+              value={width}
+              onChange={handleWidthChange}
+            />
+            <span style={{fontSize: '12px'}}>{width}X</span>
+          </div>
+          <div style={{ display: 'flex', width: 'fit-content', gap: '10px', alignItems: 'center', justifyContent: 'center' }}>
+            <IconButton onClick={() => {handleLoadLeadtimeData(); }}><MdCreate size={15}/><span style={{fontSize: '12px'}}>Reload Plan</span></IconButton>        
+            <input type="text" placeholder="Search Product"  value={searchProduct} onChange={(e) => setSearchProduct(e.target.value)} />
+            <input type="checkbox" id="showFR" checked={showFR} onChange={(e) => setShowFR(e.target.checked)} />
+            <label htmlFor="showFR">FR</label>
+            <input type="checkbox" id="showSR" checked={showSR} onChange={(e) => setShowSR(e.target.checked)} />
+            <label htmlFor="showSR">SR</label>
+            <input type="checkbox" id="showDC" checked={showDC} onChange={(e) => setShowDC(e.target.checked)} />
+            <label htmlFor="showDC">DC</label>
+            <input type="checkbox" id="showED" checked={showED} onChange={(e) => setShowED(e.target.checked)} />
+            <label htmlFor="showED">ED</label>
+          </div>
+        </div>
+        {showFR && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
+          {
+            eq_status.filter(item => item.EQ_SERIES === 'FR').map(equipment => (
+              <MachineTimeLine key={equipment.EQ_NAME} plans={FRplans_Manual.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {  
+                if(plan.PROD_REQUEST_NO !== '-'){
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+                }
+              }} 
+              searchProduct={searchProduct.toUpperCase()}
+              auto={false}
+              onClear={(plan) => {
+                console.log('plan', plan)
+                let temp1 = [...FRplans_Manual];
+                if(plan.PROD_REQUEST_NO !== '-'){  
+                  let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == plan.PROD_REQUEST_NO && p.EQ_NAME === plan.EQ_NAME)  
+                  if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                setFRPlans_Manual(temp1)
+                }
+              }}
+              onDrop={(planfrom, oldplan, destplan) => { 
+                //if planfrom exist  
+                if(planfrom.PROD_REQUEST_NO !== '-'){ 
+                let temp1 = [...FRplans_Manual]
+                let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == oldplan.PROD_REQUEST_NO && p.EQ_NAME === oldplan.EQ_NAME)  
+                if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                //search for destplan in FRplans and insert planfrom after destplan
+                let indexofdestplan = temp1.findIndex(p => p.PROD_REQUEST_NO == destplan.PROD_REQUEST_NO && p.EQ_NAME === destplan.EQ_NAME)  
+                if (indexofdestplan !== -1) {
+                  temp1.splice(indexofdestplan + 1, 0, planfrom)
+                }         
+                setFRPlans_Manual(temp1)
+                }
+              }}
+              onDragEnd={(plan) => {
+                console.log('plan', plan)
+              }}
+              />
+            ))
+          }
+        </div>}
+        {showSR && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
+          {
+            eq_status.filter(item => item.EQ_SERIES === 'SR').map(equipment => (
+              <MachineTimeLine key={equipment.EQ_NAME} plans={SRplans_Manual.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {
+                console.log(plan)
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}
+              auto={false}
+              onClear={(plan) => {
+                console.log('plan', plan)
+                let temp1 = [...SRplans_Manual];
+                if(plan.PROD_REQUEST_NO !== '-'){  
+                  let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == plan.PROD_REQUEST_NO && p.EQ_NAME === plan.EQ_NAME)  
+                  if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                setSRPlans_Manual(temp1)
+                }
+              }}
+              onDrop={(planfrom, oldplan, destplan) => { 
+                //if planfrom exist  
+                if(planfrom.PROD_REQUEST_NO !== '-'){ 
+                let temp1 = [...SRplans_Manual]
+                let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == oldplan.PROD_REQUEST_NO && p.EQ_NAME === oldplan.EQ_NAME)  
+                if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                //search for destplan in FRplans and insert planfrom after destplan
+                let indexofdestplan = temp1.findIndex(p => p.PROD_REQUEST_NO == destplan.PROD_REQUEST_NO && p.EQ_NAME === destplan.EQ_NAME)  
+                if (indexofdestplan !== -1) {
+                  temp1.splice(indexofdestplan + 1, 0, planfrom)
+                }         
+                setSRPlans_Manual(temp1)
+                }
+              }}
+              onDragEnd={(plan) => {
+                console.log('plan', plan)
+              }}
+              />
+            ))
+          }
+        </div>}
+        {showDC && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
+          {
+            eq_status.filter(item => item.EQ_SERIES === 'DC').map(equipment => (
+              <MachineTimeLine key={equipment.EQ_NAME} plans={DCplans_Manual.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {
+                console.log(plan)
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}
+              auto={false}
+              onClear={(plan) => {
+                console.log('plan', plan)
+                let temp1 = [...DCplans_Manual];
+                if(plan.PROD_REQUEST_NO !== '-'){  
+                  let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == plan.PROD_REQUEST_NO && p.EQ_NAME === plan.EQ_NAME)  
+                  if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                setDCPlans_Manual(temp1)
+                }
+              }}
+              onDrop={(planfrom, oldplan, destplan) => { 
+                //if planfrom exist  
+                if(planfrom.PROD_REQUEST_NO !== '-'){ 
+                let temp1 = [...DCplans_Manual]
+                let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == oldplan.PROD_REQUEST_NO && p.EQ_NAME === oldplan.EQ_NAME)  
+                if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                //search for destplan in FRplans and insert planfrom after destplan
+                let indexofdestplan = temp1.findIndex(p => p.PROD_REQUEST_NO == destplan.PROD_REQUEST_NO && p.EQ_NAME === destplan.EQ_NAME)  
+                if (indexofdestplan !== -1) {
+                  temp1.splice(indexofdestplan + 1, 0, planfrom)
+                }         
+                setDCPlans_Manual(temp1)
+                }
+              }}
+              onDragEnd={(plan) => {
+                console.log('plan', plan)
+              }}
+              />
+            ))
+          }
+        </div>}
+        {showED && <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px', width: '98%', overflow: 'scroll' }}>
+          {
+            eq_status.filter(item => item.EQ_SERIES === 'ED').map(equipment => (
+              <MachineTimeLine key={equipment.EQ_NAME} plans={EDplans_Manual.filter(plan => plan.EQ_NAME === equipment.EQ_NAME)} width={width} onDoubleClick={(plan) => {                
+                setPROD_REQUEST_NO(plan.PROD_REQUEST_NO)
+                setG_CODE(plan.G_CODE)  
+                setEQ_NAME(plan.EQ_NAME)
+                handleOpenDialog()
+              }} searchProduct={searchProduct.toUpperCase()}
+              auto={false}
+              onClear={(plan) => {
+                console.log('plan', plan)
+                let temp1 = [...EDplans_Manual];
+                if(plan.PROD_REQUEST_NO !== '-'){  
+                  let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == plan.PROD_REQUEST_NO && p.EQ_NAME === plan.EQ_NAME)  
+                  if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                setEDPlans_Manual(temp1)
+                }
+              }}
+              onDrop={(planfrom, oldplan, destplan) => { 
+                //if planfrom exist  
+                if(planfrom.PROD_REQUEST_NO !== '-'){ 
+                let temp1 = [...EDplans_Manual]
+                let indexofoldplan = temp1.findIndex(p => p.PROD_REQUEST_NO == oldplan.PROD_REQUEST_NO && p.EQ_NAME === oldplan.EQ_NAME)  
+                if (indexofoldplan !== -1) {
+                  temp1.splice(indexofoldplan, 1)
+                }        
+                //search for destplan in FRplans and insert planfrom after destplan
+                let indexofdestplan = temp1.findIndex(p => p.PROD_REQUEST_NO == destplan.PROD_REQUEST_NO && p.EQ_NAME === destplan.EQ_NAME)  
+                if (indexofdestplan !== -1) {
+                  temp1.splice(indexofdestplan + 1, 0, planfrom)
+                }         
+                setEDPlans_Manual(temp1)
+                }
+              }}
+              onDragEnd={(plan) => {
+                console.log('plan', plan)
+              }}
+              />
+            ))
+          }
+        </div>}
+        <CustomDialog
+          isOpen={openDialog}
+          onClose={handleCloseDialog}
+          title="Create Production Order"
+          content={<AddPlanDialog PROD_REQUEST_NO={PROD_REQUEST_NO} G_CODE={G_CODE} EQ_NAME={EQ_NAME}/>}
+          actions={<></>}  
+        />
+      </div>
+    </div>
+      
   )
 }
 export default KHCT
