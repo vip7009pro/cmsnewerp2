@@ -1414,7 +1414,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
             {temp_TON_CD?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}EA
           </span>)
         </span>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '10px', backgroundColor: 'rgba(255, 255, 255, 0.247)' }}>
+        <table className="table" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '10px', backgroundColor: 'rgba(255, 255, 255, 0.247)' }}>
           <thead>
             <tr style={{ alignItems: 'center' }}>
               <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', color: processnumber === 1 ? 'red' : 'black' }}>SLC1</th>

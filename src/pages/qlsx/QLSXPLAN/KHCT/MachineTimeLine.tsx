@@ -30,11 +30,10 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
   const startDate = new Date(Math.min(...plans.map(plan => new Date(plan.productionPlanDate).getTime())));
   const endDate = new Date(Math.max(...plans.map(plan => addMinutes(new Date(plan.productionPlanDate), plan.productionPlanTime).getTime())));
   return (
-    <div className="machine-timeline"   
-    >
+    <div className="machine-timeline">
       <div className="eq-name" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px', fontWeight: 'bold'}}>{plans[0]?.EQ_NAME}</div>
       {plans.map((plan, index) => {
-        const planWidth = (plan.productionPlanTime)*width/1000; // Tính độ rộng của hình chữ nhật con
+        const planWidth = (auto === false ? 15 : (plan.productionPlanTime)*width/1000); // Tính độ rộng của hình chữ nhật con
         const color = plan.PROD_REQUEST_NO !=='' ? colors[index % colors.length] : '#383838'; // Chọn màu sắc cho từng hình chữ nhật
         let checkSearchProduct: boolean = false;
         checkSearchProduct = plan.PROD_REQUEST_NO.toUpperCase().includes(searchProduct) === true || plan.G_NAME_KD.toUpperCase().includes(searchProduct) === true || plan.G_CODE.toUpperCase().includes(searchProduct) === true || plan.PROD_MAIN_MATERIAL.toUpperCase().includes(searchProduct) === true
@@ -58,11 +57,9 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
                 e.preventDefault();
                 if (onDrop) {        
                   const planfrom = JSON.parse(e.dataTransfer.getData('text/plain'));                  
-                  const oldplan = JSON.parse(JSON.stringify(planfrom));
-                 
-                    planfrom.EQ_NAME = plans[0].EQ_NAME
-                    onDrop(planfrom,oldplan, plan);
-                       
+                  const oldplan = JSON.parse(JSON.stringify(planfrom));                 
+                  planfrom.EQ_NAME = plans[0].EQ_NAME
+                  onDrop(planfrom,oldplan, plan);                       
                 }
               }}
 

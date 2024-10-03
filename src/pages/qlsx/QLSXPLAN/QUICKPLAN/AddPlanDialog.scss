@@ -78,6 +78,21 @@
         }
       }
     }
+    .table {
+      width: 100%;
+      font-size: 0.9rem;  
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.247);
+      thead tr th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        color: black;
+      } 
+     
+      
+    }
     .formbutton {
       display: flex;
       flex-direction: row;
