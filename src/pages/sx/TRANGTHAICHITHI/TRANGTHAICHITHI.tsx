@@ -6,11 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 const TRANGTHAICHITHI = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme); 
-  useEffect(() => {}, []);
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  useEffect(() => { }, []);
   return (
-    <div className="trangthaichithisx"> 
-      <Suspense fallback={<div> Loading...</div>}>       
+    <div className="trangthaichithisx">
+      <Suspense fallback={<div> Loading...</div>}>
         <Tabs className="tabs" style={{
           fontSize: "0.6rem",
           width: "100%",
@@ -24,20 +24,18 @@ const TRANGTHAICHITHI = () => {
             color: "gray",
             overflow: "hidden",
           }}>
-            <Tab>TÌNH HÌNH CHỐT</Tab>
             <Tab>PLAN STATUS</Tab>
+            <Tab>TÌNH HÌNH CHỐT</Tab>
           </TabList>
+          <TabPanel>
+            <PLAN_STATUS />
+          </TabPanel>
           <TabPanel>
             <TINH_HINH_CHOT />
           </TabPanel>
-          <TabPanel>
-            <PLAN_STATUS />
-          </TabPanel>          
         </Tabs>
       </Suspense>
     </div>
   );
 };
 export default TRANGTHAICHITHI;
-      
-

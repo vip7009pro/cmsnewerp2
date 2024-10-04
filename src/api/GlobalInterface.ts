@@ -1625,6 +1625,7 @@ export interface SX_DATA {
   NEXT_OUT_QTY: number;
   RETURN_QTY: number;
   KETQUASX_M: number;
+  IN_TEM?: string;
 }
 export interface TRA_PQC1_DATA {
   PQC1_ID: string;

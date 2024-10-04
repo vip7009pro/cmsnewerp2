@@ -11,6 +11,8 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  tienhanhsx: "Tình hình sản xuất",
+  khsx: "Kế hoạch sản xuất",
   khosx: "Kho SX",
   eq_manager: "Quản lý máy",
   incominginspection: "Kiểm tra đầu vào",
@@ -148,11 +150,13 @@ export const vn_lang = {
   quanlycapa: "Quản Lý CAPA",
   quanlymrp: "Quản Lý MRP",
   phongsanxuat: "Sản Xuất",
-  datasanxuat: "DATA Sản Xuất",
+  datasanxuat: "Data sản xuất",
   planstatus: "Trạng Thái Chỉ Thị",
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  tienhanhsx: "Production Status",
+  khsx: "Production Plan",
   khosx: "Production Warehouse",
   eq_manager: "Machine Manager",
   incominginspection: "Incoming Inspection",
@@ -294,6 +298,8 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  tienhanhsx: "생산 현황",
+  khsx: "생산 계획",
   khosx: "생산 창고",
   eq_manager: "기계 관리",
   incominginspection: "입고 검사",

@@ -2,12 +2,10 @@ import React from "react";
 import { GiArchiveRegister, GiCurvyKnife } from "react-icons/gi";
 import { AiFillSetting } from "react-icons/ai";
 import { HiLogout, HiOutlineQrcode } from "react-icons/hi";
-import { TbReportAnalytics } from "react-icons/tb";
-
+import { TbPrinter, TbReportAnalytics } from "react-icons/tb";
 import "./PLAN_STATUS_COMPONENTS.scss";
 import { LinearProgressWithLabel } from "../../../../components/Navbar/AccountInfo/AccountInfo";
 import { SX_DATA } from "../../../../api/GlobalInterface";
-
 const PLAN_STATUS_COMPONENTS = ({ DATA }: { DATA: SX_DATA }) => {
   let kq_tem: number =
     DATA.CHOTBC === null
@@ -18,7 +16,6 @@ const PLAN_STATUS_COMPONENTS = ({ DATA }: { DATA: SX_DATA }) => {
   let phantram_tem: number =
     DATA.PLAN_QTY === 0 ? 0 : (kq_tem / DATA.PLAN_QTY) * 100;
   let backgroundColor: string = "white";
-
   if (kq_tem > 0) {
     backgroundColor = "#c9f261";
   } else {
@@ -52,7 +49,6 @@ if(phantram_tem >110)
 {
     backgroundColor ='#ff3333';
 } */
-
   return (
     <div className="plan_status_component">
       <div
@@ -97,8 +93,8 @@ if(phantram_tem >110)
         {DATA.WORK_SHIFT === null
           ? "CHƯA SX"
           : DATA.WORK_SHIFT === "DAY"
-          ? "CA_NGÀY"
-          : "CA__ĐÊM"}
+            ? "CA_NGÀY"
+            : "CA__ĐÊM"}
       </div>
       <div
         className="flag"
@@ -185,6 +181,18 @@ if(phantram_tem >110)
       <div
         className="flag"
         style={{
+          backgroundColor: DATA.IN_TEM === null ? "red" : "#6ffa48",
+          padding: "10px",
+          width: "200px",
+          color: DATA.IN_TEM === null ? "white" : "black",
+        }}
+      >
+        <TbPrinter color="black" size={15} />{" "}
+        {DATA.IN_TEM === null ? `CHƯA IN TEM` : `ĐÃ IN TEM`}
+      </div>
+      <div
+        className="flag"
+        style={{
           backgroundColor: DATA.CHOTBC === null ? "red" : "#6ffa48",
           padding: "10px",
           width: "200px",
@@ -214,5 +222,4 @@ if(phantram_tem >110)
     </div>
   );
 };
-
 export default PLAN_STATUS_COMPONENTS;

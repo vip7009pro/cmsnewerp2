@@ -498,10 +498,17 @@ const NavMenu = () => {
           cName: "sub-nav",
         },
         {
-          title: getlang("quanlyplansx", lang),
+          title: getlang("khsx", lang),
           path: "qlsx/qlsxplan",
           icon: <FaPaperPlane color="#ff33cc" size={15} />,
           MENU_CODE: "QL4",
+        },
+        {
+          title: getlang("tienhanhsx", lang),
+          path: "sx/planstatus",
+          icon: <SiStatuspal color="#02a112" size={15} />,
+          MENU_CODE: "SX5",
+          cName: "sub-nav",
         },
         {
           title: getlang("datasanxuat", lang),
@@ -516,13 +523,7 @@ const NavMenu = () => {
           icon: <FcInspection color="blue" size={15} />,
           MENU_CODE: "SX4",
         },
-        {
-          title: getlang("planstatus", lang),
-          path: "sx/planstatus",
-          icon: <SiStatuspal color="#02a112" size={15} />,
-          MENU_CODE: "SX5",
-          cName: "sub-nav",
-        },
+        
         {
           title: 'TV Show',
           path: "sx/eqstatus",
