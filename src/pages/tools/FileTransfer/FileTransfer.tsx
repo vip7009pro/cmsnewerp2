@@ -3,6 +3,9 @@ import { generalQuery, getCtrCd, uploadQuery } from '../../../api/Api';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import toast from 'devextreme-react/toast';
+import { FILE } from 'dns';
+import { FaFile, FaFileExcel, FaFileImage, FaFilePdf, FaFileWord } from 'react-icons/fa';
+import { FaFileZipper } from 'react-icons/fa6';
 
 interface FileProgress {
   file: File;
@@ -32,8 +35,8 @@ const FileTransfer = () => {
     }
   };
 
-  const handleUpdateFileNameToDataBase = async (filename: string) => {
-   await generalQuery('update_file_name', {FILE_NAME: filename, CTR_CD: getCtrCd()});
+  const handleUpdateFileNameToDataBase = async (filename: string, filesize: number) => {
+   await generalQuery('update_file_name', {FILE_NAME: filename,FILE_SIZE: filesize, CTR_CD: getCtrCd()});
   } 
 
   const handleGetFileListFromDataBase = async () => {
@@ -60,7 +63,7 @@ const FileTransfer = () => {
         const file = uploadedFiles[i];
         try {
           await uploadQuery(file.file, getCtrCd() + '_' + file.file.name, 'globalfiles');
-          await handleUpdateFileNameToDataBase(file.file.name);
+          await handleUpdateFileNameToDataBase(file.file.name, file.file.size);
           file.progress = 100;
           console.log(`File ${file.file.name} uploaded successfully`);    
         } catch (error) {
@@ -194,7 +197,7 @@ const FileTransfer = () => {
         <div className="file-list" style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '10px', height: '62.5vh', overflowY: 'auto' }}>
           {uploadedFiles.map((file, index) => (
             <div key={index} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', gap: '10px',   alignItems: 'center', padding: '10px', borderBottom: '1px solid #eee' }}>
-              <span style={{ flex: 1 }}> {index + 1}. {file.file.name}</span> 
+              <span style={{ flex: 1 }}> {index + 1}. {file.file.name} - {(file.file.size / 1024).toFixed(2)} kB</span> 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px' }}>
                 <div style={{ width: '100%', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                   <div 
@@ -250,7 +253,26 @@ const FileTransfer = () => {
                 <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#ccc', marginRight: '10px', overflow: 'hidden' }}>
                   <img src={`/Picture_NS/NS_${file.INS_EMPL}.jpg`} alt={file.INS_EMPL} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = '/noimage.webp' }} />
                 </div>
-                <span>{index + 1}. {moment.utc(file.INS_DATE).format('DD/MM/YYYY HH:mm:ss')} {file.INS_EMPL} - {file.FILE_NAME}</span>
+                {(() => {
+                  const fileExt = file.FILE_NAME.split('.').pop().toLowerCase();
+                  if (['doc', 'docx', 'txt', 'rtf'].includes(fileExt)) {
+                    return <FaFileWord color='green' size={20}/>
+                  }
+                  if (['pdf'].includes(fileExt)) {
+                    return <FaFilePdf color='red' size={20}/>
+                  }
+                  if (['xls', 'xlsx'].includes(fileExt)) {
+                    return <FaFileExcel color='green' size={20}/>
+                  }
+                  if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExt)) {
+                    return <FaFileImage color='skyblue' size={20}/>
+                  }
+                  if (['zip', 'rar', '7z'].includes(fileExt)) {
+                    return <FaFileZipper color='orange' size={20}/>
+                  }
+                  return <FaFile color='gray' size={20}/>
+                })()}
+                <span style={{ flex: 1 }}>{index + 1}. {moment.utc(file.INS_DATE).format('DD/MM/YYYY HH:mm:ss')} {file.INS_EMPL} - <a href={`/globalfiles/${file.CTR_CD}_${file.FILE_NAME}`} target="_blank" style={{ display: 'inline-block', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.FILE_NAME}</a> - {(file.FILE_SIZE / 1024).toLocaleString('en-US', { maximumFractionDigits: 2 })} kB</span>
               </div>
               <button 
                 onClick={() => {
@@ -311,20 +333,7 @@ const FileTransfer = () => {
                 }}
               >
                 Copy Link
-              </button>
-              <button 
-                onClick={() => handleDownload(`/globalfiles/${file.CTR_CD}_${file.FILE_NAME}`)}
-                style={{
-                  padding: '5px 10px',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Download
-              </button>
+              </button>              
               <button 
                 onClick={() => handleDeleteFromDatabase(file.FILE_NAME)}
                 style={{
