@@ -28,6 +28,8 @@ import {
   FaReact,
   FaProductHunt,
   FaStackOverflow,
+  FaTools,
+  FaFileImport,
 } from "react-icons/fa";
 import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp } from "react-icons/bi";
 import {
@@ -608,6 +610,22 @@ const NavMenu = () => {
           cName: "sub-nav",
         },
       ],
+    },
+    {
+      title: getlang("tool", lang),
+      path: "#",
+      icon: <FaTools color="#14c51d" size={15} />,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,
+      subNav: [
+        {
+          title: getlang("filetransfer", lang),
+          path: "tool/filetransfer",
+          icon: <FaFileImport color="#0c1eb8" size={15} />,
+          MENU_CODE: "TL1",
+          cName: "sub-nav",
+        },
+            ],
     },
   ];
   return (

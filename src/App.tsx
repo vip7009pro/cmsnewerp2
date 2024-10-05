@@ -26,6 +26,7 @@ import { Notifications } from 'react-push-notification';
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import FileTransfer from "./pages/tools/FileTransfer/FileTransfer";
 const Home2 = React.lazy(() => import("./pages/home/Home2"));
 const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
 const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
@@ -886,6 +887,25 @@ function App() {
                           }
                         />
                       </Route>
+                      <Route
+                        path='tool'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <FileTransfer />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<FileTransfer />} />
+                        <Route
+                          path='filetransfer'
+                          element={<FileTransfer />}
+                        />  
+                      </Route>
+
                       <Route
                         path='sx'
                         element={

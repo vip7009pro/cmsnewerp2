@@ -14,7 +14,8 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-export const current_ver: number = 2501;
+import FileTransfer from "../tools/FileTransfer/FileTransfer";
+export const current_ver: number = 2502;
 const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
@@ -481,6 +482,11 @@ function Home() {
       MENU_NAME: getlang("nhapxuattonlieu", lang),
       MENU_ITEM: <KHOLIEU />,
     },
+    {
+      MENU_CODE: "TL1",
+      MENU_NAME: getlang("filetransfer", lang),
+      MENU_ITEM: <FileTransfer />,
+    },  
     {
       MENU_CODE: "ST01",
       MENU_NAME: "Setting",

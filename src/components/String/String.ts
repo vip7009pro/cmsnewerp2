@@ -11,6 +11,8 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  filetransfer: "Chuyển file",
+  tool: "Công cụ",
   tienhanhsx: "Tình hình sản xuất",
   khsx: "Kế hoạch sản xuất",
   khosx: "Kho SX",
@@ -155,6 +157,8 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  filetransfer: "File Transfer",
+  tool: "Tool",
   tienhanhsx: "Production Status",
   khsx: "Production Plan",
   khosx: "Production Warehouse",
@@ -298,6 +302,8 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  filetransfer: "파일 전송",
+  tool: "도구",
   tienhanhsx: "생산 현황",
   khsx: "생산 계획",
   khosx: "생산 창고",
