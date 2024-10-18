@@ -2,6 +2,8 @@ import React from "react";
 import { BiUser } from "react-icons/bi";
 import "./INSPECT_COMPONENT.scss";
 import { INS_STATUS } from "../../../../api/GlobalInterface";
+import { generalQuery } from "../../../../api/Api";
+import Swal from "sweetalert2";
 
 const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
   const runtopcolor: string = "#2fd5eb";
@@ -24,6 +26,31 @@ const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
       );
     }
   }
+  const resetStatus = async () => {
+    //Swal confirm whether to reset status
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to reset the status of this machine!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, reset it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await generalQuery("resetStatus", {
+          EQ_NAME: INS_DATA?.EQ_NAME,
+        }).then((response) => {
+          console.log(response);
+          if (response.data.tk_status !== "NG") {
+            Swal.fire("Reset!", "Status has been reset.", "success");
+          } else {
+            Swal.fire("Error!", "Status reset failed.", "error");
+          }
+        });
+      }
+    });
+  };
 
   return (
     <div
@@ -39,6 +66,11 @@ const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
             : checkSearch
             ? "none"
             : "blur(5px)",
+      }}
+      onDoubleClick={() => {
+        console.log("double click");
+        console.log(INS_DATA);
+        resetStatus();  
       }}
     >
       <div
