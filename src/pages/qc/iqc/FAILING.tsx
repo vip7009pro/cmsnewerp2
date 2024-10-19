@@ -462,7 +462,7 @@ const FAILING = () => {
           setInCFMQTY(response.data.data[0].OUT_CFM_QTY);
           setRollQty(response.data.data[0].ROLL_QTY);
           setVendorLot(response.data.data[0].LOTNCC ?? "");
-          setPlanId(response.data.data[0].PLAN_ID ?? "");
+          //setPlanId(response.data.data[0].PLAN_ID ?? "");
           if ((response.data.data[0].PLAN_ID ?? "").length > 7) {
             checkPlanID(response.data.data[0].PLAN_ID);
             checkPQC3_ID(response.data.data[0].PLAN_ID);
