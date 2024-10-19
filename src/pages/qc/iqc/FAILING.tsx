@@ -482,7 +482,7 @@ const FAILING = () => {
           setLieuQL_SX(0);
           setOut_Date("");
           setVendorLot("");
-          setPlanId("");
+          //setPlanId("");
         }
       })
       .catch((error) => {
