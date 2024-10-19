@@ -416,7 +416,7 @@ const FAILING = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
-          setPlanId(PLAN_ID);
+          //setPlanId(PLAN_ID);
           setGName(response.data.data[0].G_NAME);
           setProdReqDate(response.data.data[0].PROD_REQUEST_DATE);
           setGCode(response.data.data[0].G_CODE);
@@ -464,7 +464,7 @@ const FAILING = () => {
           setVendorLot(response.data.data[0].LOTNCC ?? "");
           //setPlanId(response.data.data[0].PLAN_ID ?? "");
           if ((response.data.data[0].PLAN_ID ?? "").length > 7) {
-            checkPlanID(response.data.data[0].PLAN_ID);
+            //checkPlanID(response.data.data[0].PLAN_ID);
             checkPQC3_ID(response.data.data[0].PLAN_ID);
           }
           setLieuQL_SX(
