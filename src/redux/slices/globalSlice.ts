@@ -420,7 +420,6 @@ export const glbSlice = createSlice({
     changeSelectedServer: (state, action: PayloadAction<string>) => {
       state.selectedServer = action.payload;
     }
-
   },
 });
 export const {
