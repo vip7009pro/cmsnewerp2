@@ -322,12 +322,12 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
       </div>
       <div className="tieudeycsx">
         <div className="leftlogobarcode">
-          {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />} */}
+          {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/companylogo.png' width={160} height={40} />} */}
           {company === "CMS" && (
-            <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
+            <img alt="logo" src="/companylogo.png" width={160} height={40} />
           )}
           {company !== "CMS" && (
-            <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
+            <img alt="logo" src="/companylogo.png" width={160} height={40} />
           )}
           <Barcode
             value={main_plan.PLAN_ID}

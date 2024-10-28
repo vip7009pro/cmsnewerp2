@@ -178,7 +178,7 @@ export default function PrimarySearchAppBar() {
           <Link to="/" className="menulink">
             <img
               alt="cmsvina logo"
-              src="/logocmsvina.png"
+              src="/companylogo.png"
               width={114.4}
               height={27.13333}
             />

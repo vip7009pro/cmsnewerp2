@@ -3,15 +3,17 @@ import { Navigate } from "react-router-dom";
 import "./Login.scss";
 import getsentence, { getlang } from "../../components/String/String";
 import { LangConText, UserContext } from "../../api/Context";
-import { login } from "../../api/Api";
+import { getCompany, login } from "../../api/Api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
   changeCtrCd,
+  changeSelectedServer,
   changeServer,
 } from "../../redux/slices/globalSlice";
 import { isValidInput } from "../../api/GlobalFunction";
 import Swal from "sweetalert2";
+import { eventFunc } from "react-push-notification/dist/notifications/Storage";
 const Login = () => {
   const protocol = window.location.protocol.startsWith("https") ? 'https' : 'http';
   const main_port = protocol === 'https' ? '5014' : '5013';
@@ -29,7 +31,8 @@ const Login = () => {
     (state: RootState) => state.totalSlice.ctr_cd,
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
+    const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
   const handle_setUserKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -63,11 +66,14 @@ const Login = () => {
     (state: RootState) => state.totalSlice.server_ip,
   );
   const dispatch = useDispatch();
+  
+ 
   useEffect(() => {
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);
       dispatch(changeServer(server_ip_local));
+      dispatch(changeSelectedServer(cpnInfo[getCompany()].apiUrlArray.find((item: { apiUrl: string; }) => item.apiUrl === server_ip_local)?.server_name));
     } else {
       localStorage.setItem("server_ip", "");
       dispatch(changeServer(""));
@@ -85,7 +91,7 @@ const Login = () => {
         className="loginbackground"
         style={{
           position: "absolute",
-          backgroundImage: `url('${company === "CMS" ? `/CMSVBackground.png` : `/PVNBackground.png`
+          backgroundImage: `url('${company === "CMS" ? `/companybackground.png` : `/companybackground.png`
             }')`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -107,31 +113,13 @@ const Login = () => {
             }`,
         }}
       >
-        <div className="logo">
-          {company === "CMS" && (
+        <div className="logo">          
             <img
               alt="cmsvina logo"
-              src="/logocmsvina.png"
-              width={190}
-              height={50}
-            />
-          )}
-          {company === "PVN" && (
-            <img
-              alt="cmsvina logo"
-              src="/logopvn_big.png"
-              width={190}
-              height={80}
-            />
-          )}
-          {company === "NHATHAN" && (
-            <img
-              alt="cmsvina logo"
-              src="/logopvn_big.png"
-              width={170}
-              height={160}
-            />
-          )}
+              src="/companylogo.png"
+              width={cpnInfo[getCompany()].loginLogoWidth}
+              height={cpnInfo[getCompany()].loginLogoHeight}
+            />          
         </div>
         <span className="formname">
           {getlang("dangnhap", lang)}
@@ -170,31 +158,15 @@ const Login = () => {
                 localStorage.setItem("server_ip", e.target.value);
                 setServer_String(e.target.value);
                 dispatch(changeServer(e.target.value));
+                dispatch(changeSelectedServer(cpnInfo[getCompany()].apiUrlArray.find((item: { apiUrl: string; }) => item.apiUrl === e.target.value)?.server_name));
                 ///console.log(e.target.value);
               }}
             >
-              {company === "CMS" && protocol !== 'https' && (
-                <option value={protocol + "://14.160.33.94:" + main_port}>MAIN_SERVER</option>
-              )}
-              {company === "CMS" && protocol !== 'https' && (
-                <option value={protocol + "://14.160.33.94:" + sub_port}>SUB_SERVER</option>
-              )}
-              {company === "CMS" && protocol !== 'https' && (
-                <option value={protocol + "://192.168.1.192:" + main_port}>LAN_SERVER</option>
-              )}
-              {company === "CMS" && (
-                <option value={protocol + "://cms.ddns.net:" + main_port}>NET_SERVER</option>
-              )}
-              {company === "CMS" && (
-                <option value={protocol + "://cms.ddns.net:" + sub_port}>SUBNET_SERVER</option>
-              )}
-              {company === "PVN" && protocol !== 'https' && (
-                <option value={protocol + "://222.252.1.63:" + sub_port}>PUBLIC_PVN</option>
-              )}
-              {company === "NHATHAN" && protocol !== 'https' && (
-                <option value={protocol + "://222.252.1.214:" + sub_port}>PUBLIC_NHATHAN</option>
-              )}
-              <option value={protocol + "://localhost:" + sub_port}>TEST_SERVER</option>
+              {
+                cpnInfo[getCompany()].apiUrlArray.map((item: any) => (
+                  <option key={item.server_name} value={item.apiUrl}>{item.server_name}</option>
+                ))  
+              }             
             </select>
           </label>
           <label>
@@ -204,6 +176,7 @@ const Login = () => {
               value={ctr_cd}
               onChange={(e) => {
                 dispatch(changeCtrCd(e.target.value));
+               
               }}
             >
               <option value="001">BR1</option>

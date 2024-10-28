@@ -54,6 +54,8 @@ export default function Navbar() {
     (state: RootState) => state.totalSlice.sidebarmenu,
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const selectedServer: string = useSelector((state: RootState) => state.totalSlice.selectedServer);
+  const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   useOutsideClick(
     refLang,
     () => {
@@ -104,6 +106,7 @@ export default function Navbar() {
     { value: "linear-gradient(90deg, #834D9B 0%, #D04ED6 100%)", label: "Purple-Magenta" },
     { value: "linear-gradient(90deg, #ADD100 0%, #7B920A 100%)", label: "Lime-Olive" },
     { value: "linear-gradient(90deg, #1A2A6C 0%, #B21F1F 50%, #FDBB2D 100%)", label: "Navy-Red-Yellow" },
+    { value: "linear-gradient(90deg, #f8dd55 0%, #caf52d 100%)", label: "Yellow-Orange" },
   ];
 
 
@@ -636,35 +639,17 @@ export default function Navbar() {
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>
-            <Link to="/" className="menulink">
-              {company === "CMS" && (
+            <Link to="/" className="menulink">             
                 <img
-                  alt="cmsvina logo"
-                  src="/logocmsvina.png"
-                  width={114.4}
-                  height={27.13333}
-                />
-              )}
-              {company === "PVN" && (
-                <img
-                  alt="pvn logo"
-                  src="/logopvn_big.png"
-                  width={114.4}
-                  height={25}
-                />
-              )}
-              {company === "NHATHAN" && (
-                <img
-                  alt="nhathan logo"
-                  src="/logo_nhathan_small.png"
-                  width={160}
-                  height={40}
-                />
-              )}
+                  alt="companylogo"
+                  src="/companylogo.png"
+                  width={cpnInfo[company].logoWidth}
+                  height={cpnInfo[company].logoHeight}
+                /> 
             </Link>
           </div>
           <div className="webver" style={{ fontSize: "8pt" }}>
-            <b> Web Ver: {current_ver} </b>
+            <b> Web Ver: {current_ver}_({selectedServer})</b>
           </div>
         </div>
         <div className="item">

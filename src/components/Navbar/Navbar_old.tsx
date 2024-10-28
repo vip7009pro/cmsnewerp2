@@ -596,7 +596,7 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
               {company === "CMS" && (
                 <img
                   alt="cmsvina logo"
-                  src="/logocmsvina.png"
+                  src="/companylogo.png"
                   width={114.4}
                   height={27.13333}
                 />
@@ -604,7 +604,7 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
               {company === "PVN" && (
                 <img
                   alt="pvn logo"
-                  src="/logopvn_big.png"
+                  src="/companylogo.png"
                   width={114.4}
                   height={25}
                 />
@@ -612,7 +612,7 @@ const [showDataBeforeSearchOption, setShowDataBeforeSearchOption] = useState(fal
               {company === "NHATHAN" && (
                 <img
                   alt="nhathan logo"
-                  src="/logo_nhathan_small.png"
+                  src="/companylogo.png"
                   width={160}
                   height={40}
                 />

@@ -150,7 +150,7 @@ const Suppliers = () => {
     <Router>
       <Header>
         <Navbar>
-          <Logo><img src={'./logocmsvina.png'} alt="CMS VINA" width={100} height={25}/>Supplier Hub</Logo>                   
+          <Logo><img src={'./companylogo.png'} alt="CMS VINA" width={100} height={25}/>Supplier Hub</Logo>                   
           <Menu>
             <NavMenu2 />
           </Menu>

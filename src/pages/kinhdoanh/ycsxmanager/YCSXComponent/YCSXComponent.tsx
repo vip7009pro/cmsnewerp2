@@ -347,10 +347,10 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       {request_codeinfo[0].PDUYET===1 && (
         <div className="tieudeycsx">
           {company === "CMS" && (
-            <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
+            <img alt="logo" src="/companylogo.png" width={160} height={40} />
           )}
           {company !== "CMS" && (
-            <img alt="logo" src="/logopvn_big.png" width={160} height={80} />
+            <img alt="logo" src="/companylogo.png" width={160} height={80} />
           )}
           <div className="title">
             {" "}

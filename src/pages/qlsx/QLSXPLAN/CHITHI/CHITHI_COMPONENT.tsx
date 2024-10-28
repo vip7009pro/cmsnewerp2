@@ -396,10 +396,10 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         <div className="tieudeycsx">
           <div className="leftlogobarcode">
             {company === "CMS" && (
-              <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
+              <img alt="logo" src="/companylogo.png" width={160} height={40} />
             )}
             {company !== "CMS" && (
-              <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
+              <img alt="logo" src="/companylogo.png" width={160} height={40} />
             )}
             <Barcode
               value={`${DATA.PLAN_ID}`}

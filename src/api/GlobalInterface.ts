@@ -2766,6 +2766,8 @@ export interface GlobalInterface {
     CMS: any;
     PVN: any;
   };
+  cpnInfo: any;
+  selectedServer: string;
 }
 //calc tinh gia
 export interface BANGGIA_DATA_CALC {

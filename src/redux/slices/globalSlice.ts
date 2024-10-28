@@ -15,21 +15,76 @@ const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")? "https": "http";
 const main_port = protocol === "https" ? "5014" : "5013";
-/* const sub_port = protocol === "https" ? "3006" : "3006"; */
 const sub_port = protocol === "https" ? "3006" : "3007";
-const socket = io(
-  startCPN === "CMS"
-    /* ? `${protocol}://localhost:${sub_port}` */
-    ? `${protocol}://cms.ddns.net:${sub_port}`
-    : startCPN === "PVN"
-    ? `${protocol}://222.252.1.63:${sub_port}`
-    : startCPN === "NHATHAN"
-    ? `${protocol}://222.252.1.214:${sub_port}`
-    : ""
-);
-socket.on("connect", () => {
-  console.log(socket.id); 
-});
+const companyInfo = {
+  CMS: {
+    logo: "./companylogo.png",
+    logoWidth: 114.4,
+    logoHeight: 27.13333,
+    loginLogoWidth: 190,
+    loginLogoHeight: 50,  
+    backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,  
+    apiUrl: `${protocol}://cms.ddns.net:${main_port}`,  
+    apiUrlArray: [
+      {
+        server_name: "MAIN_SERVER",
+        apiUrl: `${protocol}://14.160.33.94:${main_port}`
+      },
+      {
+        server_name: "SUB_SERVER",
+        apiUrl: `${protocol}://14.160.33.94:${sub_port}`
+      },
+      {
+        server_name: "LAN_SERVER",
+        apiUrl: `${protocol}://192.168.1.192:${main_port}`
+      },  
+      {
+        server_name: "NET_SERVER",
+        apiUrl: `${protocol}://cms.ddns.net:${main_port}`
+      },
+      {
+        server_name: "SUBNET_SERVER",
+        apiUrl: `${protocol}://cms.ddns.net:${sub_port}`
+      },
+      {
+        server_name: "TEST_SERVER",
+        apiUrl: `${protocol}://localhost:${sub_port}` 
+      }
+    ],
+  },
+  PVN: {
+    logo: "./companylogo.png",
+    logoWidth: 114.4,
+    logoHeight: 25,
+    loginLogoWidth: 190,
+    loginLogoHeight: 80,
+    backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
+    apiUrl: `${protocol}://222.252.1.63:${sub_port}`, 
+    apiUrlArray: [
+      {
+        server_name: "MAIN_SERVER",
+        apiUrl: `${protocol}://222.252.1.63:${sub_port}`
+      },
+    ],  
+  },
+  NHATHAN: {
+    logo: "./companylogo.png",
+    logoWidth: 160,
+    logoHeight: 40,
+    loginLogoWidth: 170,
+    loginLogoHeight: 160,
+    backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
+    apiUrl: `${protocol}://222.252.1.214:${sub_port}`, 
+    apiUrlArray: [
+      {
+        server_name: "MAIN_SERVER",
+        apiUrl: `${protocol}://222.252.1.214:${sub_port}`
+      },
+    ], 
+  },  
+};  
+const socket = io(companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
+socket.on("connect", () => {  console.log(socket.id); });
 socket.on("notification", (data) => {
   if (data.command === "logout") {
     console.log(getUserData());
@@ -63,15 +118,7 @@ socket.on("connect_error", (e) => {
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
 } else {
-  console.log("server_ip_local", server_ip_local);
-  localStorage.setItem(
-    "server_ip",
-    startCPN === "CMS"
-      ? `${protocol}://cms.ddns.net:${main_port}`
-      : startCPN !== "CMS"
-      ? `${protocol}://222.252.1.63:${sub_port}`
-      : ""
-  );
+  localStorage.setItem("server_ip",companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
 }
 let crST_string: any = localStorage.getItem("setting") ?? "";
 let crST: WEB_SETTING_DATA[] = [];
@@ -134,12 +181,7 @@ const initialState: GlobalInterface = {
   sidebarmenu: false,
   multiple_chithi_array: [],
   company: startCPN,
-  server_ip:
-    startCPN === "CMS"
-      ? `${protocol}://cms.ddns.net:${main_port}`
-      : startCPN !== "CMS"
-      ? `${protocol}://222.252.1.63:${sub_port}`
-      : "",
+  server_ip: companyInfo[startCPN as keyof typeof companyInfo].apiUrl,  
   tabs: [],
   componentArray: [],
   tabIndex: 0,
@@ -148,16 +190,14 @@ const initialState: GlobalInterface = {
   ctr_cd: "002",
   theme: {
     CMS: {
-      backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,
-      /* backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1))`, */
-      outletBackground: `rgb(2,0,36)`,
-      /* outletBackground: `rgba(159, 212, 254,1)`, */
+      backgroundImage: companyInfo[startCPN as keyof typeof companyInfo].backgroundImage,   
     },
     PVN: {
-      /* backgroundImage: `linear-gradient(90deg, rgba(254,255,23,1) 0%, rgba(235,242,144,0.9920343137254902) 47%, rgba(255,241,134,1) 100%)`, */
-      backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
+      backgroundImage: companyInfo[startCPN as keyof typeof companyInfo].backgroundImage,   
     },
   },
+  cpnInfo: companyInfo, 
+  selectedServer: companyInfo[startCPN as keyof typeof companyInfo].apiUrlArray[0].server_name,  
 };
 export const glbSlice = createSlice({
   name: "totalSlice",
@@ -376,6 +416,9 @@ export const glbSlice = createSlice({
     } ,
     changeCtrCd: (state, action: PayloadAction<string>) => {
       state.ctr_cd = action.payload;
+    },
+    changeSelectedServer: (state, action: PayloadAction<string>) => {
+      state.selectedServer = action.payload;
     }
 
   },
@@ -401,6 +444,7 @@ export const {
   changeGLBLanguage,
   changeGLBSetting,
   switchTheme,
-  changeCtrCd
+  changeCtrCd,
+  changeSelectedServer
 } = glbSlice.actions;
 export default glbSlice.reducer;

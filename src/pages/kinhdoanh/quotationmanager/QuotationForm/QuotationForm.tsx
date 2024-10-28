@@ -162,7 +162,7 @@ const QuotationForm = ({
           {company !== "CMS" && (
             <img
               alt="cmsvina logo"
-              src="/logopvn_big.png"
+              src="/companylogo.png"
               width={200}
               height={100}
             />
@@ -170,7 +170,7 @@ const QuotationForm = ({
           {company === "CMS" && (
             <img
               alt="cmsvina logo"
-              src="/logocmsvina.png"
+              src="/companylogo.png"
               width={230}
               height={90}
             />

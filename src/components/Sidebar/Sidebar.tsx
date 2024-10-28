@@ -623,7 +623,7 @@ const Sidebar = () => {
             {company === "CMS" && (
               <img
                 alt="logo"
-                src="/logocmsvina.png"
+                src="/companylogo.png"
                 width={85.8}
                 height={20.35}
               />
@@ -631,7 +631,7 @@ const Sidebar = () => {
             {company !== "CMS" && (
               <img
                 alt="logo"
-                src="/logopvn_big.png"
+                src="/companylogo.png"
                 width={85.8}
                 height={40.35}
               />
