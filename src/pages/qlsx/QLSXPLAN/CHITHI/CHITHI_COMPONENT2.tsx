@@ -665,13 +665,13 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
           </div>
           <div className="thongtinyeucau">
             <table className="ttyc1">
-              <thead>
+              <thead>                   
                 <tr>
-                  <th>STT</th>
-                  <th>DEFECT</th>
-                  <th>TEST_ITEM</th>
-                  <th>TEST_METHOD</th>
-                </tr>
+                    <th style={{width:'2%'}}>STT</th>
+                    <th style={{width:'5%'}}>DEFECT</th>
+                    <th style={{width:'10%'}}>TEST_ITEM</th>
+                    <th >TEST_METHOD</th>                   
+                  </tr>
               </thead>
               <tbody>
                 {defectProcessData.map((element, index) => (
