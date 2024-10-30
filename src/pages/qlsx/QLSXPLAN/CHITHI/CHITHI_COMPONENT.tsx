@@ -800,10 +800,10 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
               <table className="ttyc1">
                 <thead>
                   <tr>
-                    <th style={{width:'2%'}}>STT</th>
-                    <th style={{width:'5%'}}>DEFECT</th>
-                    <th style={{width:'10%'}}>TEST_ITEM</th>
-                    <th >TEST_METHOD</th>                   
+                    <th style={{width:'2%'}}>Worst</th>
+                    <th style={{width:'10%'}}>Tên lỗi/불량명</th>
+                    <th style={{width:'10%'}}>Hạng mục test/테스트 항목</th>
+                    <th >Phương pháp test/테스트 방법</th>                   
                   </tr>
                 </thead>
                 <tbody>

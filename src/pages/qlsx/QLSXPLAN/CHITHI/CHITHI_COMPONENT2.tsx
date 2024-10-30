@@ -633,14 +633,14 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                     <td>{element.STEP}</td>
                     <td>{element.PLAN_QTY.toLocaleString("en-US")}</td>
                     <td>{element.IS_SETTING === 'Y' ? element.STEP === 0 ? `${element.PROCESS_NUMBER === 1
-                        ? request_codeinfo[0]?.LOSS_SETTING1
-                        : element.PROCESS_NUMBER === 2
-                          ? request_codeinfo[0]?.LOSS_SETTING2
-                          : element.PROCESS_NUMBER === 3
-                            ? request_codeinfo[0]?.LOSS_SETTING3
-                            : element.PROCESS_NUMBER === 4
-                              ? request_codeinfo[0]?.LOSS_SETTING4
-                              : ""}` : 0 : "Không setting"}</td>
+                      ? request_codeinfo[0]?.LOSS_SETTING1
+                      : element.PROCESS_NUMBER === 2
+                        ? request_codeinfo[0]?.LOSS_SETTING2
+                        : element.PROCESS_NUMBER === 3
+                          ? request_codeinfo[0]?.LOSS_SETTING3
+                          : element.PROCESS_NUMBER === 4
+                            ? request_codeinfo[0]?.LOSS_SETTING4
+                            : ""}` : 0 : "Không setting"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -665,13 +665,13 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
           </div>
           <div className="thongtinyeucau">
             <table className="ttyc1">
-              <thead>                   
+              <thead>
                 <tr>
-                    <th style={{width:'2%'}}>STT</th>
-                    <th style={{width:'5%'}}>DEFECT</th>
-                    <th style={{width:'10%'}}>TEST_ITEM</th>
-                    <th >TEST_METHOD</th>                   
-                  </tr>
+                  <th style={{ width: '2%' }}>Worst</th>
+                  <th style={{ width: '10%' }}>Tên lỗi/불량명</th>
+                  <th style={{ width: '10%' }}>Hạng mục test/테스트 항목</th>
+                  <th >Phương pháp test/테스트 방법</th>
+                </tr>
               </thead>
               <tbody>
                 {defectProcessData.map((element, index) => (
