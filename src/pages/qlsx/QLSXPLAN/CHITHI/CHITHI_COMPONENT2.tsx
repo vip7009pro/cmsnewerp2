@@ -10,7 +10,9 @@ import {
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   UserData,
+  DEFECT_PROCESS_DATA,
 } from "../../../../api/GlobalInterface";
+import { f_loadDefectProcessData } from "../../../../api/GlobalFunction";
 interface PLAN_COMBO {
   PLAN_LIST: QLSXPLANDATA[];
 }
@@ -103,7 +105,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [maxLieu, setMaxLieu] = useState(12);
   const [po_balance, setPoBalance] = useState(0);
-  const handle_getMcodeOfYcsx=()=> {
+  const [defectProcessData, setDefectProcessData] = useState<DEFECT_PROCESS_DATA[]>([]);
+  const handle_getMcodeOfYcsx = () => {
     generalQuery("checkP500M_CODE", {
       PROD_REQUEST_NO: PLAN_LIST[0].PROD_REQUEST_NO,
     })
@@ -113,14 +116,13 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
         if (response.data.tk_status !== "NG") {
           setM_CODE_YCSX(response.data.data[0].M_NAME);
         } else {
-          setM_CODE_YCSX('XXX');        
+          setM_CODE_YCSX('XXX');
         }
       })
       .catch((error) => {
         console.log(error);
       });
-
-  }  
+  }
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: main_plan.PLAN_ID,
@@ -286,18 +288,22 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
       FN_LOSS_ST: FINAL_LOSS_SETTING
     }
   }
+  const handleLoadDefectProcessData = async () => {
+    setDefectProcessData(await f_loadDefectProcessData(main_plan.G_CODE, main_plan.PROCESS_NUMBER));
+  }
   useImperativeHandle(ref, () => ({
     handleInternalClick,
   }));
   const handleInternalClick = () => {
-    console.log("so chi thi:"+ PLAN_LIST[0].PLAN_ID)
+    console.log("so chi thi:" + PLAN_LIST[0].PLAN_ID)
   };
-  const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number)=> ele.LIEUQL_SX === 1)?.M_NAME
+  const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number) => ele.LIEUQL_SX === 1)?.M_NAME
   useEffect(() => {
     handle_getMcodeOfYcsx();
     checkMaxLieu();
     initCTSX();
     handleGetChiThiTable();
+    handleLoadDefectProcessData();
     checkPOBalance();
   }, []);
   return (
@@ -378,7 +384,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
         </div>
       </div>
       {request_codeinfo[0].PL_HANG === 'TT' &&
-      (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX') &&
+        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx === 'XXX') &&
         <div className="thongtinycsx">
           <div className="text1">
             1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
@@ -434,20 +440,20 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   </td>
                 </tr>
                 <tr>
-                    <td>Tổng cần SX cho CĐ{main_plan.PROCESS_NUMBER}</td>
-                    <td>{(main_plan.PROCESS_NUMBER===1? main_plan.SLC_CD1: main_plan.PROCESS_NUMBER===2? main_plan.SLC_CD2: main_plan.PROCESS_NUMBER===3? main_plan.SLC_CD3: main_plan.SLC_CD4)?.toLocaleString('en-US')} EA</td>
+                  <td>Tổng cần SX cho CĐ{main_plan.PROCESS_NUMBER}</td>
+                  <td>{(main_plan.PROCESS_NUMBER === 1 ? main_plan.SLC_CD1 : main_plan.PROCESS_NUMBER === 2 ? main_plan.SLC_CD2 : main_plan.PROCESS_NUMBER === 3 ? main_plan.SLC_CD3 : main_plan.SLC_CD4)?.toLocaleString('en-US')} EA</td>
                 </tr>
                 <tr>
-                    <td>Tồn chưa chạy:</td>
-                    <td> {(main_plan.PROCESS_NUMBER===1? main_plan.TON_CD1: main_plan.PROCESS_NUMBER===2? main_plan.TON_CD2: main_plan.PROCESS_NUMBER===3? main_plan.TON_CD3: main_plan.TON_CD4)?.toLocaleString('en-US')} EA</td>
-                  </tr>
-                <tr style={{fontWeight:'bold', backgroundColor:'greenyellow'}}> 
+                  <td>Tồn chưa chạy:</td>
+                  <td> {(main_plan.PROCESS_NUMBER === 1 ? main_plan.TON_CD1 : main_plan.PROCESS_NUMBER === 2 ? main_plan.TON_CD2 : main_plan.PROCESS_NUMBER === 3 ? main_plan.TON_CD3 : main_plan.TON_CD4)?.toLocaleString('en-US')} EA</td>
+                </tr>
+                <tr style={{ fontWeight: 'bold', backgroundColor: 'greenyellow' }}>
                   <td>Số lượng chỉ thị/지시 수량</td>
                   <td>{main_plan.PLAN_QTY?.toLocaleString("en-US")} EA</td>
-                </tr>                
+                </tr>
                 <tr>
-                  <td>PD/Cavity</td>                  
-                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}/ {`${request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}</td>
+                  <td>PD/Cavity</td>
+                  <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}/ {`${request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}`}</td>
                 </tr>
               </tbody>
             </table>
@@ -626,8 +632,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                     <td>{element.PLAN_EQ}</td>
                     <td>{element.STEP}</td>
                     <td>{element.PLAN_QTY.toLocaleString("en-US")}</td>
-                    <td>{element.IS_SETTING === 'Y' ? element.STEP===0? `${
-                      element.PROCESS_NUMBER === 1
+                    <td>{element.IS_SETTING === 'Y' ? element.STEP === 0 ? `${element.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.LOSS_SETTING1
                         : element.PROCESS_NUMBER === 2
                           ? request_codeinfo[0]?.LOSS_SETTING2
@@ -635,14 +640,14 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                             ? request_codeinfo[0]?.LOSS_SETTING3
                             : element.PROCESS_NUMBER === 4
                               ? request_codeinfo[0]?.LOSS_SETTING4
-                              : ""}`: 0 : "Không setting"}</td>
+                              : ""}` : 0 : "Không setting"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <div className="text1">
-            3. LOSS INFO (Phân loại:{" "}
+            3. DEFECT INFO (Phân loại:{" "}
             {request_codeinfo[0].CODE_50 === "01"
               ? "GC"
               : request_codeinfo[0].CODE_50 === "02"
@@ -662,35 +667,21 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
             <table className="ttyc1">
               <thead>
                 <tr>
-                  <th>PLAN_ID</th>
-                  <th>STEP</th>
-                  <th>Bóc kiểm (EA)/파괴검사</th>
-                  <th>Lấy đồ/도구 준비</th>
-                  <th>Máy hỏng/설비 고장</th>
-                  <th>Dao NG/칼 불량</th>
-                  <th>Chờ liệu/원단 대기</th>
-                  <th>Chờ BTP/BTP 대기</th>
-                  <th>Hết liệu/원단 떨어짐</th>
-                  <th>Liệu NG/원단 불량</th>
+                  <th>STT</th>
+                  <th>DEFECT</th>
+                  <th>TEST_ITEM</th>
+                  <th>TEST_METHOD</th>
                 </tr>
               </thead>
               <tbody>
-                {PLAN_LIST.map((element: QLSXPLANDATA, index: number) => {
-                  return (
-                    <tr key={index}>
-                      <td style={{ height: "20px" }}>{element.PLAN_ID}</td>
-                      <td style={{ height: "20px" }}>{element.STEP}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  );
-                })}
+                {defectProcessData.map((element, index) => (
+                  <tr key={index}>
+                    <td>{element.STT}</td>
+                    <td>{element.DEFECT}</td>
+                    <td>{element.TEST_ITEM}</td>
+                    <td>{element.TEST_METHOD}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -857,7 +848,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
         </div>}
       {request_codeinfo[0].PL_HANG !== 'TT' &&
         <div>Không chỉ thị hàng nguyên chiếc, báo lại kinh doanh</div>}
-      {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
+      {(M_CODEtrongBOM !== m_code_ycsx && m_code_ycsx !== 'XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );
 });

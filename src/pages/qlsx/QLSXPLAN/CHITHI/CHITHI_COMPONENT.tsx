@@ -12,12 +12,13 @@ import {
 import "./CHITHI_COMPONENT.scss";
 import Barcode from "react-barcode";
 import {
+  DEFECT_PROCESS_DATA,
   FullBOM,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
-import { f_checkEQvsPROCESS } from "../../../../api/GlobalFunction";
+import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../../../../api/GlobalFunction";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
 
   const company: string = useSelector(
@@ -106,6 +107,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_process_check, setEQ_Process_check] = useState(false);
   const [m_code_ycsx, setM_CODE_YCSX] = useState('XXX');
+  const [defectProcessData, setDefectProcessData] = useState<DEFECT_PROCESS_DATA[]>([]);  
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: DATA.PLAN_ID,
@@ -350,6 +352,9 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
     handleInternalClick,
   }));
 
+  const handleLoadDefectProcessData = async () => {
+    setDefectProcessData(await f_loadDefectProcessData(DATA.G_CODE, DATA.PROCESS_NUMBER));
+  } 
   const handleInternalClick = () => {
     console.log("so chi thi:"+ DATA.PLAN_ID)
   };
@@ -360,6 +365,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
     initCTSX();
     handle_getMcodeOfYcsx()
     handleGetChiThiTable();
+    handleLoadDefectProcessData();  
     checkPOBalance();
   }, [DATA.PLAN_ID]);
   return (
@@ -762,7 +768,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
           </table>         
         </div> */}
             <div className="text1">
-              3. LOSS INFO__ {DATA.PLAN_ID} {":  "} (Phân loại:{" "}
+              3. DEFECT INFO__ {DATA.PLAN_ID} {":  "} (Phân loại:{" "}
               {request_codeinfo[0].CODE_50 === "01"
                 ? "GC"
                 : request_codeinfo[0].CODE_50 === "02"
@@ -794,27 +800,21 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
               <table className="ttyc1">
                 <thead>
                   <tr>
-                    <th>Bóc kiểm (EA)/파괴검사</th>
-                    <th>Lấy đồ/도구 준비</th>
-                    <th>Máy hỏng/설비 고장</th>
-                    <th>Dao NG/칼 불량</th>
-                    <th>Chờ liệu/원단 대기</th>
-                    <th>Chờ BTP/BTP 대기</th>
-                    <th>Hết liệu/원단 떨어짐</th>
-                    <th>Liệu NG/원단 불량</th>
+                    <th>STT</th>
+                    <th>DEFECT</th>
+                    <th>TEST_ITEM</th>
+                    <th>TEST_METHOD</th>                   
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td style={{ height: "20px" }}></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  {defectProcessData.map((element, index) => (
+                    <tr key={index}>
+                      <td>{element.STT}</td>
+                      <td>{element.DEFECT}</td>
+                      <td>{element.TEST_ITEM}</td>
+                      <td>{element.TEST_METHOD}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

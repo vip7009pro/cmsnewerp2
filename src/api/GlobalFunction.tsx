@@ -9,6 +9,7 @@ import {
   COMPONENT_DATA,
   CustomerListData,
   DAILY_YCSX_RESULT,
+  DEFECT_PROCESS_DATA,
   DINHMUC_QSLX,
   DTC_TEST_POINT,
   EQ_STT,
@@ -5161,3 +5162,20 @@ export const f_updateDMSX_LOSS_KT = async () => {
     });
   return kq;
 }
+
+export const f_loadDefectProcessData = async (G_CODE: string, PROCESS_NUMBER: number) => {
+  let kq: DEFECT_PROCESS_DATA[] = [];
+  await generalQuery("loadDefectProcessData", {
+    G_CODE: G_CODE,
+    PROCESS_NUMBER: PROCESS_NUMBER,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
+} 

@@ -4218,3 +4218,18 @@ export interface ProductionPlan {
   NEEDED_M: number,
   M_STOCK_QTY: number,
 }
+
+export interface DEFECT_PROCESS_DATA {
+  CTR_CD: string;
+  NG_SX100_ID: string;
+  G_CODE: string;
+  PROCESS_NUMBER: number;
+  STT: number;
+  DEFECT: string;
+  TEST_ITEM: string;
+  TEST_METHOD: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
