@@ -768,7 +768,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
           </table>         
         </div> */}
             <div className="text1">
-              3. DEFECT INFO__ {DATA.PLAN_ID} {":  "} (Phân loại:{" "}
+              3. 중점 불량 Thông tin lỗi (Phân loại:{" "}
               {request_codeinfo[0].CODE_50 === "01"
                 ? "GC"
                 : request_codeinfo[0].CODE_50 === "02"

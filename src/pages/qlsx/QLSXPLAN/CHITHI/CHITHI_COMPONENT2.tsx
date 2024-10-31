@@ -647,7 +647,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
             </table>
           </div>
           <div className="text1">
-            3. DEFECT INFO (Phân loại:{" "}
+            3. 중점 불량 Thông tin lỗi (Phân loại:{" "}
             {request_codeinfo[0].CODE_50 === "01"
               ? "GC"
               : request_codeinfo[0].CODE_50 === "02"
