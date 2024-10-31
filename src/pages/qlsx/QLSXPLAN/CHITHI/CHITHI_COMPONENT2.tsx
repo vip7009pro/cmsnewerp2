@@ -13,6 +13,7 @@ import {
   DEFECT_PROCESS_DATA,
 } from "../../../../api/GlobalInterface";
 import { f_loadDefectProcessData } from "../../../../api/GlobalFunction";
+import { FaStar } from "react-icons/fa";
 interface PLAN_COMBO {
   PLAN_LIST: QLSXPLANDATA[];
 }
@@ -670,7 +671,10 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   <th style={{ width: '2%' }}>Worst</th>
                   <th style={{ width: '10%' }}>Tên lỗi/불량명</th>
                   <th style={{ width: '10%' }}>Hạng mục test/테스트 항목</th>
-                  <th >Phương pháp test/테스트 방법</th>
+                  <th style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                      <span>Phương pháp test/테스트 방법</span>
+                      <FaStar color="red" size={25}/>
+                    </th>
                 </tr>
               </thead>
               <tbody>

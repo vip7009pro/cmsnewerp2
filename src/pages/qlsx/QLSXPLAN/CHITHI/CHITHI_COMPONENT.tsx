@@ -19,6 +19,8 @@ import {
   UserData,
 } from "../../../../api/GlobalInterface";
 import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../../../../api/GlobalFunction";
+import { CiStar } from "react-icons/ci";
+import { FaStar } from "react-icons/fa";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
 
   const company: string = useSelector(
@@ -803,16 +805,19 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                     <th style={{width:'2%'}}>Worst</th>
                     <th style={{width:'10%'}}>Tên lỗi/불량명</th>
                     <th style={{width:'10%'}}>Hạng mục test/테스트 항목</th>
-                    <th >Phương pháp test/테스트 방법</th>                   
+                    <th style={{position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                      <span>Phương pháp test/테스트 방법</span>
+                      <FaStar color="red" size={25}/>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {defectProcessData.map((element, index) => (
                     <tr key={index}>
-                      <td>{element.STT}</td>
-                      <td>{element.DEFECT}</td>
-                      <td>{element.TEST_ITEM}</td>
-                      <td>{element.TEST_METHOD}</td>
+                      <td style={{fontSize:'12px'}}>{element.STT}</td>
+                      <td style={{fontSize:'12px'}}>{element.DEFECT}</td>
+                      <td style={{fontSize:'12px'}}>{element.TEST_ITEM}</td>
+                      <td style={{fontSize:'12px'}}>{element.TEST_METHOD}</td>
                     </tr>
                   ))}
                 </tbody>
