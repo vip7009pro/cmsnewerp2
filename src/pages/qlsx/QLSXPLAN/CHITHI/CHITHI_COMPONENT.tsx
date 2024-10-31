@@ -644,7 +644,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                             ? request_codeinfo[0]?.LOSS_SX3
                             : DATA.PROCESS_NUMBER === 4
                               ? request_codeinfo[0]?.LOSS_SX4
-                              : 0)} %/{((DATA.PROCESS_NUMBER === 1
+                              : 0).toLocaleString("en-US")}%/{((DATA.PROCESS_NUMBER === 1
                                 ? request_codeinfo[0]?.LOSS_SX1
                                 : DATA.PROCESS_NUMBER === 2
                                   ? request_codeinfo[0]?.LOSS_SX2

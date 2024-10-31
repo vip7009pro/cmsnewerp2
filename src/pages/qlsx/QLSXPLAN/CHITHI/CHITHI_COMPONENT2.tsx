@@ -599,6 +599,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   <th>Step</th>
                   <th>Plan QTY</th>
                   <th>Setting</th>
+                  <th>Loss SX</th>
                 </tr>
               </thead>
               <tbody>
@@ -641,8 +642,29 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                           ? request_codeinfo[0]?.LOSS_SETTING3
                           : element.PROCESS_NUMBER === 4
                             ? request_codeinfo[0]?.LOSS_SETTING4
-                            : ""}` : 0 : "Không setting"}</td>
+                            : ""}` : 0 : "Không setting"} m</td>
+                    <td>
+                      {(element.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.LOSS_SX1
+                        : element.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.LOSS_SX2
+                          : element.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.LOSS_SX3
+                            : element.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.LOSS_SX4
+                              : 0).toLocaleString("en-US")}%/
+                      {((element.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.LOSS_SX1
+                        : element.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.LOSS_SX2
+                        : element.PROCESS_NUMBER === 3
+                          ? request_codeinfo[0]?.LOSS_SX3
+                          : element.PROCESS_NUMBER === 4
+                            ? request_codeinfo[0]?.LOSS_SX4
+                          : 0)*element.PLAN_QTY*(element.PD??0)/(element.CAVITY??0)/1000/100).toLocaleString('en-US',{maximumFractionDigits:1,minimumFractionDigits:1})}met</td>
                   </tr>
+                  
+
                 ))}
               </tbody>
             </table>
