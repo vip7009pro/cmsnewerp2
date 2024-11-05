@@ -695,7 +695,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   <th style={{ width: '10%' }}>Hạng mục test/테스트 항목</th>
                   <th style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>Phương pháp test/테스트 방법</span>
-                    <FaStar color="red" size={25} />
+                    {defectProcessData.length > 0 && <FaStar color="red" size={25} />}  
                   </th>
                 </tr>
               </thead>
