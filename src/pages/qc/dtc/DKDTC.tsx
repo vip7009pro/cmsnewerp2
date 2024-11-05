@@ -52,6 +52,7 @@ const DKDTC = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
+  const [trigger, setTrigger] = useState(false);  
   const dtcdatacolumn = [
     { field: 'DTC_ID', headerName: 'DTC_ID', resizable: true, width: 50 },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
@@ -412,7 +413,7 @@ const DKDTC = () => {
                               classes={{ root: "custom-checkbox-root" }}
                               name={element.TEST_CODE.toString()}
                               key={element.TEST_CODE}
-                              checked={element.SELECTED}
+                              checked={element.SELECTED}                             
                               onChange={(
                                 event: React.ChangeEvent<HTMLInputElement>,
                               ) => {
@@ -514,16 +515,17 @@ const DKDTC = () => {
                   }}
                 ></input>
               </label>
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3db55', color: 'black' }} onClick={() => {
-                setTestList((tl) =>
-                  tl.map((e) => {
-                    return {
-                      ...e,
-                      SELECTED: false,
-                    };
-                  }),
-                );
-              }}>Reset hạng mục</Button>
+              {/* <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3db55', color: 'black' }} onClick={() => {
+                let temp_testList = testList.map((e) => {
+                  return {
+                    ...e,
+                    SELECTED: false,
+                  };
+                });
+                console.log('temp_testList', temp_testList);
+                setTestList(temp_testList);
+                setTrigger(prev => !prev);
+              }}>Reset hạng mục</Button> */}
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#18a70b' }} onClick={() => {
                 if (checkInput()) {
                   registerDTC();
