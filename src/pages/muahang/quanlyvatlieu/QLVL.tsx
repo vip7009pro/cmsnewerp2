@@ -929,6 +929,192 @@ const QLVL = () => {
     { field: 'FSC', headerName: 'FSC', width: 50, resizable: true, floatingFilter: true, filter: true, },
     { field: 'FSC_CODE', headerName: 'FSC_CODE', width: 60, resizable: true, floatingFilter: true, filter: true, },
     { field: 'FSC_NAME', headerName: 'FSC_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'RND_APPROVAL', headerName: 'RND_APPROVAL', width: 150, resizable: true, cellRenderer: (params: any) => {
+      return (
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <button 
+            style={{ 
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              Swal.fire({
+                title: "Approve?",
+                text: "Bạn có chắc muốn approve TDS vật liệu này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6", 
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Add approve logic here
+                  Swal.fire("Approved!", "TDS đã được approve.", "success");
+                }
+              });
+            }}
+          >
+            Approve
+          </button>
+          <button
+            style={{
+              backgroundColor: '#f44336',
+              color: 'white', 
+              border: 'none',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              Swal.fire({
+                title: "Reject?",
+                text: "Bạn có chắc muốn reject TDS vật liệu này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Add reject logic here
+                  Swal.fire("Rejected!", "TDS đã bị reject.", "success");
+                }
+              });
+            }}
+          >
+            Reject
+          </button>
+        </div>
+      )
+    }},
+    { field: 'IQC_APPROVAL', headerName: 'IQC_APPROVAL', width: 150, resizable: true, cellRenderer: (params: any) => {
+      return (
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <button 
+            style={{ 
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              Swal.fire({
+                title: "Approve?",
+                text: "Bạn có chắc muốn approve TDS vật liệu này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6", 
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Add approve logic here
+                  Swal.fire("Approved!", "TDS đã được approve.", "success");
+                }
+              });
+            }}
+          >
+            Approve
+          </button>
+          <button
+            style={{
+              backgroundColor: '#f44336',
+              color: 'white', 
+              border: 'none',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              Swal.fire({
+                title: "Reject?",
+                text: "Bạn có chắc muốn reject TDS vật liệu này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Add reject logic here
+                  Swal.fire("Rejected!", "TDS đã bị reject.", "success");
+                }
+              });
+            }}
+          >
+            Reject
+          </button>
+        </div>
+      )
+    }},
+    { field: 'DTC_APPROVAL', headerName: 'DTC_APPROVAL', width: 150, resizable: true, cellRenderer: (params: any) => {
+      return (
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <button 
+            style={{ 
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              Swal.fire({
+                title: "Approve?",
+                text: "Bạn có chắc muốn approve TDS vật liệu này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6", 
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Add approve logic here
+                  Swal.fire("Approved!", "TDS đã được approve.", "success");
+                }
+              });
+            }}
+          >
+            Approve
+          </button>
+          <button
+            style={{
+              backgroundColor: '#f44336',
+              color: 'white', 
+              border: 'none',
+              padding: '3px 8px',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              Swal.fire({
+                title: "Reject?",
+                text: "Bạn có chắc muốn reject vật liệu này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Add reject logic here
+                  Swal.fire("Rejected!", "Vật liệu đã bị reject.", "success");
+                }
+              });
+            }}
+          >
+            Reject
+          </button>
+        </div>
+      )
+    }},
     { field: 'USE_YN', headerName: 'USE_YN', width: 60, resizable: true, floatingFilter: true, filter: true, cellRenderer: (params: any) => {
       if (params.data.USE_YN === 'N') {
         return (
