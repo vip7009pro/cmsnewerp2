@@ -5179,3 +5179,36 @@ export const f_loadDefectProcessData = async (G_CODE: string, PROCESS_NUMBER: nu
     });
   return kq;  
 } 
+
+export const f_resetIN_KHO_SX_IQC1 = async (PLAN_ID: string, M_LOT_NO: string) => {
+  let kq: boolean = false;
+  await generalQuery("resetKhoSX_IQC1", {
+    PLAN_ID: PLAN_ID,
+    M_LOT_NO: M_LOT_NO,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
+}
+export const f_resetIN_KHO_SX_IQC2 = async (PLAN_ID: string, M_LOT_NO: string) => {
+  let kq: boolean = false;
+  await generalQuery("resetKhoSX_IQC2", {
+    PLAN_ID: PLAN_ID,
+    M_LOT_NO: M_LOT_NO,
+  })  
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
+}

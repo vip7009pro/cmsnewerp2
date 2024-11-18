@@ -1667,6 +1667,15 @@ const DATASX = () => {
           }
         },
         {
+          field: 'IQC_IN', headerName: 'IQC_IN', resizable: true, width: 80, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "black", fontWeight: "bold" }}>
+                {e.data.IQC_IN?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
           field: 'NOT_BEEP_QTY', headerName: 'NOT_BEEP_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
             return (
               <span style={{ color: "#0570a1", fontWeight: "bold" }}>
@@ -1675,6 +1684,7 @@ const DATASX = () => {
             );
           }
         },
+        
         {
           field: 'LOCK_QTY', headerName: 'LOCK_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
             return (
@@ -1731,6 +1741,15 @@ const DATASX = () => {
             return (
               <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
                 {e.data.NEXT_OUT_QTY?.toLocaleString("en-US")}
+              </span>
+            );
+          }
+        },
+        {
+          field: 'RETURN_IQC', headerName: 'RETURN_IQC', resizable: true, width: 100, cellRenderer: (e: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "bold" }}>
+                {e.data.RETURN_IQC?.toLocaleString("en-US")}
               </span>
             );
           }

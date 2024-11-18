@@ -15,7 +15,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { checkBP, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { checkBP, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
 import { GiConfirmed } from "react-icons/gi";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -596,6 +596,13 @@ const FAILING = () => {
           .catch((error) => {
             console.log(error);
           });
+        if(await f_isM_LOT_NO_in_P500(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO)){
+          await f_resetIN_KHO_SX_IQC2(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO);        
+        }  
+        else 
+        {
+          await f_resetIN_KHO_SX_IQC1(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO);
+        }        
       }
       if (err_code === "") {
         Swal.fire("Thông báo", "Thêm data thành công", "success");
@@ -621,24 +628,48 @@ const FAILING = () => {
     if (selectedRowsDataA.current.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
-        await generalQuery("updateQCFailTableData", {
-          OUT1_EMPL: request_empl,
-          OUT2_EMPL: request_empl2,
-          OUT_CUST_CD: cust_cd,
-          OUT_PLAN_ID: planId,
-          REMARK_OUT: remark,
-          FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message} | `;
-            }
+        if(!(selectedRowsDataA.current[i].OUT1_EMPL === null && selectedRowsDataA.current[i].OUT2_EMPL === null)){
+          err_code += `Lỗi: Cuộn ${selectedRowsDataA.current[i].M_LOT_NO} đã out rồi | `;
+        } 
+        else
+        {
+          await generalQuery("updateQCFailTableData", {
+            OUT1_EMPL: request_empl,
+            OUT2_EMPL: request_empl2,
+            OUT_CUST_CD: cust_cd,
+            OUT_PLAN_ID: planId,
+            REMARK_OUT: remark,
+            FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
           })
-          .catch((error) => {
-            console.log(error);
-          });
+            // eslint-disable-next-line no-loop-func
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                 f_nhapkhoao({
+                  FACTORY: selectedRowsDataA.current[i].FACTORY,
+                  PHANLOAI: 'R',
+                  PLAN_ID_INPUT: planId,
+                  PLAN_ID_SUDUNG: null,
+                  M_CODE: selectedRowsDataA.current[i].M_CODE,
+                  M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
+                  ROLL_QTY: selectedRowsDataA.current[i].ROLL_QTY,
+                  IN_QTY: selectedRowsDataA.current[i].IN_QTY,
+                  TOTAL_IN_QTY: selectedRowsDataA.current[i].TOTAL_IN_QTY,
+                  USE_YN: 'Y',
+                  FSC: 'N',
+                  FSC_MCODE: '01',
+                  FSC_GCODE: '01',
+                })
+              } else {
+                err_code += ` Lỗi: ${response.data.message} | `;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+        }
+
+       
       }
       if (err_code === "") {
         Swal.fire("Thông báo", "Xuất thành công", "success");
@@ -1023,7 +1054,7 @@ const FAILING = () => {
             <div className="formbutton">
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#efff0c', color: 'black' }} onClick={() => {
                 checkBP(userData, ["QC"], ["ALL"], ["ALL"], updateQCFailTable);
-              }}>Xuất</Button>
+              }}>Xuất</Button>              
             </div>            
             <div
               className="formbutton"
