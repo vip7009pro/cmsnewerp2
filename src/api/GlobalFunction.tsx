@@ -5245,3 +5245,16 @@ export const f_getMaterialDocData = async (filterData: any) => {
   return mat_doc_data;
 };
 
+export const f_insertMaterialDocData = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("insertMaterialDocData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
+};  

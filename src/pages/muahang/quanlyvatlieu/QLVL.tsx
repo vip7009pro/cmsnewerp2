@@ -965,7 +965,7 @@ const QLVL = () => {
             >
               <DialogTitle style={{ textAlign: "center" }}>Material Documents</DialogTitle>
               <DialogContent>
-                <VLDOC />
+                <VLDOC M_ID={params.data.M_ID} M_NAME={params.data.M_NAME} />
               </DialogContent>
             </Dialog>
           </>
