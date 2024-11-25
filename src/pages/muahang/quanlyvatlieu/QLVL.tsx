@@ -4,6 +4,9 @@ import {
   IconButton,
   TextField,
   createFilterOptions,
+  DialogContent,
+  DialogTitle,
+  Dialog,
 } from "@mui/material";
 import moment from "moment";
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -28,6 +31,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { BiLoaderCircle } from "react-icons/bi";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
+import VLDOC from "./VLDOC";
 const QLVL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showdialog, setShowDialog] = useState(false);
@@ -929,192 +933,6 @@ const QLVL = () => {
     { field: 'FSC', headerName: 'FSC', width: 50, resizable: true, floatingFilter: true, filter: true, },
     { field: 'FSC_CODE', headerName: 'FSC_CODE', width: 60, resizable: true, floatingFilter: true, filter: true, },
     { field: 'FSC_NAME', headerName: 'FSC_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, },
-    { field: 'RND_APPROVAL', headerName: 'RND_APPROVAL', width: 150, resizable: true, cellRenderer: (params: any) => {
-      return (
-        <div style={{ display: 'flex', gap: '5px' }}>
-          <button 
-            style={{ 
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Approve?",
-                text: "Bạn có chắc muốn approve TDS vật liệu này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6", 
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes"
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Add approve logic here
-                  Swal.fire("Approved!", "TDS đã được approve.", "success");
-                }
-              });
-            }}
-          >
-            Approve
-          </button>
-          <button
-            style={{
-              backgroundColor: '#f44336',
-              color: 'white', 
-              border: 'none',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Reject?",
-                text: "Bạn có chắc muốn reject TDS vật liệu này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes"
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Add reject logic here
-                  Swal.fire("Rejected!", "TDS đã bị reject.", "success");
-                }
-              });
-            }}
-          >
-            Reject
-          </button>
-        </div>
-      )
-    }},
-    { field: 'IQC_APPROVAL', headerName: 'IQC_APPROVAL', width: 150, resizable: true, cellRenderer: (params: any) => {
-      return (
-        <div style={{ display: 'flex', gap: '5px' }}>
-          <button 
-            style={{ 
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Approve?",
-                text: "Bạn có chắc muốn approve TDS vật liệu này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6", 
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes"
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Add approve logic here
-                  Swal.fire("Approved!", "TDS đã được approve.", "success");
-                }
-              });
-            }}
-          >
-            Approve
-          </button>
-          <button
-            style={{
-              backgroundColor: '#f44336',
-              color: 'white', 
-              border: 'none',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Reject?",
-                text: "Bạn có chắc muốn reject TDS vật liệu này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes"
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Add reject logic here
-                  Swal.fire("Rejected!", "TDS đã bị reject.", "success");
-                }
-              });
-            }}
-          >
-            Reject
-          </button>
-        </div>
-      )
-    }},
-    { field: 'DTC_APPROVAL', headerName: 'DTC_APPROVAL', width: 150, resizable: true, cellRenderer: (params: any) => {
-      return (
-        <div style={{ display: 'flex', gap: '5px' }}>
-          <button 
-            style={{ 
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Approve?",
-                text: "Bạn có chắc muốn approve TDS vật liệu này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6", 
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes"
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Add approve logic here
-                  Swal.fire("Approved!", "TDS đã được approve.", "success");
-                }
-              });
-            }}
-          >
-            Approve
-          </button>
-          <button
-            style={{
-              backgroundColor: '#f44336',
-              color: 'white', 
-              border: 'none',
-              padding: '3px 8px',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              Swal.fire({
-                title: "Reject?",
-                text: "Bạn có chắc muốn reject vật liệu này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes"
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Add reject logic here
-                  Swal.fire("Rejected!", "Vật liệu đã bị reject.", "success");
-                }
-              });
-            }}
-          >
-            Reject
-          </button>
-        </div>
-      )
-    }},
     { field: 'USE_YN', headerName: 'USE_YN', width: 60, resizable: true, floatingFilter: true, filter: true, cellRenderer: (params: any) => {
       if (params.data.USE_YN === 'N') {
         return (
@@ -1127,6 +945,33 @@ const QLVL = () => {
       } 
     } },
     { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 60, resizable: true, floatingFilter: true, filter: true, },
+    {
+      field: 'DOC', headerName: 'DOC', width: 90, resizable: true, cellRenderer: (params: any) => {
+        const [openDialog, setOpenDialog] = useState(false);
+        return (
+          <>
+            <Button
+              variant="contained" 
+              size="small"
+              onClick={() => setOpenDialog(true)}
+            >
+              Docs
+            </Button>
+            <Dialog
+              open={openDialog}
+              onClose={() => setOpenDialog(false)}
+              maxWidth="lg"
+              fullWidth
+            >
+              <DialogTitle style={{ textAlign: "center" }}>Material Documents</DialogTitle>
+              <DialogContent>
+                <VLDOC />
+              </DialogContent>
+            </Dialog>
+          </>
+        )
+      }
+    },
     {
       field: 'TDS', headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
         let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;

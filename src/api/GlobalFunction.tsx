@@ -21,6 +21,7 @@ import {
   LICHSUXUATKHOAO,
   LOSS_TABLE_DATA,
   MACHINE_LIST,
+  MAT_DOC_DATA,
   POBALANCETDYCSX,
   PONOLIST,
   POTableData,
@@ -5212,3 +5213,35 @@ export const f_resetIN_KHO_SX_IQC2 = async (PLAN_ID: string, M_LOT_NO: string) =
     });
   return kq;  
 }
+
+export const f_getMaterialDocData = async (filterData: any) => {
+  let mat_doc_data: MAT_DOC_DATA[] = [];
+  await generalQuery("getMaterialDocData", filterData)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: MAT_DOC_DATA[] = response.data.data.map(
+          (element: MAT_DOC_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+              REG_DATE: element.REG_DATE?.slice(0, 10) ?? '',
+              EXP_DATE: element.EXP_DATE?.slice(0, 10) ?? '',
+              PUR_APP_DATE: element.PUR_APP_DATE?.slice(0, 10) ?? '',
+              DTC_APP_DATE: element.DTC_APP_DATE?.slice(0, 10) ?? '',
+              RND_APP_DATE: element.RND_APP_DATE?.slice(0, 10) ?? '',
+              INS_DATE: element.INS_DATE?.slice(0, 10) ?? '',
+              UPD_DATE: element.UPD_DATE?.slice(0, 10) ?? '',
+            };
+          }
+        );
+        mat_doc_data = loadeddata;
+      } else {
+        mat_doc_data = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return mat_doc_data;
+};
+

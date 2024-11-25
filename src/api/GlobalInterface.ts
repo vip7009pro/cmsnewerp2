@@ -4233,3 +4233,31 @@ export interface DEFECT_PROCESS_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
 }
+
+export interface MAT_DOC_DATA {
+  CTR_CD: string;
+  DOC_ID: string;
+  DOC_TYPE: string;
+  M_ID: number;
+  M_NAME: string;
+  VER: string;
+  FILE_NAME: string;
+  FILE_UPLOADED: string;
+  REG_DATE: string;
+  EXP_DATE: string;
+  EXP_YN: string;
+  PUR_APP: string;
+  DTC_APP: string;
+  RND_APP: string;
+  PUR_EMPL: string;
+  DTC_EMPL: string;
+  RND_EMPL: string;
+  PUR_APP_DATE: string;
+  DTC_APP_DATE: string;
+  RND_APP_DATE: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
