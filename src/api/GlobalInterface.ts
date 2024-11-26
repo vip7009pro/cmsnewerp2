@@ -575,6 +575,9 @@ export interface MATERIAL_TABLE_DATA {
   FSC: string;
   FSC_CODE: string;
   FSC_NAME: string;
+  TDS_VER: number;
+  SGS_VER: number;
+  MSDS_VER: number
 }
 export interface FSC_LIST_DATA {
   FSC_CODE: string;

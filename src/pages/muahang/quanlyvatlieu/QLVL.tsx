@@ -35,12 +35,15 @@ import VLDOC from "./VLDOC";
 const QLVL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showdialog, setShowDialog] = useState(false);
+  const [selected_M_ID, setSelected_M_ID] = useState(0);
+  const [selected_M_NAME, setSelected_M_NAME] = useState("");
   const handleOpenDialog = () => {
     setShowDialog(true);
   }
   const handleCloseDialog = () => {
     setShowDialog(false);
   }
+  const [openDialog, setOpenDialog] = useState(false);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [m_name, setM_Name] = useState("");
@@ -65,7 +68,10 @@ const QLVL = () => {
     FSC: "N",
     FSC_CODE: "01",
     FSC_NAME: "NA",
-    TDS: "N"
+    TDS: "N",
+    TDS_VER: 0,
+    SGS_VER: 0,
+    MSDS_VER: 0
   });
   const load_material_table = () => {
     generalQuery("get_material_table", {
@@ -946,33 +952,56 @@ const QLVL = () => {
     } },
     { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 60, resizable: true, floatingFilter: true, filter: true, },
     {
-      field: 'DOC', headerName: 'DOC', width: 90, resizable: true, cellRenderer: (params: any) => {
-        const [openDialog, setOpenDialog] = useState(false);
+      field: 'DOC', headerName: 'DOC', width: 90, resizable: true, cellRenderer: (params: any) => {       
         return (
-          <>
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Button
               variant="contained" 
               size="small"
-              onClick={() => setOpenDialog(true)}
+              onClick={() => {
+                setSelected_M_ID(params.data.M_ID);
+                setSelected_M_NAME(params.data.M_NAME);
+                setOpenDialog(true);
+              }}
             >
               Docs
             </Button>
-            <Dialog
-              open={openDialog}
-              onClose={() => setOpenDialog(false)}
-              maxWidth="lg"
-              fullWidth
-            >
-              <DialogTitle style={{ textAlign: "center" }}>Material Documents</DialogTitle>
-              <DialogContent>
-                <VLDOC M_ID={params.data.M_ID} M_NAME={params.data.M_NAME} />
-              </DialogContent>
-            </Dialog>
-          </>
+            
+          </div>
         )
       }
     },
-    {
+    { field: 'TDS_VER', headerName: 'TDS', width: 70, resizable: true, cellRenderer: (params: any) => {
+      if (params.data.TDS_VER > 0) {
+        return (
+          <a href={`/materialdocs/${params.data.M_ID}_TDS_${params.data.TDS_VER}.pdf`} target="_blank" rel="noopener noreferrer">
+            Ver.{params.data.TDS_VER}
+          </a>
+        );
+      }
+      return <span>-</span>;
+    }},
+    { field: 'SGS_VER', headerName: 'SGS', width: 70, resizable: true, cellRenderer: (params: any) => {
+      if (params.data.SGS_VER > 0) {
+        return (
+          <a href={`/materialdocs/${params.data.M_ID}_SGS_${params.data.SGS_VER}.pdf`} target="_blank" rel="noopener noreferrer">
+            Ver.{params.data.SGS_VER}
+          </a>
+        );
+      }
+      return <span>-</span>;
+    }},
+    { field: 'MSDS_VER', headerName: 'MSDS', width: 70, resizable: true, cellRenderer: (params: any) => {
+      if (params.data.MSDS_VER > 0) {
+        return (
+          <a href={`/materialdocs/${params.data.M_ID}_MSDS_${params.data.MSDS_VER}.pdf`} target="_blank" rel="noopener noreferrer">
+            Ver.{params.data.MSDS_VER}
+          </a>
+        );
+      }
+      return <span>-</span>;
+    }},
+    /* {
       field: 'TDS', headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
         let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;
         let file: any = null;
@@ -998,7 +1027,7 @@ const QLVL = () => {
           )
         }
       }, floatingFilter: true, filter: true,
-    },
+    }, */
     { field: 'INS_DATE', headerName: 'INS_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
@@ -1288,6 +1317,17 @@ const QLVL = () => {
         <div className="tracuuYCSXTable">
           {material_data_ag_table}
         </div>
+        <CustomDialog
+          isOpen={openDialog}
+          onClose={() => setOpenDialog(false)}
+          title="Material Documents"
+          content={
+            <div style={{ width: '1500px', height: '100%', padding: '10px' }}>
+              <VLDOC M_ID={selected_M_ID} M_NAME={selected_M_NAME} />
+            </div>
+          }
+          actions={<></>}
+        />
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton

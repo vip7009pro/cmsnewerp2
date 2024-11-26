@@ -66,7 +66,10 @@ const NHAPLIEU = () => {
     FSC_CODE:"",
     FSC_NAME:"",
     TDS:"", 
-    FSC:""   
+    FSC:"",
+    TDS_VER:0,
+    SGS_VER:0,
+    MSDS_VER:0 
   });
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [materialList, setMaterialList] = useState<MaterialListData[]>([

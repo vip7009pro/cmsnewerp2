@@ -5258,3 +5258,70 @@ export const f_insertMaterialDocData = async (DATA: any) => {
     });
   return kq;  
 };  
+export const f_checkDocVersion = async (DATA: any) => {
+  let kq: number = 0;
+  await generalQuery("checkDocVersion", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data[0].VER;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq +1;  
+}
+
+export const f_updateMaterialDocData = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updateMaterialDocData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;    
+} 
+export const f_updatePurApp = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updatePurApp", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+export const f_updateDtcApp = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updateDtcApp", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+} 
+export const f_updateRndApp = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updateRndApp", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
+}
+
