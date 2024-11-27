@@ -81,6 +81,7 @@ const QUICKPLAN2 = () => {
     LOSS_SETTING2: 0,
     LOSS_SETTING3: 0,
     LOSS_SETTING4: 0,
+    LOSS_KT: 0,
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
@@ -1581,6 +1582,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+            LOSS_KT: datadinhmuc.LOSS_KT
           }); 
           err_code = (await f_saveQLSX({
             G_CODE: selectedPlan.current?.G_CODE,
@@ -1609,6 +1611,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+            LOSS_KT: datadinhmuc.LOSS_KT,
             NOTE: datadinhmuc.NOTE,
           })) ? "0" : "1";
           if (err_code === "1") {

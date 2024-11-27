@@ -349,8 +349,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
           {main_plan.PLAN_ID}
         </div>
         <div className="headertitle">
-          생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}- B
-          {main_plan.STEP})<br></br>
+          <span style={{fontSize: "1.4rem"}}>생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}-CĐ{main_plan.PROCESS_NUMBER}-B{main_plan.STEP})</span><br></br>
           <span style={{ fontSize: 12 }}>
             Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
           </span>

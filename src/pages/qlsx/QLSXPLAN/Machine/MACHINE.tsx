@@ -122,6 +122,7 @@ const MACHINE = () => {
     LOSS_SETTING2: 0,
     LOSS_SETTING3: 0,
     LOSS_SETTING4: 0,
+    LOSS_KT: 0,
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
@@ -1556,7 +1557,8 @@ const MACHINE = () => {
             LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,   
+            LOSS_KT: datadinhmuc.LOSS_KT         
           });
           err_code = (await f_saveQLSX({
             G_CODE: selectedPlan?.G_CODE,
@@ -2217,6 +2219,7 @@ const MACHINE = () => {
         LOSS_SETTING2: 0,
         LOSS_SETTING3: 0,
         LOSS_SETTING4: 0,
+        LOSS_KT: 0,
         NOTE: "",
       });
     }
@@ -2437,6 +2440,7 @@ const MACHINE = () => {
                 LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
                 LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
                 LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
+                LOSS_KT: rowData.LOSS_KT ?? 0,
                 NOTE: rowData.NOTE ?? "",
               });
               getRecentDM(rowData.G_CODE);
@@ -2985,6 +2989,7 @@ const MACHINE = () => {
                   LOSS_SETTING2: 0,
                   LOSS_SETTING3: 0,
                   LOSS_SETTING4: 0,
+                  LOSS_KT: 0,
                   NOTE: "",
                 });
               }}
@@ -3660,7 +3665,7 @@ const MACHINE = () => {
                 </div>
               </div>
               <div className='listlieuchithi'>
-                <div className="title">
+                <div className="title" style={{ backgroundImage: (selectedPlan?.LOSS_KT ?? 0) > 0 ? "linear-gradient(0deg, #afd3d1, #25d468)" : "linear-gradient(0deg, #afd3d1, #ec4f4f)" }}>
                   <span style={{ fontSize: '2rem', fontWeight: "bold", color: "#8c03c2FF" }}>
                     {selectedPlan?.PLAN_ID}
                   </span>
@@ -3676,8 +3681,8 @@ const MACHINE = () => {
                     </span>
                   </div>
                   <div className="losskt">
-                    <span style={{ fontSize: '1rem', fontWeight: "bold", color: "#c7c406f" }}>
-                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}% (Max 5%)
+                    <span style={{ fontSize: '1rem', fontWeight: "bold", }}>
+                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}%
                     </span>
                   </div>
                   <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>

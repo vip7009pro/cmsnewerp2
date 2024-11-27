@@ -417,6 +417,8 @@ export interface YCSXTableData {
   SLC_CD3?: number;
   SLC_CD4?: number;
   USE_YN?: string;
+  INS_DATE?: string;
+  UPD_DATE?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
@@ -1832,6 +1834,7 @@ export interface DINHMUC_QSLX {
   LOSS_SETTING2: number;
   LOSS_SETTING3: number;
   LOSS_SETTING4: number;
+  LOSS_KT: number;
   NOTE: string;
 }
 export interface QLSXPLANDATA {
@@ -2453,6 +2456,7 @@ export interface CODE_FULL_INFO {
   LOSS_ST_SX2?: number;
   LOSS_ST_SX3?: number;
   LOSS_ST_SX4?: number;
+  LOSS_KT?: number;
   NOTE?: string;
   BEP?: number;
   QL_HSD?: string;

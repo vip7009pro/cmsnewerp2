@@ -394,7 +394,7 @@ const PLAN_DATATB = () => {
           return <span>0</span>;
         }
       },
-    },
+    },    
     {
       field: "EQ_STATUS",
       headerName: "EQ_STATUS",
@@ -682,6 +682,12 @@ const PLAN_DATATB = () => {
         }
       }
     },
+    { field: "LOSS_KT", headerName: "LOSS_KT", width: 80, editable: false, cellRenderer: (params: any) => {
+      return (
+        <span style={{ color: "red" }}>{params.data.LOSS_KT.toLocaleString("en", "US", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}%</span>
+        );
+      }
+    },
     {
       field: "AT_LEADTIME",
       headerName: "AT_LEADTIME",
@@ -745,7 +751,7 @@ const PLAN_DATATB = () => {
           );
         }
       }
-    },
+    },    
     {
       field: "PROD_REQUEST_NO",
       headerName: "YCSX NO",
@@ -932,6 +938,7 @@ const PLAN_DATATB = () => {
     { field: "EQ2", headerName: "EQ2", width: 40, editable: false },
     { field: "EQ3", headerName: "EQ3", width: 40, editable: false },
     { field: "EQ4", headerName: "EQ4", width: 40, editable: false },
+    
   ];
   const column_planmaterialtable = [
     {

@@ -19,6 +19,7 @@ import {
   f_resetBanVe,
   f_setNgoaiQuan,
   f_updateBEP,
+  f_updateLossKT,
 } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
@@ -921,6 +922,12 @@ const CODE_MANAGER = () => {
     {
       field: "BEP",
       headerName: "BEP",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "LOSS_KT",
+      headerName: "LOSS_KT",
       width: 80,
       editable: enableEdit,
     },
@@ -1915,6 +1922,15 @@ const CODE_MANAGER = () => {
             >
               <MdPriceChange color="red" size={15} />
               Update BEP
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                f_updateLossKT(codedatatablefilter);
+              }}
+            >
+              <MdUpdate color="red" size={15} />
+              Update LOSS KT
             </IconButton>
           </div>
           <AGTable

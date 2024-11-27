@@ -1181,6 +1181,7 @@ export const f_saveQLSX = async (qlsxdata: any) => {
     LOSS_SETTING2: qlsxdata.LOSS_SETTING2,
     LOSS_SETTING3: qlsxdata.LOSS_SETTING3,
     LOSS_SETTING4: qlsxdata.LOSS_SETTING4,
+    LOSS_KT: qlsxdata.LOSS_KT,
     NOTE: qlsxdata.NOTE,
   })
     .then((response) => {
@@ -1207,6 +1208,7 @@ export const f_updateDMYCSX = async (ycsxDMData: any) => {
     LOSS_SETTING2: ycsxDMData.LOSS_SETTING2,
     LOSS_SETTING3: ycsxDMData.LOSS_SETTING3,
     LOSS_SETTING4: ycsxDMData.LOSS_SETTING4,
+    LOSS_KT: ycsxDMData.LOSS_KT
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
@@ -1235,6 +1237,7 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
           LOSS_SETTING2: ycsxDMData.LOSS_SETTING2,
           LOSS_SETTING3: ycsxDMData.LOSS_SETTING3,
           LOSS_SETTING4: ycsxDMData.LOSS_SETTING4,
+          LOSS_KT: ycsxDMData.LOSS_KT
         });
       }
     })
@@ -1243,7 +1246,7 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
     });
 }
 export const f_updateLossKT_ZTB_DM_HISTORY = async () => {
-  await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
+ /*  await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
       } else {
@@ -1252,7 +1255,7 @@ export const f_updateLossKT_ZTB_DM_HISTORY = async () => {
     })
     .catch((error) => {
       console.log(error);
-    })
+    }) */
 }
 export const f_updatePlanQLSX = async (planData: any) => {
   let kq: string = "";
@@ -3141,6 +3144,8 @@ export const f_traYCSX = async (searchFilter: any) => {
               W7: element.W7 ?? 0,
               W8: element.W8 ?? 0,
               PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              UPD_DATE: moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
               id: index
             };
           }
@@ -5163,7 +5168,6 @@ export const f_updateDMSX_LOSS_KT = async () => {
     });
   return kq;
 }
-
 export const f_loadDefectProcessData = async (G_CODE: string, PROCESS_NUMBER: number) => {
   let kq: DEFECT_PROCESS_DATA[] = [];
   await generalQuery("loadDefectProcessData", {
@@ -5179,8 +5183,7 @@ export const f_loadDefectProcessData = async (G_CODE: string, PROCESS_NUMBER: nu
       console.log(error);
     });
   return kq;  
-} 
-
+}
 export const f_resetIN_KHO_SX_IQC1 = async (PLAN_ID: string, M_LOT_NO: string) => {
   let kq: boolean = false;
   await generalQuery("resetKhoSX_IQC1", {
@@ -5213,7 +5216,6 @@ export const f_resetIN_KHO_SX_IQC2 = async (PLAN_ID: string, M_LOT_NO: string) =
     });
   return kq;  
 }
-
 export const f_getMaterialDocData = async (filterData: any) => {
   let mat_doc_data: MAT_DOC_DATA[] = [];
   await generalQuery("getMaterialDocData", filterData)
@@ -5244,7 +5246,6 @@ export const f_getMaterialDocData = async (filterData: any) => {
     });
   return mat_doc_data;
 };
-
 export const f_insertMaterialDocData = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("insertMaterialDocData", DATA)
@@ -5257,7 +5258,7 @@ export const f_insertMaterialDocData = async (DATA: any) => {
       console.log(error);
     });
   return kq;  
-};  
+};
 export const f_checkDocVersion = async (DATA: any) => {
   let kq: number = 0;
   await generalQuery("checkDocVersion", DATA)
@@ -5325,3 +5326,26 @@ export const f_updateRndApp = async (DATA: any) => {
   return kq;  
 }
 
+export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
+  if (codeList.length >= 1) {
+    checkBP(getUserData(), ["ALL"], ["ALL"], ["ALL"], async () => {
+      for (let i = 0; i < codeList.length; i++) {
+        await generalQuery("updateLossKT", {
+          G_CODE: codeList[i].G_CODE,
+          LOSS_KT: codeList[i].LOSS_KT ?? 0,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      Swal.fire("Thông báo", "Update LOSS KT THÀNH CÔNG", "success");
+    });
+  } else {
+    Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
+  }
+}
