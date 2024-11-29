@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   TextField,
   createFilterOptions,
@@ -80,6 +81,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
     BARCODE_TYPE: "1D",
     G_NAME: "",
     STATUS: "",
+    SX_STATUS: "",
   });
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
@@ -98,6 +100,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               return {
                 ...element,
                 G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                SX_STATUS: element?.SX_STATUS == null ? "NO" : element?.SX_STATUS,
                 id: index,
               };
             },
@@ -169,6 +172,34 @@ const PRODUCT_BARCODE_MANAGER = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const deleteBarcode = async () => {
+    if (selectedRows.SX_STATUS !== "NO") {
+      Swal.fire("Thông báo", "Barcode đã được sản xuất, không thể xóa", "error");
+      return;
+    } 
+    Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa barcode này không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        generalQuery("deleteBarcode", selectedRows)
+          .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", "Delete barcode thành công", "success");
+          load_barcode_table();
+          } else {
+          }
+        })
+        .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -432,6 +463,11 @@ const PRODUCT_BARCODE_MANAGER = () => {
                   );
                 }
               }}
+            ></Column>
+            <Column
+              dataField="SX_STATUS"
+              caption="SX_STATUS"
+              width={100}
             ></Column>
             <Summary>
               <TotalItem
@@ -1252,6 +1288,14 @@ const PRODUCT_BARCODE_MANAGER = () => {
             >
               Update
             </button>
+            <Button
+              color="error"
+              onClick={() => {
+                deleteBarcode();
+              }}
+            >
+              Delete
+            </Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{BarcodeDataTable}</div>

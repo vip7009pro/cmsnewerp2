@@ -2600,6 +2600,7 @@ export interface BARCODE_DATA {
   BARCODE_INSP: string;
   BARCODE_RELI: string;
   STATUS: string;
+  SX_STATUS: string;
 }
 //quan ly giao nhan film data
 export interface HANDOVER_DATA {

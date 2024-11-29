@@ -1246,7 +1246,7 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
     });
 }
 export const f_updateLossKT_ZTB_DM_HISTORY = async () => {
- /*  await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
+  await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
       } else {
@@ -1255,7 +1255,7 @@ export const f_updateLossKT_ZTB_DM_HISTORY = async () => {
     })
     .catch((error) => {
       console.log(error);
-    }) */
+    })
 }
 export const f_updatePlanQLSX = async (planData: any) => {
   let kq: string = "";
