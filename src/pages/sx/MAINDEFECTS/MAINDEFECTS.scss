@@ -1,0 +1,255 @@
+@media only screen and (max-width: 5000px) {
+  .maindefects {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .tracuuDataPqc {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      .tracuuDataPQCform {
+        display: flex;
+        width: 250px;
+        flex-direction: column;
+        align-items: center;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+        padding: 5px;
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+
+        .forminput {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-around;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: center;
+            flex-wrap: wrap;
+            input {
+              width: 125px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+            select {
+              width: 135px;
+              height: 25px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          flex-direction: row;
+          gap: 5px;
+          font-size: 0.6rem;
+        }
+        .formsummary {
+          display: flex;
+          flex-direction: row;
+          background-image: linear-gradient(0deg, #ececec, #99f86d);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          gap: 20px;
+          border-radius: 5px;
+          margin-top: 5px;
+
+          .summarygroup {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-items: flex-start;
+            gap: 10px;
+            .summaryvalue {
+              display: flex;
+              font-size: 16px;
+              justify-self: flex-end;
+              align-self: flex-end;
+              padding: 5px;
+              color: rgb(83, 36, 255);
+            }
+          }
+        }
+      }
+      .tracuuPQCTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 91vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+      }
+    }
+    .updatenndsform {
+      display: flex;
+      z-index: 2;
+      position: absolute;
+      padding: 10px;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 5px;
+      top: -5%;
+      left: 10%;
+      width: 80%;
+      height: fit-content;      
+      background-image: linear-gradient(0deg, #d3d2af, #86ffa4);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        .inputbox {
+          display: flex;
+          width: 100%;
+          padding: 10px;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+        }
+    }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .maindefects {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .tracuuDataPqc {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .tracuuDataPQCform {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+        padding: 5px;
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+
+        .forminput {
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-between;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            input {
+              width: 100px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+            select {
+              width: 110px;
+              height: 25px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          flex-direction: row;
+          gap: 5px;
+          font-size: 0.6rem;
+        }
+        .formsummary {
+          display: flex;
+          flex-direction: row;
+          background-image: linear-gradient(0deg, #ececec, #99f86d);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          gap: 20px;
+          border-radius: 5px;
+          margin-top: 5px;
+
+          .summarygroup {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-items: flex-start;
+            gap: 10px;
+            .summaryvalue {
+              display: flex;
+              font-size: 16px;
+              justify-self: flex-end;
+              align-self: flex-end;
+              padding: 5px;
+              color: rgb(83, 36, 255);
+            }
+          }
+        }
+      }
+      .tracuuPQCTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 85vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 320px) {
+}

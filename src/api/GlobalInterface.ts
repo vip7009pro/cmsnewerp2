@@ -4236,10 +4236,16 @@ export interface DEFECT_PROCESS_DATA {
   DEFECT: string;
   TEST_ITEM: string;
   TEST_METHOD: string;
+  INS_PATROL_ID: string;
+  IMAGE_YN: string;
+  USE_YN: string;
   INS_DATE: string;
   INS_EMPL: string;
   UPD_DATE: string;
   UPD_EMPL: string;
+  PROD_MODEL: string;
+  DESCR: string;
+  G_NAME: string;
 }
 
 export interface MAT_DOC_DATA {

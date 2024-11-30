@@ -342,6 +342,10 @@ const UpHangLoat = () => {
   };
   const handleAddNewCode = async (codefullinfo: CODE_FULL_INFO) => {
     //console.log(handleCheckCodeInfo());
+    if(Number(codefullinfo.CODE_12)<6 || Number(codefullinfo.CODE_12)>9){
+      Swal.fire('Thông báo', 'Code 12 phải là số từ 6 đến 9', 'error');
+      return false;
+    }
     let insertStatus: boolean = false;
     let checkg_name_kd: boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD);
     console.log('checkg_name_kd', checkg_name_kd);

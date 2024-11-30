@@ -17,6 +17,7 @@ import { LangConText } from "../../api/Context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import FAILING from "../qc/iqc/FAILING";
+import MAINDEFECTS from "./MAINDEFECTS/MAINDEFECTS";
 
 const BAOCAOSXALL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -66,6 +67,9 @@ const BAOCAOSXALL = () => {
             <Tab>
               <span className="mininavtext">PATROL</span>
             </Tab>    
+            <Tab>
+              <span className="mininavtext">MAIN DEFECTS</span>
+            </Tab>
           </TabList>
           <TabPanel>
             <DATASX />
@@ -93,7 +97,10 @@ const BAOCAOSXALL = () => {
           </TabPanel>
           <TabPanel>
             <PATROL />
-          </TabPanel>          
+          </TabPanel>      
+          <TabPanel>
+            <MAINDEFECTS />
+          </TabPanel>
         </Tabs>        
       </Suspense>
     </div>
