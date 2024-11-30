@@ -2,8 +2,6 @@ import React, { useEffect, useState, lazy, Suspense, useContext } from "react";
 import "./BAOCAOSXALL.scss";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-
-
 const LICHSUINPUTLIEU = React.lazy(() => import("../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
 const DATASX = React.lazy(() => import("../qlsx/QLSXPLAN/DATASX/DATASX"));
 const LICHSUTEMLOTSX = React.lazy(() => import("./LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
@@ -18,7 +16,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import FAILING from "../qc/iqc/FAILING";
 import MAINDEFECTS from "./MAINDEFECTS/MAINDEFECTS";
-
 const BAOCAOSXALL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [lang, setLang] = useContext(LangConText);
@@ -28,9 +25,9 @@ const BAOCAOSXALL = () => {
       <Suspense fallback={<div> Loading...</div>}>
         <Tabs className="tabs" style={{
           fontSize: "0.6rem",
-          width: "100%",          
+          width: "100%",
         }}
-        forceRenderTabPanel={false}
+          forceRenderTabPanel={false}
         >
           <TabList className="tablist" style={{
             display: "flex",
@@ -66,7 +63,7 @@ const BAOCAOSXALL = () => {
             </Tab>
             <Tab>
               <span className="mininavtext">PATROL</span>
-            </Tab>    
+            </Tab>
             <Tab>
               <span className="mininavtext">MAIN DEFECTS</span>
             </Tab>
@@ -97,11 +94,11 @@ const BAOCAOSXALL = () => {
           </TabPanel>
           <TabPanel>
             <PATROL />
-          </TabPanel>      
+          </TabPanel>
           <TabPanel>
             <MAINDEFECTS />
           </TabPanel>
-        </Tabs>        
+        </Tabs>
       </Suspense>
     </div>
   );
