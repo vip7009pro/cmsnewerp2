@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
-import { generalQuery, getUserData, logout } from "../../api/Api";
+import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -15,6 +15,9 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import FileTransfer from "../tools/FileTransfer/FileTransfer";
+import TINHHINHCUONLIEU from "../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import BAOCAOTHEOROLL from "../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
+import LICHSUTEMLOTSX from "../sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 export const current_ver: number = 2510;
 const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
@@ -111,7 +114,8 @@ function Home() {
   const sidebarStatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu
   );
-  const menulist: MENU_LIST_DATA[] = [
+  console.log('company',company);
+  const menulist: MENU_LIST_DATA[] = company ==='CMS' ? [
     {
       MENU_CODE: "BL1",
       MENU_NAME: "XXX",
@@ -487,6 +491,387 @@ function Home() {
       MENU_NAME: getlang("filetransfer", lang),
       MENU_ITEM: <FileTransfer />,
     },  
+    {
+      MENU_CODE: "ST01",
+      MENU_NAME: "Setting",
+      MENU_ITEM: <SettingPage />,
+    },
+    {
+      MENU_CODE: "",
+      MENU_NAME: "",
+      MENU_ITEM: <AccountInfo />,
+    },
+    {
+      MENU_CODE: "-1",
+      MENU_NAME: "",
+      MENU_ITEM: <AccountInfo />,
+    },
+  ] : [
+    {
+      MENU_CODE: "BL1",
+      MENU_NAME: "XXX",
+      MENU_ITEM: <Blank />,
+    },
+    {
+      MENU_CODE: "NS0",
+      MENU_NAME: "Account Info",
+      MENU_ITEM: <AccountInfo />,
+    },
+    {
+      MENU_CODE: "NS1",
+      MENU_NAME: getlang("quanlyphongban", lang),
+      MENU_ITEM: <QuanLyPhongBanNhanSu />,
+    },
+    {
+      MENU_CODE: "NS2",
+      MENU_NAME: getlang("diemdanhnhom", lang),
+      MENU_ITEM: <DiemDanhNhom />,
+    },
+    {
+      MENU_CODE: "NS3",
+      MENU_NAME: getlang("dieuchuyenteam", lang),
+      MENU_ITEM: <DieuChuyenTeam />,
+    },
+    {
+      MENU_CODE: "NS4",
+      MENU_NAME: getlang("dangky", lang),
+      MENU_ITEM: <TabDangKy />,
+    },
+    {
+      MENU_CODE: "NS5",
+      MENU_NAME: getlang("pheduyet", lang),
+      MENU_ITEM: <PheDuyetNghi />,
+    },
+    {
+      MENU_CODE: "NS6",
+      MENU_NAME: getlang("lichsudilam", lang),
+      MENU_ITEM: <LichSu />,
+    },
+    {
+      MENU_CODE: "NS7",
+      MENU_NAME: getlang("quanlycapcao", lang),
+      MENU_ITEM: <QuanLyCapCao />,
+    },
+    {
+      MENU_CODE: "NS8",
+      MENU_NAME: getlang("baocaonhansu", lang),
+      MENU_ITEM: <BaoCaoNhanSu />,
+    },
+    {
+      MENU_CODE: "NS9",
+      MENU_NAME: getlang("listchamcong", lang),
+      MENU_ITEM: <BANGCHAMCONG />,
+    },
+    {
+      MENU_CODE: "KD1",
+      MENU_NAME: getlang("quanlypo", lang),
+      MENU_ITEM: <PoManager />,
+    },
+    {
+      MENU_CODE: "KD2",
+      MENU_NAME: getlang("quanlyinvoices", lang),
+      MENU_ITEM: <InvoiceManager />,
+    },
+    {
+      MENU_CODE: "KD3",
+      MENU_NAME: getlang("quanlyplan", lang),
+      MENU_ITEM: <PlanManager />,
+    },
+    {
+      MENU_CODE: "KD4",
+      MENU_NAME: getlang("shortage", lang),
+      MENU_ITEM: <ShortageKD />,
+    },
+    {
+      MENU_CODE: "KD5",
+      MENU_NAME: getlang("quanlyFCST", lang),
+      MENU_ITEM: <FCSTManager />,
+    },
+    {
+      MENU_CODE: "KD6",
+      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_ITEM: <YCSXManager />,
+    },
+    {
+      MENU_CODE: "KD7",
+      MENU_NAME: getlang("quanlyPOFull", lang),
+      MENU_ITEM: <POandStockFull />,
+    },
+    {
+      MENU_CODE: "KD8",
+      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_ITEM: <CODE_MANAGER />,
+    },
+    {
+      MENU_CODE: "KD9",
+      MENU_NAME: getlang("quanlycodebom", lang),
+      MENU_ITEM: <BOM_MANAGER />,
+    },
+    {
+      MENU_CODE: "KD10",
+      MENU_NAME: getlang("quanlykhachhang", lang),
+      MENU_ITEM: <CUST_MANAGER />,
+    },
+    {
+      MENU_CODE: "KD11",
+      MENU_NAME: getlang("eqstatus", lang),
+      MENU_ITEM: <EQ_STATUS2 />,
+    },
+    {
+      MENU_CODE: "KD12",
+      MENU_NAME: getlang("ins_status", lang),
+      MENU_ITEM: <INSPECT_STATUS />,
+    },
+    {
+      MENU_CODE: "KD13",
+      MENU_NAME: getlang("baocao", lang),
+      MENU_ITEM: <KinhDoanhReport />,
+    },
+    {
+      MENU_CODE: "KD14",
+      MENU_NAME: getlang("quanlygia", lang),
+      MENU_ITEM: <QuotationTotal />,
+    },
+    {
+      MENU_CODE: "PU1",
+      MENU_NAME: getlang("quanlyvatlieu", lang),
+      MENU_ITEM: <QLVL />,
+    },
+    {
+      MENU_CODE: "PU2",
+      MENU_NAME: getlang("quanlymrp", lang),
+      MENU_ITEM: <TINHLIEU />,
+    },
+    {
+      MENU_CODE: "QC1",
+      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_ITEM: <YCSXManager />,
+    },
+    {
+      MENU_CODE: "QC2",
+      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_ITEM: <CODE_MANAGER />,
+    },
+    {
+      MENU_CODE: "QC3",
+      MENU_NAME: "IQC",
+      MENU_ITEM: <IQC />,
+    },
+    {
+      MENU_CODE: "QC4",
+      MENU_NAME: "PQC",
+      MENU_ITEM: <PQC />,
+    },
+    {
+      MENU_CODE: "QC5",
+      MENU_NAME: "OQC",
+      MENU_ITEM: <OQC />,
+    },
+    {
+      MENU_CODE: "QC6",
+      MENU_NAME: getlang("inspection", lang),
+      MENU_ITEM: <KIEMTRA />,
+    },
+    {
+      MENU_CODE: "QC7",
+      MENU_NAME: "CS",
+      MENU_ITEM: <CSTOTAL />,
+    },
+    {
+      MENU_CODE: "QC8",
+      MENU_NAME: getlang("dtc", lang),
+      MENU_ITEM: <DTC />,
+    },
+    {
+      MENU_CODE: "QC9",
+      MENU_NAME: "ISO",
+      MENU_ITEM: <ISO />,
+    },
+    {
+      MENU_CODE: "QC10",
+      MENU_NAME: getlang("baocaoqc", lang),
+      MENU_ITEM: <QCReport />,
+    },
+    {
+      MENU_CODE: "RD1",
+      MENU_NAME: getlang("quanlycodebom", lang),
+      MENU_ITEM: <BOM_MANAGER />,
+    },
+    {
+      MENU_CODE: "RD2",
+      MENU_NAME: getlang("thembomamazon", lang),
+      MENU_ITEM: <BOM_AMAZON />,
+    },
+    {
+      MENU_CODE: "RD3",
+      MENU_NAME: getlang("dtc", lang),
+      MENU_ITEM: <DTC />,
+    },
+    {
+      MENU_CODE: "RD4",
+      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_ITEM: <YCSXManager />,
+    },
+    {
+      MENU_CODE: "RD5",
+      MENU_NAME: getlang("thietkedesignamazon", lang),
+      MENU_ITEM: <DESIGN_AMAZON />,
+    },
+    {
+      MENU_CODE: "RD6",
+      MENU_NAME: getlang("productbarcodemanager", lang),
+      MENU_ITEM: <PRODUCT_BARCODE_MANAGER />,
+    },
+    {
+      MENU_CODE: "RD7",
+      MENU_NAME: getlang("baocaornd", lang),
+      MENU_ITEM: <RND_REPORT />,
+    },
+    {
+      MENU_CODE: "RD8",
+      MENU_NAME: getlang("samplemonitor", lang),
+      MENU_ITEM: <SAMPLE_MONITOR />,
+    },
+    {
+      MENU_CODE: "QL1",
+      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_ITEM: <YCSXManager />,
+    },
+    {
+      MENU_CODE: "QL2",
+      MENU_NAME: getlang("quanlycodebom", lang),
+      MENU_ITEM: <BOM_MANAGER />,
+    },
+    {
+      MENU_CODE: "QL3",
+      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_ITEM: <CODE_MANAGER />,
+    },
+    {
+      MENU_CODE: "QL4",
+      MENU_NAME: getlang("quanlyplansx", lang),
+      MENU_ITEM: <QLSXPLAN />,
+    },
+    {
+      MENU_CODE: "QL5",
+      MENU_NAME: getlang("quanlycapa", lang),
+      MENU_ITEM: <CAPA_MANAGER />,
+    },
+    {
+      MENU_CODE: "QL6",
+      MENU_NAME: getlang("quanlymrp", lang),
+      MENU_ITEM: <CAPA_MANAGER />,
+    },
+    {
+      MENU_CODE: "QL7",
+      MENU_NAME: "PLAN VISUAL",
+      MENU_ITEM: <MACHINE />,
+    },
+    {
+      MENU_CODE: "QL8",
+      MENU_NAME: "QUICK PLAN",
+      MENU_ITEM: <QUICKPLAN2 />,
+    },
+    {
+      MENU_CODE: "QL9",
+      MENU_NAME: "TRA PLAN",
+      MENU_ITEM: <PLAN_DATATB />,
+    },
+    {
+      MENU_CODE: "QL10",
+      MENU_NAME: "INPUT LIEU",
+      MENU_ITEM: <LICHSUINPUTLIEU />,
+    },
+    {
+      MENU_CODE: "QL11",
+      MENU_NAME: "PLAN STATUS",
+      MENU_ITEM: <PLAN_STATUS />,
+    },
+    {
+      MENU_CODE: "QL12",
+      MENU_NAME: "EQ STATUS",
+      MENU_ITEM: <EQ_STATUS />,
+    },
+    {
+      MENU_CODE: "SX1",
+      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_ITEM: <YCSXManager />,
+    },
+    {
+      MENU_CODE: "SX2",
+      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_ITEM: <CODE_MANAGER />,
+    },
+    {
+      MENU_CODE: "SX3",
+      MENU_NAME: getlang("datasanxuat", lang),
+      MENU_ITEM: <BAOCAOSXALL />,
+    },
+    {
+      MENU_CODE: "SX4",
+      MENU_NAME: getlang("inspection", lang),
+      MENU_ITEM: <KIEMTRA />,
+    },
+    {
+      MENU_CODE: "SX5",
+      MENU_NAME: getlang("planstatus", lang),
+      MENU_ITEM: <TRANGTHAICHITHI />,
+    },
+    {
+      MENU_CODE: "SX6",
+      MENU_NAME: getlang("eqstatus", lang),
+      MENU_ITEM: <EQ_STATUS />,
+    },
+    {
+      MENU_CODE: "SX7",
+      MENU_NAME: getlang("khothat", lang),
+      MENU_ITEM: <KHOLIEU />,
+    },
+    {
+      MENU_CODE: "SX8",
+      MENU_NAME: getlang("khoao", lang),
+      MENU_ITEM: <KHOAO />,
+    },
+    {
+      MENU_CODE: "SX9",
+      MENU_NAME: getlang("lichsuxuatlieuthat", lang),
+      MENU_ITEM: <LICHSUINPUTLIEU />,
+    },
+    {
+      MENU_CODE: "SX10",
+      MENU_NAME: getlang("materiallotstatus", lang),
+      MENU_ITEM: <TINHHINHCUONLIEU />,
+    },
+    {
+      MENU_CODE: "SX13",
+      MENU_NAME: getlang("sxrolldata", lang),
+      MENU_ITEM: <BAOCAOTHEOROLL />,
+    },
+    {
+      MENU_CODE: "SX14",
+      MENU_NAME: getlang("lichsutemlotsx", lang),
+      MENU_ITEM: <LICHSUTEMLOTSX />,
+    },
+    {
+      MENU_CODE: "SX11",
+      MENU_NAME: getlang("quanlycapa", lang),
+      MENU_ITEM: <CAPA_MANAGER />,
+    },
+    {
+      MENU_CODE: "SX12",
+      MENU_NAME: getlang("hieusuatsx", lang),
+      MENU_ITEM: <PLANRESULT />,
+    },
+    {
+      MENU_CODE: "KO1",
+      MENU_NAME: getlang("nhapxuattontp", lang),
+      MENU_ITEM: company === "CMS" ? <KHOTP /> : <KHOTPNEW />,
+    },
+    {
+      MENU_CODE: "KO2",
+      MENU_NAME: getlang("nhapxuattonlieu", lang),
+      MENU_ITEM: <KHOLIEU />,
+    },
     {
       MENU_CODE: "ST01",
       MENU_NAME: "Setting",

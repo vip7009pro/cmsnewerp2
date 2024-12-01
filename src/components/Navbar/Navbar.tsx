@@ -71,7 +71,7 @@ export default function Navbar() {
     () => { },
   );
 
-  const themeOptions = [
+  const themeOptions = company === "CMS" ? [
     { value: "linear-gradient(90deg, #7efbbc 0%, #ace95c 100%)", label: "Orange-Yellow" },
     { value: "linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)", label: "Green-Blue" },
     { value: "linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)", label: "Pink-Orange" },
@@ -106,6 +106,12 @@ export default function Navbar() {
     { value: "linear-gradient(90deg, #834D9B 0%, #D04ED6 100%)", label: "Purple-Magenta" },
     { value: "linear-gradient(90deg, #ADD100 0%, #7B920A 100%)", label: "Lime-Olive" },
     { value: "linear-gradient(90deg, #1A2A6C 0%, #B21F1F 50%, #FDBB2D 100%)", label: "Navy-Red-Yellow" },
+    { value: "linear-gradient(90deg, #f8dd55 0%, #caf52d 100%)", label: "Yellow-Orange" },
+  ] : company === "PVN" ? [
+    { value: "linear-gradient(90deg, #f8dd55 0%, #caf52d 100%)", label: "Yellow-Orange" },
+  ] : company === "NHATHAN" ? [
+    { value: "linear-gradient(90deg, hsla(0, 0%, 74%, 1) 0%, hsla(60, 23%, 95%, 1) 100%)", label: "Gray-White" },
+  ] : [
     { value: "linear-gradient(90deg, #f8dd55 0%, #caf52d 100%)", label: "Yellow-Orange" },
   ];
 

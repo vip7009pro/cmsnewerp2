@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import FAILING from "../qc/iqc/FAILING";
 import MAINDEFECTS from "./MAINDEFECTS/MAINDEFECTS";
+import { getCompany } from "../../api/Api";
 const BAOCAOSXALL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [lang, setLang] = useContext(LangConText);
@@ -55,18 +56,18 @@ const BAOCAOSXALL = () => {
             <Tab>
               <span className="mininavtext">PLAN-RESULT</span>
             </Tab>
-            <Tab>
+            { getCompany() === "CMS" && <Tab>
               <span className="mininavtext">DATA DAO-FILM</span>
-            </Tab>
-            <Tab>
+            </Tab>}
+            { getCompany() === "CMS" && <Tab>
               <span className="mininavtext">FAILING</span>
-            </Tab>
+            </Tab>}
             <Tab>
               <span className="mininavtext">PATROL</span>
             </Tab>
-            <Tab>
+            { getCompany() === "CMS" && <Tab>
               <span className="mininavtext">MAIN DEFECTS</span>
-            </Tab>
+            </Tab>}
           </TabList>
           <TabPanel>
             <DATASX />
@@ -86,18 +87,18 @@ const BAOCAOSXALL = () => {
           <TabPanel>
             <ACHIVEMENTTB />
           </TabPanel>
-          <TabPanel>
+          { getCompany() === "CMS" && <TabPanel>
             <DAOFILMDATA />
-          </TabPanel>
-          <TabPanel>
+          </TabPanel>}
+          { getCompany() !== "CMS" && <TabPanel>
             <FAILING />
-          </TabPanel>
+          </TabPanel>}
           <TabPanel>
             <PATROL />
           </TabPanel>
-          <TabPanel>
+          { getCompany() !== "CMS" && <TabPanel>
             <MAINDEFECTS />
-          </TabPanel>
+          </TabPanel>}
         </Tabs>
       </Suspense>
     </div>

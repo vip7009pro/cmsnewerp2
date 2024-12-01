@@ -11,7 +11,7 @@ import {
   UserData,
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
-const startCPN: string = "CMS";
+const startCPN: string = "PVN";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")? "https": "http";
 const main_port = protocol === "https" ? "5014" : "5013";
@@ -65,6 +65,10 @@ const companyInfo = {
         server_name: "MAIN_SERVER",
         apiUrl: `${protocol}://222.252.1.63:${sub_port}`
       },
+      {
+        server_name: "TEST_SERVER",
+        apiUrl: `${protocol}://localhost:${sub_port}` 
+      }
     ],  
   },
   NHATHAN: {
@@ -80,6 +84,10 @@ const companyInfo = {
         server_name: "MAIN_SERVER",
         apiUrl: `${protocol}://222.252.1.214:${sub_port}`
       },
+      {
+        server_name: "TEST_SERVER",
+        apiUrl: `${protocol}://localhost:${sub_port}` 
+      }
     ], 
   },  
 };  

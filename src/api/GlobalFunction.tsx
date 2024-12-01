@@ -53,6 +53,8 @@ import DATAMATRIX from "../pages/rnd/design_amazon/design_components/DATAMATRIX"
 import BARCODE from "../pages/rnd/design_amazon/design_components/BARCODE";
 import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
+import CHITHI_COMPONENT_A from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT_A";
+import CHITHI_COMPONENT2_A from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT2_A";
 export const zeroPad = (num: number, places: number) => String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -902,12 +904,14 @@ export const f_checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: s
   return maxprocess;
 };
 export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
+  const company = getCompany();
   return planlist.map((element, index) => (
-    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />
+    company === "CMS" ? <CHITHI_COMPONENT ref={ref} key={index} DATA={element} /> : <CHITHI_COMPONENT_A ref={ref} key={index} DATA={element} />
   ));
 };
 export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
-  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} />;
+  const company = getCompany();
+  return company === "CMS" ? <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} /> : <CHITHI_COMPONENT2_A ref={ref} PLAN_LIST={planlist} />;
 };
 export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
   return ycsxlist.map((element, index) => (
