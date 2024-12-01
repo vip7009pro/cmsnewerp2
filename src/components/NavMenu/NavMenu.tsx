@@ -676,13 +676,7 @@ const NavMenu = () => {
           path: "/nhansu/baocaonhansu",
           icon: <FcPieChart color="#cc99ff" size={15} />,
           MENU_CODE: "NS8",
-        },
-        getCompany() === "CMS" && {
-          title: getlang("quanlyphongban", lang),
-          path: "/nhansu/quanlyphongbannhanvien",
-          icon: <FcPortraitMode color="blue" size={15} />,
-          MENU_CODE: "NS1",
-        },
+        },       
       ],
     },
     {

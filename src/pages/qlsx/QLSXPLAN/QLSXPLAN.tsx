@@ -4,6 +4,7 @@ import KHCT from "./KHCT/KHCT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { getCompany } from "../../../api/Api";
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
 const ACHIVEMENTTB = React.lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
 const LICHSUINPUTLIEU = React.lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
@@ -35,7 +36,7 @@ const QLSXPLAN = () => {
           }}> 
             <Tab>PLAN VISUAL</Tab>
             <Tab>QUICK PLAN</Tab>
-            <Tab>AUTO PLAN</Tab>
+            { getCompany() === "CMS" && <Tab>AUTO PLAN</Tab>}
             <Tab>PLAN TABLE</Tab>
             <Tab>LỊCH SỬ</Tab>
             <Tab>DATA SX</Tab>
@@ -48,9 +49,9 @@ const QLSXPLAN = () => {
           <TabPanel>
             <MACHINE />
           </TabPanel>
-          <TabPanel>
+          { getCompany() === "CMS" && <TabPanel>
             <QUICKPLAN2 />
-          </TabPanel>    
+          </TabPanel>    }
           <TabPanel>  
             <KHCT /> 
           </TabPanel>   

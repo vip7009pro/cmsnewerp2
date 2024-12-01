@@ -169,20 +169,19 @@ const Login = () => {
               }             
             </select>
           </label>
-          <label>
+          { getCompany() === "CMS" && <label>
             Branch:
             <select
               name="select_ctr_cd"
               value={ctr_cd}
               onChange={(e) => {
-                dispatch(changeCtrCd(e.target.value));
-               
+                dispatch(changeCtrCd(e.target.value));               
               }}
             >
               <option value="001">BR1</option>
               <option value="002">BR2</option>             
             </select>
-          </label>
+          </label>}
         </div>
         <div className="submit" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <button className="login_button" onClick={login_bt}>

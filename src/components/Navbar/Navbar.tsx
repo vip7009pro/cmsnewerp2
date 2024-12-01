@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SwitchRightIcon from "@mui/icons-material/SwitchRight";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { logout } from "../../api/Api";
+import { getCompany, logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
 import { FcList } from "react-icons/fc";
@@ -658,7 +658,7 @@ export default function Navbar() {
             <b> Web Ver: {current_ver}_({selectedServer})</b>
           </div>
         </div>
-        <div className="item">
+        { getCompany() === "CMS" && <div className="item">
           <select
             onChange={(e) => {
               dispatch(switchTheme(e.target.value))
@@ -670,7 +670,7 @@ export default function Navbar() {
               <option key={index} value={theme.value}>{theme.label}</option>
             ))}            
           </select>
-        </div>
+        </div>}
         <div className="navright">          
           <div className="items">
             <div className="item" onClick={showhideLangMenu}>

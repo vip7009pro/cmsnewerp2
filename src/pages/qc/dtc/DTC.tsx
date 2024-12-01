@@ -9,6 +9,7 @@ import TEST_TABLE from "./TEST_TABLE";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { getCompany } from "../../../api/Api";
 
 const DTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -21,70 +22,7 @@ const DTC = () => {
     tab6: false,
   });
 
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        tab1: true,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: true,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: true,
-        tab4: false,
-        tab5: false,
-        tab6: false,
-      });
-    } else if (choose === 4) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: true,
-        tab5: false,
-        tab6: false,
-      });
-    } else if (choose === 5) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: true,
-        tab6: false,
-      });
-    } else if (choose === 6) {
-      setSelection({
-        ...selection,
-        tab1: false,
-        tab2: false,
-        tab3: false,
-        tab4: false,
-        tab5: false,
-        tab6: true,
-    });
-  };
-}
-
+  
   useEffect(() => {}, []);
 
   return (
@@ -116,9 +54,9 @@ const DTC = () => {
             <Tab>
               <span className="mininavtext">NHẬP KQ ĐTC</span>
             </Tab>
-            <Tab>
+            { getCompany() === "CMS" && <Tab>
               <span className="mininavtext">Quản lý hạng mục ĐTC</span> 
-            </Tab>
+            </Tab>}
           </TabList>
           <TabPanel>
             <KQDTC />
@@ -135,9 +73,9 @@ const DTC = () => {
           <TabPanel>
             <DTCRESULT />
           </TabPanel>
-          <TabPanel>
+          { getCompany() === "CMS" && <TabPanel>
             <TEST_TABLE />
-          </TabPanel>
+          </TabPanel>}
       </Tabs> 
     </div>
   );

@@ -199,13 +199,13 @@ const EQ_STATUS2 = () => {
           setSearchString(e.target.value);
         }}>
         </input>
-        <IconButton
+        { getCompany() === "CMS" && <IconButton
           className="buttonIcon"
           onClick={openDialogEQManager}
         >
           <AiOutlineSetting color="green" size={15} />
           EQ Manager
-        </IconButton>
+        </IconButton>}
       </div>
       <div className="machinelist">
         <div className="eqlist">
