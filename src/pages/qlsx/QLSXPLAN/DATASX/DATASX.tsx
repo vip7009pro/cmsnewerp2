@@ -156,6 +156,8 @@ const DATASX = () => {
     INSPECT_MATERIAL_NG: 0,
     INSPECT_PROCESS_NG: 0,
     INS_OUTPUT: 0,
+    IQC_IN: 0,
+    RETURN_IQC: 0,
     LOSS_SX1: 0,
     LOSS_SX2: 0,
     LOSS_SX3: 0,
@@ -2025,6 +2027,15 @@ const DATASX = () => {
       }
     },
     {
+      field: 'IQC_IN', headerName: 'IQC_IN', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {e.data.IQC_IN?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'NOT_SCANNED_QTY', headerName: 'NOT_SCANNED_QTY', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>
@@ -2074,6 +2085,15 @@ const DATASX = () => {
         return (
           <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
             {e.data.TON_KHO_AO?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'RETURN_IQC', headerName: 'RETURN_IQC', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "#ab27e3", fontWeight: "bold" }}>
+            {e.data.RETURN_IQC?.toLocaleString("en-US")}
           </span>
         );
       }
@@ -3414,17 +3434,20 @@ const DATASX = () => {
           </div>}
           {!selectbutton && 
             <div className="detailycsxdaily">          
-            <div className="ycsxdetail">
+            <div className="ycsxdetail" style={{ fontSize: '0.8rem' }}>
               <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#2d5bd8' }}> Material Tracking</span>
               <div className="losstable">
                 <table>
                   <thead>
-                    <tr>
+                    <tr style={{ fontSize: '0.7rem' }}>
                       <th style={{ color: "black", fontWeight: "normal" }}>
                         WAREHOUSE OUT
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
                         NEXT_IN_QTY
+                      </th>
+                      <th style={{ color: "black", fontWeight: "normal" }}>
+                        IQC_IN
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
                         NOT_SCANNED_QTY
@@ -3448,6 +3471,9 @@ const DATASX = () => {
                         NEXT_OUT_QTY
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
+                        RETURN_IQC
+                      </th>
+                      <th style={{ color: "black", fontWeight: "normal" }}>
                         RETURN_QTY
                       </th>
                     </tr>
@@ -3459,6 +3485,9 @@ const DATASX = () => {
                       </td>
                       <td style={{ color: "#0354cc", fontWeight: "bold" }}>
                         {(selectedYCSX.current.NEXT_IN_QTY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "#0354cc", fontWeight: "bold" }}>
+                        {(selectedYCSX.current.IQC_IN).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </td>
                       <td style={{ color: "gray", fontWeight: "bold" }}>
                         {(selectedYCSX.current.NOT_SCANNED_QTY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
@@ -3480,6 +3509,9 @@ const DATASX = () => {
                       </td>
                       <td style={{ color: "#2d08d1", fontWeight: "bold" }}>
                         {(selectedYCSX.current.NEXT_OUT_QTY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "#0354cc", fontWeight: "bold" }}>
+                        {(selectedYCSX.current.RETURN_IQC).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </td>
                       <td style={{ color: "#0692c9", fontWeight: "bold" }}>
                         {(selectedYCSX.current.RETURN_QTY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}

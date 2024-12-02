@@ -626,6 +626,7 @@ const InvoiceManager = () => {
         );
       },
     },
+    { field: "DESCR", headerName: "DESCR", width: 120 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "PO_ID", headerName: "PO_ID", width: 70 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },

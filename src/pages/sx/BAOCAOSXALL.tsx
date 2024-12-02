@@ -90,13 +90,13 @@ const BAOCAOSXALL = () => {
           { getCompany() === "CMS" && <TabPanel>
             <DAOFILMDATA />
           </TabPanel>}
-          { getCompany() !== "CMS" && <TabPanel>
+          { getCompany() === "CMS" && <TabPanel>
             <FAILING />
           </TabPanel>}
           <TabPanel>
             <PATROL />
           </TabPanel>
-          { getCompany() !== "CMS" && <TabPanel>
+          { getCompany() === "CMS" && <TabPanel>
             <MAINDEFECTS />
           </TabPanel>}
         </Tabs>

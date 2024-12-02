@@ -260,6 +260,7 @@ const YCSXManager = () => {
         return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
       },
     },
+    { field: "DESCR", headerName: "DESCR", width: 120 },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     {

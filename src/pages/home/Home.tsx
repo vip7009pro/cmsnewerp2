@@ -18,7 +18,7 @@ import FileTransfer from "../tools/FileTransfer/FileTransfer";
 import TINHHINHCUONLIEU from "../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
 import BAOCAOTHEOROLL from "../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 import LICHSUTEMLOTSX from "../sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
-export const current_ver: number = 2510;
+export const current_ver: number = 2512;
 const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));

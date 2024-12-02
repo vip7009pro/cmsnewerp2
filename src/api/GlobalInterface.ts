@@ -2105,12 +2105,14 @@ export interface YCSX_SX_DATA {
   LOSS_THEM_TUI: number;
   SX_MARKING_QTY: number;
   NEXT_IN_QTY: number;
+  IQC_IN: number;
   NOT_BEEP_QTY: number;
   LOCK_QTY: number;
   BEEP_QTY: number;
   TON_KHO_AO: number;
   NEXT_OUT_QTY: number;
   RETURN_QTY: number;
+  RETURN_IQC: number;
   Setting1: number;
   Setting2: number;
   Setting3: number;

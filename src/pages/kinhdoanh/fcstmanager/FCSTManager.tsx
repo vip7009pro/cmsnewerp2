@@ -82,6 +82,7 @@ const FCSTManager = () => {
         );
       },
     },
+    { field: "DESCR", headerName: "DESCR", width: 120 },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 150 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 80 },
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 80 },

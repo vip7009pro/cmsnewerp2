@@ -40,12 +40,11 @@ const MAINDEFECTS = () => {
         <img 
           src={'/INS_PATROL/INS_PATROL_'+params.data.INS_PATROL_ID+'.png'} 
           alt={params.data.G_CODE}
-          style={{width: '20px', height: '20px', cursor: 'pointer'}}
+          style={{width: '30px', height: '20px', cursor: 'pointer'}}
           onClick={() => {
             Swal.fire({
               imageUrl: '/INS_PATROL/INS_PATROL_'+params.data.INS_PATROL_ID+'.png',
-              imageWidth: 600,
-              imageHeight: 600,
+              imageWidth: 600,              
               imageAlt: params.data.G_CODE,
             });
           }}
@@ -55,15 +54,14 @@ const MAINDEFECTS = () => {
     { field: "USE_YN", headerName: "USE_YN", width: 80,  },
     { field: "IMAGE_YN", headerName: "IMAGE_YN", width: 60, cellRenderer: (params: any) => {
       return (
-        <img 
+        <img           
           src={'/sxng100/SX100_'+params.data.NG_SX100_ID+'.png'} 
           alt={params.data.G_CODE}
-          style={{width: '20px', height: '20px', cursor: 'pointer'}}
+          style={{width: '30px', height: '20px', cursor: 'pointer'}}
           onClick={() => {
             Swal.fire({
               imageUrl: '/sxng100/SX100_'+params.data.NG_SX100_ID+'.png',
-              imageWidth: 600,
-              imageHeight: 600,
+              imageWidth: 600,              
               imageAlt: params.data.G_CODE,
             });
           }}
