@@ -9,7 +9,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -26,17 +26,11 @@ import { useSelector } from "react-redux";
 import { TbLogout } from "react-icons/tb";
 import { FCSTTableData } from "../../../api/GlobalInterface";
 import { Tab, TabList, Tabs, TabPanel } from "react-tabs";
+import AGTable from "../../../components/DataTable/AGTable";
 
 const FCSTManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    testinvoicetable: false,
-  });
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -53,17 +47,14 @@ const FCSTManager = () => {
   const [id, setID] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
-
   const [po_no, setPo_No] = useState("");
   const [material, setMaterial] = useState("");
   const [over, setOver] = useState("");
   const [invoice_no, setInvoice_No] = useState("");
   const [fcstdatatable, setFCSTDataTable] = useState<Array<FCSTTableData>>([]);
-  const [fcstdatatablefilter, setFCSTDataTableFilter] = useState<
-    Array<FCSTTableData>
-  >([]);
+  const fcstdatatablefilter = useRef<Array<FCSTTableData>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-
+  const [trigger, setTrigger] = useState(true);
   const column_fcsttable:any = [
     { field: "FCST_ID", headerName: "FCST_ID", width: 80 },
     { field: "FCSTYEAR", headerName: "FCSTYEAR", width: 80 },
@@ -74,10 +65,10 @@ const FCSTManager = () => {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 250,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.G_NAME}</b>
+            <b>{params.data.G_NAME}</b>
           </span>
         );
       },
@@ -103,10 +94,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W1",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W1.toLocaleString("en-US")}</b>
+            <b>{params.data.W1.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -116,10 +107,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W2",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W2.toLocaleString("en-US")}</b>
+            <b>{params.data.W2.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -129,10 +120,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W3",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W3.toLocaleString("en-US")}</b>
+            <b>{params.data.W3.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -142,10 +133,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W4",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W4.toLocaleString("en-US")}</b>
+            <b>{params.data.W4.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -155,10 +146,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W5",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W5.toLocaleString("en-US")}</b>
+            <b>{params.data.W5.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -168,10 +159,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W6",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W6.toLocaleString("en-US")}</b>
+            <b>{params.data.W6.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -181,10 +172,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W7",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W7.toLocaleString("en-US")}</b>
+            <b>{params.data.W7.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -194,10 +185,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W8",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W8.toLocaleString("en-US")}</b>
+            <b>{params.data.W8.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -207,10 +198,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W9",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W9.toLocaleString("en-US")}</b>
+            <b>{params.data.W9.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -220,10 +211,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W10",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W10.toLocaleString("en-US")}</b>
+            <b>{params.data.W10.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -233,10 +224,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W11",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W11.toLocaleString("en-US")}</b>
+            <b>{params.data.W11.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -246,10 +237,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W12",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W12.toLocaleString("en-US")}</b>
+            <b>{params.data.W12.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -259,10 +250,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W13",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W13.toLocaleString("en-US")}</b>
+            <b>{params.data.W13.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -272,10 +263,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W14",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W14.toLocaleString("en-US")}</b>
+            <b>{params.data.W14.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -285,10 +276,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W15",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W15.toLocaleString("en-US")}</b>
+            <b>{params.data.W15.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -298,10 +289,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W16",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W16.toLocaleString("en-US")}</b>
+            <b>{params.data.W16.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -311,10 +302,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W17",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W17.toLocaleString("en-US")}</b>
+            <b>{params.data.W17.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -324,10 +315,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W18",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W18.toLocaleString("en-US")}</b>
+            <b>{params.data.W18.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -337,10 +328,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W19",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W19.toLocaleString("en-US")}</b>
+            <b>{params.data.W19.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -350,10 +341,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W20",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W20.toLocaleString("en-US")}</b>
+            <b>{params.data.W20.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -363,10 +354,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W21",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W21.toLocaleString("en-US")}</b>
+            <b>{params.data.W21.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -376,10 +367,10 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W22",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W22.toLocaleString("en-US")}</b>
+            <b>{params.data.W22.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -389,11 +380,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W1A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W1A.toLocaleString("en-US", {
+              {params.data.W1A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -407,11 +398,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W2A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W2A.toLocaleString("en-US", {
+              {params.data.W2A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -425,11 +416,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W3A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W3A.toLocaleString("en-US", {
+              {params.data.W3A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -443,11 +434,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W4A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W4A.toLocaleString("en-US", {
+              {params.data.W4A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -461,11 +452,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W5A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W5A.toLocaleString("en-US", {
+              {params.data.W5A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -479,11 +470,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W6A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W6A.toLocaleString("en-US", {
+              {params.data.W6A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -497,11 +488,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W7A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W7A.toLocaleString("en-US", {
+              {params.data.W7A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -515,11 +506,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W8A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W8A.toLocaleString("en-US", {
+              {params.data.W8A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -533,11 +524,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W9A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W9A.toLocaleString("en-US", {
+              {params.data.W9A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -551,11 +542,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W10A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W10A.toLocaleString("en-US", {
+              {params.data.W10A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -569,11 +560,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W11A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W11A.toLocaleString("en-US", {
+              {params.data.W11A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -587,11 +578,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W12A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W12A.toLocaleString("en-US", {
+              {params.data.W12A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -605,11 +596,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W13A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W13A.toLocaleString("en-US", {
+              {params.data.W13A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -623,11 +614,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W14A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W14A.toLocaleString("en-US", {
+              {params.data.W14A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -641,11 +632,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W15A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W15A.toLocaleString("en-US", {
+              {params.data.W15A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -659,11 +650,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W16A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W16A.toLocaleString("en-US", {
+              {params.data.W16A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -677,11 +668,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W17A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W17A.toLocaleString("en-US", {
+              {params.data.W17A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -695,11 +686,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W18A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W18A.toLocaleString("en-US", {
+              {params.data.W18A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -713,11 +704,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W19A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W19A.toLocaleString("en-US", {
+              {params.data.W19A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -731,11 +722,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W20A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W20A.toLocaleString("en-US", {
+              {params.data.W20A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -749,11 +740,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W21A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W21A.toLocaleString("en-US", {
+              {params.data.W21A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -767,11 +758,11 @@ const FCSTManager = () => {
       type: "number",
       headerName: "W22A",
       width: 80,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
             <b>
-              {params.row.W22A.toLocaleString("en-US", {
+              {params.data.W22A.toLocaleString("en-US", {
                 style: "currency",
                 currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
@@ -781,23 +772,22 @@ const FCSTManager = () => {
       },
     },
   ];
-
   const column_excelplan2: any = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
-    { field: "CUST_CD", headerName: "CUST_CD", width: 80 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 80 },
-    { field: "YEAR", headerName: "YEAR", width: 80 },
-    { field: "WEEKNO", headerName: "WEEKNO", width: 80 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 50 },
+    { field: "CUST_CD", headerName: "CUST_CD", width: 50 },
+    { field: "G_CODE", headerName: "G_CODE", width: 50 },
+    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 50 },
+    { field: "YEAR", headerName: "YEAR", width: 50 },
+    { field: "WEEKNO", headerName: "WEEKNO", width: 50 },
     {
       field: "W1",
       type: "number",
       headerName: "W1",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W1.toLocaleString("en-US")}</b>
+            <b>{params.data.W1.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -806,11 +796,11 @@ const FCSTManager = () => {
       field: "W2",
       type: "number",
       headerName: "W2",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W2.toLocaleString("en-US")}</b>
+            <b>{params.data.W2.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -819,11 +809,11 @@ const FCSTManager = () => {
       field: "W3",
       type: "number",
       headerName: "W3",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W3.toLocaleString("en-US")}</b>
+            <b>{params.data.W3.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -832,11 +822,11 @@ const FCSTManager = () => {
       field: "W4",
       type: "number",
       headerName: "W4",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W4.toLocaleString("en-US")}</b>
+            <b>{params.data.W4.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -845,11 +835,11 @@ const FCSTManager = () => {
       field: "W5",
       type: "number",
       headerName: "W5",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W5.toLocaleString("en-US")}</b>
+            <b>{params.data.W5.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -858,11 +848,11 @@ const FCSTManager = () => {
       field: "W6",
       type: "number",
       headerName: "W6",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W6.toLocaleString("en-US")}</b>
+            <b>{params.data.W6.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -871,11 +861,11 @@ const FCSTManager = () => {
       field: "W7",
       type: "number",
       headerName: "W7",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W7.toLocaleString("en-US")}</b>
+            <b>{params.data.W7.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -884,11 +874,11 @@ const FCSTManager = () => {
       field: "W8",
       type: "number",
       headerName: "W8",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W8.toLocaleString("en-US")}</b>
+            <b>{params.data.W8.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -897,11 +887,11 @@ const FCSTManager = () => {
       field: "W9",
       type: "number",
       headerName: "W9",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W9.toLocaleString("en-US")}</b>
+            <b>{params.data.W9.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -910,11 +900,11 @@ const FCSTManager = () => {
       field: "W10",
       type: "number",
       headerName: "W10",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W10.toLocaleString("en-US")}</b>
+            <b>{params.data.W10.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -923,11 +913,11 @@ const FCSTManager = () => {
       field: "W11",
       type: "number",
       headerName: "W11",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W11.toLocaleString("en-US")}</b>
+            <b>{params.data.W11.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -936,11 +926,11 @@ const FCSTManager = () => {
       field: "W12",
       type: "number",
       headerName: "W12",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W12.toLocaleString("en-US")}</b>
+            <b>{params.data.W12.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -949,11 +939,11 @@ const FCSTManager = () => {
       field: "W13",
       type: "number",
       headerName: "W13",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W13.toLocaleString("en-US")}</b>
+            <b>{params.data.W13.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -962,11 +952,11 @@ const FCSTManager = () => {
       field: "W14",
       type: "number",
       headerName: "W14",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W14.toLocaleString("en-US")}</b>
+            <b>{params.data.W14.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -975,11 +965,11 @@ const FCSTManager = () => {
       field: "W15",
       type: "number",
       headerName: "W15",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W15.toLocaleString("en-US")}</b>
+            <b>{params.data.W15.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -988,11 +978,11 @@ const FCSTManager = () => {
       field: "W16",
       type: "number",
       headerName: "W16",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W16.toLocaleString("en-US")}</b>
+            <b>{params.data.W16.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1001,11 +991,11 @@ const FCSTManager = () => {
       field: "W17",
       type: "number",
       headerName: "W17",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W17.toLocaleString("en-US")}</b>
+            <b>{params.data.W17.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1014,11 +1004,11 @@ const FCSTManager = () => {
       field: "W18",
       type: "number",
       headerName: "W18",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W18.toLocaleString("en-US")}</b>
+            <b>{params.data.W18.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1027,11 +1017,11 @@ const FCSTManager = () => {
       field: "W19",
       type: "number",
       headerName: "W19",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W19.toLocaleString("en-US")}</b>
+            <b>{params.data.W19.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1040,11 +1030,11 @@ const FCSTManager = () => {
       field: "W20",
       type: "number",
       headerName: "W20",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W20.toLocaleString("en-US")}</b>
+            <b>{params.data.W20.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1053,11 +1043,11 @@ const FCSTManager = () => {
       field: "W21",
       type: "number",
       headerName: "W21",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W21.toLocaleString("en-US")}</b>
+            <b>{params.data.W21.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1066,11 +1056,11 @@ const FCSTManager = () => {
       field: "W22",
       type: "number",
       headerName: "W22",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.W22.toLocaleString("en-US")}</b>
+            <b>{params.data.W22.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1079,99 +1069,28 @@ const FCSTManager = () => {
       field: "CHECKSTATUS",
       headerName: "CHECKSTATUS",
       width: 200,
-      renderCell: (params: any) => {
-        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
+      cellRenderer: (params: any) => {
+        if (params.data.CHECKSTATUS.slice(0, 2) === "OK")
           return (
             <span style={{ color: "green" }}>
-              <b>{params.row.CHECKSTATUS}</b>
+              <b>{params.data.CHECKSTATUS}</b>
             </span>
           );
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.CHECKSTATUS}</b>
+            <b>{params.data.CHECKSTATUS}</b>
           </span>
         );
       },
     },
   ];
-
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraFcst();
     }
-  };
-
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className="saveexcelbutton"
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded Fcst");
-          }}
-        >
-          Save Excel
-        </button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHideSearchDiv(!showhidesearchdiv);
-          }}
-        >
-          <TbLogout color="green" size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(fcstdatatable, "Fcst Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handleConfirmDeleteFcst,
-            );
-            //handleConfirmDeleteFcst();
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA FCST
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          Pivot
-        </IconButton>
-      </GridToolbarContainer>
-    );
-  }
+  }; 
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -1471,6 +1390,7 @@ const FCSTManager = () => {
     setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành check FCST hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
   };
   const handle_upFcstHangLoat = async () => {
     setisLoading(true);
@@ -1605,24 +1525,13 @@ const FCSTManager = () => {
       }
     });
   };
-  const handleFcstSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = fcstdatatable.filter((element: any) =>
-      selectedID.has(element.FCST_ID),
-    );
-    if (datafilter.length > 0) {
-      setFCSTDataTableFilter(datafilter);
-    } else {
-      setFCSTDataTableFilter([]);
-    }
-  };
   const deleteFcst = async () => {
-    if (fcstdatatablefilter.length >= 1) {
+    if (fcstdatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < fcstdatatablefilter.length; i++) {
-        if (fcstdatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
+      for (let i = 0; i < fcstdatatablefilter.current.length; i++) {
+        if (fcstdatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_fcst", {
-            FCST_ID: fcstdatatablefilter[i].FCST_ID,
+            FCST_ID: fcstdatatablefilter.current[i].FCST_ID,
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -1669,6 +1578,76 @@ const FCSTManager = () => {
       }
     });
   };
+  const fcstDataAGTable = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <>       
+         <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
+            checkBP(
+              userData,
+              ["KD"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmDeleteFcst,
+            );
+            //handleConfirmDeleteFcst();
+          }}
+        >
+          <MdOutlineDelete color="red" size={15} />
+          XÓA FCST
+        </IconButton>        
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+          Pivot
+        </IconButton>  
+        </>
+      }
+      columns={column_fcsttable}
+      data={fcstdatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        fcstdatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [fcstdatatable]);
+  const fcstDataAGTableExcel = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <>       
+        </>
+      }
+      columns={column_excelplan2}
+      data={uploadExcelJson}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //fcstdatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [uploadExcelJson, trigger]);
+
   useEffect(() => { }, []);
   return (
     <div className="fcstmanager">
@@ -1843,7 +1822,7 @@ const FCSTManager = () => {
               </div>
               <div className="formbutton">
                 <label>
-                  <b>All Time:</b>
+                  <b style={{fontSize: '0.6rem'}}>All Time:</b>
                   <input
                     onKeyDown={(e) => {
                       handleSearchCodeKeyDown(e);
@@ -1867,27 +1846,7 @@ const FCSTManager = () => {
             </div>
           )}
           <div className="tracuuFcstTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            <DataGrid
-              slots={{
-                toolbar: CustomToolbarPOTable,
-                
-              }}
-              sx={{ fontSize: "0.7rem" }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={fcstdatatable}
-              columns={column_fcsttable}
-              pageSizeOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode="row"
-              getRowId={(row) => row.FCST_ID}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(ids) => {
-                handleFcstSelectionforUpdate(ids);
-              }}
-            />
+            {fcstDataAGTable}            
           </div>
         </div>
         </TabPanel>
@@ -1931,22 +1890,7 @@ const FCSTManager = () => {
               </div>
             </form>
             <div className="insertPlanTable">
-              {true && (
-                <DataGrid
-                  sx={{ fontSize: "0.7rem" }}
-                  slots={{
-                    toolbar: CustomToolbar,                    
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excelplan2}
-                  pageSizeOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode="row"
-                />
-              )}
+              {fcstDataAGTableExcel}              
             </div>
           </div>
         </div>

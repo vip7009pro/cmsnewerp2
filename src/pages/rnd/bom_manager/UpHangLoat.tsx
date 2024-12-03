@@ -1,35 +1,12 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-} from "@mui/material";
-import {
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-  Column,
-} from "devextreme-react/data-grid";
-import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import { Button } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./UpHangLoat.scss";
 import { generalQuery, getCompany, getUserData } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../api/GlobalFunction";
+import { zeroPad } from "../../../api/GlobalFunction";
 import * as XLSX from "xlsx";
 import { CODE_FULL_INFO, DEFAULT_DM } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
 const UpHangLoat = () => {
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
@@ -47,92 +24,81 @@ const UpHangLoat = () => {
     GMANAGEMENT_UNIT: 0,
     M_LOSS_UNIT: 0,
   });
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={currentTable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //setFormData(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={true}
-              allowAdding={true}
-              allowDeleting={true}
-              mode="cell"
-              confirmDelete={false}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(currentTable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            {columns.map((column, index) => {
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [currentTable, trigger, columns]
-  );
+  const column_codeinfo: any = [    
+    { field: "CUST_CD", headerName: "CUST_CD", width: 80 },
+    { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 80 },
+    { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 80 },
+    { field: "CODE_12", headerName: "CODE_12", width: 80 },
+    { field: "CODE_27", headerName: "CODE_27", width: 80 },
+    { field: "SEQ_NO", headerName: "SEQ_NO", width: 80 },
+    { field: "REV_NO", headerName: "REV_NO", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    { field: "DESCR", headerName: "DESCR", width: 200 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
+    { field: "G_NAME", headerName: "G_NAME", width: 200 },
+    { field: "G_LENGTH", headerName: "G_LENGTH", width: 80 },
+    { field: "G_WIDTH", headerName: "G_WIDTH", width: 80 },
+    { field: "PD", headerName: "PD", width: 80 },
+    { field: "G_C", headerName: "G_C", width: 50 },
+    { field: "G_C_R", headerName: "G_C_R", width: 50 },
+    { field: "G_SG_L", headerName: "G_SG_L", width: 50 },
+    { field: "G_SG_R", headerName: "G_SG_R", width: 50 },
+    { field: "G_CG", headerName: "G_CG", width: 50 },
+    { field: "G_LG", headerName: "G_LG", width: 50 },
+    { field: "PACK_DRT", headerName: "PACK_DRT", width: 80 },
+    { field: "KNIFE_TYPE", headerName: "KNIFE_TYPE", width: 80 },
+    { field: "KNIFE_LIFECYCLE", headerName: "KNIFE_LIFECYCLE", width: 80 },
+    { field: "KNIFE_PRICE", headerName: "KNIFE_PRICE", width: 80 },
+    { field: "CODE_33", headerName: "CODE_33", width: 80 },
+    { field: "ROLE_EA_QTY", headerName: "ROLE_EA_QTY", width: 80 },
+    { field: "RPM", headerName: "RPM", width: 80 },
+    { field: "PIN_DISTANCE", headerName: "PIN_DISTANCE", width: 80 },
+    { field: "PROCESS_TYPE", headerName: "PROCESS_TYPE", width: 80 },
+    { field: "EQ1", headerName: "EQ1", width: 80 },
+    { field: "EQ2", headerName: "EQ2", width: 80 },
+    { field: "EQ3", headerName: "EQ3", width: 80 },
+    { field: "EQ4", headerName: "EQ4", width: 80 },
+    { field: "PROD_DIECUT_STEP", headerName: "PROD_DIECUT_STEP", width: 120 },
+    { field: "PROD_PRINT_TIMES", headerName: "PROD_PRINT_TIMES", width: 120 },
+    { field: "REMK", headerName: "REMK", width: 80 },
+    { field: "USE_YN", headerName: "USE_YN", width: 80 },
+    { field: "PO_TYPE", headerName: "PO_TYPE", width: 80 },
+    { field: "FSC", headerName: "FSC", width: 80 },
+    { field: "PROD_DVT", headerName: "PROD_DVT", width: 80 },
+    { field: "FSC_CODE", headerName: "FSC_CODE", width: 80 },
+    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 80, cellRenderer: (params: any) => {
+      if (params.data.CHECKSTATUS === 'OK') {
+        return (
+          <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
+        );
+      }
+      else if (params.data.CHECKSTATUS === 'NG') {
+        return (
+          <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
+        );
+      }
+      else {
+        return (
+          <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
+        );
+      }
+    } },
+  ];
+  const codeAGTable = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={true}
+      showFilter={true}
+      toolbar={
+        <>
+        </>
+      }
+      data={currentTable}
+      columns={column_codeinfo}
+      onSelectionChange={() => {}}  
+    />, [currentTable, trigger, columns]);
+
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -458,6 +424,7 @@ const UpHangLoat = () => {
       Swal.fire('Thông báo', 'Kéo file vào trước khi up', 'error');
     }
   }
+
   useEffect(() => {
     loadDefaultDM();
   }, []);
@@ -486,7 +453,7 @@ const UpHangLoat = () => {
             </div>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{codeAGTable}</div>
       </div>
     </div>
   );

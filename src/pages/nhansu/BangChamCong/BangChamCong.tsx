@@ -1,27 +1,9 @@
 import { Button, IconButton } from "@mui/material";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Summary,
-  Toolbar,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import moment, { duration } from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
   AiFillCloseCircle,
   AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./BangChamCong.scss";
@@ -41,6 +23,8 @@ import {
   IN_OUT_DATA22,
   UserData,
 } from "../../../api/GlobalInterface";
+import AGTable from '../../../components/DataTable/AGTable';
+
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -55,6 +39,159 @@ const BANGCHAMCONG = () => {
   const [alltime, setAllTime] = useState(false);
   const [trunghiviec, setTruNghiViec] = useState(true);
   const [trunghisinh, setTruNghiSinh] = useState(true);
+  const columns = [
+    {
+      field: 'DATE_COLUMN',
+      headerName: 'DATE_COLUMN',
+      width: 100,
+      type: 'date'
+    },
+    {
+      field: 'WEEKDAY',
+      headerName: 'WEEKDAY',
+      width: 80,
+      type: 'date'
+    },
+    {
+      field: 'NV_CCID',
+      headerName: 'NV_CCID',
+      width: 80
+    },
+    {
+      field: 'EMPL_NO',
+      headerName: 'EMPL_NO',
+      width: 80
+    },
+    {
+      field: 'CMS_ID',
+      headerName: 'NS_ID',
+      width: 80
+    },
+    {
+      field: 'FULL_NAME',
+      headerName: 'FULL_NAME',
+      width: 100
+    },
+    {
+      field: 'FACTORY_NAME',
+      headerName: 'FACTORY_NAME',
+      width: 100
+    },
+    {
+      field: 'WORK_SHIF_NAME',
+      headerName: 'WORK_SHIF_NAME',
+      width: 100
+    },
+    {
+      field: 'CALV',
+      headerName: 'CALV',
+      width: 100
+    },
+    {
+      field: 'MAINDEPTNAME',
+      headerName: 'MAINDEPTNAME',
+      width: 100
+    },
+    {
+      field: 'IN_TIME',
+      headerName: 'IN_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu giờ vào") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.value}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.value}</span>;
+        }
+      }
+    },
+    {
+      field: 'OUT_TIME',
+      headerName: 'OUT_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu giờ ra") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.value}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.value}</span>;
+        }
+      }
+    },
+    {
+      field: 'STATUS',
+      headerName: 'STATUS',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu công") {
+          return <span style={{ color: "blue", fontWeight: "normal" }}>{params.value}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "normal" }}>{params.value}</span>;
+        }
+      }
+    },
+    {
+      field: 'REASON_NAME',
+      headerName: 'REASON_NAME',
+      width: 100
+    },
+    {
+      field: 'CHECK1',
+      headerName: 'CHECK1',
+      width: 100
+    },
+    {
+      field: 'CHECK2',
+      headerName: 'CHECK2',
+      width: 100
+    },
+    {
+      field: 'CHECK3',
+      headerName: 'CHECK3',
+      width: 100
+    },
+    {
+      field: 'PREV_CHECK1',
+      headerName: 'PREV_CHECK1',
+      width: 100
+    },
+    {
+      field: 'PREV_CHECK2',
+      headerName: 'PREV_CHECK2',
+      width: 100
+    },
+    {
+      field: 'PREV_CHECK3',
+      headerName: 'PREV_CHECK3',
+      width: 100
+    },
+    {
+      field: 'NEXT_CHECK1',
+      headerName: 'NEXT_CHECK1',
+      width: 100
+    },
+    {
+      field: 'NEXT_CHECK2',
+      headerName: 'NEXT_CHECK2',
+      width: 100
+    },
+    {
+      field: 'NEXT_CHECK3',
+      headerName: 'NEXT_CHECK3',
+      width: 100
+    }
+  ];
+  const toolbar = (
+    <>     
+      <IconButton
+        className='buttonIcon'
+        onClick={() => {
+          setShowHidePivotTable(!showhidePivotTable);
+        }}
+      >
+        <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+        Pivot
+      </IconButton>
+    </>
+  );
   const fields_chamcong: any = [
     {
       caption: "DATE_COLUMN",
@@ -754,256 +891,23 @@ const BANGCHAMCONG = () => {
         store: bangchamcong,
       })
     );
+
   const chamcongTBMM = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={bangchamcong2}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"85vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={false}
-            allowAdding={false}
-            allowDeleting={false}
-            mode='cell'
-            confirmDelete={false}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(bangchamcong, "SXDATATABLE");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                SAVE
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  setShowHidePivotTable(!showhidePivotTable);
-                }}
-              >
-                <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-                Pivot
-              </IconButton>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-          <Column
-            dataField='DATE_COLUMN'
-            caption='DATE_COLUMN'
-            width={100}
-            dataType='date'
-          ></Column>
-          <Column
-            dataField='WEEKDAY'
-            caption='WEEKDAY'
-            width={80}
-            dataType='date'
-          ></Column>
-          <Column dataField='NV_CCID' caption='NV_CCID' width={80}></Column>
-          <Column dataField='EMPL_NO' caption='EMPL_NO' width={80}></Column>
-          <Column dataField='CMS_ID' caption='NS_ID' width={80}></Column>
-          {/*  <Column dataField='MIDLAST_NAME' caption='MIDLAST_NAME' width={100}></Column>
-            <Column dataField='FIRST_NAME' caption='FIRST_NAME' width={100}></Column> */}
-          <Column
-            dataField='FULL_NAME'
-            caption='FULL_NAME'
-            width={100}
-          ></Column>
-          {/*  <Column dataField='PHONE_NUMBER' caption='PHONE_NUMBER' width={100}></Column>
-            <Column dataField='SEX_NAME' caption='SEX_NAME' width={100}></Column>
-            <Column dataField='WORK_STATUS_NAME' caption='WORK_STATUS_NAME' width={100}></Column> */}
-          <Column
-            dataField='FACTORY_NAME'
-            caption='FACTORY_NAME'
-            width={100}
-          ></Column>
-          {/* <Column dataField='JOB_NAME' caption='JOB_NAME' width={100}></Column> */}
-          <Column
-            dataField='WORK_SHIF_NAME'
-            caption='WORK_SHIF_NAME'
-            width={100}
-          ></Column>
-          <Column
-            dataField='CALV'
-            caption='CALV'
-            width={100}
-          ></Column>
-          {/* <Column dataField='WORK_POSITION_NAME' caption='WORK_POSITION_NAME' width={100}></Column>
-            <Column dataField='SUBDEPTNAME' caption='SUBDEPTNAME' width={100}></Column> */}
-          <Column
-            dataField='MAINDEPTNAME'
-            caption='MAINDEPTNAME'
-            width={100}
-          ></Column>
-          {/* <Column dataField='REQUEST_DATE' caption='REQUEST_DATE' width={100}></Column>
-            <Column dataField='APPLY_DATE' caption='APPLY_DATE' width={100}></Column>
-            <Column dataField='APPROVAL_STATUS' caption='APPROVAL_STATUS' width={100}></Column> */}
-          {/*  <Column dataField='OFF_ID' caption='OFF_ID' width={100}></Column>
-            <Column dataField='CA_NGHI' caption='CA_NGHI' width={100}></Column>
-            <Column dataField='ON_OFF' caption='ON_OFF' width={100}></Column>
-            <Column dataField='OVERTIME_INFO' caption='OVERTIME_INFO' width={100}></Column>
-            <Column dataField='OVERTIME' caption='OVERTIME' width={100}></Column> */}
-          {/* <Column dataField='REMARK' caption='REMARK' width={100}></Column> */}
-          {/* <Column dataField='XACNHAN' caption='XACNHAN' width={100}></Column> */}
-          <Column
-            dataField='IN_TIME'
-            caption='IN_TIME'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.IN_TIME !== "Thiếu giờ vào") {
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {e.data.IN_TIME}
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    {e.data.IN_TIME}
-                  </span>
-                );
-              }
+    () => {    
+      return (
+       
+          <AGTable
+            data={bangchamcong2}
+            columns={columns}
+            toolbar={toolbar}
+            onSelectionChange={(e) => {
+              // Handle selection change
             }}
-          ></Column>
-          <Column
-            dataField='OUT_TIME'
-            caption='OUT_TIME'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.OUT_TIME !== "Thiếu giờ ra") {
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {e.data.OUT_TIME}
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    {e.data.OUT_TIME}
-                  </span>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='STATUS'
-            caption='STATUS'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.STATUS !== "Thiếu công") {
-                return (
-                  <span style={{ color: "blue", fontWeight: "normal" }}>
-                    {e.data.STATUS}
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "normal" }}>
-                    {e.data.STATUS}
-                  </span>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='REASON_NAME'
-            caption='REASON_NAME'
-            width={100}
-          ></Column>
-          <Column dataField='CHECK1' caption='CHECK1' width={100}></Column>
-          <Column dataField='CHECK2' caption='CHECK2' width={100}></Column>
-          <Column dataField='CHECK3' caption='CHECK3' width={100}></Column>
-          <Column
-            dataField='PREV_CHECK1'
-            caption='PREV_CHECK1'
-            width={100}
-          ></Column>
-          <Column
-            dataField='PREV_CHECK2'
-            caption='PREV_CHECK2'
-            width={100}
-          ></Column>
-          <Column
-            dataField='PREV_CHECK3'
-            caption='PREV_CHECK3'
-            width={100}
-          ></Column>
-          <Column
-            dataField='NEXT_CHECK1'
-            caption='NEXT_CHECK1'
-            width={100}
-          ></Column>
-          <Column
-            dataField='NEXT_CHECK2'
-            caption='NEXT_CHECK2'
-            width={100}
-          ></Column>
-          <Column
-            dataField='NEXT_CHECK3'
-            caption='NEXT_CHECK3'
-            width={100}
-          ></Column>
-          <Summary>
-            <TotalItem
-              alignment='right'
-              column='DATE_COLUMN'
-              summaryType='count'
-              valueFormat={"decimal"}
-            />
-          </Summary>
-        </DataGrid>
-      </div>
-    ),
-    [bangchamcong2]
+          />
+       
+      );
+    },
+    [bangchamcong2, showhidePivotTable]
   );
   const loadBangChamCong = () => {
     Swal.fire({
@@ -1134,56 +1038,6 @@ const BANGCHAMCONG = () => {
                   element.OUT_END !== null
                     ? moment.utc(element.OUT_END).format("HH:mm")
                     : "",
-                /*  IN_TIME: tinhInOutTime2({
-                        SHIFT_NAME:element.WORK_SHIF_NAME,
-                        IN_START: element.IN_START !== null? moment.utc(element.IN_START).format("HH:mm"): '',
-                        IN_END: element.IN_END !== null? moment.utc(element.IN_END).format("HH:mm"): '',
-                        OUT_START: element.OUT_START !== null? moment.utc(element.OUT_START).format("HH:mm"): '',
-                        OUT_END: element.OUT_END !== null? moment.utc(element.OUT_END).format("HH:mm"): '',                  
-                        CHECK10: element.CHECK10 !== null? moment.utc(element.CHECK10).format("HH:mm"): '',
-                        CHECK20: element.CHECK20 !== null? moment.utc(element.CHECK20).format("HH:mm"): '',
-                        CHECK30: element.CHECK30 !== null? moment.utc(element.CHECK30).format("HH:mm"): '',
-                        CHECK40: element.CHECK40 !== null? moment.utc(element.CHECK40).format("HH:mm"): '',
-                        CHECK50: element.CHECK50 !== null? moment.utc(element.CHECK50).format("HH:mm"): '',
-                        CHECK60: element.CHECK60 !== null? moment.utc(element.CHECK60).format("HH:mm"): '',
-                        CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format("HH:mm"): '',
-                        CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format("HH:mm"): '',
-                        CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format("HH:mm"): '',
-                        CHECK4: element.CHECK4 !== null? moment.utc(element.CHECK4).format("HH:mm"): '',
-                        CHECK5: element.CHECK5 !== null? moment.utc(element.CHECK5).format("HH:mm"): '',
-                        CHECK6: element.CHECK6 !== null? moment.utc(element.CHECK6).format("HH:mm"): '',
-                        CHECK12: element.CHECK12 !== null? moment.utc(element.CHECK12).format("HH:mm"): '',
-                        CHECK22: element.CHECK22 !== null? moment.utc(element.CHECK22).format("HH:mm"): '',
-                        CHECK32: element.CHECK32 !== null? moment.utc(element.CHECK32).format("HH:mm"): '',
-                        CHECK42: element.CHECK42 !== null? moment.utc(element.CHECK42).format("HH:mm"): '',
-                        CHECK52: element.CHECK52 !== null? moment.utc(element.CHECK52).format("HH:mm"): '',
-                        CHECK62: element.CHECK62 !== null? moment.utc(element.CHECK62).format("HH:mm"): '',
-                      }).IN_TIME,
-                      OUT_TIME: tinhInOutTime2({
-                        SHIFT_NAME:element.WORK_SHIF_NAME,
-                        IN_START: element.IN_START !== null? moment.utc(element.IN_START).format("HH:mm"): '',
-                        IN_END: element.IN_END !== null? moment.utc(element.IN_END).format("HH:mm"): '',
-                        OUT_START: element.OUT_START !== null? moment.utc(element.OUT_START).format("HH:mm"): '',
-                        OUT_END: element.OUT_END !== null? moment.utc(element.OUT_END).format("HH:mm"): '',                  
-                        CHECK10: element.CHECK10 !== null? moment.utc(element.CHECK10).format("HH:mm"): '',
-                        CHECK20: element.CHECK20 !== null? moment.utc(element.CHECK20).format("HH:mm"): '',
-                        CHECK30: element.CHECK30 !== null? moment.utc(element.CHECK30).format("HH:mm"): '',
-                        CHECK40: element.CHECK40 !== null? moment.utc(element.CHECK40).format("HH:mm"): '',
-                        CHECK50: element.CHECK50 !== null? moment.utc(element.CHECK50).format("HH:mm"): '',
-                        CHECK60: element.CHECK60 !== null? moment.utc(element.CHECK60).format("HH:mm"): '',
-                        CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format("HH:mm"): '',
-                        CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format("HH:mm"): '',
-                        CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format("HH:mm"): '',
-                        CHECK4: element.CHECK4 !== null? moment.utc(element.CHECK4).format("HH:mm"): '',
-                        CHECK5: element.CHECK5 !== null? moment.utc(element.CHECK5).format("HH:mm"): '',
-                        CHECK6: element.CHECK6 !== null? moment.utc(element.CHECK6).format("HH:mm"): '',
-                        CHECK12: element.CHECK12 !== null? moment.utc(element.CHECK12).format("HH:mm"): '',
-                        CHECK22: element.CHECK22 !== null? moment.utc(element.CHECK22).format("HH:mm"): '',
-                        CHECK32: element.CHECK32 !== null? moment.utc(element.CHECK32).format("HH:mm"): '',
-                        CHECK42: element.CHECK42 !== null? moment.utc(element.CHECK42).format("HH:mm"): '',
-                        CHECK52: element.CHECK52 !== null? moment.utc(element.CHECK52).format("HH:mm"): '',
-                        CHECK62: element.CHECK62 !== null? moment.utc(element.CHECK62).format("HH:mm"): '',
-                      }).OUT_TIME, */
                 IN_TIME: tinhInOutTime({
                   CA_CODE: element.CA_CODE,
                   IN_START:
@@ -1379,7 +1233,7 @@ const BANGCHAMCONG = () => {
           );
           Swal.fire(
             "Thông báo",
-            " Đã tải: " + loaded_data.length + " dòng",
+            " Đã tải: " + loaded_data.length + " dòng ",
             "success"
           );
         } else {
@@ -1554,7 +1408,7 @@ const BANGCHAMCONG = () => {
           );
           Swal.fire(
             "Thông báo",
-            " Đã tải: " + loaded_data.length + " dòng",
+            " Đã tải: " + loaded_data.length + " dòng, IN_TIME, OUT_TIME chỉ là dự đoán, có thể sai do chấm công không đúng quy định",
             "success"
           );
         } else {

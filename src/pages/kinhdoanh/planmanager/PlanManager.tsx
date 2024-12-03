@@ -1,40 +1,21 @@
 import { IconButton } from "@mui/material";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../components/PivotChart/PivotChart";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { TbLogout } from "react-icons/tb";
 import { PlanTableData, UserData } from "../../../api/GlobalInterface";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import AGTable from "../../../components/DataTable/AGTable";
 const PlanManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    testinvoicetable: false,
-  });
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -55,45 +36,44 @@ const PlanManager = () => {
   const [material, setMaterial] = useState("");
   const [over, setOver] = useState("");
   const [invoice_no, setInvoice_No] = useState("");
+  const [trigger, setTrigger] = useState(true);
   const [plandatatable, setPlanDataTable] = useState<Array<PlanTableData>>([]);
-  const [plandatatablefilter, setPlanDataTableFilter] = useState<
-    Array<PlanTableData>
-  >([]);
+  const plandatatablefilter = useRef<Array<PlanTableData>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const column_plantable:any = [
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
-    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 180 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+  const column_plantable: any = [
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 100, checkboxSelection: true, headerCheckboxSelection: true },
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
+    { field: "G_CODE", headerName: "G_CODE", width: 70 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 120,
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.G_NAME}</b>
+            <b>{params.data.G_NAME}</b>
           </span>
         );
       },
     },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 100 },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 60 },
     {
       field: "PROD_MAIN_MATERIAL",
       headerName: "PROD_MAIN_MATERIAL",
       width: 120,
     },
-    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 120 },
+    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 50 },
     {
       field: "D1",
       type: "number",
       headerName: "D1",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D1.toLocaleString("en-US")}</b>
+            <b>{params.data.D1.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -102,11 +82,11 @@ const PlanManager = () => {
       field: "D2",
       type: "number",
       headerName: "D2",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D2.toLocaleString("en-US")}</b>
+            <b>{params.data.D2.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -115,11 +95,11 @@ const PlanManager = () => {
       field: "D3",
       type: "number",
       headerName: "D3",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D3.toLocaleString("en-US")}</b>
+            <b>{params.data.D3.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -128,11 +108,11 @@ const PlanManager = () => {
       field: "D4",
       type: "number",
       headerName: "D4",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D4.toLocaleString("en-US")}</b>
+            <b>{params.data.D4.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -141,11 +121,11 @@ const PlanManager = () => {
       field: "D5",
       type: "number",
       headerName: "D5",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D5.toLocaleString("en-US")}</b>
+            <b>{params.data.D5.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -154,11 +134,11 @@ const PlanManager = () => {
       field: "D6",
       type: "number",
       headerName: "D6",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D6.toLocaleString("en-US")}</b>
+            <b>{params.data.D6.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -167,11 +147,11 @@ const PlanManager = () => {
       field: "D7",
       type: "number",
       headerName: "D7",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D7.toLocaleString("en-US")}</b>
+            <b>{params.data.D7.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -180,11 +160,11 @@ const PlanManager = () => {
       field: "D8",
       type: "number",
       headerName: "D8",
-      width: 80,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D8.toLocaleString("en-US")}</b>
+            <b>{params.data.D8.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -193,11 +173,11 @@ const PlanManager = () => {
       field: "D9",
       type: "number",
       headerName: "D9",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D9.toLocaleString("en-US")}</b>
+            <b>{params.data.D9.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -206,11 +186,11 @@ const PlanManager = () => {
       field: "D10",
       type: "number",
       headerName: "D10",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D10.toLocaleString("en-US")}</b>
+            <b>{params.data.D10.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -219,11 +199,11 @@ const PlanManager = () => {
       field: "D11",
       type: "number",
       headerName: "D11",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D11.toLocaleString("en-US")}</b>
+            <b>{params.data.D11.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -232,11 +212,11 @@ const PlanManager = () => {
       field: "D12",
       type: "number",
       headerName: "D12",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D12.toLocaleString("en-US")}</b>
+            <b>{params.data.D12.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -245,11 +225,11 @@ const PlanManager = () => {
       field: "D13",
       type: "number",
       headerName: "D13",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D13.toLocaleString("en-US")}</b>
+            <b>{params.data.D13.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -258,11 +238,11 @@ const PlanManager = () => {
       field: "D14",
       type: "number",
       headerName: "D14",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D14.toLocaleString("en-US")}</b>
+            <b>{params.data.D14.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -271,31 +251,31 @@ const PlanManager = () => {
       field: "D15",
       type: "number",
       headerName: "D15",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 50,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D15.toLocaleString("en-US")}</b>
+            <b>{params.data.D15.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
-  const column_excelplan2:any = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 120 },
-    { field: "PLAN_DATE", type: "date", headerName: "PLAN_DATE", width: 120 },
+  const column_excelplan2: any = [
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 60 },
+    { field: "CUST_CD", headerName: "CUST_CD", width: 60 },
+    { field: "G_CODE", headerName: "G_CODE", width: 60 },
+    { field: "PLAN_DATE", type: "date", headerName: "PLAN_DATE", width: 60 },
     {
       field: "D1",
       type: "number",
       headerName: "D1",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D1.toLocaleString("en-US")}</b>
+            <b>{params.data.D1.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -304,11 +284,11 @@ const PlanManager = () => {
       field: "D2",
       type: "number",
       headerName: "D2",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D2.toLocaleString("en-US")}</b>
+            <b>{params.data.D2.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -317,11 +297,11 @@ const PlanManager = () => {
       field: "D3",
       type: "number",
       headerName: "D3",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D3.toLocaleString("en-US")}</b>
+            <b>{params.data.D3.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -330,11 +310,11 @@ const PlanManager = () => {
       field: "D4",
       type: "number",
       headerName: "D4",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D4.toLocaleString("en-US")}</b>
+            <b>{params.data.D4.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -343,11 +323,11 @@ const PlanManager = () => {
       field: "D5",
       type: "number",
       headerName: "D5",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D5.toLocaleString("en-US")}</b>
+            <b>{params.data.D5.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -356,11 +336,11 @@ const PlanManager = () => {
       field: "D6",
       type: "number",
       headerName: "D6",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D6.toLocaleString("en-US")}</b>
+            <b>{params.data.D6.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -369,11 +349,11 @@ const PlanManager = () => {
       field: "D7",
       type: "number",
       headerName: "D7",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D7.toLocaleString("en-US")}</b>
+            <b>{params.data.D7.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -382,11 +362,11 @@ const PlanManager = () => {
       field: "D8",
       type: "number",
       headerName: "D8",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D8.toLocaleString("en-US")}</b>
+            <b>{params.data.D8.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -395,11 +375,11 @@ const PlanManager = () => {
       field: "D9",
       type: "number",
       headerName: "D9",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D9.toLocaleString("en-US")}</b>
+            <b>{params.data.D9.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -408,11 +388,11 @@ const PlanManager = () => {
       field: "D10",
       type: "number",
       headerName: "D10",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D10.toLocaleString("en-US")}</b>
+            <b>{params.data.D10.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -421,11 +401,11 @@ const PlanManager = () => {
       field: "D11",
       type: "number",
       headerName: "D11",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D11.toLocaleString("en-US")}</b>
+            <b>{params.data.D11.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -434,11 +414,11 @@ const PlanManager = () => {
       field: "D12",
       type: "number",
       headerName: "D12",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D12.toLocaleString("en-US")}</b>
+            <b>{params.data.D12.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -447,11 +427,11 @@ const PlanManager = () => {
       field: "D13",
       type: "number",
       headerName: "D13",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D13.toLocaleString("en-US")}</b>
+            <b>{params.data.D13.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -460,11 +440,11 @@ const PlanManager = () => {
       field: "D14",
       type: "number",
       headerName: "D14",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D14.toLocaleString("en-US")}</b>
+            <b>{params.data.D14.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -473,11 +453,11 @@ const PlanManager = () => {
       field: "D15",
       type: "number",
       headerName: "D15",
-      width: 120,
-      renderCell: (params: any) => {
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.row.D15.toLocaleString("en-US")}</b>
+            <b>{params.data.D15.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -487,95 +467,21 @@ const PlanManager = () => {
       field: "CHECKSTATUS",
       headerName: "CHECKSTATUS",
       width: 200,
-      renderCell: (params: any) => {
-        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
+      cellRenderer: (params: any) => {
+        if (params.data.CHECKSTATUS.slice(0, 2) === "OK")
           return (
             <span style={{ color: "green" }}>
-              <b>{params.row.CHECKSTATUS}</b>
+              <b>{params.data.CHECKSTATUS}</b>
             </span>
           );
         return (
           <span style={{ color: "red" }}>
-            <b>{params.row.CHECKSTATUS}</b>
+            <b>{params.data.CHECKSTATUS}</b>
           </span>
         );
       },
     },
   ];
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className="saveexcelbutton"
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded Plan");
-          }}
-        >
-          Save Excel
-        </button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHideSearchDiv(!showhidesearchdiv);
-          }}
-        >
-          <TbLogout color="green" size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(plandatatable, "Plan Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeletePlan
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handleConfirmDeletePlan,
-            );
-            //handleConfirmDeletePlan();
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA PLAN
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          Pivot
-        </IconButton>
-      </GridToolbarContainer>
-    );
-  }
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -679,8 +585,8 @@ const PlanManager = () => {
             (element: PlanTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
                 PLAN_DATE: element.PLAN_DATE.slice(0, 10),
                 D1: element.D1 === null ? 0 : element.D1,
                 D2: element.D2 === null ? 0 : element.D2,
@@ -781,6 +687,7 @@ const PlanManager = () => {
     setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger); 
   };
   const handle_upPlanHangLoat = async () => {
     setisLoading(true);
@@ -912,25 +819,14 @@ const PlanManager = () => {
         handle_checkPlanHangLoat();
       }
     });
-  }; 
-  const handlePlanSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID),
-    );
-    if (datafilter.length > 0) {
-      setPlanDataTableFilter(datafilter);
-    } else {
-      setPlanDataTableFilter([]);
-    }
   };
   const deletePlan = async () => {
-    if (plandatatablefilter.length >= 1) {
+    if (plandatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < plandatatablefilter.length; i++) {
-        if (plandatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
+      for (let i = 0; i < plandatatablefilter.current.length; i++) {
+        if (plandatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_plan", {
-            PLAN_ID: plandatatablefilter[i].PLAN_ID,
+            PLAN_ID: plandatatablefilter.current[i].PLAN_ID,
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -977,7 +873,80 @@ const PlanManager = () => {
       }
     });
   };
-
+  const planDataAGTable = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              /*  checkBP(
+                userData?.EMPL_NO,
+                userData?.MAINDEPTNAME,
+                ["KD"],
+                handleConfirmDeletePlan
+              ); */
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmDeletePlan,
+              );
+              //handleConfirmDeletePlan();
+            }}
+          >
+            <MdOutlineDelete color="red" size={15} />
+            XÓA PLAN
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
+            }}
+          >
+            <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+            Pivot
+          </IconButton>
+        </>
+      }
+      columns={column_plantable}
+      data={plandatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())
+        plandatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [plandatatable]);
+  const planDataAGTableExcel = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <>
+        </>
+      }
+      columns={column_excelplan2}
+      data={uploadExcelJson}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+      }} onSelectionChange={(params: any) => {
+        //plandatatablefilter.current = params!.api.getSelectedRows();
+      }}
+    />
+    , [uploadExcelJson, trigger]);
   useEffect(() => { }, []);
   return (
     <div className="planmanager">
@@ -1133,26 +1102,7 @@ const PlanManager = () => {
               </div>
             )}
             <div className="tracuuPlanTable">
-              <DataGrid
-                sx={{ fontSize: "0.7rem" }}
-                slots={{
-                  toolbar: CustomToolbarPOTable,
-                }}
-                loading={isLoading}
-                rowHeight={30}
-                rows={plandatatable}
-                columns={column_plantable}
-                pageSizeOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                ]}
-                editMode="row"
-                getRowId={(row) => row.PLAN_ID}
-                checkboxSelection
-                disableRowSelectionOnClick
-                onRowSelectionModelChange={(ids) => {
-                  handlePlanSelectionforUpdate(ids);
-                }}
-              />
+              {planDataAGTable}
             </div>
           </div>
         </TabPanel>
@@ -1193,22 +1143,7 @@ const PlanManager = () => {
                 </div>
               </form>
               <div className="insertPlanTable">
-                {true && (
-                  <DataGrid
-                    sx={{ fontSize: "0.7rem" }}
-                    slots={{
-                      toolbar: CustomToolbar,
-                    }}
-                    loading={isLoading}
-                    rowHeight={35}
-                    rows={uploadExcelJson}
-                    columns={column_excelplan2}
-                    pageSizeOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                    ]}
-                    editMode="row"
-                  />
-                )}
+                {planDataAGTableExcel}
               </div>
             </div>
           </div>
