@@ -393,7 +393,7 @@ const QuanLyPhongBanNhanSu = () => {
             .then((response) => {
               if (response.data.tk_status === "OK") {
                 console.log(response.data.data);
-                setSubDeptTable(response.data.data);
+                setWorkPositionTable(response.data.data);
               }
             })
             .catch((error) => {
@@ -730,6 +730,9 @@ const QuanLyPhongBanNhanSu = () => {
             console.log(response.data.data);
             setSubDeptTable(response.data.data);
           }
+          else {
+            setSubDeptTable([]);
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -755,6 +758,13 @@ const QuanLyPhongBanNhanSu = () => {
             console.log(response.data.data);
             setWorkPositionTable(response.data.data);
           }
+          else {
+            setWorkPositionTable([]);
+          }
+          setWorkPositionCode(0);
+          setWorkPositionName("");
+          setWorkPositionNameKR("");
+          setATT_GROUP_CODE(0);
         })
         .catch((error) => {
           console.log(error);
@@ -1162,7 +1172,7 @@ const QuanLyPhongBanNhanSu = () => {
                           <option value={0}>Hành chính</option>
                           <option value={1}>TEAM 1</option>
                           <option value={2}>TEAM 2</option>
-                          <option value={3}>TEAM 12T</option>
+                          {/* <option value={3}>TEAM 12T</option> */}
                         </select>
                       </label>
                       <label>
@@ -1540,7 +1550,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <br></br>
                     WORK POSITION NAME KR: <br></br>
                     <br></br>
-                    ATT GROUP CDOE:
+                    ATT GROUP CODE:
                   </div>
                   <div className='workpositioninputbox'>
                     <input

@@ -894,7 +894,7 @@ const QLVL = () => {
     ],
     store: data,
   });
-  const [colDefs, setColDefs] = useState<Array<any>>([
+  const column1 = [
     {
       field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, floatingFilter: true, rowDrag: true, /* cellStyle: (params:any) => {     
        if (params.data.M_ID%2==0 ) {
@@ -1032,7 +1032,148 @@ const QLVL = () => {
     { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
     { field: 'UPD_EMPL', headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
-  ]);
+
+  ];
+  const column2 = [
+    {
+      field: 'M_ID', headerName: 'M_ID', headerCheckboxSelection: true, checkboxSelection: true, width: 90, resizable: true, floatingFilter: true, rowDrag: true, /* cellStyle: (params:any) => {     
+       if (params.data.M_ID%2==0 ) {
+        return { backgroundColor: '#d4edda', color: '#155724' };
+      } else {
+        return { backgroundColor: '#f8d7da', color: '#721c24' };
+        } 
+    } */},
+    { field: 'M_NAME', headerName: 'M_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+      return (
+        
+          <span style={{color:'blue'}}>{params.data.M_NAME}</span>
+       
+      )
+    } },
+    { field: 'DESCR', headerName: 'DESCR', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'CUST_CD', headerName: 'CUST_CD', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    {
+      field: 'SSPRICE', headerName: 'OPEN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
+        return (
+          <span style={{color:'green'}}>{params.data.SSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        );
+      }
+    },
+    {
+      field: 'CMSPRICE', headerName: 'ORIGIN_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
+        return (
+          <span style={{color:'green'}}>{params.data.CMSPRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        );
+      }
+    },
+    {
+      field: 'SLITTING_PRICE', headerName: 'SLITTING_PRICE', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number", cellRenderer: (params: any) => {
+        return (
+          <span style={{color:'green'}}>{params.data.SLITTING_PRICE?.toLocaleString('vi-VN', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        );
+      }
+    },
+    { field: 'MASTER_WIDTH', headerName: 'MASTER_WIDTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'ROLL_LENGTH', headerName: 'ROLL_LENGTH', width: 90, resizable: true, floatingFilter: true, filter: true, cellDataType: "number" },
+    { field: 'FSC', headerName: 'FSC', width: 50, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'FSC_CODE', headerName: 'FSC_CODE', width: 60, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'FSC_NAME', headerName: 'FSC_NAME', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'USE_YN', headerName: 'USE_YN', width: 60, resizable: true, floatingFilter: true, filter: true, cellRenderer: (params: any) => {
+      if (params.data.USE_YN === 'N') {
+        return (
+          <span style={{color:'red'}}>{params.data.USE_YN}</span>
+        )
+      } else {
+        return (
+          <span style={{color:'green'}}>{params.data.USE_YN}</span>
+        )
+      } 
+    } },
+    { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 60, resizable: true, floatingFilter: true, filter: true, },
+    /* {
+      field: 'DOC', headerName: 'DOC', width: 90, resizable: true, cellRenderer: (params: any) => {       
+        return (
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <Button
+              variant="contained" 
+              size="small"
+              onClick={() => {
+                setSelected_M_ID(params.data.M_ID);
+                setSelected_M_NAME(params.data.M_NAME);
+                setOpenDialog(true);
+              }}
+            >
+              Docs
+            </Button>
+            
+          </div>
+        )
+      }
+    },
+    { field: 'TDS_VER', headerName: 'TDS', width: 70, resizable: true, cellRenderer: (params: any) => {
+      if (params.data.TDS_VER > 0) {
+        return (
+          <a href={`/materialdocs/${params.data.M_ID}_TDS_${params.data.TDS_VER}.pdf`} target="_blank" rel="noopener noreferrer">
+            Ver.{params.data.TDS_VER}
+          </a>
+        );
+      }
+      return <span>-</span>;
+    }},
+    { field: 'SGS_VER', headerName: 'SGS', width: 70, resizable: true, cellRenderer: (params: any) => {
+      if (params.data.SGS_VER > 0) {
+        return (
+          <a href={`/materialdocs/${params.data.M_ID}_SGS_${params.data.SGS_VER}.pdf`} target="_blank" rel="noopener noreferrer">
+            Ver.{params.data.SGS_VER}
+          </a>
+        );
+      }
+      return <span>-</span>;
+    }},
+    { field: 'MSDS_VER', headerName: 'MSDS', width: 70, resizable: true, cellRenderer: (params: any) => {
+      if (params.data.MSDS_VER > 0) {
+        return (
+          <a href={`/materialdocs/${params.data.M_ID}_MSDS_${params.data.MSDS_VER}.pdf`} target="_blank" rel="noopener noreferrer">
+            Ver.{params.data.MSDS_VER}
+          </a>
+        );
+      }
+      return <span>-</span>;
+    }}, */
+    {
+      field: 'TDS', headerName: 'TDS', width: 90, resizable: true, cellRenderer: (params: CustomCellRendererProps) => {
+        let href = `/tds2/NVL_${params.data?.M_ID}.pdf`;
+        let file: any = null;
+        if (params.data?.TDS === 'Y') {
+          return (
+            <a target="_blank" rel="noopener noreferrer" href={href} >LINK</a>
+          )
+        }
+        else {
+          return (
+            <div className="tdsuploadbutton">
+              <button onClick={() => {
+                uploadTDS(params.data?.M_ID, file);
+              }}>Upload</button>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                }}
+              />
+            </div>
+          )
+        }
+      }, floatingFilter: true, filter: true,
+    },
+    { field: 'INS_DATE', headerName: 'INS_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 90, resizable: true, floatingFilter: true, filter: true, },
+    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', width: 90, resizable: true, floatingFilter: true, filter: true, },
+  ];
+  const [colDefs, setColDefs] = useState<Array<any>>(column1);
   const material_data_ag_table = useMemo(() => {
     return (
       <AGTable
@@ -1059,7 +1200,7 @@ const QLVL = () => {
               Add/Update
             </IconButton>
           </div>}
-        columns={colDefs}
+        columns={getCompany() === 'CMS' ? column1 : column2}
         data={data}
         onCellEditingStopped={(params: any) => {
         }}

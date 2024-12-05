@@ -1,45 +1,13 @@
-import {
-  Autocomplete,
-  IconButton,
-  TextField,
-  createFilterOptions,
-} from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
+import { IconButton } from "@mui/material";
 import moment from "moment";
-import React, {
-  startTransition,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import React, { useEffect, useRef, useState } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
-import { UserContext } from "../../../api/Context";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel, checkBP } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart } from "react-icons/md";
+import { checkBP } from "../../../api/GlobalFunction";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { ResponsiveContainer } from "recharts";
 import {
   KTP_IN,
   KTP_OUT,
@@ -47,46 +15,158 @@ import {
   STOCK_G_NAME_KD,
   STOCK_PROD_REQUEST_NO,
 } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
+import { MdOutlinePivotTableChart } from "react-icons/md";
 
 const KHOTPNEW = () => {
   const dataGridRef = useRef<any>(null);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [khotpinputdatatable, setKhoTPInputDataTable] = useState<Array<KTP_IN>>(
-    [],
-  );
-  const [khotpoutputdatatable, setKhoTPOutputDataTable] = useState<
-    Array<KTP_OUT>
-  >([]);
-  const [tonktp_gcode, setTonKTPG_CODE] = useState<Array<STOCK_G_CODE>>([]);
-  const [tonktp_gnamekd, setTonKTP_G_NAME_KD] = useState<
-    Array<STOCK_G_NAME_KD>
-  >([]);
-  const [tonktp_prod_request_no, setTonKTP_PROD_REQUEST_NO] = useState<
-    Array<STOCK_PROD_REQUEST_NO>
-  >([]);
+  const columnKTP_IN = [
+    { field: 'IN_DATE', headerName: 'IN_DATE', resizable: true, width: 70 },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
+    { field: 'AUTO_ID', headerName: 'AUTO_ID', resizable: true, width: 50 },
+    { field: 'INSPECT_OUTPUT_ID', headerName: 'INSPECT_OUTPUT_ID', resizable: true, width: 100 },
+    { field: 'PACK_ID', headerName: 'PACK_ID', resizable: true, width: 60 },
+    { field: 'EMPL_NAME', headerName: 'EMPL_NAME', resizable: true, width: 100 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 100 },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 70 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 150 },
+    { field: 'PROD_TYPE', headerName: 'PROD_TYPE', resizable: true, width: 70 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 70 },
+    { field: 'IN_QTY', headerName: 'IN_QTY', resizable: true, width: 70, cellRenderer: (params: any) => {
+      return <span style={{color: params.data.USE_YN !=='DA GIAO' ? 'green' : 'red', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 },
+    { field: 'EMPL_GIAO', headerName: 'EMPL_GIAO', resizable: true, width: 70 },
+    { field: 'EMPL_NHAN', headerName: 'EMPL_NHAN', resizable: true, width: 70 },
+    { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 70 },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 70 },
+    { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 70 },
+    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 70 },
+    { field: 'STATUS', headerName: 'STATUS', resizable: true, width: 60 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 50 }
+  ]
+  const columnKTP_OUT = [
+    { field: 'OUT_DATE', headerName: 'OUT_DATE', resizable: true, width: 100, checkboxSelection: true, headerCheckboxSelection: true },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 60 },
+    { field: 'AUTO_ID', headerName: 'AUTO_ID', resizable: true, width: 50 },
+    { field: 'INSPECT_OUTPUT_ID', headerName: 'INSP_OUT_ID', resizable: true, width: 70 },
+    { field: 'PACK_ID', headerName: 'PACK_ID', resizable: true, width: 50 },
+    { field: 'EMPL_NAME', headerName: 'EMPL_NAME', resizable: true, width: 100 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 50 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 150 },
+    { field: 'PROD_TYPE', headerName: 'PROD_TYPE', resizable: true, width: 60 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 50 },
+    { field: 'CUST_CD', headerName: 'CUST_CD', resizable: true, width: 50 },
+    { field: 'OUT_QTY', headerName: 'OUT_QTY', resizable: true, width: 50 },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
+    { field: 'OUT_TYPE', headerName: 'OUT_TYPE', resizable: true, width: 60},
+    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 , cellRenderer: (params: any) => {
+      return <span style={{color: params.data.USE_YN ==='COMPLETED' ? 'green' : 'red', fontWeight:'bold'}}>{params.value}</span>
+    } },
+    { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 70 },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 70 },
+    { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 70 },
+    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 70 },
+    { field: 'STATUS', headerName: 'STATUS', resizable: true, width: 50 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 60 },
+    { field: 'AUTO_ID_IN', headerName: 'ID_IN', resizable: true, width: 50 },
+    { field: 'OUT_PRT_SEQ', headerName: 'PRT_SEQ', resizable: true, width: 50 },
+    { field: 'PO_NO', headerName: 'PO_NO', resizable: true, width: 50 }
+  ]
+  const columnSTOCKFULL = [
+    { field: 'IN_DATE', headerName: 'IN_DATE', resizable: true, width: 70 },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
+    { field: 'AUTO_ID', headerName: 'AUTO_ID', resizable: true, width: 50 },
+    { field: 'INSPECT_OUTPUT_ID', headerName: 'INSPECT_OUTPUT_ID', resizable: true, width: 100 },
+    { field: 'PACK_ID', headerName: 'PACK_ID', resizable: true, width: 60 },
+    { field: 'EMPL_NAME', headerName: 'EMPL_NAME', resizable: true, width: 100 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 100 },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 70 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 150 },
+    { field: 'PROD_TYPE', headerName: 'PROD_TYPE', resizable: true, width: 70 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 70 },
+    { field: 'IN_QTY', headerName: 'IN_QTY', resizable: true, width: 70, cellRenderer: (params: any) => {
+      return <span style={{color: params.data.USE_YN !=='DA GIAO' ? 'green' : 'red', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 },
+    { field: 'EMPL_GIAO', headerName: 'EMPL_GIAO', resizable: true, width: 70 },
+    { field: 'EMPL_NHAN', headerName: 'EMPL_NHAN', resizable: true, width: 70 },
+    { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 70 },
+    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 70 },
+    { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 70 },
+    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 70 },
+    { field: 'STATUS', headerName: 'STATUS', resizable: true, width: 60 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 50 }
+  ]
+  const columnSTOCKG_CODE = [
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 100 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 200 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 200 },
+    { field: 'PROD_TYPE', headerName: 'PROD_TYPE', resizable: true, width: 100 },
+    { field: 'STOCK', headerName: 'STOCK', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'green', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'BLOCK_QTY', headerName: 'BLOCK_QTY', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'red', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'TOTAL_STOCK', headerName: 'TOTAL_STOCK', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'blue', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } }
 
+  ]
+  const columnSTOCKG_NAME_KD = [
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 60 },
+    { field: 'STOCK', headerName: 'STOCK', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'green', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'BLOCK_QTY', headerName: 'BLOCK_QTY', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'red', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'TOTAL_STOCK', headerName: 'TOTAL_STOCK', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'blue', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } }
+
+  ]
+  const columnSTOCK_YCSX = [
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 60 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 150 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80 },
+    { field: 'PROD_TYPE', headerName: 'PROD_TYPE', resizable: true, width: 60 },
+    { field: 'STOCK', headerName: 'STOCK', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'green', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'BLOCK_QTY', headerName: 'BLOCK_QTY', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'red', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } },
+    { field: 'TOTAL_STOCK', headerName: 'TOTAL_STOCK', resizable: true, width: 100, cellRenderer: (params: any) => {
+      return <span style={{color:'blue', fontWeight:'bold'}}>{params.value.toLocaleString('en-US')}</span>
+    } }
+  ] 
+  const [columns, setColumns] = useState<Array<any>>(columnKTP_IN);
+  const [whDataTable, setWhDataTable] = useState<any>([]);
   const [fromdate, setFromDate] = useState(moment.utc().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
   const [factory, setFactory] = useState("ALL");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [custName, setCustName] = useState("");
-  const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
   const [plxk, setPLXK] = useState("ALL");
-  const [rndEmpl, setRNDEMPL] = useState("");
-  const [qcEmpl, setQCEMPL] = useState("");
   const [kdEmpl, setKDEMPL] = useState("");
   const [prod_type, setProdType] = useState("ALL");
-  const [selectedRows, setSelectedRows] = useState<KTP_IN>();
   const [buttonselected, setbuttonselected] = useState("GR");
   const [trigger, setTrigger] = useState(false);
-  const [selectedOUTRow, setSelectedOUTRow] = useState<KTP_OUT[]>([]);
-
+  const selectedOUTRow = useRef<KTP_OUT[]>([]);
 
   const ktp_in_fields: any = [
     {
@@ -832,14 +912,14 @@ const KHOTPNEW = () => {
     useState<PivotGridDataSource>(
       new PivotGridDataSource({
         fields: ktp_in_fields,
-        store: khotpinputdatatable,
+        store: whDataTable,
       }),
     );
 
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
-      setSelectedOUTRow([]);
+      selectedOUTRow.current = [];
       console.log(dataGridRef.current);
     }
   };
@@ -875,14 +955,16 @@ const KHOTPNEW = () => {
             },
           );
           //console.log(loadeddata);
-          setKhoTPInputDataTable(loadeddata);
+          
+          setWhDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          setKhoTPInputDataTable([]);
+          
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -922,14 +1004,16 @@ const KHOTPNEW = () => {
             },
           );
           //console.log(loadeddata);
-          setKhoTPOutputDataTable(loadeddata);
+         
+          setWhDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          setKhoTPOutputDataTable([]);
+          
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -969,14 +1053,16 @@ const KHOTPNEW = () => {
             },
           );
           //console.log(loadeddata);
-          setKhoTPInputDataTable(loadeddata);
+          
+          setWhDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          setKhoTPInputDataTable([]);
+         
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -1012,14 +1098,16 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             },
           );
           //console.log(loadeddata);
-          setTonKTPG_CODE(loadeddata);
+          
+          setWhDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          setTonKTPG_CODE([]);
+          
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -1054,14 +1142,16 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search(
             },
           );
           //console.log(loadeddata);
-          setTonKTP_G_NAME_KD(loadeddata);
+          
+          setWhDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          setTonKTP_G_NAME_KD([]);
+         
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -1097,14 +1187,16 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             },
           );
           //console.log(loadeddata);
-          setTonKTP_PROD_REQUEST_NO(loadeddata);
+         
+          setWhDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          setTonKTP_PROD_REQUEST_NO([]);
+          
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -1113,14 +1205,14 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
   };  
   const duyetHuy = async ()=> {
-    if(selectedOUTRow.length>0)
+    if(selectedOUTRow.current.length>0)
     {
-      for(let i=0;i<selectedOUTRow.length;i++)
+      for(let i=0;i<selectedOUTRow.current.length;i++)
       {
         //chuyen P -> X, them remark Xuat Huy  O660
         await generalQuery("updatePheDuyetHuyO660", {
-          AUTO_ID: selectedOUTRow[i].AUTO_ID,
-          AUTO_ID_IN: selectedOUTRow[i].AUTO_ID_IN
+          AUTO_ID: selectedOUTRow.current[i].AUTO_ID,
+          AUTO_ID_IN: selectedOUTRow.current[i].AUTO_ID_IN
         })
           .then((response) => {            
             if (response.data.tk_status !== "NG") {
@@ -1140,14 +1232,14 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     }
   }
   const cancelHuy = async ()=> {
-    if(selectedOUTRow.length>0)
+    if(selectedOUTRow.current.length>0)
     {
-      for(let i=0;i<selectedOUTRow.length;i++)
+      for(let i=0;i<selectedOUTRow.current.length;i++)
       {
         //chuyen P -> X, them remark Xuat Huy  O660
         await generalQuery("cancelPheDuyetHuyO660", {
-          AUTO_ID: selectedOUTRow[i].AUTO_ID,
-          AUTO_ID_IN: selectedOUTRow[i].AUTO_ID_IN
+          AUTO_ID: selectedOUTRow.current[i].AUTO_ID,
+          AUTO_ID_IN: selectedOUTRow.current[i].AUTO_ID_IN
         })
           .then((response) => {            
             if (response.data.tk_status !== "NG") {
@@ -1166,478 +1258,37 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       Swal.fire('Thông báo','Chọn ít nhất một dòng để thực hiện');
     }
   }
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Enter") {
-      //loadKTP_IN();
-      loadKTP_OUT();
-    }
-  };
-  const KHOTP_INPUT = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={khotpinputdatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => {}}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(khotpinputdatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="INSPECT_OUTPUT_ID"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment="right"
-                column="IN_QTY"
-                summaryType="sum"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [khotpinputdatatable, selectedDataSource],
-  );
-  const KHOTP_OUTPUT = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            ref={dataGridRef}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={khotpoutputdatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => {}}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-              setSelectedOUTRow(e.selectedRowsData)
-            }}
-            onRowClick={(e) => {
-              //setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="multiple" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(khotpinputdatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="INSPECT_OUTPUT_ID"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment="right"
-                column="OUT_QTY"
-                summaryType="sum"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [khotpoutputdatatable, selectedDataSource],
-  );
-  const KHOTP_STOCKG_CODE = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={tonktp_gcode}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => {}}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(khotpinputdatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [tonktp_gcode, selectedDataSource],
-  );
-  const KHOTP_STOCKG_NAME_KD = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={tonktp_gnamekd}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => {}}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(khotpinputdatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [tonktp_gnamekd,selectedDataSource],
-  );
-  const KHOTP_STOCK_YCSX = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={tonktp_prod_request_no}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => {}}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(khotpinputdatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [tonktp_prod_request_no, selectedDataSource],
-  );
-
-  const filterOptions1 = createFilterOptions({
-    matchFrom: "any",
-    limit: 100,
-  });
-  const [isPending, startTransition] = useTransition();
-
+  const whAGTable = React.useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+        toolbar={
+          <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(!showhidePivotTable);
+              }}
+            >
+              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+              Pivot
+            </IconButton>
+          </div>}
+        columns={columns}
+        data={whDataTable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          //console.log(e.data) 
+        }} onSelectionChange={(params: any) => {
+          //console.log(params)
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+          selectedOUTRow.current = params!.api.getSelectedRows();
+        }}
+      />
+    )
+  }, [whDataTable, columns])
   useEffect(() => {
     //loadKTP_IN();
     //setColumnDefinition(column_inspect_output);
@@ -1778,6 +1429,36 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   value={buttonselected}
                   onChange={(e) => {
                     setbuttonselected(e.target.value);
+                    switch (e.target.value) {
+                      case "GR":
+                        setColumns(columnKTP_IN);
+                        setWhDataTable([]);
+                        break;
+                      case "GI":
+                        setColumns(columnKTP_OUT);
+                        setWhDataTable([]);
+                        break;
+                      case "STOCKFULL":
+                        setColumns(columnSTOCKFULL);  
+                        setWhDataTable([]);
+                        break;
+                      case "STOCKG_CODE":
+                        setColumns(columnSTOCKG_CODE);
+                        setWhDataTable([]);
+                        break;
+                      case "STOCKG_NAME_KD":
+                        setColumns(columnSTOCKG_NAME_KD);
+                        setWhDataTable([]);
+                        break;
+                      case "STOCK_YCSX":
+                        setColumns(columnSTOCK_YCSX);
+                        setWhDataTable([]);
+                        break;
+                      default:
+                        setColumns(columnKTP_IN);
+                        setWhDataTable([]);
+                        break;
+                    } 
                   }}
                 >
                   <option value="GR">Nhập Kho</option>
@@ -1809,7 +1490,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     setSelectedDataSource(
                       new PivotGridDataSource({
                         fields: ktp_in_fields,
-                        store: khotpinputdatatable,
+                        store: whDataTable,
                       }),
                     );
                     break;
@@ -1818,7 +1499,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     setSelectedDataSource(
                       new PivotGridDataSource({
                         fields: ktp_out_fields,
-                        store: khotpoutputdatatable,
+                        store: whDataTable,
                       }),
                     );
                     break;
@@ -1827,7 +1508,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                     setSelectedDataSource(
                       new PivotGridDataSource({
                         fields: ktp_in_fields,
-                        store: khotpinputdatatable,
+                        store: whDataTable,
                       }),
                     );
                     break;
@@ -1934,25 +1615,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               Cancel hủy
             </button>
           </div>
-        </div>
-        {buttonselected === "GR" && (
-          <div className="tracuuYCSXTable">{KHOTP_INPUT}</div>
-        )}
-        {buttonselected === "GI" && (
-          <div className="tracuuYCSXTable">{KHOTP_OUTPUT}</div>
-        )}
-        {buttonselected === "STOCKFULL" && (
-          <div className="tracuuYCSXTable">{KHOTP_INPUT}</div>
-        )}
-        {buttonselected === "STOCKG_CODE" && (
-          <div className="tracuuYCSXTable">{KHOTP_STOCKG_CODE}</div>
-        )}
-        {buttonselected === "STOCKG_NAME_KD" && (
-          <div className="tracuuYCSXTable">{KHOTP_STOCKG_NAME_KD}</div>
-        )}
-        {buttonselected === "STOCK_YCSX" && (
-          <div className="tracuuYCSXTable">{KHOTP_STOCK_YCSX}</div>
-        )}
+        </div>       
+        {whAGTable}
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton

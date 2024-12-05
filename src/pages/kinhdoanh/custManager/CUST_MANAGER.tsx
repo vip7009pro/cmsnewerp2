@@ -45,7 +45,7 @@ const CUST_MANAGER = () => {
     UPD_EMPL: "",
   });
   const columns = [
-    { field: 'CUST_TYPE', headerName: 'CUST_TYPE', resizable: true, width: 100, headerCheckboxSelection: true, checkboxSelection: true},
+    { field: 'CUST_TYPE', headerName: 'CUST_TYPE', resizable: true, width: 100, headerCheckboxSelection: true, checkboxSelection: true },
     { field: 'CUST_CD', headerName: 'CUST_CD', resizable: true, width: 100 },
     { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
     { field: 'CUST_NAME', headerName: 'CUST_NAME', resizable: true, width: 100 },
@@ -65,6 +65,7 @@ const CUST_MANAGER = () => {
     { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 100 },
     { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 100 },
   ];
+
   const setCustInfo = (keyname: string, value: any) => {
     let tempCustInfo: CUST_INFO = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
@@ -250,7 +251,7 @@ const CUST_MANAGER = () => {
     )
   }, [custinfodatatable])
   useEffect(() => {
-    handleCUSTINFO();    
+    handleCUSTINFO();
   }, []);
   return (
     <div className="cust_manager">
@@ -334,10 +335,10 @@ const CUST_MANAGER = () => {
                     onChange={(e) => setCustInfo("CUST_NUMBER", e.target.value)}
                   ></input>
                 </label>
-              </div>           
-              
+              </div>
+
               <div className="forminputcolumn">
-                
+
                 <label>
                   <b>Tên chủ:</b>{" "}
                   <input
@@ -389,7 +390,7 @@ const CUST_MANAGER = () => {
                     type="text"
                     placeholder="Email"
                     value={selectedRows?.EMAIL}
-                    onChange={(e) => setCustInfo("REMK", e.target.value)}
+                    onChange={(e) => setCustInfo("EMAIL", e.target.value)}
                   ></input>
                 </label>
                 <label>
@@ -408,9 +409,9 @@ const CUST_MANAGER = () => {
               </div>
             </div>}
             actions={<div className="formbutton">
-               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
-              createNewCustomer(selectedRows.CUST_TYPE);
-            }}>Clear</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
+                createNewCustomer(selectedRows.CUST_TYPE);
+              }}>Clear</Button>
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
                 handle_addCustomer();
               }}>Add</Button>
@@ -418,8 +419,8 @@ const CUST_MANAGER = () => {
                 handle_editCustomer();
               }}>Update</Button>
             </div>}
-            />
-             
+          />
+
         </div>
         <div className="tracuuYCSXTable">{customerDataTableAG}</div>
       </div>

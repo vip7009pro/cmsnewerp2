@@ -1132,37 +1132,7 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: true,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: true,
-      });
-    }
-  };
-  const getFSCList = () => {
+   const getFSCList = () => {
     generalQuery("getFSCList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
