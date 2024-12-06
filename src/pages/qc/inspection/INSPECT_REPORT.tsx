@@ -69,6 +69,7 @@ const INSPECT_REPORT = () => {
     await generalQuery("getpatrolheader", {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data);
@@ -134,7 +135,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -142,14 +144,17 @@ const INSPECT_REPORT = () => {
           const loadeddata: DailyPPMData[] = response.data.data.map(
             (element: DailyPPMData, index: number) => {
               return {
-                ...element,
+                ...element,                
+                TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
                 INSPECT_DATE: moment
                   .utc(element.INSPECT_DATE)
                   .format("YYYY-MM-DD"),
               };
             },
           );
-          //console.log(loadeddata);
+          console.log(loadeddata);
           if (FACTORY === "NM1") {
             setDailyPPM1(loadeddata);
           } else if (FACTORY === "NM2") {
@@ -173,7 +178,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -182,6 +188,9 @@ const INSPECT_REPORT = () => {
             (element: WeeklyPPMData, index: number) => {
               return {
                 ...element,
+                TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
               };
             },
           );
@@ -208,7 +217,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -217,6 +227,9 @@ const INSPECT_REPORT = () => {
             (element: MonthlyPPMData, index: number) => {
               return {
                 ...element,
+                TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
               };
             },
           );
@@ -243,7 +256,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -252,6 +266,9 @@ const INSPECT_REPORT = () => {
             (element: YearlyPPMData, index: number) => {
               return {
                 ...element,
+                TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
               };
             },
           );
@@ -277,7 +294,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -314,7 +332,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -324,7 +343,11 @@ const INSPECT_REPORT = () => {
               return {
                 ...element,
                 INSPECT_DATE: moment(element.INSPECT_DATE).format("YYYY-MM-DD"),
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
+                M_NG_AMOUNT: ng_type === "ALL" ? element.M_NG_AMOUNT : ng_type === "P" ? 0 : element.M_NG_AMOUNT,
+                P_NG_AMOUNT: ng_type === "ALL" ? element.P_NG_AMOUNT : ng_type === "M" ? 0 : element.P_NG_AMOUNT,
+                M_NG_QTY: ng_type === "ALL" ? element.M_NG_QTY : ng_type === "P" ? 0 : element.M_NG_QTY,
+                P_NG_QTY: ng_type === "ALL" ? element.P_NG_QTY : ng_type === "M" ? 0 : element.P_NG_QTY,
+                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,                
                 T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
                 M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
                 P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
@@ -352,7 +375,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -361,6 +385,10 @@ const INSPECT_REPORT = () => {
             (element: InspectSummary, index: number) => {
               return {
                 ...element,
+                M_NG_AMOUNT: ng_type === "ALL" ? element.M_NG_AMOUNT : ng_type === "P" ? 0 : element.M_NG_AMOUNT,
+                P_NG_AMOUNT: ng_type === "ALL" ? element.P_NG_AMOUNT : ng_type === "M" ? 0 : element.P_NG_AMOUNT,
+                M_NG_QTY: ng_type === "ALL" ? element.M_NG_QTY : ng_type === "P" ? 0 : element.M_NG_QTY,
+                P_NG_QTY: ng_type === "ALL" ? element.P_NG_QTY : ng_type === "M" ? 0 : element.P_NG_QTY,
                 T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
                 T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
                 M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
@@ -389,7 +417,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -398,6 +427,10 @@ const INSPECT_REPORT = () => {
             (element: InspectSummary, index: number) => {
               return {
                 ...element,
+                M_NG_AMOUNT: ng_type === "ALL" ? element.M_NG_AMOUNT : ng_type === "P" ? 0 : element.M_NG_AMOUNT,
+                P_NG_AMOUNT: ng_type === "ALL" ? element.P_NG_AMOUNT : ng_type === "M" ? 0 : element.P_NG_AMOUNT,
+                M_NG_QTY: ng_type === "ALL" ? element.M_NG_QTY : ng_type === "P" ? 0 : element.M_NG_QTY,
+                P_NG_QTY: ng_type === "ALL" ? element.P_NG_QTY : ng_type === "M" ? 0 : element.P_NG_QTY,
                 T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
                 T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
                 M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
@@ -426,7 +459,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -435,6 +469,10 @@ const INSPECT_REPORT = () => {
             (element: InspectSummary, index: number) => {
               return {
                 ...element,
+                M_NG_AMOUNT: ng_type === "ALL" ? element.M_NG_AMOUNT : ng_type === "P" ? 0 : element.M_NG_AMOUNT,
+                P_NG_AMOUNT: ng_type === "ALL" ? element.P_NG_AMOUNT : ng_type === "M" ? 0 : element.P_NG_AMOUNT,
+                M_NG_QTY: ng_type === "ALL" ? element.M_NG_QTY : ng_type === "P" ? 0 : element.M_NG_QTY,
+                P_NG_QTY: ng_type === "ALL" ? element.P_NG_QTY : ng_type === "M" ? 0 : element.P_NG_QTY,
                 T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
                 T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
                 M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
@@ -463,7 +501,8 @@ const INSPECT_REPORT = () => {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -472,6 +511,38 @@ const INSPECT_REPORT = () => {
             (element: DEFECT_TRENDING_DATA, index: number) => {
               return {
                 ...element,
+                ERR1:0,
+                ERR2:0,
+                ERR3:0,
+                ERR4: ng_type === "ALL" ? element.ERR4 : ng_type === "P" ? 0 : element.ERR4,
+                ERR5: ng_type === "ALL" ? element.ERR5 : ng_type === "P" ? 0 : element.ERR5,
+                ERR6: ng_type === "ALL" ? element.ERR6 : ng_type === "P" ? 0 : element.ERR6,
+                ERR7: ng_type === "ALL" ? element.ERR7 : ng_type === "P" ? 0 : element.ERR7,
+                ERR8: ng_type === "ALL" ? element.ERR8 : ng_type === "P" ? 0 : element.ERR8,
+                ERR9: ng_type === "ALL" ? element.ERR9 : ng_type === "P" ? 0 : element.ERR9,
+                ERR10: ng_type === "ALL" ? element.ERR10 : ng_type === "P" ? 0 : element.ERR10,
+                ERR11: ng_type === "ALL" ? element.ERR11 : ng_type === "P" ? 0 : element.ERR11,
+                ERR12: ng_type === "ALL" ? element.ERR12 : ng_type === "M" ? 0 : element.ERR12,
+                ERR13: ng_type === "ALL" ? element.ERR13 : ng_type === "M" ? 0 : element.ERR13,
+                ERR14: ng_type === "ALL" ? element.ERR14 : ng_type === "M" ? 0 : element.ERR14,
+                ERR15: ng_type === "ALL" ? element.ERR15 : ng_type === "M" ? 0 : element.ERR15,
+                ERR16: ng_type === "ALL" ? element.ERR16 : ng_type === "M" ? 0 : element.ERR16,
+                ERR17: ng_type === "ALL" ? element.ERR17 : ng_type === "M" ? 0 : element.ERR17,
+                ERR18: ng_type === "ALL" ? element.ERR18 : ng_type === "M" ? 0 : element.ERR18,
+                ERR19: ng_type === "ALL" ? element.ERR19 : ng_type === "M" ? 0 : element.ERR19,
+                ERR20: ng_type === "ALL" ? element.ERR20 : ng_type === "M" ? 0 : element.ERR20,
+                ERR21: ng_type === "ALL" ? element.ERR21 : ng_type === "M" ? 0 : element.ERR21,
+                ERR22: ng_type === "ALL" ? element.ERR22 : ng_type === "M" ? 0 : element.ERR22,
+                ERR23: ng_type === "ALL" ? element.ERR23 : ng_type === "M" ? 0 : element.ERR23,
+                ERR24: ng_type === "ALL" ? element.ERR24 : ng_type === "M" ? 0 : element.ERR24,
+                ERR25: ng_type === "ALL" ? element.ERR25 : ng_type === "M" ? 0 : element.ERR25,
+                ERR26: ng_type === "ALL" ? element.ERR26 : ng_type === "M" ? 0 : element.ERR26,
+                ERR27: ng_type === "ALL" ? element.ERR27 : ng_type === "M" ? 0 : element.ERR27,
+                ERR28: ng_type === "ALL" ? element.ERR28 : ng_type === "M" ? 0 : element.ERR28,
+                ERR29: ng_type === "ALL" ? element.ERR29 : ng_type === "M" ? 0 : element.ERR29,
+                ERR30: ng_type === "ALL" ? element.ERR30 : ng_type === "M" ? 0 : element.ERR30,
+                ERR31: ng_type === "ALL" ? element.ERR31 : ng_type === "M" ? 0 : element.ERR31,
+                ERR32: 0,
                 INSPECT_DATE: moment(element.INSPECT_DATE).format("YYYY-MM-DD"),
                 id: index
               };

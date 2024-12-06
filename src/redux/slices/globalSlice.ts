@@ -11,14 +11,14 @@ import {
   UserData,
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
-const startCPN: string = "NHATHAN";
+const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")? "https": "http";
 const main_port = protocol === "https" ? "5014" : "5013";
 const sub_port = protocol === "https" ? "3006" : "3007";
 const companyInfo = {
   CMS: {
-    logo: "./companylogo.png",
+    logo: "/companylogo.png",
     logoWidth: 114.4,
     logoHeight: 27.13333,
     loginLogoWidth: 190,
@@ -53,7 +53,7 @@ const companyInfo = {
     ],
   },
   PVN: {
-    logo: "./companylogo.png",
+    logo: "/companylogo.png",
     logoWidth: 114.4,
     logoHeight: 25,
     loginLogoWidth: 190,
@@ -72,9 +72,9 @@ const companyInfo = {
     ],  
   },
   NHATHAN: {
-    logo: "./companylogo.png",
-    logoWidth: 160,
-    logoHeight: 40,
+    logo: "/companylogo.png",
+    logoWidth: 30,
+    logoHeight: 30,
     loginLogoWidth: 170,
     loginLogoHeight: 160,
     backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
@@ -90,7 +90,7 @@ const companyInfo = {
       }
     ], 
   },  
-};  
+};
 const socket = io(companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
 socket.on("connect", () => {  console.log(socket.id); });
 socket.on("notification", (data) => {

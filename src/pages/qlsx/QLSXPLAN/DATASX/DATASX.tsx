@@ -107,6 +107,10 @@ const DATASX = () => {
     INPUT3: 0,
     RESULT3: 0,
     LOSS3: 0,
+    TARGET4: 0,
+    INPUT4: 0,
+    RESULT4: 0,
+    LOSS4: 0,
     INSP_QTY: 0,
     INSP_LOSS: 0,
     INSP_NG: 0,
@@ -2544,6 +2548,80 @@ const DATASX = () => {
       headerClass: 'header'
     },
     {
+      headerName: 'CD4',
+      children: [
+        {
+          field: 'TARGET4', headerName: 'TARGET4', resizable: true, width: 80, cellRenderer: (e: any) => {
+            if (e.data.TARGET4 !== 0)
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.TARGET4?.toLocaleString("en-US")}
+                </span>
+              );
+            return (
+              <span style={{ color: "blue", fontWeight: "normal", }}>
+              </span>
+            )
+          }
+        },
+        {
+          field: 'INPUT4', headerName: 'INPUT4', resizable: true, width: 80, cellRenderer: (e: any) => {
+            if (e.data.INPUT4 !== 0)
+              return (
+                <span style={{ color: "#f15bcc", fontWeight: "normal" }}>
+                  {e.data.INPUT4?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
+            return (
+              <span style={{ color: "blue", fontWeight: "normal", }}>
+              </span>
+            )
+          }
+        },
+        {
+          field: 'RESULT4', headerName: 'RESULT4', resizable: true, width: 80, cellRenderer: (e: any) => {
+            if (e.data.RESULT4 !== 0)
+              return (
+                <span style={{ color: "#09b420", fontWeight: "normal" }}>
+                  {e.data.RESULT4?.toLocaleString("en-US", {
+                    style: "decimal",
+                    maximumFractionDigits: 0,
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              );
+            return (
+              <span style={{ color: "blue", fontWeight: "normal", }}>
+              </span>
+            )
+          }
+        },
+        {
+          field: 'LOSS4', headerName: 'LOSS4', resizable: true, width: 80, cellRenderer: (e: any) => {
+            if (e.data.LOSS4 !== 0)
+              return (
+                <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                  {e.data.LOSS4?.toLocaleString("en-US", {
+                    style: "percent",
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                </span>
+              );
+            return (
+              <span style={{ color: "blue", fontWeight: "normal", }}>
+              </span>
+            )
+          }
+        },
+      ],
+      headerClass: 'header'
+    },
+    {
       headerName: 'INSPECTION',
       children: [
         {
@@ -3013,6 +3091,10 @@ const DATASX = () => {
         INPUT3: 0,
         RESULT3: 0,
         LOSS3: 0,
+        TARGET4: 0,
+        INPUT4: 0,
+        RESULT4: 0,
+        LOSS4: 0,
         INSP_QTY: 0,
         INSP_LOSS: 0,
         INSP_NG: 0,
@@ -3555,6 +3637,12 @@ const DATASX = () => {
                         LOSS3
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
+                        SETTING4
+                      </th>
+                      <th style={{ color: "black", fontWeight: "normal" }}>
+                        LOSS4
+                      </th>
+                      <th style={{ color: "black", fontWeight: "normal" }}>
                         INSPECTION
                       </th>
                       <th style={{ color: "black", fontWeight: "normal" }}>
@@ -3597,6 +3685,12 @@ const DATASX = () => {
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {selectedYCSX.current.LOSS_SX3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}%
                       </td>
+                      <td style={{ color: "gray", fontWeight: "normal" }}>
+                        {selectedYCSX.current.LOSS_SETTING4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "red", fontWeight: "normal" }}>
+                        {selectedYCSX.current.LOSS_SX4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}%
+                      </td>
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {selectedYCSX.current.LOSS_KT.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
                       </td>
@@ -3629,6 +3723,12 @@ const DATASX = () => {
                       </td>
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {(selectedYCSX.current.LOSS_SX3 * selectedYCSX.current.PROD_REQUEST_QTY / 100).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "gray", fontWeight: "normal" }}>
+                        {(selectedYCSX.current.LOSS_SETTING4 * 1000.0 / selectedYCSX.current.PD * selectedYCSX.current.CAVITY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "red", fontWeight: "normal" }}>
+                        {(selectedYCSX.current.LOSS_SX4 * selectedYCSX.current.PROD_REQUEST_QTY / 100).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </td>
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {(selectedYCSX.current.LOSS_KT * selectedYCSX.current.PROD_REQUEST_QTY / 100).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
@@ -3665,6 +3765,12 @@ const DATASX = () => {
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {(selectedYCSX.current.LOSS_SX3 * selectedYCSX.current.PROD_REQUEST_QTY / 100 / 1000 * selectedYCSX.current.PD / selectedYCSX.current.CAVITY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </td>
+                      <td style={{ color: "gray", fontWeight: "normal" }}>
+                        {(selectedYCSX.current.LOSS_SETTING4).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
+                      <td style={{ color: "red", fontWeight: "normal" }}>
+                        {(selectedYCSX.current.LOSS_SX4 * selectedYCSX.current.PROD_REQUEST_QTY / 100 / 1000 * selectedYCSX.current.PD / selectedYCSX.current.CAVITY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </td>
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {(selectedYCSX.current.LOSS_KT * selectedYCSX.current.PROD_REQUEST_QTY / 100 / 1000 * selectedYCSX.current.PD / selectedYCSX.current.CAVITY).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </td>
@@ -3699,6 +3805,12 @@ const DATASX = () => {
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {(selectedYCSX.current.LOSS_SX3).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}%
                       </td>
+                      <td style={{ color: "gray", fontWeight: "normal" }}>
+                        {(selectedYCSX.current.LOSS_SETTING4 * 1000.0 / selectedYCSX.current.PD * selectedYCSX.current.CAVITY / selectedYCSX.current.PROD_REQUEST_QTY * 100).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}%
+                      </td>
+                      <td style={{ color: "red", fontWeight: "normal" }}>
+                        {(selectedYCSX.current.LOSS_SX4).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}%
+                      </td>
                       <td style={{ color: "red", fontWeight: "normal" }}>
                         {(selectedYCSX.current.LOSS_KT).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
                       </td>
@@ -3723,6 +3835,9 @@ const DATASX = () => {
                       </td>
                       <td colSpan={2} style={{ color: "red", fontWeight: "bold" }}>
                         {(totalDailyYCSX.LOSS3 * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
+                      </td>
+                      <td colSpan={2} style={{ color: "red", fontWeight: "bold" }}>
+                        {(totalDailyYCSX.LOSS4 * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                       </td>
                       <td style={{ color: "red", fontWeight: "bold" }}>
                         {(totalDailyYCSX.LOSS_KT * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%

@@ -622,12 +622,12 @@ const MACHINE = () => {
     },
   ] : [
     {
-      field: "G_CODE", headerName: "G_CODE", width: 110,
+      field: "G_CODE", headerName: "G_CODE", width: 50,
     },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 100,
+      width: 70,
       cellRenderer: (params: any) => {
         if (params.data.PDBV === "P" || params.data.PDBV === null)
           return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
@@ -637,19 +637,19 @@ const MACHINE = () => {
     {
       field: "G_NAME",
       headerName: "G_NAME",
-      width: 250,
+      width: 120,
       cellRenderer: (params: any) => {
         if (params.data.PDBV === "P" || params.data.PDBV === null)
           return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
         return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
       },
     },
-    { field: "G_WIDTH", headerName: "WIDTH", width: 60 },
-    { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
-    { field: "G_C", headerName: "CVT_C", width: 60 },
-    { field: "G_C_R", headerName: "CVT_R", width: 60 },
-    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    { field: "G_WIDTH", headerName: "WIDTH", width: 50 },
+    { field: "G_LENGTH", headerName: "LENGTH", width: 50 },
+    { field: "G_C", headerName: "CVT_C", width: 50 },
+    { field: "G_C_R", headerName: "CVT_R", width: 50 },
+    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 50 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 70 },
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
         if (params.data.DACHITHI === null) {
@@ -667,12 +667,12 @@ const MACHINE = () => {
         }
       },
     },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 60 },
     { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
       field: "PO_BALANCE",
       headerName: "PO_BALANCE",
-      width: 110,
+      width: 70,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -685,7 +685,7 @@ const MACHINE = () => {
       field: "PROD_REQUEST_QTY",
       cellDataType: "number",
       headerName: "SL YCSX",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
@@ -697,7 +697,7 @@ const MACHINE = () => {
     {
       field: "CD1",
       headerName: "CD1",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -709,7 +709,7 @@ const MACHINE = () => {
     {
       field: "CD2",
       headerName: "CD2",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -721,7 +721,7 @@ const MACHINE = () => {
     {
       field: "CD3",
       headerName: "CD3",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -733,7 +733,7 @@ const MACHINE = () => {
     {
       field: "CD4",
       headerName: "CD4",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -771,7 +771,7 @@ const MACHINE = () => {
     {
       field: "TON_CD1",
       headerName: "TCD1",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -783,7 +783,7 @@ const MACHINE = () => {
     {
       field: "TON_CD2",
       headerName: "TCD2",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -795,7 +795,7 @@ const MACHINE = () => {
     {
       field: "TON_CD3",
       headerName: "TCD3",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -807,7 +807,7 @@ const MACHINE = () => {
     {
       field: "TON_CD4",
       headerName: "TCD4",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -820,7 +820,7 @@ const MACHINE = () => {
       field: "INSPECT_BALANCE",
       cellDataType: "number",
       headerName: "TỒN KIỂM",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -832,7 +832,7 @@ const MACHINE = () => {
     {
       field: "EQ1",
       headerName: "EQ1",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
       },
@@ -840,7 +840,7 @@ const MACHINE = () => {
     {
       field: "EQ2",
       headerName: "EQ2",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
       },
@@ -848,7 +848,7 @@ const MACHINE = () => {
     {
       field: "EQ3",
       headerName: "EQ3",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
       },
@@ -856,12 +856,12 @@ const MACHINE = () => {
     {
       field: "EQ4",
       headerName: "EQ4",
-      width: 80,
+      width: 40,
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
       },
     },
-    {
+    /* {
       field: "SHORTAGE_YCSX",
       cellDataType: "number",
       headerName: "TỒN YCSX",
@@ -873,7 +873,7 @@ const MACHINE = () => {
           </span>
         );
       },
-    },
+    }, */
     {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
@@ -905,8 +905,8 @@ const MACHINE = () => {
           );
       },
     },
-    { field: "PL_HANG", headerName: "PL_HANG", width: 120 },
-    { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PL_HANG", headerName: "PL_HANG", width: 60 },
+    { field: "REMARK", headerName: "REMARK", width: 100 },
     {
       field: "PDUYET",
       headerName: "PDUYET",
@@ -1031,7 +1031,7 @@ const MACHINE = () => {
     {
       field: "",
       headerName: "G_NAME",
-      width: 250,
+      width: 100,
       cellRenderer: (params: any) => {
         if (params.data.PDBV === "P" || params.data.PDBV === null)
           return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
@@ -1057,7 +1057,7 @@ const MACHINE = () => {
           );
       },
     },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
   ];
   const column_plandatatable = [
     {
@@ -1076,8 +1076,8 @@ const MACHINE = () => {
         }
       },
     },
-    { field: "G_CODE", headerName: "G_CODE", width: 70, editable: false },
-    { field: "G_NAME", headerName: "G_NAME", width: 120, editable: false },
+    { field: "G_CODE", headerName: "G_CODE", width: 60, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 100, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
@@ -1106,7 +1106,7 @@ const MACHINE = () => {
     {
       field: "PROD_REQUEST_QTY",
       headerName: "YCSX QTY",
-      width: 70,
+      width: 60,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1171,7 +1171,7 @@ const MACHINE = () => {
     {
       field: "PLAN_QTY",
       headerName: "PLAN_QTY",
-      width: 80,
+      width: 70,
       editable: true,
       cellRenderer: (params: any) => {
         if (params.data.PLAN_QTY === 0) {
@@ -1204,7 +1204,7 @@ const MACHINE = () => {
       },
     },
     { field: "STEP", headerName: "STEP", width: 50, editable: true },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 70, editable: true },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 50, editable: true },
     {
       field: "PLAN_ORDER",
       headerName: "STT",
@@ -1272,7 +1272,7 @@ const MACHINE = () => {
     {
       field: "SLC_CD1",
       headerName: "SLC_CD1",
-      width: 70,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1285,7 +1285,7 @@ const MACHINE = () => {
     {
       field: "SLC_CD2",
       headerName: "SLC_CD2",
-      width: 70,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1298,7 +1298,7 @@ const MACHINE = () => {
     {
       field: "SLC_CD3",
       headerName: "SLC_CD3",
-      width: 70,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1311,7 +1311,7 @@ const MACHINE = () => {
     {
       field: "SLC_CD4",
       headerName: "SLC_CD4",
-      width: 70,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1324,7 +1324,7 @@ const MACHINE = () => {
     {
       field: "CD1",
       headerName: "CD1",
-      width: 60,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1337,7 +1337,7 @@ const MACHINE = () => {
     {
       field: "CD2",
       headerName: "CD2",
-      width: 60,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1350,7 +1350,7 @@ const MACHINE = () => {
     {
       field: "CD3",
       headerName: "CD3",
-      width: 60,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1363,7 +1363,7 @@ const MACHINE = () => {
     {
       field: "CD4",
       headerName: "CD4",
-      width: 60,
+      width: 50,
       editable: false,
       cellRenderer: (params: any) => {
         return (
@@ -1376,31 +1376,31 @@ const MACHINE = () => {
     {
       field: "PLAN_DATE",
       headerName: "PLAN_DATE",
-      width: 90,
+      width: 60,
       editable: false,
     },
     {
       field: "PROD_REQUEST_NO",
       headerName: "YCSX NO",
-      width: 80,
+      width: 60,
       editable: false,
     },
     {
       field: "PROD_REQUEST_DATE",
       headerName: "YCSX DATE",
-      width: 80,
+      width: 60,
       editable: false,
     },
     {
       field: "NEXT_PLAN_ID",
       headerName: "NEXT_PLAN",
-      width: 100,
+      width: 60,
       editable: true,
     },
     {
       field: "AT_LEADTIME",
       headerName: "LEADTIME",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span>{params.data?.AT_LEADTIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
@@ -1411,7 +1411,7 @@ const MACHINE = () => {
     {
       field: "ACC_TIME",
       headerName: "ACC_TIME",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span>{params.data?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>

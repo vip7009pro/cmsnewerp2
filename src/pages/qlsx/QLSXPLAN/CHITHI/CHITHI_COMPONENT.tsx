@@ -22,7 +22,7 @@ import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../../../../api/Glo
 import { CiStar } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
-
+  const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
@@ -135,6 +135,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           setM_CODE_YCSX(response.data.data[0].M_NAME);
+          console.log('M_CODE_YCSX',response.data.data[0].M_NAME)
         } else {
           setM_CODE_YCSX('XXX');        
         }
@@ -403,11 +404,11 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       {
         <div className="tieudeycsx">
           <div className="leftlogobarcode">
-            {company === "CMS" && (
-              <img alt="logo" src="/companylogo.png" width={160} height={40} />
+          {company === "CMS" && (
+              <img alt="logo" src={cpnInfo[getCompany()].logo} width={cpnInfo[getCompany()].logoWidth} height={cpnInfo[getCompany()].logoHeight} />
             )}
             {company !== "CMS" && (
-              <img alt="logo" src="/companylogo.png" width={160} height={40} />
+              <img alt="logo" src={cpnInfo[getCompany()].logo} width={cpnInfo[getCompany()].logoWidth} height={cpnInfo[getCompany()].logoHeight} />
             )}
             <Barcode
               value={`${DATA.PLAN_ID}`}

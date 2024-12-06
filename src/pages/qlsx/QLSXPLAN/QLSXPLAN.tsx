@@ -35,7 +35,7 @@ const QLSXPLAN = () => {
             color: 'gray'
           }}> 
             <Tab>PLAN VISUAL</Tab>
-            <Tab>QUICK PLAN</Tab>
+            { getCompany() === "CMS" && <Tab>QUICK PLAN</Tab>}
             { getCompany() === "CMS" && <Tab>AUTO PLAN</Tab>}
             <Tab>PLAN TABLE</Tab>
             <Tab>LỊCH SỬ</Tab>
@@ -52,9 +52,9 @@ const QLSXPLAN = () => {
           { getCompany() === "CMS" && <TabPanel>
             <QUICKPLAN2 />
           </TabPanel>    }
-          <TabPanel>  
+          { getCompany() === "CMS" && <TabPanel>  
             <KHCT /> 
-          </TabPanel>   
+          </TabPanel> }  
           <TabPanel>
             <PLAN_DATATB />
           </TabPanel>      

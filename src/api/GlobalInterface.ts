@@ -3997,6 +3997,10 @@ export interface DAILY_YCSX_RESULT {
   INPUT3: number,
   RESULT3: number,
   LOSS3: number;
+  TARGET4: number,
+  INPUT4: number,
+  RESULT4: number,
+  LOSS4: number;
   INSP_QTY: number,
   INSP_LOSS: number,
   INSP_NG: number,  

@@ -4374,6 +4374,10 @@ export const f_YCSXDailyChiThiData = async (PROD_REQUEST_NO: string) => {
       INPUT3: 0,
       RESULT3: 0,
       LOSS3: 0,
+      TARGET4: 0,
+      INPUT4: 0,
+      RESULT4: 0,
+      LOSS4: 0,
       INSP_QTY: 0,
       INSP_LOSS: 0,
       INSP_NG: 0,
@@ -4414,6 +4418,10 @@ export const f_YCSXDailyChiThiData = async (PROD_REQUEST_NO: string) => {
           INPUT3: 0,
           RESULT3: 0,
           LOSS3: 0,
+          TARGET4: 0,
+          INPUT4: 0,
+          RESULT4: 0,
+          LOSS4: 0,
           INSP_QTY: 0,
           INSP_LOSS: 0,
           INSP_NG: 0,
@@ -4424,12 +4432,15 @@ export const f_YCSXDailyChiThiData = async (PROD_REQUEST_NO: string) => {
           totalRow.TARGET1 += loaded_data[i].TARGET1;
           totalRow.TARGET2 += loaded_data[i].TARGET2;
           totalRow.TARGET3 += loaded_data[i].TARGET3;
+          totalRow.TARGET4 += loaded_data[i].TARGET4;
           totalRow.INPUT1 += loaded_data[i].INPUT1;
           totalRow.INPUT2 += loaded_data[i].INPUT2;
           totalRow.INPUT3 += loaded_data[i].INPUT3;
+          totalRow.INPUT4 += loaded_data[i].INPUT4;
           totalRow.RESULT1 += loaded_data[i].RESULT1;
           totalRow.RESULT2 += loaded_data[i].RESULT2;
           totalRow.RESULT3 += loaded_data[i].RESULT3;
+          totalRow.RESULT4 += loaded_data[i].RESULT4;
           totalRow.INSP_QTY += loaded_data[i].INSP_QTY;
           totalRow.INSP_OK += loaded_data[i].INSP_OK;
           totalRow.INSP_NG += loaded_data[i].INSP_NG;
@@ -4437,12 +4448,14 @@ export const f_YCSXDailyChiThiData = async (PROD_REQUEST_NO: string) => {
         }
         totalRow.LOSS1 = totalRow.INPUT1 !== 0 ? 1 - totalRow.RESULT1 / totalRow.INPUT1 : 0;
         totalRow.LOSS2 = totalRow.INPUT2 !== 0 ? 1 - totalRow.RESULT2 / totalRow.INPUT2 : 0;
-        totalRow.LOSS3 = totalRow.INPUT3 !== 0 ? 1 - totalRow.RESULT2 / totalRow.INPUT3 : 0;
+        totalRow.LOSS3 = totalRow.INPUT3 !== 0 ? 1 - totalRow.RESULT3 / totalRow.INPUT3 : 0;
+        totalRow.LOSS4 = totalRow.INPUT4 !== 0 ? 1 - totalRow.RESULT4 / totalRow.INPUT4 : 0;
         totalRow.LOSS_KT = totalRow.INSP_QTY !== 0 ? 1 - totalRow.INSP_OK / totalRow.INSP_QTY : 0;
         loaded_data.push(totalRow)
         kq.datasx = loaded_data;
         kq.summary = totalRow;
       } else {
+        Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
       }
     })
     .catch((error) => {

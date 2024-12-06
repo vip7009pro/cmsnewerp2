@@ -28,7 +28,7 @@ const IQC = () => {
           <Tab><span className="mininavtext">ĐỘ TIN CẬY</span></Tab>
           <Tab><span className="mininavtext">IN-HOLD-FAIL</span></Tab>
           <Tab><span className="mininavtext">NCR MANAGEMENT</span></Tab>
-          <Tab><span className="mininavtext">RMA MANAGEMENT</span></Tab>
+          {/* <Tab><span className="mininavtext">RMA MANAGEMENT</span></Tab> */}
         </TabList>
         <TabPanel>
           <KHOLIEU />
@@ -42,8 +42,8 @@ const IQC = () => {
         <TabPanel>
           <NCR_MANAGER />
         </TabPanel>
-        <TabPanel>
-        </TabPanel>
+        {/* <TabPanel>
+        </TabPanel> */}
       </Tabs>
     </div>
   );

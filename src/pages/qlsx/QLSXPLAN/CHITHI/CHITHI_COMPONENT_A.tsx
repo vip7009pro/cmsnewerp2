@@ -1,14 +1,8 @@
 import moment from "moment";
-import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import Swal from "sweetalert2";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generalQuery, getCompany } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-} from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT.scss";
 import Barcode from "react-barcode";
 import {
@@ -17,8 +11,8 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
-const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
-
+const CHITHI_COMPONENT_A = forwardRef(({ DATA }: { DATA: QLSXPLANDATA }, ref) => {
+  const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
@@ -121,7 +115,7 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       });
   };
   const max_lieu: number = 17;
-  const handle_getMcodeOfYcsx=()=> {
+  const handle_getMcodeOfYcsx = () => {
     generalQuery("checkP500M_CODE", {
       PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
     })
@@ -131,14 +125,14 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         if (response.data.tk_status !== "NG") {
           setM_CODE_YCSX(response.data.data[0].M_NAME);
         } else {
-          setM_CODE_YCSX('XXX');        
+          setM_CODE_YCSX('XXX');
         }
       })
       .catch((error) => {
         console.log(error);
       });
 
-  }  
+  }
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
@@ -357,15 +351,16 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       FN_LOSS_SX: FINAL_LOSS_SX,
       FN_LOSS_ST: FINAL_LOSS_SETTING
     }
-  }  
+  }
   useImperativeHandle(ref, () => ({
     handleInternalClick,
   }));
 
   const handleInternalClick = () => {
-    console.log("so chi thi:"+ DATA.PLAN_ID)
+    console.log("so chi thi:" + DATA.PLAN_ID)
   };
-  const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number)=> ele.LIEUQL_SX === 1)?.M_NAME
+  const M_CODEtrongBOM = chithidatatable.find((ele: QLSXCHITHIDATA, index: number) => ele.LIEUQL_SX === 1)?.M_NAME
+  /*  console.log(cpnInfo[getCompany()].logo,cpnInfo[getCompany()].logoWidth,'x',cpnInfo[getCompany()].logoHeight) */
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
@@ -408,10 +403,10 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         <div className="tieudeycsx">
           <div className="leftlogobarcode">
             {company === "CMS" && (
-              <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
+              <img alt="logo" src={cpnInfo[getCompany()].logo} width={cpnInfo[getCompany()].logoWidth} height={cpnInfo[getCompany()].logoHeight} />
             )}
             {company !== "CMS" && (
-              <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
+              <img alt="logo" src={cpnInfo[getCompany()].logo} width={cpnInfo[getCompany()].logoWidth} height={cpnInfo[getCompany()].logoHeight} />
             )}
             <Barcode
               value={`${DATA.PLAN_ID}`}
@@ -471,10 +466,10 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         DATA.PROCESS_NUMBER !== 0 &&
         eq_process_check &&
         DATA.CHOTBC !== 'V' &&
-        checkApprove() && 
-        request_codeinfo[0].PL_HANG==='TT' && 
-        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX') &&
-        request_codeinfo[0].USE_YN==='Y'
+        checkApprove() &&
+        request_codeinfo[0].PL_HANG === 'TT' &&
+        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx === 'XXX') &&
+        request_codeinfo[0].USE_YN === 'Y'
         &&
         (
           <div className="thongtinycsx">
@@ -600,7 +595,7 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             <div className="thongtinyeucau">
               <table className="ttyc1">
                 <thead>
-                  <tr>                    
+                  <tr>
                     <th>Hạng mục/항목</th>
                     <th>Thông tin/정보</th>
                     <th>Hạng mục/항목</th>
@@ -634,8 +629,8 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                       minutes
                     </td>
                     <td>
-                     Loss SX
-                    </td>                   
+                      Loss SX
+                    </td>
                     <td>
                       {DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.LOSS_SX1
@@ -687,8 +682,8 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                       minutes
                     </td>
                     <td>
-                     Loss Setting
-                    </td>                   
+                      Loss Setting
+                    </td>
                     <td>
                       {DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.LOSS_SETTING1
@@ -981,7 +976,7 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             </div>
           </div>
         )}
-        {request_codeinfo[0].USE_YN!=='Y' && <div>Code đã khóa, liên hệ RND</div>}
+      {request_codeinfo[0].USE_YN !== 'Y' && <div>Code đã khóa, liên hệ RND</div>}
       {!checkApprove() && <div>Yêu cầu chưa được QC Pass <br></br>
         Cụ thể: <br></br>
         Phê duyệt bản vẽ : {request_codeinfo[0].PDBV === 'Y' ? "Đã phê duyệt" : "Chưa phê duyệt, báo PQC"} <br></br>
@@ -1002,7 +997,7 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       )}
       {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
       {request_codeinfo[0].PL_HANG !== 'TT' && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc, báo lại kinh doanh</div>}
-      {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
+      {(M_CODEtrongBOM !== m_code_ycsx && m_code_ycsx !== 'XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );
 });

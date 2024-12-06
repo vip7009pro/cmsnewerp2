@@ -27,12 +27,13 @@ const Login = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
+  const companyInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   const ctr_cd: string = useSelector(
     (state: RootState) => state.totalSlice.ctr_cd,
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
-    const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
   const handle_setUserKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -75,8 +76,12 @@ const Login = () => {
       dispatch(changeServer(server_ip_local));
       dispatch(changeSelectedServer(cpnInfo[getCompany()].apiUrlArray.find((item: { apiUrl: string; }) => item.apiUrl === server_ip_local)?.server_name));
     } else {
-      localStorage.setItem("server_ip", "");
-      dispatch(changeServer(""));
+      localStorage.setItem("server_ip",companyInfo[getCompany() as keyof typeof companyInfo].apiUrl);
+      setServer_String(companyInfo[getCompany() as keyof typeof companyInfo].apiUrl);
+      dispatch(changeServer(companyInfo[getCompany() as keyof typeof companyInfo].apiUrl));
+      dispatch(changeSelectedServer(cpnInfo[getCompany()].apiUrlArray.find((item: { apiUrl: string; }) => item.apiUrl === companyInfo[getCompany() as keyof typeof companyInfo].apiUrl)?.server_name));
+      //localStorage.setItem("server_ip", "");
+      //dispatch(changeServer(companyInfo[getCompany() as keyof typeof companyInfo].apiUrl));
     }
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
