@@ -1,19 +1,16 @@
 import { Button, IconButton } from "@mui/material";
-import moment, { duration } from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import {
-  AiFillCloseCircle,
-  AiFillFileExcel,
-} from "react-icons/ai";
+import moment from "moment";
+import React, { useEffect, useRef, useState } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./BangChamCong.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
+import { checkBP, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   BANGCHAMCONG_DATA,
   BANGCHAMCONG_DATA2,
@@ -33,6 +30,7 @@ const BANGCHAMCONG = () => {
   const [cainfo, setCaInfo] = useState<CA_INFO[]>([]);
   const [bangchamcong, setBangChamCong] = useState<BANGCHAMCONG_DATA[]>([]);
   const [bangchamcong2, setBangChamCong2] = useState<BANGCHAMCONG_DATA2[]>([]);
+  const selectedRows = useRef<BANGCHAMCONG_DATA2[]>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -43,76 +41,105 @@ const BANGCHAMCONG = () => {
     {
       field: 'DATE_COLUMN',
       headerName: 'DATE_COLUMN',
-      width: 100,
-      type: 'date'
+      width: 120,
+      type: 'date',
+      checkboxSelection: true,
+      headerCheckboxSelection: true
     },
     {
       field: 'WEEKDAY',
       headerName: 'WEEKDAY',
-      width: 80,
+      width: 50,
       type: 'date'
     },
     {
       field: 'NV_CCID',
       headerName: 'NV_CCID',
-      width: 80
+      width: 50
     },
     {
       field: 'EMPL_NO',
       headerName: 'EMPL_NO',
-      width: 80
+      width: 50
     },
     {
       field: 'CMS_ID',
       headerName: 'NS_ID',
-      width: 80
+      width: 50
     },
     {
       field: 'FULL_NAME',
       headerName: 'FULL_NAME',
-      width: 100
+      width: 100,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: "#013b92", fontWeight: "bold" }}>{params.data.FULL_NAME}</span>;
+      } 
     },
     {
       field: 'FACTORY_NAME',
       headerName: 'FACTORY_NAME',
-      width: 100
+      width: 80
     },
     {
       field: 'WORK_SHIF_NAME',
-      headerName: 'WORK_SHIF_NAME',
+      headerName: 'WORK_SHIFT_NAME',
       width: 100
     },
     {
       field: 'CALV',
       headerName: 'CALV',
-      width: 100
+      width: 60
     },
     {
       field: 'MAINDEPTNAME',
       headerName: 'MAINDEPTNAME',
-      width: 100
+      width: 80
     },
     {
-      field: 'IN_TIME',
-      headerName: 'IN_TIME',
+      field: 'FIXED_IN_TIME',
+      headerName: 'FIXED_IN_TIME',
       width: 100,
       cellRenderer: (params: any) => {
         if (params.value !== "Thiếu giờ vào") {
-          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.value}</span>;
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.FIXED_IN_TIME}</span>;
         } else {
-          return <span style={{ color: "red", fontWeight: "bold" }}>{params.value}</span>;
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.FIXED_IN_TIME}</span>;
+        }
+      }
+    },
+    {
+      field: 'FIXED_OUT_TIME',
+      headerName: 'FIXED_OUT_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu giờ ra") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.FIXED_OUT_TIME}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.FIXED_OUT_TIME}</span>;
+        }
+      }
+    },
+    {
+      field: 'IN_TIME',
+      headerName: 'AUTO_IN_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu giờ vào") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.IN_TIME}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.IN_TIME}</span>;
         }
       }
     },
     {
       field: 'OUT_TIME',
-      headerName: 'OUT_TIME',
+      headerName: 'AUTO_OUT_TIME',
       width: 100,
       cellRenderer: (params: any) => {
         if (params.value !== "Thiếu giờ ra") {
-          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.value}</span>;
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.OUT_TIME}</span>;
         } else {
-          return <span style={{ color: "red", fontWeight: "bold" }}>{params.value}</span>;
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.OUT_TIME}</span>;
         }
       }
     },
@@ -122,9 +149,9 @@ const BANGCHAMCONG = () => {
       width: 100,
       cellRenderer: (params: any) => {
         if (params.value !== "Thiếu công") {
-          return <span style={{ color: "blue", fontWeight: "normal" }}>{params.value}</span>;
+          return <span style={{ color: "blue", fontWeight: "normal" }}>{params.data.STATUS}</span>;
         } else {
-          return <span style={{ color: "red", fontWeight: "normal" }}>{params.value}</span>;
+          return <span style={{ color: "red", fontWeight: "normal" }}>{params.data.STATUS}</span>;
         }
       }
     },
@@ -891,20 +918,18 @@ const BANGCHAMCONG = () => {
         store: bangchamcong,
       })
     );
-
   const chamcongTBMM = React.useMemo(
     () => {    
-      return (
-       
+      return (       
           <AGTable
             data={bangchamcong2}
             columns={columns}
             toolbar={toolbar}
             onSelectionChange={(e) => {
               // Handle selection change
+              selectedRows.current = e!.api.getSelectedRows();
             }}
-          />
-       
+          />       
       );
     },
     [bangchamcong2, showhidePivotTable]
@@ -1306,7 +1331,7 @@ const BANGCHAMCONG = () => {
                     : "",
               }).IN_TIME;
               const outtime_calc: string = tinhInOutTime22({
-                SHIFT_NAME: element.WORK_SHIF_NAME,
+                SHIFT_NAME: element.WORK_SHIF_NAME,          
                 CHECK1:
                   element.CHECK1 !== null
                     ? moment.utc(element.CHECK1).format("HH:mm")
@@ -1354,7 +1379,7 @@ const BANGCHAMCONG = () => {
                 CALV: element.CALV === 0 ? 'Hành Chính' : element.CALV === 1 ? 'Ca Ngày' : element.CALV === 2 ? 'Ca Đêm' : 'Không có ca',
                 APPLY_DATE:
                   element.APPLY_DATE !== null
-                    ? moment.utc(element.APPLY_DATE).format("DD/MM/YYYY")
+                    ? moment.utc(element.APPLY_DATE).format("YYYY-MM-DD")
                     : "",
                 CHECK1:
                   element.CHECK1 !== null
@@ -1394,6 +1419,8 @@ const BANGCHAMCONG = () => {
                     : "",
                 IN_TIME: intime_calc,
                 OUT_TIME: outtime_calc,
+                FIXED_IN_TIME: element.FIXED_IN_TIME ?? "X",
+                FIXED_OUT_TIME: element.FIXED_OUT_TIME ?? "X",
                 STATUS: intime_calc === 'Thiếu giờ vào' || outtime_calc === 'Thiếu giờ ra' ? 'Thiếu công' : 'Đủ công',
                 id: index,
               };
@@ -2092,6 +2119,126 @@ const BANGCHAMCONG = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
+
+  const handleFixTime = () => {
+    //swal confirm to fix time
+    Swal.fire({ 
+      title: 'Bạn có chắc chắn muốn fix time không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, fix it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log(selectedRows.current);
+        for (let i = 0; i < selectedRows.current.length; i++) {
+          const row = selectedRows.current[i];
+            if(row.ON_OFF === null) {
+              await generalQuery("setdiemdanhnhom2", {
+                
+                diemdanhvalue: 1,
+                EMPL_NO: row.EMPL_NO,
+                CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,    
+                CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
+              })
+                .then((response) => {
+                  //console.log(response.data);
+                  if (response.data.tk_status === "OK") {                    
+                  } else {
+                    Swal.fire(
+                      "Có lỗi",
+                      "Nội dung: " + response.data.message,
+                      "error"
+                    );
+                  }
+                })
+                .catch((error) => {
+                  //console.log(error);
+                });
+            }
+           await generalQuery("fixTime", {
+            APPLY_DATE: row.APPLY_DATE,
+            EMPL_NO: row.EMPL_NO,
+            IN_TIME: row.FIXED_IN_TIME,
+            OUT_TIME: row.FIXED_OUT_TIME
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+              
+              } else {
+                
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+            });          
+        } 
+        Swal.fire("Thông báo", "Fix time thành công", "success");
+      }
+    })
+  }
+  const handleFixTimeAuto = () => {
+    //swal confirm to fix time
+    Swal.fire({ 
+      title: 'Bạn có chắc chắn muốn fix time không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, fix it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log(selectedRows.current);
+        for (let i = 0; i < selectedRows.current.length; i++) {
+          const row = selectedRows.current[i];       
+          if(row.ON_OFF === null) {
+           await generalQuery("setdiemdanhnhom", {
+              diemdanhvalue: 1,
+              EMPL_NO: row.EMPL_NO,
+              CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,    
+              CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
+            })
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status === "OK") {                    
+                } else {
+                  Swal.fire(
+                    "Có lỗi",
+                    "Nội dung: " + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
+          }
+          await generalQuery("fixTime", {
+            APPLY_DATE: row.APPLY_DATE,
+            EMPL_NO: row.EMPL_NO,
+            IN_TIME: row.IN_TIME,
+            OUT_TIME: row.OUT_TIME
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+              
+              } else {
+                
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+            });          
+        } 
+        Swal.fire("Thông báo", "Fix time thành công", "success");
+      }
+    })
+  }
   useEffect(() => {
     testcomparetime();
     loadCaInfo();
@@ -2148,6 +2295,24 @@ const BANGCHAMCONG = () => {
                 loadBangChamCong2
               );
             }}>Tra chấm công</Button>
+            <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f78923' }} onClick={() => {
+              checkBP(
+                userData,
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                handleFixTime
+              );
+            }}>FIX MANUAL TIME</Button>
+            <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f78923' }} onClick={() => {
+              checkBP(
+                userData,
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                handleFixTimeAuto
+              );
+            }}>FIX AUTO TIME</Button>
           </div>
         </div>
         <div className='tracuuYCSXTable'>{chamcongTBMM}</div>

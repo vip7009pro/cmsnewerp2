@@ -675,6 +675,8 @@ export interface BANGCHAMCONG_DATA2 {
   REASON_NAME: string;
   REMARK: string;
   XACNHAN: string;
+  FIXED_IN_TIME: string;
+  FIXED_OUT_TIME: string;
   CHECK1: string;
   CHECK2: string;
   CHECK3: string;
