@@ -1,19 +1,34 @@
 import moment from "moment";
-import React, { startTransition, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { generalQuery } from "../../../api/Api";
 import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
 import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
 import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
 import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/InspectionYearlyPPM";
-import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/INSPECTION/ChartInspectionWorst";
-import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
-import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-import { SaveExcel, deBounce, nFormatter } from "../../../api/GlobalFunction";
-import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions, IconButton } from "@mui/material";
+import {
+  CodeListData,
+  DEFECT_TRENDING_DATA,
+  DailyPPMData,
+  InspectSummary,
+  MonthlyPPMData,
+  PATROL_HEADER_DATA,
+  WeeklyPPMData,
+  WorstData,
+  YearlyPPMData,
+} from "../../../api/GlobalInterface";
+import { SaveExcel } from "../../../api/GlobalFunction";
+import {
+  Autocomplete,
+  Checkbox,
+  TextField,
+  Typography,
+  createFilterOptions,
+  IconButton,
+} from "@mui/material";
 import FCOSTTABLE from "./FCOSTTABLE";
 import InspectionDailyFcost from "../../../components/Chart/INSPECTION/InspectDailyFcost";
 import InspectionWeeklyFcost from "../../../components/Chart/INSPECTION/InspectWeeklyFcost";
@@ -144,7 +159,7 @@ const INSPECT_REPORT = () => {
           const loadeddata: DailyPPMData[] = response.data.data.map(
             (element: DailyPPMData, index: number) => {
               return {
-                ...element,                
+                ...element,
                 TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
                 MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
                 PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
@@ -347,7 +362,7 @@ const INSPECT_REPORT = () => {
                 P_NG_AMOUNT: ng_type === "ALL" ? element.P_NG_AMOUNT : ng_type === "M" ? 0 : element.P_NG_AMOUNT,
                 M_NG_QTY: ng_type === "ALL" ? element.M_NG_QTY : ng_type === "P" ? 0 : element.M_NG_QTY,
                 P_NG_QTY: ng_type === "ALL" ? element.P_NG_QTY : ng_type === "M" ? 0 : element.P_NG_QTY,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,                
+                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
                 T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
                 M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
                 P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
@@ -511,9 +526,9 @@ const INSPECT_REPORT = () => {
             (element: DEFECT_TRENDING_DATA, index: number) => {
               return {
                 ...element,
-                ERR1:0,
-                ERR2:0,
-                ERR3:0,
+                ERR1: 0,
+                ERR2: 0,
+                ERR3: 0,
                 ERR4: ng_type === "ALL" ? element.ERR4 : ng_type === "P" ? 0 : element.ERR4,
                 ERR5: ng_type === "ALL" ? element.ERR5 : ng_type === "P" ? 0 : element.ERR5,
                 ERR6: ng_type === "ALL" ? element.ERR6 : ng_type === "P" ? 0 : element.ERR6,
@@ -795,14 +810,14 @@ const INSPECT_REPORT = () => {
             <div className="dailygraphtotal">
               <div className="dailygraph">
                 <span className="subsection">Daily NG Rate <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(dailyppm, "DailyPPMData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(dailyppm, "DailyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionDailyPPM
                   dldata={[...dailyppm].reverse()}
                   processColor="#eeeb30"
@@ -811,14 +826,14 @@ const INSPECT_REPORT = () => {
               </div>
               <div className="dailygraph">
                 <span className="subsection">Weekly NG Rate <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(weeklyppm, "WeeklyPPMData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(weeklyppm, "WeeklyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionWeeklyPPM
                   dldata={[...weeklyppm].reverse()}
                   processColor="#eeeb30"
@@ -829,14 +844,14 @@ const INSPECT_REPORT = () => {
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
                 <span className="subsection">Monthly NG Rate <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(monthlyppm, "MonthlyPPMData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(monthlyppm, "MonthlyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionMonthlyPPM
                   dldata={[...monthlyppm].reverse()}
                   processColor="#eeeb30"
@@ -845,14 +860,14 @@ const INSPECT_REPORT = () => {
               </div>
               <div className="dailygraph">
                 <span className="subsection">Yearly NG Rate <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(yearlyppm, "YearlyPPMData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yearlyppm, "YearlyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionYearlyPPM
                   dldata={yearlyppm}
                   processColor="#eeeb30"
@@ -875,14 +890,14 @@ const INSPECT_REPORT = () => {
             <div className="fcostgraph">
               <div className="dailygraph">
                 <span className="subsection">Daily F-Cost <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(dailyFcostData, "DailyFcostData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(dailyFcostData, "DailyFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionDailyFcost
                   dldata={[...dailyFcostData].reverse()}
                   processColor="#89fc98"
@@ -895,14 +910,14 @@ const INSPECT_REPORT = () => {
             <div className="fcostgraph">
               <div className="dailygraph">
                 <span className="subsection">Weekly F-Cost <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(weeklyFcostData, "WeeklyFcostData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(weeklyFcostData, "WeeklyFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionWeeklyFcost
                   dldata={[...weeklyFcostData].reverse()}
                   processColor="#89fc98"
@@ -911,14 +926,14 @@ const INSPECT_REPORT = () => {
               </div>
               <div className="dailygraph">
                 <span className="subsection">Monthly F-Cost <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(monthlyFcostData, "MonthFcostData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(monthlyFcostData, "MonthFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionMonthlyFcost
                   dldata={[...monthlyFcostData].reverse()}
                   processColor="#89fc98"
@@ -927,14 +942,14 @@ const INSPECT_REPORT = () => {
               </div>
               <div className="dailygraph">
                 <span className="subsection">Yearly F-Cost <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(annualyFcostData, "YearlyFcostData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(annualyFcostData, "YearlyFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
                 <InspectionYearlyFcost
                   dldata={[...annualyFcostData].reverse()}
                   processColor="#89fc98"
