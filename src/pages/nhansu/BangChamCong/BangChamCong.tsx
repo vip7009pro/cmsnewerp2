@@ -100,7 +100,7 @@ const BANGCHAMCONG = () => {
       headerName: 'FIXED_IN_TIME',
       width: 100,
       cellRenderer: (params: any) => {
-        if (params.value !== "Thiếu giờ vào") {
+        if (params.data.FIXED_IN_TIME !== "OFF") {
           return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.FIXED_IN_TIME}</span>;
         } else {
           return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.FIXED_IN_TIME}</span>;
@@ -112,7 +112,7 @@ const BANGCHAMCONG = () => {
       headerName: 'FIXED_OUT_TIME',
       width: 100,
       cellRenderer: (params: any) => {
-        if (params.value !== "Thiếu giờ ra") {
+        if (params.data.FIXED_OUT_TIME !== "OFF") {
           return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.FIXED_OUT_TIME}</span>;
         } else {
           return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.FIXED_OUT_TIME}</span>;
@@ -2136,8 +2136,8 @@ const BANGCHAMCONG = () => {
           const row = selectedRows.current[i];
             if(row.ON_OFF === null) {
               await generalQuery("setdiemdanhnhom2", {
-                
-                diemdanhvalue: 1,
+                APPLY_DATE: row.DATE_COLUMN,
+                diemdanhvalue: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 0 : 1,
                 EMPL_NO: row.EMPL_NO,
                 CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,    
                 CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
@@ -2158,7 +2158,7 @@ const BANGCHAMCONG = () => {
                 });
             }
            await generalQuery("fixTime", {
-            APPLY_DATE: row.APPLY_DATE,
+            APPLY_DATE: row.DATE_COLUMN,
             EMPL_NO: row.EMPL_NO,
             IN_TIME: row.FIXED_IN_TIME,
             OUT_TIME: row.FIXED_OUT_TIME
@@ -2195,8 +2195,9 @@ const BANGCHAMCONG = () => {
         for (let i = 0; i < selectedRows.current.length; i++) {
           const row = selectedRows.current[i];       
           if(row.ON_OFF === null) {
-           await generalQuery("setdiemdanhnhom", {
-              diemdanhvalue: 1,
+           await generalQuery("setdiemdanhnhom2", {
+              APPLY_DATE: row.DATE_COLUMN,
+              diemdanhvalue: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 0 : 1,
               EMPL_NO: row.EMPL_NO,
               CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,    
               CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
@@ -2217,10 +2218,10 @@ const BANGCHAMCONG = () => {
               });
           }
           await generalQuery("fixTime", {
-            APPLY_DATE: row.APPLY_DATE,
+            APPLY_DATE: row.DATE_COLUMN,
             EMPL_NO: row.EMPL_NO,
-            IN_TIME: row.IN_TIME,
-            OUT_TIME: row.OUT_TIME
+            IN_TIME: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 'OFF' : row.IN_TIME,
+            OUT_TIME: row.OUT_TIME.includes("Thiếu") && row.IN_TIME.includes("Thiếu") ? 'OFF' : row.OUT_TIME  
           })
             .then((response) => {
               //console.log(response.data.data);
