@@ -1365,6 +1365,7 @@ export interface InSpectionSummaryData {
 export interface EQ_STT {
   FACTORY?: string;
   EQ_NAME?: string;
+  EQ_OP?: number;
   EQ_SERIES?: string;
   EQ_ACTIVE?: string;
   REMARK?: string;

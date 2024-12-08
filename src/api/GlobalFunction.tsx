@@ -5133,6 +5133,7 @@ export const f_addMachine = async (DATA: any) => {
     EQ_CODE: DATA.EQ_CODE,
     EQ_NAME: DATA.EQ_NAME,
     EQ_ACTIVE: DATA.EQ_ACTIVE,
+    EQ_OP: DATA.EQ_OP
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {

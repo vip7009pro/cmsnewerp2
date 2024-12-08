@@ -11,7 +11,7 @@ import {
   UserData,
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
-const startCPN: string = "NHATHAN";
+const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")? "https": "http";
 const main_port = protocol === "https" ? "5014" : "5013";

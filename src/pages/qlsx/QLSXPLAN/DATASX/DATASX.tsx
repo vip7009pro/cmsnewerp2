@@ -2825,7 +2825,7 @@ const DATASX = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                handle_loaddailyYCSX(selectedYCSX.current.PROD_REQUEST_NO)
+                //handle_loaddailyYCSX(selectedYCSX.current.PROD_REQUEST_NO)
                 setShowHideDailyYCSX(prev => !prev);
               }}
             >
@@ -2839,8 +2839,9 @@ const DATASX = () => {
           //console.log(e.data)
         }} onRowClick={(e) => {
           //console.log(e.data)
-          selectedYCSX.current = e.data;
+          selectedYCSX.current = e.data;         
           handle_loaddailyYCSX(e.data.PROD_REQUEST_NO)
+          
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
@@ -3514,7 +3515,7 @@ const DATASX = () => {
           {!selectbutton && <div className="ycsx">
             {datasx_ycsx2}
           </div>}
-          {!selectbutton && 
+          {(!selectbutton) && showhideDailyYCSX &&
             <div className="detailycsxdaily">          
             <div className="ycsxdetail" style={{ fontSize: '0.8rem' }}>
               <span style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#2d5bd8' }}> Material Tracking</span>

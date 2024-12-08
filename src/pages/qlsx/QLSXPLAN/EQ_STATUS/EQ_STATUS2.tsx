@@ -20,6 +20,7 @@ const EQ_STATUS2 = () => {
   const [eqCode, setEqCode] = useState("");
   const [eqName, setEqName] = useState("");
   const [eqActive, setEqActive] = useState("OK");
+  const [eqOp, setEqOp] = useState(1);
   const [showHideEQManager, setShowHideEQManager] = useState(false);
   const [showAddMachineDialog, setShowAddMachineDialog] = useState(false);
   const selectedMachine = useRef<EQ_STT | null>(null);
@@ -30,6 +31,7 @@ const EQ_STATUS2 = () => {
       EQ_CODE: eqCode,
       EQ_NAME: eqName,
       EQ_ACTIVE: eqActive,
+      EQ_OP: eqOp      
     });
     if (kq) {
       Swal.fire({
@@ -43,7 +45,6 @@ const EQ_STATUS2 = () => {
       });
     }
   }
-
   const handleDeleteMachine = async () => {
     console.log(selectedMachine.current)
     if (selectedMachine.current) {
@@ -117,6 +118,8 @@ const EQ_STATUS2 = () => {
         }
       }
     },
+    
+    { field: "EQ_OP", headerName: "EQ_OP", width: 80 },
     { field: "EQ_STATUS", headerName: "EQ_STATUS", width: 80 },
     { field: "CURR_PLAN_ID", headerName: "CURR_PLAN_ID", width: 80 },
     { field: "CURR_G_CODE", headerName: "CURR_G_CODE", width: 80 },
@@ -199,7 +202,7 @@ const EQ_STATUS2 = () => {
           setSearchString(e.target.value);
         }}>
         </input>
-        { getCompany() === "CMS" && <IconButton
+        { getUserData()?.EMPL_NO === "NHU1903" && <IconButton
           className="buttonIcon"
           onClick={openDialogEQManager}
         >
@@ -370,6 +373,17 @@ const EQ_STATUS2 = () => {
                 name="eq_name"
                 value={eqName}
                 onChange={(e) => setEqName(e.target.value)}
+                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <label htmlFor="eq_op" style={{ marginBottom: '5px' }}>EQ OP:</label>
+              <input
+                type="text"
+                id="eq_op"
+                name="eq_op"
+                value={eqOp}
+                onChange={(e) => setEqOp(parseInt(e.target.value))}
                 style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
               />
             </div>
