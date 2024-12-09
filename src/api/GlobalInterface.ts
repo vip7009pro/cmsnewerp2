@@ -4284,3 +4284,23 @@ export interface MAT_DOC_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
 }
+export interface SX_CAPA_DATA {
+  EQ_SERIES: string;
+  EQ_QTY: number;
+  EQ_OP: number;
+  AVG_EQ_OP: number;
+  MAN_FULL_CAPA: number;
+  RETAIN_WF: number;
+  RETAIN_WF_CAPA: number;
+  ATT_WF: number;
+  ATT_WF_CAPA: number;
+  RETAIN_WF_TO_EQ: number;
+  RETAIN_WF_TO_EQ_CAPA: number;
+  ATT_WF_TO_EQ: number;
+  ATT_WF_TO_EQ_CAPA: number;
+  RETAIN_WF_MIN_CAPA: number;
+  ATT_WF_MIN_CAPA: number;
+  YCSX_BALANCE: number;
+  RETAIN_WF_LEADTIME_DAYS: number;
+  ATT_WF_LEADTIME_DAYS: number;
+}

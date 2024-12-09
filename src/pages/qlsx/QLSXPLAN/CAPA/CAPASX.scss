@@ -33,6 +33,10 @@
       .sectiondiv {
         display: flex;
         flex-direction: column;
+        .title {
+          display: flex;
+          font-size: 1rem;
+        }
 
         .totalwfdiv {
           display: flex;
@@ -65,6 +69,7 @@
         flex-direction: column;
         justify-content: space-around;
         gap: 20px;
+        font-size: 1rem;
         .starndardworkforce {
           background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -143,6 +148,17 @@
         border: 1px solid gray;
         text-align: center;
       }
+    }
+    .capadatatable {
+      display: flex;
+      width: 70%;
+      flex-direction: column;
+      background-image: linear-gradient(0deg, #afd3d1, #72efaa);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      gap: 20px;
+      border-radius: 5px;
+      height: 200px;
     }
   }
 }

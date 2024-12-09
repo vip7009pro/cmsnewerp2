@@ -5,6 +5,7 @@ const CAPASX = React.lazy(() => import("../../qlsx/QLSXPLAN/CAPA/CAPASX"));
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import CAPASX2 from "../../qlsx/QLSXPLAN/CAPA/CAPASX2";
 
 const BCSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme); 
@@ -28,11 +29,11 @@ const BCSX = () => {
             <Tab>PRODUCTION PERFOMANCE REPORT</Tab>
             <Tab>PRODUCTION CAPA REPORT</Tab>
           </TabList>
-          <TabPanel>
+          <TabPanel>            
             <SX_REPORT/>            
           </TabPanel>
           <TabPanel>
-            <CAPASX/>            
+            <CAPASX2/>            
           </TabPanel>        
         </Tabs>
       </Suspense>
