@@ -5381,3 +5381,30 @@ export const f_addProdProcessData = async (DATA: any) => {
     });
   return kq;
 } 
+export const f_updateProdProcessData = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updateProdProcessData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+export const f_deleteProdProcessData = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("deleteProdProcessData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+
