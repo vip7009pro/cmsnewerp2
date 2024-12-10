@@ -442,8 +442,8 @@ const VLDOC = ({ M_ID, M_NAME }: { M_ID: number, M_NAME: string }) => {
         DOC_ID: filteredMatDocData[i].DOC_ID,
         REG_DATE: filteredMatDocData[i].REG_DATE,
         EXP_DATE: filteredMatDocData[i].EXP_DATE,
-        EXP_YN: filteredMatDocData[i].EXP_YN,
-        USE_YN: filteredMatDocData[i].USE_YN
+        EXP_YN: filteredMatDocData[i].EXP_YN.toUpperCase(),
+        USE_YN: filteredMatDocData[i].USE_YN.toUpperCase()
       })
         .then((response) => {
           console.log(response);

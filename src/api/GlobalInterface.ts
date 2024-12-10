@@ -291,6 +291,7 @@ export interface CUST_INFO {
   FAX_NO: string;
   CUST_POSTAL: string;
   REMK: string;
+  USE_YN: string;
   INS_DATE: string;
   INS_EMPL: string;
   UPD_DATE: string;

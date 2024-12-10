@@ -39,6 +39,7 @@ const CUST_MANAGER = () => {
     FAX_NO: "",
     CUST_POSTAL: "",
     REMK: "",
+    USE_YN: "Y",
     INS_DATE: "",
     INS_EMPL: "",
     UPD_DATE: "",
@@ -60,6 +61,18 @@ const CUST_MANAGER = () => {
     { field: 'CUST_POSTAL', headerName: 'CUST_POSTAL', resizable: true, width: 100 },
     { field: 'EMAIL', headerName: 'EMAIL', resizable: true, width: 100 },
     { field: 'REMK', headerName: 'REMK', resizable: true, width: 100 },
+    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 50, cellRenderer: (params: any) => {
+      return (
+        <div style={{
+          backgroundColor: params.data.USE_YN === 'Y' ? '#4caf50' : '#f44336',
+          color: 'white',            
+          borderRadius: '4px',
+          textAlign: 'center'
+        }}>
+          {params.value === 'Y' ? 'USE' : 'NOT USE'}
+        </div>
+      )
+    } },
     { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 100 },
     { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 100 },
     { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 100 },
@@ -114,6 +127,7 @@ const CUST_MANAGER = () => {
       INS_DATE: "",
       INS_EMPL: "",
       REMK: "",
+      USE_YN: "Y",
       TAX_NO: "",
       TEL_NO1: "",
       UPD_DATE: "",
@@ -404,6 +418,19 @@ const CUST_MANAGER = () => {
                   >
                     <option value="KH">Khách Hàng</option>
                     <option value="NCC">Nhà Cung Cấp</option>
+                  </select>
+                </label>
+                <label>
+                  <b>Mở/Khóa:</b>{" "}
+                  <select
+                    name="plvendor"
+                    value={selectedRows?.USE_YN}
+                    onChange={(e) => {
+                      setCustInfo("USE_YN", e.target.value);
+                    }}
+                  >
+                    <option value="Y">Mở</option>
+                    <option value="N">Khóa</option>
                   </select>
                 </label>
               </div>

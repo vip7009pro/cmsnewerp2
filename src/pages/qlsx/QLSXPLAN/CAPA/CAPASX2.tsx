@@ -1341,6 +1341,7 @@ const CAPASX2 = () => {
               capadata.filter((e: SX_CAPA_DATA, index: number) => e.EQ_SERIES !== "TOTAL").map((e: SX_CAPA_DATA, index: number) => {
                 return (
                   <CIRCLE_COMPONENT
+                    key={index} 
                     type='machine'
                     value={e.EQ_QTY.toString()}
                     title={e.EQ_SERIES} 

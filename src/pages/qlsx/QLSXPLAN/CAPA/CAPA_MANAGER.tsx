@@ -1,10 +1,12 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import "./CAPA_MANAGER.scss";
-import CAPASX from "./CAPASX";
 import CAPADATA from "./CAPADATA";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import CAPASX2 from "./CAPASX2";
+import { getCompany } from "../../../../api/Api";
+import CAPASX from "./CAPASX";
 
 const CAPA_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -27,7 +29,12 @@ const CAPA_MANAGER = () => {
             <Tab>CAPA DATA</Tab>
           </TabList>
           <TabPanel>
-            <CAPASX />
+            {
+              getCompany() ==='CMS' && <CAPASX />
+            }
+            {
+              getCompany() !=='CMS' && <CAPASX2 />
+            }
           </TabPanel>
           <TabPanel>
             <CAPADATA />

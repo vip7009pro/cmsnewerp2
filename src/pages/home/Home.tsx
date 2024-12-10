@@ -14,12 +14,14 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-import FileTransfer from "../tools/FileTransfer/FileTransfer";
-import TINHHINHCUONLIEU from "../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
-import BAOCAOTHEOROLL from "../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
-import LICHSUTEMLOTSX from "../sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
-export const current_ver: number = 2513;
-/* export const current_ver: number = 412; */
+
+
+export const current_ver: number = 2514;
+/* export const current_ver: number = 413; */
+const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
+const TINHHINHCUONLIEU = React.lazy(() => import("../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
+const BAOCAOTHEOROLL = React.lazy(() => import("../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
+const LICHSUTEMLOTSX = React.lazy(() => import("../sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import CAPASX2 from "../../qlsx/QLSXPLAN/CAPA/CAPASX2";
+import { getCompany } from "../../../api/Api";
 
 const BCSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme); 
@@ -33,7 +34,12 @@ const BCSX = () => {
             <SX_REPORT/>            
           </TabPanel>
           <TabPanel>
-            <CAPASX2/>            
+            {
+              getCompany() ==='CMS' && <CAPASX />
+            }
+            {
+              getCompany() !=='CMS' && <CAPASX2 />
+            }
           </TabPanel>        
         </Tabs>
       </Suspense>

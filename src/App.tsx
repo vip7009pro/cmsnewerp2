@@ -26,7 +26,8 @@ import { Notifications } from 'react-push-notification';
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import FileTransfer from "./pages/tools/FileTransfer/FileTransfer";
+const FileTransfer = React.lazy(() => import("./pages/tools/FileTransfer/FileTransfer"));
+const CAPASX2 = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX2"));
 const Home2 = React.lazy(() => import("./pages/home/Home2"));
 const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
 const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
@@ -56,7 +57,6 @@ const PRODUCT_BARCODE_MANAGER = React.lazy(() => import("./pages/rnd/product_bar
 const QLGN = React.lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
 const QLSX = React.lazy(() => import("./pages/qlsx/QLSX"));
 const QLSXPLAN = React.lazy(() => import("./pages/qlsx/QLSXPLAN/QLSXPLAN"));
-const CAPASX = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX"));
 const TINHLIEU = React.lazy(() => import("./pages/muahang/tinhlieu/TINHLIEU"));
 const MUAHANG = React.lazy(() => import("./pages/muahang/MUAHANG"));
 const QLVL = React.lazy(() => import("./pages/muahang/quanlyvatlieu/QLVL"));
@@ -691,7 +691,7 @@ function App() {
                         <Route path='codeinfo' element={<CODE_MANAGER />} />
                         <Route path='qlsxplan' element={<QLSXPLAN />} />
                         <Route path='quanlycodebom' element={<BOM_MANAGER />} />
-                        <Route path='capamanager' element={<CAPASX />} />
+                        <Route path='capamanager' element={<CAPASX2 />} />
                         <Route path='qlsxmrp' element={<TINHLIEU />} />
                       </Route>
                       <Route

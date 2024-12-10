@@ -1,16 +1,8 @@
 .documentcomponent {
-  position: relative;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  outline: 0;
-  pointer-events: none;
+  position: relative;  
   .draw {
     width: 208mm !important;
-    height: 297mm !important;
+    height: 297mm !important;    
   }
   .approval_info {
     position: absolute;
