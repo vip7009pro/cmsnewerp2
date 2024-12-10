@@ -52,43 +52,103 @@ const FAILING = () => {
   const [ncrId, setNCRID] = useState(0);
   const [isNewFailing, setIsNewFailing] = useState(false);
   const column_failing_table = [
-    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 80, checkboxSelection: true },
-    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 80 },
-    { field: 'PLAN_ID_SUDUNG', headerName: 'PLAN_ID_SUDUNG', resizable: true, width: 80 },
-    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
-    { field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 80 },
-    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 80 },
-    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
-    { field: 'VENDOR_LOT', headerName: 'VENDOR_LOT', resizable: true, width: 80 },
-    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80 },
-    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80 },
-    { field: 'ROLL_QTY', headerName: 'ROLL_QTY', resizable: true, width: 80 },
-    { field: 'TOTAL_IN_QTY', headerName: 'TOTAL_IN_QTY', resizable: true, width: 80 },
-    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 },
-    { field: 'PQC3_ID', headerName: 'PQC3_ID', resizable: true, width: 80 },
-    { field: 'DEFECT_PHENOMENON', headerName: 'DEFECT_PHENOMENON', resizable: true, width: 80 },
-    { field: 'SX_DEFECT', headerName: 'SX_DEFECT', resizable: true, width: 80 },
+    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 50, checkboxSelection: true },
+    { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
+    { field: 'PLAN_ID_SUDUNG', headerName: 'PLAN_ID_SUDUNG', resizable: true, width: 90 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
+    { field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 60 },
+    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 60 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 60, cellRenderer: (params: any) => {
+      if(params.data.QC_PASS === "Y") {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'blue', backgroundColor: '#96f53d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', backgroundColor: '#e9dddd', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      }
+    } },
+    { field: 'VENDOR_LOT', headerName: 'VENDOR_LOT', resizable: true, width: 70, cellRenderer: (params: any) => {
+      if(params.data.OUT2_EMPL === null || params.data.OUT2_EMPL === "") {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', backgroundColor: '#aae1f1', borderRadius: '5px'}}>{params.data.VENDOR_LOT}</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', backgroundColor: '#ff0000', borderRadius: '5px'}}>{params.data.VENDOR_LOT}</div>
+        )
+      }
+    } },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80, cellRenderer: (params: any) => {
+      if(params.data.IN2_EMPL === null || params.data.IN2_EMPL === "") {  
+        return (
+          <span style={{textAlign: 'right', fontWeight: 'bold', color: 'red'}}>{params.data.M_NAME}</span>
+        )
+      } else {
+        return (
+          <span style={{textAlign: 'right', fontWeight: 'bold', color: 'blue'}}>{params.data.M_NAME}</span>
+        )
+      }
+    } },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 60 },
+    { field: 'ROLL_QTY', headerName: 'ROLL_QTY', resizable: true, width: 60 },
+    { field: 'TOTAL_IN_QTY', headerName: 'TOTAL_IN_QTY', resizable: true, width: 80, cellRenderer: (params: any) => {
+      return (
+        <span style={{textAlign: 'right', fontWeight: 'bold', color: 'blue'}}>{params.data.TOTAL_IN_QTY}</span>
+      )
+    } },   
+    
+    { field: 'SX_DEFECT', headerName: 'SX_DEFECT', resizable: true, width: 80, cellRenderer: (params: any) => {
+      return (
+        <span style={{textAlign: 'right', fontWeight: 'bold', color: 'black'}}>{params.data.SX_DEFECT}</span>
+      )
+    } },
     { field: 'OUT_DATE', headerName: 'OUT_DATE', resizable: true, width: 80 },
+    { field: 'PHANLOAI', headerName: 'PHANLOAI', resizable: true, width: 60 },
+    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 40, cellRenderer: (params: any) => {
+      if(params.data.USE_YN === 'Y') {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>Có tồn</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'white', width: '100%', backgroundColor: 'red', borderRadius: '5px'}}>Không tồn</div>
+        )
+      }
+    } },
+    { field: 'QC_PASS', headerName: 'QC_PASS', resizable: true, width: 50, cellRenderer: (params: any) => {
+      if(params.data.QC_PASS === 'Y') { 
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>{params.data.QC_PASS}</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'red', borderRadius: '5px'}}>{params.data.QC_PASS}</div>
+        )
+      }
+    } },
+    { field: 'QC_PASS_EMPL', headerName: 'QC_PASS_EMPL', resizable: true, width: 80 },    
+    { field: 'QC_PASS_DATE', headerName: 'QC_PASS_DATE', resizable: true, width: 80 },
+    { field: 'IN1_EMPL', headerName: 'IN1_EMPL', resizable: true, width: 60 },
+    { field: 'IN2_EMPL', headerName: 'IN2_EMPL', resizable: true, width: 60 },
+    { field: 'OUT1_EMPL', headerName: 'OUT1_EMPL', resizable: true, width: 60 },
+    { field: 'OUT2_EMPL', headerName: 'OUT2_EMPL', resizable: true, width: 60 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 60 },
+    { field: 'IN_CUST_CD', headerName: 'IN_CUST_CD', resizable: true, width: 80 },
+    { field: 'OUT_CUST_CD', headerName: 'OUT_CUST_CD', resizable: true, width: 80 },
+    { field: 'IN_CUST_NAME', headerName: 'IN_CUST_NAME', resizable: true, width: 80 },
+    { field: 'OUT_CUST_NAME', headerName: 'OUT_CUST_NAME', resizable: true, width: 90 },
+    { field: 'OUT_PLAN_ID', headerName: 'OUT_PLAN_ID', resizable: true, width: 70 },
+    { field: 'REMARK_OUT', headerName: 'REMARK_OUT', resizable: true, width: 80 },
+    { field: 'NCR_ID', headerName: 'NCR_ID', resizable: true, width: 60 },
+    { field: 'PQC3_ID', headerName: 'PQC3_ID', resizable: true, width: 60 },
+    { field: 'DEFECT_PHENOMENON', headerName: 'DEFECT_PHENOMENON', resizable: true, width: 120 },
     { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 80 },
     { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 80 },
     { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 80 },
     { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 80 },
-    { field: 'PHANLOAI', headerName: 'PHANLOAI', resizable: true, width: 80 },
-    { field: 'QC_PASS', headerName: 'QC_PASS', resizable: true, width: 80 },
-    { field: 'QC_PASS_DATE', headerName: 'QC_PASS_DATE', resizable: true, width: 80 },
-    { field: 'QC_PASS_EMPL', headerName: 'QC_PASS_EMPL', resizable: true, width: 80 },
-    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 80 },
-    { field: 'IN1_EMPL', headerName: 'IN1_EMPL', resizable: true, width: 80 },
-    { field: 'IN2_EMPL', headerName: 'IN2_EMPL', resizable: true, width: 80 },
-    { field: 'OUT1_EMPL', headerName: 'OUT1_EMPL', resizable: true, width: 80 },
-    { field: 'OUT2_EMPL', headerName: 'OUT2_EMPL', resizable: true, width: 80 },
-    { field: 'IN_CUST_CD', headerName: 'IN_CUST_CD', resizable: true, width: 80 },
-    { field: 'OUT_CUST_CD', headerName: 'OUT_CUST_CD', resizable: true, width: 80 },
-    { field: 'IN_CUST_NAME', headerName: 'IN_CUST_NAME', resizable: true, width: 80 },
-    { field: 'OUT_CUST_NAME', headerName: 'OUT_CUST_NAME', resizable: true, width: 80 },
-    { field: 'OUT_PLAN_ID', headerName: 'OUT_PLAN_ID', resizable: true, width: 80 },
-    { field: 'REMARK_OUT', headerName: 'REMARK_OUT', resizable: true, width: 80 },
-    { field: 'NCR_ID', headerName: 'NCR_ID', resizable: true, width: 80 },
+    
   ];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -181,7 +241,7 @@ const FAILING = () => {
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         await generalQuery("updateIQCConfirm_FAILING", {
           FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
-          IN2_EMPL: confirmEMPL,
+          IN2_EMPL: confirmEMPL.toUpperCase(),
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {

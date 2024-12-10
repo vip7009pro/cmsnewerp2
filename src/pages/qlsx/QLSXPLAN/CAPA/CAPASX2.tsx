@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting } from "../../../../api/Api";
 import moment from "moment";
 import {
   Chart,
@@ -1367,7 +1367,7 @@ const CAPASX2 = () => {
       <div className="capadatatable">
         {capaDataAGTable}
       </div>
-      <div className='dailydeliverycapa'>
+      {getCompany() === "CMS" && <div className='dailydeliverycapa'>
         <div className='sectiondiv'>
           <div className='title'>3. PRODUCTION BY DELIVERY PLAN</div>
           <div className='selectcontrol'>
@@ -1400,7 +1400,8 @@ const CAPASX2 = () => {
               <option value='NM1'>NM1</option>
               <option value='NM2'>NM2</option>
             </select>           
-          </div>          
+          </div>     
+               
           <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
           <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
           {selectedFactory === "NM1" && (
@@ -1410,7 +1411,7 @@ const CAPASX2 = () => {
             <div className='starndardworkforce'>{DeliveryLeadTimeMMDC}</div>
           )}
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
