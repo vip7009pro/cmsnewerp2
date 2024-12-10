@@ -23,7 +23,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP, f_addProdProcessData, f_getMachineListData, renderElement } from "../../../api/GlobalFunction";
+import { checkBP, f_getMachineListData, renderElement } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -45,7 +45,6 @@ import {
   MASTER_MATERIAL_HSD,
   MATERIAL_INFO,
   MaterialListData,
-  PROD_PROCESS_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
@@ -64,21 +63,6 @@ const BOM_MANAGER = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
-  const [tempSelectedMachine, setTempSelectedMachine] = useState<string>("NA");
-  const tempSelectedProcess = useRef<PROD_PROCESS_DATA>({
-    G_CODE: "xxx",
-    PROCESS_NUMBER: 0,
-    EQ_SERIES: "xxx",
-    SETTING_TIME: 0,
-    UPH: 0,
-    STEP: 0,
-    LOSS_SX: 0,
-    LOSS_SETTING: 0,
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
-  });
   const codedatatablefilter = useRef<Array<CODE_INFO>>([]);
   const bomsxdatatablefilter = useRef<Array<BOM_SX>>([]);
   const bomgiadatatablefilter = useRef<Array<BOM_GIA>>([]);
@@ -670,31 +654,6 @@ const BOM_MANAGER = () => {
       editable: true,
     },
   ];
-  let column_eqlist = [
-    { field: "PROCESS_NUMBER", headerName: "PROCESS_NUMBER", width: 120, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ_SERIES", width: 120, editable: true },   
-  ];
-  const [currentProcessList, setCurrentProcessList] = useState<PROD_PROCESS_DATA[]>([]);
-  const eqListAGTable = useMemo(() => {
-    return (
-      <AGTable      
-      showFilter={false}
-      columns={column_eqlist}
-      data={currentProcessList}
-      suppressRowClickSelection={true}
-      onCellEditingStopped={(params: any) => {
-      }} onRowClick={(params: any) => {       
-        ////console.log(datafilter[0]);        
-        //console.log([params.data]);
-        tempSelectedProcess.current = params.data;
-       
-      }} onSelectionChange={(params: any) => {
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-        //console.log(e!.api.getSelectedRows())
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-      }} />
-    );
-  }, [currentProcessList]);
   const codeInfoAGTable = useMemo(() => {
     return (
       <AGTable
@@ -743,7 +702,6 @@ const BOM_MANAGER = () => {
           }
           ////console.log(datafilter[0]);
           handlecodefullinfo(params.data.G_CODE);
-          loadProcessList(params.data.G_CODE);
           //console.log([params.data]);
           codedatatablefilter.current = [params.data];
         }} onSelectionChange={(params: any) => {
@@ -897,27 +855,6 @@ const BOM_MANAGER = () => {
       }}
     />
     , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial, enableEdit]);
-  
-  const loadProcessList = (G_CODE: string) => {
-    generalQuery("loadProdProcessData", {
-      G_CODE: G_CODE
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          let loadeddata: PROD_PROCESS_DATA[] = response.data.data.map( 
-            (element: PROD_PROCESS_DATA, index: number) => {
-              return { ...element, id: index };
-            },
-          );
-          setCurrentProcessList(loadeddata);
-        } else {
-          setCurrentProcessList([]);
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
-  } 
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
@@ -2820,7 +2757,6 @@ const BOM_MANAGER = () => {
     loadDefaultDM();
     loadMasterMaterialList();
     handleGETBOMAMAZON("6E00004A");
-    loadProcessList('xxx');
   }, []);
   return (
     <div className="bom_manager">      
@@ -3586,7 +3522,7 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("PROCESS_TYPE", e.target.value);
                         }}
                       ></input>
-                    </label>                                    
+                    </label>
                     <label>
                       Máy 1:
                       <select
@@ -3954,69 +3890,6 @@ const BOM_MANAGER = () => {
                   <div className="info3"></div>
                   <div className="info4"></div>
                 </div>
-              </div>
-              <div className="processlist">
-                <div className="selectmachine">
-                <label>
-                      Máy:
-                      <select
-                        disabled={enableform}
-                        name="may1"
-                        value={tempSelectedMachine}
-                        onChange={(e) => {
-                          setTempSelectedMachine(e.target.value);
-                        }}
-                      >
-                        {machine_list.map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          },
-                        )}
-                      </select>
-                    </label>  
-                    <Button
-                      onClick={async () => {
-                        if(codefullinfo.G_CODE !== '-------'){
-                          if (currentProcessList.length > 0) {
-                            let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
-                            let kq = await f_addProdProcessData({ 
-                              G_CODE: codefullinfo.G_CODE,
-                              PROCESS_NUMBER: nextProcessNo,
-                              EQ_SERIES: tempSelectedMachine
-                            });
-                            if (kq) {
-                              loadProcessList(codefullinfo.G_CODE);
-                              Swal.fire("Thông báo", "Thêm process thành công", "success");
-                            } else {
-                              Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                            }
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          }
-                        } else {
-                          Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
-                        }
-                      }}
-                    >
-                      Add
-                    </Button> 
-                    <Button
-                      color="error"
-                      onClick={() => {                        
-                        
-                      }}
-                    >
-                      Delete
-                    </Button>                     
-                    
-                </div>              
-                {
-                  eqListAGTable
-                }
               </div>
             </div>
             <div className="updatehistory">

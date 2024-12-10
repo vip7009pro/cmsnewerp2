@@ -551,6 +551,14 @@
             }
           }
         }
+        .processlist {
+          display: flex;
+          flex-direction: column; 
+          align-self: center;
+          flex: 1;
+          height: 500px;
+          width: 250px;
+        } 
       }
     }
     .uphangloat {

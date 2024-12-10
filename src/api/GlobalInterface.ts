@@ -4305,3 +4305,17 @@ export interface SX_CAPA_DATA {
   RETAIN_WF_LEADTIME_DAYS: number;
   ATT_WF_LEADTIME_DAYS: number;
 }
+export interface PROD_PROCESS_DATA {  
+  G_CODE: string;
+  PROCESS_NUMBER: number;
+  EQ_SERIES: string;
+  SETTING_TIME: number;
+  UPH: number;
+  STEP: number;
+  LOSS_SX: number;
+  LOSS_SETTING: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}

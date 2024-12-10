@@ -5367,3 +5367,17 @@ export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
     Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
   }
 }
+
+export const f_addProdProcessData = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("addProdProcessData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+} 
