@@ -27,6 +27,7 @@ import {
   POTableData,
   PRICEWITHMOQ,
   PROD_OVER_DATA,
+  PROD_PROCESS_DATA,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
@@ -5381,9 +5382,35 @@ export const f_addProdProcessData = async (DATA: any) => {
     });
   return kq;
 } 
+export const f_addProdProcessDataQLSX = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("addProdProcessDataQLSX", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+} 
 export const f_updateProdProcessData = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("updateProdProcessData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+export const f_updateProdProcessDataQLSX = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updateProdProcessDataQLSX", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = true;
@@ -5408,3 +5435,128 @@ export const f_deleteProdProcessData = async (DATA: any) => {
   return kq;
 }
 
+export const f_checkProcessNumberContinuos = async (DATA: PROD_PROCESS_DATA[]) => {
+  let kq: boolean = true;
+  for (let i = 0; i < DATA.length; i++) {
+    if (DATA[i].PROCESS_NUMBER !== i + 1) {
+      kq = false;
+      break;
+    }
+  }
+  return kq;
+} 
+export const f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST = async (DATA: PROD_PROCESS_DATA[], machineList: MACHINE_LIST[]) => {
+  //console.log('checkEQ_SERIES_Exist_In_EQ_SERIES_LIST', DATA, machineList);
+  let kq: boolean = true;
+  for (let i = 0; i < DATA.length; i++) {
+    //console.log('check', machineList.find(item => item.EQ_NAME === DATA[i].EQ_SERIES))
+    if (machineList.find(item => item.EQ_NAME === DATA[i].EQ_SERIES) === undefined) {
+      kq = false;
+      break;
+    }
+  }
+  //console.log('checkEQ_SERIES_Exist_In_EQ_SERIES_LIST', kq);
+  return kq;
+}
+
+export const f_deleteProcessNotInCurrentListFromDataBase = async (DATA: PROD_PROCESS_DATA[]) => {
+  let kq: boolean = false;
+  await generalQuery("deleteProcessNotInCurrentListFromDataBase", {
+    G_CODE: DATA[0].G_CODE,
+    PROCESS_NUMBER_LIST: DATA.map(item => item.PROCESS_NUMBER).join(','),
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}   
+export const f_checkProcessExist = async (DATA: PROD_PROCESS_DATA) => {
+  let kq: boolean = false;
+  await generalQuery("checkProcessExist", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data[0].COUNT_QTY > 0;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  console.log('checkexist',kq);
+  return kq;
+} 
+
+export const f_addProcessDataTotal = async (DATA: PROD_PROCESS_DATA[]) => {  
+  for (let i = 0; i < DATA.length; i++) {
+    if (await f_checkProcessExist(DATA[i])) {
+      await f_updateProdProcessData(DATA[i]);
+    }
+    else 
+    {
+      await f_addProdProcessData(DATA[i]);     
+    }
+  }
+  if(DATA.length > 0)
+  {
+    Swal.fire("Thông báo", "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!", "success"); 
+  }
+  else
+  {
+    Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error"); 
+  }
+}
+export const f_addProcessDataTotalQLSX = async (DATA: PROD_PROCESS_DATA[]) => {  
+  for (let i = 0; i < DATA.length; i++) {
+    if (await f_checkProcessExist(DATA[i])) {
+      await f_updateProdProcessDataQLSX(DATA[i]);
+    }
+    else 
+    {
+      await f_addProdProcessDataQLSX(DATA[i]);     
+    }
+  }
+  if(DATA.length > 0)
+  {
+    Swal.fire("Thông báo", "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!", "success"); 
+  }
+  else
+  {
+    Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error"); 
+  }
+}
+
+export const f_autoUpdateDocUSE_YN = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("autoUpdateDocUSEYN_EXP", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+} 
+
+export const f_loadProdProcessData = async (G_CODE: string) => {
+  let kq: PROD_PROCESS_DATA[] = [];
+  await generalQuery("loadProdProcessData", {
+    G_CODE: G_CODE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data.map((element: PROD_PROCESS_DATA, index: number) => {
+          return { ...element, id: index };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}

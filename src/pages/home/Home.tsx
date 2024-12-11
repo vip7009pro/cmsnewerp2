@@ -16,8 +16,8 @@ import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
 
-export const current_ver: number = 2514;
-/* export const current_ver: number = 413; */
+export const current_ver: number = 2515;
+/* export const current_ver: number = 415; */
 const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
 const TINHHINHCUONLIEU = React.lazy(() => import("../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
 const BAOCAOTHEOROLL = React.lazy(() => import("../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));

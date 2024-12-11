@@ -23,7 +23,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP, f_addProdProcessData, f_deleteProdProcessData, f_getMachineListData, renderElement } from "../../../api/GlobalFunction";
+import { checkBP, f_addProcessDataTotal, f_addProdProcessData, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_loadProdProcessData, renderElement } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -78,6 +78,7 @@ const BOM_MANAGER = () => {
     INS_EMPL: "",
     UPD_DATE: "",
     UPD_EMPL: "",
+    FACTORY: "NM1"
   });
   const codedatatablefilter = useRef<Array<CODE_INFO>>([]);
   const bomsxdatatablefilter = useRef<Array<BOM_SX>>([]);
@@ -389,20 +390,41 @@ const BOM_MANAGER = () => {
   ]);
   let column_codeinfo2 = [
     {
-      field: "id", headerName: "ID", width: 30, editable: enableEdit,
+      field: "id", headerName: "ID", width: 20, editable: enableEdit,
     },
-    { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", width: 50, editable: enableEdit },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       flex: 1,
-      minWidth: 120,
+      minWidth: 100,
       editable: enableEdit,
     },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 100,
+      width: 90,
+      editable: enableEdit,
+    },
+    { field: "PD", headerName: "PD", width: 30, editable: enableEdit },
+    { field: "CAVITY", headerName: "CAVITY", width: 50, editable: enableEdit },
+    
+    {
+      field: "G_WIDTH",
+      headerName: "G_WIDTH",
+      width: 50,
+      editable: enableEdit,
+    },
+    {
+      field: "G_LENGTH",
+      headerName: "G_LENGTH",
+      width: 55,
+      editable: enableEdit,
+    },
+    {
+      field: "PACKING_QTY",
+      headerName: "PACKING_QTY",
+      width: 70,
       editable: enableEdit,
     },
     {
@@ -422,27 +444,7 @@ const BOM_MANAGER = () => {
       headerName: "PRICE",
       width: 80,
       editable: enableEdit,
-    },
-    { field: "PD", headerName: "PD", width: 80, editable: enableEdit },
-    { field: "CAVITY", headerName: "CAVITY", width: 80, editable: enableEdit },
-    {
-      field: "PACKING_QTY",
-      headerName: "PACKING_QTY",
-      width: 80,
-      editable: enableEdit,
-    },
-    {
-      field: "G_WIDTH",
-      headerName: "G_WIDTH",
-      width: 80,
-      editable: enableEdit,
-    },
-    {
-      field: "G_LENGTH",
-      headerName: "G_LENGTH",
-      width: 80,
-      editable: enableEdit,
-    },
+    },   
     {
       field: "PROD_PROJECT",
       headerName: "PROD_PROJECT",
@@ -671,8 +673,8 @@ const BOM_MANAGER = () => {
     },
   ];
   let column_eqlist = [
-    { field: "PROCESS_NUMBER", headerName: "PROCESS_NUMBER", width: 120, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ_SERIES", width: 120, editable: true },   
+    { field: "PROCESS_NUMBER", headerName: "CD", width: 100, editable: true },
+    { field: "EQ_SERIES", headerName: "EQ", width: 100, editable: true },   
   ];
   const [currentProcessList, setCurrentProcessList] = useState<PROD_PROCESS_DATA[]>([]);
   const eqListAGTable = useMemo(() => {
@@ -898,25 +900,9 @@ const BOM_MANAGER = () => {
     />
     , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial, enableEdit]);
   
-  const loadProcessList = (G_CODE: string) => {
-    generalQuery("loadProdProcessData", {
-      G_CODE: G_CODE
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          let loadeddata: PROD_PROCESS_DATA[] = response.data.data.map( 
-            (element: PROD_PROCESS_DATA, index: number) => {
-              return { ...element, id: index };
-            },
-          );
-          setCurrentProcessList(loadeddata);
-        } else {
-          setCurrentProcessList([]);
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
+  const loadProcessList = async (G_CODE: string) => {
+    let loadeddata = await f_loadProdProcessData(G_CODE);
+    setCurrentProcessList(loadeddata);    
   } 
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
@@ -1739,6 +1725,10 @@ const BOM_MANAGER = () => {
   };
   const handleAddNewCode = async () => {
     ////console.log(handleCheckCodeInfo());
+    /* if(await f_checkProcessNumberContinuos(currentProcessList)){
+      Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
+      return;
+    } */
     let checkg_name_kd: boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD);
     //console.log('checkg_name_kd',checkg_name_kd);
     if ((getCompany() === 'CMS') && (await handleCheckCodeInfo()) || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
@@ -2629,6 +2619,7 @@ const BOM_MANAGER = () => {
   });
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
+    setTempSelectedMachine((await f_getMachineListData())[0].EQ_NAME);
   };
   const autogenerateCodeKH = (cust_cd: string) => {
     let nextCodeKH: string = cust_cd + "-001";
@@ -3949,10 +3940,10 @@ const BOM_MANAGER = () => {
                         </div>
                       )}
                     </div>
-                    {getCompany() === 'CMS' && <div className="processlist">
+                    {getCompany() === 'CMS' &&  getUserData()?.EMPL_NO==='NHU1903'  &&   <div className="processlist">
                       <div className="selectmachine">
-                        <label>
-                          Máy:
+                      Máy:
+                        <label>                         
                           <select
                             disabled={enableform}
                             name="may1"
@@ -3961,7 +3952,8 @@ const BOM_MANAGER = () => {
                               setTempSelectedMachine(e.target.value);
                             }}
                           >
-                            {machine_list.map(
+                            {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
+                            map(
                               (ele: MACHINE_LIST, index: number) => {
                                 return (
                                   <option key={index} value={ele.EQ_NAME}>
@@ -3974,7 +3966,7 @@ const BOM_MANAGER = () => {
                         </label>
                         <Button
                           onClick={async () => {
-                            if (codefullinfo.G_CODE !== '-------') {
+                            if(codefullinfo.G_CODE !== '-------'){
                               if (currentProcessList.length > 0) {
                                 let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
                                 let tempProcess: PROD_PROCESS_DATA = {
@@ -3989,7 +3981,8 @@ const BOM_MANAGER = () => {
                                   INS_DATE: '',
                                   INS_EMPL: '',
                                   UPD_DATE: '',
-                                  UPD_EMPL: ''
+                                  UPD_EMPL: '',
+                                  FACTORY: 'NM1'
                                 }
                                 setCurrentProcessList([...currentProcessList, tempProcess]);
                                 /* let kq = await f_addProdProcessData({
@@ -4016,7 +4009,8 @@ const BOM_MANAGER = () => {
                                   INS_DATE: '',
                                   INS_EMPL: '',
                                   UPD_DATE: '',
-                                  UPD_EMPL: ''
+                                  UPD_EMPL: '',
+                                  FACTORY: 'NM1'
                                 }
                                 setCurrentProcessList([tempProcess]); 
 
@@ -4041,38 +4035,52 @@ const BOM_MANAGER = () => {
                         </Button>
                         <Button
                           color="error"
-                          onClick={async () => {                            
-                            
-                            /* if (codefullinfo.G_CODE !== '-------') {
-                              //swal confirm
-                              Swal.fire({
-                                title: 'Bạn có chắc chắn muốn xóa process không?',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonText: 'Xóa',
-                                cancelButtonText: 'Hủy'
-                              }).then(async (result) => {
-                                if (result.isConfirmed) {
-                                  let kq = await f_deleteProdProcessData({
-                                    G_CODE: codefullinfo.G_CODE
-                                  });
-                                  if (kq) {
-                                    loadProcessList(codefullinfo.G_CODE);
-                                    Swal.fire("Thông báo", "Xóa process thành công", "success");
-                                  } else {
-                                    Swal.fire("Thông báo", "Xóa process thất bại", "error");
-                                  }
-                                }
-                              });
-                            } else {
-                              Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
-                            } */
+                          onClick={async () => { 
+                            setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));                            
                           }
                           }
 
                         >
                           Delete
                         </Button>
+                        <Button
+                          onClick={async () => {
+                            Swal.fire({
+                              title: "Cập nhật công đoạn",
+                              text: "Đang cập nhật, hãy chờ chút",
+                              icon: "info",
+                              showCancelButton: false,
+                              allowOutsideClick: false,
+                              confirmButtonText: "OK",
+                              showConfirmButton: false,
+                            });
+
+                            if(!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)){  
+                              Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
+                              return;
+                            }
+
+                            if(await f_checkProcessNumberContinuos(currentProcessList)){  
+                              //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
+                            } else {
+                              Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
+                              return;
+                            }
+                            if(currentProcessList.length > 0){
+                              await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
+                              loadProcessList(codefullinfo.G_CODE);
+                            } else {
+                              await f_deleteProdProcessData({
+                              G_CODE: codefullinfo.G_CODE
+                              }); 
+                              loadProcessList(codefullinfo.G_CODE);
+                            }
+                            await f_addProcessDataTotal(currentProcessList);
+                            loadProcessList(codefullinfo.G_CODE);
+                          }}
+                        >
+                          Save
+                        </Button>                        
 
                       </div>
                       {

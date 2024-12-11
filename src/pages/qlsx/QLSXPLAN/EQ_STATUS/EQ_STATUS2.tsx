@@ -83,6 +83,7 @@ const EQ_STATUS2 = () => {
   }
   const [searchString, setSearchString] = useState("");
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
+  const [eq_status_manager_data, setEQ_STATUS_MANAGER_DATA] = useState<EQ_STT[]>([]);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const handle_loadEQ_STATUS = async () => {
     let eq_data = await f_handle_loadEQ_STATUS();
@@ -174,7 +175,7 @@ const EQ_STATUS2 = () => {
             </IconButton>
           </>
         }
-        data={eq_status}
+        data={eq_status_manager_data}
         columns={column_eq_status}
         onSelectionChange={(e) => {
           
@@ -185,7 +186,7 @@ const EQ_STATUS2 = () => {
         }}
       />
     )
-  }, [eq_status])
+  }, [eq_status_manager_data])
   useEffect(() => {
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
@@ -204,7 +205,14 @@ const EQ_STATUS2 = () => {
         </input>
         { getUserData()?.EMPL_NO === "NHU1903" && <IconButton
           className="buttonIcon"
-          onClick={openDialogEQManager}
+          onClick={
+            () => {
+              checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
+                setEQ_STATUS_MANAGER_DATA(eq_status);
+                openDialogEQManager();
+              })
+            }
+          }
         >
           <AiOutlineSetting color="green" size={15} />
           EQ Manager

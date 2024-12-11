@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { MAT_DOC_DATA } from "../../../api/GlobalInterface";
-import { checkBP, f_checkDocVersion, f_getMaterialDocData, f_insertMaterialDocData, f_updateDtcApp, f_updateMaterialDocData, f_updatePurApp, f_updateRndApp } from "../../../api/GlobalFunction";
+import { checkBP, f_autoUpdateDocUSE_YN, f_checkDocVersion, f_getMaterialDocData, f_insertMaterialDocData, f_updateDtcApp, f_updateMaterialDocData, f_updatePurApp, f_updateRndApp } from "../../../api/GlobalFunction";
 import AGTable from "../../../components/DataTable/AGTable";
 import { getUserData, uploadQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
@@ -459,6 +459,7 @@ const VLDOC = ({ M_ID, M_NAME }: { M_ID: number, M_NAME: string }) => {
 
   useEffect(() => {
     handleSearch();
+    f_autoUpdateDocUSE_YN({});
   }, []);
 
   return (

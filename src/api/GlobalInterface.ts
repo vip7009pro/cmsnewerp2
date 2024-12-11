@@ -4308,6 +4308,7 @@ export interface SX_CAPA_DATA {
 export interface PROD_PROCESS_DATA {  
   G_CODE: string;
   PROCESS_NUMBER: number;
+  FACTORY: string;
   EQ_SERIES: string;
   SETTING_TIME: number;
   UPH: number;

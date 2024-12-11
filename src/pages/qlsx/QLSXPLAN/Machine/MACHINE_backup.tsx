@@ -3,7 +3,7 @@ import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState 
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getCompany, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { Button, IconButton } from "@mui/material";
 import {
@@ -43,14 +43,8 @@ import {
   f_addQLSXPLAN,
   f_handle_xuatlieu_sample,
   f_handle_xuatdao_sample,
+  f_neededSXQtyByYCSX,
   f_updateLossKT_ZTB_DM_HISTORY,
-  f_checkProcessNumberContinuos,
-  f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST,
-  f_deleteProcessNotInCurrentListFromDataBase,
-  f_deleteProdProcessData,
-  f_addProcessDataTotal,
-  f_loadProdProcessData,
-  f_addProcessDataTotalQLSX,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -65,7 +59,6 @@ import {
   DINHMUC_QSLX,
   EQ_STT,
   MACHINE_LIST,
-  PROD_PROCESS_DATA,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
@@ -162,23 +155,6 @@ const MACHINE = () => {
   const [selectedMachine, setSelectedMachine] = useState("FR1");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedPlanDate, setSelectedPlanDate] = useState(moment().format("YYYY-MM-DD"));
-  const [tempSelectedMachine, setTempSelectedMachine] = useState<string>("NA");
-  const [currentProcessList, setCurrentProcessList] = useState<PROD_PROCESS_DATA[]>([]);
-  const tempSelectedProcess = useRef<PROD_PROCESS_DATA>({
-    G_CODE: "xxx",
-    PROCESS_NUMBER: 0,
-    EQ_SERIES: "xxx",
-    SETTING_TIME: 0,
-    UPH: 0,
-    STEP: 0,
-    LOSS_SX: 0,
-    LOSS_SETTING: 0,
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
-    FACTORY: "NM1"
-  });
   const defaultPlan: QLSXPLANDATA = {
     id: 0,
     PLAN_ID: 'XXX',
@@ -267,10 +243,6 @@ const MACHINE = () => {
   const [showYCKT, setShowYCKT] = useState(false);
   const [trigger, setTrigger] = useState(true);
   const ycsxprintref = useRef(null);
-  const loadProcessList = async (G_CODE: string) => {
-    let loadeddata = await f_loadProdProcessData(G_CODE);
-    setCurrentProcessList(loadeddata);    
-  } 
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
@@ -294,6 +266,7 @@ const MACHINE = () => {
     SLC_CD3: 0,
     SLC_CD4: 0
   }
+  const [ycsxSLCData, setYCSXSLCDATA] = useState<YCSX_SLC_DATA>(defaultSLCData);
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const checkMaxLieu = () => {
@@ -307,7 +280,6 @@ const MACHINE = () => {
   };
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
-    setTempSelectedMachine((await f_getMachineListData())[0].EQ_NAME);
   };
   const column_ycsxtable = getCompany() === 'CMS' ? [
     {
@@ -349,7 +321,7 @@ const MACHINE = () => {
           return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
         return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
       },
-    },
+    },    
     {
       field: "PROD_REQUEST_QTY",
       cellDataType: "number",
@@ -512,7 +484,7 @@ const MACHINE = () => {
       },
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 100 },    
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
     { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
@@ -526,7 +498,7 @@ const MACHINE = () => {
           </span>
         );
       },
-    },
+    },    
     {
       field: "EQ1",
       headerName: "EQ1",
@@ -558,7 +530,7 @@ const MACHINE = () => {
       cellRenderer: (params: any) => {
         return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
       },
-    },
+    },    
     {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
@@ -610,7 +582,7 @@ const MACHINE = () => {
             </span>
           );
       },
-    },
+    },   
     {
       field: "PDBV",
       headerName: "PD BANVE",
@@ -628,7 +600,7 @@ const MACHINE = () => {
           </span>
         );
       },
-    },
+    },    
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -1143,7 +1115,7 @@ const MACHINE = () => {
           </span>
         );
       },
-    },
+    },    
     {
       field: "TON_CD1",
       headerName: "TCD1",
@@ -1264,13 +1236,13 @@ const MACHINE = () => {
           return <span>0</span>;
         }
       },
-    },
+    },   
     {
       field: "PLAN_FACTORY",
       headerName: "FACTORY",
       width: 70,
       editable: false,
-    },
+    },    
     {
       field: "IS_SETTING",
       headerName: "IS_SETTING",
@@ -1553,17 +1525,7 @@ const MACHINE = () => {
         );
       }
     },
-  ];
-  let column_eqlist = [
-    { field: "PROCESS_NUMBER", headerName: "CD", flex: 1, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },   
-    { field: "SETTING_TIME", headerName: "SETTING_TIME (min)", flex: 1, editable: true },
-    { field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true },
-    { field: "STEP", headerName: "STEP", flex: 1, editable: true },
-    { field: "LOSS_SX", headerName: "LOSS_SX (%)", flex: 1, editable: true },
-    { field: "LOSS_SETTING", headerName: "LOSS_SETTING (met)", flex: 1, editable: true },
-    { field: "FACTORY", headerName: "FACTORY", flex: 1, editable: true },
-  ];
+  ]
   const handle_loadEQ_STATUS = async () => {
     let eq_data = await f_handle_loadEQ_STATUS();
     setEQ_STATUS(eq_data.EQ_STATUS);
@@ -1595,8 +1557,8 @@ const MACHINE = () => {
             LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-            LOSS_KT: datadinhmuc.LOSS_KT
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,   
+            LOSS_KT: datadinhmuc.LOSS_KT         
           });
           err_code = (await f_saveQLSX({
             G_CODE: selectedPlan?.G_CODE,
@@ -1784,6 +1746,7 @@ const MACHINE = () => {
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+             
         if (selectedPlan.PLAN_ID !== 'XXX') {
           Swal.fire({
             title: "Đang lưu chỉ thị",
@@ -1793,22 +1756,22 @@ const MACHINE = () => {
             allowOutsideClick: false,
             confirmButtonText: "OK",
             showConfirmButton: false,
-          });
-          await f_saveChiThiMaterialTable(selectedPlan, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
-          //await hanlde_SaveChiThi();
-          Swal.fire({
-            title: "Đang đăng ký xuất liệu",
-            text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
-            icon: "info",
-            showCancelButton: false,
-            allowOutsideClick: false,
-            confirmButtonText: "OK",
-            showConfirmButton: false,
-          });
-          await handleDangKyXuatLieu();
-          clearSelectedMaterialRows();
-          setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-          setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
+          }); 
+            await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+            //await hanlde_SaveChiThi();
+            Swal.fire({
+              title: "Đang đăng ký xuất liệu",
+              text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
+              icon: "info",
+              showCancelButton: false,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              showConfirmButton: false,
+            });
+            await handleDangKyXuatLieu();
+            clearSelectedMaterialRows();
+            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+            setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
         } else {
           Swal.fire(
             "Thông báo",
@@ -1876,7 +1839,7 @@ const MACHINE = () => {
     else {
       loadQLSXPlan(selectedPlanDate);
     }
-  };
+  };  
   const handle_UpdatePlan = async () => {
     Swal.fire({
       title: "Lưu Plan",
@@ -1906,7 +1869,7 @@ const MACHINE = () => {
     }
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -2079,7 +2042,7 @@ const MACHINE = () => {
     }
   };
   const handleDangKyXuatLieu = async () => {
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -2297,7 +2260,7 @@ const MACHINE = () => {
   }, []);
   const selectMaterialRow = async () => {
     const api = gridMaterialRef.current?.api; // Access the grid API   
-    api?.forEachNode((node: { data: { M_STOCK: number; }; setSelected: (arg0: boolean) => void; }) => {
+    api?.forEachNode((node: { data: { M_STOCK: number; }; setSelected: (arg0: boolean) => void; }) => {      
       if (node.data.M_STOCK > 0) {
         node.setSelected(true);
       }
@@ -2306,6 +2269,8 @@ const MACHINE = () => {
       }
     });
   };
+
+
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -2397,12 +2362,12 @@ const MACHINE = () => {
         }} onSelectionChange={(params: any) => {
           //console.log(params!.api.getSelectedRows())
           //ycsxdatatablefilter.current = params!.api.getSelectedRows();
-        }}
+        }} 
         onRowDoubleClick={(params: any) => {
           console.log([params.data])
           handle_AddPlan2([params.data])
         }}
-      />
+        />
     )
   }, [ycsxdatatable, selectedMachine, selectedPlanDate])
   const planDataTableAG = useMemo(() => {
@@ -2478,11 +2443,11 @@ const MACHINE = () => {
                 LOSS_KT: rowData.LOSS_KT ?? 0,
                 NOTE: rowData.NOTE ?? "",
               });
-              setCurrentProcessList(await f_loadProdProcessData(rowData.G_CODE));
               getRecentDM(rowData.G_CODE);
               if (params.column.colId !== 'IS_SETTING') {
                 clearSelectedMaterialRows();
                 setChiThiDataTable(await f_handleGetChiThiTable(rowData));
+                
                 //await selectMaterialRow();
               }
               //setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
@@ -2539,7 +2504,7 @@ const MACHINE = () => {
           >
             <AiOutlineCheck color='green' size={20} />
             Select
-          </IconButton>
+          </IconButton> 
           <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -2687,26 +2652,6 @@ const MACHINE = () => {
       }}
     />
     , [chithidatatable]);
-    const eqListAGTable = useMemo(() => {
-      return (
-        <AGTable      
-        showFilter={false}
-        columns={column_eqlist}
-        data={currentProcessList}
-        suppressRowClickSelection={true}
-        onCellEditingStopped={(params: any) => {
-        }} onRowClick={(params: any) => {       
-          ////console.log(datafilter[0]);        
-          //console.log([params.data]);
-          tempSelectedProcess.current = params.data;
-         
-        }} onSelectionChange={(params: any) => {
-          //setCodeDataTableFilter(params!.api.getSelectedRows());
-          //console.log(e!.api.getSelectedRows())
-          //setCodeDataTableFilter(params!.api.getSelectedRows());
-        }} />
-      );
-    }, [currentProcessList]);
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
@@ -2754,7 +2699,7 @@ const MACHINE = () => {
       </div>
       {selection.tab1 && (
         <div className='NM1'>
-          {eq_series.map((ele_series: string, index: number) => {
+          {eq_series.map((ele_series: string, index: number) => {          
             return (
               <div key={index}>
                 <span className='machine_title'>{ele_series}-NM1</span>
@@ -3047,7 +2992,6 @@ const MACHINE = () => {
                   LOSS_KT: 0,
                   NOTE: "",
                 });
-                setCurrentProcessList([]);
               }}
             >
               Close
@@ -3260,18 +3204,19 @@ const MACHINE = () => {
                 </div>
               </div>
               <div className="soluongcandiv">
-                {(selectedPlan.EQ1 !== 'NO' && selectedPlan.EQ1 !== 'NA') && <div className="slcsub">
-                  SLC1: {selectedPlan.SLC_CD1?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
+                {(selectedPlan.EQ1 !=='NO' && selectedPlan.EQ1 !=='NA' )&&<div className="slcsub">
+                SLC1: {selectedPlan.SLC_CD1?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
-                {(selectedPlan.EQ2 !== 'NO' && selectedPlan.EQ2 !== 'NA') && <div className="slcsub">
-                  SLC2: {selectedPlan.SLC_CD2?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
+                {(selectedPlan.EQ2 !=='NO' && selectedPlan.EQ2 !=='NA' )&&<div className="slcsub">
+                SLC2: {selectedPlan.SLC_CD2?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
-                {(selectedPlan.EQ3 !== 'NO' && selectedPlan.EQ3 !== 'NA') && <div className="slcsub">
-                  SLC3: {selectedPlan.SLC_CD3?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
+                {(selectedPlan.EQ3 !=='NO' && selectedPlan.EQ3 !=='NA' )&&<div className="slcsub">
+                SLC3: {selectedPlan.SLC_CD3?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
-                {(selectedPlan.EQ4 !== 'NO' && selectedPlan.EQ4 !== 'NA') && <div className="slcsub">
-                  SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
+                {(selectedPlan.EQ4 !=='NO' && selectedPlan.EQ4 !=='NA' )&&<div className="slcsub">
+                SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US',{maximumFractionDigits:0, minimumFractionDigits:0})} EA
                 </div>}
+                
               </div>
               <div className='datadinhmucto'>
                 <div className='datadinhmuc'>
@@ -3719,154 +3664,6 @@ const MACHINE = () => {
                   </div>
                 </div>
               </div>
-              {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
-                <div className="selectmachine">
-                  Máy:
-                  <label>
-                    <select
-                      disabled={false}
-                      name="may1"
-                      value={tempSelectedMachine}
-                      onChange={(e) => {
-                        setTempSelectedMachine(e.target.value);
-                      }}
-                    >
-                      {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
-                        map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          },
-                        )}
-                    </select>
-                  </label>
-                  <Button
-                    onClick={async () => {
-                      if (selectedPlan.G_CODE !== '-------') {
-                        if (currentProcessList.length > 0) {
-                          let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
-                          }
-                          setCurrentProcessList([...currentProcessList, tempProcess]);
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        } else {
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
-                          }
-                          setCurrentProcessList([tempProcess]);
-
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        }
-                      } else {
-                        Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
-                      }
-                    }}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    color="error"
-                    onClick={async () => {
-                      setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));
-                    }
-                    }
-
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      Swal.fire({
-                        title: "Cập nhật công đoạn",
-                        text: "Đang cập nhật, hãy chờ chút",
-                        icon: "info",
-                        showCancelButton: false,
-                        allowOutsideClick: false,
-                        confirmButtonText: "OK",
-                        showConfirmButton: false,
-                      });
-
-                      if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
-                        Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
-                        return;
-                      }
-
-                      if (await f_checkProcessNumberContinuos(currentProcessList)) {
-                        //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
-                      } else {
-                        Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (currentProcessList.length > 0) {
-                        await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
-                        loadProcessList(selectedPlan.G_CODE);
-                      } else {
-                        await f_deleteProdProcessData({
-                          G_CODE: selectedPlan.G_CODE
-                        });
-                        loadProcessList(selectedPlan.G_CODE);
-                      }
-                      await f_addProcessDataTotalQLSX(currentProcessList);
-                      loadProcessList(selectedPlan.G_CODE);
-                    }}
-                  >
-                    Save
-                  </Button>
-
-                </div>
-                {
-                  eqListAGTable
-                }
-              </div>}
-
               <div className='listlieuchithi'>
                 <div className="title" style={{ backgroundImage: (selectedPlan?.LOSS_KT ?? 0) > 0 ? "linear-gradient(0deg, #afd3d1, #25d468)" : "linear-gradient(0deg, #afd3d1, #ec4f4f)" }}>
                   <span style={{ fontSize: '2rem', fontWeight: "bold", color: "#8c03c2FF" }}>

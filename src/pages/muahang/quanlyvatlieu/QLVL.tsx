@@ -146,6 +146,7 @@ const QLVL = () => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
             Swal.fire("Thông báo", "Thêm vật liệu thành công", "success");
+            load_material_table();
           } else {
           }
         })
@@ -165,10 +166,12 @@ const QLVL = () => {
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
-                Swal.fire("Thông báo", "Update vật liệu thành công", "success");
+                
               } else {
-                Swal.fire("Thông báo", "Update vật liệu thất bại", "error");
+                //Swal.fire("Thông báo", "Update vật liệu thất bại:" + response.data.message, "error");
               }
+              Swal.fire("Thông báo", "Update vật liệu thành công", "success");
+              load_material_table();
             })
             .catch((error) => {
               console.log(error);
