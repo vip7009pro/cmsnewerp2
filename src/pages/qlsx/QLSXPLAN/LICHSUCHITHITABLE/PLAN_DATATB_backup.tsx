@@ -23,10 +23,7 @@ import {
   f_handle_xuatlieu_sample,
   f_handleDangKyXuatLieu,
   f_handleGetChiThiTable,
-  f_handleGetChiThiTable_New,
   f_handleResetChiThiTable,
-  f_loadQLSXPLANDATA2,
-  f_loadProdProcessData,
   f_loadQLSXPLANDATA,
   f_saveChiThiMaterialTable,
   f_updateBatchPlan,
@@ -35,13 +32,11 @@ import {
   renderChiThi,
   renderChiThi2,
   SaveExcel,
-  f_handleResetChiThiTable_New,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
-  PROD_PROCESS_DATA,
   MACHINE_LIST,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
@@ -59,7 +54,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
-const PLAN_DATATB = () => {
+const PLAN_DATATB_OLD = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
@@ -1169,16 +1164,8 @@ const PLAN_DATATB = () => {
           });
           await handleDangKyXuatLieu();
           clearSelectedMaterialRows();
-          let thisProcessList: PROD_PROCESS_DATA[] = [];  
-          thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
-          let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
-          if (selectedProcessData) {
-            setChiThiDataTable(await f_handleGetChiThiTable_New(selectedPlan, selectedProcessData));
-          }
-          else {
-            Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
-          }
-          setPlanDataTable(await f_loadQLSXPLANDATA2(fromdate, machine, factory));
+          setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+          setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
         } else {
           Swal.fire(
             "Thông báo",
@@ -1405,15 +1392,7 @@ const PLAN_DATATB = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành RESET liệu", "Đang RESET liệu", "success");
-        let thisProcessList: PROD_PROCESS_DATA[] = [];
-        thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
-        let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
-        if (selectedProcessData) {    
-          setChiThiDataTable(await f_handleResetChiThiTable_New(selectedPlan, selectedProcessData));
-        }
-        else {
-          Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
-        }
+        setChiThiDataTable(await f_handleResetChiThiTable(selectedPlan));
       }
     });
   };
@@ -1671,15 +1650,7 @@ const PLAN_DATATB = () => {
             //console.log(params.data)
             clickedRow.current = params.data;
             setSelectedPlan(params.data);
-            let thisProcessList: PROD_PROCESS_DATA[] = [];
-            thisProcessList = await f_loadProdProcessData(params.data.G_CODE);
-            let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === params.data.G_CODE && element.PROCESS_NUMBER === params.data.PROCESS_NUMBER);
-            if (selectedProcessData) {
-              setChiThiDataTable(await f_handleGetChiThiTable_New(params.data, selectedProcessData));
-            }
-            else {
-              Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
-            }
+            setChiThiDataTable(await f_handleGetChiThiTable(params.data));
             clearSelectedMaterialRows();
           }}
           onRowDoubleClicked={
@@ -2143,4 +2114,4 @@ const PLAN_DATATB = () => {
     </div>
   );
 };
-export default PLAN_DATATB;
+export default PLAN_DATATB_OLD;

@@ -27,6 +27,7 @@ import {
   f_getNextP500_IN_NO,
   f_handleAmazonData,
   f_insertDMYCSX,
+  f_insertDMYCSX_New,
   f_insertP500,
   f_insertP501,
   f_insertYCSX,
@@ -1324,6 +1325,10 @@ const YCSXManager = () => {
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
             });
+            await f_insertDMYCSX_New({
+              PROD_REQUEST_NO: next_prod_request_no,
+              G_CODE: uploadExcelJson[i].G_CODE,
+            });            
             let kq: string = await f_insertYCSX({
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
@@ -1607,6 +1612,10 @@ const YCSXManager = () => {
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,
         });
+        await f_insertDMYCSX_New({
+          PROD_REQUEST_NO: next_prod_request_no,
+          G_CODE: selectedCode?.G_CODE,
+        });  
         let kq: string = await f_insertYCSX({
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,

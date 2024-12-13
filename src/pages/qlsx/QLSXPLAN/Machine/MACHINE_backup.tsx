@@ -68,7 +68,7 @@ import {
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
-const MACHINE = () => {
+const MACHINE_OLD = () => {
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
   const getRecentDM = async (G_CODE: string) => {
@@ -4003,4 +4003,4 @@ const MACHINE = () => {
     </div>
   );
 };
-export default MACHINE;
+export default MACHINE_OLD;

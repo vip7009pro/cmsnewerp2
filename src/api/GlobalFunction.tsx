@@ -192,6 +192,12 @@ export async function checkBP(
   permitted_empl: string[],
   func: any,
 ) {
+  console.log(userData?.MAINDEPTNAME);
+  console.log(permitted_main_dept);
+  console.log(userData?.JOB_NAME);
+  console.log(permitted_position);
+  console.log(permitted_empl);
+
   if (userData !== undefined) {
     if (
       userData.EMPL_NO !== undefined &&
@@ -218,9 +224,9 @@ export async function checkBP(
           }
         } else if (
           permitted_position.indexOf(
-            userData.POSITION_NAME === undefined
+            userData.JOB_NAME === undefined
               ? "NA"
-              : userData.POSITION_NAME,
+              : userData.JOB_NAME,
           ) > -1
         ) {
           if (permitted_empl.indexOf("ALL") > -1) {
@@ -243,7 +249,7 @@ export async function checkBP(
             Swal.fire("Thông báo", "Không đủ quyền hạn", "warning");
           }
         } else if (
-          permitted_position.indexOf(userData.POSITION_NAME ?? "NA") > -1
+          permitted_position.indexOf(userData.JOB_NAME ?? "NA") > -1
         ) {
           if (permitted_empl.indexOf("ALL") > -1) {
             await func();
@@ -1224,6 +1230,17 @@ export const f_updateDMYCSX = async (ycsxDMData: any) => {
       console.log(error);
     });
 }
+export const f_updateDMYCSX_New = async (ycsxDMData: any) => {
+  generalQuery("updateDBYCSX_New", ycsxDMData)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 export const f_insertDMYCSX = async (ycsxDMData: any) => {
   await generalQuery("insertDBYCSX", {
     PROD_REQUEST_NO: ycsxDMData.PROD_REQUEST_NO,
@@ -1244,6 +1261,21 @@ export const f_insertDMYCSX = async (ycsxDMData: any) => {
           LOSS_SETTING4: ycsxDMData.LOSS_SETTING4,
           LOSS_KT: ycsxDMData.LOSS_KT
         });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+export const f_insertDMYCSX_New = async (ycsxDMData: any) => {
+  await generalQuery("insertDBYCSX_New", {
+    PROD_REQUEST_NO: ycsxDMData.PROD_REQUEST_NO,
+    G_CODE: ycsxDMData.G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        f_updateDMYCSX_New(ycsxDMData);
       }
     })
     .catch((error) => {
@@ -1505,6 +1537,77 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
     });
   return planData;
 }
+export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, factory: string) => {
+  let planData: QLSXPLANDATA[] = [];
+  await generalQuery("getqlsxplan2", { PLAN_DATE: plan_date, MACHINE: machine, FACTORY: factory })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loadeddata = response.data.data.map(
+          (element: QLSXPLANDATA, index: number) => {
+            /* let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1*element.LOSS_SX2 + element.LOSS_SX1*element.LOSS_SX3 + element.LOSS_SX1*element.LOSS_SX4 + element.LOSS_SX1*(element.LOSS_KT??0))*1.0/10000;
+            let DU2: number = element.PROD_REQUEST_QTY * (element.LOSS_SX2*element.LOSS_SX3 + element.LOSS_SX2*element.LOSS_SX4 + element.LOSS_SX2*(element.LOSS_KT??0))*1.0/10000;
+            let DU3: number = element.PROD_REQUEST_QTY * (element.LOSS_SX3*element.LOSS_SX4 + element.LOSS_SX3*(element.LOSS_KT??0))*1.0/10000;
+            let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4*(element.LOSS_KT??0))*1.0/10000; */
+            let DU1: number = 0;
+            let DU2: number = 0;
+            let DU3: number = 0;
+            let DU4: number = 0;
+            let temp_TCD1: number = (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - element.CD1 - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100));
+            let temp_TCD2: number = (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - element.CD2 - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100));
+            let temp_TCD3: number = (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - element.CD3 - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100));
+            let temp_TCD4: number = (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - element.CD4 - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100));
+            /* if (temp_TCD1 < 0) {
+              temp_TCD2 = temp_TCD2 - temp_TCD1;
+            }
+            if (temp_TCD2 < 0) {
+              temp_TCD3 = temp_TCD3 - temp_TCD2;
+            }
+            if (temp_TCD3 < 0) {
+              temp_TCD4 = temp_TCD4 - temp_TCD3;
+            } */
+            return {
+              ...element,
+              ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
+              LOSS_KT: getCompany() === 'CMS' ? ((element?.LOSS_KT ?? 0) > 5 ? 5 : element.LOSS_KT ?? 0) : 0,
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+              PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+              EQ_STATUS: element.EQ_STATUS === "B" ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
+              ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
+              SLC_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100)),
+              SLC_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100)),
+              SLC_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100)),
+              SLC_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100)),
+              CD1: element.CD1 ?? 0,
+              CD2: element.CD2 ?? 0,
+              CD3: element.CD3 ?? 0,
+              CD4: element.CD4 ?? 0,
+              TON_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : temp_TCD1,
+              TON_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : temp_TCD2,
+              TON_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : temp_TCD3,
+              TON_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : temp_TCD4,
+              SETTING_START_TIME: element.SETTING_START_TIME === null ? "X" : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
+              MASS_START_TIME: element.MASS_START_TIME === null ? "X" : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
+              MASS_END_TIME: element.MASS_END_TIME === null ? "X" : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
+              CURRENT_SLC: element.PROCESS_NUMBER === 1 ? element.SLC_CD1 : element.PROCESS_NUMBER === 2 ? element.SLC_CD2 : element.PROCESS_NUMBER === 3 ? element.SLC_CD3 : element.SLC_CD4,
+              id: index,
+            };
+          }
+        );
+        //console.log(loadeddata);
+        planData = loadeddata;
+        f_updatePlanOrder(plan_date);
+      } else {
+        planData = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return planData;
+}
 export const f_getPlanMaterialTable = async (PLAN_ID: string) => {
   let planMaterialTable: QLSXCHITHIDATA[] = [];
   await generalQuery("getchithidatatable", {
@@ -1584,6 +1687,13 @@ export const f_calcMaterialMet = async (PLAN_QTY: number, PD: number, CAVITY: nu
   console.log('FINAL_LOSS_SETTING', FINAL_LOSS_SETTING) */
   return M_MET_NEEDED;
 }
+export const f_calcMaterialMet_New = async (PLAN_QTY: number, PD: number, CAVITY: number, LOSS_KT: number, IS_SETTING: string, LOSS_SX: number, UPH: number, LOSS_SETTING: number) => {
+  let M_MET_NEEDED: number = 0;
+  let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
+  M_MET_NEEDED = ((PLAN_QTY ?? 0) * (PD ?? 0) * 1.0) / ((CAVITY ?? 0) * 1.0) / 1000;
+  M_MET_NEEDED = ((M_MET_NEEDED + (M_MET_NEEDED * LOSS_SX) * 1.0 / 100 + (calc_loss_setting ? LOSS_SETTING : 0)))
+  return M_MET_NEEDED;
+}
 export const f_calcMaterialMet2 = async (PLAN_QTY: number, PD: number, CAVITY: number, PROCESS_NUMBER: number, LOSS_SX1: number, LOSS_SX2: number, LOSS_SX3: number, LOSS_SX4: number, LOSS_SETTING1: number, LOSS_SETTING2: number, LOSS_SETTING3: number, LOSS_SETTING4: number, LOSS_KT: number, IS_SETTING: string) => {
   let FINAL_LOSS_SX: number = 0, FINAL_LOSS_SETTING: number = 0, M_MET_NEEDED: number = 0;
   let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
@@ -1643,10 +1753,110 @@ export const f_handleGetChiThiTable = async (planData: QLSXPLANDATA) => {
   );
   return chiThiDataTable;
 };
+export const f_handleGetChiThiTable_New = async (planData: QLSXPLANDATA, processData: PROD_PROCESS_DATA) => {
+  let M_MET_NEEDED: number = 0;
+  let chiThiDataTable: QLSXCHITHIDATA[] = [];
+  chiThiDataTable = await f_getPlanMaterialTable(planData.PLAN_ID);
+  if (chiThiDataTable.length > 0) return chiThiDataTable;
+  M_MET_NEEDED = await f_calcMaterialMet_New(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'), processData.LOSS_SX, processData.UPH, processData.LOSS_SETTING);
+  let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
+  chiThiDataTable = tempBOMSX.map(
+    (element: BOMSX_DATA, index: number) => {
+      let temp_material_table: QLSXCHITHIDATA = {
+        CHITHI_ID: "NEW" + index,
+        PLAN_ID: planData.PLAN_ID,
+        M_CODE: element.M_CODE,
+        M_NAME: element.M_NAME,
+        WIDTH_CD: element.WIDTH_CD,
+        M_ROLL_QTY: 0,
+        M_MET_QTY: Math.ceil(M_MET_NEEDED),
+        M_QTY: element.M_QTY,
+        LIEUQL_SX: element.LIEUQL_SX,
+        MAIN_M: element.MAIN_M,
+        OUT_KHO_SX: 0,
+        OUT_CFM_QTY: 0,
+        INS_EMPL: "",
+        INS_DATE: "",
+        UPD_EMPL: "",
+        UPD_DATE: "",
+        M_STOCK: element.M_STOCK,
+        id: index.toString(),
+      };
+      return temp_material_table;
+    }
+  );
+  return chiThiDataTable;
+};
+export const f_handleGetChiThiTable2 = async (planData: QLSXPLANDATA, processListData: PROD_PROCESS_DATA[]) => {
+  let M_MET_NEEDED: number = 0;
+  let chiThiDataTable: QLSXCHITHIDATA[] = [];
+  chiThiDataTable = await f_getPlanMaterialTable(planData.PLAN_ID);
+  if (chiThiDataTable.length > 0) return chiThiDataTable;
+  M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
+  chiThiDataTable = tempBOMSX.map(
+    (element: BOMSX_DATA, index: number) => {
+      let temp_material_table: QLSXCHITHIDATA = {
+        CHITHI_ID: "NEW" + index,
+        PLAN_ID: planData.PLAN_ID,
+        M_CODE: element.M_CODE,
+        M_NAME: element.M_NAME,
+        WIDTH_CD: element.WIDTH_CD,
+        M_ROLL_QTY: 0,
+        M_MET_QTY: Math.ceil(M_MET_NEEDED),
+        M_QTY: element.M_QTY,
+        LIEUQL_SX: element.LIEUQL_SX,
+        MAIN_M: element.MAIN_M,
+        OUT_KHO_SX: 0,
+        OUT_CFM_QTY: 0,
+        INS_EMPL: "",
+        INS_DATE: "",
+        UPD_EMPL: "",
+        UPD_DATE: "",
+        M_STOCK: element.M_STOCK,
+        id: index.toString(),
+      };
+      return temp_material_table;
+    }
+  );
+  return chiThiDataTable;
+};
 export const f_handleResetChiThiTable = async (planData: QLSXPLANDATA) => {
   let M_MET_NEEDED: number = 0;
   let chiThiDataTable: QLSXCHITHIDATA[] = [];
   M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
+  chiThiDataTable = tempBOMSX.map(
+    (element: BOMSX_DATA, index: number) => {
+      let temp_material_table: QLSXCHITHIDATA = {
+        CHITHI_ID: "NEW" + index,
+        PLAN_ID: planData.PLAN_ID,
+        M_CODE: element.M_CODE,
+        M_NAME: element.M_NAME,
+        WIDTH_CD: element.WIDTH_CD,
+        M_ROLL_QTY: 0,
+        M_MET_QTY: Math.ceil(M_MET_NEEDED),
+        M_QTY: element.M_QTY,
+        LIEUQL_SX: element.LIEUQL_SX,
+        MAIN_M: element.MAIN_M,
+        OUT_KHO_SX: 0,
+        OUT_CFM_QTY: 0,
+        INS_EMPL: "",
+        INS_DATE: "",
+        UPD_EMPL: "",
+        UPD_DATE: "",
+        M_STOCK: element.M_STOCK,
+        id: index.toString(),
+      };
+      return temp_material_table;
+    }
+  );
+  return chiThiDataTable;
+};
+export const f_handleResetChiThiTable_New = async (planData: QLSXPLANDATA, processData: PROD_PROCESS_DATA) => {
+  let M_MET_NEEDED: number = 0;
+  let chiThiDataTable: QLSXCHITHIDATA[] = [];
+  M_MET_NEEDED = await f_calcMaterialMet_New(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'), processData.LOSS_SX, processData.UPH, processData.LOSS_SETTING);
   let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
   chiThiDataTable = tempBOMSX.map(
     (element: BOMSX_DATA, index: number) => {
@@ -3533,6 +3743,17 @@ export const f_deleteDMYCSX = async (PROD_REQUEST_NO: string) => {
       console.log(error);
     });
 }
+export const f_deleteDMYCSX2 = async (PROD_REQUEST_NO: string) => {
+  await generalQuery("deleteDMYCSX2", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
   let err_code: boolean = false;
   await generalQuery("delete_ycsx", {
@@ -3542,6 +3763,7 @@ export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
         f_deleteDMYCSX(PROD_REQUEST_NO);
+        f_deleteDMYCSX2(PROD_REQUEST_NO);
       } else {
         err_code = true;
       }

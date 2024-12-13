@@ -328,8 +328,8 @@ const DAOFILMDATA = () => {
             (element: XUATDAOFILM_DATA, index: number) => {
               return {
                 ...element,
-                PLAN_DATE: moment.utc(element.PLAN_DATE).format('YYYY-MM-DD'),
-                INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
+                PLAN_DATE: element.PLAN_DATE !== null ? moment.utc(element.PLAN_DATE).format('YYYY-MM-DD') : '',
+                INS_DATE: element.INS_DATE !== null ? moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss') : '',
                 SX_DATE: element.SX_DATE !== null ? moment.utc(element.SX_DATE).format('YYYY-MM-DD') : '',
                 UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss') : '',
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',

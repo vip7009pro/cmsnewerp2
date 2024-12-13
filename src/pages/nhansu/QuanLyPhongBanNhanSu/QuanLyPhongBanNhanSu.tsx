@@ -61,7 +61,7 @@ const QuanLyPhongBanNhanSu = () => {
   const [WORK_POSITION_CODE, setWORK_POSITION_CODE] = useState(1);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(0);
   const [POSITION_CODE, setPOSITION_CODE] = useState(0);
-  const [JOB_CODE, setJOB_CODE] = useState(0);
+  const [JOB_CODE, setJOB_CODE] = useState(1);
   const [FACTORY_CODE, setFACTORY_CODE] = useState(1);
   const [WORK_STATUS_CODE, setWORK_STATUS_CODE] = useState(0);
   const [EMPL_IMAGE, setEMPL_IMAGE] = useState('N');

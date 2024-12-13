@@ -117,14 +117,18 @@ const FAILING = () => {
         )
       }
     } },
-    { field: 'QC_PASS', headerName: 'QC_PASS', resizable: true, width: 50, cellRenderer: (params: any) => {
+    { field: 'QC_PASS', headerName: 'QC_PASS/FAIL', resizable: true, width: 50, cellRenderer: (params: any) => {
       if(params.data.QC_PASS === 'Y') { 
         return (
-          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>{params.data.QC_PASS}</div>
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>PASSED</div>
+        )
+      } else if(params.data.QC_PASS === 'N') {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'red', borderRadius: '5px'}}>FAILED</div>
         )
       } else {
         return (
-          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'red', borderRadius: '5px'}}>{params.data.QC_PASS}</div>
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', width: '100%', backgroundColor: 'yellow', borderRadius: '5px'}}>PENDING</div>
         )
       }
     } },
@@ -585,7 +589,7 @@ const FAILING = () => {
       UPD_EMPL: "",
       UPD_DATE: "",
       PHANLOAI: testtype,
-      QC_PASS: "N",
+      QC_PASS: "P",
       QC_PASS_DATE: "",
       QC_PASS_EMPL: "",
       REMARK: remark,

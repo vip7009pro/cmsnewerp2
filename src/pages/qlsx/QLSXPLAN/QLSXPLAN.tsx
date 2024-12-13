@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { getCompany } from "../../../api/Api";
+import MACHINE_OLD from "./Machine/MACHINE_backup";
+import PLAN_DATATB_OLD from "./LICHSUCHITHITABLE/PLAN_DATATB_backup";
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
 const ACHIVEMENTTB = React.lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
 const LICHSUINPUTLIEU = React.lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
@@ -47,7 +49,7 @@ const QLSXPLAN = () => {
             <Tab>PLAN_RESULT</Tab>
           </TabList>
           <TabPanel>
-            <MACHINE />
+            { getCompany() === "CMS" ? <MACHINE /> : <MACHINE_OLD />}
           </TabPanel>
           { getCompany() === "CMS" && <TabPanel>
             <QUICKPLAN2 />
@@ -56,7 +58,7 @@ const QLSXPLAN = () => {
             <KHCT /> 
           </TabPanel> }  
           <TabPanel>
-            <PLAN_DATATB />
+            { getCompany() === "CMS" ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
           </TabPanel>      
           <TabPanel>
             <LICHSUINPUTLIEU />

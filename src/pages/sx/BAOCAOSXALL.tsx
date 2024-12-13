@@ -56,9 +56,9 @@ const BAOCAOSXALL = () => {
             <Tab>
               <span className="mininavtext">PLAN-RESULT</span>
             </Tab>
-            { getCompany() === "CMS" && <Tab>
+            <Tab>
               <span className="mininavtext">DATA DAO-FILM</span>
-            </Tab>}
+            </Tab>
             { getCompany() === "CMS" && <Tab>
               <span className="mininavtext">FAILING</span>
             </Tab>}
@@ -87,9 +87,9 @@ const BAOCAOSXALL = () => {
           <TabPanel>
             <ACHIVEMENTTB />
           </TabPanel>
-          { getCompany() === "CMS" && <TabPanel>
+          <TabPanel>
             <DAOFILMDATA />
-          </TabPanel>}
+          </TabPanel>
           { getCompany() === "CMS" && <TabPanel>
             <FAILING />
           </TabPanel>}

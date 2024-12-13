@@ -51,6 +51,11 @@ import {
   f_addProcessDataTotal,
   f_loadProdProcessData,
   f_addProcessDataTotalQLSX,
+  f_handleGetChiThiTable_New,
+  f_calcMaterialMet_New,
+  f_handleResetChiThiTable_New,
+  f_insertDMYCSX_New,
+  f_loadQLSXPLANDATA2,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -274,26 +279,6 @@ const MACHINE = () => {
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-  const defaultSLCData: YCSX_SLC_DATA = {
-    PROD_REQUEST_NO: "XXX",
-    G_CODE: "XXX",
-    PD: 0,
-    CAVITY: 0,
-    LOSS_SX1: 0,
-    LOSS_SX2: 0,
-    LOSS_SX3: 0,
-    LOSS_SX4: 0,
-    LOSS_SETTING1: 0,
-    LOSS_SETTING2: 0,
-    LOSS_SETTING3: 0,
-    LOSS_SETTING4: 0,
-    LOSS_KT: 0,
-    PROD_REQUEST_QTY: 0,
-    SLC_CD1: 0,
-    SLC_CD2: 0,
-    SLC_CD3: 0,
-    SLC_CD4: 0
-  }
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const checkMaxLieu = () => {
@@ -1645,7 +1630,7 @@ const MACHINE = () => {
     ));
   };
   const loadQLSXPlan = async (plan_date: string) => {
-    setPlanDataTable(await f_loadQLSXPLANDATA(plan_date, 'ALL', 'ALL'));
+    setPlanDataTable(await f_loadQLSXPLANDATA2(plan_date, 'ALL', 'ALL'));
   };
   const handletraYCSX = async () => {
     Swal.fire({
@@ -1766,10 +1751,16 @@ const MACHINE = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn RESET liệu!",
-    }).then(async (result) => {
+      }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành RESET liệu", "Đang RESET liệu", "success");
-        setChiThiDataTable(await f_handleResetChiThiTable(selectedPlan));
+        let thisProcessList: PROD_PROCESS_DATA | undefined = currentProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);  
+        if (thisProcessList) {
+          setChiThiDataTable(await f_handleResetChiThiTable_New(selectedPlan, thisProcessList));
+        }
+        else {
+          Swal.fire("Thông báo", "Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
+        }
       }
     });
   };
@@ -1807,8 +1798,16 @@ const MACHINE = () => {
           });
           await handleDangKyXuatLieu();
           clearSelectedMaterialRows();
-          setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-          setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
+          let thisProcessList: PROD_PROCESS_DATA[] = [];
+          thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
+          let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
+          if (selectedProcessData) {
+            setChiThiDataTable(await f_handleGetChiThiTable_New(selectedPlan, selectedProcessData));
+          }
+          else {
+            Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
+          }
+          setPlanDataTable(await f_loadQLSXPLANDATA2(selectedPlanDate, 'ALL', 'ALL'));
         } else {
           Swal.fire(
             "Thông báo",
@@ -1904,23 +1903,6 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
       loadQLSXPlan(selectedPlanDate);
     }
-  };
-  const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
-    if (err_code === "1") {
-      Swal.fire(
-        "Thông báo",
-        "Phải chỉ định liệu quản lý, k để sót size nào, và chỉ chọn 1 loại liệu làm liệu chính, và nhập liệu quản lý chỉ 1 hoặc 0",
-        "error"
-      );
-    }
-    else if (err_code !== "0") {
-      Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
-    } else {
-      Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
-    }
-    setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-    setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
   };
   function PlanTableAGToolbar() {
     return (
@@ -2478,11 +2460,21 @@ const MACHINE = () => {
                 LOSS_KT: rowData.LOSS_KT ?? 0,
                 NOTE: rowData.NOTE ?? "",
               });
-              setCurrentProcessList(await f_loadProdProcessData(rowData.G_CODE));
+              let thisProcessList: PROD_PROCESS_DATA[] = [];
+              thisProcessList = await f_loadProdProcessData(rowData.G_CODE);
+              setCurrentProcessList(thisProcessList);
               getRecentDM(rowData.G_CODE);
               if (params.column.colId !== 'IS_SETTING') {
                 clearSelectedMaterialRows();
-                setChiThiDataTable(await f_handleGetChiThiTable(rowData));
+                let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === rowData.G_CODE && element.PROCESS_NUMBER === rowData.PROCESS_NUMBER);
+                if (selectedProcessData) {
+                  setChiThiDataTable(await f_handleGetChiThiTable_New(rowData, selectedProcessData));
+                }
+                else {
+                  Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
+                }
+                //await selectMaterialRow();  
+                //setChiThiDataTable(await f_handleGetChiThiTable_New(rowData, selectedProcessData));
                 //await selectMaterialRow();
               }
               //setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
@@ -3833,12 +3825,15 @@ const MACHINE = () => {
                         confirmButtonText: "OK",
                         showConfirmButton: false,
                       });
+                      if(selectedPlan.PLAN_ID === 'XXX'){
+                        Swal.fire('Thông báo', 'Vui lòng chọn plan', 'error');
+                        return;
+                      }
 
                       if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
                         Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
                         return;
                       }
-
                       if (await f_checkProcessNumberContinuos(currentProcessList)) {
                         //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
                       } else {
@@ -3855,6 +3850,10 @@ const MACHINE = () => {
                         loadProcessList(selectedPlan.G_CODE);
                       }
                       await f_addProcessDataTotalQLSX(currentProcessList);
+                      await f_insertDMYCSX_New({
+                        PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+                        G_CODE: selectedPlan.G_CODE,
+                      });
                       loadProcessList(selectedPlan.G_CODE);
                     }}
                   >
