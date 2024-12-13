@@ -49,7 +49,7 @@ const QLSXPLAN = () => {
             <Tab>PLAN_RESULT</Tab>
           </TabList>
           <TabPanel>
-            { getCompany() === "CMS" ? <MACHINE /> : <MACHINE_OLD />}
+            { getCompany() === "zzz" ? <MACHINE /> : <MACHINE_OLD />}
           </TabPanel>
           { getCompany() === "CMS" && <TabPanel>
             <QUICKPLAN2 />
@@ -58,7 +58,7 @@ const QLSXPLAN = () => {
             <KHCT /> 
           </TabPanel> }  
           <TabPanel>
-            { getCompany() === "CMS" ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
+            { getCompany() === "zzz" ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
           </TabPanel>      
           <TabPanel>
             <LICHSUINPUTLIEU />
