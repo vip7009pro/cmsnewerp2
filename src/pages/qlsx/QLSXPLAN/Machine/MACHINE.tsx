@@ -274,6 +274,7 @@ const MACHINE = () => {
   const ycsxprintref = useRef(null);
   const loadProcessList = async (G_CODE: string) => {
     let loadeddata = await f_loadProdProcessData(G_CODE);
+
     setCurrentProcessList(loadeddata);    
   } 
   const handlePrint = useReactToPrint({
@@ -1542,11 +1543,25 @@ const MACHINE = () => {
   let column_eqlist = [
     { field: "PROCESS_NUMBER", headerName: "CD", flex: 1, editable: true },
     { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },   
-    { field: "SETTING_TIME", headerName: "SETTING_TIME (min)", flex: 1, editable: true },
-    { field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true },
+    { field: "SETTING_TIME", headerName: "SETTING_TIME (min)", flex: 1.1, editable: true },
+    { field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true, cellRenderer: (params: any) => {
+      return (
+        <span>{params.data?.UPH?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+      )
+    } },
     { field: "STEP", headerName: "STEP", flex: 1, editable: true },
     { field: "LOSS_SX", headerName: "LOSS_SX (%)", flex: 1, editable: true },
-    { field: "LOSS_SETTING", headerName: "LOSS_SETTING (met)", flex: 1, editable: true },
+    { field: "RECENT_LOSS_SX", headerName: "RECENT_LOSS_SX (%)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
+      return (
+        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+      )
+    } },
+    { field: "LOSS_SETTING", headerName: "LOSS_ST (met)", flex: 1, editable: true },
+    { field: "RECENT_LOSS_SETTING", headerName: "RECENT_LOSS_ST(met)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
+      return (
+        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SETTING?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+      )
+    } },
     { field: "FACTORY", headerName: "FACTORY", flex: 1, editable: true },
   ];
   const handle_loadEQ_STATUS = async () => {
@@ -1554,82 +1569,22 @@ const MACHINE = () => {
     setEQ_STATUS(eq_data.EQ_STATUS);
     setEQ_SERIES(eq_data.EQ_SERIES);
   };
-  const handleSaveQLSX = async () => {
-    if (selectedPlan.PLAN_ID !== 'XXX') {
-      checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
-        let err_code: string = "0";
-        if (
-          datadinhmuc.FACTORY === "NA" ||
-          datadinhmuc.EQ1 === "NA" ||
-          datadinhmuc.EQ1 === "NO" ||
-          datadinhmuc.EQ2 === "" ||
-          datadinhmuc.Setting1 === 0 ||
-          datadinhmuc.UPH1 === 0 ||
-          datadinhmuc.Step1 === 0 ||
-          datadinhmuc.LOSS_SX1 === 0
-        ) {
-          Swal.fire("Thông báo", "Lưu thất bại, hãy nhập đủ thông tin", "error");
-        } else {
-          await f_insertDMYCSX({
-            PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
-            G_CODE: selectedPlan?.G_CODE,
-            LOSS_SX1: datadinhmuc.LOSS_SX1,
-            LOSS_SX2: datadinhmuc.LOSS_SX2,
-            LOSS_SX3: datadinhmuc.LOSS_SX3,
-            LOSS_SX4: datadinhmuc.LOSS_SX4,
-            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
-            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-            LOSS_KT: datadinhmuc.LOSS_KT
-          });
-          err_code = (await f_saveQLSX({
-            G_CODE: selectedPlan?.G_CODE,
-            FACTORY: datadinhmuc.FACTORY,
-            EQ1: datadinhmuc.EQ1,
-            EQ2: datadinhmuc.EQ2,
-            EQ3: datadinhmuc.EQ3,
-            EQ4: datadinhmuc.EQ4,
-            Setting1: datadinhmuc.Setting1,
-            Setting2: datadinhmuc.Setting2,
-            Setting3: datadinhmuc.Setting3,
-            Setting4: datadinhmuc.Setting4,
-            UPH1: datadinhmuc.UPH1,
-            UPH2: datadinhmuc.UPH2,
-            UPH3: datadinhmuc.UPH3,
-            UPH4: datadinhmuc.UPH4,
-            Step1: datadinhmuc.Step1,
-            Step2: datadinhmuc.Step2,
-            Step3: datadinhmuc.Step3,
-            Step4: datadinhmuc.Step4,
-            LOSS_SX1: datadinhmuc.LOSS_SX1,
-            LOSS_SX2: datadinhmuc.LOSS_SX2,
-            LOSS_SX3: datadinhmuc.LOSS_SX3,
-            LOSS_SX4: datadinhmuc.LOSS_SX4,
-            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
-            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
-            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-            NOTE: datadinhmuc.NOTE,
-          })) ? "0" : "1";
-          if (err_code === "1") {
-            Swal.fire("Thông báo", "Lưu thất bại, không được để trống ô cần thiết", "error");
-          } else {
-            loadQLSXPlan(selectedPlanDate);
-            Swal.fire("Thông báo", "Lưu thành công", "success");
-          }
-        }
-      })
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
-    }
-  };
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
       <YCKT key={index} DATA={element} />
     ));
   };
   const loadQLSXPlan = async (plan_date: string) => {
+    Swal.fire({
+      title: "Load Plan",
+      text: "Đang load Plan, hãy chờ một chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+
     setPlanDataTable(await f_loadQLSXPLANDATA2(plan_date, 'ALL', 'ALL'));
   };
   const handletraYCSX = async () => {
@@ -2007,23 +1962,7 @@ const MACHINE = () => {
         >
           <BiRefresh color='yellow' size={20} />
           Refresh PLAN
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["QLSX"],
-              handleSaveQLSX
-            ); */
-            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleSaveQLSX);
-            //handleSaveQLSX();
-          }}
-        >
-          <AiFillSave color='lightgreen' size={20} />
-          Lưu Data Định Mức
-        </IconButton>
+        </IconButton>        
         <span style={{ fontSize: '0.7rem' }}>Total time: {plandatatable.filter(
           (element: QLSXPLANDATA, index: number) => {
             return (
@@ -2462,8 +2401,19 @@ const MACHINE = () => {
               });
               let thisProcessList: PROD_PROCESS_DATA[] = [];
               thisProcessList = await f_loadProdProcessData(rowData.G_CODE);
-              setCurrentProcessList(thisProcessList);
-              getRecentDM(rowData.G_CODE);
+              let recentDMData: RecentDM[] = [];
+              recentDMData = await f_getRecentDMData(rowData.G_CODE);
+
+              let updatedThisProcessList: PROD_PROCESS_DATA[] = [];
+              updatedThisProcessList = thisProcessList.map((element: PROD_PROCESS_DATA, index: number) => {
+                return {
+                  ...element,
+                  RECENT_LOSS_SX: recentDMData.filter((e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER)[0]?.LOSS_SX ?? 0,
+                  RECENT_LOSS_SETTING: recentDMData.filter((e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER)[0]?.TT_SETTING_MET ?? 0,
+                };
+              });
+              setRecentDMData(recentDMData);
+              setCurrentProcessList(updatedThisProcessList);
               if (params.column.colId !== 'IS_SETTING') {
                 clearSelectedMaterialRows();
                 let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === rowData.G_CODE && element.PROCESS_NUMBER === rowData.PROCESS_NUMBER);
@@ -3265,453 +3215,7 @@ const MACHINE = () => {
                   SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
                 </div>}
               </div>
-              <div className='datadinhmucto'>
-                <div className='datadinhmuc'>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>EQ1:</b>
-                      <select
-                        name='phanloai'
-                        value={datadinhmuc.EQ1}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            EQ1: e.target.value,
-                          })
-                        }
-                        style={{ width: 150, height: 22 }}
-                      >
-                        {machine_list.map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          }
-                        )}
-                      </select>
-                    </label>
-                    <label>
-                      <b>EQ2:</b>
-                      <select
-                        name='phanloai'
-                        value={datadinhmuc.EQ2}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            EQ2: e.target.value,
-                          })
-                        }
-                        style={{ width: 150, height: 22 }}
-                      >
-                        {machine_list.map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          }
-                        )}
-                      </select>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>Setting1(min):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Thời gian setting 1'
-                        value={datadinhmuc.Setting1}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Setting1: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Setting2(min):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Thời gian setting 2'
-                        value={datadinhmuc.Setting2}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Setting2: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>UPH1(EA/h):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Tốc độ sx 1'
-                        value={datadinhmuc.UPH1}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            UPH1: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>UPH2(EA/h):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Tốc độ sx 2'
-                        value={datadinhmuc.UPH2}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            UPH2: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>Step1:</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Số bước 1'
-                        value={datadinhmuc.Step1}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Step1: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Step2:</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Số bước 2'
-                        value={datadinhmuc.Step2}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Step2: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='% loss sx 1'
-                        value={datadinhmuc.LOSS_SX1}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SX1: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='% loss sx 2'
-                        value={datadinhmuc.LOSS_SX2}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SX2: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>LOSS ST1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='met setting 1'
-                        value={datadinhmuc.LOSS_SETTING1}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SETTING1: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>LOSS ST2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='met setting 2'
-                        value={datadinhmuc.LOSS_SETTING2}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SETTING2: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>FACTORY:</b>
-                      <select
-                        name='phanloai'
-                        value={
-                          datadinhmuc.FACTORY === null
-                            ? "NA"
-                            : datadinhmuc.FACTORY
-                        }
-                        onChange={(e) => {
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            FACTORY: e.target.value,
-                          });
-                        }}
-                        style={{ width: 162, height: 22 }}
-                      >
-                        <option value='NA'>NA</option>
-                        <option value='NM1'>NM1</option>
-                        <option value='NM2'>NM2</option>
-                      </select>
-                    </label>
-                  </div>
-                </div>
-                <div className='datadinhmuc'>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>EQ3:</b>
-                      <select
-                        name='phanloai'
-                        value={datadinhmuc.EQ3}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            EQ3: e.target.value,
-                          })
-                        }
-                        style={{ width: 150, height: 22 }}
-                      >
-                        {machine_list.map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          }
-                        )}
-                      </select>
-                    </label>
-                    <label>
-                      <b>EQ4:</b>
-                      <select
-                        name='phanloai'
-                        value={datadinhmuc.EQ4}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            EQ4: e.target.value,
-                          })
-                        }
-                        style={{ width: 150, height: 22 }}
-                      >
-                        {machine_list.map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          }
-                        )}
-                      </select>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>Setting3(min):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Thời gian setting 3'
-                        value={datadinhmuc.Setting3}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Setting3: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Setting4(min):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Thời gian setting 4'
-                        value={datadinhmuc.Setting4}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Setting4: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>UPH3(EA/h):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Tốc độ sx 1'
-                        value={datadinhmuc.UPH3}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            UPH3: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>UPH4(EA/h):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Tốc độ sx 2'
-                        value={datadinhmuc.UPH4}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            UPH4: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>Step3:</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Số bước 3'
-                        value={datadinhmuc.Step3}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Step3: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Step4:</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Số bước 4'
-                        value={datadinhmuc.Step4}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            Step4: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='% loss sx 3'
-                        value={datadinhmuc.LOSS_SX3}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SX3: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}%)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='% loss sx 4'
-                        value={datadinhmuc.LOSS_SX4}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SX4: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>LOSS ST3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='met setting 3'
-                        value={datadinhmuc.LOSS_SETTING3}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SETTING3: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                    <label>
-                      <b>LOSS ST4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? "---"}m)</span></b>{" "}
-                      <input
-                        type='text'
-                        placeholder='met setting 4'
-                        value={datadinhmuc.LOSS_SETTING4}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            LOSS_SETTING4: Number(e.target.value),
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                  <div className='forminputcolumn'>
-                    <label>
-                      <b>NOTE (QLSX):</b>{" "}
-                      <input
-                        type='text'
-                        placeholder='Chú ý'
-                        value={datadinhmuc.NOTE}
-                        onChange={(e) =>
-                          setDataDinhMuc({
-                            ...datadinhmuc,
-                            NOTE: e.target.value,
-                          })
-                        }
-                      ></input>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
+                          {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
                 <div className="selectmachine">
                   Máy:
                   <label>

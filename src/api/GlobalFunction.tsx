@@ -1539,33 +1539,13 @@ export const f_loadQLSXPLANDATA = async (plan_date: string, machine: string, fac
 }
 export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, factory: string) => {
   let planData: QLSXPLANDATA[] = [];
-  await generalQuery("getqlsxplan2", { PLAN_DATE: plan_date, MACHINE: machine, FACTORY: factory })
+  await generalQuery("getqlsxplan2_New", { PLAN_DATE: plan_date, MACHINE: machine, FACTORY: factory })
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
         let loadeddata = response.data.data.map(
           (element: QLSXPLANDATA, index: number) => {
-            /* let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1*element.LOSS_SX2 + element.LOSS_SX1*element.LOSS_SX3 + element.LOSS_SX1*element.LOSS_SX4 + element.LOSS_SX1*(element.LOSS_KT??0))*1.0/10000;
-            let DU2: number = element.PROD_REQUEST_QTY * (element.LOSS_SX2*element.LOSS_SX3 + element.LOSS_SX2*element.LOSS_SX4 + element.LOSS_SX2*(element.LOSS_KT??0))*1.0/10000;
-            let DU3: number = element.PROD_REQUEST_QTY * (element.LOSS_SX3*element.LOSS_SX4 + element.LOSS_SX3*(element.LOSS_KT??0))*1.0/10000;
-            let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4*(element.LOSS_KT??0))*1.0/10000; */
-            let DU1: number = 0;
-            let DU2: number = 0;
-            let DU3: number = 0;
-            let DU4: number = 0;
-            let temp_TCD1: number = (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - element.CD1 - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100));
-            let temp_TCD2: number = (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - element.CD2 - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100));
-            let temp_TCD3: number = (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - element.CD3 - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100));
-            let temp_TCD4: number = (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - element.CD4 - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100));
-            /* if (temp_TCD1 < 0) {
-              temp_TCD2 = temp_TCD2 - temp_TCD1;
-            }
-            if (temp_TCD2 < 0) {
-              temp_TCD3 = temp_TCD3 - temp_TCD2;
-            }
-            if (temp_TCD3 < 0) {
-              temp_TCD4 = temp_TCD4 - temp_TCD3;
-            } */
+            
             return {
               ...element,
               ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
@@ -1574,19 +1554,7 @@ export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, fa
               G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
               PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               EQ_STATUS: element.EQ_STATUS === "B" ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
-              ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
-              SLC_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100)),
-              SLC_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100)),
-              SLC_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100)),
-              SLC_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100)),
-              CD1: element.CD1 ?? 0,
-              CD2: element.CD2 ?? 0,
-              CD3: element.CD3 ?? 0,
-              CD4: element.CD4 ?? 0,
-              TON_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : temp_TCD1,
-              TON_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : temp_TCD2,
-              TON_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : temp_TCD3,
-              TON_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : temp_TCD4,
+              ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,              
               SETTING_START_TIME: element.SETTING_START_TIME === null ? "X" : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
               MASS_START_TIME: element.MASS_START_TIME === null ? "X" : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
               MASS_END_TIME: element.MASS_END_TIME === null ? "X" : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
@@ -1598,6 +1566,13 @@ export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, fa
         //console.log(loadeddata);
         planData = loadeddata;
         f_updatePlanOrder(plan_date);
+        Swal.fire({
+          title: "Thông báo",
+          text: "Load plan thành công",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonText: "OK",
+        }); 
       } else {
         planData = [];
         Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
