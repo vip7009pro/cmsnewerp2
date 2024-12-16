@@ -228,16 +228,16 @@ const QUICKPLAN2 = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const loadProcessList = async (G_CODE: string) => {
     let loadeddata = await f_loadProdProcessData(G_CODE);
-    setCurrentProcessList(loadeddata);    
-  } 
+    setCurrentProcessList(loadeddata);
+  }
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());     
+    setMachine_List(await f_getMachineListData());
   };
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-  const column_ycsxtable:any = [
+  const column_ycsxtable: any = [
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -726,7 +726,7 @@ const QUICKPLAN2 = () => {
           </span>
         );
       },
-    },    
+    },
     {
       field: "CD1",
       headerName: "CD1",
@@ -967,8 +967,6 @@ const QUICKPLAN2 = () => {
     { field: "EQ2", headerName: "EQ2", width: 50, editable: editplan },
     { field: "EQ3", headerName: "EQ3", width: 50, editable: editplan },
     { field: "EQ4", headerName: "EQ4", width: 50, editable: editplan },
-    
-    
     {
       field: "PLAN_FACTORY",
       headerName: "NM",
@@ -986,7 +984,7 @@ const QUICKPLAN2 = () => {
       headerName: "NEXT_PLAN_ID",
       width: 120,
       editable: true,
-    },    
+    },
   ];
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
@@ -1544,7 +1542,7 @@ const QUICKPLAN2 = () => {
       localStorage.setItem("temp_plan_table", JSON.stringify(plandatatable));
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
-        console.log('CURRENT_SLC',qlsxplandatafilter.current[i].CURRENT_SLC)
+        console.log('CURRENT_SLC', qlsxplandatafilter.current[i].CURRENT_SLC)
         if (
           (qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4) &&
           qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
@@ -1557,7 +1555,7 @@ const QUICKPLAN2 = () => {
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC") &&
-          qlsxplandatafilter.current[i].STEP>= 0 && qlsxplandatafilter.current[i].STEP<= 9
+          qlsxplandatafilter.current[i].STEP >= 0 && qlsxplandatafilter.current[i].STEP <= 9
         ) {
           let check_ycsx_hethongcu: boolean = false;
           await generalQuery("checkProd_request_no_Exist_O302", {
@@ -1613,42 +1611,36 @@ const QUICKPLAN2 = () => {
               .catch((error) => {
                 console.log(error);
               });
-              await f_updateDMSX_LOSS_KT();
+            await f_updateDMSX_LOSS_KT();
           } else {
             err_code +=
               "__Yc này đã chạy hệ thống cũ, chạy nốt bằng hệ thống cũ nhé";
           }
         } else {
-          if(!(qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Process Number không hợp lệ";
+          if (!(qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4)) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Process Number không hợp lệ";
           }
-          else if(qlsxplandatafilter.current[i].PLAN_QTY <= 0)
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị không hợp lệ";
+          else if (qlsxplandatafilter.current[i].PLAN_QTY <= 0) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị không hợp lệ";
           }
-          else if(qlsxplandatafilter.current[i].PLAN_QTY > (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị lớn hơn số lượng cần sx";
+          else if (qlsxplandatafilter.current[i].PLAN_QTY > (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0)) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị lớn hơn số lượng cần sx";
           }
-          else if(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "" )
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
+          else if (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "") {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
           }
-          else if(!(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC"))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
+          else if (!(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC")) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
           }
-          else if(!(qlsxplandatafilter.current[i].STEP>= 0 && qlsxplandatafilter.current[i].STEP<= 9))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": STEP không hợp lệ";
-          }         
+          else if (!(qlsxplandatafilter.current[i].STEP >= 0 && qlsxplandatafilter.current[i].STEP <= 9)) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": STEP không hợp lệ";
+          }
         }
       }
       setPlanDataTable(org_plan_tb);
@@ -1694,7 +1686,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             LOSS_KT: datadinhmuc.LOSS_KT
-          }); 
+          });
           err_code = (await f_saveQLSX({
             G_CODE: selectedPlan.current?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
@@ -1884,18 +1876,18 @@ const QUICKPLAN2 = () => {
               } */
               return {
                 ...element,
-              SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
-              SLC_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0)-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100)),
-              SLC_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0)-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100)),
-              SLC_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0)-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100)), 
-              CD1: element.CD1??0,
-              CD2: element.CD2??0,
-              CD3: element.CD3??0,
-              CD4: element.CD4??0,
-              TON_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 :temp_TCD1,
-              TON_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 :temp_TCD2,
-              TON_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 :temp_TCD3,
-              TON_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 :temp_TCD4,
+                SLC_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100)),
+                SLC_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100)),
+                SLC_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100)),
+                SLC_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100)),
+                CD1: element.CD1 ?? 0,
+                CD2: element.CD2 ?? 0,
+                CD3: element.CD3 ?? 0,
+                CD4: element.CD4 ?? 0,
+                TON_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : temp_TCD1,
+                TON_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : temp_TCD2,
+                TON_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : temp_TCD3,
+                TON_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : temp_TCD4,
               };
             },
           );
@@ -1911,46 +1903,51 @@ const QUICKPLAN2 = () => {
   };
   let column_eqlist = [
     { field: "PROCESS_NUMBER", headerName: "CD", flex: 1, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },   
+    { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },
     { field: "SETTING_TIME", headerName: "SETTING_TIME (min)", flex: 1.1, editable: true },
-    { field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true, cellRenderer: (params: any) => {
-      return (
-        <span>{params.data?.UPH?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-      )
-    } },
+    {
+      field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true, cellRenderer: (params: any) => {
+        return (
+          <span>{params.data?.UPH?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+        )
+      }
+    },
     { field: "STEP", headerName: "STEP", flex: 1, editable: true },
     { field: "LOSS_SX", headerName: "LOSS_SX (%)", flex: 1, editable: true },
-    { field: "RECENT_LOSS_SX", headerName: "RECENT_LOSS_SX (%)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
-      )
-    } },
+    {
+      field: "RECENT_LOSS_SX", headerName: "RECENT_LOSS_SX (%)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+        )
+      }
+    },
     { field: "LOSS_SETTING", headerName: "LOSS_ST (met)", flex: 1, editable: true },
-    { field: "RECENT_LOSS_SETTING", headerName: "RECENT_LOSS_ST(met)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SETTING?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-      )
-    } },
+    {
+      field: "RECENT_LOSS_SETTING", headerName: "RECENT_LOSS_ST(met)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SETTING?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+        )
+      }
+    },
     { field: "FACTORY", headerName: "FACTORY", flex: 1, editable: true },
   ];
   const eqListAGTable = useMemo(() => {
     return (
-      <AGTable      
-      showFilter={false}
-      columns={column_eqlist}
-      data={currentProcessList}
-      suppressRowClickSelection={true}
-      onCellEditingStopped={(params: any) => {
-      }} onRowClick={(params: any) => {       
-        ////console.log(datafilter[0]);        
-        //console.log([params.data]);
-        tempSelectedProcess.current = params.data;
-       
-      }} onSelectionChange={(params: any) => {
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-        //console.log(e!.api.getSelectedRows())
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-      }} />
+      <AGTable
+        showFilter={false}
+        columns={column_eqlist}
+        data={currentProcessList}
+        suppressRowClickSelection={true}
+        onCellEditingStopped={(params: any) => {
+        }} onRowClick={(params: any) => {
+          ////console.log(datafilter[0]);        
+          //console.log([params.data]);
+          tempSelectedProcess.current = params.data;
+        }} onSelectionChange={(params: any) => {
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
+          //console.log(e!.api.getSelectedRows())
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
+        }} />
     );
   }, [currentProcessList]);
   const planDataTableAG = useMemo(() => {
@@ -2061,11 +2058,11 @@ const QUICKPLAN2 = () => {
                       G_NAME_KD: temp_ycsx_data[0].G_NAME_KD,
                       PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
                       CURRENT_SLC: (temp_ycsx_data[0].SLC_CD1 ?? 0),
-                      PLAN_QTY:  temp_ycsx_data[0].TON_CD1 <= 0 ? 0: temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor ? temp_ycsx_data[0].TON_CD1 : temp_ycsx_data[0].UPH1 * qtyFactor,
+                      PLAN_QTY: temp_ycsx_data[0].TON_CD1 <= 0 ? 0 : temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor ? temp_ycsx_data[0].TON_CD1 : temp_ycsx_data[0].UPH1 * qtyFactor,
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
-                      CD4: temp_ycsx_data[0].CD4,                      
+                      CD4: temp_ycsx_data[0].CD4,
                       SLC_CD1: temp_ycsx_data[0].SLC_CD1,
                       SLC_CD2: temp_ycsx_data[0].SLC_CD2,
                       SLC_CD3: temp_ycsx_data[0].SLC_CD3,
@@ -2118,7 +2115,7 @@ const QUICKPLAN2 = () => {
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
             //console.table(newdata)
             setPlanDataTable(newdata);
-          } else if (keyvar === "PLAN_EQ") {  
+          } else if (keyvar === "PLAN_EQ") {
             /* const newdata: QLSXPLANDATA[]= plandatatable.map((p) => {
               if (p.PLAN_ID === params.id) {
                 if (keyvar === "PLAN_EQ") {
@@ -2126,7 +2123,6 @@ const QUICKPLAN2 = () => {
                     let plan_temp = params.value.substring(0, 2);                    
                     if (plan_temp === p.EQ1 || plan_temp === p.EQ2 || plan_temp === p.EQ3 || plan_temp === p.EQ4) {
                       return { ...p, [keyvar]: params.value };
-                      
                     } else {
                       Swal.fire(
                         "Thông báo",
@@ -2147,7 +2143,6 @@ const QUICKPLAN2 = () => {
                 return p;
               }
             }); */
-
             let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
               (element) => element.PLAN_ID === params.data.PLAN_ID,
             )?.PROD_REQUEST_NO;
@@ -2267,10 +2262,9 @@ const QUICKPLAN2 = () => {
                 return p;
               }
             });
-
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
             setPlanDataTable(newdata);
-          }  else if (keyvar === "PROCESS_NUMBER") {   
+          } else if (keyvar === "PROCESS_NUMBER") {
             let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
               (element) => element.PLAN_ID === params.data.PLAN_ID,
             )?.PROD_REQUEST_NO;
@@ -2281,19 +2275,19 @@ const QUICKPLAN2 = () => {
               if (p.PLAN_ID === params.data.PLAN_ID) {
                 if (keyvar === "PROCESS_NUMBER") {
                   let prnb: number = p.PROCESS_NUMBER;
-                  if (prnb<=4 && prnb>=1) {                    
+                  if (prnb <= 4 && prnb >= 1) {
                     let UPH1: number = p.UPH1 ?? 999999999;
                     let UPH2: number = p.UPH2 ?? 999999999;
                     let UPH3: number = p.UPH3 ?? 999999999;
                     let UPH4: number = p.UPH4 ?? 999999999;
-                    let UPH: number  = prnb === 1? UPH1 : prnb === 2? UPH2 : prnb === 3? UPH3 : UPH4;
-                    let TON: number = prnb === 1? (temp_ycsx_data[0].TON_CD1 ?? 0) : prnb === 2? (temp_ycsx_data[0].TON_CD2 ?? 0) : prnb === 3? (temp_ycsx_data[0].TON_CD3 ?? 0) : (temp_ycsx_data[0].TON_CD4 ?? 0);
-                    let SLC: number = prnb === 1? (temp_ycsx_data[0].SLC_CD1 ?? 0) : prnb === 2? (temp_ycsx_data[0].SLC_CD2 ?? 0) : prnb === 3? (temp_ycsx_data[0].SLC_CD3 ?? 0) : (temp_ycsx_data[0].SLC_CD4 ?? 0);                    
+                    let UPH: number = prnb === 1 ? UPH1 : prnb === 2 ? UPH2 : prnb === 3 ? UPH3 : UPH4;
+                    let TON: number = prnb === 1 ? (temp_ycsx_data[0].TON_CD1 ?? 0) : prnb === 2 ? (temp_ycsx_data[0].TON_CD2 ?? 0) : prnb === 3 ? (temp_ycsx_data[0].TON_CD3 ?? 0) : (temp_ycsx_data[0].TON_CD4 ?? 0);
+                    let SLC: number = prnb === 1 ? (temp_ycsx_data[0].SLC_CD1 ?? 0) : prnb === 2 ? (temp_ycsx_data[0].SLC_CD2 ?? 0) : prnb === 3 ? (temp_ycsx_data[0].SLC_CD3 ?? 0) : (temp_ycsx_data[0].SLC_CD4 ?? 0);
                     return {
                       ...p,
-                      [keyvar]: params.value,                     
+                      [keyvar]: params.value,
                       CURRENT_SLC: SLC,
-                      PLAN_EQ:'',
+                      PLAN_EQ: '',
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
@@ -2302,7 +2296,7 @@ const QUICKPLAN2 = () => {
                       TON_CD2: temp_ycsx_data[0].TON_CD2,
                       TON_CD3: temp_ycsx_data[0].TON_CD3,
                       TON_CD4: temp_ycsx_data[0].TON_CD4,
-                      PLAN_QTY:TON <= 0 ? 0: TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
+                      PLAN_QTY: TON <= 0 ? 0 : TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
                     };
                   } else {
                     Swal.fire("Thông báo", "Nhập máy không đúng", "error");
@@ -2331,7 +2325,7 @@ const QUICKPLAN2 = () => {
             setPlanDataTable(newdata);
           }
         }}
-        onCellClick={ async (params: any) => {
+        onCellClick={async (params: any) => {
           let rowData: QLSXPLANDATA = params.data;
           selectedPlan.current = rowData;
           setDataDinhMuc({
@@ -2363,7 +2357,20 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
             NOTE: rowData.NOTE ?? "",
           });
-          setRecentDMData(await f_getRecentDMData(rowData.G_CODE));          
+          let thisProcessList: PROD_PROCESS_DATA[] = [];
+          thisProcessList = await f_loadProdProcessData(rowData.G_CODE);
+          let recentDMData: RecentDM[] = [];
+          recentDMData = await f_getRecentDMData(rowData.G_CODE);
+          let updatedThisProcessList: PROD_PROCESS_DATA[] = [];
+          updatedThisProcessList = thisProcessList.map((element: PROD_PROCESS_DATA, index: number) => {
+            return {
+              ...element,
+              RECENT_LOSS_SX: recentDMData.filter((e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER)[0]?.LOSS_SX ?? 0,
+              RECENT_LOSS_SETTING: recentDMData.filter((e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER)[0]?.TT_SETTING_MET ?? 0,
+            };
+          });
+          setRecentDMData(recentDMData);
+          setCurrentProcessList(updatedThisProcessList);
         }}
         onSelectionChange={(params: any) => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()
@@ -2396,619 +2403,155 @@ const QUICKPLAN2 = () => {
         <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
         </span>
-        <div className="dinhmucdiv">
-          {(showhideycsxtable === 1 || showhideycsxtable === 3) && (
-            <div className="datadinhmucto">
-              <div className="datadinhmuc">
-                <div className="forminputcolumn">
-                  <label>
-                    <b>EQ1:</b>
-                    <select
-                      name="phanloai"
-                      value={datadinhmuc.EQ1}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
-                      }
-                      style={{ height: 22 }}
-                    >
-                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
-                        return (
-                          <option key={index} value={ele.EQ_NAME}>
-                            {ele.EQ_NAME}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </label>
-                  <label>
-                    <b>EQ2:</b>
-                    <select
-                      name="phanloai"
-                      value={datadinhmuc.EQ2}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
-                      }
-                      style={{ height: 22 }}
-                    >
-                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
-                        return (
-                          <option key={index} value={ele.EQ_NAME}>
-                            {ele.EQ_NAME}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Setting1(min):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Thời gian setting 1"
-                      value={datadinhmuc.Setting1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Setting1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Setting2(min):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Thời gian setting 2"
-                      value={datadinhmuc.Setting2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Setting2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>UPH1(EA/h):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Tốc độ sx 1"
-                      value={datadinhmuc.UPH1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          UPH1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>UPH2(EA/h):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Tốc độ sx 2"
-                      value={datadinhmuc.UPH2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          UPH2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Step1:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Số bước 1"
-                      value={datadinhmuc.Step1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Step1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Step2:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Số bước 2"
-                      value={datadinhmuc.Step2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Step2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="% loss sx 1"
-                      value={datadinhmuc.LOSS_SX1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SX1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="% loss sx 2"
-                      value={datadinhmuc.LOSS_SX2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SX2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>LOSS SETTING1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="met setting 1"
-                      value={datadinhmuc.LOSS_SETTING1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SETTING1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>LOSS SETTING2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="met setting 2"
-                      value={datadinhmuc.LOSS_SETTING2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SETTING2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>FACTORY:</b>
-                    <select
-                      name="phanloai"
-                      value={
-                        datadinhmuc.FACTORY === null
-                          ? "NA"
-                          : datadinhmuc.FACTORY
-                      }
-                      onChange={(e) => {
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          FACTORY: e.target.value,
-                        });
-                      }}
-                      style={{ height: 22 }}
-                    >
-                      <option value="NA">NA</option>
-                      <option value="NM1">NM1</option>
-                      <option value="NM2">NM2</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>NOTE (QLSX):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Chú ý"
-                      value={datadinhmuc.NOTE}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-                      }
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className="datadinhmuc">
-                <div className="forminputcolumn">
-                  <label>
-                    <b>EQ3:</b>
-                    <select
-                      name="phanloai"
-                      value={datadinhmuc.EQ3}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, EQ3: e.target.value })
-                      }
-                      style={{ height: 22 }}
-                    >
-                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
-                        return (
-                          <option key={index} value={ele.EQ_NAME}>
-                            {ele.EQ_NAME}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </label>
-                  <label>
-                    <b>EQ4:</b>
-                    <select
-                      name="phanloai"
-                      value={datadinhmuc.EQ4}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, EQ4: e.target.value })
-                      }
-                      style={{ height: 22 }}
-                    >
-                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
-                        return (
-                          <option key={index} value={ele.EQ_NAME}>
-                            {ele.EQ_NAME}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Setting3(min):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Thời gian setting 3"
-                      value={datadinhmuc.Setting3}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Setting3: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Setting4(min):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Thời gian setting 4"
-                      value={datadinhmuc.Setting4}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Setting4: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>UPH3(EA/h):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Tốc độ sx 1"
-                      value={datadinhmuc.UPH3}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          UPH3: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>UPH4(EA/h):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Tốc độ sx 2"
-                      value={datadinhmuc.UPH4}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          UPH4: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Step3:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Số bước 3"
-                      value={datadinhmuc.Step3}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Step3: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Step4:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Số bước 4"
-                      value={datadinhmuc.Step4}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Step4: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="% loss sx 3"
-                      value={datadinhmuc.LOSS_SX3}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SX3: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="% loss sx 4"
-                      value={datadinhmuc.LOSS_SX4}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SX4: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>LOSS SETTING3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="met setting 3"
-                      value={datadinhmuc.LOSS_SETTING3}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SETTING3: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>LOSS SETTING4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
-                    <input
-                      type="text"
-                      placeholder="met setting 4"
-                      value={datadinhmuc.LOSS_SETTING4}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SETTING4: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>FACTORY:</b>
-                    <select
-                      name="phanloai"
-                      value={
-                        datadinhmuc.FACTORY === null
-                          ? "NA"
-                          : datadinhmuc.FACTORY
-                      }
-                      onChange={(e) => {
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          FACTORY: e.target.value,
-                        });
-                      }}
-                      style={{ height: 22 }}
-                    >
-                      <option value="NA">NA</option>
-                      <option value="NM1">NM1</option>
-                      <option value="NM2">NM2</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>NOTE (QLSX):</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Chú ý"
-                      value={datadinhmuc.NOTE}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-                      }
-                    ></input>
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
         {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
-                <div className="selectmachine">
-                  Máy:
-                  <label>
-                    <select
-                      disabled={false}
-                      name="may1"
-                      value={tempSelectedMachine}
-                      onChange={(e) => {
-                        setTempSelectedMachine(e.target.value);
-                      }}
-                    >
-                      {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
-                        map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          },
-                        )}
-                    </select>
-                  </label>
-                  <Button
-                    onClick={async () => {
-                      if (selectedPlan.current.G_CODE !== '-------') {
-                        if (currentProcessList.length > 0) {
-                          let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.current.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
-                          }
-                          setCurrentProcessList([...currentProcessList, tempProcess]);
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        } else {
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.current.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
-                          }
-                          setCurrentProcessList([tempProcess]);
-
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        }
-                      } else {
-                        Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
-                      }
-                    }}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    color="error"
-                    onClick={async () => {
-                      setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));
+          <div className="selectmachine">
+            Máy:
+            <label>
+              <select
+                disabled={false}
+                name="may1"
+                value={tempSelectedMachine}
+                onChange={(e) => {
+                  setTempSelectedMachine(e.target.value);
+                }}
+              >
+                {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
+                  map(
+                    (ele: MACHINE_LIST, index: number) => {
+                      return (
+                        <option key={index} value={ele.EQ_NAME}>
+                          {ele.EQ_NAME}
+                        </option>
+                      );
+                    },
+                  )}
+              </select>
+            </label>
+            <Button
+              onClick={async () => {
+                if (selectedPlan.current.G_CODE !== '-------') {
+                  if (currentProcessList.length > 0) {
+                    let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
+                    let tempProcess: PROD_PROCESS_DATA = {
+                      G_CODE: selectedPlan.current.G_CODE,
+                      PROCESS_NUMBER: nextProcessNo,
+                      EQ_SERIES: tempSelectedMachine,
+                      SETTING_TIME: 0,
+                      UPH: 0,
+                      STEP: 0,
+                      LOSS_SX: 0,
+                      LOSS_SETTING: 0,
+                      INS_DATE: '',
+                      INS_EMPL: '',
+                      UPD_DATE: '',
+                      UPD_EMPL: '',
+                      FACTORY: 'NM1'
                     }
+                    setCurrentProcessList([...currentProcessList, tempProcess]);
+                    /* let kq = await f_addProdProcessData({
+                      G_CODE: codefullinfo.G_CODE,
+                      PROCESS_NUMBER: nextProcessNo,
+                      EQ_SERIES: tempSelectedMachine
+                    });
+                    if (kq) {
+                      loadProcessList(codefullinfo.G_CODE);
+                      //Swal.fire("Thông báo", "Thêm process thành công", "success");
+                    } else {
+                      Swal.fire("Thông báo", "Thêm process thất bại", "error");
+                    } */
+                  } else {
+                    let tempProcess: PROD_PROCESS_DATA = {
+                      G_CODE: selectedPlan.current.G_CODE,
+                      PROCESS_NUMBER: 1,
+                      EQ_SERIES: tempSelectedMachine,
+                      SETTING_TIME: 0,
+                      UPH: 0,
+                      STEP: 0,
+                      LOSS_SX: 0,
+                      LOSS_SETTING: 0,
+                      INS_DATE: '',
+                      INS_EMPL: '',
+                      UPD_DATE: '',
+                      UPD_EMPL: '',
+                      FACTORY: 'NM1'
                     }
-
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      Swal.fire({
-                        title: "Cập nhật công đoạn",
-                        text: "Đang cập nhật, hãy chờ chút",
-                        icon: "info",
-                        showCancelButton: false,
-                        allowOutsideClick: false,
-                        confirmButtonText: "OK",
-                        showConfirmButton: false,
-                      });
-                      if(selectedPlan.current.PLAN_ID === 'XXX'){
-                        Swal.fire('Thông báo', 'Vui lòng chọn plan', 'error');
-                        return;
-                      }
-
-                      if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
-                        Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (await f_checkProcessNumberContinuos(currentProcessList)) {
-                        //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
-                      } else {
-                        Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (currentProcessList.length > 0) {
-                        await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
-                        loadProcessList(selectedPlan.current.G_CODE);
-                      } else {
-                        await f_deleteProdProcessData({
-                          G_CODE: selectedPlan.current.G_CODE
-                        });
-                        loadProcessList(selectedPlan.current.G_CODE);
-                      }
-                      await f_addProcessDataTotalQLSX(currentProcessList);
-                      await f_insertDMYCSX_New({
-                        PROD_REQUEST_NO: selectedPlan.current.PROD_REQUEST_NO,
-                        G_CODE: selectedPlan.current.G_CODE,
-                      });
-                      loadProcessList(selectedPlan.current.G_CODE);
-                    }}
-                  >
-                    Save
-                  </Button>
-
-                </div>
-                {
-                  eqListAGTable
+                    setCurrentProcessList([tempProcess]);
+                    /* let kq = await f_addProdProcessData({
+                      G_CODE: codefullinfo.G_CODE,
+                      PROCESS_NUMBER: 1,
+                      EQ_SERIES: tempSelectedMachine
+                    });
+                    if (kq) {
+                      loadProcessList(codefullinfo.G_CODE);
+                      //Swal.fire("Thông báo", "Thêm process thành công", "success");
+                    } else {
+                      Swal.fire("Thông báo", "Thêm process thất bại", "error");
+                    } */
+                  }
+                } else {
+                  Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
                 }
+              }}
+            >
+              Add
+            </Button>
+            <Button
+              color="error"
+              onClick={async () => {
+                setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));
+              }
+              }
+            >
+              Delete
+            </Button>
+            <Button
+              onClick={async () => {
+                Swal.fire({
+                  title: "Cập nhật công đoạn",
+                  text: "Đang cập nhật, hãy chờ chút",
+                  icon: "info",
+                  showCancelButton: false,
+                  allowOutsideClick: false,
+                  confirmButtonText: "OK",
+                  showConfirmButton: false,
+                });
+                if (selectedPlan.current.PLAN_ID === 'XXX') {
+                  Swal.fire('Thông báo', 'Vui lòng chọn plan', 'error');
+                  return;
+                }
+                if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
+                  Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
+                  return;
+                }
+                if (await f_checkProcessNumberContinuos(currentProcessList)) {
+                  //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
+                } else {
+                  Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
+                  return;
+                }
+                if (currentProcessList.length > 0) {
+                  await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
+                  loadProcessList(selectedPlan.current.G_CODE);
+                } else {
+                  await f_deleteProdProcessData({
+                    G_CODE: selectedPlan.current.G_CODE
+                  });
+                  loadProcessList(selectedPlan.current.G_CODE);
+                }
+                await f_addProcessDataTotalQLSX(currentProcessList);
+                await f_insertDMYCSX_New({
+                  PROD_REQUEST_NO: selectedPlan.current.PROD_REQUEST_NO,
+                  G_CODE: selectedPlan.current.G_CODE,
+                });
+                loadProcessList(selectedPlan.current.G_CODE);
+              }}
+            >
+              Save
+            </Button>
+          </div>
+          {
+            eqListAGTable
+          }
         </div>}
         <div className="content">
           {(showhideycsxtable === 2 || showhideycsxtable === 3) && (
@@ -3206,7 +2749,6 @@ const QUICKPLAN2 = () => {
                     sx={{ fontSize: 12, flex: 1 }}
                     slots={{
                       toolbar: CustomToolbarPOTable,
-                      
                     }}
                     loading={isLoading}
                     rowHeight={30}
@@ -3217,7 +2759,7 @@ const QUICKPLAN2 = () => {
                     ]}
                     editMode="row"
                     getRowId={(row) => row.PROD_REQUEST_NO}
-                    onRowSelectionModelChange={(ids:any) => {
+                    onRowSelectionModelChange={(ids: any) => {
                       handleYCSXSelectionforUpdate(ids);
                     }}
                   />
