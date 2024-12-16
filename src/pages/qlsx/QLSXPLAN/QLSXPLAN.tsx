@@ -17,6 +17,7 @@ const EQ_STATUS = React.lazy(() => import("./EQ_STATUS/EQ_STATUS"));
 const EQ_STATUS2 = React.lazy(() => import("./EQ_STATUS/EQ_STATUS2"));
 const KHOAO = React.lazy(() => import("./KHOAO/KHOAO"));
 const QUICKPLAN2 = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2"));
+const QUICKPLAN2_OLD = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2_backup"));
 
 const QLSXPLAN = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme); 
@@ -52,7 +53,7 @@ const QLSXPLAN = () => {
             { getCompany() === "CMS" ? <MACHINE /> : <MACHINE_OLD />}
           </TabPanel>
           { getCompany() === "CMS" && <TabPanel>
-            <QUICKPLAN2 />
+            { getCompany() === "CMS" ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
           </TabPanel>    }
           { getCompany() === "CMS" && <TabPanel>  
             <KHCT /> 

@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import "./QUICKPLAN.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getAuditMode, getGlobalSetting, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { Button, IconButton, LinearProgress } from "@mui/material";
@@ -17,16 +17,9 @@ import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
-  f_addProcessDataTotalQLSX,
-  f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST,
-  f_checkProcessNumberContinuos,
-  f_deleteProcessNotInCurrentListFromDataBase,
-  f_deleteProdProcessData,
   f_getMachineListData,
   f_getRecentDMData,
   f_insertDMYCSX,
-  f_insertDMYCSX_New,
-  f_loadProdProcessData,
   f_saveQLSX,
   f_updateDMSX_LOSS_KT,
   PLAN_ID_ARRAY,
@@ -43,7 +36,6 @@ import { RootState } from "../../../../redux/store";
 import {
   DINHMUC_QSLX,
   MACHINE_LIST,
-  PROD_PROCESS_DATA,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
@@ -52,7 +44,7 @@ import {
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
-const QUICKPLAN2 = () => {
+const QUICKPLAN2_OLD = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([]);
@@ -96,23 +88,6 @@ const QUICKPLAN2 = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
-  const [tempSelectedMachine, setTempSelectedMachine] = useState<string>("NA");
-  const [currentProcessList, setCurrentProcessList] = useState<PROD_PROCESS_DATA[]>([]);
-  const tempSelectedProcess = useRef<PROD_PROCESS_DATA>({
-    G_CODE: "xxx",
-    PROCESS_NUMBER: 0,
-    EQ_SERIES: "xxx",
-    SETTING_TIME: 0,
-    UPH: 0,
-    STEP: 0,
-    LOSS_SX: 0,
-    LOSS_SETTING: 0,
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
-    FACTORY: "NM1"
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -137,99 +112,13 @@ const QUICKPLAN2 = () => {
     useState<Array<ReactElement>>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedCode, setSelectedCode] = useState("CODE: ");
-  const defaultPlan: QLSXPLANDATA = {
-    id: 0,
-    PLAN_ID: 'XXX',
-    PLAN_DATE: 'XXX',
-    PROD_REQUEST_NO: 'XXX',
-    PLAN_QTY: 0,
-    PLAN_EQ: 'XXX',
-    PLAN_FACTORY: 'XXX',
-    PLAN_LEADTIME: 0,
-    INS_EMPL: 'XXX',
-    INS_DATE: 'XXX',
-    UPD_EMPL: 'XXX',
-    UPD_DATE: 'XXX',
-    G_CODE: 'XXX',
-    G_NAME: 'XXX',
-    G_NAME_KD: 'XXX',
-    PROD_REQUEST_DATE: 'XXX',
-    PROD_REQUEST_QTY: 0,
-    STEP: 0,
-    PLAN_ORDER: 'XXX',
-    PROCESS_NUMBER: 0,
-    KQ_SX_TAM: 0,
-    KETQUASX: 0,
-    CD1: 0,
-    CD2: 0,
-    CD3: 0,
-    CD4: 0,
-    TON_CD1: 0,
-    TON_CD2: 0,
-    TON_CD3: 0,
-    TON_CD4: 0,
-    FACTORY: 'XXX',
-    EQ1: 'XXX',
-    EQ2: 'XXX',
-    EQ3: 'XXX',
-    EQ4: 'XXX',
-    Setting1: 0,
-    Setting2: 0,
-    Setting3: 0,
-    Setting4: 0,
-    UPH1: 0,
-    UPH2: 0,
-    UPH3: 0,
-    UPH4: 0,
-    Step1: 0,
-    Step2: 0,
-    Step3: 0,
-    Step4: 0,
-    LOSS_SX1: 0,
-    LOSS_SX2: 0,
-    LOSS_SX3: 0,
-    LOSS_SX4: 0,
-    LOSS_SETTING1: 0,
-    LOSS_SETTING2: 0,
-    LOSS_SETTING3: 0,
-    LOSS_SETTING4: 0,
-    NOTE: 'XXX',
-    NEXT_PLAN_ID: 'XXX',
-    XUATDAOFILM: 'XXX',
-    EQ_STATUS: 'XXX',
-    MAIN_MATERIAL: 'XXX',
-    INT_TEM: 'XXX',
-    CHOTBC: 'XXX',
-    DKXL: 'XXX',
-    OLD_PLAN_QTY: 0,
-    ACHIVEMENT_RATE: 0,
-    PDBV: 'XXX',
-    PD: 0,
-    CAVITY: 0,
-    SETTING_START_TIME: 'XXX',
-    MASS_START_TIME: 'XXX',
-    MASS_END_TIME: 'XXX',
-    REQ_DF: 'XXX',
-    AT_LEADTIME: 0,
-    ACC_TIME: 0,
-    IS_SETTING: 'XXX',
-    PDBV_EMPL: 'XXX',
-    PDBV_DATE: 'XXX',
-    LOSS_KT: 0,
-    ORG_LOSS_KT: 0,
-    USE_YN: 'XXX',
-  };
-  const selectedPlan = useRef<QLSXPLANDATA>(defaultPlan);
+  const selectedPlan = useRef<QLSXPLANDATA>();
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [temp_id, setTemID] = useState(0);
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const loadProcessList = async (G_CODE: string) => {
-    let loadeddata = await f_loadProdProcessData(G_CODE);
-    setCurrentProcessList(loadeddata);    
-  } 
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());     
   };
@@ -1909,50 +1798,6 @@ const QUICKPLAN2 = () => {
       });
     return temp_data;
   };
-  let column_eqlist = [
-    { field: "PROCESS_NUMBER", headerName: "CD", flex: 1, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },   
-    { field: "SETTING_TIME", headerName: "SETTING_TIME (min)", flex: 1.1, editable: true },
-    { field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true, cellRenderer: (params: any) => {
-      return (
-        <span>{params.data?.UPH?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-      )
-    } },
-    { field: "STEP", headerName: "STEP", flex: 1, editable: true },
-    { field: "LOSS_SX", headerName: "LOSS_SX (%)", flex: 1, editable: true },
-    { field: "RECENT_LOSS_SX", headerName: "RECENT_LOSS_SX (%)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
-      )
-    } },
-    { field: "LOSS_SETTING", headerName: "LOSS_ST (met)", flex: 1, editable: true },
-    { field: "RECENT_LOSS_SETTING", headerName: "RECENT_LOSS_ST(met)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SETTING?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-      )
-    } },
-    { field: "FACTORY", headerName: "FACTORY", flex: 1, editable: true },
-  ];
-  const eqListAGTable = useMemo(() => {
-    return (
-      <AGTable      
-      showFilter={false}
-      columns={column_eqlist}
-      data={currentProcessList}
-      suppressRowClickSelection={true}
-      onCellEditingStopped={(params: any) => {
-      }} onRowClick={(params: any) => {       
-        ////console.log(datafilter[0]);        
-        //console.log([params.data]);
-        tempSelectedProcess.current = params.data;
-       
-      }} onSelectionChange={(params: any) => {
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-        //console.log(e!.api.getSelectedRows())
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-      }} />
-    );
-  }, [currentProcessList]);
   const planDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -2856,160 +2701,6 @@ const QUICKPLAN2 = () => {
             </div>
           )}
         </div>
-        {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
-                <div className="selectmachine">
-                  Máy:
-                  <label>
-                    <select
-                      disabled={false}
-                      name="may1"
-                      value={tempSelectedMachine}
-                      onChange={(e) => {
-                        setTempSelectedMachine(e.target.value);
-                      }}
-                    >
-                      {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
-                        map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
-                            );
-                          },
-                        )}
-                    </select>
-                  </label>
-                  <Button
-                    onClick={async () => {
-                      if (selectedPlan.current.G_CODE !== '-------') {
-                        if (currentProcessList.length > 0) {
-                          let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.current.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
-                          }
-                          setCurrentProcessList([...currentProcessList, tempProcess]);
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        } else {
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.current.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
-                          }
-                          setCurrentProcessList([tempProcess]);
-
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        }
-                      } else {
-                        Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
-                      }
-                    }}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    color="error"
-                    onClick={async () => {
-                      setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));
-                    }
-                    }
-
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      Swal.fire({
-                        title: "Cập nhật công đoạn",
-                        text: "Đang cập nhật, hãy chờ chút",
-                        icon: "info",
-                        showCancelButton: false,
-                        allowOutsideClick: false,
-                        confirmButtonText: "OK",
-                        showConfirmButton: false,
-                      });
-                      if(selectedPlan.current.PLAN_ID === 'XXX'){
-                        Swal.fire('Thông báo', 'Vui lòng chọn plan', 'error');
-                        return;
-                      }
-
-                      if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
-                        Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (await f_checkProcessNumberContinuos(currentProcessList)) {
-                        //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
-                      } else {
-                        Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (currentProcessList.length > 0) {
-                        await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
-                        loadProcessList(selectedPlan.current.G_CODE);
-                      } else {
-                        await f_deleteProdProcessData({
-                          G_CODE: selectedPlan.current.G_CODE
-                        });
-                        loadProcessList(selectedPlan.current.G_CODE);
-                      }
-                      await f_addProcessDataTotalQLSX(currentProcessList);
-                      await f_insertDMYCSX_New({
-                        PROD_REQUEST_NO: selectedPlan.current.PROD_REQUEST_NO,
-                        G_CODE: selectedPlan.current.G_CODE,
-                      });
-                      loadProcessList(selectedPlan.current.G_CODE);
-                    }}
-                  >
-                    Save
-                  </Button>
-
-                </div>
-                {
-                  eqListAGTable
-                }
-        </div>}
         <div className="content">
           {(showhideycsxtable === 2 || showhideycsxtable === 3) && (
             <div className="ycsxlist">
@@ -3333,4 +3024,4 @@ const QUICKPLAN2 = () => {
     </div>)
   );
 };
-export default QUICKPLAN2;
+export default QUICKPLAN2_OLD;
