@@ -1844,7 +1844,7 @@ const QUICKPLAN2 = () => {
   };
   const get1YCSXDATA = async (PROD_REQUEST_NO: string) => {
     let temp_data: YCSXTableData[] = [];
-    await generalQuery("quickcheckycsx", {
+    await generalQuery("quickcheckycsx_New", {
       PROD_REQUEST_NO: PROD_REQUEST_NO,
     })
       .then((response) => {
@@ -1853,41 +1853,10 @@ const QUICKPLAN2 = () => {
           //console.log(response.data.data);
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
-              /* let DU1: number = element.PROD_REQUEST_QTY * (element.LOSS_SX1 * element.LOSS_SX2 + element.LOSS_SX1 * element.LOSS_SX3 + element.LOSS_SX1 * element.LOSS_SX4 + element.LOSS_SX1 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
-              let DU2: number = element.PROD_REQUEST_QTY * (element.LOSS_SX2 * element.LOSS_SX3 + element.LOSS_SX2 * element.LOSS_SX4 + element.LOSS_SX2 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
-              let DU3: number = element.PROD_REQUEST_QTY * (element.LOSS_SX3 * element.LOSS_SX4 + element.LOSS_SX3 * (element.LOSS_KT ?? 0)) * 1.0 / 10000;
-              let DU4: number = element.PROD_REQUEST_QTY * (element.LOSS_SX4 * (element.LOSS_KT ?? 0)) * 1.0 / 10000; */
-              let DU1: number = 0;
-              let DU2: number = 0;
-              let DU3: number = 0;
-              let DU4: number = 0;
-              let temp_TCD1: number = (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - element.CD1 - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100));
-              let temp_TCD2: number = (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - element.CD2 - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100));
-              let temp_TCD3: number = (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - element.CD3 - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100));
-              let temp_TCD4: number = (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - element.CD4 - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100));
-              /* if (temp_TCD1 < 0) {
-                temp_TCD2 = temp_TCD2 - temp_TCD1;
-              }
-              if (temp_TCD2 < 0) {
-                temp_TCD3 = temp_TCD3 - temp_TCD2;
-              }
-              if (temp_TCD3 < 0) {
-                temp_TCD4 = temp_TCD4 - temp_TCD3;
-              } */
+              
               return {
                 ...element,
-                SLC_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100)),
-                SLC_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100)),
-                SLC_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100)),
-                SLC_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100)),
-                CD1: element.CD1 ?? 0,
-                CD2: element.CD2 ?? 0,
-                CD3: element.CD3 ?? 0,
-                CD4: element.CD4 ?? 0,
-                TON_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : temp_TCD1,
-                TON_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : temp_TCD2,
-                TON_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : temp_TCD3,
-                TON_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : temp_TCD4,
+                id: index,
               };
             },
           );
@@ -2042,8 +2011,10 @@ const QUICKPLAN2 = () => {
         onCellEditingStopped={async (params: any) => {
           const keyvar = params.column.colId;
           let temp_ycsx_data: YCSXTableData[] = [];
+          let currentUPH: number = 0;
           if (keyvar === "PROD_REQUEST_NO") {
             temp_ycsx_data = await get1YCSXDATA(params.value);
+            currentUPH =  currentProcessList.filter((e) => e.PROCESS_NUMBER === 1)[0]?.UPH ?? 0;
             //console.log('temp_ycsx_data',temp_ycsx_data)
             const newdata: QLSXPLANDATA[] = plandatatable.map((p) => {
               if (p.PLAN_ID === params.data.PLAN_ID) {
@@ -2058,7 +2029,7 @@ const QUICKPLAN2 = () => {
                       G_NAME_KD: temp_ycsx_data[0].G_NAME_KD,
                       PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
                       CURRENT_SLC: (temp_ycsx_data[0].SLC_CD1 ?? 0),
-                      PLAN_QTY: temp_ycsx_data[0].TON_CD1 <= 0 ? 0 : temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor ? temp_ycsx_data[0].TON_CD1 : temp_ycsx_data[0].UPH1 * qtyFactor,
+                      PLAN_QTY: temp_ycsx_data[0].TON_CD1 <= 0 ? 0 : temp_ycsx_data[0].TON_CD1 < currentUPH * qtyFactor ? temp_ycsx_data[0].TON_CD1 : currentUPH * qtyFactor,
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
@@ -2116,33 +2087,7 @@ const QUICKPLAN2 = () => {
             //console.table(newdata)
             setPlanDataTable(newdata);
           } else if (keyvar === "PLAN_EQ") {
-            /* const newdata: QLSXPLANDATA[]= plandatatable.map((p) => {
-              if (p.PLAN_ID === params.id) {
-                if (keyvar === "PLAN_EQ") {
-                  if (params.value.length === 4) {
-                    let plan_temp = params.value.substring(0, 2);                    
-                    if (plan_temp === p.EQ1 || plan_temp === p.EQ2 || plan_temp === p.EQ3 || plan_temp === p.EQ4) {
-                      return { ...p, [keyvar]: params.value };
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Máy đã nhập ko giống trong BOM",
-                        "warning",
-                      );
-                      return { ...p, [keyvar]: params.value };
-                    }
-                  } else {
-                    Swal.fire("Thông báo", "Nhập máy không đúng", "error");
-                    return { ...p, [keyvar]: "" };
-                  }
-                } else {
-                  console.log(keyvar);
-                  return { ...p, [keyvar]: params.value };
-                }
-              } else {
-                return p;
-              }
-            }); */
+            
             let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
               (element) => element.PLAN_ID === params.data.PLAN_ID,
             )?.PROD_REQUEST_NO;
@@ -2154,16 +2099,15 @@ const QUICKPLAN2 = () => {
                 if (keyvar === "PLAN_EQ") {
                   if (params.value.length === 4) {
                     let plan_temp = params.value.substring(0, 2);
-                    let UPH1: number = p.UPH1 ?? 999999999;
-                    let UPH2: number = p.UPH2 ?? 999999999;
-                    let UPH3: number = p.UPH3 ?? 999999999;
-                    let UPH4: number = p.UPH4 ?? 999999999;
-                    if (plan_temp === p.EQ1) {
+                    let filteredProcess = currentProcessList.find((e) => e.EQ_SERIES === plan_temp);
+                    if(filteredProcess){
+                      let currentSLC = filteredProcess.PROCESS_NUMBER === 1 ? temp_ycsx_data[0].SLC_CD1 : filteredProcess.PROCESS_NUMBER === 2 ? temp_ycsx_data[0].SLC_CD2 : filteredProcess.PROCESS_NUMBER === 3 ? temp_ycsx_data[0].SLC_CD3 : temp_ycsx_data[0].SLC_CD4;
+                      let currentTON = filteredProcess.PROCESS_NUMBER === 1 ? temp_ycsx_data[0].TON_CD1 : filteredProcess.PROCESS_NUMBER === 2 ? temp_ycsx_data[0].TON_CD2 : filteredProcess.PROCESS_NUMBER === 3 ? temp_ycsx_data[0].TON_CD3 : temp_ycsx_data[0].TON_CD4;
                       return {
                         ...p,
                         [keyvar]: params.value,
                         PROCESS_NUMBER: 1,
-                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD1 ?? 0),
+                        CURRENT_SLC: currentSLC,
                         CD1: temp_ycsx_data[0].CD1,
                         CD2: temp_ycsx_data[0].CD2,
                         CD3: temp_ycsx_data[0].CD3,
@@ -2172,82 +2116,10 @@ const QUICKPLAN2 = () => {
                         TON_CD2: temp_ycsx_data[0].TON_CD2,
                         TON_CD3: temp_ycsx_data[0].TON_CD3,
                         TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD1 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD1 < UPH1 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD1
-                              : UPH1 * qtyFactor,
-                      };
-                    } else if (plan_temp === p.EQ2) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 2,
-                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD2 ?? 0),
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD2 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD2 < UPH2 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD2
-                              : UPH2 * qtyFactor,
-                      };
-                    } else if (plan_temp === p.EQ3) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 3,
-                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD3 ?? 0),
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD3 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD3 < UPH3 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD3
-                              : UPH3 * qtyFactor,
-                      };
-                    } else if (plan_temp === p.EQ4) {
-                      return {
-                        ...p,
-                        [keyvar]: params.value,
-                        PROCESS_NUMBER: 2,
-                        CURRENT_SLC: (temp_ycsx_data[0].SLC_CD4 ?? 0),
-                        CD1: temp_ycsx_data[0].CD1,
-                        CD2: temp_ycsx_data[0].CD2,
-                        CD3: temp_ycsx_data[0].CD3,
-                        CD4: temp_ycsx_data[0].CD4,
-                        TON_CD1: temp_ycsx_data[0].TON_CD1,
-                        TON_CD2: temp_ycsx_data[0].TON_CD2,
-                        TON_CD3: temp_ycsx_data[0].TON_CD3,
-                        TON_CD4: temp_ycsx_data[0].TON_CD4,
-                        PLAN_QTY:
-                          temp_ycsx_data[0].TON_CD4 <= 0
-                            ? 0
-                            : temp_ycsx_data[0].TON_CD4 < UPH4 * qtyFactor
-                              ? temp_ycsx_data[0].TON_CD4
-                              : UPH4 * qtyFactor,
+                        PLAN_QTY: currentTON <= 0 ? 0 : currentTON < filteredProcess.UPH * qtyFactor ? currentTON : filteredProcess.UPH * qtyFactor,
                       };
                     } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Máy đã nhập ko giống trong BOM",
-                        "warning",
-                      );
+                      Swal.fire("Thông báo", "Máy đã nhập ko giống trong BOM", "warning");
                       return { ...p, [keyvar]: params.value };
                     }
                   } else {
