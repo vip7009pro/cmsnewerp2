@@ -2096,6 +2096,65 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
     });
   return ycsxdata;
 };
+export const f_handletraYCSXQLSX_New = async (filterdata: any) => {
+  //console.log(filterdata);
+  let ycsxdata: YCSXTableData[] = [];
+  await generalQuery("traYCSXDataFull_QLSX_New", {
+    alltime: filterdata.alltime,
+    start_date: filterdata.start_date,
+    end_date: filterdata.end_date,
+    cust_name: filterdata.cust_name,
+    codeCMS: filterdata.codeCMS,
+    codeKD: filterdata.codeKD,
+    prod_type: filterdata.prod_type,
+    empl_name: filterdata.empl_name,
+    phanloai: filterdata.phanloai,
+    ycsx_pending: filterdata.ycsx_pending,
+    inspect_inputcheck: filterdata.inspect_inputcheck,
+    prod_request_no: filterdata.prod_request_no,
+    material: filterdata.material,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        const loadeddata: YCSXTableData[] = response.data.data.map(
+          (element: YCSXTableData, index: number) => {          
+            return {
+              ...element,
+              G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+              G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+              PO_TDYCSX: element.PO_TDYCSX ?? 0,
+              TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
+              TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
+              BTP_TDYCSX: element.BTP_TDYCSX ?? 0,
+              CK_TDYCSX: element.CK_TDYCSX ?? 0,
+              BLOCK_TDYCSX: element.BLOCK_TDYCSX ?? 0,
+              FCST_TDYCSX: element.FCST_TDYCSX ?? 0,
+              W1: element.W1 ?? 0,
+              W2: element.W2 ?? 0,
+              W3: element.W3 ?? 0,
+              W4: element.W4 ?? 0,
+              W5: element.W5 ?? 0,
+              W6: element.W6 ?? 0,
+              W7: element.W7 ?? 0,
+              W8: element.W8 ?? 0,
+              PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,              
+              id: index
+            };
+          }
+        );
+        ycsxdata = loadeddata;
+      } else {
+        ycsxdata = []
+        console.log('err', response.data.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return ycsxdata;
+};
 export const f_setPendingYCSX = async (ycsxdatatablefilter: YCSXTableData[], pending_value: number) => {
   let err_code: string = "0";
   if (ycsxdatatablefilter.length >= 1) {

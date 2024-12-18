@@ -56,6 +56,7 @@ import {
   f_handleResetChiThiTable_New,
   f_insertDMYCSX_New,
   f_loadQLSXPLANDATA2,
+  f_handletraYCSXQLSX_New,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -1598,6 +1599,25 @@ const MACHINE = () => {
       showConfirmButton: false,
     });
     let ycsxData: YCSXTableData[] = [];
+
+    if (getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903") {
+      ycsxData = await f_handletraYCSXQLSX_New({
+        alltime: alltime,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        phanloai: phanloai,
+        ycsx_pending: ycsxpendingcheck,
+        inspect_inputcheck: inspectInputcheck,
+        prod_request_no: prodrequestno,
+        material: material,
+      });
+    }
+    else {
     ycsxData = await f_handletraYCSXQLSX({
       alltime: alltime,
       start_date: fromdate,
@@ -1613,6 +1633,7 @@ const MACHINE = () => {
       prod_request_no: prodrequestno,
       material: material,
     });
+  }
     if (ycsxData.length > 0) {
       Swal.fire("Thông báo", "Đã load " + ycsxData.length + " dòng", "success");
     }

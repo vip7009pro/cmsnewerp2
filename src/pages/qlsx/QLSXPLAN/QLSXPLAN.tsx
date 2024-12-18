@@ -49,16 +49,16 @@ const QLSXPLAN = () => {
             <Tab>PLAN_RESULT</Tab>
           </TabList>
           <TabPanel>
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <MACHINE /> : <MACHINE_OLD />}
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903' ? <MACHINE /> : <MACHINE_OLD />}
           </TabPanel>
           {getCompany() === "CMS" && <TabPanel>
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903' ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
           </TabPanel>}
           {getCompany() === "CMS" && <TabPanel>
             <KHCT />
           </TabPanel>}
           <TabPanel>
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903' ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
           </TabPanel>
           <TabPanel>
             <LICHSUINPUTLIEU />

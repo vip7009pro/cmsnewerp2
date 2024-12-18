@@ -2108,7 +2108,7 @@ const PLAN_DATATB_OLD = () => {
       {
         showQuickPlan && (
           <div className="quickplandiv">
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903" ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
           </div>
         )
       }
