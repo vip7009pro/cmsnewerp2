@@ -436,7 +436,7 @@ const VLDOC = ({ M_ID, M_NAME }: { M_ID: number, M_NAME: string }) => {
   };
   const handleUpdateDoc = () => {
     checkBP(getUserData(), ["MUA"], ["ALL"], ["ALL"], async () => {
-
+      
     for (let i = 0; i < filteredMatDocData.length; i++) {
       f_updateMaterialDocData({
         DOC_ID: filteredMatDocData[i].DOC_ID,

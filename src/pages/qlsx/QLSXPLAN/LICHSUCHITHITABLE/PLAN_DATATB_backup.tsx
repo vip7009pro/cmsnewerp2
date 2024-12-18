@@ -13,7 +13,7 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany } from "../../../../api/Api";
+import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
 import {
   checkBP,
   f_deleteChiThiMaterialLine,
@@ -54,6 +54,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
+import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
 const PLAN_DATATB_OLD = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
@@ -2107,7 +2108,7 @@ const PLAN_DATATB_OLD = () => {
       {
         showQuickPlan && (
           <div className="quickplandiv">
-            <QUICKPLAN2 />
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
           </div>
         )
       }

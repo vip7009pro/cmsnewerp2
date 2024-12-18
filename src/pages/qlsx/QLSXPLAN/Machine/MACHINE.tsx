@@ -1575,7 +1575,7 @@ const MACHINE = () => {
     ));
   };
   const loadQLSXPlan = async (plan_date: string) => {
-    Swal.fire({
+    /* Swal.fire({
       title: "Load Plan",
       text: "Đang load Plan, hãy chờ một chút",
       icon: "info",
@@ -1583,7 +1583,7 @@ const MACHINE = () => {
       allowOutsideClick: false,
       confirmButtonText: "OK",
       showConfirmButton: false,
-    });
+    }); */
 
     setPlanDataTable(await f_loadQLSXPLANDATA2(plan_date, 'ALL', 'ALL'));
   };

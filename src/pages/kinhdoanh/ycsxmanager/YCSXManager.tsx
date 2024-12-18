@@ -672,6 +672,32 @@ const YCSXManager = () => {
       },
     },
     {
+      field: "SORTING_INPUT",
+      cellDataType: "number",
+      headerName: "SORTING_INPUT",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.SORTING_INPUT?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "NORMAL_INPUT",
+      cellDataType: "number",
+      headerName: "NORMAL_INPUT",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data.NORMAL_INPUT?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "OUTPUTNB_QTY",
       cellDataType: "number",
       headerName: "XUẤT NB",

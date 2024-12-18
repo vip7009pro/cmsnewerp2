@@ -1853,7 +1853,6 @@ const QUICKPLAN2 = () => {
           //console.log(response.data.data);
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
-              
               return {
                 ...element,
                 id: index,
@@ -2014,7 +2013,7 @@ const QUICKPLAN2 = () => {
           let currentUPH: number = 0;
           if (keyvar === "PROD_REQUEST_NO") {
             temp_ycsx_data = await get1YCSXDATA(params.value);
-            currentUPH =  currentProcessList.filter((e) => e.PROCESS_NUMBER === 1)[0]?.UPH ?? 0;
+            currentUPH = currentProcessList.filter((e) => e.PROCESS_NUMBER === 1)[0]?.UPH ?? 0;
             //console.log('temp_ycsx_data',temp_ycsx_data)
             const newdata: QLSXPLANDATA[] = plandatatable.map((p) => {
               if (p.PLAN_ID === params.data.PLAN_ID) {
@@ -2087,7 +2086,6 @@ const QUICKPLAN2 = () => {
             //console.table(newdata)
             setPlanDataTable(newdata);
           } else if (keyvar === "PLAN_EQ") {
-            
             let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
               (element) => element.PLAN_ID === params.data.PLAN_ID,
             )?.PROD_REQUEST_NO;
@@ -2100,7 +2098,7 @@ const QUICKPLAN2 = () => {
                   if (params.value.length === 4) {
                     let plan_temp = params.value.substring(0, 2);
                     let filteredProcess = currentProcessList.find((e) => e.EQ_SERIES === plan_temp);
-                    if(filteredProcess){
+                    if (filteredProcess) {
                       let currentSLC = filteredProcess.PROCESS_NUMBER === 1 ? temp_ycsx_data[0].SLC_CD1 : filteredProcess.PROCESS_NUMBER === 2 ? temp_ycsx_data[0].SLC_CD2 : filteredProcess.PROCESS_NUMBER === 3 ? temp_ycsx_data[0].SLC_CD3 : temp_ycsx_data[0].SLC_CD4;
                       let currentTON = filteredProcess.PROCESS_NUMBER === 1 ? temp_ycsx_data[0].TON_CD1 : filteredProcess.PROCESS_NUMBER === 2 ? temp_ycsx_data[0].TON_CD2 : filteredProcess.PROCESS_NUMBER === 3 ? temp_ycsx_data[0].TON_CD3 : temp_ycsx_data[0].TON_CD4;
                       return {

@@ -770,7 +770,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             </tbody>
           </table>         
         </div> */}
-            <div className="text1">
+            { getCompany() === 'CMS' && <div className="text1">
               3. 중점 불량 Thông tin lỗi (Phân loại:{" "}
               {request_codeinfo[0].CODE_50 === "01"
                 ? "GC"
@@ -798,8 +798,8 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
               />
               _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
               POBALANCE: {po_balance?.toLocaleString("en-US")}{" "}
-            </div>
-            <div className="thongtinyeucau">
+            </div>}
+            {getCompany() === 'CMS' && <div className="thongtinyeucau">
               <table className="ttyc1">
                 <thead>
                   <tr>
@@ -823,7 +823,55 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </div>}
+
+          {getCompany() !== 'CMS' && <div className="text1">
+            3. LOSS INFO (Phân loại:{" "}
+            {request_codeinfo[0].CODE_50 === "01"
+              ? "GC"
+              : request_codeinfo[0].CODE_50 === "02"
+                ? "SK"
+                : request_codeinfo[0].CODE_50 === "03"
+                  ? "KD"
+                  : request_codeinfo[0].CODE_50 === "04"
+                    ? "VN"
+                    : request_codeinfo[0].CODE_50 === "05"
+                      ? "SAMPLE"
+                      : request_codeinfo[0].CODE_50 === "06"
+                        ? "Vai bac 4"
+                        : "ETC"}
+            ) _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+          </div>}
+          {getCompany() !== 'CMS' && <div className="thongtinyeucau">
+            <table className="ttyc1">
+              <thead>
+                <tr>                  
+                  <th>Bóc kiểm (EA)/파괴검사</th>
+                  <th>Lấy đồ/도구 준비</th>
+                  <th>Máy hỏng/설비 고장</th>
+                  <th>Dao NG/칼 불량</th>
+                  <th>Chờ liệu/원단 대기</th>
+                  <th>Chờ BTP/BTP 대기</th>
+                  <th>Hết liệu/원단 떨어짐</th>
+                  <th>Liệu NG/원단 불량</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                    <td style={{ height: "20px" }}></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>}
+
+
             <div className="text1">
               4. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
               {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}

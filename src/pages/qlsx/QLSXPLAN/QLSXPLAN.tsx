@@ -4,7 +4,7 @@ import KHCT from "./KHCT/KHCT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import { getCompany } from "../../../api/Api";
+import { getCompany, getUserData } from "../../../api/Api";
 const MACHINE_OLD = React.lazy(() => import("./Machine/MACHINE_backup"));
 const PLAN_DATATB_OLD = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB_backup"));
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
@@ -18,13 +18,12 @@ const EQ_STATUS2 = React.lazy(() => import("./EQ_STATUS/EQ_STATUS2"));
 const KHOAO = React.lazy(() => import("./KHOAO/KHOAO"));
 const QUICKPLAN2 = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2"));
 const QUICKPLAN2_OLD = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2_backup"));
-
 const QLSXPLAN = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme); 
-  useEffect(() => {}, []);
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  useEffect(() => { }, []);
   return (
     <div className="qlsxplan">
-      <Suspense fallback={<div> Loading...</div>}>       
+      <Suspense fallback={<div> Loading...</div>}>
         <Tabs className="tabs" style={{
           fontSize: "0.6rem",
           width: "100%",
@@ -34,54 +33,54 @@ const QLSXPLAN = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "left",
-            backgroundImage: theme.CMS.backgroundImage, 
+            backgroundImage: theme.CMS.backgroundImage,
             color: 'gray'
-          }}> 
+          }}>
             <Tab>PLAN VISUAL</Tab>
-            { getCompany() === "CMS" && <Tab>QUICK PLAN</Tab>}
-            { getCompany() === "CMS" && <Tab>AUTO PLAN</Tab>}
+            {getCompany() === "CMS" && <Tab>QUICK PLAN</Tab>}
+            {getCompany() === "CMS" && <Tab>AUTO PLAN</Tab>}
             <Tab>PLAN TABLE</Tab>
             <Tab>LỊCH SỬ</Tab>
             <Tab>DATA SX</Tab>
             <Tab>PLAN STATUS</Tab>
             <Tab>TV SHOW</Tab>
-            <Tab>EQ STATUS</Tab>  
+            <Tab>EQ STATUS</Tab>
             <Tab>Kho SX Main</Tab>
             <Tab>PLAN_RESULT</Tab>
           </TabList>
           <TabPanel>
-            { getCompany() === "CMS" ? <MACHINE /> : <MACHINE_OLD />}
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <MACHINE /> : <MACHINE_OLD />}
           </TabPanel>
-          { getCompany() === "CMS" && <TabPanel>
-            { getCompany() === "CMS" ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
-          </TabPanel>    }
-          { getCompany() === "CMS" && <TabPanel>  
-            <KHCT /> 
-          </TabPanel> }  
+          {getCompany() === "CMS" && <TabPanel>
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
+          </TabPanel>}
+          {getCompany() === "CMS" && <TabPanel>
+            <KHCT />
+          </TabPanel>}
           <TabPanel>
-            { getCompany() === "CMS" ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
-          </TabPanel>      
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
+          </TabPanel>
           <TabPanel>
             <LICHSUINPUTLIEU />
           </TabPanel>
           <TabPanel>
             <DATASX />
-          </TabPanel> 
+          </TabPanel>
           <TabPanel>
             <PLAN_STATUS />
-          </TabPanel>           
+          </TabPanel>
           <TabPanel>
-            <EQ_STATUS /> 
-          </TabPanel>   
+            <EQ_STATUS />
+          </TabPanel>
           <TabPanel>
-            <EQ_STATUS2 /> 
-          </TabPanel>         
+            <EQ_STATUS2 />
+          </TabPanel>
           <TabPanel>
-            <KHOAO /> 
-          </TabPanel>          
+            <KHOAO />
+          </TabPanel>
           <TabPanel>
             <ACHIVEMENTTB />
-          </TabPanel> 
+          </TabPanel>
         </Tabs>
       </Suspense>
     </div>

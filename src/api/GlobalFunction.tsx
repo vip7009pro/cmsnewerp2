@@ -913,12 +913,12 @@ export const f_checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: s
 export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
   const company = getCompany();
   return planlist.map((element, index) => (
-    company === "CMS" ? <CHITHI_COMPONENT ref={ref} key={index} DATA={element} /> : <CHITHI_COMPONENT_A ref={ref} key={index} DATA={element} />
+    <CHITHI_COMPONENT ref={ref} key={index} DATA={element} />
   ));
 };
 export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
   const company = getCompany();
-  return company === "CMS" ? <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} /> : <CHITHI_COMPONENT2_A ref={ref} PLAN_LIST={planlist} />;
+  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} /> ;
 };
 export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
   return ycsxlist.map((element, index) => (
@@ -1566,13 +1566,13 @@ export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, fa
         //console.log(loadeddata);
         planData = loadeddata;
         f_updatePlanOrder(plan_date);
-        Swal.fire({
+        /* Swal.fire({
           title: "Thông báo",
           text: "Load plan thành công",
           icon: "success",
           showCancelButton: false,
           confirmButtonText: "OK",
-        }); 
+        });  */
       } else {
         planData = [];
         Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -5488,7 +5488,6 @@ export const f_checkDocVersion = async (DATA: any) => {
     });
   return kq +1;  
 }
-
 export const f_updateMaterialDocData = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("updateMaterialDocData", DATA)
@@ -5541,7 +5540,6 @@ export const f_updateRndApp = async (DATA: any) => {
     });
   return kq;  
 }
-
 export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
   if (codeList.length >= 1) {
     checkBP(getUserData(), ["ALL"], ["ALL"], ["ALL"], async () => {
@@ -5565,7 +5563,6 @@ export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
     Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
   }
 }
-
 export const f_addProdProcessData = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("addProdProcessData", DATA)
@@ -5631,7 +5628,6 @@ export const f_deleteProdProcessData = async (DATA: any) => {
     });
   return kq;
 }
-
 export const f_checkProcessNumberContinuos = async (DATA: PROD_PROCESS_DATA[]) => {
   let kq: boolean = true;
   for (let i = 0; i < DATA.length; i++) {
@@ -5655,7 +5651,6 @@ export const f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST = async (DATA: PROD_PROCES
   //console.log('checkEQ_SERIES_Exist_In_EQ_SERIES_LIST', kq);
   return kq;
 }
-
 export const f_deleteProcessNotInCurrentListFromDataBase = async (DATA: PROD_PROCESS_DATA[]) => {
   let kq: boolean = false;
   await generalQuery("deleteProcessNotInCurrentListFromDataBase", {
@@ -5686,7 +5681,6 @@ export const f_checkProcessExist = async (DATA: PROD_PROCESS_DATA) => {
   console.log('checkexist',kq);
   return kq;
 } 
-
 export const f_addProcessDataTotal = async (DATA: PROD_PROCESS_DATA[]) => {  
   for (let i = 0; i < DATA.length; i++) {
     if (await f_checkProcessExist(DATA[i])) {
@@ -5725,7 +5719,6 @@ export const f_addProcessDataTotalQLSX = async (DATA: PROD_PROCESS_DATA[]) => {
     Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error"); 
   }
 }
-
 export const f_autoUpdateDocUSE_YN = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("autoUpdateDocUSEYN_EXP", DATA)
@@ -5739,7 +5732,6 @@ export const f_autoUpdateDocUSE_YN = async (DATA: any) => {
     });
   return kq;
 } 
-
 export const f_loadProdProcessData = async (G_CODE: string) => {
   let kq: PROD_PROCESS_DATA[] = [];
   await generalQuery("loadProdProcessData", {
@@ -5756,4 +5748,20 @@ export const f_loadProdProcessData = async (G_CODE: string) => {
       console.log(error);
     });
   return kq;
+}
+export const f_isM_LOT_NO_in_IN_KHO_SX = async (PLAN_ID: string, M_LOT_NO: string) => {
+  let kq: boolean = false;
+  await generalQuery("isM_LOT_NO_in_IN_KHO_SX", {
+    PLAN_ID: PLAN_ID,
+    M_LOT_NO: M_LOT_NO,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
 }

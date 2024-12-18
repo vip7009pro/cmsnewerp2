@@ -349,7 +349,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
           {main_plan.PLAN_ID}
         </div>
         <div className="headertitle">
-          <span style={{fontSize: "1.4rem"}}>생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}-CĐ{main_plan.PROCESS_NUMBER}-B{main_plan.STEP})</span><br></br>
+          <span style={{ fontSize: "1.4rem" }}>생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}-CĐ{main_plan.PROCESS_NUMBER}-B{main_plan.STEP})</span><br></br>
           <span style={{ fontSize: 12 }}>
             Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
           </span>
@@ -662,13 +662,11 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                               ? request_codeinfo[0]?.LOSS_SX4
                               : 0) * element.PLAN_QTY * (element.PD ?? 0) / (element.CAVITY ?? 0) / 1000 / 100).toLocaleString('en-US', { maximumFractionDigits: 1, minimumFractionDigits: 1 })}met</td>
                   </tr>
-
-
                 ))}
               </tbody>
             </table>
           </div>
-          <div className="text1">
+          {getCompany() === 'CMS' && <div className="text1">
             3. 중점 불량 Thông tin lỗi (Phân loại:{" "}
             {request_codeinfo[0].CODE_50 === "01"
               ? "GC"
@@ -684,8 +682,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                         ? "Vai bac 4"
                         : "ETC"}
             ) _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
-          </div>
-          <div className="thongtinyeucau">
+          </div>}
+          {getCompany() === 'CMS' && <div className="thongtinyeucau">
             <table className="ttyc1">
               <thead>
                 <tr>
@@ -694,7 +692,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                   <th style={{ width: '10%' }}>Hạng mục test/테스트 항목</th>
                   <th style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>Phương pháp test/테스트 방법</span>
-                    {defectProcessData.length > 0 && <FaStar color="red" size={25} />}  
+                    {defectProcessData.length > 0 && <FaStar color="red" size={25} />}
                   </th>
                 </tr>
               </thead>
@@ -709,9 +707,62 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                 ))}
               </tbody>
             </table>
-          </div>
+          </div>}
+          {getCompany() !== 'CMS' && <div className="text1">
+            3. LOSS INFO (Phân loại:{" "}
+            {request_codeinfo[0].CODE_50 === "01"
+              ? "GC"
+              : request_codeinfo[0].CODE_50 === "02"
+                ? "SK"
+                : request_codeinfo[0].CODE_50 === "03"
+                  ? "KD"
+                  : request_codeinfo[0].CODE_50 === "04"
+                    ? "VN"
+                    : request_codeinfo[0].CODE_50 === "05"
+                      ? "SAMPLE"
+                      : request_codeinfo[0].CODE_50 === "06"
+                        ? "Vai bac 4"
+                        : "ETC"}
+            ) _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+          </div>}
+          {getCompany() !== 'CMS' && <div className="thongtinyeucau">
+            <table className="ttyc1">
+              <thead>
+                <tr>
+                  <th>PLAN_ID</th>
+                  <th>STEP</th>
+                  <th>Bóc kiểm (EA)/파괴검사</th>
+                  <th>Lấy đồ/도구 준비</th>
+                  <th>Máy hỏng/설비 고장</th>
+                  <th>Dao NG/칼 불량</th>
+                  <th>Chờ liệu/원단 대기</th>
+                  <th>Chờ BTP/BTP 대기</th>
+                  <th>Hết liệu/원단 떨어짐</th>
+                  <th>Liệu NG/원단 불량</th>
+                </tr>
+              </thead>
+              <tbody>
+                {PLAN_LIST.map((element: QLSXPLANDATA, index: number) => {
+                  return (
+                    <tr key={index}>
+                      <td style={{ height: "20px" }}>{element.PLAN_ID}</td>
+                      <td style={{ height: "20px" }}>{element.STEP}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>}
           <div className="text1">
-            5. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
+            4. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
             {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}
             {checklieuchinh === true ? "Đã SET" : "Chưa SET"}
           </div>

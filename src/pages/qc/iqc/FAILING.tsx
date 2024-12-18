@@ -15,7 +15,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { checkBP, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { checkBP, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
 import { GiConfirmed } from "react-icons/gi";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -554,6 +554,7 @@ const FAILING = () => {
       });
   };
   const checkInput = (): boolean => {
+
     if (
       m_lot_no !== "" &&
       planId !== "" &&
@@ -960,18 +961,35 @@ const FAILING = () => {
               </div>
             </div>
             <div className="formbutton">                         
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={() => {
+              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#403dda' }} onClick={ async () => {
                 if (checkInput() && isNewFailing) {
+                  let checkLOTExistTotal: boolean = false;                  
+                  let checkLotWithPlanIdP500 = await f_isM_LOT_NO_in_P500(planId, m_lot_no);
+                  let checkLotWithPlanId_IN_KHO_SX = await f_isM_LOT_NO_in_IN_KHO_SX(planId, m_lot_no);
+                  if(checkLotWithPlanIdP500){
+                    checkLOTExistTotal = true;                       
+                  }  
+                  else 
+                  {
+                    if(checkLotWithPlanId_IN_KHO_SX){
+                      checkLOTExistTotal = true;
+                    }
+                  }   
+
                   let lotArray = inspectiondatatable.map(
                     (element: QC_FAIL_DATA, index: number) => {
                       return element.M_LOT_NO;
                     },
-                  );                  
-                    if (lotArray.indexOf(m_lot_no) < 0) {
-                      addRow();
-                    } else {
-                      Swal.fire( "Thông tin", "Đã thêm cuộn này rồi", "error");
-                    }                  
+                  );     
+                  if(!checkLOTExistTotal) {
+                    Swal.fire("Thông báo", "LOT này không dùng cho chỉ thị này", "error");
+                    return;
+                  }    
+                  if(lotArray.indexOf(m_lot_no) >= 0){
+                    Swal.fire("Thông báo", "LOT này đã được thêm rồi", "error");
+                    return;
+                  }                  
+                  addRow();       
                 } else {
                   Swal.fire("Thông báo", "Hãy chọn New Failing rồi nhập đủ thông tin trước bấm lưu", "error");
                 }
