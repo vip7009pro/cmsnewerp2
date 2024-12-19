@@ -275,7 +275,6 @@ const MACHINE = () => {
   const ycsxprintref = useRef(null);
   const loadProcessList = async (G_CODE: string) => {
     let loadeddata = await f_loadProdProcessData(G_CODE);
-
     setCurrentProcessList(loadeddata);    
   } 
   const handlePrint = useReactToPrint({

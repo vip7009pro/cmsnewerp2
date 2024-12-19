@@ -54,8 +54,6 @@ import DATAMATRIX from "../pages/rnd/design_amazon/design_components/DATAMATRIX"
 import BARCODE from "../pages/rnd/design_amazon/design_components/BARCODE";
 import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
-import CHITHI_COMPONENT_A from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT_A";
-import CHITHI_COMPONENT2_A from "../pages/qlsx/QLSXPLAN/CHITHI/CHITHI_COMPONENT2_A";
 export const zeroPad = (num: number, places: number) => String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -197,7 +195,6 @@ export async function checkBP(
   console.log(userData?.JOB_NAME);
   console.log(permitted_position);
   console.log(permitted_empl);
-
   if (userData !== undefined) {
     if (
       userData.EMPL_NO !== undefined &&
@@ -918,7 +915,7 @@ export const renderChiThi = (planlist: QLSXPLANDATA[], ref: any) => {
 };
 export const renderChiThi2 = (planlist: QLSXPLANDATA[], ref: any) => {
   const company = getCompany();
-  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} /> ;
+  return <CHITHI_COMPONENT2 ref={ref} PLAN_LIST={planlist} />;
 };
 export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
   return ycsxlist.map((element, index) => (
@@ -1545,7 +1542,6 @@ export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, fa
       if (response.data.tk_status !== "NG") {
         let loadeddata = response.data.data.map(
           (element: QLSXPLANDATA, index: number) => {
-            
             return {
               ...element,
               ORG_LOSS_KT: getCompany() === 'CMS' ? element.LOSS_KT : 0,
@@ -1554,7 +1550,7 @@ export const f_loadQLSXPLANDATA2 = async (plan_date: string, machine: string, fa
               G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
               PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               EQ_STATUS: element.EQ_STATUS === "B" ? "Đang setting" : element.EQ_STATUS === "M" ? "Đang Run" : element.EQ_STATUS === "K" ? "Chạy xong" : element.EQ_STATUS === "K" ? "KTST-KSX" : "Chưa chạy",
-              ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,              
+              ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
               SETTING_START_TIME: element.SETTING_START_TIME === null ? "X" : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
               MASS_START_TIME: element.MASS_START_TIME === null ? "X" : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
               MASS_END_TIME: element.MASS_END_TIME === null ? "X" : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
@@ -2119,7 +2115,7 @@ export const f_handletraYCSXQLSX_New = async (filterdata: any) => {
       if (response.data.tk_status !== "NG") {
         //console.log(response.data.data);
         const loadeddata: YCSXTableData[] = response.data.data.map(
-          (element: YCSXTableData, index: number) => {          
+          (element: YCSXTableData, index: number) => {
             return {
               ...element,
               G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
@@ -2139,7 +2135,7 @@ export const f_handletraYCSXQLSX_New = async (filterdata: any) => {
               W6: element.W6 ?? 0,
               W7: element.W7 ?? 0,
               W8: element.W8 ?? 0,
-              PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,              
+              PROD_REQUEST_QTY: element.PROD_REQUEST_QTY ?? 0,
               id: index
             };
           }
@@ -5457,7 +5453,7 @@ export const f_loadDefectProcessData = async (G_CODE: string, PROCESS_NUMBER: nu
     .catch((error) => {
       console.log(error);
     });
-  return kq;  
+  return kq;
 }
 export const f_resetIN_KHO_SX_IQC1 = async (PLAN_ID: string, M_LOT_NO: string) => {
   let kq: boolean = false;
@@ -5473,14 +5469,14 @@ export const f_resetIN_KHO_SX_IQC1 = async (PLAN_ID: string, M_LOT_NO: string) =
     .catch((error) => {
       console.log(error);
     });
-  return kq;  
+  return kq;
 }
 export const f_resetIN_KHO_SX_IQC2 = async (PLAN_ID: string, M_LOT_NO: string) => {
   let kq: boolean = false;
   await generalQuery("resetKhoSX_IQC2", {
     PLAN_ID: PLAN_ID,
     M_LOT_NO: M_LOT_NO,
-  })  
+  })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = true;
@@ -5489,7 +5485,7 @@ export const f_resetIN_KHO_SX_IQC2 = async (PLAN_ID: string, M_LOT_NO: string) =
     .catch((error) => {
       console.log(error);
     });
-  return kq;  
+  return kq;
 }
 export const f_getMaterialDocData = async (filterData: any) => {
   let mat_doc_data: MAT_DOC_DATA[] = [];
@@ -5532,7 +5528,7 @@ export const f_insertMaterialDocData = async (DATA: any) => {
     .catch((error) => {
       console.log(error);
     });
-  return kq;  
+  return kq;
 };
 export const f_checkDocVersion = async (DATA: any) => {
   let kq: number = 0;
@@ -5545,7 +5541,7 @@ export const f_checkDocVersion = async (DATA: any) => {
     .catch((error) => {
       console.log(error);
     });
-  return kq +1;  
+  return kq + 1;
 }
 export const f_updateMaterialDocData = async (DATA: any) => {
   let kq: boolean = false;
@@ -5558,8 +5554,8 @@ export const f_updateMaterialDocData = async (DATA: any) => {
     .catch((error) => {
       console.log(error);
     });
-  return kq;    
-} 
+  return kq;
+}
 export const f_updatePurApp = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("updatePurApp", DATA)
@@ -5585,7 +5581,7 @@ export const f_updateDtcApp = async (DATA: any) => {
       console.log(error);
     });
   return kq;
-} 
+}
 export const f_updateRndApp = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("updateRndApp", DATA)
@@ -5597,7 +5593,7 @@ export const f_updateRndApp = async (DATA: any) => {
     .catch((error) => {
       console.log(error);
     });
-  return kq;  
+  return kq;
 }
 export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
   if (codeList.length >= 1) {
@@ -5634,7 +5630,7 @@ export const f_addProdProcessData = async (DATA: any) => {
       console.log(error);
     });
   return kq;
-} 
+}
 export const f_addProdProcessDataQLSX = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("addProdProcessDataQLSX", DATA)
@@ -5647,7 +5643,7 @@ export const f_addProdProcessDataQLSX = async (DATA: any) => {
       console.log(error);
     });
   return kq;
-} 
+}
 export const f_updateProdProcessData = async (DATA: any) => {
   let kq: boolean = false;
   await generalQuery("updateProdProcessData", DATA)
@@ -5696,7 +5692,7 @@ export const f_checkProcessNumberContinuos = async (DATA: PROD_PROCESS_DATA[]) =
     }
   }
   return kq;
-} 
+}
 export const f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST = async (DATA: PROD_PROCESS_DATA[], machineList: MACHINE_LIST[]) => {
   //console.log('checkEQ_SERIES_Exist_In_EQ_SERIES_LIST', DATA, machineList);
   let kq: boolean = true;
@@ -5725,7 +5721,7 @@ export const f_deleteProcessNotInCurrentListFromDataBase = async (DATA: PROD_PRO
       console.log(error);
     });
   return kq;
-}   
+}
 export const f_checkProcessExist = async (DATA: PROD_PROCESS_DATA) => {
   let kq: boolean = false;
   await generalQuery("checkProcessExist", DATA)
@@ -5737,45 +5733,39 @@ export const f_checkProcessExist = async (DATA: PROD_PROCESS_DATA) => {
     .catch((error) => {
       console.log(error);
     });
-  console.log('checkexist',kq);
+  console.log('checkexist', kq);
   return kq;
-} 
-export const f_addProcessDataTotal = async (DATA: PROD_PROCESS_DATA[]) => {  
+}
+export const f_addProcessDataTotal = async (DATA: PROD_PROCESS_DATA[]) => {
   for (let i = 0; i < DATA.length; i++) {
     if (await f_checkProcessExist(DATA[i])) {
       await f_updateProdProcessData(DATA[i]);
     }
-    else 
-    {
-      await f_addProdProcessData(DATA[i]);     
+    else {
+      await f_addProdProcessData(DATA[i]);
     }
   }
-  if(DATA.length > 0)
-  {
-    Swal.fire("Thông báo", "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!", "success"); 
+  if (DATA.length > 0) {
+    Swal.fire("Thông báo", "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!", "success");
   }
-  else
-  {
-    Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error"); 
+  else {
+    Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error");
   }
 }
-export const f_addProcessDataTotalQLSX = async (DATA: PROD_PROCESS_DATA[]) => {  
+export const f_addProcessDataTotalQLSX = async (DATA: PROD_PROCESS_DATA[]) => {
   for (let i = 0; i < DATA.length; i++) {
     if (await f_checkProcessExist(DATA[i])) {
       await f_updateProdProcessDataQLSX(DATA[i]);
     }
-    else 
-    {
-      await f_addProdProcessDataQLSX(DATA[i]);     
+    else {
+      await f_addProdProcessDataQLSX(DATA[i]);
     }
   }
-  if(DATA.length > 0)
-  {
-    Swal.fire("Thông báo", "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!", "success"); 
+  if (DATA.length > 0) {
+    Swal.fire("Thông báo", "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!", "success");
   }
-  else
-  {
-    Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error"); 
+  else {
+    Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error");
   }
 }
 export const f_autoUpdateDocUSE_YN = async (DATA: any) => {
@@ -5790,7 +5780,7 @@ export const f_autoUpdateDocUSE_YN = async (DATA: any) => {
       console.log(error);
     });
   return kq;
-} 
+}
 export const f_loadProdProcessData = async (G_CODE: string) => {
   let kq: PROD_PROCESS_DATA[] = [];
   await generalQuery("loadProdProcessData", {
@@ -5822,5 +5812,5 @@ export const f_isM_LOT_NO_in_IN_KHO_SX = async (PLAN_ID: string, M_LOT_NO: strin
     .catch((error) => {
       console.log(error);
     });
-  return kq;  
+  return kq;
 }
