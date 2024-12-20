@@ -6,6 +6,8 @@ import OQC_REPORT from "./OQC_REPORT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { getCompany } from "../../../api/Api";
+import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 const OQC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {}, []);
@@ -35,7 +37,7 @@ const OQC = () => {
         </TabList>
         <TabPanel>
           <div className="trainspection">
-            <KHOTP />
+            {getCompany() === 'CMS' ? <KHOTP /> : <KHOTPNEW />}
           </div>
         </TabPanel>
         <TabPanel>
