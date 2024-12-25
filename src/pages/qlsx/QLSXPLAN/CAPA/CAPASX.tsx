@@ -29,7 +29,7 @@ import {
 import { CustomResponsiveContainer, f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
 const CAPASX = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
-  const dailytime2: number = dailytime;
+  const dailytime2: number = dailytime+300;
   const [trigger, setTrigger] = useState(true);
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedMachine, setSelectedMachine] = useState("FR");
