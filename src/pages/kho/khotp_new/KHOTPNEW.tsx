@@ -62,7 +62,9 @@ const KHOTPNEW = () => {
     { field: 'PROD_TYPE', headerName: 'PROD_TYPE', resizable: true, width: 60 },
     { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 50 },
     { field: 'CUST_CD', headerName: 'CUST_CD', resizable: true, width: 50 },
-    { field: 'OUT_QTY', headerName: 'OUT_QTY', resizable: true, width: 50 },
+    { field: 'OUT_QTY', headerName: 'OUT_QTY', resizable: true, width: 50, cellRenderer: (params: any) => {
+      return <span style={{color: 'blue', fontWeight:'bold'}}>{params.data.OUT_QTY.toLocaleString('en-US')}</span>
+    }  },
     { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
     { field: 'OUT_TYPE', headerName: 'OUT_TYPE', resizable: true, width: 60},
     { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 80 , cellRenderer: (params: any) => {

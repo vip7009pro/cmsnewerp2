@@ -22,7 +22,7 @@ import {
 } from "../../../api/GlobalFunction";
 import { DailyData, FcostData } from "../../../api/GlobalInterface";
 
-const InspectionMonthlyFcost = ({
+const InspectionDailyFcost2 = ({
   dldata,
   dlppmdata,
   processColor,
@@ -33,12 +33,12 @@ const InspectionMonthlyFcost = ({
   };
 
   let dldata_ppm = dldata?.map((item) => {
-    let ppm = dlppmdata?.find((ppm) => ppm.YEAR_MONTH === item.INSPECT_YM);
+    let ppm = dlppmdata?.find((ppm) => ppm.INSPECT_DATE === item.INSPECT_DATE);
     return {
       ...item,
-      TOTAL_PPM: (ppm?.TOTAL_PPM ?? 0)/10000,
-      PROCESS_PPM: (ppm?.PROCESS_PPM ?? 0)/10000,
-      MATERIAL_PPM: (ppm?.MATERIAL_PPM ?? 0)/10000,
+      TOTAL_PPM: ppm?.TOTAL_PPM,
+      PROCESS_PPM: ppm?.PROCESS_PPM,
+      MATERIAL_PPM: ppm?.MATERIAL_PPM,
     };
   }); 
 
@@ -46,7 +46,7 @@ const InspectionMonthlyFcost = ({
     return formatCash(value) + ' $'; 
   };
   const labelFormatter2 = (value: number) => {
-    return (value?.toLocaleString("en-US") ?? 0)+'%'; 
+    return formatCash(value); 
   };
 
   const CustomTooltip = ({
@@ -59,6 +59,7 @@ const InspectionMonthlyFcost = ({
     label?: any;
   }) => {
     if (active && payload && payload.length) {
+      console.log(payload);
       return (
         <div
           className='custom-tooltip'
@@ -68,29 +69,36 @@ const InspectionMonthlyFcost = ({
             borderRadius: 5,
           }}
         >
-          <p>Tháng {label}:</p>
-          <p className='label'style={{color:'green'}}>
+          <p>Ngày {label}:</p>
+          <p className='label'>
             PROCESS_NG: {`${payload[0].payload?.P_NG_AMOUNT?.toLocaleString("en-US")}`} $
           </p>
-          <p className='label'style={{color:'green'}}>
+          <p className='label'>
             MATERIAL_NG: {`${payload[0].payload?.M_NG_AMOUNT?.toLocaleString("en-US")}`} $
           </p>
-          <p className='label'style={{color:'green'}}>
+          <p className='label'>
             TOTAL_NG: {`${payload[0].payload?.T_NG_AMOUNT?.toLocaleString("en-US")}`} $
-          </p>         
-          <p className='label' style={{color:'blue'}}>
-            PROCESS_PPM: {`${payload[0].payload?.PROCESS_PPM?.toLocaleString("en-US")}`} %
-          </p>
-          <p className='label' style={{color:'blue'}}>
-            MATERIAL_PPM: {`${payload[0].payload?.MATERIAL_PPM?.toLocaleString("en-US")}`} %
-          </p>
-          <p className='label' style={{color:'blue'}}>
-            TOTAL_PPM: {`${payload[0].payload?.TOTAL_PPM?.toLocaleString("en-US")}`} %
           </p>
         </div>
       );
     }
     return null;
+  };
+  const CustomLabel = (props: any) => {
+    //console.log(props);
+    return (
+      <g>
+        <rect
+          x={props.viewBox.x}
+          y={props.viewBox.y}
+          fill="#aaa"
+          style={{ transform: `rotate(90deg)` }}
+        />
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={-10} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
+          {formatCash(props.value)}
+        </text>
+      </g>
+    );
   };
   useEffect(() => {}, []);
   return (
@@ -107,8 +115,8 @@ const InspectionMonthlyFcost = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='INSPECT_YM' height={40} tick={{fontSize:'0.7rem'}}>         
-          <Label value='Tháng' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+        <XAxis dataKey='INSPECT_DATE' height={40} tick={{fontSize:'0.7rem'}}>         
+          <Label value='Ngày' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -125,8 +133,10 @@ const InspectionMonthlyFcost = ({
               compactDisplay: "short",
             }).format(value) + "$"
           }
-          tickCount={7}
+          tickCount={10}
         />
+     
+
         <Tooltip content={<CustomTooltip />} />
         <Legend 
         verticalAlign="top"
@@ -136,28 +146,54 @@ const InspectionMonthlyFcost = ({
         formatter={(value, entry) => (
           <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
         )}/>
+        
+
         <YAxis yAxisId='right-axis' dataKey='TOTAL_PPM' tick={{ fontSize: '0.7rem' }} orientation='right' tickCount={10} tickFormatter={(value) =>
           new Intl.NumberFormat("en", {
             notation: "compact",
             compactDisplay: "short",
           }).format(value)
         }></YAxis>
-        {/* <Line
+
+        {/* <Bar
+          stackId='a'
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='PROCESS_PPM'          
+          stroke='white'
+          fill={`#d4f542`}
+        >
+          <LabelList dataKey="PROCESS_PPM" position="inside" formatter={labelFormatter2} fontSize={"0.7rem"} />
+        </Bar>
+        <Bar
+          stackId='a'
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='MATERIAL_PPM'
+          stroke='white'
+          fill={`#4be725`}
+        >
+          <LabelList dataKey="MATERIAL_PPM" position="inside" formatter={labelFormatter2} fontSize={"0.7rem"} />
+        </Bar> */}
+
+
+      
+        <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='T_NG_AMOUNT'
           stroke='green'
-          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}   
-        /> */}
+          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+        />
         <Bar
           stackId='a'
           yAxisId='left-axis'
           type='monotone'
           dataKey='P_NG_AMOUNT'
           stroke='white'
-          fill={processColor}                 
+          fill={processColor}          
         >
-          <LabelList dataKey="P_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="P_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} style={{fontWeight:'bold', color:'black'}}/>
         </Bar>
         <Bar
           stackId='a'
@@ -165,19 +201,23 @@ const InspectionMonthlyFcost = ({
           type='monotone'
           dataKey='M_NG_AMOUNT'
           stroke='white'
-          fill={materialColor}                
+          fill={materialColor}          
         >
-          <LabelList dataKey="M_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="M_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} style={{fontWeight:'bold', color:'black'}}/>
         </Bar>
-        <Line
+
+        
+
+
+        {/* <Line
           yAxisId='right-axis'
           type='monotone'
           dataKey='TOTAL_PPM'
           stroke='red'
           label={{ position: "top", formatter: labelFormatter2, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
-        />
+        /> */}
       </ComposedChart>
     </CustomResponsiveContainer>
   );
 };
-export default InspectionMonthlyFcost;
+export default InspectionDailyFcost2;

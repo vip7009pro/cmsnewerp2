@@ -11,7 +11,7 @@ interface WidgetInfo {
   process_ppm?: number;
   total_ppm?: number;
 }
-export default function WidgetInspection({
+export default function WidgetInspection2({
   widgettype,
   label,
   topColor,
@@ -33,11 +33,11 @@ export default function WidgetInspection({
         </div>
         <div className="middle">
         <div className="totalNG">
-            {((total_ppm??0)/10000)?.toLocaleString("en-US", {
+            {total_ppm?.toLocaleString("en-US", {
               style: "decimal",
-              maximumFractionDigits: 3,
-              minimumFractionDigits: 3,
-            })} %
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })} ppm
           </div>
 
         </div>

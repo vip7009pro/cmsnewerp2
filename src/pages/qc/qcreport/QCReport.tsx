@@ -7,6 +7,8 @@ const OQC_REPORT = React.lazy(() => import("../oqc/OQC_REPORT"));
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { getCompany } from "../../../api/Api";
+import INSPECT_REPORT2 from "../inspection/INSPECT_REPORT2";
 
 const QCReport = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -36,7 +38,7 @@ const QCReport = () => {
           <PQC_REPORT/>
         </TabPanel>
         <TabPanel>
-          <INSPECT_REPORT/>
+          {getCompany() ==='CMS' ? <INSPECT_REPORT/> : <INSPECT_REPORT2/>}
         </TabPanel>
         <TabPanel>
           <CSREPORT/>

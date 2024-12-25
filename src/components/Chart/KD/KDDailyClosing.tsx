@@ -57,7 +57,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
     payload?: any;
     label?: any;
   }) => {
-    if (active && payload && payload.length) {
+    if (active && payload && payload.length) {      
       return (
         <div
           className='custom-tooltip'

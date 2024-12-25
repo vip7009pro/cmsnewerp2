@@ -692,6 +692,15 @@ const FAILING = () => {
   const updateQCFailTable = async () => {
     if (selectedRowsDataA.current.length > 0) {
       let err_code: string = "";
+      if(g_name == "")
+      {
+        Swal.fire('Thông báo', 'Số chỉ thị chưa đúng', 'error');
+        return;
+      }
+     
+
+
+
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         if(!(selectedRowsDataA.current[i].OUT1_EMPL === null && selectedRowsDataA.current[i].OUT2_EMPL === null)){
           err_code += `Lỗi: Cuộn ${selectedRowsDataA.current[i].M_LOT_NO} đã out rồi | `;
@@ -798,6 +807,9 @@ const FAILING = () => {
                       if (e.target.value.length >= 7) {
                         checkPlanID(e.target.value);
                         checkPQC3_ID(e.target.value);
+                      }
+                      else {
+                        setGName("");                        
                       }
                       setPlanId(e.target.value);
                     }}
@@ -1050,6 +1062,9 @@ const FAILING = () => {
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
                         checkPlanID(e.target.value);
+                      }
+                      {
+                        setGName("")
                       }
                       setPlanId(e.target.value);
                     }}

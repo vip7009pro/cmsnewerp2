@@ -3116,6 +3116,21 @@ export interface DailyPPMData {
   MATERIAL_PPM?: number;
   PROCESS_PPM?: number;
 }
+export interface PPMData {
+  INSPECT_DATE?: string;
+  YEAR_WEEK?: number;
+  YEAR_NUM?: number;
+  WEEK_NUM?: number;
+  YEAR_MONTH?: string;
+  MONTH_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+}
 export interface DailyData {
   dldata?: DailyPPMData[];
   processColor?: string;
@@ -3123,6 +3138,7 @@ export interface DailyData {
 }
 export interface FcostData {
   dldata?: InspectSummary[];
+  dlppmdata?: PPMData[];
   processColor?: string;
   materialColor?: string;
 }

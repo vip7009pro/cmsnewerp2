@@ -110,12 +110,10 @@ socket.on("notification", (data) => {
   console.log(data);
 }); */
 socket.on("login", (data) => {
-  console.log(data);
-  
+  console.log(data);  
 });
 socket.on("logout", (data) => {
-  console.log(data);
-  
+  console.log(data);  
 });
 socket.on("disconnect", () => {
   console.log(socket.id); //undefined
