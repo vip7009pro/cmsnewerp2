@@ -25,8 +25,11 @@ import {
 import moment from "moment";
 import React, {
   startTransition,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -50,6 +53,8 @@ import {
 } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
+import { AgGridReact } from "ag-grid-react";
 const PRODUCT_BARCODE_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -208,6 +213,217 @@ const PRODUCT_BARCODE_MANAGER = () => {
       load_barcode_table();
     }
   };
+  const columns_def = [
+    { field: 'G_CODE', headerName: 'G_CODE', width: 60 },
+    { field: 'G_NAME', headerName: 'G_NAME', width: 160 },
+    { field: 'BARCODE_STT', headerName: 'BARCODE_STT', width: 80 },
+    { field: 'BARCODE_TYPE', headerName: 'BARCODE_TYPE', width: 80 },
+    { field: 'BARCODE_RND', headerName: 'BARCODE_RND', width: 80 },
+    { field: 'BARCODE_INSP', headerName: 'BARCODE_INSP', width: 80 },
+    { field: 'BARCODE_RELI', headerName: 'BARCODE_RELI', width: 80 },
+    {
+      field: 'STATUS', headerName: 'STATUS', width: 100, cellRenderer: (params: any) => {
+        if (params.data.STATUS === "OK") {
+          return (
+            <div
+              style={{
+                color: "white",
+                backgroundColor: "#13DC0C",
+                width: "80px",
+                textAlign: "center",
+              }}
+            >
+              OK
+            </div>
+          );
+        } else {
+          return (
+            <div
+              style={{
+                color: "white",
+                backgroundColor: "red",
+                width: "80px",
+                textAlign: "center",
+              }}
+            >
+              NG
+            </div>
+          );
+        }
+      }
+    },
+    { field: 'BARCODE_RND', headerName: 'CODE_VISUALIZE', width: 250, cellRenderer: (params: any) => {    
+      if (params.data.BARCODE_TYPE === "QR") {      
+        return (      
+            <QRCODE
+              DATA={{
+                CAVITY_PRINT: 2,
+                DOITUONG_NAME: "bc",
+                DOITUONG_NO: 1,
+                DOITUONG_STT: "0",
+                FONT_NAME: "Arial",
+                FONT_SIZE: 6,
+                FONT_STYLE: "normal",
+                G_CODE_MAU: "",
+                GIATRI: params.data.BARCODE_RND,
+                PHANLOAI_DT: "QR CODE",
+                POS_X: 0,
+                POS_Y: 0,
+                SIZE_W: 10,
+                SIZE_H: 10,
+                REMARK: "",
+                ROTATE: 0,
+              }}
+            />       
+        );
+      } else if (params.data.BARCODE_TYPE === "1D") {
+        return (       
+            <BARCODE
+              DATA={{
+                CAVITY_PRINT: 2,
+                DOITUONG_NAME: "bc",
+                DOITUONG_NO: 1,
+                DOITUONG_STT: "0",
+                FONT_NAME: "Arial",
+                FONT_SIZE: 6,
+                FONT_STYLE: "normal",
+                G_CODE_MAU: "",
+                GIATRI: params.data.BARCODE_RND,
+                PHANLOAI_DT: "QR CODE",
+                POS_X: 0,
+                POS_Y: 0,
+                SIZE_W: 60,
+                SIZE_H: 10,
+                REMARK: "",
+                ROTATE: 0,
+              }}
+            />        
+        );
+      } else if (params.data.BARCODE_TYPE === "MATRIX") {
+        return (       
+            <DATAMATRIX
+              DATA={{
+                CAVITY_PRINT: 2,
+                DOITUONG_NAME: "bc",
+                DOITUONG_NO: 1,
+                DOITUONG_STT: "0",
+                FONT_NAME: "Arial",
+                FONT_SIZE: 6,
+                FONT_STYLE: "normal",
+                G_CODE_MAU: "",
+                GIATRI: params.data.BARCODE_RND,
+                PHANLOAI_DT: "QR CODE",
+                POS_X: 0,
+                POS_Y: 0,
+                SIZE_W: 10,
+                SIZE_H: 10,
+                REMARK: "",
+                ROTATE: 0,
+              }}
+            />        
+        );
+      }
+    }},
+    { field: 'SX_STATUS', headerName: 'SX_STATUS', width: 100 },
+  ];  
+  const product_barcode_data_ag_table = useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>
+           
+          </div>}
+        columns={columns_def}
+        data={barcodedatatable}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={(params: any) => {
+          setSelectedRows(params.data)
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+        }}     />   
+    )
+  }, [barcodedatatable, columns_def]);
+
+  const gridRef = useRef<AgGridReact<any>>(null);
+  const setHeaderHeight = useCallback((value?: number) => {
+    gridRef.current!.api.setGridOption("headerHeight", value);
+    //setIdText("headerHeight", value);
+  }, []);
+  const rowStyle = { backgroundColor: 'transparent', height: '150px' };
+  const getRowStyle = (params: any) => {
+    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
+  };
+
+  const defaultColDef = useMemo(() => {
+    return {
+      initialWidth: 100,
+      wrapHeaderText: true,
+      autoHeaderHeight: false,
+      editable: true,
+      floatingFilter:  true,
+      filter: true,
+      headerCheckboxSelectionFilteredOnly: true,
+    };
+  }, []);
+
+  const product_barcode_data_ag_table2 = useMemo(() => {
+    return (
+      <div className="agtable">       
+        <div className="ag-theme-quartz"
+          style={{ height: '100%', }}
+        >
+          <AgGridReact
+            rowData={barcodedatatable}
+            columnDefs={columns_def}
+            rowHeight={50}            
+            ref={gridRef}
+            onGridReady={() => {
+              setHeaderHeight(20);
+            }}
+            defaultColDef={defaultColDef}            
+            columnHoverHighlight={true}
+            rowStyle={rowStyle}
+            getRowStyle={getRowStyle}
+            getRowId={(params: any) => params.data.G_CODE}
+            rowSelection={"multiple"}
+            rowMultiSelectWithClick={true}
+            suppressRowClickSelection={true}
+            enterNavigatesVertically={true}
+            enterNavigatesVerticallyAfterEdit={true}
+            stopEditingWhenCellsLoseFocus={true}
+            rowBuffer={10}
+            debounceVerticalScrollbar={false}
+            enableCellTextSelection={true}
+            floatingFiltersHeight={23}
+            onSelectionChanged={(params: any) => {
+              
+            }}
+            onCellClicked={async (params: any) => {
+              let rowData = params.data;
+              setSelectedRows(rowData);
+              
+            }}
+            onRowDoubleClicked={
+              (params: any) => {
+
+              }
+            }
+            onCellEditingStopped={(params: any) => {
+              //console.log(params)
+            }}
+          />
+        </div>
+        <div className="bottombar">
+        
+        </div>
+      </div>
+    )
+  }, [barcodedatatable,   columns_def])
+
   const BarcodeDataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -367,7 +583,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
                     <div
                       style={{
                         color: "white",
-                        backgroundColor: "#13DC0C",
+                        backgroundColor: "#5d855b",
                         width: "80px",
                         textAlign: "center",
                         position: "relative",
@@ -1298,7 +1514,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
             </Button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{BarcodeDataTable}</div>
+        <div className="tracuuYCSXTable">{product_barcode_data_ag_table2}</div>
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton

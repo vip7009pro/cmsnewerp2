@@ -17,7 +17,7 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import { CustomResponsiveContainer, f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart, MdPrint } from "react-icons/md";
@@ -28,6 +28,7 @@ import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, Pi
 import { useReactToPrint } from "react-to-print";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 const LICHSUTEMLOTSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [option, setOption] = useState("dataconfirm");
@@ -226,7 +227,7 @@ const LICHSUTEMLOTSX = () => {
                 } else if (e.DOITUONG_NAME === "LOT_QTY") {
                   value = (params.data.TEMP_QTY?.toLocaleString('en-US') ?? "") + "(" + params.data.TEMP_MET?.toLocaleString('en-US',{maximumFractionDigits: 2}) + "m)";
                 } else if (e.DOITUONG_NAME === "LOT_NVL") {
-                  value = "Lot NVL: " + params.data.M_LOT_NO ?? "";
+                  value = "Lot NVL: " + (params.data.M_LOT_NO ?? "");
                 } else if (e.DOITUONG_NAME === "SETTING") {
                   value = "SET " + (params.data.SETTING_MET?.toString() ?? "") +  "m | NG CĐ " +( params.data.PR_NG?.toString() ?? "") + "m";
                 } else if (e.DOITUONG_NAME === "NM_CD_CT") {
@@ -333,6 +334,97 @@ const LICHSUTEMLOTSX = () => {
     ),
     [lichsutemlotdata],
   );
+  
+  const columns_lichsutemlot = [
+    { field: 'INS_DATE', headerName: 'INS_DATE', width: 100 },
+    { field: 'G_CODE', headerName: 'G_CODE', width: 60 },
+    { field: 'G_NAME', headerName: 'G_NAME', width: 120 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', width: 60 },
+    { field: 'LOTNCC', headerName: 'LOTNCC', width: 100 },
+    { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 60 },
+    { field: 'PROCESS_LOT_NO', headerName: 'PROCESS_LOT_NO', width: 100, cellRenderer:(ele: any) => {
+      return (
+        <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.PROCESS_LOT_NO}</span>
+      )
+    }},
+    { field: 'M_NAME', headerName: 'M_NAME', width: 100 },
+    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', width: 60 },
+    { field: 'EMPL_NAME', headerName: 'EMPL_NAME', width: 100 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', width: 100 },
+    { field: 'TEMP_QTY', headerName: 'TEMP_QTY', width: 70, cellRenderer:(ele: any) => {
+      return (
+        <span style={{ color: 'blue', fontWeight: 'bold' }}>{ele.data.TEMP_QTY?.toLocaleString('en-US')}</span>
+      )
+    }},
+    { field: 'PROCESS_NUMBER', headerName: 'PROCESS_NUMBER', width: 100 },
+    { field: 'LOT_STATUS', headerName: 'LOT_STATUS', width: 100 },
+  ]
+
+  const audit_list_data_ag_table = useMemo(() => {
+    return (
+      <AGTable        
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>     
+            <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  setShowHideTemLot(prev => !prev);
+                }}
+              >
+                <MdPrint color="#611ad3" size={15} />
+                Show LOT
+              </IconButton>      
+          </div>}
+        columns={columns_lichsutemlot}
+        data={lichsutemlotdata}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={async (params: any) => {
+          //setSelectedRows(params.data)
+          setComponentList(
+            componentList.map((e: COMPONENT_DATA, index: number) => {
+              let value: string = e.GIATRI;
+              if (e.DOITUONG_NAME === "G_NAME") {
+                value = params.data.G_NAME?.substring(0, 34) ?? "";
+              } else if (e.DOITUONG_NAME === "LOTSX_BARCODE") {
+                value = params.data.PROCESS_LOT_NO ?? "";                
+              } else if (e.DOITUONG_NAME === "LOTSX_TEXT") {
+                value = params.data.PROCESS_LOT_NO ?? "";
+              } else if (e.DOITUONG_NAME === "LOT_QTY") {
+                value = (params.data.TEMP_QTY?.toLocaleString('en-US') ?? "") + "(" + params.data.TEMP_MET?.toLocaleString('en-US',{maximumFractionDigits: 2}) + "m)";
+              } else if (e.DOITUONG_NAME === "LOT_NVL") {
+                value = "Lot NVL: " + (params.data.M_LOT_NO ?? "");
+              } else if (e.DOITUONG_NAME === "SETTING") {
+                value = "SET " + (params.data.SETTING_MET?.toString() ?? "") +  "m | NG CĐ " +( params.data.PR_NG?.toString() ?? "") + "m";
+              } else if (e.DOITUONG_NAME === "NM_CD_CT") {
+                value = (params.data.FACTORY ?? "" )+ "/" + (params.data.EQUIPMENT_CD ?? "") + "/CĐ:" + (params.data.PR_NB ?? "") + "/" + (params.data.PLAN_ID ?? "");
+              } else if (e.DOITUONG_NAME === "PLAN_QTY") {
+                  value = "SL Chỉ thị: " + (params.data.PLAN_QTY?.toLocaleString('en-US') ?? "") + "EA";
+              } else if (e.DOITUONG_NAME === "NVL") {
+                value = "NVL: " + (params.data.M_NAME ?? "") + "| " + (params.data.WIDTH_CD ?? "") + " mm";
+              } else if (e.DOITUONG_NAME === "NHANVIEN") {
+                value = "NV: " + (params.data.INS_EMPL ?? "") + "_Time: " + (params.data.INS_DATE ?? "");
+              } else if (e.DOITUONG_NAME === "LOTSX_BARCODE2") {
+                value = params.data.PROCESS_LOT_NO ?? "";
+              } 
+              return {
+                ...e,
+                GIATRI: value,
+              };
+            }),
+          );
+
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+        
+        }}     />   
+    )
+  }, [lichsutemlotdata, columns_lichsutemlot]);
+
+
   const loadLabelDesign = async() => {
     setComponentList(await f_handleGETBOMAMAZON("6E00002A"));
   }
@@ -441,7 +533,7 @@ const LICHSUTEMLOTSX = () => {
         </FormButtonColumn>
       </QueryFormDiv>
       <DataTBDiv>
-        {option === 'dataconfirm' && LichSuTemLotSXDataTable}
+        {audit_list_data_ag_table}
       </DataTBDiv>      
       {showhideTemLot && 
        <div className="labelprint" style={{position: 'absolute', top: '50%', left: '45%',  width: 'fit-content', height: 'fit-content'}}>        

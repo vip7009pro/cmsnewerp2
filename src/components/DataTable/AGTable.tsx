@@ -10,6 +10,7 @@ interface AGInterface {
   toolbar?: ReactElement,
   showFilter?: boolean,
   suppressRowClickSelection?: boolean,
+  rowHeight?: number,
   onRowClick?: (e: any) => void,
   onCellClick?: (e: any) => void,
   onRowDoubleClick?: (e: any) => void,
@@ -104,7 +105,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
           animateRows={true}
           rowData={ag_data.data ?? []}
           columnDefs={ag_data.columns ?? []}
-          rowHeight={25}
+          rowHeight={ag_data.rowHeight? ag_data.rowHeight : 25}
           defaultColDef={defaultColDef}
           ref={gridRef ?? gridRefDefault}
           onGridReady={() => {

@@ -21,7 +21,7 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { UserContext } from "../../../api/Context";
@@ -37,6 +37,7 @@ import {
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 const OQC_DATA_TB = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -240,6 +241,53 @@ const OQC_DATA_TB = () => {
     ),
     [oqc_table_data],
   );
+  const columns_def = [  
+    { field: 'OQC_ID', headerName: 'OQC_ID', width: 50 },
+    { field: 'DELIVERY_DATE', headerName: 'DELIVERY_DATE', width: 80 },
+    { field: 'SHIFT_CODE', headerName: 'SHIFT_CODE', width: 70 },
+    { field: 'FACTORY_NAME', headerName: 'FACTORY_NAME', width: 80 },
+    { field: 'FULL_NAME', headerName: 'FULL_NAME', width: 100 },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 80 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', width: 100 },
+    { field: 'PROCESS_LOT_NO', headerName: 'PROCESS_LOT_NO', width: 100 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', width: 100 },
+    { field: 'LOTNCC', headerName: 'LOTNCC', width: 100 },
+    { field: 'LABEL_ID', headerName: 'LABEL_ID', width: 60 },
+    { field: 'PROD_REQUEST_DATE', headerName: 'YCSX_DATE', width: 60 },
+    { field: 'PROD_REQUEST_QTY', headerName: 'YCSX_QTY', width: 60 },
+    { field: 'G_CODE', headerName: 'G_CODE', width: 60 },
+    { field: 'G_NAME', headerName: 'G_NAME', width: 100 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 100 },
+    { field: 'DELIVERY_QTY', headerName: 'DELIVERY_QTY', width: 80 },
+    { field: 'SAMPLE_QTY', headerName: 'SAMPLE_QTY', width:70 },
+    { field: 'SAMPLE_NG_QTY', headerName: 'SAMPLE_NG_QTY', width: 90 },
+    { field: 'PROD_LAST_PRICE', headerName: 'PROD_LAST_PRICE', width: 100 },
+    { field: 'DELIVERY_AMOUNT', headerName: 'DELIVERY_AMOUNT', width: 100 },
+    { field: 'SAMPLE_NG_AMOUNT', headerName: 'SAMPLE_NG_AMOUNT', width: 100 },
+    { field: 'REMARK', headerName: 'REMARK', width: 80 },
+    { field: 'RUNNING_COUNT', headerName: 'RUNNING_COUNT', width: 90 },
+    { field: 'id', headerName: 'id', width: 60 },
+  ];
+  const oqc_data_ag_table = useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>
+          </div>}
+        columns={columns_def}
+        data={oqc_table_data}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={(params: any) => {
+          //setSelectedRows(params.data)
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+        }}     />   
+    )
+  }, [oqc_table_data, columns_def]);
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -658,7 +706,7 @@ const OQC_DATA_TB = () => {
         </FormButtonColumn>
       </QueryFormDiv>
       <DataTBDiv>
-        {materialDataTable}
+        {oqc_data_ag_table}
       </DataTBDiv>
       {showhidePivotTable && (
         <PivotTableDiv>

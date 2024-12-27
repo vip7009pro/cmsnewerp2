@@ -21,7 +21,7 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { UserContext } from "../../../api/Context";
@@ -41,6 +41,7 @@ import {
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NNDSDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 const CS_DATA_TB = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
@@ -87,6 +88,10 @@ const CS_DATA_TB = () => {
   const [cs_rma_table_data, set_cs_rma_table_data] = useState<Array<CS_RMA_DATA>>([]);
   const [cs_cndb_table_data, set_cs_cndb_table_data] = useState<Array<CS_CNDB_DATA>>([]);
   const [cs_taxi_table_data, set_cs_taxi_table_data] = useState<Array<CS_TAXI_DATA>>([]);
+
+  const [cs_data, set_cs_data] = useState<Array<any>>([]);
+
+
   const [filterData, setFilterData] = useState({
     FROM_DATE: moment().format("YYYY-MM-DD"),
     TO_DATE: moment().format("YYYY-MM-DD"),
@@ -120,6 +125,661 @@ const CS_DATA_TB = () => {
     YEAR_WEEK: '',
     REDUCE_AMOUNT: 0
   });
+  const columns_confirm = [
+    {
+      field: 'YEAR_WEEK',
+      headerName: 'YEAR_WEEK',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_ID',
+      headerName: 'CONFIRM_ID',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_DATE',
+      headerName: 'CONFIRM_DATE',
+      width: 100
+    },
+    {
+      field: 'CONTACT_ID',
+      headerName: 'CONTACT_ID',
+      width: 100
+    },
+    {
+      field: 'CS_EMPL_NO',
+      headerName: 'CS_EMPL_NO',
+      width: 100
+    },
+    {
+      field: 'EMPL_NAME',
+      headerName: 'EMPL_NAME',
+      width: 100
+    },
+    {
+      field: 'G_CODE',
+      headerName: 'G_CODE',
+      width: 100
+    },
+    {
+      field: 'G_NAME',
+      headerName: 'G_NAME',
+      width: 100
+    },
+    {
+      field: 'G_NAME_KD',
+      headerName: 'G_NAME_KD',
+      width: 100
+    },
+    {
+      field: 'PROD_REQUEST_NO',
+      headerName: 'PROD_REQUEST_NO',
+      width: 100
+    },
+    {
+      field: 'CUST_CD',
+      headerName: 'CUST_CD',
+      width: 100
+    },
+    {
+      field: 'CUST_NAME_KD',
+      headerName: 'CUST_NAME_KD',
+      width: 100
+    },
+    {
+      field: 'CONTENT',
+      headerName: 'CONTENT',
+      width: 100
+    },
+    {
+      field: 'INSPECT_QTY',
+      headerName: 'INSPECT_QTY',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ color: 'blue' }}>{ele.data.INSPECT_QTY?.toLocaleString('en-US')}</span>
+        )
+      }
+    },
+    {
+      field: 'NG_QTY',
+      headerName: 'NG_QTY',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ color: 'red' }}>{ele.data.NG_QTY?.toLocaleString('en-US')}</span>
+      )
+      }
+    },
+    {
+      field: 'REPLACE_RATE',
+      headerName: 'REPLACE_RATE',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ color: 'purple' }}>{ele.data.REPLACE_RATE?.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2, })}%</span>
+        )
+      }
+    },
+    {
+      field: 'REDUCE_QTY',
+      headerName: 'REDUCE_QTY',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ color: 'green' }}>{ele.data.REDUCE_QTY?.toLocaleString('en-US')}</span>
+        )
+      }
+    },
+    {
+      field: 'FACTOR',
+      headerName: 'FACTOR',
+      width: 100
+    },
+    {
+      field: 'RESULT',
+      headerName: 'RESULT',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_STATUS',
+      headerName: 'CONFIRM_STATUS',
+      width: 100
+    },
+    {
+      field: 'REMARK',
+      headerName: 'REMARK',
+      width: 100
+    },
+    {
+      field: 'INS_DATETIME',
+      headerName: 'INS_DATETIME',
+      width: 100
+    },
+    {
+      field: 'PHANLOAI',
+      headerName: 'PHANLOAI',
+      width: 100
+    },
+    {
+      field: 'LINK',
+      headerName: 'LINK',
+      width: 200,
+      cellRenderer :(ele: any) => {
+        let href = `/cs/CS_${ele.data.CONFIRM_ID}.jpg`;
+        return (
+          <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
+        )
+      }
+    },
+    {
+      field: 'PROD_TYPE',
+      headerName: 'PROD_TYPE',
+      width: 100
+    },
+    {
+      field: 'PROD_MODEL',
+      headerName: 'PROD_MODEL',
+      width: 100
+    },
+    {
+      field: 'PROD_PROJECT',
+      headerName: 'PROD_PROJECT',
+      width: 100
+    },
+    {
+      field: 'PROD_LAST_PRICE',
+      headerName: 'PROD_LAST_PRICE',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ color: '#0C8ADC' }}>{ele.data.PROD_LAST_PRICE?.toLocaleString('en-US', { maximumFractionDigits: 6, minimumFractionDigits: 6, })}</span>
+        )
+      }
+    },
+    {
+      field: 'REDUCE_AMOUNT',
+      headerName: 'REDUCE_AMOUNT',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.REDUCE_AMOUNT?.toLocaleString("en-US", {
+            style: "currency",
+            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+          })}</span>
+        )
+      }
+    },
+    {
+      field: 'LINK',
+      headerName: 'DEFECT_IMAGE',
+      width: 200,
+      cellRenderer : (ele: any) => {
+        let href = `/cs/CS_${ele.data.CONFIRM_ID}.jpg`;
+        let file: any = null;
+        if (ele.data.LINK === 'Y') {
+          return (
+            <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
+          )
+        }
+        else {
+          return (
+            <div className="csuploadbutton">
+              <button onClick={() => {
+                uploadCSImage(ele.data.CONFIRM_ID, file);
+              }}>Upload</button>
+              <input
+                accept='.jpg'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                }}
+              />
+            </div>
+          )
+        }
+      }
+    },
+    {
+      field: 'UP_NNDS',
+      headerName: 'UP_NNDS',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <button onClick={() => {
+            setCurrentDefectRow(ele.data);
+            setShowHideUpdateNNDS(true)
+            setCurrentDS(ele.data.DOI_SACH);
+            setCurrentNN(ele.data.NG_NHAN);
+          }
+          }>Update NNDS</button>
+        )
+      }
+    },
+    {
+      field: 'NG_NHAN',
+      headerName: 'NG_NHAN',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ width: '150px', color: 'red', fontWeight: 'bold', wordWrap: 'break-word' }}>{ele.data.NG_NHAN}</span>
+        )
+      }
+    },
+    {
+      field: 'DOI_SACH',
+      headerName: 'DOI_SACH',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        return (
+          <span style={{ width: '150px', color: 'green', fontWeight: 'bold', wordWrap: 'break-word' }}>{ele.data.DOI_SACH}</span>
+        )
+      }
+    },
+    {
+      field: 'DS_VN',
+      headerName: 'DS_VN',
+      width: 100,
+      cellRenderer:(ele: any) => {
+        let href = `/cs/CS_${ele.data.CONFIRM_ID}_VN.pptx`;
+        let file: any = null;
+        if (ele.data.DS_VN === 'Y') {
+          return (
+            <a href={href}>LINK</a>
+          )
+        }
+        else {
+          return (
+            <div className="csuploadbutton">
+              <button onClick={() => {
+                uploadCSDoiSach(ele.data.CONFIRM_ID, file, "VN");
+              }}>Upload</button>
+              <input
+                accept='.pptx'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                }}
+              />
+            </div>
+          )
+        }
+      }
+    },
+    {
+      field: 'DS_KR',
+      headerName: 'DS_KR',
+      width: 100,
+      cellRenderer : (ele: any) => {
+        let href = `/cs/CS_${ele.data.CONFIRM_ID}_KR.pptx`;
+        let file: any = null;
+        if (ele.data.DS_KR === 'Y') {
+          return (
+            <a href={href}>LINK</a>
+          )
+        }
+        else {
+          return (
+            <div className="csuploadbutton">
+              <button onClick={() => {
+                uploadCSDoiSach(ele.data.CONFIRM_ID, file, "KR");
+              }}>Upload</button>
+              <input
+                accept='.pptx'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                }}
+              />
+            </div>
+          )
+        }
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'id',
+      width: 100
+    },
+  ];
+  const columns_rmadata = [
+    {
+      field: 'RMA_ID',
+      headerName: 'RMA_ID',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_ID',
+      headerName: 'CONFIRM_ID',
+      width: 100
+    },
+    {
+      field: 'G_NAME_KD',
+      headerName: 'G_NAME_KD',
+      width: 100
+    },
+    {
+      field: 'RETURN_DATE',
+      headerName: 'RETURN_DATE',
+      width: 100
+    },
+    {
+      field: 'PROD_REQUEST_NO',
+      headerName: 'PROD_REQUEST_NO',
+      width: 100
+    },
+    {
+      field: 'G_CODE',
+      headerName: 'G_CODE',
+      width: 100
+    },
+    {
+      field: 'RMA_TYPE',
+      headerName: 'RMA_TYPE',
+      width: 100
+    },
+    {
+      field: 'RMA_EMPL_NO',
+      headerName: 'RMA_EMPL_NO',
+      width: 100
+    },
+    {
+      field: 'INS_DATETIME',
+      headerName: 'INS_DATETIME',
+      width: 100
+    },
+    {
+      field: 'FACTORY',
+      headerName: 'FACTORY',
+      width: 100
+    },
+    {
+      field: 'RETURN_QTY',
+      headerName: 'RETURN_QTY',
+      width: 100
+    },
+    {
+      field: 'SORTING_OK_QTY',
+      headerName: 'SORTING_OK_QTY',
+      width: 100
+    },
+    {
+      field: 'SORTING_NG_QTY',
+      headerName: 'SORTING_NG_QTY',
+      width: 100
+    },
+    {
+      field: 'RMA_DELIVERY_QTY',
+      headerName: 'RMA_DELIVERY_QTY',
+      width: 100
+    },
+    {
+      field: 'PROD_LAST_PRICE',
+      headerName: 'PROD_LAST_PRICE',
+      width: 100
+    },
+    {
+      field: 'RETURN_AMOUNT',
+      headerName: 'RETURN_AMOUNT',
+      width: 100
+    },
+    {
+      field: 'SORTING_OK_AMOUNT',
+      headerName: 'SORTING_OK_AMOUNT',
+      width: 100
+    },
+    {
+      field: 'SORTING_NG_AMOUNT',
+      headerName: 'SORTING_NG_AMOUNT',
+      width: 100
+    },
+    {
+      field: 'G_NAME',
+      headerName: 'G_NAME',
+      width: 100
+    },
+    {
+      field: 'PROD_TYPE',
+      headerName: 'PROD_TYPE',
+      width: 100
+    },
+    {
+      field: 'PROD_MODEL',
+      headerName: 'PROD_MODEL',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_DATE',
+      headerName: 'CONFIRM_DATE',
+      width: 100
+    },
+    {
+      field: 'CS_EMPL_NO',
+      headerName: 'CS_EMPL_NO',
+      width: 100
+    },
+    {
+      field: 'CONTENT',
+      headerName: 'CONTENT',
+      width: 100
+    },
+    {
+      field: 'INSPECT_QTY',
+      headerName: 'INSPECT_QTY',
+      width: 100
+    },
+    {
+      field: 'NG_QTY',
+      headerName: 'NG_QTY',
+      width: 100
+    },
+    {
+      field: 'REPLACE_RATE',
+      headerName: 'REPLACE_RATE',
+      width: 100
+    },
+    {
+      field: 'REDUCE_QTY',
+      headerName: 'REDUCE_QTY',
+      width: 100
+    },
+    {
+      field: 'FACTOR',
+      headerName: 'FACTOR',
+      width: 100
+    },
+    {
+      field: 'RESULT',
+      headerName: 'RESULT',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_STATUS',
+      headerName: 'CONFIRM_STATUS',
+      width: 100
+    },
+    {
+      field: 'REMARK',
+      headerName: 'REMARK',
+      width: 100
+    },
+    {
+      field: 'PHANLOAI',
+      headerName: 'PHANLOAI',
+      width: 100
+    },
+    {
+      field: 'LINK',
+      headerName: 'LINK',
+      width: 100
+    },
+    {
+      field: 'CUST_NAME_KD',
+      headerName: 'CUST_NAME_KD',
+      width: 100
+    },
+    {
+      field: 'id',
+      headerName: 'id',
+      width: 100
+    },
+  ]
+  const columns_cndbdata = [
+    {
+      field: 'SA_ID',
+      headerName: 'SA_ID',
+      width: 100
+    },
+    {
+      field: 'CNDB_DATE',
+      headerName: 'CNDB_DATE',
+      width: 100
+    },
+    {
+      field: 'CONTACT_ID',
+      headerName: 'CONTACT_ID',
+      width: 100
+    },
+    {
+      field: 'CS_EMPL_NO',
+      headerName: 'CS_EMPL_NO',
+      width: 100
+    },
+    {
+      field: 'G_CODE',
+      headerName: 'G_CODE',
+      width: 100
+    },
+    {
+      field: 'G_NAME',
+      headerName: 'G_NAME',
+      width: 100
+    },
+    {
+      field: 'CUST_NAME_KD',
+      headerName: 'CUST_NAME_KD',
+      width: 100
+    },
+    {
+      field: 'PROD_REQUEST_NO',
+      headerName: 'PROD_REQUEST_NO',
+      width: 100
+    },
+    {
+      field: 'REQUEST_DATETIME',
+      headerName: 'REQUEST_DATETIME',
+      width: 100
+    },
+    {
+      field: 'CONTENT',
+      headerName: 'CONTENT',
+      width: 100
+    },
+    {
+      field: 'SA_QTY',
+      headerName: 'SA_QTY',
+      width: 100
+    },
+    {
+      field: 'RESULT',
+      headerName: 'RESULT',
+      width: 100
+    },
+    {
+      field: 'SA_STATUS',
+      headerName: 'SA_STATUS',
+      width: 100
+    },
+    {
+      field: 'SA_REMARK',
+      headerName: 'SA_REMARK',
+      width: 100
+    },
+    {
+      field: 'INS_DATETIME',
+      headerName: 'INS_DATETIME',
+      width: 100
+    },
+    {
+      field: 'SA_CUST_CD',
+      headerName: 'SA_CUST_CD',
+      width: 100
+    },
+  ]
+  const columns_taxidata = [
+    {
+      field: 'TAXI_ID',
+      headerName: 'TAXI_ID',
+      width: 100
+    },
+    {
+      field: 'CONFIRM_ID',
+      headerName: 'CONFIRM_ID',
+      width: 100
+    },
+    {
+      field: 'SA_ID',
+      headerName: 'SA_ID',
+      width: 100
+    },
+    {
+      field: 'CHIEU',
+      headerName: 'CHIEU',
+      width: 100
+    },
+    {
+      field: 'CONG_VIEC',
+      headerName: 'CONG_VIEC',
+      width: 100
+    },
+    {
+      field: 'TAXI_DATE',
+      headerName: 'TAXI_DATE',
+      width: 100
+    },
+    {
+      field: 'TAXI_SHIFT',
+      headerName: 'TAXI_SHIFT',
+      width: 100
+    },
+    {
+      field: 'CS_EMPL_NO',
+      headerName: 'CS_EMPL_NO',
+      width: 100
+    },
+    {
+      field: 'DIEM_DI',
+      headerName: 'DIEM_DI',
+      width: 100
+    },
+    {
+      field: 'DIEM_DEN',
+      headerName: 'DIEM_DEN',
+      width: 100
+    },
+    {
+      field: 'TAXI_AMOUNT',
+      headerName: 'TAXI_AMOUNT',
+      width: 100
+    },
+    {
+      field: 'TRANSPORTATION',
+      headerName: 'TRANSPORTATION',
+      width: 100
+    },
+    {
+      field: 'TAXI_REMARK',
+      headerName: 'TAXI_REMARK',
+      width: 100
+    },
+    {
+      field: 'INS_DATETIME',
+      headerName: 'INS_DATETIME',
+      width: 100
+    },
+  ]
+
+  const [columnDef, setColumnDef] = useState(columns_confirm);
   const updateNNDS = () => {
     generalQuery("updatenndscs", {
       CONFIRM_ID: currentDefectRow.CONFIRM_ID,
@@ -249,14 +909,17 @@ const CS_DATA_TB = () => {
                 },
               );
               //console.log(loadeddata);
-              set_cs_table_data(loadeddata);
+              //set_cs_table_data(loadeddata);
+              set_cs_data(loadeddata);
+              setColumnDef(columns_confirm);
               Swal.fire(
                 "Thông báo",
                 "Đã load: " + response.data.data.length + " dòng",
                 "success",
               );
             } else {
-              set_cs_table_data([]);
+              set_cs_data([]);
+              setColumnDef(columns_confirm);
               Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
             }
           })
@@ -287,14 +950,17 @@ const CS_DATA_TB = () => {
                 },
               );
               //console.log(loadeddata);
-              set_cs_rma_table_data(loadeddata);
+              //set_cs_rma_table_data(loadeddata);
+              set_cs_data(loadeddata);
+              setColumnDef(columns_rmadata);
               Swal.fire(
                 "Thông báo",
                 "Đã load: " + response.data.data.length + " dòng",
                 "success",
               );
             } else {
-              set_cs_rma_table_data([]);
+              set_cs_data([]);
+              setColumnDef(columns_rmadata);
               Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
             }
           })
@@ -325,14 +991,17 @@ const CS_DATA_TB = () => {
                 },
               );
               //console.log(loadeddata);
-              set_cs_cndb_table_data(loadeddata);
+              //set_cs_cndb_table_data(loadeddata);
+              set_cs_data(loadeddata);
+              setColumnDef(columns_cndbdata);
               Swal.fire(
                 "Thông báo",
                 "Đã load: " + response.data.data.length + " dòng",
                 "success",
               );
             } else {
-              set_cs_cndb_table_data([]);
+              set_cs_data([]);
+              setColumnDef(columns_cndbdata);
               Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
             }
           })
@@ -360,14 +1029,17 @@ const CS_DATA_TB = () => {
                 },
               );
               //console.log(loadeddata);
-              set_cs_taxi_table_data(loadeddata);
+              set_cs_data(loadeddata);
+              setColumnDef(columns_taxidata)
+              //set_cs_taxi_table_data(loadeddata);
               Swal.fire(
                 "Thông báo",
                 "Đã load: " + response.data.data.length + " dòng",
                 "success",
               );
             } else {
-              set_cs_taxi_table_data([]);
+              set_cs_data([]);
+              setColumnDef(columns_taxidata);
               Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
             }
           })
@@ -1039,6 +1711,29 @@ const CS_DATA_TB = () => {
     ),
     [cs_taxi_table_data],
   );
+
+  const cs_data_ag_table = useMemo(() => {
+    return (
+      <AGTable
+        rowHeight={option ==='dataconfirm' ? 100: 25}
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>
+          </div>}
+        columns={columnDef}
+        data={cs_data}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={(params: any) => {
+          //setSelectedRows(params.data)
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+        }}     />   
+    )
+  }, [cs_data, columnDef, option]);
+
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1558,10 +2253,11 @@ const CS_DATA_TB = () => {
         </FormButtonColumn>
       </QueryFormDiv>
       <DataTBDiv>
-        {option === 'dataconfirm' && xacNhanDataTable}
+        {cs_data_ag_table}
+       {/*  {option === 'dataconfirm' && xacNhanDataTable}
         {option === 'datarma' && rmaDataTable}
         {option === 'datacndbkhachhang' && cndbDataTable}
-        {option === 'datataxi' && taxiDataTable}
+        {option === 'datataxi' && taxiDataTable} */}
       </DataTBDiv>
       {showhidePivotTable && (
         <PivotTableDiv>

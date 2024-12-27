@@ -24,7 +24,7 @@ import {
   KeyboardNavigation,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
@@ -36,6 +36,7 @@ import { HiSave } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
 import { BiCloudUpload, BiRefresh } from "react-icons/bi";
 import * as XLSX from "xlsx";
+import AGTable from "../../../../components/DataTable/AGTable";
 const AUDIT = () => {
   const [passScore, setPassScore] = useState(80);
   const [auditname, setAuditName] = useState("");
@@ -948,6 +949,334 @@ const AUDIT = () => {
     ),
     [auditResultList],
   );
+  const columns_Audit_List_Table = [
+    {
+      field: 'AUDIT_RESULT_ID',
+      headerName: 'RS_ID',
+      width: 40
+    },
+    {
+      field: 'AUDIT_ID',
+      headerName: 'AD_ID',
+      width: 40
+    },
+    {
+      field: 'AUDIT_NAME',
+      headerName: 'AUDIT_NAME',
+      width: 120
+    },
+    {
+      field: 'AUDIT_DATE',
+      headerName: 'AUDIT_DATE',
+      width: 80
+    },
+    {
+      field: 'REMARK',
+      headerName: 'REMARK',
+      width: 100
+    },
+    {
+      field: 'INS_DATE',
+      headerName: 'INS_DATE',
+      width: 120
+    },
+    {
+      field: 'INS_EMPL',
+      headerName: 'INS_EMPL',
+      width: 60
+    },
+    {
+      field: 'UPD_DATE',
+      headerName: 'UPD_DATE',
+      width: 120
+    },
+    {
+      field: 'UPD_EMPL',
+      headerName: 'UPD_EMPL',
+      width: 60
+    },
+
+  ];
+  const columns_Audit_CheckList_Table = [
+    {
+      field: 'AUDIT_RESULT_DETAIL_ID',
+      headerName: 'RS_DT_ID',
+      width: 50
+    },
+    {
+      field: 'AUDIT_RESULT_ID',
+      headerName: 'RS_ID',
+      width: 30
+    },
+    {
+      field: 'AUDIT_DETAIL_ID',
+      headerName: 'DT_ID',
+      width: 40
+    },
+    {
+      field: 'AUDIT_ID',
+      headerName: 'AD_ID',
+      width: 40
+    },
+    {
+      field: 'AUDIT_NAME',
+      headerName: 'AUDIT_NAME',
+      width: 120
+    },
+    {
+      field: 'MAIN_ITEM_NO',
+      headerName: 'MAIN_NO',
+      width: 50
+    },
+    {
+      field: 'MAIN_ITEM_CONTENT',
+      headerName: 'MAIN_CONTENT',
+      width: 100
+    },
+    {
+      field: 'SUB_ITEM_NO',
+      headerName: 'SUB_NO',
+      width: 45
+    },
+    {
+      field: 'SUB_ITEM_CONTENT',
+      headerName: 'SUB_CONTENT',
+      width: 150
+    },
+    {
+      field: 'LEVEL_CAT',
+      headerName: 'LEVEL_CAT',
+      width: 60
+    },
+    {
+      field: 'DETAIL_VN',
+      headerName: 'DETAIL_VN',
+      width: 200
+    },   
+    {
+      field: 'MAX_SCORE',
+      headerName: 'MAX_SCORE',
+      width: 60
+    },
+    {
+      field: 'AUDIT_SCORE',
+      headerName: 'AUDIT_SCORE',
+      width: 70
+    },
+    {
+      field: 'AUDIT_EVIDENT',
+      headerName: 'EVD_FILE',
+      width: 60
+    },
+    {
+      field: 'EVIDENT_IMAGE',
+      headerName: 'EVD_IMAGE',
+      width: 200,
+      cellRenderer :(ele: any) => {
+        if (ele.data.AUDIT_EVIDENT !== null) {
+          let fileList: string[] = ele.data.AUDIT_EVIDENT.split(',');
+          return (
+            <div className="evident_div" style={{ display: 'flex', gap: '10px',}}>
+              {
+                fileList.map((element: string, index: number) => {
+                  let href = `/audit/AUDIT_${ele.data.AUDIT_RESULT_ID}_${ele.data.AUDIT_RESULT_DETAIL_ID}_${element}`;
+                  return (
+                    <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={50} height={50}></img></a>
+                  )
+                })
+              }
+            </div>
+          )
+        }
+        else {
+        }
+      }
+
+    },
+    {
+      field: 'AUDIT_EVIDENT2',
+      headerName: 'UPLOAD EVIDENT',
+      width: 200,
+      cellRenderer :(ele: any) => {
+        let href = `/audit/AUDIT_${ele.data.AUDIT_RESULT_DETAIL_ID}.jpg`;
+        let file: any = null;
+        if (ele.data.AUDIT_EVIDENT === 'Y') {
+          return (
+            <div>
+            <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
+            </div>
+          )
+        }
+        else {
+          return (
+            <div className="csuploadbutton">
+              <button onClick={() => {
+                uploadAuditEvident(ele.data.AUDIT_RESULT_ID, ele.data.AUDIT_RESULT_DETAIL_ID, file);
+              }}>Upload</button>
+              <input
+                accept='.jpg'
+                type='file'
+                multiple={true}
+                onChange={(e: any) => {
+                  file = e.target.files;
+                }}
+              />
+            </div>
+          )
+        }
+      }
+    },
+    {
+      field: 'REMARK',
+      headerName: 'REMARK',
+      width: 100
+    },
+    {
+      field: 'DEPARTMENT',
+      headerName: 'DEPARTMENT',
+      width: 70
+    },
+    {
+      field: 'DETAIL_KR',
+      headerName: 'DETAIL_KR',
+      width: 200
+    },
+    {
+      field: 'DETAIL_EN',
+      headerName: 'DETAIL_EN',
+      width: 200
+    },
+    {
+      field: 'INS_DATE',
+      headerName: 'INS_DATE',
+      width: 100
+    },
+    {
+      field: 'INS_EMPL',
+      headerName: 'INS_EMPL',
+      width: 60
+    },
+    {
+      field: 'UPD_DATE',
+      headerName: 'UPD_DATE',
+      width: 100
+    },
+    {
+      field: 'UPD_EMPL',
+      headerName: 'UPD_EMPL',
+      width: 60
+    },
+
+  ];
+  const audit_checklist_data_ag_table = useMemo(() => {
+    return (
+      <AGTable        
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>
+            <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color='green' size={15} />
+                  Show/Hide
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(auditResultCheckList, "auditResultCheckList");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    confirmSaveCheckSheet();
+                  }}
+                >
+                  <HiSave color="#05db5e" size={15} />
+                  Lưu Checksheet
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    if (getUserData()?.SUBDEPTNAME === 'ISO' || getUserData()?.EMPL_NO === 'NHU1903') {
+                      confirmResetEvident();
+                    }
+                    else {
+                      Swal.fire("Cánh báo", "Không đủ quyền hạn", 'warning');
+                    }
+                  }}
+                >
+                  <HiSave color="#ff0000" size={15} />
+                  Reset Evident
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    if (selectedAuditResultID !== -1) {
+                      loadAuditResultCheckList(selectedAuditResultID);
+                    }
+                    else {
+                      Swal.fire('Thông báo', 'Chọn ít nhất một checksheet kết quả audit để refresh (bảng bên phải)', 'error');
+                    }
+                    loadAuditList();
+                  }}
+                >
+                  <BiRefresh color='yellow' size={20} />
+                  Refresh
+                </IconButton>
+          </div>}        
+          rowHeight={50}
+        columns={columns_Audit_CheckList_Table}
+        data={auditResultCheckList}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={(params: any) => {
+          //setSelectedRows(params.data)
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+          selectedauditResultCheckListRows.current = params!.api.getSelectedRows()
+        }}     />   
+    )
+  }, [auditResultCheckList, columns_Audit_CheckList_Table]);
+  const audit_list_data_ag_table = useMemo(() => {
+    return (
+      <AGTable        
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>           
+          </div>}
+        columns={columns_Audit_List_Table}
+        data={auditResultList}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={async (params: any) => {
+          //setSelectedRows(params.data)
+          setSelectedAuditResultID(params.data.AUDIT_RESULT_ID);
+          if (await checkAuditResultCheckListExist(params.data.AUDIT_RESULT_ID)) {
+            loadAuditResultCheckList(params.data.AUDIT_RESULT_ID);
+          }
+          else {
+            insertNewResultCheckList(params.data.AUDIT_RESULT_ID, params.data.AUDIT_ID);
+          }
+
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+          selectedauditResultCheckListRows.current = params!.api.getSelectedRows()
+        }}     />   
+    )
+  }, [auditResultList, columns_Audit_List_Table]);
+
   useEffect(() => {
     getcustomerlist();
     loadAuditList();
@@ -1002,22 +1331,7 @@ const AUDIT = () => {
                     })
                   }
                 </select>
-              </label>
-              {/*  <label>
-                <b>Chọn data:</b>{" "}
-                <select
-                  name="datatimekiem"
-                  value={option}
-                  onChange={(e) => {
-                    setOption(e.target.value);
-                  }}
-                >
-                  <option value="dataconfirm">Lịch Sử Xác Nhận Lỗi</option>
-                  <option value="datarma">Lịch Sử RMA</option>
-                  <option value="datacndbkhachhang">Lịch Sử Xin CNĐB</option>
-                  <option value="datataxi">Lịch Sử Taxi</option>
-                </select>
-              </label> */}
+              </label>             
             </div>
           </div>
           <div className="formbutton">
@@ -1034,10 +1348,12 @@ const AUDIT = () => {
               setSelectedAuditResultID(-1);
             }}>Load Data</Button>
           </div>
-          {auditListResultTable}
+          <div className="auditlist">          
+          {audit_list_data_ag_table}
+          </div>
         </div>}
         <div className="tracuuYCSXTable">
-          {auditListResultCheckListTable}
+          {audit_checklist_data_ag_table}
         </div>
       </div>
       {showhideaddform && (
