@@ -6,9 +6,10 @@ export interface NotificationElement {
   id: number,
   title: string,
   content: string;
-  time: string
+  time: string;
+  EMPL_NO: string;  
 }
-const Notification = ({id, title, content, time}: NotificationElement) => {
+const Notification = ({id, title, content, time, EMPL_NO}: NotificationElement) => {
     const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
 
   return (
