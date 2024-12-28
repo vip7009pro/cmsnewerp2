@@ -5814,3 +5814,20 @@ export const f_isM_LOT_NO_in_IN_KHO_SX = async (PLAN_ID: string, M_LOT_NO: strin
     });
   return kq;
 }
+export const f_isM_CODE_in_M140_Main = async (M_CODE: string, G_CODE: string) => {
+  let kq: boolean = false;
+  await generalQuery("check_m_code_m140_main", {
+    M_CODE: M_CODE,
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+

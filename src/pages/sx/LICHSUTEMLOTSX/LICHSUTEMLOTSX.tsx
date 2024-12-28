@@ -415,7 +415,6 @@ const LICHSUTEMLOTSX = () => {
               };
             }),
           );
-
         }}
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())

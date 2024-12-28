@@ -43,6 +43,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "USE_YN", headerName: "USE_YN", width: 90 },
     { field: "REMARK", headerName: "REMARK", width: 90 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+    { field: "INS_EMPL", headerName: "INS_EMPL", width: 150 },
     { field: "KHO_CFM_DATE", headerName: "KHO_CFM_DATE", width: 100 },
     { field: "RETURN_STATUS", headerName: "RETURN_STATUS", width: 100 },
   ];
@@ -60,6 +61,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "OUT_QTY", headerName: "OUT_QTY", width: 80 },
     { field: "TOTAL_OUT_QTY", headerName: "TOTAL_OUT_QTY", width: 80 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+    { field: "INS_EMPL", headerName: "INS_EMPL", width: 150 },
   ];
   const column_tonkhoaotable = [
     {

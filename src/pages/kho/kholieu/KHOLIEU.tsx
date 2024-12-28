@@ -42,13 +42,13 @@ const KHOLIEU = () => {
   const [shownhaplieu, setShowNhapLieu] = useState(false);
   const [showxuatlieu, setShowXuatLieu] = useState(false);
   const column_STOCK_LIEU = [
-    { field: "M_CODE", headerName: "M_CODE", width: 90 },
-    { field: "M_NAME", headerName: "M_NAME", width: 180 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "M_CODE", headerName: "M_CODE", width: 50 },
+    { field: "M_NAME", headerName: "M_NAME", width: 100 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 60 },
     {
       field: "TON_NM1",
       headerName: "TON_NM1",
-      width: 120,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
@@ -60,7 +60,7 @@ const KHOLIEU = () => {
     {
       field: "TON_NM2",
       headerName: "TON_NM2",
-      width: 120,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray" }}>
@@ -72,7 +72,7 @@ const KHOLIEU = () => {
     {
       field: "HOLDING_NM1",
       headerName: "HOLDING_NM1",
-      width: 100,
+      width: 80,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -84,7 +84,7 @@ const KHOLIEU = () => {
     {
       field: "HOLDING_NM2",
       headerName: "HOLDING_NM2",
-      width: 100,
+      width: 80,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -96,7 +96,7 @@ const KHOLIEU = () => {
     {
       field: "TOTAL_OK",
       headerName: "TOTAL_OK",
-      width: 150,
+      width: 80,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
@@ -108,7 +108,7 @@ const KHOLIEU = () => {
     {
       field: "TOTAL_HOLDING",
       headerName: "TOTAL_HOLDING",
-      width: 150,
+      width: 90,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -116,41 +116,22 @@ const KHOLIEU = () => {
           </span>
         );
       },
-    },    
-    {
-      field: "TDS",
-      headerName: "TDS",
-      width: 150,
-      cellRenderer: (params: any) => {
-        let hreftlink = "/tds/" + params.data.M_CODE + ".pdf";
-        if (params.data.TDS === "Y") {
-          return (
-            <span style={{ color: "gray" }}>
-              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
-                LINK
-              </a>
-            </span>
-          );
-        } else {
-          return <span style={{ color: "gray" }}>Chưa có TDS</span>;
-        }
-      },
-    },
+    },        
   ];
   const column_XUATLIEUDATA = [
-    { field: "G_CODE", headerName: "G_CODE", width: 100 },
-    { field: "G_NAME", headerName: "G_NAME", width: 220 },
-    { field: "PROD_REQUEST_NO", headerName: "SO YCSX", width: 90 },
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 },
-    { field: "M_CODE", headerName: "M_CODE", width: 100 },
-    { field: "M_NAME", headerName: "M_NAME", width: 180 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
-    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
+    { field: "G_CODE", headerName: "G_CODE", width: 50 },
+    { field: "G_NAME", headerName: "G_NAME", width: 100 },
+    { field: "PROD_REQUEST_NO", headerName: "SO YCSX", width: 50 },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 50 },
+    { field: "M_CODE", headerName: "M_CODE", width: 50 },
+    { field: "M_NAME", headerName: "M_NAME", width: 90 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 60 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 90 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 60 },
     {
       field: "OUT_CFM_QTY",
       headerName: "UNIT_QTY",
-      width: 120,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
@@ -159,11 +140,11 @@ const KHOLIEU = () => {
         );
       },
     },
-    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 60 },
     {
       field: "TOTAL_OUT_QTY",
       headerName: "OUTPUT QTY",
-      width: 120,
+      width: 70,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
@@ -172,21 +153,21 @@ const KHOLIEU = () => {
         );
       },
     },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
-    { field: "INS_EMPL", headerName: "NV_GIAO", width: 80 },
-    { field: "INS_RECEPTION", headerName: "NV_NHAN", width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 100 },
+    { field: "INS_EMPL", headerName: "NV_GIAO", width: 60 },
+    { field: "INS_RECEPTION", headerName: "NV_NHAN", width: 60 },
   ];
   const column_NHAPLIEUDATA = [
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },
-    { field: "LOTNCC", headerName: "LOTNCC", width: 120 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
-    { field: "M_CODE", headerName: "M_CODE", width: 100 },
-    { field: "M_NAME", headerName: "M_NAME", width: 180 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 150 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 80 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 60 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 70 },
+    { field: "M_CODE", headerName: "M_CODE", width: 50 },
+    { field: "M_NAME", headerName: "M_NAME", width: 100 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 60 },
     {
       field: "IN_CFM_QTY",
       headerName: "UNIT QTY",
-      width: 120,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
@@ -195,11 +176,11 @@ const KHOLIEU = () => {
         );
       },
     },
-    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 60 },
     {
       field: "TOTAL_IN_QTY",
       headerName: "INPUT QTY",
-      width: 120,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
@@ -208,7 +189,7 @@ const KHOLIEU = () => {
         );
       },
     },
-    { field: "USE_YN", headerName: "USE_YN", width: 90, cellStyle: (params: any) => {
+    { field: "USE_YN", headerName: "USE_YN", width: 60, cellStyle: (params: any) => {
       if (params.data.USE_YN !== "X") { 
         return (
           {backgroundColor: "green", color: "white", textAlign: "center"}
@@ -219,11 +200,32 @@ const KHOLIEU = () => {
         );
       }
     } },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
-    { field: "QC_PASS", headerName: "QC_PASS", width: 180 },
-    { field: "QC_PASS_EMPL", headerName: "QC_PASS_EMPL", width: 180 },
-    { field: "QC_PASS_DATE", headerName: "QC_PASS_DATE", width: 180 },
-  ];
+
+
+    { field: "INVOICE", headerName: "INVOICE", width: 100 },
+    { field: "EXP_DATE", headerName: "EXP_DATE", width: 60, cellRenderer: (params: any) => {
+      if (new Date(params.data.EXP_DATE) > new Date()) {
+      return (
+        <span style={{ color: "green" }}>
+          <b>{params.data.EXP_DATE?.toLocaleString("en-US")}</b>
+        </span>
+      );
+    } else {
+      return (
+        <span style={{ color: "red" }}>
+          <b>{params.data.EXP_DATE?.toLocaleString("en-US")}</b>
+        </span>
+      );
+    }
+    }},
+    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", width: 60 },
+    { field: "FACTORY", headerName: "FACTORY", width: 60 },
+    { field: "LOC_CD", headerName: "LOC_CD", width: 60 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 100 },
+    { field: "QC_PASS", headerName: "QC_PASS", width: 70 },
+    { field: "QC_PASS_EMPL", headerName: "QC_PASS_EMPL", width: 90 },
+    { field: "QC_PASS_DATE", headerName: "QC_PASS_DATE", width: 90 },
+  ];70
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_XUATLIEUDATA);
   const handletra_inputlieu = () => {
@@ -263,6 +265,12 @@ const KHOLIEU = () => {
                       .utc(element.QC_PASS_DATE)
                       .format("YYYY-MM-DD HH:mm:ss")
                     : "",
+                EXP_DATE:
+                  element.EXP_DATE !== null
+                    ? moment
+                      .utc(element.EXP_DATE)
+                      .format("YYYY-MM-DD")
+                    : "",
               };
             },
           );
@@ -275,6 +283,7 @@ const KHOLIEU = () => {
             "success",
           );
         } else {
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
         }
@@ -329,6 +338,7 @@ const KHOLIEU = () => {
             "success",
           );
         } else {
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
         }
@@ -374,6 +384,7 @@ const KHOLIEU = () => {
             "success",
           );
         } else {
+          setWhDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
         }

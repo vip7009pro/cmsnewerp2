@@ -436,6 +436,12 @@
           font-size: 1.2rem;
         }
       }
+      .datatable {
+        display: flex;
+        flex-direction: row;
+        height: 92vh;
+        width: 100%;
+      }
       .datatb {
         justify-items: center;
         width: 99%;

@@ -15,7 +15,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { checkBP, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { checkBP, f_isM_CODE_in_M140_Main, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
 import { GiConfirmed } from "react-icons/gi";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -55,6 +55,7 @@ const FAILING = () => {
     { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 50, checkboxSelection: true },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
     { field: 'PLAN_ID_SUDUNG', headerName: 'PLAN_ID_SUDUNG', resizable: true, width: 90 },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 50 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
     { field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 60 },
     { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 60 },
@@ -248,9 +249,16 @@ const FAILING = () => {
           IN2_EMPL: confirmEMPL.toUpperCase(),
         })
           // eslint-disable-next-line no-loop-func
-          .then((response) => {
+          .then(async (response) => {
             //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
+            if (response.data.tk_status !== "NG") {              
+             /*  if(await f_isM_LOT_NO_in_P500(selectedRowsDataA.current[i].PLAN_ID_SUDUNG, selectedRowsDataA.current[i].M_LOT_NO)){
+                await f_resetIN_KHO_SX_IQC2(selectedRowsDataA.current[i].PLAN_ID_SUDUNG, selectedRowsDataA.current[i].M_LOT_NO);        
+              }  
+              else 
+              {
+                await f_resetIN_KHO_SX_IQC1(selectedRowsDataA.current[i].PLAN_ID_SUDUNG, selectedRowsDataA.current[i].M_LOT_NO);
+              } */
             } else {
               err_code += ` Lỗi: ${response.data.message}`;
             }
@@ -569,8 +577,9 @@ const FAILING = () => {
     let temp_row: QC_FAIL_DATA = {
       id: inspectiondatatable.length,
       FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
-      PLAN_ID_SUDUNG: planId,
+      PLAN_ID_SUDUNG: planId.toUpperCase(),
       G_NAME: g_name,
+      G_CODE: g_code,
       LIEUQL_SX: lieql_sx,
       M_CODE: m_code,
       M_LOT_NO: m_lot_no,
@@ -594,8 +603,8 @@ const FAILING = () => {
       QC_PASS_DATE: "",
       QC_PASS_EMPL: "",
       REMARK: remark,
-      IN1_EMPL: request_empl,
-      IN2_EMPL: request_empl2,
+      IN1_EMPL: request_empl.toUpperCase(),
+      IN2_EMPL: request_empl2.toUpperCase(),
       OUT1_EMPL: "",
       OUT2_EMPL: "",
       OUT_PLAN_ID: "",
@@ -697,12 +706,19 @@ const FAILING = () => {
         Swal.fire('Thông báo', 'Số chỉ thị chưa đúng', 'error');
         return;
       }
-     
-
-
+      if(empl_name == "")
+      {
+        Swal.fire('Thông báo', 'Phải nhập mã nhân viên người giao', 'error');
+        return;
+      }
+      if(empl_name2 == "")
+      { 
+        Swal.fire('Thông báo', 'Phải nhập mã nhân viên người nhận', 'error');
+        return;
+      } 
 
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
-        if(!(selectedRowsDataA.current[i].OUT1_EMPL === null && selectedRowsDataA.current[i].OUT2_EMPL === null)){
+        if(((selectedRowsDataA.current[i].OUT1_EMPL !== null || selectedRowsDataA.current[i].OUT2_EMPL !== null) && selectedRowsDataA.current[i].USE_YN==='N')){
           err_code += `Lỗi: Cuộn ${selectedRowsDataA.current[i].M_LOT_NO} đã out rồi | `;
         } 
         else
@@ -716,8 +732,15 @@ const FAILING = () => {
             FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
           })
             // eslint-disable-next-line no-loop-func
-            .then((response) => {
+            .then(async (response) => {
               if (response.data.tk_status !== "NG") {
+                let checkM_CODE: boolean = false;
+                checkM_CODE = await f_isM_CODE_in_M140_Main(selectedRowsDataA.current[i].M_CODE, g_code);
+                console.log('checkM_CODE',checkM_CODE);
+
+                if(checkM_CODE){
+                  //neu la lieu chinh trong bom      
+
                  f_nhapkhoao({
                   FACTORY: selectedRowsDataA.current[i].FACTORY,
                   PHANLOAI: 'R',
@@ -732,7 +755,11 @@ const FAILING = () => {
                   FSC: 'N',
                   FSC_MCODE: '01',
                   FSC_GCODE: '01',
-                })
+                });  
+                }
+                else {
+                  err_code += "Chú ý: Có cuộn không phải liệu chính trong BOM của code được chỉ thị vào";                  
+                }
               } else {
                 err_code += ` Lỗi: ${response.data.message} | `;
               }

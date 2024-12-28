@@ -44,6 +44,7 @@ import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
 import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";
 import SX_MonthlyLossTrend from "../../../components/Chart/SX/SX_MonthlyLossTrend";
 import SX_YearlyLossTrend from "../../../components/Chart/SX/SX_YearlyLossTrend";
+import AGTable from "../../../components/DataTable/AGTable";
 const BAOCAOTHEOROLL = () => {
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
@@ -878,6 +879,450 @@ const BAOCAOTHEOROLL = () => {
       </Chart>
     );
   }, [sxlosstrendingdata]);
+  const columns_loss = [
+    {
+      field: 'PHANLOAI',
+      headerName: 'PHANLOAI',
+      width: 60
+    },
+    {
+      field: 'INPUT_DATE',
+      headerName: 'INPUT_DATE',
+      width: 60
+    },
+    {
+      field: 'EQUIPMENT_CD',
+      headerName: 'EQ',
+      width: 30
+    },
+    {
+      field: 'PROD_REQUEST_NO',
+      headerName: 'YCSX_NO',
+      width: 50
+    },
+    {
+      field: 'PLAN_ID',
+      headerName: 'PLAN_ID',
+      width: 50,
+    
+    },
+    {
+      field: 'PLAN_QTY',
+      headerName: 'PLAN_QTY',
+      width: 60,
+      cellRenderer :(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.PLAN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+      
+    },
+    {
+      field: 'SX_RESULT',
+      headerName: 'SX_RESULT',
+      width: 70,      
+      cellRenderer :(params: any) => {
+        return (
+          <span style={{ color: "purple", fontWeight: "bold" }}>
+            {params.data.SX_RESULT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'ACHIVEMENT_RATE',
+      headerName: 'ACH_RATE',
+      width: 70,
+      cellRenderer : (params: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {params.data.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+              style: 'percent'
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'IS_SETTING',
+      headerName: 'IS_SETTING',
+      width: 70,
+      cellRenderer :(params: any) => {
+        if (params.data.IS_SETTING === 'Y')
+          return (
+            <span style={{ color: "blue", fontWeight: "bold" }}>
+              {params.data.IS_SETTING}
+            </span>
+          );
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.IS_SETTING}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'PROD_MODEL',
+      headerName: 'PROD_MODEL',
+      width: 70
+    },
+    {
+      field: 'G_NAME_KD',
+      headerName: 'G_NAME_KD',
+      width: 70
+    },
+    {
+      field: 'M_NAME',
+      headerName: 'M_NAME',
+      width: 70
+    },
+    {
+      field: 'WIDTH_CD',
+      headerName: 'WIDTH_CD',
+      width: 70
+    },
+    {
+      field: 'M_LOT_NO',
+      headerName: 'M_LOT_NO',
+      width: 70
+    },
+    {
+      field: 'INPUT_QTY',
+      headerName: 'INPUT_QTY',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.INPUT_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'REMAIN_QTY',
+      headerName: 'REMAIN_QTY',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.REMAIN_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'USED_QTY',
+      headerName: 'USED_QTY',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.USED_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'RPM',
+      headerName: 'RPM',
+      width: 70
+    },
+    {
+      field: 'SETTING_MET',
+      headerName: 'SETTING_MET',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.SETTING_MET?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'PR_NG',
+      headerName: 'PR_NG',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.PR_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'OK_MET_AUTO',
+      headerName: 'OK_MET_AUTO',
+      width: 80,
+      cellRender:(params: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {params.data.OK_MET_AUTO?.toLocaleString("en-US", {
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'OK_MET_TT',
+      headerName: 'OK_MET_TT',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {params.data.OK_MET_TT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'USED_SQM',
+      headerName: 'USED_SQM',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.USED_SQM?.toLocaleString("en-US",)}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SQM',
+      headerName: 'LOSS_SQM',
+      width: 70,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.LOSS_SQM?.toLocaleString("en-US",)}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'TT_LOSS_SQM',
+      headerName: 'TT_LOSS_SQM',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.TT_LOSS_SQM?.toLocaleString("en-US",)}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_ST',
+      headerName: 'LOSS_ST',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.LOSS_ST?.toLocaleString("en-US", {
+              style: 'percent'
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_SX',
+      headerName: 'LOSS_SX',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.LOSS_SX?.toLocaleString("en-US", {
+              style: 'percent'
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_TT',
+      headerName: 'LOSS_TT',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.LOSS_TT?.toLocaleString("en-US", {
+              style: 'percent'
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_TT_KT',
+      headerName: 'LOSS_TT_KT',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.LOSS_TT_KT?.toLocaleString("en-US", {
+              style: 'percent'
+            })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'OK_EA',
+      headerName: 'OK_EA',
+      width: 70,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.OK_EA?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'OUTPUT_EA',
+      headerName: 'OUTPUT_EA',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.OUTPUT_EA?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_INPUT',
+      headerName: 'INSPECT_INPUT',
+      width: 90,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.INSPECT_INPUT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_TT_QTY',
+      headerName: 'INSPECT_TT_QTY',
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.INSPECT_TT_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_OK_QTY',
+      headerName: 'INSPECT_OK_QTY',
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_OK_SQM',
+      headerName: 'INSPECT_OK_SQM',
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.INSPECT_OK_SQM?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'REMARK',
+      headerName: 'REMARK',
+      width: 70,
+      cellRenderer: (params: any) => {
+        if (params.data.EQUIPMENT_CD === 'TOTAL') {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              {params.data.REMARK}
+            </span>
+          );
+        }
+        else {
+          return (
+            <span>
+              {params.data.REMARK}
+            </span>
+          );
+        }
+      }
+    },
+    {
+      field: 'PD',
+      headerName: 'PD',
+      width: 70
+    },
+    {
+      field: 'CAVITY',
+      headerName: 'CAVITY',
+      width: 70
+    },
+    {
+      field: 'STEP',
+      headerName: 'STEP',
+      width: 70
+    },
+    {
+      field: 'PR_NB',
+      headerName: 'PR_NB',
+      width: 70
+    },
+    {
+      field: 'MAX_PROCESS_NUMBER',
+      headerName: 'MAX_PRNB',
+      width: 70
+    },
+    {
+      field: 'LAST_PROCESS',
+      headerName: 'LAST_PROCESS',
+      width: 80
+    },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 40
+    },
+  ]
+
+  const loss_data_ag_table = useMemo(() => {
+    return (
+      <AGTable        
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>           
+          </div>}
+        columns={columns_loss}
+        data={plandatatable}
+        onCellEditingStopped={(params: any) => {
+        }}
+        onCellClick={async (params: any) => {
+          //setSelectedRows(params.data)
+         
+
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+         
+        }}     />   
+    )
+  }, [plandatatable, columns_loss]);
 
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -1412,10 +1857,10 @@ const BAOCAOTHEOROLL = () => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });    
   }
-  
+    
   useEffect(() => {
     getMachineList();
-    initFunction();
+    //initFunction();
     /* getDailySXLossTrendingData(machine,factory, moment().add(-8, "day").format("YYYY-MM-DD"), moment().add(0, "day").format("YYYY-MM-DD"));
     loadBaoCaoTheoRoll(); */
     
@@ -1682,7 +2127,10 @@ const BAOCAOTHEOROLL = () => {
               </tbody>
             </table>
           </div>
-          {planDataTable}
+          <div className="datatable">
+          {loss_data_ag_table}
+          </div>
+          
         </div>
       </div>      
       {showhidePivotTable && (

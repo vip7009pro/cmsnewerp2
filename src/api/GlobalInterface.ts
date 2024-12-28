@@ -1475,6 +1475,7 @@ export interface QC_FAIL_DATA {
   FACTORY: string;
   PLAN_ID_SUDUNG: string;
   G_NAME: string;
+  G_CODE: string;
   LIEUQL_SX: number;
   M_CODE: string;
   M_LOT_NO: string;
@@ -2205,6 +2206,10 @@ export interface NHAPLIEUDATA {
   QC_PASS: string;
   QC_PASS_EMPL: string;
   QC_PASS_DATE: string;
+  EXP_DATE: string;
+  INVOICE: string;
+  LOC_CD: string;
+  FACTORY: string;
 }
 export interface XUATLIEUDATA {
   G_CODE: string;
