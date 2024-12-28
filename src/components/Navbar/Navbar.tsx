@@ -27,7 +27,9 @@ import { ELE_ARRAY, MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import useOutsideClick from "../../api/customHooks";
 import { MdOutlineSettings } from "react-icons/md";
 import NavMenu from "../NavMenu/NavMenu";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import { SimplifiedSearchMode } from "devextreme/common";
+import NotificationPanel from "../NotificationPanel/NotificationPanel";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -38,6 +40,7 @@ export const searchExpressionLabel = { 'aria-label': 'Search Expression' };
 export const searchModeLabel = { 'aria-label': 'Search Mode' };
 export const productLabel = { 'aria-label': 'Product' };
 export const simpleProductLabel = { 'aria-label': 'Simple Product' };
+
 export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
@@ -70,7 +73,11 @@ export default function Navbar() {
     },
     () => { },
   );
+  const [showHideNotificaionPanel,setShowHideNotificationPanel] = useState(false);
 
+  const handleShowHideNotificaionPanel = () => {
+    setShowHideNotificationPanel(!showHideNotificaionPanel);
+  }
   const themeOptions = company === "CMS" ? [
     { value: "linear-gradient(90deg, #7efbbc 0%, #ace95c 100%)", label: "Orange-Yellow" },
     { value: "linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)", label: "Green-Blue" },
@@ -673,6 +680,9 @@ export default function Navbar() {
         </div>}
         <div className="navright">          
           <div className="items">
+           {/*  <div className="item" onClick = {handleShowHideNotificaionPanel}>
+              <IoIosNotificationsOutline size={20}/>
+            </div> */}
             <div className="item" onClick={showhideLangMenu}>
               <LanguageIcon className="icon" />
               {lang === "vi"
@@ -833,6 +843,11 @@ export default function Navbar() {
             )}
           </div>
         </div>
+        {
+          showHideNotificaionPanel && (
+            <NotificationPanel/>
+          )
+        }
         {tabModeSwap && false &&
           tabs.filter(
             (ele: ELE_ARRAY, index: number) =>
