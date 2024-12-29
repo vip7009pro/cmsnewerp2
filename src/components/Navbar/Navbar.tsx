@@ -30,6 +30,7 @@ import NavMenu from "../NavMenu/NavMenu";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { SimplifiedSearchMode } from "devextreme/common";
 import NotificationPanel from "../NotificationPanel/NotificationPanel";
+import { enqueueSnackbar } from "notistack";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -680,9 +681,14 @@ export default function Navbar() {
         </div>}
         <div className="navright">          
           <div className="items">
-           {/*  <div className="item" onClick = {handleShowHideNotificaionPanel}>
+            <div className="item" onClick = {handleShowHideNotificaionPanel}>
               <IoIosNotificationsOutline size={20}/>
-            </div> */}
+            </div>
+            <div className="item" onClick = {()=> {
+               enqueueSnackbar('That was easy!')
+            }}>
+              <IoIosNotificationsOutline size={20}/>
+            </div>
             <div className="item" onClick={showhideLangMenu}>
               <LanguageIcon className="icon" />
               {lang === "vi"

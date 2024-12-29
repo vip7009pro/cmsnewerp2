@@ -5,6 +5,7 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import "./index.css";
 import Vendors from "./App2";
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
@@ -22,7 +23,9 @@ if (fullUrl.includes("cmsvendors")) {
   root.render(
     <StrictMode>
     <Provider store={store}>
-      <App />
+      <SnackbarProvider maxSnack={5}>
+        <App />
+      </SnackbarProvider>
       </Provider>
     </StrictMode>
   );
