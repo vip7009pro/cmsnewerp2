@@ -54,6 +54,7 @@ import DATAMATRIX from "../pages/rnd/design_amazon/design_components/DATAMATRIX"
 import BARCODE from "../pages/rnd/design_amazon/design_components/BARCODE";
 import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
+import { NotificationElement } from "../components/NotificationPanel/Notification";
 export const zeroPad = (num: number, places: number) => String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -5831,3 +5832,18 @@ export const f_isM_CODE_in_M140_Main = async (M_CODE: string, G_CODE: string) =>
   return kq;
 }
 
+export const f_load_Notification_Data = async () => {
+  let kq: NotificationElement[] = [];
+  await generalQuery("load_Notification_Data", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data.map((element: any, index: number) => {
+          return { ...element, id: index };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
