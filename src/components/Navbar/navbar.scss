@@ -132,6 +132,7 @@
               right: -5px;
             }
           }
+          
           .avatarmenu {
             display: flex;
             width: 200px;
@@ -237,6 +238,13 @@
         right: 10px;
         z-index: 999;
       }
+      .notificationPanel {
+        position: absolute;
+        top: 25px;
+        right: 160px;
+        z-index: 9999;
+      }
+
     }
   }
   @media only screen and (max-width: 768px) {

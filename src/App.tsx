@@ -2,7 +2,7 @@ import "devextreme/dist/css/dx.light.css";
 import React, { Component, useEffect, useState, Suspense, useRef } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery, getCompany, getGlobalSetting, getSocket, getUserData } from "./api/Api";
+import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import 'react-tabs/style/react-tabs.css';
@@ -16,6 +16,7 @@ import {
   setTabModeSwap,
   changeGLBSetting,
   changeServer,
+  updateNotiCount,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.scss";
@@ -26,6 +27,8 @@ import { Notifications } from 'react-push-notification';
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import { NotificationElement } from "./components/NotificationPanel/Notification";
+import { enqueueSnackbar } from "notistack";
 const FileTransfer = React.lazy(() => import("./pages/tools/FileTransfer/FileTransfer"));
 const CAPASX2 = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX2"));
 const Home2 = React.lazy(() => import("./pages/home/Home2"));
@@ -355,6 +358,9 @@ function App() {
   const loginState: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.loginState
   );
+  const notiCount: number = useSelector(
+    (state: RootState) => (state.totalSlice.notificationCount ?? 0),
+  );
   const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
   useEffect(() => {     
@@ -551,12 +557,53 @@ function App() {
         }
       });
     }
+    if (!getSocket().hasListeners('notification_panel')) {     
+      getSocket().on("notification_panel", (data: {data: NotificationElement, notiType: string}) => {    
+        console.log(data);
+        if(data.data.MAINDEPTNAME!== getUserData()?.MAINDEPTNAME || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
+          return;
+        }
+        console.log('notiCount---',getNotiCount())
+        dispatch(updateNotiCount((getNotiCount()??0)+1));
+        localStorage.setItem("notification_count",((getNotiCount()??0)+1).toString());
+        switch(data.notiType) {
+          case 'success':
+            enqueueSnackbar(data.data.CONTENT, {
+              variant: 'success',
+            });
+            break;
+          case 'error':
+            enqueueSnackbar(data.data.CONTENT, {
+              variant: 'error',
+            });
+            break;
+          case 'warning':
+            enqueueSnackbar(data.data.CONTENT, {
+              variant: 'warning',
+            });
+            break;
+          case 'info':
+            enqueueSnackbar(data.data.CONTENT, {
+              variant: 'info',
+            });
+            break;
+          default:
+            enqueueSnackbar(data.data.CONTENT, {
+              variant: 'success',
+            });
+            break;
+        }  
+      });
+    }
     return () => {
       getSocket().off("setWebVer", (data: any) => {
         //console.log(data);
       });
       getSocket().off("request_check_online", (data: any) => {
         //console.log(data);
+      });
+      getSocket().off("notification_panel", (data: any) => {
+        //console.log(data);)
       });
     };
   }, []);

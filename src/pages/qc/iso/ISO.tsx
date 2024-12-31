@@ -19,7 +19,7 @@ const ISO = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "left",
-          backgroundImage: theme.CMS.backgroundImage, 
+          backgroundImage: theme.CMS.backgroundImage,
           color: 'gray'
         }}>
           <Tab>EMPL G_RNR</Tab>

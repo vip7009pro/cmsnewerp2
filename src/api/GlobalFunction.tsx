@@ -5834,12 +5834,30 @@ export const f_isM_CODE_in_M140_Main = async (M_CODE: string, G_CODE: string) =>
 
 export const f_load_Notification_Data = async () => {
   let kq: NotificationElement[] = [];
-  await generalQuery("load_Notification_Data", {})
+  await generalQuery("load_Notification_Data", {
+    MAINDEPTNAME: getUserData()?.MAINDEPTNAME
+  })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data.map((element: any, index: number) => {
-          return { ...element, id: index };
+          return { ...element, 
+            INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+            id: index };
         });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_insert_Notification_Data = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("insert_Notification_Data", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
       }
     })
     .catch((error) => {

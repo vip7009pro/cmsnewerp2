@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { generalQuery, getGlobalLang, } from "../../../api/Api";
+import { generalQuery, getGlobalLang, getSocket, getUserData, } from "../../../api/Api";
 import "./TabDangKy.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const TabDangKy = () => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang,
@@ -75,8 +77,28 @@ const TabDangKy = () => {
     };
     console.log(insertData);
     generalQuery("dangkynghi2", insertData)
-      .then((response) => {
+      .then(async (response) => {
         if (response.data.tk_status === "OK") {
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            TITLE: 'Đăng ký nghỉ',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký nghỉ từ ngày ${fromdate} tới ngày ${todate}.`,
+            SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+            MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel",  {
+              notiType: "success",
+              data: newNotification
+            });
+          }
+
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng ký nghỉ thành công !",

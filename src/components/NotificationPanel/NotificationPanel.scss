@@ -1,8 +1,5 @@
 .notification-list {
   display: flex;
-  position: absolute;
-  top: 25px;
-  right: 160px;
   width: 400px;
   height: 500px;
   flex-direction: column;
@@ -15,4 +12,9 @@
   -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.28);
   -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
   overflow: scroll;
+  .title {
+    display: flex;
+    font-size: 1.3rem;
+    padding: 5px;
+  }
 }

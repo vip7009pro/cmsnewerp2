@@ -24,7 +24,7 @@ const companyInfo = {
     loginLogoWidth: 190,
     loginLogoHeight: 50,  
     backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,  
-    apiUrl: `${protocol}://14.160.33.94:${main_port}`,  
+    apiUrl: `${protocol}://14.160.33.94:${sub_port}`,  
     apiUrlArray: [
       {
         server_name: "MAIN_SERVER",
@@ -126,12 +126,19 @@ if (server_ip_local !== undefined) {
 } else {
   localStorage.setItem("server_ip",companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
 }
+let notiCount: any = localStorage.getItem("notification_count")?.toString();
+if (notiCount !== undefined) {
+} else {
+  localStorage.setItem("notification_count",'0');
+}
 let crST_string: any = localStorage.getItem("setting") ?? "";
 let crST: WEB_SETTING_DATA[] = [];
 if (crST_string !== "") {
   crST = JSON.parse(crST_string);
 }
+console.log('notiCount',notiCount);
 const initialState: GlobalInterface = {
+  notificationCount: Number.parseInt(notiCount),
   globalSetting: crST,
   globalSocket: socket,
   userData: {
@@ -425,7 +432,12 @@ export const glbSlice = createSlice({
     },
     changeSelectedServer: (state, action: PayloadAction<string>) => {
       state.selectedServer = action.payload;
-    }
+    },
+    updateNotiCount: (state, action: PayloadAction<number>) => {
+      console.log(action.payload);
+      state.notificationCount = action.payload;
+    },
+
   },
 });
 export const {
@@ -450,6 +462,7 @@ export const {
   changeGLBSetting,
   switchTheme,
   changeCtrCd,
-  changeSelectedServer
+  changeSelectedServer,
+  updateNotiCount
 } = glbSlice.actions;
 export default glbSlice.reducer;

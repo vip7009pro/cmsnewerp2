@@ -32,6 +32,10 @@ export function getSocket() {
   const state = store.getState();
   return state.totalSlice.globalSocket;
 }
+export function getNotiCount() {
+  const state = store.getState();
+  return state.totalSlice.notificationCount;
+}
 export function getGlobalLang() {
   const state = store.getState();
   return state.totalSlice.lang;

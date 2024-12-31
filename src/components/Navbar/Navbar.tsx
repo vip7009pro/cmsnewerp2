@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SwitchRightIcon from "@mui/icons-material/SwitchRight";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { getCompany, logout } from "../../api/Api";
+import { getCompany, getSocket, logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
 import { FcList } from "react-icons/fc";
@@ -13,7 +13,8 @@ import {
   setTabModeSwap,
   closeTab,
   changeGLBLanguage,
-  switchTheme
+  switchTheme,
+  updateNotiCount
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,10 +28,13 @@ import { ELE_ARRAY, MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import useOutsideClick from "../../api/customHooks";
 import { MdOutlineSettings } from "react-icons/md";
 import NavMenu from "../NavMenu/NavMenu";
-import { IoIosNotificationsOutline } from "react-icons/io";
+import { IoIosNotifications, IoIosNotificationsOutline } from "react-icons/io";
 import { SimplifiedSearchMode } from "devextreme/common";
 import NotificationPanel from "../NotificationPanel/NotificationPanel";
 import { enqueueSnackbar } from "notistack";
+import { set } from "date-fns";
+import { NotificationElement } from "../NotificationPanel/Notification";
+import { update } from "@react-spring/web";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -48,11 +52,15 @@ export default function Navbar() {
   const [lang, setLang] = useContext(LangConText);
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
+  const refNotificationPanel = useRef<HTMLDivElement>(null);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
+  );
+  const notiCount: number = useSelector(
+    (state: RootState) => (state.totalSlice.notificationCount ?? 0),
   );
   const sidebarStatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu,
@@ -74,10 +82,18 @@ export default function Navbar() {
     },
     () => { },
   );
+  useOutsideClick(
+    refNotificationPanel,
+    () => {
+      setShowHideNotificationPanel(false);
+    },
+    () => { },
+  );
   const [showHideNotificaionPanel,setShowHideNotificationPanel] = useState(false);
 
   const handleShowHideNotificaionPanel = () => {
     setShowHideNotificationPanel(!showHideNotificaionPanel);
+    dispatch(updateNotiCount(0));
   }
   const themeOptions = company === "CMS" ? [
     { value: "linear-gradient(90deg, #7efbbc 0%, #ace95c 100%)", label: "Orange-Yellow" },
@@ -681,13 +697,9 @@ export default function Navbar() {
         </div>}
         <div className="navright">          
           <div className="items">
+          {notiCount}
             <div className="item" onClick = {handleShowHideNotificaionPanel}>
-              <IoIosNotificationsOutline size={20}/>
-            </div>
-            <div className="item" onClick = {()=> {
-               enqueueSnackbar('That was easy!')
-            }}>
-              <IoIosNotificationsOutline size={20}/>
+              <IoIosNotifications size={20} color={`${notiCount === 0 ? 'white' : 'red'}`}/>
             </div>
             <div className="item" onClick={showhideLangMenu}>
               <LanguageIcon className="icon" />
@@ -851,7 +863,9 @@ export default function Navbar() {
         </div>
         {
           showHideNotificaionPanel && (
+            <div ref={refNotificationPanel} className="notificationPanel">
             <NotificationPanel/>
+            </div>
           )
         }
         {tabModeSwap && false &&

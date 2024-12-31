@@ -23,7 +23,7 @@ if (fullUrl.includes("cmsvendors")) {
   root.render(
     <StrictMode>
     <Provider store={store}>
-      <SnackbarProvider maxSnack={5} autoHideDuration={3000}>
+      <SnackbarProvider maxSnack={5} autoHideDuration={3000} preventDuplicate>
         <App />
       </SnackbarProvider>
       </Provider>
