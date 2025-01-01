@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { start } from "repl";
 const TabDangKy = () => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang,
@@ -48,8 +49,25 @@ const TabDangKy = () => {
     };
     console.log(insertData);
     generalQuery("xacnhanchamcongnhom", insertData)
-      .then((response) => {
+      .then(async (response) => {
         if (response.data.tk_status === "OK") {
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "success",
+            TITLE: 'Xác nhận chấm công',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký xác nhận chấm công ngày ${confirm_date}, thời gian ${confirm_worktime}.`,
+            SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+            MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel", newNotification);
+          }
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, Xác nhận chấm công thành công !",
@@ -82,6 +100,7 @@ const TabDangKy = () => {
           let newNotification: NotificationElement = {
             CTR_CD: '002',
             NOTI_ID: -1,
+            NOTI_TYPE: "success",
             TITLE: 'Đăng ký nghỉ',
             CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký nghỉ từ ngày ${fromdate} tới ngày ${todate}.`,
             SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
@@ -93,10 +112,7 @@ const TabDangKy = () => {
           }  
           if(await f_insert_Notification_Data(newNotification))
           {
-            getSocket().emit("notification_panel",  {
-              notiType: "success",
-              data: newNotification
-            });
+            getSocket().emit("notification_panel",newNotification);
           }
 
           Swal.fire(
@@ -123,8 +139,25 @@ const TabDangKy = () => {
     };
     console.log(insertData);
     generalQuery("dangkytangcacanhan", insertData)
-      .then((response) => {
+      .then(async (response) => {
         if (response.data.tk_status === "OK") {
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "success",
+            TITLE: 'Đăng ký tăng ca',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký tăng ca từ  ${starttime} tới ${finishtime}.`,
+            SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+            MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel",newNotification);
+          }
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng ký tăng ca thành công !",
@@ -133,7 +166,7 @@ const TabDangKy = () => {
         } else {
           Swal.fire(
             "Thông báo",
-            "Đăngkys tăng ca thất bại ! " + response.data.message,
+            "Đăng ký tăng ca thất bại ! Kiểm tra xem đã điểm danh chưa? " + response.data.message,
             "error",
           );
         }

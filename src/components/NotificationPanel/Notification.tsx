@@ -5,6 +5,7 @@ import { RootState } from '../../redux/store';
 export interface NotificationElement {
   CTR_CD: string,
   NOTI_ID: number,
+  NOTI_TYPE: string,
   TITLE: string,
   CONTENT: string,
   SUBDEPTNAME: string,

@@ -433,8 +433,7 @@ export const glbSlice = createSlice({
     changeSelectedServer: (state, action: PayloadAction<string>) => {
       state.selectedServer = action.payload;
     },
-    updateNotiCount: (state, action: PayloadAction<number>) => {
-      console.log(action.payload);
+    updateNotiCount: (state, action: PayloadAction<number>) => {      
       state.notificationCount = action.payload;
     },
 

@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode } from "../../../api/Api";
-import { checkBP } from "../../../api/GlobalFunction";
+import { generalQuery, getAuditMode, getSocket, getUserData } from "../../../api/Api";
+import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ import { RootState } from "../../../redux/store";
 import { PlanTableData, UserData } from "../../../api/GlobalInterface";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import AGTable from "../../../components/DataTable/AGTable";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const PlanManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
@@ -785,6 +786,23 @@ const PlanManager = () => {
       }
     }
     setisLoading(false);
+    let newNotification: NotificationElement = {
+      CTR_CD: '002',
+      NOTI_ID: -1,
+      NOTI_TYPE: "success",
+      TITLE: 'Invoice mới hàng loạt',
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm kế hoạch giao hàng mới`, 
+      SUBDEPTNAME: "KD",
+      MAINDEPTNAME: "KD",
+      INS_EMPL: 'NHU1903',
+      INS_DATE: '2024-12-30',
+      UPD_EMPL: 'NHU1903',
+      UPD_DATE: '2024-12-30',
+    }  
+    if(await f_insert_Notification_Data(newNotification))
+    {
+      getSocket().emit("notification_panel",newNotification);
+    }
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };

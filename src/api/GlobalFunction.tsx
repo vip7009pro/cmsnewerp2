@@ -5835,7 +5835,8 @@ export const f_isM_CODE_in_M140_Main = async (M_CODE: string, G_CODE: string) =>
 export const f_load_Notification_Data = async () => {
   let kq: NotificationElement[] = [];
   await generalQuery("load_Notification_Data", {
-    MAINDEPTNAME: getUserData()?.MAINDEPTNAME
+    MAINDEPTNAME: getUserData()?.MAINDEPTNAME,
+    SUBDEPTNAME: getUserData()?.SUBDEPTNAME
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {

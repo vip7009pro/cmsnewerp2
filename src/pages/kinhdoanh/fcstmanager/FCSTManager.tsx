@@ -14,8 +14,8 @@ import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { generalQuery, getAuditMode, getGlobalSetting, getSocket, getUserData } from "../../../api/Api";
+import { checkBP, f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./FCSTManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -27,6 +27,7 @@ import { TbLogout } from "react-icons/tb";
 import { FCSTTableData } from "../../../api/GlobalInterface";
 import { Tab, TabList, Tabs, TabPanel } from "react-tabs";
 import AGTable from "../../../components/DataTable/AGTable";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 
 const FCSTManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -1490,6 +1491,23 @@ const FCSTManager = () => {
       }
     }
     setisLoading(false);
+    let newNotification: NotificationElement = {
+      CTR_CD: '002',
+      NOTI_ID: -1,
+      NOTI_TYPE: "success",
+      TITLE: 'Invoice mới hàng loạt',
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm forecast mới`, 
+      SUBDEPTNAME: "KD",
+      MAINDEPTNAME: "KD",
+      INS_EMPL: 'NHU1903',
+      INS_DATE: '2024-12-30',
+      UPD_EMPL: 'NHU1903',
+      UPD_DATE: '2024-12-30',
+    }  
+    if(await f_insert_Notification_Data(newNotification))
+    {
+      getSocket().emit("notification_panel", newNotification);
+    }
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };

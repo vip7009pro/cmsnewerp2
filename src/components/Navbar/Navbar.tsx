@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SwitchRightIcon from "@mui/icons-material/SwitchRight";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { getCompany, getSocket, logout } from "../../api/Api";
+import { getCompany, getSocket, getUserData, logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
 import { FcList } from "react-icons/fc";
@@ -35,6 +35,7 @@ import { enqueueSnackbar } from "notistack";
 import { set } from "date-fns";
 import { NotificationElement } from "../NotificationPanel/Notification";
 import { update } from "@react-spring/web";
+import { f_insert_Notification_Data } from "../../api/GlobalFunction";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -94,6 +95,7 @@ export default function Navbar() {
   const handleShowHideNotificaionPanel = () => {
     setShowHideNotificationPanel(!showHideNotificaionPanel);
     dispatch(updateNotiCount(0));
+    localStorage.setItem("notification_count", '0');
   }
   const themeOptions = company === "CMS" ? [
     { value: "linear-gradient(90deg, #7efbbc 0%, #ace95c 100%)", label: "Orange-Yellow" },
@@ -701,6 +703,28 @@ export default function Navbar() {
             <div className="item" onClick = {handleShowHideNotificaionPanel}>
               <IoIosNotifications size={20} color={`${notiCount === 0 ? 'white' : 'red'}`}/>
             </div>
+         {/*    <div className="item" onClick = {async ()=> {
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: 'success',
+              TITLE: 'Test Notification',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} test`, 
+              SUBDEPTNAME: "KD,QC",
+              MAINDEPTNAME: "KD,QC",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel",newNotification);
+            }
+
+            }}>
+              <IoIosNotifications size={20} color={`${notiCount === 0 ? 'white' : 'red'}`}/>
+            </div> */}
             <div className="item" onClick={showhideLangMenu}>
               <LanguageIcon className="icon" />
               {lang === "vi"

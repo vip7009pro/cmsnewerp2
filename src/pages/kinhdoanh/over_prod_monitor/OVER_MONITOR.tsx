@@ -2,15 +2,16 @@ import { IconButton } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./OVER_MONITOR.scss";
-import { getUserData } from "../../../api/Api";
+import { getSocket, getUserData } from "../../../api/Api";
 import { MdCancel, MdInput, MdRefresh } from "react-icons/md";
 import { PROD_OVER_DATA } from "../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { checkBP, f_loadProdOverData, f_updateProdOverData } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data, f_loadProdOverData, f_updateProdOverData } from "../../../api/GlobalFunction";
 import { AiFillCloseCircle } from "react-icons/ai";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const OVER_MONITOR = () => {
   const [only_pending, setOnly_Pending] = useState(true)
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -42,6 +43,23 @@ const OVER_MONITOR = () => {
         switch (getUserData()?.MAINDEPTNAME) {
           case 'KD':
             await f_updateProdOverData(prod_over_data, updateValue)
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "success",
+              TITLE: 'Invoice mới hàng loạt',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xác nhận ${updateValue==='Y'? 'NHẬP': 'HỦY'} hàng sản xuất dư code ${prod_over_data.G_NAME_KD}, số YCSX: (${prod_over_data.PROD_REQUEST_NO}, số lượng dư là: ${prod_over_data.OVER_QTY} EA).` , 
+              SUBDEPTNAME: "KD,INSPECTION",
+              MAINDEPTNAME: "KD,INSPECTION",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
             await loadProdOverData();
             break;
           default:
@@ -65,6 +83,23 @@ const OVER_MONITOR = () => {
           case 'KD':
             for (let i = 0; i < selectedRows.length; i++) {
               if(selectedRows[i].HANDLE_STATUS !=='C') await f_updateProdOverData(selectedRows[i], updatevalue)
+            }
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "success",
+              TITLE: 'Invoice mới hàng loạt',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xác nhận hàng sản xuất dư hàng loạt`, 
+              SUBDEPTNAME: "KD,INSPECTION",
+              MAINDEPTNAME: "KD,INSPECTION",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel",newNotification);
             }
             break;
           default:

@@ -4,8 +4,8 @@ import React, { useEffect, useMemo, useRef, useState, useTransition } from "reac
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
-import { checkBP, f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo, SaveExcel } from "../../../api/GlobalFunction";
+import { generalQuery, getGlobalSetting, getSocket, getUserData } from "../../../api/Api";
+import { checkBP, f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insert_Notification_Data, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -26,6 +26,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const InvoiceManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
@@ -242,6 +243,23 @@ const InvoiceManager = () => {
         tempjson[i].CHECKSTATUS = "NG: Ngày Invoice không được trước ngày PO";
       }
     }
+    let newNotification: NotificationElement = {
+      CTR_CD: '002',
+      NOTI_ID: -1,
+      NOTI_TYPE: "success",
+      TITLE: 'Invoice mới hàng loạt',
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm Invoice hàng loạt`, 
+      SUBDEPTNAME: "KD",
+      MAINDEPTNAME: "KD",
+      INS_EMPL: 'NHU1903',
+      INS_DATE: '2024-12-30',
+      UPD_EMPL: 'NHU1903',
+      UPD_DATE: '2024-12-30',
+    }  
+    if(await f_insert_Notification_Data(newNotification))
+    {
+      getSocket().emit("notification_panel", newNotification);
+    }
     Swal.fire("Thông báo", "Đã hoàn thành thêm Invoice hàng loạt", "success");
     setUploadExcelJSon(tempjson);
     setTrigger(!trigger);
@@ -265,6 +283,23 @@ const InvoiceManager = () => {
         }
       }
       if (err_code === 0) {
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: "success",
+          TITLE: 'Invoice mới hàng loạt',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm Invoice hàng loạt`, 
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel",newNotification);
+        }
         Swal.fire('Thông báo', 'Thêm invoice từ lịch sử xuất kho thành công', 'success');
       }
       else {
@@ -435,6 +470,23 @@ const InvoiceManager = () => {
         INVOICE_NO: "",
       });
       if (kq === "OK") {
+      let newNotification: NotificationElement = {
+        CTR_CD: '002',
+        NOTI_ID: -1,
+        NOTI_TYPE: "success",
+        TITLE: 'Invoice mới',
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm Invoice mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newinvoiceQTY} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`, 
+        SUBDEPTNAME: "KD",
+        MAINDEPTNAME: "KD",
+        INS_EMPL: 'NHU1903',
+        INS_DATE: '2024-12-30',
+        UPD_EMPL: 'NHU1903',
+        UPD_DATE: '2024-12-30',
+      }  
+      if(await f_insert_Notification_Data(newNotification))
+      {
+        getSocket().emit("notification_panel", newNotification);
+      }
         Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
       } else {
         Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq, "error");

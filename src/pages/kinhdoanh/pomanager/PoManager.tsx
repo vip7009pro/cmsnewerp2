@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd, AiOutlineClose } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { getCompany, getGlobalSetting, getSever } from "../../../api/Api";
+import { getCompany, getGlobalSetting, getSever, getSocket, getUserData } from "../../../api/Api";
 import {
   autoGetProdPrice,
   checkBP,
@@ -18,6 +18,7 @@ import {
   f_dongboGiaPO,
   f_getcodelist,
   f_getcustomerlist,
+  f_insert_Notification_Data,
   f_insertInvoice,
   f_insertPO,
   f_loadPoDataFull,
@@ -44,6 +45,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const PoManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openNewPODialog, setOpenNewPODialog] = useState(false);
@@ -320,6 +322,23 @@ const PoManager = () => {
         tempjson[i].CHECKSTATUS = "NG: PO chưa được check trước khi up";
       }
     }
+    let newNotification: NotificationElement = {
+      CTR_CD: '002',
+      NOTI_ID: -1,
+      NOTI_TYPE: 'success',
+      TITLE: 'PO vừa được thêm hàng loạt',
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm hàng loạt PO mới`, 
+      SUBDEPTNAME: "KD",
+      MAINDEPTNAME: "KD",
+      INS_EMPL: 'NHU1903',
+      INS_DATE: '2024-12-30',
+      UPD_EMPL: 'NHU1903',
+      UPD_DATE: '2024-12-30',
+    }  
+    if(await f_insert_Notification_Data(newNotification))
+    {
+      getSocket().emit("notification_panel",newNotification);
+    }
     Swal.fire("Thông báo", "Đã hoàn thành thêm PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
     setTrigger(!trigger);
@@ -410,6 +429,23 @@ const PoManager = () => {
       });
       if (kq === "OK") {
         Swal.fire("Thông báo", "Thêm PO mới thành công", "success");
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: "success",
+          TITLE: 'PO mới được thêm',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm PO mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newpoqty} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`, 
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel", newNotification);
+        }
         setSelection({
           ...selection,
           trapo: true,
@@ -474,6 +510,23 @@ const PoManager = () => {
         REMARK: newinvoiceRemark,
       });
       if (kq === "OK") {
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: "success",
+          TITLE: 'Invoice mới',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm Invoice mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newinvoiceQTY} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`, 
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel",newNotification);
+        }
         Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
       } else {
         Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " + kq, "error");

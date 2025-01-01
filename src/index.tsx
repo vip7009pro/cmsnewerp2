@@ -22,10 +22,10 @@ if (fullUrl.includes("cmsvendors")) {
 } else {
   root.render(
     <StrictMode>
-    <Provider store={store}>
-      <SnackbarProvider maxSnack={5} autoHideDuration={3000} preventDuplicate>
-        <App />
-      </SnackbarProvider>
+      <Provider store={store}>
+        <SnackbarProvider maxSnack={5} autoHideDuration={5000} preventDuplicate>
+          <App />
+        </SnackbarProvider>
       </Provider>
     </StrictMode>
   );
