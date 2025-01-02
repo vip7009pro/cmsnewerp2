@@ -728,7 +728,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     });
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("loadChoKiemGop", {
+    generalQuery("loadChoKiemGop_NEW", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
