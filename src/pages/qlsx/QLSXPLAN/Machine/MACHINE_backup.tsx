@@ -3,7 +3,7 @@ import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState 
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { Button, IconButton } from "@mui/material";
 import {
@@ -45,6 +45,7 @@ import {
   f_handle_xuatdao_sample,
   f_neededSXQtyByYCSX,
   f_updateLossKT_ZTB_DM_HISTORY,
+  f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -68,6 +69,7 @@ import {
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
+import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 const MACHINE_OLD = () => {
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
@@ -1592,6 +1594,23 @@ const MACHINE_OLD = () => {
           if (err_code === "1") {
             Swal.fire("Thông báo", "Lưu thất bại, không được để trống ô cần thiết", "error");
           } else {
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "info",
+              TITLE: 'Update định mức sản xuất',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update định mức sản xuất của code: ${selectedPlan?.G_NAME_KD},`,
+              SUBDEPTNAME: "SX,QLSX",
+              MAINDEPTNAME: "SX,QLSX",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
             loadQLSXPlan(selectedPlanDate);
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
@@ -1769,6 +1788,24 @@ const MACHINE_OLD = () => {
               showConfirmButton: false,
             });
             await handleDangKyXuatLieu();
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "info",
+              TITLE: 'Đăng ký xuất liệu cho chỉ thị',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+              SUBDEPTNAME: "KD,RND,SX_VP,QLSX,KHO_VP,MUA_VP",
+              MAINDEPTNAME: "KD,RND,SX,QLSX,KHO,MUA",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
+
             clearSelectedMaterialRows();
             setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
             setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
@@ -1828,6 +1865,23 @@ const MACHINE_OLD = () => {
       Swal.fire("Thông báo", err_code, "error");
     }
     else {
+      let newNotification: NotificationElement = {
+        CTR_CD: '002',
+        NOTI_ID: -1,
+        NOTI_TYPE: "info",
+        TITLE: 'YCSX được tạo chỉ thị sx mới',
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã tạo chỉ thị mới cho ycsx ${ycsxdatatablefilter.current[0].PROD_REQUEST_NO}, CODE:  ${ycsxdatatablefilter.current[0].G_NAME_KD} tại máy ${selectedMachine}`,
+        SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
+        MAINDEPTNAME: "KD,RND,SX,QLSX",
+        INS_EMPL: 'NHU1903',
+        INS_DATE: '2024-12-30',
+        UPD_EMPL: 'NHU1903',
+        UPD_DATE: '2024-12-30',
+      }  
+      if(await f_insert_Notification_Data(newNotification))
+      {
+        getSocket().emit("notification_panel", newNotification);
+      }
       loadQLSXPlan(selectedPlanDate);
     }
   };
@@ -3802,6 +3856,23 @@ const MACHINE_OLD = () => {
                         if (selectedPlan.PLAN_ID !== 'XXX') {
                           checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
                             await f_saveSinglePlan(selectedPlan);
+                            let newNotification: NotificationElement = {
+                              CTR_CD: '002',
+                              NOTI_ID: -1,
+                              NOTI_TYPE: "info",
+                              TITLE: 'Update thông tin chỉ thị',
+                              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update thông tin chỉ thị ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+                              SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
+                              MAINDEPTNAME: "KD,RND,SX,QLSX",
+                              INS_EMPL: 'NHU1903',
+                              INS_DATE: '2024-12-30',
+                              UPD_EMPL: 'NHU1903',
+                              UPD_DATE: '2024-12-30',
+                            }  
+                            if(await f_insert_Notification_Data(newNotification))
+                            {
+                              getSocket().emit("notification_panel", newNotification);
+                            }
                             await loadQLSXPlan(selectedPlanDate);
                             setChiThiDataTable(await f_handleGetChiThiTable({
                               ...selectedPlan,

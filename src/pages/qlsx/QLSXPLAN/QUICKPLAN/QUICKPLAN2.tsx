@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import "./QUICKPLAN.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSocket, getUserData, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { Button, IconButton, LinearProgress } from "@mui/material";
@@ -24,6 +24,7 @@ import {
   f_deleteProdProcessData,
   f_getMachineListData,
   f_getRecentDMData,
+  f_insert_Notification_Data,
   f_insertDMYCSX,
   f_insertDMYCSX_New,
   f_loadProdProcessData,
@@ -52,6 +53,7 @@ import {
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 const QUICKPLAN2 = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)
@@ -1460,7 +1462,7 @@ const QUICKPLAN2 = () => {
           "temp_plan_table",
           JSON.stringify([...plandatatable, temp_add_plan]),
         );
-      }
+      }      
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
     }
@@ -1647,6 +1649,23 @@ const QUICKPLAN2 = () => {
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
       } else {
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: "info",
+          TITLE: 'YCSX được tạo chỉ thị sx mới',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã tạo chỉ thị sx mới ${qlsxplandatafilter.current[0].PROD_REQUEST_NO}, CODE:  ${qlsxplandatafilter.current[0].G_NAME_KD} tại máy ${qlsxplandatafilter.current[0].PLAN_EQ} và có thể nhiều hơn nữa`,
+          SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
+          MAINDEPTNAME: "KD,RND,SX,QLSX",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel", newNotification);
+        }
         Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
       }
     } else {
@@ -1725,6 +1744,23 @@ const QUICKPLAN2 = () => {
             );
           } else {
             //loadQLSXPlan(selectedPlanDate);
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "info",
+              TITLE: 'Update định mức sản xuất',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update định mức sản xuất của code: ${selectedPlan.current?.G_NAME_KD},`,
+              SUBDEPTNAME: "SX,QLSX",
+              MAINDEPTNAME: "SX,QLSX",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }

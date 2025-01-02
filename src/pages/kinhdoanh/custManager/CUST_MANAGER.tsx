@@ -3,15 +3,16 @@ import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./CUST_MANAGER.scss";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import { CUST_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { zeroPad } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const CUST_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
@@ -188,9 +189,27 @@ const CUST_MANAGER = () => {
   };
   const handle_addCustomer = () => {
     generalQuery("add_customer", selectedRows)
-      .then((response) => {
+      .then(async (response) => {
         /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "success",
+            TITLE: 'Thêm khách hàng mới',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm một khách hàng mới:${selectedRows.CUST_CD}  - ${selectedRows.CUST_NAME_KD}  -  ${selectedRows.CUST_NAME} `,
+            SUBDEPTNAME: "ALL",
+            MAINDEPTNAME: "ALL",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel", newNotification);
+          }
+
           Swal.fire("Thông báo", "Thêm khách thành công", "success");
           handleCUSTINFO();
         } else {
@@ -207,9 +226,26 @@ const CUST_MANAGER = () => {
   };
   const handle_editCustomer = () => {
     generalQuery("edit_customer", selectedRows)
-      .then((response) => {
+      .then(async (response) => {
         /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "info",
+            TITLE: 'Update thông tin khách hàng',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã sửa một khách hàng:${selectedRows.CUST_CD}  - ${selectedRows.CUST_NAME_KD}  -  ${selectedRows.CUST_NAME} `,
+            SUBDEPTNAME: "ALL",
+            MAINDEPTNAME: "ALL",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel", newNotification);
+          }
           Swal.fire("Thông báo", "Sửa khách thành công", "success");
           handleCUSTINFO();
         } else {

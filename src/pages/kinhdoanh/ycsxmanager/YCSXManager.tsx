@@ -11,7 +11,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
 import {
   checkBP,
   f_batchDeleteYCSX,
@@ -26,6 +26,7 @@ import {
   f_getcustomerlist,
   f_getNextP500_IN_NO,
   f_handleAmazonData,
+  f_insert_Notification_Data,
   f_insertDMYCSX,
   f_insertDMYCSX_New,
   f_insertP500,
@@ -64,6 +65,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tabIndex, setTabIndex] = useState(0);
@@ -1354,7 +1356,7 @@ const YCSXManager = () => {
             await f_insertDMYCSX_New({
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
-            });            
+            });
             let kq: string = await f_insertYCSX({
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
@@ -1515,6 +1517,22 @@ const YCSXManager = () => {
       }
     }
     setisLoading(false);
+    let newNotification: NotificationElement = {
+      CTR_CD: '002',
+      NOTI_ID: -1,
+      NOTI_TYPE: "success",
+      TITLE: 'Thêm YCSX hàng loạt',
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm ${uploadExcelJson.length} YCSX mới`,
+      SUBDEPTNAME: "KD,QLSX",
+      MAINDEPTNAME: "KD,QLSX",
+      INS_EMPL: 'NHU1903',
+      INS_DATE: '2024-12-30',
+      UPD_EMPL: 'NHU1903',
+      UPD_DATE: '2024-12-30',
+    }
+    if (await f_insert_Notification_Data(newNotification)) {
+      getSocket().emit("notification_panel", newNotification);
+    }
     Swal.fire("Thông báo", "Đã hoàn thành Up YCSX hàng loạt", "success");
     await f_updateDMSX_LOSS_KT();
     setUploadExcelJSon(tempjson);
@@ -1641,7 +1659,7 @@ const YCSXManager = () => {
         await f_insertDMYCSX_New({
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,
-        });  
+        });
         let kq: string = await f_insertYCSX({
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
@@ -1688,6 +1706,22 @@ const YCSXManager = () => {
         });
         if (kq === 'OK') {
           await f_updateDMSX_LOSS_KT();
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "success",
+            TITLE: 'Thêm YCSX mới',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm YCSX mới: ${next_prod_request_no}, CODE: ${selectedCode?.G_CODE}, CUST_CD: ${selectedCust_CD?.CUST_CD}, QTY: ${newycsxqty}, DELIVERY DATE: ${deliverydate?.toString()}.`,
+            SUBDEPTNAME: "KD,QLSX",
+            MAINDEPTNAME: "KD,QLSX",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }
+          if (await f_insert_Notification_Data(newNotification)) {
+            getSocket().emit("notification_panel", newNotification);
+          }
           Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
         }
         else {
@@ -1741,6 +1775,22 @@ const YCSXManager = () => {
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
         });
         if (kq === 'OK') {
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "success",
+            TITLE: 'Thêm YCSX mới',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm YCSX mới: ${next_prod_request_no}, CODE: ${selectedCode?.G_CODE}, CUST_CD: ${selectedCust_CD?.CUST_CD}, QTY: ${newycsxqty}, DELIVERY DATE: ${deliverydate?.toString()}.`,
+            SUBDEPTNAME: "KD,QLSX",
+            MAINDEPTNAME: "KD,QLSX",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }
+          if (await f_insert_Notification_Data(newNotification)) {
+            getSocket().emit("notification_panel", newNotification);
+          }
           Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
         }
         else {

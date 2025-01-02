@@ -1,7 +1,7 @@
 import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getUserData } from "./Api";
+import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSocket, getUserData } from "./Api";
 import {
   BOMSX_DATA,
   CODE_FULL_INFO,
@@ -3828,6 +3828,23 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
       }
     }
     if (!err_code) {
+      let newNotification: NotificationElement = {
+        CTR_CD: '002',
+        NOTI_ID: -1,
+        NOTI_TYPE: "warning",
+        TITLE: 'Xóa YCSX',
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa YCSX: ${ycsxList[0].PROD_REQUEST_NO}, CODE: ${ycsxList[0]?.G_CODE}, CUST_CD: ${ycsxList[0]?.CUST_CD}, QTY: ${ycsxList[0]?.PROD_REQUEST_QTY}, DELIVERY DATE: ${ycsxList[0]?.DELIVERY_DT?.toString()}, và có thể nhiều ycsx khác`,
+        SUBDEPTNAME: "KD,QLSX",
+        MAINDEPTNAME: "KD,QLSX",
+        INS_EMPL: 'NHU1903',
+        INS_DATE: '2024-12-30',
+        UPD_EMPL: 'NHU1903',
+        UPD_DATE: '2024-12-30',
+      }  
+      if(await f_insert_Notification_Data(newNotification))
+      {
+        getSocket().emit("notification_panel", newNotification);
+      }
       Swal.fire("Thông báo", "Xóa YCSX thành công (chỉ YCSX của người đăng nhập)!", "success");
     } else {
       Swal.fire("Thông báo", "Có lỗi: Có thể ycsx này đã được đăng ký xuất liệu", "error");

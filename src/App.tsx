@@ -557,45 +557,59 @@ function App() {
         }
       });
     }
+    const showNoti =  (data: NotificationElement) => {
+      dispatch(updateNotiCount((getNotiCount()??0)+1));
+      localStorage.setItem("notification_count",((getNotiCount()??0)+1).toString());
+      switch(data.NOTI_TYPE) {
+        case 'success':
+          enqueueSnackbar(data.CONTENT, {
+            variant: 'success',
+          });
+          break;
+        case 'error':
+          enqueueSnackbar(data.CONTENT, {
+            variant: 'error',
+          });
+          break;
+        case 'warning':
+          enqueueSnackbar(data.CONTENT, {
+            variant: 'warning',
+          });
+          break;
+        case 'info':
+          enqueueSnackbar(data.CONTENT, {
+            variant: 'info',
+          });
+          break;
+        default:
+          enqueueSnackbar(data.CONTENT, {
+            variant: 'success',
+          });
+          break;
+      }  
+
+    }
     if (!getSocket().hasListeners('notification_panel')) {     
       getSocket().on("notification_panel", (data: NotificationElement) => {    
         console.log(data);
         let mainDeptArray = data.MAINDEPTNAME?.split(',');
         console.log('mainDeptArray',mainDeptArray);
         console.log('user',getUserData()?.MAINDEPTNAME);
-        if(!mainDeptArray || !mainDeptArray.includes((getUserData()?.MAINDEPTNAME??'ALL')) || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
+       /*  if(!mainDeptArray || !mainDeptArray.includes((getUserData()?.MAINDEPTNAME??'ALL')) || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
           return;
-        }
+        } */
         //console.log('notiCount---',getNotiCount())
-        dispatch(updateNotiCount((getNotiCount()??0)+1));
-        localStorage.setItem("notification_count",((getNotiCount()??0)+1).toString());
-        switch(data.NOTI_TYPE) {
-          case 'success':
-            enqueueSnackbar(data.CONTENT, {
-              variant: 'success',
-            });
-            break;
-          case 'error':
-            enqueueSnackbar(data.CONTENT, {
-              variant: 'error',
-            });
-            break;
-          case 'warning':
-            enqueueSnackbar(data.CONTENT, {
-              variant: 'warning',
-            });
-            break;
-          case 'info':
-            enqueueSnackbar(data.CONTENT, {
-              variant: 'info',
-            });
-            break;
-          default:
-            enqueueSnackbar(data.CONTENT, {
-              variant: 'success',
-            });
-            break;
-        }  
+        if(getUserData()?.EMPL_NO==='NHU1903') 
+        {
+          showNoti(data);
+        }
+        else {
+          if(!mainDeptArray || !mainDeptArray.includes((getUserData()?.MAINDEPTNAME??'ALL')) || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
+            return;
+          }
+          showNoti(data);
+        }
+       
       });
     }
     return () => {

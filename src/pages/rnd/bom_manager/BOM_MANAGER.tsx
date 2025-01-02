@@ -22,8 +22,8 @@ import {
   AiOutlinePushpin,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP, f_addProcessDataTotal, f_addProdProcessData, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_loadProdProcessData, renderElement } from "../../../api/GlobalFunction";
+import { generalQuery, getAuditMode, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
+import { checkBP, f_addProcessDataTotal, f_addProdProcessData, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_insert_Notification_Data, f_loadProdProcessData, renderElement } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -52,6 +52,7 @@ import UpHangLoat from "./UpHangLoat";
 import BOM_DESIGN from "./BOM_DESIGN";
 import AGTable from "../../../components/DataTable/AGTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const BOM_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [activeOnly, setActiveOnly] = useState(true)
@@ -1759,9 +1760,26 @@ const BOM_MANAGER = () => {
         NEXT_SEQ_NO: nextgseqno,
         CODE_FULL_INFO: codefullinfo,
       })
-        .then((response) => {
+        .then(async (response) => {
           ////console.log(response.data);
           if (response.data.tk_status !== "NG") {
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "info",
+              TITLE: 'Thêm code mới',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm code mới: ${nextcode}: (${codefullinfo.G_NAME_KD} - KHÁCH: ${codefullinfo.CUST_NAME})`,
+              SUBDEPTNAME: "KD,RND",
+              MAINDEPTNAME: "KD,RND",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
             Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
           } else {
             Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
@@ -1819,9 +1837,26 @@ const BOM_MANAGER = () => {
         REV_NO: NEXT_REV_NO,
         CODE_FULL_INFO: codefullinfo,
       })
-        .then((response) => {
+        .then(async (response) => {
           ////console.log(response.data);
           if (response.data.tk_status !== "NG") {
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "info",
+              TITLE: 'Thêm ver mới',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm code mới: ${newGCODE}: (${codefullinfo.G_NAME_KD} - KHÁCH: ${codefullinfo.CUST_NAME})`,
+              SUBDEPTNAME: "KD,RND",
+              MAINDEPTNAME: "KD,RND",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
             Swal.fire("Thông báo", "Code ver mới: " + newGCODE, "success");
           } else {
             Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
@@ -1885,9 +1920,26 @@ const BOM_MANAGER = () => {
             tempInfo = { ...codefullinfo, PD_HSD: 'N', UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1, UPDATE_REASON: tempUpdateReason }
           }
           await generalQuery("updateM100", tempInfo)
-            .then((response) => {
+            .then(async (response) => {
               console.log(response.data);
               if (response.data.tk_status !== "NG") {
+                let newNotification: NotificationElement = {
+                  CTR_CD: '002',
+                  NOTI_ID: -1,
+                  NOTI_TYPE: "info",
+                  TITLE: 'Update thông tin sản phẩm',
+                  CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update thông tin sản phẩm: ${codefullinfo.G_CODE}: (${codefullinfo.G_NAME_KD} - KHÁCH: ${codefullinfo.CUST_NAME})`,
+                  SUBDEPTNAME: "KD,RND",
+                  MAINDEPTNAME: "KD,RND",
+                  INS_EMPL: 'NHU1903',
+                  INS_DATE: '2024-12-30',
+                  UPD_EMPL: 'NHU1903',
+                  UPD_DATE: '2024-12-30',
+                }  
+                if(await f_insert_Notification_Data(newNotification))
+                {
+                  getSocket().emit("notification_panel", newNotification);
+                }
                 Swal.fire(
                   "Thông báo",
                   "Update thành công: " + codefullinfo.G_CODE,

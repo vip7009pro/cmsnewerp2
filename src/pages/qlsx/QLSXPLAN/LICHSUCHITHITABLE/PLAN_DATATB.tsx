@@ -13,7 +13,7 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData } from "../../../../api/Api";
 import {
   checkBP,
   f_deleteChiThiMaterialLine,
@@ -36,6 +36,7 @@ import {
   renderChiThi2,
   SaveExcel,
   f_handleResetChiThiTable_New,
+  f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
@@ -60,6 +61,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
+import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 const PLAN_DATATB = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
@@ -1169,6 +1171,24 @@ const PLAN_DATATB = () => {
             showConfirmButton: false,
           });
           await handleDangKyXuatLieu();
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "info",
+            TITLE: 'Đăng ký xuất liệu cho chỉ thị',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+            SUBDEPTNAME: "KD,RND,SX_VP,QLSX,KHO_VP,MUA_VP",
+            MAINDEPTNAME: "KD,RND,SX,QLSX,KHO,MUA",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel", newNotification);
+          }
+
           clearSelectedMaterialRows();
           let thisProcessList: PROD_PROCESS_DATA[] = [];  
           thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
@@ -1291,6 +1311,23 @@ const PLAN_DATATB = () => {
       Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
     }
     else {
+      let newNotification: NotificationElement = {
+        CTR_CD: '002',
+        NOTI_ID: -1,
+        NOTI_TYPE: "info",
+        TITLE: 'Move plan',
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã chuyển ${qlsxplandatafilter.current.length} plan tại ngày ${qlsxplandatafilter.current[0].PLAN_DATE} cho ngày ${todate}`,
+        SUBDEPTNAME: "SX_VP,QLSX,KHO_VP,MUA_VP",
+        MAINDEPTNAME: "SX,QLSX,KHO,MUA",
+        INS_EMPL: 'NHU1903',
+        INS_DATE: '2024-12-30',
+        UPD_EMPL: 'NHU1903',
+        UPD_DATE: '2024-12-30',
+      }  
+      if(await f_insert_Notification_Data(newNotification))
+      {
+        getSocket().emit("notification_panel", newNotification);
+      }
       Swal.fire('Thông báo', 'Move plan thành công', 'success');
     }
     loadQLSXPlan(fromdate);

@@ -790,7 +790,7 @@ const PlanManager = () => {
       CTR_CD: '002',
       NOTI_ID: -1,
       NOTI_TYPE: "success",
-      TITLE: 'Invoice mới hàng loạt',
+      TITLE: 'Thêm kế hoạch giao hàng mới',
       CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm kế hoạch giao hàng mới`, 
       SUBDEPTNAME: "KD",
       MAINDEPTNAME: "KD",
@@ -861,6 +861,23 @@ const PlanManager = () => {
         }
       }
       if (!err_code) {
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: 'warning',
+          TITLE: 'Xóa Kế hoạch giao hàng',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa kế hoạch giao hàng`, 
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel",newNotification);
+        }
         Swal.fire(
           "Thông báo",
           "Xóa Plan thành công (chỉ Plan của người đăng nhập)!",

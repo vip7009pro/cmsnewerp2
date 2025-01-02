@@ -3,7 +3,7 @@ import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState 
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { Button, IconButton } from "@mui/material";
 import {
@@ -57,6 +57,7 @@ import {
   f_insertDMYCSX_New,
   f_loadQLSXPLANDATA2,
   f_handletraYCSXQLSX_New,
+  f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
@@ -81,6 +82,7 @@ import {
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
+import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 const MACHINE = () => {
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
@@ -1772,6 +1774,25 @@ const MACHINE = () => {
             showConfirmButton: false,
           });
           await handleDangKyXuatLieu();
+
+          let newNotification: NotificationElement = {
+            CTR_CD: '002',
+            NOTI_ID: -1,
+            NOTI_TYPE: "info",
+            TITLE: 'Đăng ký xuất liệu cho chỉ thị',
+            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+            SUBDEPTNAME: "KD,RND,SX_VP,QLSX,KHO_VP,MUA_VP",
+            MAINDEPTNAME: "KD,RND,SX,QLSX,KHO,MUA",
+            INS_EMPL: 'NHU1903',
+            INS_DATE: '2024-12-30',
+            UPD_EMPL: 'NHU1903',
+            UPD_DATE: '2024-12-30',
+          }  
+          if(await f_insert_Notification_Data(newNotification))
+          {
+            getSocket().emit("notification_panel", newNotification);
+          }
+
           clearSelectedMaterialRows();
           let thisProcessList: PROD_PROCESS_DATA[] = [];
           thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
@@ -1839,6 +1860,23 @@ const MACHINE = () => {
       Swal.fire("Thông báo", err_code, "error");
     }
     else {
+      let newNotification: NotificationElement = {
+        CTR_CD: '002',
+        NOTI_ID: -1,
+        NOTI_TYPE: "info",
+        TITLE: 'YCSX được tạo chỉ thị sx mới',
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã tạo chỉ thị mới cho ycsx ${ycsxdatatablefilter.current[0].PROD_REQUEST_NO}, CODE:  ${ycsxdatatablefilter.current[0].G_NAME_KD} tại máy ${selectedMachine}`,
+        SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
+        MAINDEPTNAME: "KD,RND,SX,QLSX",
+        INS_EMPL: 'NHU1903',
+        INS_DATE: '2024-12-30',
+        UPD_EMPL: 'NHU1903',
+        UPD_DATE: '2024-12-30',
+      }  
+      if(await f_insert_Notification_Data(newNotification))
+      {
+        getSocket().emit("notification_panel", newNotification);
+      }
       loadQLSXPlan(selectedPlanDate);
     }
   };
@@ -3528,10 +3566,28 @@ const MACHINE = () => {
                         if (selectedPlan.PLAN_ID !== 'XXX') {
                           checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
                             await f_saveSinglePlan(selectedPlan);
+                            let newNotification: NotificationElement = {
+                              CTR_CD: '002',
+                              NOTI_ID: -1,
+                              NOTI_TYPE: "info",
+                              TITLE: 'Update thông tin chỉ thị',
+                              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update thông tin chỉ thị ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+                              SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
+                              MAINDEPTNAME: "KD,RND,SX,QLSX",
+                              INS_EMPL: 'NHU1903',
+                              INS_DATE: '2024-12-30',
+                              UPD_EMPL: 'NHU1903',
+                              UPD_DATE: '2024-12-30',
+                            }  
+                            if(await f_insert_Notification_Data(newNotification))
+                            {
+                              getSocket().emit("notification_panel", newNotification);
+                            }
                             await loadQLSXPlan(selectedPlanDate);
                             setChiThiDataTable(await f_handleGetChiThiTable({
                               ...selectedPlan,
                             }));
+                            
                           });
                         }
                         else {

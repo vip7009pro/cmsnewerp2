@@ -13,7 +13,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
 import { MdAdd, MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -26,12 +26,13 @@ import { CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Comp
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { BiLoaderCircle } from "react-icons/bi";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import VLDOC from "./VLDOC";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const QLVL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showdialog, setShowDialog] = useState(false);
@@ -142,9 +143,26 @@ const QLVL = () => {
       });
     if (materialExist === false) {
       await generalQuery("addMaterial", clickedRows)
-        .then((response) => {
+        .then(async (response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "success",
+              TITLE: 'Thêm vật liệu mới',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm vật liệu mới ${clickedRows.M_NAME}.` ,
+              SUBDEPTNAME: "KD,RND,IQC,ĐỘ TIN CẬY,QC",
+              MAINDEPTNAME: "KD,RND,KHO,QC",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel", newNotification);
+            }
             Swal.fire("Thông báo", "Thêm vật liệu thành công", "success");
             load_material_table();
           } else {
@@ -159,16 +177,33 @@ const QLVL = () => {
   };
   const updateMaterial = async () => {
     await generalQuery("updateMaterial", clickedRows)
-      .then((response) => {
+      .then(async (response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           generalQuery("updateM090FSC", clickedRows)
-            .then((response) => {
+            .then(async (response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
                 
               } else {
                 //Swal.fire("Thông báo", "Update vật liệu thất bại:" + response.data.message, "error");
+              }
+              let newNotification: NotificationElement = {
+                CTR_CD: '002',
+                NOTI_ID: -1,
+                NOTI_TYPE: "info",
+                TITLE: 'Update thông tin vật liệu',
+                CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update vật liệu ${clickedRows.M_NAME}.` ,
+                SUBDEPTNAME: "KD,RND,IQC,ĐỘ TIN CẬY,QC",
+                MAINDEPTNAME: "KD,RND,KHO,QC",
+                INS_EMPL: 'NHU1903',
+                INS_DATE: '2024-12-30',
+                UPD_EMPL: 'NHU1903',
+                UPD_DATE: '2024-12-30',
+              }  
+              if(await f_insert_Notification_Data(newNotification))
+              {
+                getSocket().emit("notification_panel", newNotification);
               }
               Swal.fire("Thông báo", "Update vật liệu thành công", "success");
               load_material_table();

@@ -661,6 +661,23 @@ const PoManager = () => {
         PO_ID: selectedID,
       });
       if (kq === "OK") {
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: 'info',
+          TITLE: 'Update PO',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update PO po_id: ${selectedID} - ${selectedCode?.G_NAME_KD} - (${selectedCust_CD?.CUST_NAME_KD}) - PO NO: ${newpono} - PO QTY: ${newpoqty} - PO DATE: ${newpodate} - RD DATE: ${newrddate} - PROD PRICE: ${newpoprice} - BEP: ${newpoBEP} - REMARK: ${newporemark}`, 
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel",newNotification);
+        }
         Swal.fire("Thông báo", "Update Po thành công", "success");
       } else {
         Swal.fire("Thông báo", "Update PO thất bại: " + kq, "error");
@@ -692,6 +709,23 @@ const PoManager = () => {
         }
       }
       if (!err_code) {
+        let newNotification: NotificationElement = {
+          CTR_CD: '002',
+          NOTI_ID: -1,
+          NOTI_TYPE: 'warning',
+          TITLE: 'Xóa PO',
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa PO_NO ${podatatablefilter.current.map((x: POTableData) => x.PO_NO).join(', ')} - CODE: ${podatatablefilter.current.map((x: POTableData) => x.G_NAME_KD).join(', ')}`, 
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: 'NHU1903',
+          INS_DATE: '2024-12-30',
+          UPD_EMPL: 'NHU1903',
+          UPD_DATE: '2024-12-30',
+        }  
+        if(await f_insert_Notification_Data(newNotification))
+        {
+          getSocket().emit("notification_panel",newNotification);
+        }
         Swal.fire(
           "Thông báo",
           "Xóa PO thành công (chỉ PO của người đăng nhập)!",

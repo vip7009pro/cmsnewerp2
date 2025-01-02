@@ -24,7 +24,7 @@ const companyInfo = {
     loginLogoWidth: 190,
     loginLogoHeight: 50,  
     backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,  
-    apiUrl: `${protocol}://14.160.33.94:${sub_port}`,  
+    apiUrl: `${protocol}://14.160.33.94:${main_port}`,  
     apiUrlArray: [
       {
         server_name: "MAIN_SERVER",
