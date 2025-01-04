@@ -7,15 +7,17 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import "./DiemDanhNhom.scss";
 import Swal from "sweetalert2";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { DiemDanhNhomData } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { a } from "@react-spring/web";
 
 const DiemDanhNhomBP = () => {
   const glbLang: string | undefined = useSelector(
@@ -248,6 +250,23 @@ const DiemDanhNhomBP = () => {
                   //console.log(error);
                 });
             }
+            let newNotification: NotificationElement = {
+              CTR_CD: '002',
+              NOTI_ID: -1,
+              NOTI_TYPE: "success",
+              TITLE: 'Điểm danh thủ công',
+              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã điểm danh thủ công cho ${params.row.EMPL_NO}_ ${params.row.MIDLAST_NAME} ${params.row.FIRST_NAME} ${type === 1 ? 'đi làm':'nghỉ'}`,
+              SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+              MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+              INS_EMPL: 'NHU1903',
+              INS_DATE: '2024-12-30',
+              UPD_EMPL: 'NHU1903',
+              UPD_DATE: '2024-12-30',
+            }  
+            if(await f_insert_Notification_Data(newNotification))
+            {
+              getSocket().emit("notification_panel",newNotification);
+            }
           } else {
           }
         };
@@ -318,7 +337,7 @@ const DiemDanhNhomBP = () => {
             EMPL_NO: params.row.EMPL_NO,
             overtime_info: overtimeinfo,
           })
-            .then((response) => {
+            .then(async (response) => {
               //console.log(response.data);
               if (response.data.tk_status === "OK") {
                 const newProjects = diemdanhnhomtable.map((p) =>
@@ -330,6 +349,23 @@ const DiemDanhNhomBP = () => {
                       }
                     : p
                 );
+                let newNotification: NotificationElement = {
+                  CTR_CD: '002',
+                  NOTI_ID: -1,
+                  NOTI_TYPE: "success",
+                  TITLE: 'Đăng ký tăng ca hộ',
+                  CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký tăng ca cho ${params.row.EMPL_NO}_ ${params.row.MIDLAST_NAME} ${params.row.FIRST_NAME} ${overtimeinfo}`,
+                  SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+                  MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+                  INS_EMPL: 'NHU1903',
+                  INS_DATE: '2024-12-30',
+                  UPD_EMPL: 'NHU1903',
+                  UPD_DATE: '2024-12-30',
+                }  
+                if(await f_insert_Notification_Data(newNotification))
+                {
+                  getSocket().emit("notification_panel",newNotification);
+                }
                 setDiemDanhNhomTable(newProjects);
               } else {
                 Swal.fire(

@@ -553,7 +553,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraWHSTOCKCMS = () => {
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("traSTOCKCMS", {
+    generalQuery("traSTOCKCMS_NEW", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -595,7 +595,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraWHSTOCKKD = () => {
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("traSTOCKKD", {
+    generalQuery("traSTOCKKD_NEW", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
