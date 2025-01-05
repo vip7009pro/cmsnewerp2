@@ -591,10 +591,10 @@ function App() {
     }
     if (!getSocket().hasListeners('notification_panel')) {     
       getSocket().on("notification_panel", (data: NotificationElement) => {    
-        console.log(data);
+        //console.log(data);
         let mainDeptArray = data.MAINDEPTNAME?.split(',');
-        console.log('mainDeptArray',mainDeptArray);
-        console.log('user',getUserData()?.MAINDEPTNAME);
+        //console.log('mainDeptArray',mainDeptArray);
+        //console.log('user',getUserData()?.MAINDEPTNAME);
        /*  if(!mainDeptArray || !mainDeptArray.includes((getUserData()?.MAINDEPTNAME??'ALL')) || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
           return;
         } */
