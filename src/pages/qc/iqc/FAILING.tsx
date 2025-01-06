@@ -15,7 +15,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { checkBP, f_isM_CODE_in_M140_Main, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { checkBP, f_isM_CODE_in_M140_Main, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_O302, f_isM_LOT_NO_in_P500, f_nhapkhoao, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
 import { GiConfirmed } from "react-icons/gi";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -1005,6 +1005,7 @@ const FAILING = () => {
                   let checkLOTExistTotal: boolean = false;                  
                   let checkLotWithPlanIdP500 = await f_isM_LOT_NO_in_P500(planId, m_lot_no);
                   let checkLotWithPlanId_IN_KHO_SX = await f_isM_LOT_NO_in_IN_KHO_SX(planId, m_lot_no);
+                  let checkLotWithPlanId_O302 = await f_isM_LOT_NO_in_O302(planId, m_lot_no);
                   if(checkLotWithPlanIdP500){
                     checkLOTExistTotal = true;                       
                   }  
@@ -1012,6 +1013,11 @@ const FAILING = () => {
                   {
                     if(checkLotWithPlanId_IN_KHO_SX){
                       checkLOTExistTotal = true;
+                    }
+                    else {
+                      if(checkLotWithPlanId_O302){
+                        checkLOTExistTotal = true;
+                      }
                     }
                   }   
 

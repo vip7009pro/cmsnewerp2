@@ -5883,3 +5883,19 @@ export const f_insert_Notification_Data = async (DATA: any) => {
     });
   return kq;
 }
+export const f_isM_LOT_NO_in_O302 = async (planId: string, m_lot_no: string) => {
+  let kq: boolean = false;
+  await generalQuery("isM_LOT_NO_in_O302", {
+    PLAN_ID: planId,
+    M_LOT_NO: m_lot_no,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
