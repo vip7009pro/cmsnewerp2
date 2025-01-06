@@ -627,19 +627,22 @@
     .bom_manager_wrapper {
       display: flex;
       flex-direction: column;
+      height: fit-content;
+      gap: 100px;
       .left {
         display: flex;
         flex-direction: column;        
-        flex: 1.2;
+        height: 1000px;
         .codemanager {
           width: 100%;
-          height: fit-content;
+          height: 500px;
           display: flex;
-          flex-direction: column;
-          flex: 4;
+          flex-direction: column;          
           .tracuuFcst {
             display: flex;
+            flex-direction: column;
             width: 100%;
+            height: 500px;
             .tracuuFcstform {
               display: flex;
               flex-direction: column;
@@ -763,10 +766,10 @@
         }
         .bom_manager_button {
           display: flex;
+          height: 500px;
           flex-direction: row;
           justify-items: center;
-          align-items: center;
-          flex: 0.5;
+          align-items: center;          
           border-radius: 0px;
           margin-bottom: 5px;
           background-image: linear-gradient(0deg, #7ae2f5, #80db17);
@@ -783,10 +786,11 @@
         }
         .product_visualize {
           display: flex;
-          flex: 4;
+          flex-direction: column;
+          height: 500px;
           background-color: rgb(116, 117, 118);
           overflow: scroll;
-          width: 100%;
+          width: 100%;          
           .banve {
             display: flex;
             flex-direction: row;
@@ -798,9 +802,8 @@
       .right {
         display: flex;
         flex-direction: column;
-        flex: 4;
+        height: 1500px;
         gap: 15px;
-
         .codeinfobig {
           display: flex;
           gap: 20px;
@@ -831,9 +834,7 @@
             font-weight: bold;
             color: rgb(32, 122, 240);
           }
-        }
-
-       
+        }       
         .up {
           display: flex;
           flex-direction: column;
@@ -925,7 +926,7 @@
         .down {
           display: flex;
           width: 100%;
-          height: 105vh;
+          height: 160vh;
           flex-direction: column;
           justify-items: flex-start;
           background-image: linear-gradient(0deg, #afd3d1, #72cf34);

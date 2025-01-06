@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import "./CodeVisualLize.scss";
-import { CODEDATA } from "../CalcQuotation";
 import RECTANGLE from "../../../rnd/design_amazon/design_components/RECTANGLE";
+import { CODEDATA } from "../../../../api/GlobalInterface";
 
 const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
   let factor = 1;

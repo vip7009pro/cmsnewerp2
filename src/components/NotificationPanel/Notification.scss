@@ -1,3 +1,5 @@
+
+@media only screen and (max-width: 5000px) {
 .notification {
   display: flex;
   flex-direction: column;
@@ -24,5 +26,37 @@
   }
   .content {
     font-size: 14px;
+  }
+}
+}
+@media only screen and (max-width: 768px) {
+  .notification {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+    gap: 10px;
+    background-color: rgb(235, 248, 159);
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 5px;  
+    .header {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      .title {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .time {
+        font-size: 12px;
+        font-weight: bold;
+        color: gray;
+      }
+    }
+    .content {
+      font-size: 14px;
+    }
   }
 }

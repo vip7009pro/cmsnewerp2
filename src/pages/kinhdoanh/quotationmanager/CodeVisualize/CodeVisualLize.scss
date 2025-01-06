@@ -1,5 +1,13 @@
+@media only screen and (max-width: 5000px) {
 .codevisualizecomponent {
   position: relative;
   top: 1mm;
   left: 1mm;
+}
+}
+@media only screen and (max-width: 768px) {
+  .codevisualizecomponent {
+    display: flex;
+    flex-direction: row;   
+  }
 }
