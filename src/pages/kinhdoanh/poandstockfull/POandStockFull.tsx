@@ -747,8 +747,9 @@ const POandStockFull = () => {
       showConfirmButton: false,
     });
     setisLoading(true);
+    //traPOFullCMS2_NEW
     setColumnDefinition(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
-    generalQuery(getCompany() === "CMS" ? "traPOFullCMS_New" : "traPOFullCMS2_NEW", {
+    generalQuery(getCompany() === "CMS" ? "traPOFullCMS_New" : "traPOFullCMS2", {
       allcode: alltime,
       codeSearch: codeCMS,
     })
@@ -811,7 +812,8 @@ const POandStockFull = () => {
     });
     setisLoading(true);
     setColumnDefinition(column_codeKD2);
-    generalQuery(getCompany() === "CMS" ? "traPOFullKD_NEW" : "traPOFullKD2_NEW", {
+    //traPOFullKD2_NEW
+    generalQuery(getCompany() === "CMS" ? "traPOFullKD_NEW" : "traPOFullKD2", {
       allcode: alltime,
       codeSearch: codeCMS,
     })

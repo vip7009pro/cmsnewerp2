@@ -3,7 +3,7 @@ import { Button,} from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import "./KHOTP.scss";
 import {
   TONKIEMGOP_CMS,
@@ -553,7 +553,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraWHSTOCKCMS = () => {
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("traSTOCKCMS_NEW", {
+    generalQuery(getCompany() === "CMS" ? "traSTOCKCMS_NEW" : "traSTOCKCMS", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -595,7 +595,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraWHSTOCKKD = () => {
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("traSTOCKKD_NEW", {
+    generalQuery(getCompany() === "CMS" ? "traSTOCKKD_NEW" : "traSTOCKKD", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
