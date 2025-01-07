@@ -954,17 +954,17 @@ function Home() {
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          console.log("webver", response.data.data[0].VERWEB);
-          setCheckVerWeb(response.data.data[0].VERWEB);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        console.log("webver", response.data.data[0].VERWEB);
+        setCheckVerWeb(response.data.data[0].VERWEB);
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
     let intervalID = window.setInterval(() => {
       generalQuery("checkWebVer", {})
         .then((response) => {
