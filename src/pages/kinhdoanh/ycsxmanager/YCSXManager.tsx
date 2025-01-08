@@ -15,6 +15,7 @@ import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from ".
 import {
   checkBP,
   f_batchDeleteYCSX,
+  f_check_G_NAME_2Ver_active,
   f_checkDuplicateAMZ,
   f_checkFCST_G_CODE,
   f_checkG_CODE_ACTIVE,
@@ -1278,6 +1279,7 @@ const YCSXManager = () => {
       let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
+      let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? '');
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1285,6 +1287,8 @@ const YCSXManager = () => {
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length === 0) err_code = 7;
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
+     
+      if (isTwoVersionExist) err_code = 12;
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -1309,6 +1313,8 @@ const YCSXManager = () => {
         tempjson[i].CHECKSTATUS = "NG: " + checkBOM_Matching;
       } else if (err_code === 10) {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
+      } else if (err_code === 12) {
+        tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa";
       }
     }
     setisLoading(false);
@@ -1324,6 +1330,7 @@ const YCSXManager = () => {
       let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
+      let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? "");
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1331,6 +1338,7 @@ const YCSXManager = () => {
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length = 0) err_code = 7;
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
+      if (isTwoVersionExist) err_code = 12;
       if (err_code === 0) {
         let err_code1: number = 0;
         let next_prod_request_no: string = await f_generateNextProdRequestNo();
@@ -1514,6 +1522,8 @@ const YCSXManager = () => {
         tempjson[i].CHECKSTATUS = "NG: " + checkBOM_Matching;
       } else if (err_code === 10) {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
+      } else if (err_code === 12) {
+        tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa"; 
       }
     }
     setisLoading(false);
@@ -1635,7 +1645,8 @@ const YCSXManager = () => {
     let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(selectedCode?.G_CODE ?? "");
     let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(selectedCode?.G_CODE ?? "")) || (getCompany() !== 'CMS')
     let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(selectedCode?.G_CODE ?? "");
-    let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS')
+    let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
+    let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(selectedCode?.G_CODE ?? "");
     //console.log(await f_process_lot_no_generate(phanloai));
     if (selectedCode?.USE_YN === "N") {
       err_code = 3; // ver bi khoa
@@ -1650,6 +1661,7 @@ const YCSXManager = () => {
     }
     if (!isBOMGiaHasMain) err_code = 10;
     if (!isBOMMatching) err_code = 11;
+    if (isTwoVersionExist) err_code = 12;
     if (err_code === 0) {
       if (newphanloai === "TT") {
         await f_insertDMYCSX({
@@ -1837,6 +1849,8 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "NG: " + checkBOM_Matching, "error");
     } else if (err_code === 10) {
       Swal.fire("Thông báo", "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1", "error");
+    } else if (err_code === 12) {
+      Swal.fire("Thông báo", "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa", "error");
     }
   };
   const clearYCSXform = () => {

@@ -5906,7 +5906,9 @@ export const f_check_G_NAME_2Ver_active = async (G_CODE: string) => {
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        kq = true;
+        if (response.data.data.length > 1) {
+          kq = true;
+        }        
       }
     })
     .catch((error) => {
