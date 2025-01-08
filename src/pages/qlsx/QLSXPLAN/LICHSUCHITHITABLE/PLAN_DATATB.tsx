@@ -705,7 +705,7 @@ const PLAN_DATATB = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-            {params.data.AT_LEADTIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
+            {params.data.AT_LEADTIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
           </span>
         );
       }
@@ -719,7 +719,7 @@ const PLAN_DATATB = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-            {params.data.ACC_TIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
+            {params.data.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
           </span>
         );
       }

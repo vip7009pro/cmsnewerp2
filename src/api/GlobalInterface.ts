@@ -4307,6 +4307,33 @@ export interface MAT_DOC_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
 }
+
+export interface ALL_DOC_DATA {
+  CTR_CD: string;
+  DOC_ID: number;
+  DEPARTMENT: string;
+  DOC_CATEGORY: string;
+  DOC_CATEGORY2: string;
+  DOC_NAME: string;
+  HSD_YN: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+
+export interface ALL_FILE_DATA {
+  CTR_CD: string;
+  FILE_ID: string;
+  DOC_ID: string;
+  REG_DATE: string;
+  EXP_DATE: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;  
+}
 export interface SX_CAPA_DATA {
   EQ_SERIES: string;
   EQ_QTY: number;

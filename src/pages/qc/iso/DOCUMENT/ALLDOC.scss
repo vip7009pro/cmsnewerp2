@@ -1,0 +1,20 @@
+.documentmanager {
+  display: flex;
+  flex-direction: column;
+  .documenttable {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height:87vh;
+    .tbleft {
+      display: flex;
+      flex: 1;
+      height: 100%;
+    } 
+    .tbright {
+      display: flex;
+      flex: 1;
+      height: 100%;
+    }
+  }
+}

@@ -5899,3 +5899,18 @@ export const f_isM_LOT_NO_in_O302 = async (planId: string, m_lot_no: string) => 
     });
   return kq;
 }
+export const f_check_G_NAME_2Ver_active = async (G_CODE: string) => {
+  let kq: boolean = false;
+  await generalQuery("check_G_NAME_2Ver_active", {
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
