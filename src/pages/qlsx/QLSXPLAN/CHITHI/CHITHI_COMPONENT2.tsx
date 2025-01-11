@@ -777,8 +777,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                       <th>Tên Liệu/원단명</th>
                       <th>Size Liệu/원단폭</th>
                       <th>SL chỉ thị/지시 수량</th>
-                      <th>Thực xuất M/실제 출고 M</th>
-                      <th>Thực xuất Roll/실제 출고 Roll</th>
+                      <th>WH Stock M/재고고 M</th>
+                      <th>IQC Stock M/IQC 재고</th>
                       <th>Ghi chú/비고</th>
                     </tr>
                   </thead>
@@ -807,8 +807,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                           )}{" "}
                           M
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>{element.M_STOCK?.toLocaleString("en-US")}</td>
+                        <td>{element.IQC_STOCK?.toLocaleString("en-US")}</td>   
                         <td>{element.LIEUQL_SX}</td>
                       </tr>
                     ))}
@@ -826,8 +826,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                       <th>Tên Liệu/원단명</th>
                       <th>Size Liệu/원단폭</th>
                       <th>SL chỉ thị/지시 수량</th>
-                      <th>Thực xuất M/실제 출고 M</th>
-                      <th>Thực xuất Roll/실제 출고 Roll</th>
+                      <th>WH Stock M/재고고 M</th>
+                      <th>IQC Stock M/IQC 재고</th>
                       <th>Ghi chú/비고</th>
                     </tr>
                   </thead>
@@ -858,8 +858,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                               )}{" "}
                               M
                             </td>
-                            <td></td>
-                            <td></td>
+                            <td>{element.M_STOCK?.toLocaleString("en-US")}</td>
+                            <td>{element.IQC_STOCK?.toLocaleString("en-US")}</td>   
                             <td>{element.LIEUQL_SX}</td>
                           </tr>
                         ),
@@ -878,8 +878,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                       <th>Tên Liệu/원단명</th>
                       <th>Size Liệu/원단폭</th>
                       <th>SL chỉ thị/지시 수량</th>
-                      <th>Thực xuất M/실제 출고 M</th>
-                      <th>Thực xuất Roll/실제 출고 Roll</th>
+                      <th>WH Stock M/재고고 M</th>
+                      <th>IQC Stock M/IQC 재고</th>
                       <th>Ghi chú/비고</th>
                     </tr>
                   </thead>
@@ -910,8 +910,8 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                               )}{" "}
                               M
                             </td>
-                            <td></td>
-                            <td></td>
+                            <td>{element.M_STOCK?.toLocaleString("en-US")}</td>
+                            <td>{element.IQC_STOCK?.toLocaleString("en-US")}</td>   
                             <td>{element.LIEUQL_SX}</td>
                           </tr>
                         ),
