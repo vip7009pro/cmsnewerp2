@@ -1280,7 +1280,7 @@ const YCSXManager = () => {
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? '');
-      if (!isBOMGiaHasMain) err_code = 10;
+      if (!isBOMGiaHasMain ) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
       if (uploadExcelJson[i].CODE_55 === undefined) err_code = 6;
@@ -1288,7 +1288,7 @@ const YCSXManager = () => {
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
      
-      if (isTwoVersionExist) err_code = 12;
+      if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !=='04') err_code = 12;
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -1338,7 +1338,7 @@ const YCSXManager = () => {
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length = 0) err_code = 7;
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
-      if (isTwoVersionExist) err_code = 12;
+      if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !=='04') err_code = 12;
       if (err_code === 0) {
         let err_code1: number = 0;
         let next_prod_request_no: string = await f_generateNextProdRequestNo();
@@ -1661,7 +1661,7 @@ const YCSXManager = () => {
     }
     if (!isBOMGiaHasMain) err_code = 10;
     if (!isBOMMatching) err_code = 11;
-    if (isTwoVersionExist) err_code = 12;
+    if (isTwoVersionExist && loaisx !=='04') err_code = 12;
     if (err_code === 0) {
       if (newphanloai === "TT") {
         await f_insertDMYCSX({
