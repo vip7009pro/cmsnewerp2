@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = 2534;
+export const current_ver: number = 2537;
 /* export const current_ver: number = 419; */
 const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
 const TINHHINHCUONLIEU = React.lazy(() => import("../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
@@ -914,19 +914,19 @@ function Home() {
   });
   const getchamcong = () => {
     generalQuery("checkMYCHAMCONG", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          //console.log('data',response.data.data)
-          //console.log('data',response.data.REFRESH_TOKEN);
-          let rfr_token: string = response.data.REFRESH_TOKEN;
-          cookies.set("token", rfr_token, { path: "/" });
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        //console.log('data',response.data.data)
+        //console.log('data',response.data.REFRESH_TOKEN);
+        let rfr_token: string = response.data.REFRESH_TOKEN;
+        cookies.set("token", rfr_token, { path: "/" });
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
   const checkERPLicense = async () => {
     //console.log(getSever());
