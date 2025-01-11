@@ -737,10 +737,8 @@ const FAILING = () => {
                 let checkM_CODE: boolean = false;
                 checkM_CODE = await f_isM_CODE_in_M140_Main(selectedRowsDataA.current[i].M_CODE, g_code);
                 console.log('checkM_CODE',checkM_CODE);
-
                 if(checkM_CODE){
-                  //neu la lieu chinh trong bom      
-
+                  //neu la lieu chinh trong bom
                  f_nhapkhoao({
                   FACTORY: selectedRowsDataA.current[i].FACTORY,
                   PHANLOAI: 'R',
