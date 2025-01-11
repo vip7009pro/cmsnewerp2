@@ -516,6 +516,7 @@ export interface FullBOM {
   TONLIEU: number;
   HOLDING: number;
   TONG_TON_LIEU: number;
+  IQC_STOCK?: number;
   PO_TYPE?: string;
   FSC: string;
   PROD_MAIN_MATERIAL?: string;
@@ -1948,6 +1949,7 @@ export interface QLSXCHITHIDATA {
   UPD_EMPL: string;
   UPD_DATE: string;
   M_STOCK: number;
+  IQC_STOCK?: number;
 }
 export interface EQ_STATUS {
   FACTORY: string;
