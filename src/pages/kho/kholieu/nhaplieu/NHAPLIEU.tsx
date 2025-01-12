@@ -15,7 +15,6 @@ const NHAPLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [material_table_data, set_material_table_data] = useState<Array<WH_M_INPUT_DATA>>([]);
   const selectedData = useRef<Array<WH_M_INPUT_DATA>>([]);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [invoice_no, setInvoiceNo] = useState("");
   const [loaink, setloaiNK] = useState("03");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
