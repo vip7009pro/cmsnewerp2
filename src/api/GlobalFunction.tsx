@@ -5916,3 +5916,76 @@ export const f_check_G_NAME_2Ver_active = async (G_CODE: string) => {
     });
   return kq;
 }
+export const f_getI221NextIN_NO= async () => {
+    let next_in_no: string = "001";
+    await generalQuery("getI221Lastest_IN_NO", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        const current_in_no:string = response.data.data[0].MAX_IN_NO ?? '000';        
+        next_in_no = zeroPad(parseInt(current_in_no)+1,3);
+      } else {
+      }
+    })
+    .catch((error) => {
+      //console.log(error);
+    });
+    //console.log(next_in_no);
+    return next_in_no;
+  }
+
+  export const f_getI222Next_M_LOT_NO = async ()=> {
+      let next_m_lot_no: string = "001";
+      await generalQuery("getI222Lastest_M_LOT_NO", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          const current_m_lot_no:string = response.data.data[0].MAX_M_LOT_NO;
+          let part1: string = current_m_lot_no.substring(0,8);
+          let part2: string = current_m_lot_no.substring(8,12);
+          next_m_lot_no = part1 + zeroPad(parseInt(part2)+1,4);
+        } else {
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+      //console.log(next_m_lot_no);
+      return next_m_lot_no;
+    }
+
+export const f_Insert_I221 = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insert_I221", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+}
+
+export const f_Insert_I222 = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insert_I222", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+}
