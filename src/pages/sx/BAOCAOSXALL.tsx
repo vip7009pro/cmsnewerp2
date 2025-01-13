@@ -17,6 +17,7 @@ import { RootState } from "../../redux/store";
 import FAILING from "../qc/iqc/FAILING";
 import MAINDEFECTS from "./MAINDEFECTS/MAINDEFECTS";
 import { getCompany } from "../../api/Api";
+import BTP_AUTO from "./BTP_AUTO/BTP_AUTO";
 const BAOCAOSXALL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [lang, setLang] = useContext(LangConText);
@@ -68,6 +69,9 @@ const BAOCAOSXALL = () => {
             { getCompany() === "CMS" && <Tab>
               <span className="mininavtext">MAIN DEFECTS</span>
             </Tab>}
+            { getCompany() === "CMS" && <Tab>
+              <span className="mininavtext">BTP DATA</span>
+            </Tab>}
           </TabList>
           <TabPanel>
             <DATASX />
@@ -98,6 +102,9 @@ const BAOCAOSXALL = () => {
           </TabPanel>
           { getCompany() === "CMS" && <TabPanel>
             <MAINDEFECTS />
+          </TabPanel>}
+          { getCompany() === "CMS" && <TabPanel>
+            <BTP_AUTO />
           </TabPanel>}
         </Tabs>
       </Suspense>

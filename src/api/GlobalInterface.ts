@@ -4371,3 +4371,39 @@ export interface PROD_PROCESS_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
 }
+
+
+export interface BTP_AUTO_DATA {
+  CTR_CD: string;
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  EQUIPMENT_CD: string;
+  MACHINE: string;
+  PLAN_ID: string;
+  M_LOT_NO: string;
+  PROCESS_LOT_NO: string;
+  TEMP_QTY: number;
+  LOT_STATUS: string;
+  PLAN_ID_INPUT: string;
+  REMAIN_QTY: number;
+  PL_HANG: string;
+  USE_YN: string;
+  PR_NB: number;
+  BTP_REMAIN_EA: number;
+  EQ_NAME: string;
+  NEXT_EQ: string;
+  FINAL_BTP: number;
+  FINAL_PR_NB: number;
+  BTP_LOCATION: string;
+  FINAL_MACHINE: string;
+  FINAL_LOCATION: string;
+  XUONG: string;
+}
+
+export interface BTP_AUTO_DATA_SUMMARY {
+  G_CODE: string,
+  XA: number,
+  XB: number
+}

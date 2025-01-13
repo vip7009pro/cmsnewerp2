@@ -4,6 +4,8 @@ import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSocket, getUserData } from "./Api";
 import {
   BOMSX_DATA,
+  BTP_AUTO_DATA,
+  BTP_AUTO_DATA_SUMMARY,
   CODE_FULL_INFO,
   CodeListData,
   COMPONENT_DATA,
@@ -5987,6 +5989,37 @@ export const f_Insert_I222 = async (DATA: any) => {
     .catch((error) => {
       console.log(error);
       kq = error.message;
+    });
+  return kq;
+}
+
+export const f_load_BTP_Auto = async () => {
+  let kq: BTP_AUTO_DATA[] = [];
+  await generalQuery("loadBTPAuto", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data.map((element: any, index: number) => {
+          return { ...element, id: index };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
+export const f_load_BTP_Summary_Auto = async () => {
+  let kq: BTP_AUTO_DATA_SUMMARY[] = [];
+  await generalQuery("loadBTPSummaryAuto", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data.map((element: any, index: number) => {
+          return { ...element, id: index };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
   return kq;
 }
