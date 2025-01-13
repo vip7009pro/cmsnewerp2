@@ -24,16 +24,17 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { MdOutlinePivotTableChart } from "react-icons/md";
+import { MdDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
 import { checkBP, CustomResponsiveContainer, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateStockM090, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './XUATLIEU.scss';
+import AGTable from "../../../../components/DataTable/AGTable";
 const XUATLIEU = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
@@ -47,13 +48,7 @@ const XUATLIEU = () => {
   const [FSC_M100, setFSC_M100] = useState("N"); 
   const [prepareOutData, setPrepareOutData] = useState<WH_M_OUTPUT_DATA[]>([]);
   const [selectedFactory, setSelectedFactory] = useState("NM1");
-  const [materialList, setMaterialList] = useState<MaterialListData[]>([
-    {
-      M_CODE: "A0000001",
-      M_NAME: "#200",
-      WIDTH_CD: 1200,
-    },
-  ]);
+  const selectedData = useRef<Array<WH_M_OUTPUT_DATA>>([]);
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerListData | null>({
       CUST_CD: getCompany() === "CMS" ? "6969" : "KH000",
@@ -467,6 +462,62 @@ const XUATLIEU = () => {
     ),
     [dangkyxuatlieutable],
   );
+
+  const columns_outputMaterial = [
+    { field: "M_CODE", headerName: "M_CODE", width: 90,headerCheckboxSelection: true, checkboxSelection: true  },
+    { field: "M_NAME", headerName: "M_NAME", width: 90 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 90 },
+    { field: "UNIT_QTY", headerName: "UNIT_QTY", width: 90 },
+    { field: "TOTAL_QTY", headerName: "TOTAL_QTY", width: 90 },
+    { field: "LIEUQL_SX", headerName: "LIEUQL_SX", width: 90 },
+    { field: "WAHS_CD", headerName: "WAHS_CD", width: 90 },
+    { field: "LOC_CD", headerName: "LOC_CD", width: 90 },
+    { field: "OUT_DATE", headerName: "OUT_DATE", width: 90 },
+    { field: "OUT_NO", headerName: "OUT_NO", width: 90 },
+    { field: "OUT_SEQ", headerName: "OUT_SEQ", width: 90 },
+    { field: "IN_DATE", headerName: "IN_DATE", width: 90 },
+    { field: "USE_YN", headerName: "USE_YN", width: 90 },
+  ]
+  const materialOutputTable = React.useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                //delete selected rows from table
+                if (selectedData.current.length > 0) {
+                  setPrepareOutData(
+                    prepareOutData.filter(
+                      (x: any) =>
+                        !selectedData.current.includes(x)
+                    )
+                  );
+                }
+                
+              }}
+            >
+              <MdDelete color="red" size={15} />
+              Delete Seleceted
+            </IconButton>     
+
+          </div>}
+        columns={columns_outputMaterial}
+        data={prepareOutData}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          //console.log(e.data)
+        }} onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+          selectedData.current = params!.api.getSelectedRows();
+        }}
+      />
+    )
+  },[columns_outputMaterial,prepareOutData])
+
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -484,657 +535,10 @@ const XUATLIEU = () => {
         console.log(error);
       });
   };
-  const dataSource = new PivotGridDataSource({
-    fields: [
-      {
-        caption: "INS_DATE",
-        width: 80,
-        dataField: "INS_DATE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "date",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_LOT_NO",
-        width: 80,
-        dataField: "M_LOT_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_CODE",
-        width: 80,
-        dataField: "M_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_NAME",
-        width: 80,
-        dataField: "M_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "WIDTH_CD",
-        width: 80,
-        dataField: "WIDTH_CD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "XUAT_KHO",
-        width: 80,
-        dataField: "XUAT_KHO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_FR",
-        width: 80,
-        dataField: "VAO_FR",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_SR",
-        width: 80,
-        dataField: "VAO_SR",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_DC",
-        width: 80,
-        dataField: "VAO_DC",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_ED",
-        width: 80,
-        dataField: "VAO_ED",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CONFIRM_GIAONHAN",
-        width: 80,
-        dataField: "CONFIRM_GIAONHAN",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_KIEM",
-        width: 80,
-        dataField: "VAO_KIEM",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "NHATKY_KT",
-        width: 80,
-        dataField: "NHATKY_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "RA_KIEM",
-        width: 80,
-        dataField: "RA_KIEM",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_QTY",
-        width: 80,
-        dataField: "ROLL_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "OUT_CFM_QTY",
-        width: 80,
-        dataField: "OUT_CFM_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_QTY",
-        width: 80,
-        dataField: "TOTAL_OUT_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_RESULT",
-        width: 80,
-        dataField: "FR_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_RESULT",
-        width: 80,
-        dataField: "SR_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_RESULT",
-        width: 80,
-        dataField: "DC_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_RESULT",
-        width: 80,
-        dataField: "ED_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_QTY",
-        width: 80,
-        dataField: "INSPECT_TOTAL_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_QTY",
-        width: 80,
-        dataField: "INSPECT_OK_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUT",
-        width: 80,
-        dataField: "INS_OUT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PD",
-        width: 80,
-        dataField: "PD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CAVITY",
-        width: 80,
-        dataField: "CAVITY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_EA",
-        width: 80,
-        dataField: "TOTAL_OUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_EA",
-        width: 80,
-        dataField: "FR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_EA",
-        width: 80,
-        dataField: "SR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_EA",
-        width: 80,
-        dataField: "DC_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_EA",
-        width: 80,
-        dataField: "ED_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_EA",
-        width: 80,
-        dataField: "INSPECT_TOTAL_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_EA",
-        width: 80,
-        dataField: "INSPECT_OK_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUTPUT_EA",
-        width: 80,
-        dataField: "INS_OUTPUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS_KT",
-        width: 80,
-        dataField: "ROLL_LOSS_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS",
-        width: 80,
-        dataField: "ROLL_LOSS",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PROD_REQUEST_NO",
-        width: 80,
-        dataField: "PROD_REQUEST_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_ID",
-        width: 80,
-        dataField: "PLAN_ID",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_EQ",
-        width: 80,
-        dataField: "PLAN_EQ",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_CODE",
-        width: 80,
-        dataField: "G_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_NAME",
-        width: 80,
-        dataField: "G_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FACTORY",
-        width: 80,
-        dataField: "FACTORY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-    ],
-    store: datasxtable,
-  });
-  const getmateriallist = () => {
-    generalQuery("getMaterialList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          ////console.log(response.data.data);
-          setMaterialList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
-  };
+ 
   useEffect(() => {
     getcustomerlist();
-    getmateriallist();
+   
   }, []);
   return (
     <div className="xuatlieu">
@@ -1341,21 +745,7 @@ const XUATLIEU = () => {
           </div>
           <div className="dkxlTable">{dkxlDataTable}</div>
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
-        {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
-            </IconButton>
-            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
-          </div>
-        )}
+        <div className="tracuuYCSXTable">{materialOutputTable}</div>        
       </div>
     </div>
   );
