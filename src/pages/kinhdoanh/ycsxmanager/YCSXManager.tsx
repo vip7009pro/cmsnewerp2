@@ -1495,7 +1495,8 @@ const YCSXManager = () => {
               PROD_REQUEST_NO: next_prod_request_no,
               PLAN_ID: next_prod_request_no + "A",
               PROCESS_NUMBER: 0,
-              TEMP_QTY: uploadExcelJson[i].PROD_REQUEST_QTY
+              TEMP_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,
+              USE_YN: 'Y'
             });
           }
         }
@@ -1834,7 +1835,8 @@ const YCSXManager = () => {
           PROD_REQUEST_NO: next_prod_request_no,
           PLAN_ID: next_prod_request_no + "A",
           PROCESS_NUMBER: 0,
-          TEMP_QTY: newycsxqty
+          TEMP_QTY: newycsxqty,
+          USE_YN: 'Y'
         });
       }
     } else if (err_code === 1) {

@@ -3337,6 +3337,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               PLAN_ID: next_prod_request_no + "A",
+              USE_YN:'Y'
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -3759,6 +3760,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
           PROD_REQUEST_NO: next_prod_request_no,
           PLAN_ID: next_prod_request_no + "A",
+          USE_YN:'Y'
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {

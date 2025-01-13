@@ -3511,7 +3511,8 @@ export const f_insertP501 = async (P501Data: any) => {
     PROD_REQUEST_NO: P501Data.PROD_REQUEST_NO,
     PLAN_ID: P501Data.PLAN_ID,
     PROCESS_NUMBER: P501Data.PROCESS_NUMBER,
-    TEMP_QTY: P501Data.TEMP_QTY
+    TEMP_QTY: P501Data.TEMP_QTY,
+    USE_YN: P501Data.USE_YN,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
