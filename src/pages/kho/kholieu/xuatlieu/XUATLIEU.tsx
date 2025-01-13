@@ -36,8 +36,6 @@ import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './XUATLIEU.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
 const XUATLIEU = () => {
-  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [giao_empl, setGiao_Empl] = useState("");
   const [nhan_empl, setNhan_Empl] = useState("");
   const [giao_empl_name, setGiao_Empl_Name] = useState("");
@@ -286,182 +284,33 @@ const XUATLIEU = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const materialDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={prepareOutData}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"80vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="multiple" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={true}
-              allowAdding={false}
-              allowDeleting={true}
-              mode="cell"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="saveButton" />
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="M_CODE" caption="M_CODE" width={90} allowEditing={false} ></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={90} allowEditing={false} ></Column>
-            <Column dataField="WIDTH_CD" caption="WIDTH_CD" width={90} allowEditing={false} ></Column>
-            <Column dataField="M_LOT_NO" caption="M_LOT_NO" width={90} allowEditing={false} ></Column>
-            <Column dataField="ROLL_QTY" caption="ROLL_QTY" width={90} allowEditing={false} ></Column>
-            <Column dataField="UNIT_QTY" caption="UNIT_QTY" width={90} allowEditing={false} ></Column>
-            <Column dataField="TOTAL_QTY" caption="TOTAL_QTY" width={90} allowEditing={false} ></Column>
-            <Column dataField="LIEUQL_SX" caption="LIEUQL_SX" width={90} allowEditing={false} ></Column>
-            <Column dataField="WAHS_CD" caption="WAHS_CD" width={90} allowEditing={false} ></Column>
-            <Column dataField="LOC_CD" caption="LOC_CD" width={90} allowEditing={false} ></Column>
-            <Column dataField="OUT_DATE" caption="OUT_DATE" width={90} allowEditing={false} ></Column>
-            <Column dataField="OUT_NO" caption="OUT_NO" width={90} allowEditing={false} ></Column>
-            <Column dataField="OUT_SEQ" caption="OUT_SEQ" width={90} allowEditing={false} ></Column>
-            <Column dataField="IN_DATE" caption="IN_DATE" width={90} allowEditing={false} ></Column>
-            <Column dataField="USE_YN" caption="USE_YN" width={90} allowEditing={false} ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [prepareOutData],
-  );
-  const dkxlDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={dangkyxuatlieutable}
-            columnWidth="auto"
-            keyExpr="M_CODE"
-            height={"65vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Editing
-              allowUpdating={true}
-              allowAdding={false}
-              allowDeleting={false}
-              mode="cell"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="M_CODE" caption="M_CODE" width={60} allowEditing={false} ></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={70} allowEditing={false} ></Column>
-            <Column dataField="WIDTH_CD" caption="SIZE" width={50} allowEditing={false} ></Column>
-            <Column dataField="OUT_PRE_QTY" caption="DKY" width={50} allowEditing={false} ></Column>
-            <Column dataField="OUT_CFM_QTY" caption="OUT" width={50} allowEditing={false} ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [dangkyxuatlieutable],
-  );
+  };
+  const columns_dkxl = [
+    { field: "M_CODE", headerName: "M_CODE", width: 80,headerCheckboxSelection: true, checkboxSelection: true  },
+    { field: "M_NAME", headerName: "M_NAME", width: 70 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30 },
+    { field: "OUT_PRE_QTY", headerName: "DKY", width: 40 },
+    { field: "OUT_CFM_QTY", headerName: "OUT", width: 40 },
+  ];
+  const materialRegisterTable = React.useMemo(()=> {
+    return (
+      <AGTable
+        toolbar={
+          <div>           
+          </div>}
+        columns={columns_dkxl}
+        data={dangkyxuatlieutable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          //console.log(e.data)
+        }} onSelectionChange={(params: any) => {
+          //console.log(e!.api.getSelectedRows())
+          
+        }}
+      />
+    )
+  },[dangkyxuatlieutable,columns_dkxl])
 
   const columns_outputMaterial = [
     { field: "M_CODE", headerName: "M_CODE", width: 90,headerCheckboxSelection: true, checkboxSelection: true  },
@@ -534,8 +383,7 @@ const XUATLIEU = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
- 
+  }; 
   useEffect(() => {
     getcustomerlist();
    
@@ -742,9 +590,9 @@ const XUATLIEU = () => {
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#6952ec' }} onClick={() => {
               handleConfirmXuatKho();
             }}>Xuất kho</Button>
-          </div>
-          <div className="dkxlTable">{dkxlDataTable}</div>
+          </div>          
         </div>
+        <div className="dkxlTable">{materialRegisterTable}</div>
         <div className="tracuuYCSXTable">{materialOutputTable}</div>        
       </div>
     </div>
