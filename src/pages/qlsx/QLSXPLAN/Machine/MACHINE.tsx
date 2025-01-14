@@ -84,6 +84,7 @@ import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 const MACHINE = () => {
+  console.log('vao machine');
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
   const getRecentDM = async (G_CODE: string) => {
@@ -636,6 +637,34 @@ const MACHINE = () => {
           );
       },
     },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
+      },
+    },
   ] : [
     {
       field: "G_CODE", headerName: "G_CODE", width: 50,
@@ -1074,6 +1103,34 @@ const MACHINE = () => {
       },
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
+      },
+    },
   ];
   const column_plandatatable = [
     {
@@ -1632,7 +1689,7 @@ const MACHINE = () => {
       ycsx_pending: ycsxpendingcheck,
       inspect_inputcheck: inspectInputcheck,
       prod_request_no: prodrequestno,
-      material: material,
+      material: material,      
     });
   }
     if (ycsxData.length > 0) {

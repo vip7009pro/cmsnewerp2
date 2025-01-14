@@ -1,6 +1,6 @@
 import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./TINHLIEU.scss";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
@@ -11,6 +11,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 const TINHLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
+  const ycsxdatatablefilter = useRef<Array<any>>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
   const [formdata, setFormData] = useState<any>({
     CUST_NAME_KD: '',
@@ -28,6 +29,82 @@ const TINHLIEU = () => {
     };
     setFormData(tempCustInfo);
   };
+
+  const setLockMaterial = async (material_value: string) => {
+    if (ycsxdatatablefilter.current.length >= 1) {
+      let err_code: boolean = false;
+      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
+        await generalQuery("setMaterial_YN", {
+          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+          MATERIAL_YN: material_value,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (!err_code) {
+        Swal.fire(
+          "Thông báo",
+          "SET YCSX thành công",
+          "success"
+        );
+      } else {
+        Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để SET !", "error");
+    }
+  };
+
+
+  const handleConfirmLockMaterial = () => {
+      Swal.fire({
+        title: "Chắc chắn muốn khóa Liệu cho YCSX được chọn?",
+        text: "Sẽ bắt đầu khóa liệu cho YCSX đã chọn",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Khóa!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            "Tiến hành Khóa Liệu",
+            "Đang Khóa liệu YCSX hàng loạt",
+            "success"
+          );
+          setLockMaterial('N');
+        }
+      });
+    };
+    const handleConfirmUnLockMaterial = () => {
+      Swal.fire({
+        title: "Chắc chắn muốn mở Liệu cho YCSX được chọn?",
+        text: "Sẽ bắt đầu mở liệu cho YCSX đã chọn",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Mở!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            "Tiến hành mở Liệu",
+            "Đang mở liệu YCSX hàng loạt",
+            "success"
+          );
+          setLockMaterial('Y');
+        }
+      });
+    };
+
   const load_material_table = (option: string) => {
     if (option === 'PO') {
       generalQuery(getCompany() == 'CMS' ? "loadMaterialByPO" : "loadMaterialByYCSX", formdata)
@@ -134,32 +211,64 @@ const TINHLIEU = () => {
     },
   ]
   const column_mrp_table2 = [
-    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 150 },
-    { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 150 },
+    { field: "PROD_REQUEST_NO", headerName: "YCSX_NO", width: 50, cellRenderer: (params: any) => {
+      return <span style={{ color: 'blue', fontWeight: "bold" }}>
+        {params.data.PROD_REQUEST_NO}
+      </span>
+    } },
+    { field: "PROD_REQUEST_DATE", headerName: "YCS_DATE", width: 50 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },
-    { field: "G_CODE", headerName: "G_CODE", width: 100 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
-    { field: "M_CODE", headerName: "M_CODE", width: 100 },
-    { field: "M_NAME", headerName: "M_NAME", width: 150 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
+    { field: "G_CODE", headerName: "G_CODE", width: 50 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+    { field: "M_CODE", headerName: "M_CODE", width: 50 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 50 },
     {
-      field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 150, cellRenderer: (params: any) => {
+      field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 60, cellRenderer: (params: any) => {
         return <span style={{ color: params.data.PROD_REQUEST_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
           {params.data.PROD_REQUEST_QTY?.toLocaleString("en-US",)}
         </span>
       }
     },
-    { field: "PD", headerName: "PD", width: 80 },
-    { field: "CAVITY_COT", headerName: "CAVITY_COT", width: 120 },
-    { field: "CAVITY_HANG", headerName: "CAVITY_HANG", width: 120 },
-    { field: "CAVITY", headerName: "CAVITY", width: 100 },
+    { field: "PD", headerName: "PD", width: 30 },
+    { field: "CAVITY_COT", headerName: "CAVITY_COT", width: 70 },
+    { field: "CAVITY_HANG", headerName: "CAVITY_HANG", width: 70 },
+    { field: "CAVITY", headerName: "CAVITY", width: 50 },
     {
       field: "NEED_M_QTY", headerName: "NEED_M_QTY", width: 120, cellRenderer: (params: any) => {
-        return <span style={{ color: params.data.NEED_M_QTY < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+        return <span style={{ color: params.data.NEED_M_QTY < 0 ? "#ff0000" : "#033fe6", fontWeight: "bold" }}>
           {params.data.NEED_M_QTY?.toLocaleString("en-US",)}
         </span>
       }
+    },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
+      },
     },
   ]
   const column_mrp_all = [
@@ -207,11 +316,12 @@ const TINHLIEU = () => {
         //console.log(params)
         //setSelectedRows(params!.api.getSelectedRows()[0]);
         //console.log(e!.api.getSelectedRows())
+        ycsxdatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [currentTable, columns]);
+    , [currentTable, columns, column_mrp_table2]);
   useEffect(() => {
-    load_material_table('PO');
+    //load_material_table('PO');
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -294,6 +404,17 @@ const TINHLIEU = () => {
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
               load_material_table('ALL');
             }}>MRP SUMMARY</Button>
+          </div>
+          <br></br>
+          <div className="formbutton">
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#19fc51', color:'black' }} onClick={() => {
+              handleConfirmUnLockMaterial();
+              
+            }}>MỞ LIỆU</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f80404' }} onClick={() => {
+              handleConfirmLockMaterial();
+              
+            }}>KHÓA LIỆU</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable2}</div>

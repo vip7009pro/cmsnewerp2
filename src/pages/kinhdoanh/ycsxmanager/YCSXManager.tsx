@@ -104,6 +104,7 @@ const YCSXManager = () => {
   const [prod_type, setProdType] = useState("");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
+  const [materialYES, setMaterialYES] = useState(false);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
     G_NAME: "GT-I9500_SJ68-01284A",
@@ -233,6 +234,7 @@ const YCSXManager = () => {
     PROD_PRINT_TIMES: 0,
     PROD_TYPE: '',
     SETVL: '',
+    MATERIAL_YN: 'N'
   });
   const column_ycsxtable2 = [
     {
@@ -253,11 +255,11 @@ const YCSXManager = () => {
         }
       },
     },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 50 },
     {
       field: "G_NAME",
       headerName: "G_NAME",
-      width: 250,
+      width: 120,
       cellRenderer: (params: any) => {
         if (params.data.PDBV === "P" || params.data.PDBV === null)
           return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
@@ -265,12 +267,12 @@ const YCSXManager = () => {
       },
     },
     { field: "DESCR", headerName: "DESCR", width: 120 },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 80 },
     {
       field: "PROD_REQUEST_NO",
       headerName: "SỐ YCSX",
-      width: 80,
+      width: 50,
       cellRenderer: (params: any) => {
         if (params.data.DACHITHI === null) {
           return (
@@ -290,7 +292,7 @@ const YCSXManager = () => {
     {
       field: "PROD_REQUEST_DATE",
       headerName: "NGÀY YCSX",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         if (params.data.DAUPAMZ === null) {
           return (
@@ -311,13 +313,13 @@ const YCSXManager = () => {
       field: "PROD_REQUEST_QTY",
       cellDataType: "number",
       headerName: "SL YCSX",
-      width: 80,
+      width: 50,
     },
     {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       cellDataType: "number",
       headerName: "NHẬP KIỂM",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -330,7 +332,7 @@ const YCSXManager = () => {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       cellDataType: "number",
       headerName: "XUẤT KIỂM",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -343,7 +345,7 @@ const YCSXManager = () => {
       field: "INSPECT_BALANCE",
       cellDataType: "number",
       headerName: "TỒN KIỂM",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -356,7 +358,7 @@ const YCSXManager = () => {
       field: "SHORTAGE_YCSX",
       cellDataType: "number",
       headerName: "TỒN YCSX",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -388,12 +390,12 @@ const YCSXManager = () => {
       field: "PL_HANG",
       cellDataType: "text",
       headerName: "PL_HANG",
-      width: 80,
+      width: 60,
     },
     {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         if (params.data.PHAN_LOAI === "01")
           return (
@@ -422,8 +424,36 @@ const YCSXManager = () => {
       },
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 80 },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
+      },
+    },
+    { field: "PO_NO", headerName: "PO_NO", width: 80 },
     {
       field: "PDUYET",
       headerName: "PDUYET",
@@ -586,25 +616,25 @@ const YCSXManager = () => {
         return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
       },
     },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 50 },
     {
       field: "G_NAME",
       headerName: "G_NAME",
-      width: 250,
+      width: 120,
       cellRenderer: (params: any) => {
         if (params.data.PDBV === "P" || params.data.PDBV === null)
           return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
         return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
       },
     },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "G_WIDTH", headerName: "WIDTH", width: 60 },
-    { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
-    { field: "G_C", headerName: "CVT_C", width: 60 },
-    { field: "G_C_R", headerName: "CVT_R", width: 60 },
-    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 50 },
+    { field: "G_WIDTH", headerName: "WIDTH", width: 50 },
+    { field: "G_LENGTH", headerName: "LENGTH", width: 50 },
+    { field: "G_C", headerName: "CVT_C", width: 50 },
+    { field: "G_C_R", headerName: "CVT_R", width: 50 },
+    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 50 },
     {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 60, cellRenderer: (params: any) => {
         if (params.data.DACHITHI === null) {
           return (
             <span style={{ color: "black" }}>
@@ -620,13 +650,13 @@ const YCSXManager = () => {
         }
       },
     },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
-    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 60 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 60 },
     {
       field: "PROD_REQUEST_QTY",
       cellDataType: "number",
       headerName: "SL YCSX",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#009933" }}>
@@ -639,7 +669,7 @@ const YCSXManager = () => {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       cellDataType: "number",
       headerName: "NHẬP KIỂM",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -652,7 +682,7 @@ const YCSXManager = () => {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       cellDataType: "number",
       headerName: "XUẤT KIỂM",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -665,7 +695,7 @@ const YCSXManager = () => {
       field: "INPUT_QTY",
       cellDataType: "number",
       headerName: "NHẬP KHO",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -678,7 +708,7 @@ const YCSXManager = () => {
       field: "SORTING_INPUT",
       cellDataType: "number",
       headerName: "SORTING_INPUT",
-      width: 100,
+      width: 80,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -691,7 +721,7 @@ const YCSXManager = () => {
       field: "NORMAL_INPUT",
       cellDataType: "number",
       headerName: "NORMAL_INPUT",
-      width: 100,
+      width: 80,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -704,7 +734,7 @@ const YCSXManager = () => {
       field: "OUTPUTNB_QTY",
       cellDataType: "number",
       headerName: "XUẤT NB",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -717,7 +747,7 @@ const YCSXManager = () => {
       field: "OUTPUTKH_QTY",
       cellDataType: "number",
       headerName: "XUẤT KH",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -743,7 +773,7 @@ const YCSXManager = () => {
       field: "STOCK",
       cellDataType: "number",
       headerName: "TỒN KHO",
-      width: 80,
+      width: 60,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -763,6 +793,35 @@ const YCSXManager = () => {
             <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
+      },
+    },
+    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 80 },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
       },
     },
     {
@@ -824,7 +883,6 @@ const YCSXManager = () => {
     { field: "REMARK", headerName: "REMARK", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
     { field: "DESCR", headerName: "DESCRIPTION", width: 150 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
     {
       field: "PDUYET",
       headerName: "PDUYET",
@@ -1267,7 +1325,8 @@ const YCSXManager = () => {
       inspect_inputcheck: inspectInputcheck,
       prod_request_no: prodrequestno,
       material: material,
-      phanloaihang: phanloaihang
+      phanloaihang: phanloaihang,
+      material_yes: materialYES,
     }));
   };
   const handle_checkYCSXHangLoat = async () => {
@@ -1280,15 +1339,14 @@ const YCSXManager = () => {
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? '');
-      if (!isBOMGiaHasMain ) err_code = 10;
+      if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
       if (uploadExcelJson[i].CODE_55 === undefined) err_code = 6;
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length === 0) err_code = 7;
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
-     
-      if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !=='04') err_code = 12;
+      if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !== '04') err_code = 12;
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -1338,7 +1396,7 @@ const YCSXManager = () => {
       if (customerList.filter((ele: CustomerListData, index: number) => ele.CUST_CD === uploadExcelJson[i].CUST_CD).length = 0) err_code = 7;
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
-      if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !=='04') err_code = 12;
+      if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !== '04') err_code = 12;
       if (err_code === 0) {
         let err_code1: number = 0;
         let next_prod_request_no: string = await f_generateNextProdRequestNo();
@@ -1412,6 +1470,7 @@ const YCSXManager = () => {
               PDUYET:
                 pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
+              MATERIAL_YN: 'N'
             });
             if (kq === 'OK') {
               tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
@@ -1464,6 +1523,7 @@ const YCSXManager = () => {
               CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
               PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
+              MATERIAL_YN: 'Y'
             });
             if (kq === 'OK') {
               tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
@@ -1496,7 +1556,7 @@ const YCSXManager = () => {
               PLAN_ID: next_prod_request_no + "A",
               PROCESS_NUMBER: 0,
               TEMP_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,
-              USE_YN: 'Y'
+              USE_YN: 'X'
             });
           }
         }
@@ -1524,7 +1584,7 @@ const YCSXManager = () => {
       } else if (err_code === 10) {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
       } else if (err_code === 12) {
-        tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa"; 
+        tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa";
       }
     }
     setisLoading(false);
@@ -1662,7 +1722,7 @@ const YCSXManager = () => {
     }
     if (!isBOMGiaHasMain) err_code = 10;
     if (!isBOMMatching) err_code = 11;
-    if (isTwoVersionExist && loaisx !=='04') err_code = 12;
+    if (isTwoVersionExist && loaisx !== '04') err_code = 12;
     if (err_code === 0) {
       if (newphanloai === "TT") {
         await f_insertDMYCSX({
@@ -1716,6 +1776,7 @@ const YCSXManager = () => {
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
           PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
+          MATERIAL_YN: 'N'
         });
         if (kq === 'OK') {
           await f_updateDMSX_LOSS_KT();
@@ -1786,6 +1847,7 @@ const YCSXManager = () => {
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
           PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
+          MATERIAL_YN: 'Y'
         });
         if (kq === 'OK') {
           let newNotification: NotificationElement = {
@@ -1836,7 +1898,7 @@ const YCSXManager = () => {
           PLAN_ID: next_prod_request_no + "A",
           PROCESS_NUMBER: 0,
           TEMP_QTY: newycsxqty,
-          USE_YN: 'Y'
+          USE_YN: 'X'
         });
       }
     } else if (err_code === 1) {
@@ -1965,6 +2027,38 @@ const YCSXManager = () => {
       }
     } else {
       Swal.fire("Thông báo", "Không đủ quyền hạn phê duyệt !", "error");
+    }
+  };
+  const setLockMaterial = async (material_value: string) => {
+    if (ycsxdatatablefilter.current.length >= 1) {
+      let err_code: boolean = false;
+      for (let i = 0; i < ycsxdatatablefilter.current.length; i++) {
+        await generalQuery("setMaterial_YN", {
+          PROD_REQUEST_NO: ycsxdatatablefilter.current[i].PROD_REQUEST_NO,
+          MATERIAL_YN: material_value,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (!err_code) {
+        Swal.fire(
+          "Thông báo",
+          "SET YCSX thành công",
+          "success"
+        );
+      } else {
+        Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để SET !", "error");
     }
   };
   const setPendingYCSX = async (pending_value: number) => {
@@ -2145,6 +2239,46 @@ const YCSXManager = () => {
           "success"
         );
         setPDuyetYCSX(1);
+      }
+    });
+  };
+  const handleConfirmLockMaterial = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn khóa Liệu cho YCSX được chọn?",
+      text: "Sẽ bắt đầu khóa liệu cho YCSX đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Khóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành Khóa Liệu",
+          "Đang Khóa liệu YCSX hàng loạt",
+          "success"
+        );
+        setLockMaterial('N');
+      }
+    });
+  };
+  const handleConfirmUnLockMaterial = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn mở Liệu cho YCSX được chọn?",
+      text: "Sẽ bắt đầu mở liệu cho YCSX đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Mở!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành mở Liệu",
+          "Đang mở liệu YCSX hàng loạt",
+          "success"
+        );
+        setLockMaterial('Y');
       }
     });
   };
@@ -2402,6 +2536,36 @@ const YCSXManager = () => {
               <MdLock color='#245af0' size={15} />
               Mở khóa YCSX
             </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["MUA"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmLockMaterial
+                );
+              }}
+            >
+              <MdLock color='#ec0303' size={15} />
+              Khóa Liệu
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["MUA"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmUnLockMaterial
+                );
+              }}
+            >
+              <MdLock color='#245af0' size={15} />
+              Mở Liệu
+            </IconButton>
           </div>}
         columns={getCompany() === 'CMS' ? column_ycsxtable2 : column_ycsxtable_pvn2}
         data={ycsxdatatable}
@@ -2416,7 +2580,7 @@ const YCSXManager = () => {
           //console.log(e!.api.getSelectedRows())
         }} />
     )
-  }, [ycsxdatatable])
+  }, [ycsxdatatable, column_ycsxtable2, column_ycsxtable_pvn2])
   const ycsxUploadExcelDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -2653,14 +2817,23 @@ const YCSXManager = () => {
                       </select>
                     </label>
                     <label>
-                      <b>All Time:</b>
-                      <input
-                        type='checkbox'
-                        name='alltimecheckbox'
-                        defaultChecked={alltime}
-                        onChange={() => setAllTime(!alltime)}
-                      ></input>
-                    </label>
+                          <b>All Time:</b>
+                          <input
+                            type='checkbox'
+                            name='alltimecheckbox'
+                            checked={alltime}
+                            onChange={() => setAllTime(!alltime)}
+                          ></input>
+                        </label>                  
+                    <label>
+                          <b>Material YES Only:</b>
+                          <input
+                            type='checkbox'
+                            name='alltimecheckbox'
+                            checked={materialYES}
+                            onChange={() => setMaterialYES(!materialYES)}
+                          ></input>
+                        </label>                  
                   </div>
                   <div className='forminputcolumn'>
                     <label>

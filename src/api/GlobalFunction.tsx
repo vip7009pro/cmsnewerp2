@@ -1693,12 +1693,18 @@ export const f_calcMaterialMet2 = async (PLAN_QTY: number, PD: number, CAVITY: n
   M_MET_NEEDED = ((M_MET_NEEDED + (M_MET_NEEDED * FINAL_LOSS_SX) * 1.0 / 100 + FINAL_LOSS_SETTING))
   return M_MET_NEEDED;
 }
-export const f_handleGetChiThiTable = async (planData: QLSXPLANDATA) => {
+export const f_handleGetChiThiTable = async (planData: QLSXPLANDATA, tempDMData?: DINHMUC_QSLX, tempDMYN?: boolean) => {
   let M_MET_NEEDED: number = 0;
   let chiThiDataTable: QLSXCHITHIDATA[] = [];
   chiThiDataTable = await f_getPlanMaterialTable(planData.PLAN_ID);
   if (chiThiDataTable.length > 0) return chiThiDataTable;
-  M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  if(tempDMYN !== true){
+    M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));    
+  }
+  else {
+    M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, tempDMData?.LOSS_SX1 ?? 0, tempDMData?.LOSS_SX2 ?? 0, tempDMData?.LOSS_SX3 ?? 0, tempDMData?.LOSS_SX4 ?? 0, tempDMData?.LOSS_SETTING1 ?? 0, tempDMData?.LOSS_SETTING2 ?? 0, tempDMData?.LOSS_SETTING3 ?? 0, tempDMData?.LOSS_SETTING4 ?? 0, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  }
+
   let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
   chiThiDataTable = tempBOMSX.map(
     (element: BOMSX_DATA, index: number) => {
@@ -1795,10 +1801,18 @@ export const f_handleGetChiThiTable2 = async (planData: QLSXPLANDATA, processLis
   );
   return chiThiDataTable;
 };
-export const f_handleResetChiThiTable = async (planData: QLSXPLANDATA) => {
+export const f_handleResetChiThiTable = async (planData: QLSXPLANDATA, tempDMData?: DINHMUC_QSLX, tempDMYN?: boolean) => {
   let M_MET_NEEDED: number = 0;
   let chiThiDataTable: QLSXCHITHIDATA[] = [];
-  M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  console.log('tempDMYN',tempDMYN);
+  if(tempDMYN !== true) {
+    M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, planData.LOSS_SX1, planData.LOSS_SX2, planData.LOSS_SX3, planData.LOSS_SX4, planData.LOSS_SETTING1, planData.LOSS_SETTING2, planData.LOSS_SETTING3, planData.LOSS_SETTING4, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  }
+  else {
+    M_MET_NEEDED = await f_calcMaterialMet(planData.PLAN_QTY, (planData.PD ?? 0), (planData.CAVITY ?? 0), planData.PROCESS_NUMBER, tempDMData?.LOSS_SX1 ?? 0, tempDMData?.LOSS_SX2 ?? 0, tempDMData?.LOSS_SX3 ?? 0, tempDMData?.LOSS_SX4 ?? 0, tempDMData?.LOSS_SETTING1 ?? 0, tempDMData?.LOSS_SETTING2 ?? 0, tempDMData?.LOSS_SETTING3 ?? 0, tempDMData?.LOSS_SETTING4 ?? 0, (planData.LOSS_KT ?? 0), (planData.IS_SETTING ?? 'Y'));
+  }
+ 
+
   let tempBOMSX: BOMSX_DATA[] = await f_getBOMSX(planData.G_CODE);
   chiThiDataTable = tempBOMSX.map(
     (element: BOMSX_DATA, index: number) => {
@@ -2012,7 +2026,7 @@ export const f_saveChiThiMaterialTable = async (selectedPlan: QLSXPLANDATA, chit
   return err_code;
 }
 export const f_handletraYCSXQLSX = async (filterdata: any) => {
-  //console.log(filterdata);
+  console.log('filterdata',filterdata);
   let ycsxdata: YCSXTableData[] = [];
   await generalQuery("traYCSXDataFull_QLSX", {
     alltime: filterdata.alltime,
@@ -2028,6 +2042,7 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
     inspect_inputcheck: filterdata.inspect_inputcheck,
     prod_request_no: filterdata.prod_request_no,
     material: filterdata.material,
+    material_yes: filterdata.material_yes,
   })
     .then((response) => {
       //console.log(response.data.data);
@@ -2639,7 +2654,8 @@ export const f_addPLANRaw = async (planData: any) => {
     });
   return err_code;
 }
-export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], selectedPlanDate: string, selectedMachine: string, selectedFactory: string) => {
+export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], selectedPlanDate: string, selectedMachine: string, selectedFactory: string, tempDM?: boolean) => {
+  console.log('tempDM', tempDM);
   let err_code: string = '0';
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   if (ycsxdatatablefilter.length >= 1) {
@@ -2658,7 +2674,7 @@ export const f_addQLSXPLAN = async (ycsxdatatablefilter: YCSXTableData[], select
         let UPH4: number = ycsxdatatablefilter[i].UPH4 ?? 999999999;
         let UPH: number = proc_number === 1 ? UPH1 : proc_number === 2 ? UPH2 : proc_number === 3 ? UPH3 : proc_number === 4 ? UPH4 : 999999999;
         let TON: number = proc_number === 1 ? (ycsxdatatablefilter[i].TON_CD1 ?? 0) : proc_number === 2 ? (ycsxdatatablefilter[i].TON_CD2 ?? 0) : proc_number === 3 ? (ycsxdatatablefilter[i].TON_CD3 ?? 0) : proc_number === 4 ? (ycsxdatatablefilter[i].TON_CD4 ?? 0) : 0;
-        if (proc_number === 0) {
+        if (proc_number === 0 && tempDM ===false) {
           err_code += "Không đúng máy trong BOM | ";
         }
         else {
@@ -3364,7 +3380,8 @@ export const f_traYCSX = async (searchFilter: any) => {
     inspect_inputcheck: searchFilter.inspect_inputcheck,
     prod_request_no: searchFilter.prod_request_no,
     material: searchFilter.material,
-    phanloaihang: searchFilter.phanloaihang
+    phanloaihang: searchFilter.phanloaihang,
+    material_yes: searchFilter.material_yes
   })
     .then((response) => {
       //console.log(response.data.data);
@@ -3414,6 +3431,7 @@ export const f_traYCSX = async (searchFilter: any) => {
     });
   return kq;
 }
+
 export const f_insertYCSX = async (ycsxData: any) => {
   let err_code: string = 'NG';
   await generalQuery("insert_ycsx", {
@@ -3451,6 +3469,7 @@ export const f_insertYCSX = async (ycsxData: any) => {
     CK_TDYCSX: ycsxData.CK_TDYCSX,
     PDUYET: ycsxData.PDUYET,
     BLOCK_TDYCSX: ycsxData.BLOCK_TDYCSX,
+    MATERIAL_YN: ycsxData.MATERIAL_YN,
   })
     .then((response) => {
       console.log(response.data.tk_status);

@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getGlobalSetting, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { DataGrid, GridRowSelectionModel, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
-import { Button, IconButton, LinearProgress } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import {
   AiFillFileExcel,
   AiFillFolderAdd,
@@ -36,7 +36,6 @@ import { RootState } from "../../../../redux/store";
 import {
   DINHMUC_QSLX,
   MACHINE_LIST,
-  QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
   UserData,
@@ -98,6 +97,7 @@ const QUICKPLAN2_OLD = () => {
   const [prod_type, setProdType] = useState("");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
+  const [materialYES, setMaterialYES] = useState(false);
   const [phanloai, setPhanLoai] = useState("00");
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
@@ -120,13 +120,13 @@ const QUICKPLAN2_OLD = () => {
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());     
+    setMachine_List(await f_getMachineListData());
   };
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-  const column_ycsxtable:any = [
+  const column_ycsxtable: any = [
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -615,7 +615,7 @@ const QUICKPLAN2_OLD = () => {
           </span>
         );
       },
-    },    
+    },
     {
       field: "CD1",
       headerName: "CD1",
@@ -856,8 +856,6 @@ const QUICKPLAN2_OLD = () => {
     { field: "EQ2", headerName: "EQ2", width: 50, editable: editplan },
     { field: "EQ3", headerName: "EQ3", width: 50, editable: editplan },
     { field: "EQ4", headerName: "EQ4", width: 50, editable: editplan },
-    
-    
     {
       field: "PLAN_FACTORY",
       headerName: "NM",
@@ -875,7 +873,7 @@ const QUICKPLAN2_OLD = () => {
       headerName: "NEXT_PLAN_ID",
       width: 120,
       editable: true,
-    },    
+    },
   ];
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
@@ -924,6 +922,7 @@ const QUICKPLAN2_OLD = () => {
       inspect_inputcheck: inspectInputcheck,
       prod_request_no: prodrequestno,
       material: material,
+      material_yes: materialYES,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1433,7 +1432,7 @@ const QUICKPLAN2_OLD = () => {
       localStorage.setItem("temp_plan_table", JSON.stringify(plandatatable));
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
-        console.log('CURRENT_SLC',qlsxplandatafilter.current[i].CURRENT_SLC)
+        console.log('CURRENT_SLC', qlsxplandatafilter.current[i].CURRENT_SLC)
         if (
           (qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4) &&
           qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
@@ -1446,7 +1445,7 @@ const QUICKPLAN2_OLD = () => {
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC") &&
-          qlsxplandatafilter.current[i].STEP>= 0 && qlsxplandatafilter.current[i].STEP<= 9
+          qlsxplandatafilter.current[i].STEP >= 0 && qlsxplandatafilter.current[i].STEP <= 9
         ) {
           let check_ycsx_hethongcu: boolean = false;
           await generalQuery("checkProd_request_no_Exist_O302", {
@@ -1502,42 +1501,36 @@ const QUICKPLAN2_OLD = () => {
               .catch((error) => {
                 console.log(error);
               });
-              await f_updateDMSX_LOSS_KT();
+            await f_updateDMSX_LOSS_KT();
           } else {
             err_code +=
               "__Yc này đã chạy hệ thống cũ, chạy nốt bằng hệ thống cũ nhé";
           }
         } else {
-          if(!(qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Process Number không hợp lệ";
+          if (!(qlsxplandatafilter.current[i].PROCESS_NUMBER >= 1 && qlsxplandatafilter.current[i].PROCESS_NUMBER <= 4)) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Process Number không hợp lệ";
           }
-          else if(qlsxplandatafilter.current[i].PLAN_QTY <= 0)
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị không hợp lệ";
+          else if (qlsxplandatafilter.current[i].PLAN_QTY <= 0) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị không hợp lệ";
           }
-          else if(qlsxplandatafilter.current[i].PLAN_QTY > (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị lớn hơn số lượng cần sx";
+          else if (qlsxplandatafilter.current[i].PLAN_QTY > (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0)) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": Số lượng chỉ thị lớn hơn số lượng cần sx";
           }
-          else if(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "" )
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
+          else if (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "") {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
           }
-          else if(!(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
-          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC"))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
+          else if (!(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC")) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
           }
-          else if(!(qlsxplandatafilter.current[i].STEP>= 0 && qlsxplandatafilter.current[i].STEP<= 9))
-          {
-            err_code+= "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": STEP không hợp lệ";
-          }         
+          else if (!(qlsxplandatafilter.current[i].STEP >= 0 && qlsxplandatafilter.current[i].STEP <= 9)) {
+            err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": STEP không hợp lệ";
+          }
         }
       }
       setPlanDataTable(org_plan_tb);
@@ -1583,7 +1576,7 @@ const QUICKPLAN2_OLD = () => {
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             LOSS_KT: datadinhmuc.LOSS_KT
-          }); 
+          });
           err_code = (await f_saveQLSX({
             G_CODE: selectedPlan.current?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
@@ -1773,18 +1766,18 @@ const QUICKPLAN2_OLD = () => {
               } */
               return {
                 ...element,
-              SLC_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 : (element.SLC_CD1??0)-Math.floor(DU1*(1-element.LOSS_SX1*1.0/100)),
-              SLC_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 : (element.SLC_CD2??0)-Math.floor(DU2*(1-element.LOSS_SX2*1.0/100)),
-              SLC_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 : (element.SLC_CD3??0)-Math.floor(DU3*(1-element.LOSS_SX3*1.0/100)),
-              SLC_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 : (element.SLC_CD4??0)-Math.floor(DU4*(1-element.LOSS_SX4*1.0/100)), 
-              CD1: element.CD1??0,
-              CD2: element.CD2??0,
-              CD3: element.CD3??0,
-              CD4: element.CD4??0,
-              TON_CD1: (element.EQ1 ==='NO' || element.EQ1 ==='NA') ? 0 :temp_TCD1,
-              TON_CD2: (element.EQ2 ==='NO' || element.EQ2 ==='NA') ? 0 :temp_TCD2,
-              TON_CD3: (element.EQ3 ==='NO' || element.EQ3 ==='NA') ? 0 :temp_TCD3,
-              TON_CD4: (element.EQ4 ==='NO' || element.EQ4 ==='NA') ? 0 :temp_TCD4,
+                SLC_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : (element.SLC_CD1 ?? 0) - Math.floor(DU1 * (1 - element.LOSS_SX1 * 1.0 / 100)),
+                SLC_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : (element.SLC_CD2 ?? 0) - Math.floor(DU2 * (1 - element.LOSS_SX2 * 1.0 / 100)),
+                SLC_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : (element.SLC_CD3 ?? 0) - Math.floor(DU3 * (1 - element.LOSS_SX3 * 1.0 / 100)),
+                SLC_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : (element.SLC_CD4 ?? 0) - Math.floor(DU4 * (1 - element.LOSS_SX4 * 1.0 / 100)),
+                CD1: element.CD1 ?? 0,
+                CD2: element.CD2 ?? 0,
+                CD3: element.CD3 ?? 0,
+                CD4: element.CD4 ?? 0,
+                TON_CD1: (element.EQ1 === 'NO' || element.EQ1 === 'NA') ? 0 : temp_TCD1,
+                TON_CD2: (element.EQ2 === 'NO' || element.EQ2 === 'NA') ? 0 : temp_TCD2,
+                TON_CD3: (element.EQ3 === 'NO' || element.EQ3 === 'NA') ? 0 : temp_TCD3,
+                TON_CD4: (element.EQ4 === 'NO' || element.EQ4 === 'NA') ? 0 : temp_TCD4,
               };
             },
           );
@@ -1906,11 +1899,11 @@ const QUICKPLAN2_OLD = () => {
                       G_NAME_KD: temp_ycsx_data[0].G_NAME_KD,
                       PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
                       CURRENT_SLC: (temp_ycsx_data[0].SLC_CD1 ?? 0),
-                      PLAN_QTY:  temp_ycsx_data[0].TON_CD1 <= 0 ? 0: temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor ? temp_ycsx_data[0].TON_CD1 : temp_ycsx_data[0].UPH1 * qtyFactor,
+                      PLAN_QTY: temp_ycsx_data[0].TON_CD1 <= 0 ? 0 : temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor ? temp_ycsx_data[0].TON_CD1 : temp_ycsx_data[0].UPH1 * qtyFactor,
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
-                      CD4: temp_ycsx_data[0].CD4,                      
+                      CD4: temp_ycsx_data[0].CD4,
                       SLC_CD1: temp_ycsx_data[0].SLC_CD1,
                       SLC_CD2: temp_ycsx_data[0].SLC_CD2,
                       SLC_CD3: temp_ycsx_data[0].SLC_CD3,
@@ -1963,7 +1956,7 @@ const QUICKPLAN2_OLD = () => {
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
             //console.table(newdata)
             setPlanDataTable(newdata);
-          } else if (keyvar === "PLAN_EQ") {  
+          } else if (keyvar === "PLAN_EQ") {
             /* const newdata: QLSXPLANDATA[]= plandatatable.map((p) => {
               if (p.PLAN_ID === params.id) {
                 if (keyvar === "PLAN_EQ") {
@@ -1971,7 +1964,6 @@ const QUICKPLAN2_OLD = () => {
                     let plan_temp = params.value.substring(0, 2);                    
                     if (plan_temp === p.EQ1 || plan_temp === p.EQ2 || plan_temp === p.EQ3 || plan_temp === p.EQ4) {
                       return { ...p, [keyvar]: params.value };
-                      
                     } else {
                       Swal.fire(
                         "Thông báo",
@@ -1992,7 +1984,6 @@ const QUICKPLAN2_OLD = () => {
                 return p;
               }
             }); */
-
             let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
               (element) => element.PLAN_ID === params.data.PLAN_ID,
             )?.PROD_REQUEST_NO;
@@ -2112,10 +2103,9 @@ const QUICKPLAN2_OLD = () => {
                 return p;
               }
             });
-
             localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
             setPlanDataTable(newdata);
-          }  else if (keyvar === "PROCESS_NUMBER") {   
+          } else if (keyvar === "PROCESS_NUMBER") {
             let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
               (element) => element.PLAN_ID === params.data.PLAN_ID,
             )?.PROD_REQUEST_NO;
@@ -2126,19 +2116,19 @@ const QUICKPLAN2_OLD = () => {
               if (p.PLAN_ID === params.data.PLAN_ID) {
                 if (keyvar === "PROCESS_NUMBER") {
                   let prnb: number = p.PROCESS_NUMBER;
-                  if (prnb<=4 && prnb>=1) {                    
+                  if (prnb <= 4 && prnb >= 1) {
                     let UPH1: number = p.UPH1 ?? 999999999;
                     let UPH2: number = p.UPH2 ?? 999999999;
                     let UPH3: number = p.UPH3 ?? 999999999;
                     let UPH4: number = p.UPH4 ?? 999999999;
-                    let UPH: number  = prnb === 1? UPH1 : prnb === 2? UPH2 : prnb === 3? UPH3 : UPH4;
-                    let TON: number = prnb === 1? (temp_ycsx_data[0].TON_CD1 ?? 0) : prnb === 2? (temp_ycsx_data[0].TON_CD2 ?? 0) : prnb === 3? (temp_ycsx_data[0].TON_CD3 ?? 0) : (temp_ycsx_data[0].TON_CD4 ?? 0);
-                    let SLC: number = prnb === 1? (temp_ycsx_data[0].SLC_CD1 ?? 0) : prnb === 2? (temp_ycsx_data[0].SLC_CD2 ?? 0) : prnb === 3? (temp_ycsx_data[0].SLC_CD3 ?? 0) : (temp_ycsx_data[0].SLC_CD4 ?? 0);                    
+                    let UPH: number = prnb === 1 ? UPH1 : prnb === 2 ? UPH2 : prnb === 3 ? UPH3 : UPH4;
+                    let TON: number = prnb === 1 ? (temp_ycsx_data[0].TON_CD1 ?? 0) : prnb === 2 ? (temp_ycsx_data[0].TON_CD2 ?? 0) : prnb === 3 ? (temp_ycsx_data[0].TON_CD3 ?? 0) : (temp_ycsx_data[0].TON_CD4 ?? 0);
+                    let SLC: number = prnb === 1 ? (temp_ycsx_data[0].SLC_CD1 ?? 0) : prnb === 2 ? (temp_ycsx_data[0].SLC_CD2 ?? 0) : prnb === 3 ? (temp_ycsx_data[0].SLC_CD3 ?? 0) : (temp_ycsx_data[0].SLC_CD4 ?? 0);
                     return {
                       ...p,
-                      [keyvar]: params.value,                     
+                      [keyvar]: params.value,
                       CURRENT_SLC: SLC,
-                      PLAN_EQ:'',
+                      PLAN_EQ: '',
                       CD1: temp_ycsx_data[0].CD1,
                       CD2: temp_ycsx_data[0].CD2,
                       CD3: temp_ycsx_data[0].CD3,
@@ -2147,7 +2137,7 @@ const QUICKPLAN2_OLD = () => {
                       TON_CD2: temp_ycsx_data[0].TON_CD2,
                       TON_CD3: temp_ycsx_data[0].TON_CD3,
                       TON_CD4: temp_ycsx_data[0].TON_CD4,
-                      PLAN_QTY:TON <= 0 ? 0: TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
+                      PLAN_QTY: TON <= 0 ? 0 : TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
                     };
                   } else {
                     Swal.fire("Thông báo", "Nhập máy không đúng", "error");
@@ -2176,7 +2166,7 @@ const QUICKPLAN2_OLD = () => {
             setPlanDataTable(newdata);
           }
         }}
-        onCellClick={ async (params: any) => {
+        onCellClick={async (params: any) => {
           let rowData: QLSXPLANDATA = params.data;
           selectedPlan.current = rowData;
           setDataDinhMuc({
@@ -2208,7 +2198,7 @@ const QUICKPLAN2_OLD = () => {
             LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
             NOTE: rowData.NOTE ?? "",
           });
-          setRecentDMData(await f_getRecentDMData(rowData.G_CODE));          
+          setRecentDMData(await f_getRecentDMData(rowData.G_CODE));
         }}
         onSelectionChange={(params: any) => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()
@@ -2873,6 +2863,15 @@ const QUICKPLAN2_OLD = () => {
                   </div>
                   <div className="formbutton">
                     <label>
+                      <b>Material YES Only:</b>
+                      <input
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        checked={materialYES}
+                        onChange={() => setMaterialYES(!materialYES)}
+                      ></input>
+                    </label>
+                    <label>
                       <b>All Time:</b>
                       <input
                         type="checkbox"
@@ -2897,7 +2896,6 @@ const QUICKPLAN2_OLD = () => {
                     sx={{ fontSize: 12, flex: 1 }}
                     slots={{
                       toolbar: CustomToolbarPOTable,
-                      
                     }}
                     loading={isLoading}
                     rowHeight={30}
@@ -2908,7 +2906,7 @@ const QUICKPLAN2_OLD = () => {
                     ]}
                     editMode="row"
                     getRowId={(row) => row.PROD_REQUEST_NO}
-                    onRowSelectionModelChange={(ids:any) => {
+                    onRowSelectionModelChange={(ids: any) => {
                       handleYCSXSelectionforUpdate(ids);
                     }}
                   />

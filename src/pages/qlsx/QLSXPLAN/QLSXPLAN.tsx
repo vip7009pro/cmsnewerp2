@@ -49,7 +49,7 @@ const QLSXPLAN = () => {
             <Tab>PLAN_RESULT</Tab>
           </TabList>
           <TabPanel>
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <MACHINE /> : <MACHINE_OLD />}
+            {(getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z') ? <MACHINE /> : <MACHINE_OLD />}
           </TabPanel>
           {getCompany() === "CMS" && <TabPanel>
             {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}

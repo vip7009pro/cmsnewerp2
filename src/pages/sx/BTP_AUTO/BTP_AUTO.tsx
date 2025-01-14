@@ -36,6 +36,7 @@ const BTP_AUTO = () => {
     { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 100 },
     { field: "TEMP_QTY", headerName: "TEMP_QTY", width: 60, type: 'number' },
     { field: "LOT_STATUS", headerName: "LOT_STT", width: 50 },
+    { field: "USE_YN", headerName: "USE_YN", width: 40 },
 /*     { field: "REMAIN_QTY", headerName: "REMAIN_QTY (M)", width: 90, type: 'number' }, */
 /*     { field: "USE_YN", headerName: "USE_YN", width: 40 },
     { field: "PR_NB", headerName: "PR_NB", width: 40, type: 'number' }, */

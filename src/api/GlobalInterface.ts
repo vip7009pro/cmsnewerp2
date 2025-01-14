@@ -420,6 +420,7 @@ export interface YCSXTableData {
   USE_YN?: string;
   INS_DATE?: string;
   UPD_DATE?: string;
+  MATERIAL_YN?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;

@@ -127,6 +127,7 @@ const MACHINE_OLD = () => {
     LOSS_KT: 0,
     NOTE: "",
   });
+  const [tempDM, setTempDM] = useState(false);
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
@@ -141,6 +142,7 @@ const MACHINE_OLD = () => {
   const [prod_type, setProdType] = useState("");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
+  const [materialYES, setMaterialYES] = useState(false);
   const [phanloai, setPhanLoai] = useState("00");
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
@@ -622,6 +624,34 @@ const MACHINE_OLD = () => {
           );
       },
     },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
+      },
+    },
   ] : [
     {
       field: "G_CODE", headerName: "G_CODE", width: 50,
@@ -1060,6 +1090,34 @@ const MACHINE_OLD = () => {
       },
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
+    {
+      field: "MATERIAL_YN",
+      headerName: "VL_STT",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.MATERIAL_YN === "N") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>NO</b>
+            </span>
+          );
+        }
+        else if (params.data.MATERIAL_YN === "Y") {
+          return (
+            <span style={{ color: "green" }}>
+              <b>YES</b>
+            </span>
+          );
+        }
+        else {
+          return (
+            <span style={{ color: "orange" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        }
+      },
+    },
   ];
   const column_plandatatable = [
     {
@@ -1629,6 +1687,7 @@ const MACHINE_OLD = () => {
     setPlanDataTable(await f_loadQLSXPLANDATA(plan_date, 'ALL', 'ALL'));
   };
   const handletraYCSX = async () => {
+    console.log('materialYES',materialYES);
     Swal.fire({
       title: "Tra YCSX",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -1653,6 +1712,7 @@ const MACHINE_OLD = () => {
       inspect_inputcheck: inspectInputcheck,
       prod_request_no: prodrequestno,
       material: material,
+      material_yes: materialYES,
     });
     if (ycsxData.length > 0) {
       Swal.fire("Thông báo", "Đã load " + ycsxData.length + " dòng", "success");
@@ -1750,7 +1810,7 @@ const MACHINE_OLD = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành RESET liệu", "Đang RESET liệu", "success");
-        setChiThiDataTable(await f_handleResetChiThiTable(selectedPlan));
+        setChiThiDataTable(await f_handleResetChiThiTable(selectedPlan, datadinhmuc, tempDM));
       }
     });
   };
@@ -1807,7 +1867,7 @@ const MACHINE_OLD = () => {
             }
 
             clearSelectedMaterialRows();
-            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
             setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
         } else {
           Swal.fire(
@@ -1860,7 +1920,8 @@ const MACHINE_OLD = () => {
     setChiThiDataTable(kq);
   };
   const handle_AddPlan = async () => {
-    let err_code: string = await f_addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory);
+    console.log('handle_AddPlan', tempDM);
+    let err_code: string = await f_addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory, tempDM);
     if (err_code !== '0') {
       Swal.fire("Thông báo", err_code, "error");
     }
@@ -1885,8 +1946,8 @@ const MACHINE_OLD = () => {
       loadQLSXPlan(selectedPlanDate);
     }
   };
-  const handle_AddPlan2 = async (data: YCSXTableData[]) => {
-    let err_code: string = await f_addQLSXPLAN(data, selectedPlanDate, selectedMachine, selectedFactory);
+  const handle_AddPlan2 = async (data: YCSXTableData[],tempDM: boolean) => {
+    let err_code: string = await f_addQLSXPLAN(data, selectedPlanDate, selectedMachine, selectedFactory,tempDM);
     if (err_code !== '0') {
       Swal.fire("Thông báo", err_code, "error");
     }
@@ -1936,7 +1997,7 @@ const MACHINE_OLD = () => {
     } else {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
-    setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+    setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
     setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
   };
   function PlanTableAGToolbar() {
@@ -2419,11 +2480,11 @@ const MACHINE_OLD = () => {
         }} 
         onRowDoubleClick={(params: any) => {
           console.log([params.data])
-          handle_AddPlan2([params.data])
+          handle_AddPlan2([params.data],tempDM)
         }}
         />
     )
-  }, [ycsxdatatable, selectedMachine, selectedPlanDate])
+  }, [ycsxdatatable, selectedMachine, selectedPlanDate,tempDM])
   const planDataTableAG = useMemo(() => {
     return (
       <div className="agtable">
@@ -2500,7 +2561,7 @@ const MACHINE_OLD = () => {
               getRecentDM(rowData.G_CODE);
               if (params.column.colId !== 'IS_SETTING') {
                 clearSelectedMaterialRows();
-                setChiThiDataTable(await f_handleGetChiThiTable(rowData));
+                setChiThiDataTable(await f_handleGetChiThiTable(rowData,datadinhmuc,tempDM));
                 
                 //await selectMaterialRow();
               }
@@ -2653,7 +2714,7 @@ const MACHINE_OLD = () => {
           <IconButton
             className='buttonIcon'
             onClick={async () => {
-              setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+              setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
             }}
           >
             <BiRefresh color='yellow' size={20} />
@@ -2705,7 +2766,7 @@ const MACHINE_OLD = () => {
         qlsxchithidatafilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [chithidatatable]);
+    , [chithidatatable, datadinhmuc]);
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
@@ -3223,23 +3284,46 @@ const MACHINE_OLD = () => {
                       </div>
                       <div className="forminputcolumn">
                         <label>
+                          <b>Material YES Only:</b>
+                          <input
+                            type='checkbox'
+                            name='alltimecheckbox'
+                            checked={materialYES}
+                            onChange={() => setMaterialYES(!materialYES)}
+                          ></input>
+                        </label>
+                        <label>
                           <b>All Time:</b>
                           <input
                             type='checkbox'
                             name='alltimecheckbox'
-                            defaultChecked={alltime}
+                            checked={alltime}
                             onChange={() => setAllTime(!alltime)}
                           ></input>
                         </label>
-                        <IconButton
+                       
+                      </div>
+                      <div className="forminputcolumn">
+                      {getCompany()!=='CMS' && <label>
+                          <b>ĐM Tạm thời:</b>
+                          <input
+                            type='checkbox'
+                            name='alltimecheckbox'
+                            checked={tempDM}
+                            onChange={() => setTempDM(!tempDM)}
+                          ></input>
+                        </label>}
+                      <IconButton
                           className='buttonIcon'
                           onClick={() => {
+                            console.log('material_YES', materialYES);
                             handletraYCSX();
                           }}
                         >
                           <FcSearch color='green' size={15} />
                           Search
                         </IconButton>
+
                       </div>
                     </div>
                     <div className='formbutton'>
@@ -3759,7 +3843,7 @@ const MACHINE_OLD = () => {
                             })
                           }
                           onBlur={async (e) => {
-                            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+                            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
                           }}
                         ></input>
                       </label>
@@ -3843,7 +3927,7 @@ const MACHINE_OLD = () => {
                             setChiThiDataTable(await f_handleGetChiThiTable({
                               ...selectedPlan,
                               IS_SETTING: e.target.checked ? 'Y' : 'N'
-                            }));
+                            },datadinhmuc,tempDM));
                           }
                           }
                           onBlur={(e) => {
@@ -3876,7 +3960,7 @@ const MACHINE_OLD = () => {
                             await loadQLSXPlan(selectedPlanDate);
                             setChiThiDataTable(await f_handleGetChiThiTable({
                               ...selectedPlan,
-                            }));
+                            },datadinhmuc,tempDM));
                           });
                         }
                         else {
