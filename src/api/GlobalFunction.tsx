@@ -6042,3 +6042,17 @@ export const f_load_BTP_Summary_Auto = async () => {
     });
   return kq;
 }
+
+export const f_updateBTP_M100 = async () => {
+  let kq: boolean = false;
+  await generalQuery("updateBTP_M100", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}

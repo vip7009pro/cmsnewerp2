@@ -15,6 +15,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { f_updateBTP_M100 } from "../../../api/GlobalFunction";
 const KHOTP = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);
@@ -550,10 +551,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   };
-  const handletraWHSTOCKCMS = () => {
+  const handletraWHSTOCKCMS = async () => {
+    await f_updateBTP_M100();
     setSummaryWH("");
     setisLoading(true);
-    generalQuery(getCompany() === "CMS" ? "traSTOCKCMS_NEW" : "traSTOCKCMS", {
+    await generalQuery(getCompany() === "CMS" ? "traSTOCKCMS_NEW" : "traSTOCKCMS", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -592,10 +594,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   };
-  const handletraWHSTOCKKD = () => {
+  const handletraWHSTOCKKD = async () => {
+    await f_updateBTP_M100();
     setSummaryWH("");
     setisLoading(true);
-    generalQuery(getCompany() === "CMS" ? "traSTOCKKD_NEW" : "traSTOCKKD", {
+    await generalQuery(getCompany() === "CMS" ? "traSTOCKKD_NEW" : "traSTOCKKD", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,

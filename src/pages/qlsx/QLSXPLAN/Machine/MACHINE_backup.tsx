@@ -3304,7 +3304,7 @@ const MACHINE_OLD = () => {
                        
                       </div>
                       <div className="forminputcolumn">
-                      {getCompany()!=='CMS' && <label>
+                      {(getCompany()!=='CMS' || getUserData()?.EMPL_NO ==='NHU1903') && <label>
                           <b>ĐM Tạm thời:</b>
                           <input
                             type='checkbox'

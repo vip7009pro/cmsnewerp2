@@ -10,7 +10,7 @@ import { BiAddToQueue, BiLoader, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_load_BTP_Auto, f_load_BTP_Summary_Auto, f_loadDefectProcessData } from "../../../api/GlobalFunction";
+import { f_load_BTP_Auto, f_load_BTP_Summary_Auto, f_loadDefectProcessData, f_updateBTP_M100 } from "../../../api/GlobalFunction";
 const BTP_AUTO = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
@@ -77,6 +77,7 @@ const BTP_AUTO = () => {
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(columns_btp);
   const [btpData, setBTPData] = useState<Array<any>>([]);
   const handleLoadBTPAutoData = async () => {
+    await f_updateBTP_M100();
     let kq: BTP_AUTO_DATA[] = [];
     kq = await f_load_BTP_Auto();
     setBTPData(kq.map((ele: BTP_AUTO_DATA, index: number) => {
@@ -85,8 +86,10 @@ const BTP_AUTO = () => {
         id: index
     }
     }));
+    Swal.fire('Thông báo','Đã load: '+ kq.length + ' dòng','success');
   }
   const handleLoadBTPSummaryData = async () => {
+    await f_updateBTP_M100();
     let kq: BTP_AUTO_DATA_SUMMARY[] = [];
     kq = await f_load_BTP_Summary_Auto();
     setBTPData(kq.map((ele: BTP_AUTO_DATA_SUMMARY, index: number) => {
@@ -95,6 +98,7 @@ const BTP_AUTO = () => {
         id: index
     }
     }));
+    Swal.fire('Thông báo','Đã load: '+ kq.length + ' dòng','success');
   }
   const btpDataAG = useMemo(() => {
     return (
