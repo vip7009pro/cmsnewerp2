@@ -56,7 +56,7 @@ const QLSXPLAN = () => {
           {getCompany() === "CMS" && <TabPanel>
             {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
           </TabPanel>}
-          {getCompany() === "CMS" && <TabPanel>
+          {getCompany() === "CMS" && getUserData()?.EMPL_NO  ==='NHU1903' &&<TabPanel>
             <KHCT />
           </TabPanel>}
           <TabPanel>
