@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = 2542;
+export const current_ver: number = 2545;
 /* export const current_ver: number = 419; */
 const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
 const TINHHINHCUONLIEU = React.lazy(() => import("../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
