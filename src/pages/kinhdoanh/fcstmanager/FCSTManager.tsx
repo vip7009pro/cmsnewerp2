@@ -57,7 +57,7 @@ const FCSTManager = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [trigger, setTrigger] = useState(true);
   const column_fcsttable:any = [
-    { field: "FCST_ID", headerName: "FCST_ID", width: 80 },
+    { field: "FCST_ID", headerName: "FCST_ID", width: 80,  headerCheckboxSelection: true, checkboxSelection: true,  },
     { field: "FCSTYEAR", headerName: "FCSTYEAR", width: 80 },
     { field: "FCSTWEEKNO", headerName: "FCSTWEEKNO", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
