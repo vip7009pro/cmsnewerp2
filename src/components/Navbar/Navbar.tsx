@@ -699,10 +699,12 @@ export default function Navbar() {
         </div>}
         <div className="navright">          
           <div className="items">
+            {getCompany() === "CMS" && <>
           {notiCount}
             <div className="item" onClick = {handleShowHideNotificaionPanel}>
               <IoIosNotifications size={20} color={`${notiCount === 0 ? 'white' : 'red'}`}/>
             </div>
+            </>}
          {/*    <div className="item" onClick = {async ()=> {
             let newNotification: NotificationElement = {
               CTR_CD: '002',
