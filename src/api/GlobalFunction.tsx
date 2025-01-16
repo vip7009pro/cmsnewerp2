@@ -6018,7 +6018,10 @@ export const f_load_BTP_Auto = async () => {
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data.map((element: any, index: number) => {
-          return { ...element, id: index };
+          return { ...element, 
+            INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+            NEXT_EQ: element.NEXT_EQ === 'NA' || element.NEXT_EQ === 'NO' ? "KT" : element.NEXT_EQ,
+            id: index };
         });
       }
     })
