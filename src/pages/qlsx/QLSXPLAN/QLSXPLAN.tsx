@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { getCompany, getUserData } from "../../../api/Api";
+const BTP_AUTO = React.lazy(() => import("../../sx/BTP_AUTO/BTP_AUTO"));
 const MACHINE_OLD = React.lazy(() => import("./Machine/MACHINE_backup"));
 const PLAN_DATATB_OLD = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB_backup"));
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
@@ -38,7 +39,7 @@ const QLSXPLAN = () => {
           }}>
             <Tab>PLAN VISUAL</Tab>
             {getCompany() === "CMS" && <Tab>QUICK PLAN</Tab>}
-            {getCompany() === "CMS" && <Tab>AUTO PLAN</Tab>}
+            {getCompany() === "CMS" &&  getUserData()?.EMPL_NO  ==='NHU1903' && <Tab>AUTO PLAN</Tab>}
             <Tab>PLAN TABLE</Tab>
             <Tab>LỊCH SỬ</Tab>
             <Tab>DATA SX</Tab>
@@ -47,6 +48,7 @@ const QLSXPLAN = () => {
             <Tab>EQ STATUS</Tab>
             <Tab>Kho SX Main</Tab>
             <Tab>PLAN_RESULT</Tab>
+            <Tab>BTP</Tab>
           </TabList>
           <TabPanel>
             {(getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z') ? <MACHINE /> : <MACHINE_OLD />}
@@ -80,6 +82,9 @@ const QLSXPLAN = () => {
           </TabPanel>
           <TabPanel>
             <ACHIVEMENTTB />
+          </TabPanel>
+          <TabPanel>
+            <BTP_AUTO />
           </TabPanel>
         </Tabs>
       </Suspense>
