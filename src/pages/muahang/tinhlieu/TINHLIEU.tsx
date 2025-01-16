@@ -212,9 +212,20 @@ const TINHLIEU = () => {
   ]
   const column_mrp_table2 = [
     { field: "PROD_REQUEST_NO", headerName: "YCSX_NO", width: 50, cellRenderer: (params: any) => {
-      return <span style={{ color: 'blue', fontWeight: "bold" }}>
+      if(params.data.MATERIAL_YN ==='Y')
+      {
+        return <span style={{ color: 'blue', fontWeight: "bold" }}>
+          {params.data.PROD_REQUEST_NO}
+        </span>
+      }
+      else
+      {
+        return <span style={{ color: 'red', fontWeight: "bold" }}>
         {params.data.PROD_REQUEST_NO}
       </span>
+      }
+      
+     
     } },
     { field: "PROD_REQUEST_DATE", headerName: "YCS_DATE", width: 50 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
