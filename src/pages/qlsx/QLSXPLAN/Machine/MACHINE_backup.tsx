@@ -177,6 +177,7 @@ const MACHINE_OLD = () => {
     G_NAME_KD: 'XXX',
     PROD_REQUEST_DATE: 'XXX',
     PROD_REQUEST_QTY: 0,
+    DELIVERY_DT:'',
     STEP: 0,
     PLAN_ORDER: 'XXX',
     PROCESS_NUMBER: 0,
@@ -1452,6 +1453,12 @@ const MACHINE_OLD = () => {
       editable: false,
     },
     {
+      field: "DELIVERY_DT",
+      headerName: "NGAY_GH",
+      width: 60,
+      editable: false,
+    },
+    {
       field: "NEXT_PLAN_ID",
       headerName: "NEXT_PLAN",
       width: 60,
@@ -1592,6 +1599,10 @@ const MACHINE_OLD = () => {
     setEQ_SERIES(eq_data.EQ_SERIES);
   };
   const handleSaveQLSX = async () => {
+    if(tempDM){
+      Swal.fire('Lỗi','Đang bật ĐM tạm thời, không lưu được, hãy tắt ĐM tạm thời','error');
+      return;
+    }
     if (selectedPlan.PLAN_ID !== 'XXX') {
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         let err_code: string = "0";
@@ -2384,8 +2395,6 @@ const MACHINE_OLD = () => {
       }
     });
   };
-
-
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -2604,7 +2613,7 @@ const MACHINE_OLD = () => {
         </div>
       </div>
     )
-  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
+  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc,column_plandatatable])
   const planMaterialTableAG = useMemo(() =>
     <AGTable
       ref={gridMaterialRef}
