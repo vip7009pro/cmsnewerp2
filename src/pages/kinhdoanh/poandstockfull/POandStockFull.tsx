@@ -493,6 +493,18 @@ const POandStockFull = () => {
         );
       },
     },
+    {
+      field: "USE_YN",
+      cellDataType: "number",
+      headerName: "STATUS",
+      width: 120,
+      cellRenderer: (params: any) => {
+        if(params.data.USE_YN ==='Y') return(<span style={{ color: "green" }}><b>MỞ</b></span>) 
+        return (
+          <span style={{ color: "red" }}><b>KHÓA</b></span>         
+        );
+      },
+    },
     /* {
       field: "YCSX_BALANCE",
       cellDataType: "number",
