@@ -12,11 +12,11 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import {
   DiemDanhNhomData,
   WorkPositionTableData,
@@ -24,6 +24,7 @@ import {
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 
 const DieuChuyenTeam = () => {
   const glbLang: string | undefined = useSelector(
@@ -121,6 +122,95 @@ const DieuChuyenTeam = () => {
         }
       },
     },
+    {
+              field: "SETCA",
+              headerName: "SET CA",
+              minWidth: 200,
+              flex: 1,
+              renderCell: (params: any) => {               
+                const onClick = (calv: string) => {
+                  //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
+                  generalQuery("setca", {                    
+                    EMPL_NO: params.row.EMPL_NO,
+                    CALV: calv,
+                  })
+                    .then(async (response) => {
+                      //console.log(response.data);
+                      if (response.data.tk_status === "OK") {
+                        const newProjects = diemdanhnhomtable.map((p) =>
+                          p.EMPL_NO === params.row.EMPL_NO
+                            ? {
+                                ...p,
+                                CALV: calv,                                
+                              }
+                            : p
+                        );
+                        let newNotification: NotificationElement = {
+                          CTR_CD: '002',
+                          NOTI_ID: -1,
+                          NOTI_TYPE: "success",
+                          TITLE: 'Thay đổi ca làm việc',
+                          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thay ca làm việc cho ${params.row.EMPL_NO}_ ${params.row.MIDLAST_NAME} ${params.row.FIRST_NAME} thành ${calv === "1" ? "Ca ngày" : "Ca đêm"} `,
+                          SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+                          MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+                          INS_EMPL: 'NHU1903',
+                          INS_DATE: '2024-12-30',
+                          UPD_EMPL: 'NHU1903',
+                          UPD_DATE: '2024-12-30',
+                        }  
+                        if(await f_insert_Notification_Data(newNotification))
+                        {
+                          getSocket().emit("notification_panel",newNotification);
+                        }
+                        setDiemDanhNhomTable(newProjects);
+                      } else {
+                        Swal.fire(
+                          "Có lỗi",
+                          "Nội dung: " + response.data.message,
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      //console.log(error);
+                    });
+                };
+                const onReset = () => {
+                  const newProjects = diemdanhnhomtable.map((p) =>
+                    p.EMPL_NO === params.row.EMPL_NO
+                      ? { ...p, CALV: null }
+                      : p
+                  );
+                  ////console.log(newProjects);
+                  setDiemDanhNhomTable(newProjects);
+                };
+                if (params.row.CALV === null) {
+                  return (
+                    <div className={`calvdiv`}>
+                      <button className='tcbutton' onClick={() => onClick("0")}>
+                        Ca HC
+                      </button>
+                      <button className='tcbutton' onClick={() => onClick("1")}>
+                        Ca ngày
+                      </button>
+                      <button className='tcbutton' onClick={() => onClick("2")}>
+                        Ca đêm
+                      </button>                  
+                    </div>
+                  );
+                }
+                return (
+                  <div className='onoffdiv'>
+                    <span className={`onoffshowtext A${params.row.CALV}`}>
+                      {params.row.CALV === 0 ? "Ca HC" :  params.row.CALV === 1 ? "Ca ngày" : params.row.CALV === 2 ? "Ca đêm" :  "Chưa có ca"}
+                    </span>
+                    <button className='resetbutton' onClick={() => onReset()}>
+                      RESET
+                    </button>
+                  </div>
+                );
+              },headerClassName: 'super-app-theme--header',
+            },
     { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130,headerClassName: 'super-app-theme--header' },
     {
       field: "SET_NM",
