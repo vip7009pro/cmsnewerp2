@@ -14,6 +14,40 @@ const BTP_AUTO = () => {
     { field: "G_CODE", headerName: "G_CODE", width: 50 },
     { field: "G_NAME", headerName: "G_NAME", width: 120 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    /* { field: "EQUIPMENT_CD", headerName: "START_EQ", width: 60 }, */
+ /*    { field: "MACHINE", headerName: "EQ_SERIES", width: 60 }, */
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 60 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 70 },
+    { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 100 },
+    { field: "TEMP_QTY", headerName: "TEMP_QTY", width: 60, type: 'number' },
+    /* { field: "LOT_STATUS", headerName: "LOT_STT", width: 50 },
+    { field: "USE_YN", headerName: "USE_YN", width: 40 }, */
+/*     { field: "REMAIN_QTY", headerName: "REMAIN_QTY (M)", width: 90, type: 'number' }, */
+/*     { field: "USE_YN", headerName: "USE_YN", width: 40 },
+    { field: "PR_NB", headerName: "PR_NB", width: 40, type: 'number' }, */
+/*     { field: "BTP_REMAIN_EA", headerName: "REMAIN_QTY (EA)", width: 90, type: 'number' }, */
+/*     { field: "EQ_NAME", headerName: "REMAIN_EQ", width: 150 },
+    */
+/* { field: "NEXT_EQ", headerName: "NEXT_EQ", width: 60 }, */
+    { field: "FINAL_BTP", headerName: "FINAL_BTP", width: 60  , type: 'number', cellRenderer:(params: any)=> {
+      return (
+        <span style={{color: 'green', fontWeight:'bold'}}>{params.value?.toLocaleString('en-US')}</span>
+      )
+    } },
+   /*  { field: "FINAL_PR_NB", headerName: "FINAL_PR_NB", width: 80, type: 'number' }, */
+/*     { field: "BTP_LOCATION", headerName: "BTP_LOCATION", width: 150 }, */
+/*     { field: "FINAL_MACHINE", headerName: "FINAL_MACHINE", width: 150 }, */
+    { field: "FINAL_LOCATION", headerName: "FINAL_LOCATION", width: 90 },
+    { field: "FINAL_FACTORY", headerName: "FINAL_FACTORY", width: 90 },
+    { field: "FINAL_XUONG", headerName: "FINAL_XUONG", width: 90 },
+   /*  { field: "XUONG", headerName: "XUONG", width: 50 }, */
+    { field: "INS_DATE", headerName: "PROD_DATE", width: 90 },
+  ];
+  const columns_btp2 = [   
+    { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 50 },
+    { field: "G_CODE", headerName: "G_CODE", width: 50 },
+    { field: "G_NAME", headerName: "G_NAME", width: 120 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
     { field: "EQUIPMENT_CD", headerName: "START_EQ", width: 60 },
     { field: "MACHINE", headerName: "EQ_SERIES", width: 60 },
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 60 },
