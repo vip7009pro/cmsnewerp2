@@ -1,29 +1,14 @@
 import { Button, IconButton } from "@mui/material";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./BTP_AUTO.scss";
-import { BTP_AUTO_DATA, BTP_AUTO_DATA_SUMMARY, DAO_FILM_DATA, DEFECT_PROCESS_DATA, QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../api/GlobalInterface";
+import { BTP_AUTO_DATA, BTP_AUTO_DATA_SUMMARY } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { BiAddToQueue, BiLoader, BiLogIn } from "react-icons/bi";
+import { BiLoader } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { f_load_BTP_Auto, f_load_BTP_Summary_Auto, f_loadDefectProcessData, f_updateBTP_M100 } from "../../../api/GlobalFunction";
+import { f_load_BTP_Auto, f_load_BTP_Summary_Auto, f_updateBTP_M100 } from "../../../api/GlobalFunction";
 const BTP_AUTO = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
-  const [btnGN_QL, setBtnGN_QL] = useState(true);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [planId, setPlanId] = useState("");
-  const [alltime, setAllTime] = useState(false);
-  const [id, setID] = useState("");
-  const [type, setType] = useState("All");
-  const [factory, setFactory] = useState("All");
   const columns_btp = [   
     { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 50 },
     { field: "G_CODE", headerName: "G_CODE", width: 50 },
@@ -42,7 +27,8 @@ const BTP_AUTO = () => {
     { field: "PR_NB", headerName: "PR_NB", width: 40, type: 'number' }, */
 /*     { field: "BTP_REMAIN_EA", headerName: "REMAIN_QTY (EA)", width: 90, type: 'number' }, */
 /*     { field: "EQ_NAME", headerName: "REMAIN_EQ", width: 150 },
-    { field: "NEXT_EQ", headerName: "NEXT_EQ", width: 150 }, */
+    */
+{ field: "NEXT_EQ", headerName: "NEXT_EQ", width: 60 },
     { field: "FINAL_BTP", headerName: "FINAL_BTP", width: 60  , type: 'number', cellRenderer:(params: any)=> {
       return (
         <span style={{color: 'green', fontWeight:'bold'}}>{params.value?.toLocaleString('en-US')}</span>
@@ -53,6 +39,7 @@ const BTP_AUTO = () => {
 /*     { field: "FINAL_MACHINE", headerName: "FINAL_MACHINE", width: 150 }, */
     { field: "FINAL_LOCATION", headerName: "FINAL_LOCATION", width: 90 },
     { field: "XUONG", headerName: "XUONG", width: 50 },
+    { field: "INS_DATE", headerName: "PROD_DATE", width: 90 },
   ];
   const columns_btp_summary = [
     { field: "id", headerName: "STT", width: 30 },
