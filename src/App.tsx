@@ -599,6 +599,7 @@ function App() {
           return;
         } */
         //console.log('notiCount---',getNotiCount())
+        if(getCompany() !=='CMS') return;
         if(getUserData()?.EMPL_NO==='NHU1903') 
         {
           showNoti(data);
