@@ -1862,6 +1862,7 @@ export interface QLSXPLANDATA {
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
+  DELIVERY_DT?: string;
   STEP: number;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
