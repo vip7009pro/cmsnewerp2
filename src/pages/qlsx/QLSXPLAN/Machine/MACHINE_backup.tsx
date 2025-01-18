@@ -2613,7 +2613,7 @@ const MACHINE_OLD = () => {
         </div>
       </div>
     )
-  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc,column_plandatatable])
+  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
   const planMaterialTableAG = useMemo(() =>
     <AGTable
       ref={gridMaterialRef}

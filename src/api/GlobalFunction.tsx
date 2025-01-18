@@ -193,11 +193,11 @@ export async function checkBP(
   permitted_empl: string[],
   func: any,
 ) {
-  console.log(userData?.MAINDEPTNAME);
+ /*  console.log(userData?.MAINDEPTNAME);
   console.log(permitted_main_dept);
   console.log(userData?.JOB_NAME);
   console.log(permitted_position);
-  console.log(permitted_empl);
+  console.log(permitted_empl); */
   if (userData !== undefined) {
     if (
       userData.EMPL_NO !== undefined &&
@@ -6058,4 +6058,21 @@ export const f_updateBTP_M100 = async () => {
       console.log(error);
     });
   return kq;
+}
+
+export const f_setCa = async (DATA: any)=> {
+  let kq: boolean = false;
+  await generalQuery("setCa", {
+    EMPL_NO: DATA.EMPL_NO,
+    CALV: DATA.CALV,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
 }

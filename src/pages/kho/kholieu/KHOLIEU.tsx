@@ -158,6 +158,7 @@ const KHOLIEU = () => {
     { field: "INS_RECEPTION", headerName: "NV_NHAN", width: 60 },
   ];
   const column_NHAPLIEUDATA = [
+    { field: "MAKER", headerName: "MAKER", width: 80 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 80 },
     { field: "LOTNCC", headerName: "LOTNCC", width: 60 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 70 },
@@ -449,8 +450,7 @@ const KHOLIEU = () => {
             >
               <MdInput color="green" size={15} />
               Nhập Liệu
-            </IconButton>     
-
+            </IconButton>
             <IconButton
               className="buttonIcon"
               onClick={() => {

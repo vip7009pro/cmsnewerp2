@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "./BangChamCong.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { checkBP, weekdayarray } from "../../../api/GlobalFunction";
+import { checkBP, f_setCa, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
@@ -18,6 +18,7 @@ import {
   IN_OUT_DATA,
   IN_OUT_DATA2,
   IN_OUT_DATA22,
+  IN_OUT_DATA3,
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from '../../../components/DataTable/AGTable';
@@ -93,6 +94,11 @@ const BANGCHAMCONG = () => {
     {
       field: 'MAINDEPTNAME',
       headerName: 'MAINDEPTNAME',
+      width: 80
+    },
+    {
+      field: 'SUBDEPTNAME',
+      headerName: 'SUBDEPTNAME',
       width: 80
     },
     {
@@ -922,6 +928,7 @@ const BANGCHAMCONG = () => {
     () => {    
       return (       
           <AGTable
+          suppressRowClickSelection={false}
             data={bangchamcong2}
             columns={columns}
             toolbar={toolbar}
@@ -1291,7 +1298,19 @@ const BANGCHAMCONG = () => {
         if (response.data.tk_status !== "NG") {
           const loaded_data: BANGCHAMCONG_DATA2[] = response.data.data.map(
             (element: BANGCHAMCONG_DATA2, index: number) => {
-              const intime_calc: string = tinhInOutTime22({
+              let inoutdata: { IN_TIME: string; OUT_TIME: string; } = tinhInOutTime3({                
+                CALV:element.CALV,          
+                CHECK1:element.CHECK1 !== null  ? moment.utc(element.CHECK1).format("HH:mm")  : "",
+                CHECK2:element.CHECK2 !== null  ? moment.utc(element.CHECK2).format("HH:mm")  : "",
+                CHECK3:element.CHECK3 !== null  ? moment.utc(element.CHECK3).format("HH:mm")  : "",
+                PREV_CHECK1:element.PREV_CHECK1 !== null  ? moment.utc(element.PREV_CHECK1).format("HH:mm")  : "",
+                PREV_CHECK2:element.PREV_CHECK2 !== null  ? moment.utc(element.PREV_CHECK2).format("HH:mm")  : "",
+                PREV_CHECK3:element.PREV_CHECK3 !== null  ? moment.utc(element.PREV_CHECK3).format("HH:mm")  : "",
+                NEXT_CHECK1:element.NEXT_CHECK1 !== null  ? moment.utc(element.NEXT_CHECK1).format("HH:mm")  : "",
+                NEXT_CHECK2:element.NEXT_CHECK2 !== null  ? moment.utc(element.NEXT_CHECK2).format("HH:mm")  : "",
+                NEXT_CHECK3:element.NEXT_CHECK3 !== null  ? moment.utc(element.NEXT_CHECK3).format("HH:mm")  : "",
+              },);       
+              /* const intime_calc: string = tinhInOutTime22({                
                 SHIFT_NAME: element.WORK_SHIF_NAME,
                 CHECK1:
                   element.CHECK1 !== null
@@ -1369,7 +1388,7 @@ const BANGCHAMCONG = () => {
                     ? moment.utc(element.NEXT_CHECK3).format("HH:mm")
                     : "",
               }).OUT_TIME;
-
+ */
 
               return {
                 ...element,
@@ -1417,11 +1436,11 @@ const BANGCHAMCONG = () => {
                   element.NEXT_CHECK3 !== null
                     ? moment.utc(element.NEXT_CHECK3).format("HH:mm:ss")
                     : "",
-                IN_TIME: intime_calc,
-                OUT_TIME: outtime_calc,
+                IN_TIME: inoutdata.IN_TIME,
+                OUT_TIME: inoutdata.OUT_TIME,
                 FIXED_IN_TIME: element.FIXED_IN_TIME ?? "X",
                 FIXED_OUT_TIME: element.FIXED_OUT_TIME ?? "X",
-                STATUS: intime_calc === 'Thiếu giờ vào' || outtime_calc === 'Thiếu giờ ra' ? 'Thiếu công' : 'Đủ công',
+                STATUS: inoutdata.IN_TIME === 'Thiếu giờ vào' || inoutdata.OUT_TIME === 'Thiếu giờ ra' ? 'Thiếu công' : 'Đủ công',
                 id: index,
               };
             }
@@ -1981,6 +2000,7 @@ const BANGCHAMCONG = () => {
       const check2_end_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
+      
       //ca dem
       const minStartRange: number = Math.min.apply(Math, check1_start_range);
       const maxEndRange: number = Math.max.apply(Math, check2_end_range);
@@ -2090,6 +2110,212 @@ const BANGCHAMCONG = () => {
     }
     return result;
   };
+  const tinhInOutTime3 = (IO_DATA: IN_OUT_DATA3) => {
+    //console.log(cainfo);
+    let team = (IO_DATA.CALV === 0 || IO_DATA.CALV === 1) ? 'CA1' : IO_DATA.CALV === 2 ? 'CA2' : 'Chưa có ca';
+    let result = {
+      IN_TIME: "",
+      OUT_TIME: "",
+    };
+    const tgv: string = "Thiếu giờ vào";
+    const tgr: string = "Thiếu giờ ra";
+    const check0_array: number[] = [
+      IO_DATA.PREV_CHECK1 !== ""
+        ? moment(IO_DATA.PREV_CHECK1, "HH:mm").valueOf()
+        : 0,
+      IO_DATA.PREV_CHECK2 !== ""
+        ? moment(IO_DATA.PREV_CHECK2, "HH:mm").valueOf()
+        : 0,
+      IO_DATA.PREV_CHECK3 !== ""
+        ? moment(IO_DATA.PREV_CHECK3, "HH:mm").valueOf()
+        : 0,
+    ];
+    const check1_array: number[] = [
+      IO_DATA.CHECK1 !== "" ? moment(IO_DATA.CHECK1, "HH:mm").valueOf() : 0,
+      IO_DATA.CHECK2 !== "" ? moment(IO_DATA.CHECK2, "HH:mm").valueOf() : 0,
+      IO_DATA.CHECK3 !== "" ? moment(IO_DATA.CHECK3, "HH:mm").valueOf() : 0,
+    ];
+    const check2_array: number[] = [
+      IO_DATA.NEXT_CHECK1 !== ""
+        ? moment(IO_DATA.NEXT_CHECK1, "HH:mm").valueOf()
+        : 0,
+      IO_DATA.NEXT_CHECK2 !== ""
+        ? moment(IO_DATA.NEXT_CHECK2, "HH:mm").valueOf()
+        : 0,
+      IO_DATA.NEXT_CHECK3 !== ""
+        ? moment(IO_DATA.NEXT_CHECK3, "HH:mm").valueOf()
+        : 0,
+    ];
+    const check0_nozero: number[] = check0_array.filter(
+      (ele: number, index: number) => ele !== 0
+    );
+    const check1_nozero: number[] = check1_array.filter(
+      (ele: number, index: number) => ele !== 0
+    );
+    const check2_nozero: number[] = check2_array.filter(
+      (ele: number, index: number) => ele !== 0
+    );
+    const mincheck0: number = Math.min.apply(Math, check0_nozero);
+    const maxcheck0: number = Math.max.apply(Math, check0_nozero);
+    const mincheck1: number = Math.min.apply(Math, check1_nozero);
+    const maxcheck1: number = Math.max.apply(Math, check1_nozero);
+    const mincheck2: number = Math.min.apply(Math, check2_nozero);
+    const maxcheck2: number = Math.max.apply(Math, check2_nozero);
+    if (IO_DATA.CALV === 1 || IO_DATA.CALV === 2) {
+      const in_start1: number = moment("05:30", "HH:mm").valueOf();
+      const in_end1: number = moment("08:00", "HH:mm").valueOf();
+      const out_start1: number = moment("20:00", "HH:mm").valueOf();
+      const out_end1: number = moment("22:00", "HH:mm").valueOf();
+      const in_start2: number = moment("17:30", "HH:mm").valueOf();
+      const in_end2: number = moment("20:00", "HH:mm").valueOf();
+      const out_start2: number = moment("08:00", "HH:mm").valueOf();
+      const out_end2: number = moment("10:00", "HH:mm").valueOf();
+
+    /*const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
+      const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
+      const out_start1: number = moment(cainfo[1].OUT_START.substring(11,16),'HH:mm').valueOf();
+      const out_end1: number = moment(cainfo[1].OUT_END.substring(11,16),'HH:mm').valueOf();
+      const in_start2: number = moment(cainfo[2].IN_START.substring(11,16),'HH:mm').valueOf();
+      const in_end2: number = moment(cainfo[2].IN_END.substring(11,16),'HH:mm').valueOf();
+      const out_start2: number = moment(cainfo[2].OUT_START.substring(11,16),'HH:mm').valueOf();
+      const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();  */
+
+      /* console.log("check1check", check1check);
+      console.log("check0check", check0check);
+      console.log("check0maxcheck", check0maxcheck); */
+      /* console.log("final ca", final_ca); */
+      const in_start: number = IO_DATA.CALV === 1 ? in_start1 : in_start2;
+      const in_end: number = IO_DATA.CALV === 1 ? in_end1 : in_end2;
+      const out_start: number = IO_DATA.CALV === 1 ? out_start1 : out_start2;
+      const out_end: number = IO_DATA.CALV === 1 ? out_end1 : out_end2;
+      const check0_start_range: number[] = check0_nozero.filter(
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
+      );
+      const check0_end_range: number[] = check0_nozero.filter(
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
+      );
+      const check1_start_range: number[] = check1_nozero.filter(
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
+      );
+      const check1_end_range: number[] = check1_nozero.filter(
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
+      );
+      const check2_start_range: number[] = check2_nozero.filter(
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
+      );
+      const check2_end_range: number[] = check2_nozero.filter(
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
+      );
+
+      //ca dem
+      const minStartRange: number = Math.min.apply(Math, check1_start_range);
+      const maxEndRange: number = Math.max.apply(Math, check2_end_range);
+      //ca ngay
+      const maxStartRange: number = Math.max.apply(Math, check1_end_range);
+      //min of all check0
+      const minAllCheck0: number = Math.min.apply(Math, check0_nozero);
+      //max of all check0
+      const maxAllCheck0: number = Math.max.apply(Math, check0_nozero);
+      //min of all check1
+      const minAllCheck1: number = Math.min.apply(Math, check1_nozero);
+      //max of all check1
+      const maxAllCheck1: number = Math.max.apply(Math, check1_nozero);
+      //max all check2
+      const minAllCheck2: number = Math.min.apply(Math, check2_nozero);
+      const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);
+      switch (IO_DATA.CALV) {
+        case 1:
+          var temp1_intime =
+            check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
+          let temp1_outtime =
+            check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgv;
+          let checkthieu: string = "NA";
+          if (mincheck1 >= in_start1 && mincheck1 <= in_end1) {
+            checkthieu = tgr;
+          }
+          if (mincheck1 === maxcheck1) {
+            result = {
+              IN_TIME: checkthieu === tgr ? temp1_intime : tgv,
+              OUT_TIME: checkthieu !== tgr ? temp1_outtime : tgr,
+            };
+          } else {
+            result = {
+              IN_TIME: temp1_intime,
+              OUT_TIME: temp1_outtime,
+            };
+          }
+          /*  result= {
+                        IN_TIME: moment(minStartRange).isValid()?  moment(minStartRange).format('HH:mm'): check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv,
+                        OUT_TIME: moment(maxStartRange).isValid()?  moment(maxStartRange).format('HH:mm'):check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgr,
+                    } */
+          break;
+        case 2:
+          //console.log("dang tinh inout ca 2");
+          result = {
+            IN_TIME:
+              check1_nozero.length > 0
+                ? moment(maxAllCheck1).format("HH:mm")
+                : tgv,
+            OUT_TIME:
+              check2_nozero.length > 0
+                ? moment(minAllCheck2).format("HH:mm")
+                : tgr,
+          };
+          break;
+        default:
+          let temp_intime =
+            check1_nozero.length > 0
+              ? moment(minAllCheck1).format("HH:mm")
+              : tgv;
+          let temp_outtime =
+            check1_nozero.length > 0
+              ? moment(maxAllCheck1).format("HH:mm")
+              : tgv;
+          result = {
+            IN_TIME: temp_intime === temp_outtime ? temp_intime : tgv,
+            OUT_TIME: temp_intime === temp_outtime ? tgr : temp_outtime,
+          };
+          break;
+      }
+    } else {
+      const in_start: number = moment(
+        cainfo[0].IN_START.substring(11, 16),
+        "HH:mm"
+      ).valueOf();
+      const in_end: number = moment(
+        cainfo[0].IN_END.substring(11, 16),
+        "HH:mm"
+      ).valueOf();
+      const out_start: number = moment(
+        cainfo[0].OUT_START.substring(11, 16),
+        "HH:mm"
+      ).valueOf();
+      const out_end: number = moment(
+        cainfo[0].OUT_END.substring(11, 16),
+        "HH:mm"
+      ).valueOf();
+      let temp_intime =
+        check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
+      let temp_outtime =
+        check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgr;
+      let checkthieu: string = "NA";
+      if (mincheck1 >= in_start && mincheck1 <= in_end) {
+        checkthieu = tgr;
+      }
+      if (mincheck1 === maxcheck1) {
+        result = {
+          IN_TIME: checkthieu === tgr ? temp_intime : tgv,
+          OUT_TIME: checkthieu !== tgr ? temp_outtime : tgr,
+        };
+      } else {
+        result = {
+          IN_TIME: temp_intime,
+          OUT_TIME: temp_outtime,
+        };
+      }
+    }
+    return result;
+  };
   const testcomparetime = () => {
     const a: number = moment.utc("19:47:42", "HH:mm:ss").valueOf();
     const reverse_a: string = moment.utc(a).format("HH:mm:ss");
@@ -2119,7 +2345,6 @@ const BANGCHAMCONG = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-
   const handleFixTime = () => {
     //swal confirm to fix time
     Swal.fire({ 
@@ -2240,6 +2465,33 @@ const BANGCHAMCONG = () => {
       }
     })
   }
+  const handleSETCA = (CALV: number) => {
+    //swal confirm to fix time
+    if(selectedRows.current.length ===0) {
+      Swal.fire('Thông báo','Chưa chọn dòng nào','error');
+      return;
+    }
+    Swal.fire({ 
+      title: 'Bạn có set Ca không ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {        
+        for (let i = 0; i < selectedRows.current.length; i++) {
+          const row = selectedRows.current[i];
+          await f_setCa({
+            EMPL_NO: row.EMPL_NO,
+            CALV: CALV
+          });                    
+        } 
+        loadBangChamCong2();
+        Swal.fire("Thông báo", "Set Ca thành công", "success");
+      }
+    })
+  }
   useEffect(() => {
     testcomparetime();
     loadCaInfo();
@@ -2314,6 +2566,39 @@ const BANGCHAMCONG = () => {
                 handleFixTimeAuto
               );
             }}>FIX AUTO TIME</Button>
+            <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#1899d4' }} onClick={() => {
+              checkBP(
+                userData,
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                ()=> {
+                  handleSETCA(0);
+                }
+              );
+            }}>SET CA HC</Button>
+            <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69c006' }} onClick={() => {
+              checkBP(
+                userData,
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                ()=> {
+                  handleSETCA(1);
+                }
+              );
+            }}>SET CA NGÀY</Button>
+            <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#8f8173' }} onClick={() => {
+              checkBP(
+                userData,
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                ()=> {
+                  handleSETCA(2);
+                }
+              );
+            }}>SET CA ĐÊM</Button>
           </div>
         </div>
         <div className='tracuuYCSXTable'>{chamcongTBMM}</div>

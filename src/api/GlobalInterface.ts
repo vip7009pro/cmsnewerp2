@@ -754,7 +754,19 @@ export interface IN_OUT_DATA2 {
   CHECK62: string;
 }
 export interface IN_OUT_DATA22 {
-  SHIFT_NAME: string;
+  SHIFT_NAME: string;  
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+  PREV_CHECK1: string;
+  PREV_CHECK2: string;
+  PREV_CHECK3: string;
+  NEXT_CHECK1: string;
+  NEXT_CHECK2: string;
+  NEXT_CHECK3: string;
+}
+export interface IN_OUT_DATA3 {
+  CALV: number;    
   CHECK1: string;
   CHECK2: string;
   CHECK3: string;
