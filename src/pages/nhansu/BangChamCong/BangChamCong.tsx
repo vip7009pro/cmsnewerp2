@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "./BangChamCong.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { checkBP, f_setCa, weekdayarray } from "../../../api/GlobalFunction";
+import { checkBP, f_setCaDiemDanh, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
@@ -2222,13 +2222,14 @@ const BANGCHAMCONG = () => {
       const maxAllCheck1: number = Math.max.apply(Math, check1_nozero);
       //max all check2
       const minAllCheck2: number = Math.min.apply(Math, check2_nozero);
-      const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);
+      const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);     
+      
       switch (IO_DATA.CALV) {
         case 1:
-          var temp1_intime =
+          let temp1_intime =
             check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
           let temp1_outtime =
-            check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgv;
+            check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgr;
           let checkthieu: string = "NA";
           if (mincheck1 >= in_start1 && mincheck1 <= in_end1) {
             checkthieu = tgr;
@@ -2251,16 +2252,17 @@ const BANGCHAMCONG = () => {
           break;
         case 2:
           //console.log("dang tinh inout ca 2");
+          let temp1_intime2 =
+            check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgv;
+          let temp1_outtime2 =
+            check2_nozero.length > 0 ? moment(mincheck2).format("HH:mm") : tgr;
+          let checkthieu2: string = "NA";
           result = {
-            IN_TIME:
-              check1_nozero.length > 0
-                ? moment(maxAllCheck1).format("HH:mm")
-                : tgv,
-            OUT_TIME:
-              check2_nozero.length > 0
-                ? moment(minAllCheck2).format("HH:mm")
-                : tgr,
-          };
+            IN_TIME: temp1_intime2,
+            OUT_TIME: temp1_outtime2,
+          }
+          
+
           break;
         default:
           let temp_intime =
@@ -2270,7 +2272,7 @@ const BANGCHAMCONG = () => {
           let temp_outtime =
             check1_nozero.length > 0
               ? moment(maxAllCheck1).format("HH:mm")
-              : tgv;
+              : tgr;
           result = {
             IN_TIME: temp_intime === temp_outtime ? temp_intime : tgv,
             OUT_TIME: temp_intime === temp_outtime ? tgr : temp_outtime,
@@ -2482,8 +2484,9 @@ const BANGCHAMCONG = () => {
       if (result.isConfirmed) {        
         for (let i = 0; i < selectedRows.current.length; i++) {
           const row = selectedRows.current[i];
-          await f_setCa({
+          await f_setCaDiemDanh({
             EMPL_NO: row.EMPL_NO,
+            APPLY_DATE: row.DATE_COLUMN,
             CALV: CALV
           });                    
         } 

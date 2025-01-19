@@ -6062,8 +6062,25 @@ export const f_updateBTP_M100 = async () => {
 
 export const f_setCa = async (DATA: any)=> {
   let kq: boolean = false;
-  await generalQuery("setCa", {
+  await generalQuery("setca", {
     EMPL_NO: DATA.EMPL_NO,
+    CALV: DATA.CALV,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;  
+}
+export const f_setCaDiemDanh = async (DATA: any)=> {
+  let kq: boolean = false;
+  await generalQuery("setcadiemdanh", {
+    EMPL_NO: DATA.EMPL_NO,
+    APPLY_DATE: DATA.APPLY_DATE,
     CALV: DATA.CALV,
   })
     .then((response) => {
