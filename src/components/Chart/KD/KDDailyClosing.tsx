@@ -32,7 +32,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
   const formatCash = (n: number) => {
     /*  if (n < 1e3) return n;
      if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$"; */
-    return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
+    return nFormatter(n, 0) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
   };
   const labelFormatter = (value: number) => {
     return formatCash(value);
@@ -172,7 +172,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
             fontSize: '0.7rem'
           }}
           tick={{ fontSize: '0.7rem' }}
-          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') ?? "$"}
+          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ')}
           tickCount={10}
         />
         <Tooltip content={<CustomTooltip />} />

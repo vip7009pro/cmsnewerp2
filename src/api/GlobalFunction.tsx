@@ -5,6 +5,7 @@ import { generalQuery, getAuditMode, getCompany, getGlobalSetting, getSocket, ge
 import {
   BOMSX_DATA,
   BTP_AUTO_DATA,
+  BTP_AUTO_DATA2,
   BTP_AUTO_DATA_SUMMARY,
   CODE_FULL_INFO,
   CodeListData,
@@ -6013,14 +6014,12 @@ export const f_Insert_I222 = async (DATA: any) => {
 }
 
 export const f_load_BTP_Auto = async () => {
-  let kq: BTP_AUTO_DATA[] = [];
-  await generalQuery("loadBTPAuto", {})
+  let kq: BTP_AUTO_DATA2[] = [];
+  await generalQuery("loadBTPAuto2", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data.map((element: any, index: number) => {
-          return { ...element, 
-            INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
-            NEXT_EQ: element.NEXT_EQ === 'NA' || element.NEXT_EQ === 'NO' ? "KT" : element.NEXT_EQ,
+          return { ...element,             
             id: index };
         });
       }
@@ -6032,7 +6031,7 @@ export const f_load_BTP_Auto = async () => {
 }
 export const f_load_BTP_Summary_Auto = async () => {
   let kq: BTP_AUTO_DATA_SUMMARY[] = [];
-  await generalQuery("loadBTPSummaryAuto", {})
+  await generalQuery("loadBTPSummaryAuto2", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data.map((element: any, index: number) => {
@@ -6048,7 +6047,7 @@ export const f_load_BTP_Summary_Auto = async () => {
 
 export const f_updateBTP_M100 = async () => {
   let kq: boolean = false;
-  await generalQuery("updateBTP_M100", {})
+  await generalQuery("updateBTP_M1002", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = true;

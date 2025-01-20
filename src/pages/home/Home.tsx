@@ -14,8 +14,9 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-export const current_ver: number = 2550;
+export const current_ver: number = 2552;
 /* export const current_ver: number = 419; */
+const QuanLyCapCao_NS = React.lazy(() => import("../nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
 const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
 const TINHHINHCUONLIEU = React.lazy(() => import("../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
 const BAOCAOTHEOROLL = React.lazy(() => import("../sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
@@ -171,6 +172,11 @@ function Home() {
       MENU_CODE: "NS9",
       MENU_NAME: getlang("listchamcong", lang),
       MENU_ITEM: <BANGCHAMCONG />,
+    },
+    {
+      MENU_CODE: "NS10",
+      MENU_NAME: getlang("quanlycapcao", lang),
+      MENU_ITEM: <QuanLyCapCao_NS />,
     },
     {
       MENU_CODE: "KD1",
@@ -562,6 +568,11 @@ function Home() {
       MENU_CODE: "NS9",
       MENU_NAME: getlang("listchamcong", lang),
       MENU_ITEM: <BANGCHAMCONG />,
+    },
+    {
+      MENU_CODE: "NS10",
+      MENU_NAME: getlang("quanlycapcao", lang),
+      MENU_ITEM: <QuanLyCapCao_NS />,
     },
     {
       MENU_CODE: "KD1",

@@ -29,6 +29,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
+const QuanLyCapCao_NS = React.lazy(() => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
 const FileTransfer = React.lazy(() => import("./pages/tools/FileTransfer/FileTransfer"));
 const CAPASX2 = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX2"));
 const Home2 = React.lazy(() => import("./pages/home/Home2"));
@@ -1285,6 +1286,18 @@ function App() {
                               jobname='leader'
                             >
                               <QuanLyCapCao />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='quanlycapcaons'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='leader'
+                            >
+                              <QuanLyCapCao_NS />
                             </ProtectedRoute>
                           }
                         />

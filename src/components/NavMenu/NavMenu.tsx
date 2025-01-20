@@ -167,6 +167,12 @@ const NavMenu = () => {
           MENU_CODE: "NS9",
         },
         {
+          title: getlang("quanlycapcaons", lang),
+          path: "/nhansu/quanlycapcaons",
+          icon: <FcManager color="#cc99ff" size={15} />,
+          MENU_CODE: "NS10",
+        },
+        {
           title: getlang("baocaonhansu", lang),
           path: "/nhansu/baocaonhansu",
           icon: <FcPieChart color="#cc99ff" size={15} />,
@@ -697,6 +703,12 @@ const NavMenu = () => {
           path: "/nhansu/listchamcong",
           icon: <MdOutlineChecklistRtl color="blue" size={15} />,
           MENU_CODE: "NS9",
+        },
+        {
+          title: getlang("quanlycapcaons", lang),
+          path: "/nhansu/quanlycapcaons",
+          icon: <FcManager color="#cc99ff" size={15} />,
+          MENU_CODE: "NS10",
         },
         {
           title: getlang("baocaonhansu", lang),

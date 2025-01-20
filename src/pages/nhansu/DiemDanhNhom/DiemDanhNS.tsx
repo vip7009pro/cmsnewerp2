@@ -19,7 +19,7 @@ import { RootState } from "../../../redux/store";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { a } from "@react-spring/web";
 
-const DiemDanhNhomBP = () => {
+const DiemDanhNhomNS = () => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang,
   );
@@ -477,7 +477,7 @@ const DiemDanhNhomBP = () => {
     );
   }
   const onselectionteamhandle = (teamnamelist: number) => {
-    generalQuery("diemdanhnhomBP", { team_name_list: teamnamelist })
+    generalQuery("diemdanhnhomNS", { team_name_list: teamnamelist })
       .then((response) => {
         ////console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -499,7 +499,7 @@ const DiemDanhNhomBP = () => {
   };
   useEffect(() => {
     setisLoading(true);
-    generalQuery("diemdanhnhomBP", { team_name_list: 5 })
+    generalQuery("diemdanhnhomNS", { team_name_list: 5 })
       .then((response) => {
         ////console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -576,4 +576,4 @@ const DiemDanhNhomBP = () => {
     </div>)
   );
 };
-export default DiemDanhNhomBP;
+export default DiemDanhNhomNS;

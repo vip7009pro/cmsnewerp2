@@ -4416,8 +4416,32 @@ export interface BTP_AUTO_DATA {
   XUONG: string;
 }
 
+export interface BTP_AUTO_DATA2 {
+  FACTORY: string;
+  XUONG: string;
+  EQ_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  PROD_TYPE: string;
+  UNIT: string;
+  PROD_REQUEST_NO: string;
+  PLAN_ID: string;
+  PROCESS_NUMBER: number;
+  M_LOT_NO: string;
+  PROCESS_LOT_NO: string;
+  REMAIN_QTY_M: number;
+  TEMP_QTY_EA: number;
+  FINAL_FACTORY: string;
+  FINAL_XUONG: string;
+  PHAN_LOAI: string;
+  USE_YN: string;
+  PD: number;
+  CAVITY: number;
+  TRANS_LOT_NO: string;
+}
 export interface BTP_AUTO_DATA_SUMMARY {
   G_CODE: string,
   XA: number,
-  XB: number
+  XB: number,
+  TOTAL_BTP: number
 }
