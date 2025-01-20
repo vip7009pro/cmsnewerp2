@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { f_load_BTP_Summary_Auto, SaveExcel } from "../../../api/GlobalFunction";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
 import KHOTP from "../../kho/khotp/KHOTP";
@@ -748,7 +748,7 @@ const POandStockFull = () => {
       filter: true,
     };
   }, []);
-  const handletraPOFullCMS = () => {
+  const handletraPOFullCMS = async () => {
     Swal.fire({
       title: "Tra data",
       text: "Đang tra data",
@@ -758,6 +758,7 @@ const POandStockFull = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+    await f_load_BTP_Summary_Auto();
     setisLoading(true);
     //traPOFullCMS2_NEW
     setColumnDefinition(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
@@ -812,7 +813,7 @@ const POandStockFull = () => {
         console.log(error);
       });
   };
-  const handletraPOFullKD = () => {
+  const handletraPOFullKD = async () => {
     Swal.fire({
       title: "Tra data",
       text: "Đang tra data",
@@ -822,6 +823,7 @@ const POandStockFull = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+    await f_load_BTP_Summary_Auto();
     setisLoading(true);
     setColumnDefinition(column_codeKD2);
     //traPOFullKD2_NEW
