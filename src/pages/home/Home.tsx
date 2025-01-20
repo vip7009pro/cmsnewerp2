@@ -14,8 +14,7 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-
-export const current_ver: number = 2549;
+export const current_ver: number = 2550;
 /* export const current_ver: number = 419; */
 const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
 const TINHHINHCUONLIEU = React.lazy(() => import("../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
@@ -116,8 +115,8 @@ function Home() {
   const sidebarStatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu
   );
-  console.log('company',company);
-  const menulist: MENU_LIST_DATA[] = company ==='CMS' ? [
+  console.log('company', company);
+  const menulist: MENU_LIST_DATA[] = company === 'CMS' ? [
     {
       MENU_CODE: "BL1",
       MENU_NAME: "XXX",
@@ -492,7 +491,7 @@ function Home() {
       MENU_CODE: "TL1",
       MENU_NAME: getlang("filetransfer", lang),
       MENU_ITEM: <FileTransfer />,
-    },  
+    },
     {
       MENU_CODE: "ST01",
       MENU_NAME: "Setting",
@@ -914,19 +913,19 @@ function Home() {
   });
   const getchamcong = () => {
     generalQuery("checkMYCHAMCONG", {})
-    .then((response) => {
-      //console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        //console.log('data',response.data.data)
-        //console.log('data',response.data.REFRESH_TOKEN);
-        let rfr_token: string = response.data.REFRESH_TOKEN;
-        cookies.set("token", rfr_token, { path: "/" });
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log('data',response.data.data)
+          //console.log('data',response.data.REFRESH_TOKEN);
+          let rfr_token: string = response.data.REFRESH_TOKEN;
+          cookies.set("token", rfr_token, { path: "/" });
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const checkERPLicense = async () => {
     //console.log(getSever());
@@ -954,17 +953,17 @@ function Home() {
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
-    .then((response) => {
-      console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
-        console.log("webver", response.data.data[0].VERWEB);
-        setCheckVerWeb(response.data.data[0].VERWEB);
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          console.log("webver", response.data.data[0].VERWEB);
+          setCheckVerWeb(response.data.data[0].VERWEB);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     let intervalID = window.setInterval(() => {
       generalQuery("checkWebVer", {})
         .then((response) => {
@@ -1037,7 +1036,7 @@ function Home() {
                   ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
               ).length > 0 && (
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <Tabs                    
+                  <Tabs
                     value={tabIndex}
                     onChange={(
                       event: React.SyntheticEvent,
@@ -1064,33 +1063,32 @@ function Home() {
                       if (ele.ELE_CODE !== "-1") {
                         return (
                           <div>
-                          <CustomTab
-                            key={index}
-                            label={
-                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}
-                              onClick={() => {
-                                dispatch(settabIndex(index));
+                            <CustomTab
+                              key={index}
+                              label={
+                                <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}
+                                  onClick={() => {
+                                    dispatch(settabIndex(index));
+                                  }}
+                                >
+                                  <CustomTabLabel style={{ fontSize: "0.7rem", }}>
+                                    {index + 1}.{ele.ELE_NAME}
+                                    <IconButton key={index + 'A'} onClick={() => {
+                                      dispatch(closeTab(index));
+                                    }}>
+                                      <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={15} />
+                                    </IconButton>
+                                  </CustomTabLabel>
+                                </div>
+                              }
+                              value={index}
+                              style={{
+                                minHeight: "2px",
+                                height: "5px",
+                                boxSizing: "border-box",
+                                borderRadius: "3px",
                               }}
-                              >
-                                <CustomTabLabel style={{ fontSize: "0.7rem", }}>
-                                  {index + 1}.{ele.ELE_NAME}
-                                  <IconButton key={index+'A'} onClick={() => {
-                                    dispatch(closeTab(index));
-                                  }}>
-                                    <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={15} />
-                                  </IconButton>                                  
-                                </CustomTabLabel>                               
-                              </div>
-                            }
-                            value={index}
-                            style={{
-                              minHeight: "2px",
-                              height: "5px",
-                              boxSizing: "border-box",
-                              borderRadius: "3px",
-                            }}
-                          ></CustomTab>
-                           
+                            ></CustomTab>
                           </div>
                         );
                       }
