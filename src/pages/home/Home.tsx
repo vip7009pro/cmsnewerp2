@@ -14,7 +14,8 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-export const current_ver: number = 2554;
+import Information from "../information_board/Information";
+export const current_ver: number = 2555;
 /* export const current_ver: number = 419; */
 const QuanLyCapCao_NS = React.lazy(() => import("../nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
 const FileTransfer = React.lazy(() => import("../tools/FileTransfer/FileTransfer"));
@@ -492,6 +493,11 @@ function Home() {
       MENU_CODE: "KO2",
       MENU_NAME: getlang("nhapxuattonlieu", lang),
       MENU_ITEM: <KHOLIEU />,
+    },
+    {
+      MENU_CODE: "IF1",
+      MENU_NAME: getlang("information_board", lang),
+      MENU_ITEM: <Information />,
     },
     {
       MENU_CODE: "TL1",

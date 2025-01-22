@@ -30,6 +30,7 @@ import {
   FaStackOverflow,
   FaTools,
   FaFileImport,
+  FaChalkboardTeacher,
 } from "react-icons/fa";
 import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp } from "react-icons/bi";
 import {
@@ -74,6 +75,7 @@ import { getCompany } from "../../api/Api";
 import { addTab, settabIndex } from "../../redux/slices/globalSlice";
 import Swal from "sweetalert2";
 import { ELE_ARRAY, } from "../../api/GlobalInterface";
+import { HiInformationCircle } from "react-icons/hi";
 const NavMenu = () => {
   const [lang, setLang] = useContext(LangConText);
   const userData: UserData | undefined = useSelector(
@@ -616,6 +618,22 @@ const NavMenu = () => {
           cName: "sub-nav",
         },
       ],
+    },
+    {
+      title: getlang("information_board", lang),
+      path: "#",
+      icon: <FaChalkboardTeacher  color="#21bae9" size={15} />,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,
+      subNav: [
+        {
+          title: getlang("information_board", lang),
+          path: "information_board/news",
+          icon: <FaFileImport color="#0c1eb8" size={15} />,
+          MENU_CODE: "IF1",
+          cName: "sub-nav",
+        },
+            ],
     },
     {
       title: getlang("tool", lang),
