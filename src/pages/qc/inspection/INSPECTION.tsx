@@ -19,6 +19,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 const INSPECTION = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -695,7 +696,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
       });
   };
-  const handleLoadChoKiem = () => {
+  const handleLoadChoKiem = async() => {
     Swal.fire({
       title: "Loading data",
       text: "Data is being loaded, please wait",
@@ -707,7 +708,8 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     });
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("loadChoKiemGop_NEW", {
+    await f_updateTONKIEM_M100();
+    await generalQuery("loadChoKiemGop_NEW", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
