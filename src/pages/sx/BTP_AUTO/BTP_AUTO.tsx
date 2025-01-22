@@ -15,6 +15,7 @@ import {
   f_load_BTP_Summary_Auto,
   f_updateBTP_M100,
 } from "../../../api/GlobalFunction";
+import moment from "moment";
 const BTP_AUTO = () => {
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const columns_btp = [
@@ -60,6 +61,7 @@ const BTP_AUTO = () => {
     { field: "INS_DATE", headerName: "PROD_DATE", width: 90 },
   ];
   const columns_btp_auto_2 = [
+    { field: "INS_DATE", headerName: "PROD_DATE", width: 100 },
     { field: "FACTORY", headerName: "FACTORY", width: 50 },
     { field: "XUONG", headerName: "XUONG", width: 50 },
     { field: "EQ_NAME", headerName: "EQ_NAME", width: 50 },
@@ -192,6 +194,7 @@ const BTP_AUTO = () => {
       kq.map((ele: BTP_AUTO_DATA2, index: number) => {
         return {
           ...ele,
+          INS_DATE: ele.INS_DATE !== null ? moment.utc(ele.INS_DATE).format("YYYY-MM-DD HH:mm:ss") : "",
           id: index,
         };
       })

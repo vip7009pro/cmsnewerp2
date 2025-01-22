@@ -4417,6 +4417,7 @@ export interface BTP_AUTO_DATA {
 }
 
 export interface BTP_AUTO_DATA2 {
+  INS_DATE: string;
   FACTORY: string;
   XUONG: string;
   EQ_NAME: string;
