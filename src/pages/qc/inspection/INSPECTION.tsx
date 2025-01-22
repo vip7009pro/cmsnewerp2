@@ -1,30 +1,9 @@
-import {
-  Autocomplete,
-  Button,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Button, IconButton } from "@mui/material";
 import moment from "moment";
-import React, { Profiler, useContext, useEffect, useMemo, useState, useTransition } from "react";
-import {
-  AiFillCloseCircle,
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
+import { useEffect, useMemo, useState } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INSPECTION.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";

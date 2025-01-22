@@ -3,7 +3,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { f_load_BTP_Summary_Auto, SaveExcel } from "../../../api/GlobalFunction";
+import {
+  f_load_BTP_Summary_Auto,
+  f_updateTONKIEM_M100,
+  SaveExcel,
+} from "../../../api/GlobalFunction";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
 import KHOTP from "../../kho/khotp/KHOTP";
@@ -28,7 +32,7 @@ const POandStockFull = () => {
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [alltime, setAllTime] = useState(true);
-  const [pofulldatatable, setPOFULLDataTable] = useState<Array<any>>([]);  
+  const [pofulldatatable, setPOFULLDataTable] = useState<Array<any>>([]);
   const column_codeERP_PVN2 = [
     { field: "id", headerName: "No", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -499,9 +503,16 @@ const POandStockFull = () => {
       headerName: "STATUS",
       width: 120,
       cellRenderer: (params: any) => {
-        if(params.data.USE_YN ==='Y') return(<span style={{ color: "green" }}><b>MỞ</b></span>) 
+        if (params.data.USE_YN === "Y")
+          return (
+            <span style={{ color: "green" }}>
+              <b>MỞ</b>
+            </span>
+          );
         return (
-          <span style={{ color: "red" }}><b>KHÓA</b></span>         
+          <span style={{ color: "red" }}>
+            <b>KHÓA</b>
+          </span>
         );
       },
     },
@@ -718,10 +729,12 @@ const POandStockFull = () => {
       },
     },
   ];
-  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
-  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
+    getCompany() === "CMS" ? column_codeCMS2 : column_codeERP_PVN2
+  );
+  const rowStyle = { backgroundColor: "transparent", height: "20px" };
   const getRowStyle = (params: any) => {
-    return { backgroundColor: 'white', fontSize: '0.6rem' };
+    return { backgroundColor: "white", fontSize: "0.6rem" };
     /* if (params.data.M_ID % 2 === 0) {
         return { backgroundColor: 'white', fontSize:'0.6rem'};
     }
@@ -731,7 +744,7 @@ const POandStockFull = () => {
   };
   const onSelectionChanged = useCallback(() => {
     const selectedrow = gridRef.current!.api.getSelectedRows();
-    //setCodeDataTableFilter(selectedrow);    
+    //setCodeDataTableFilter(selectedrow);
   }, []);
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
@@ -759,13 +772,19 @@ const POandStockFull = () => {
       showConfirmButton: false,
     });
     await f_load_BTP_Summary_Auto();
+    await f_updateTONKIEM_M100();
     setisLoading(true);
     //traPOFullCMS2_NEW
-    setColumnDefinition(getCompany() === 'CMS' ? column_codeCMS2 : column_codeERP_PVN2);
-    generalQuery(getCompany() === "CMS" ? "traPOFullCMS_New" : "traPOFullCMS2", {
-      allcode: alltime,
-      codeSearch: codeCMS,
-    })
+    setColumnDefinition(
+      getCompany() === "CMS" ? column_codeCMS2 : column_codeERP_PVN2
+    );
+    generalQuery(
+      getCompany() === "CMS" ? "traPOFullCMS_New" : "traPOFullCMS2",
+      {
+        allcode: alltime,
+        codeSearch: codeCMS,
+      }
+    )
       .then((response) => {
         //console.log(response.data);
         let temp_summary: POFullSummary = {
@@ -790,11 +809,21 @@ const POandStockFull = () => {
                 element.THUA_THIEU < 0 ? element.THUA_THIEU : 0;
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME:
+                  getAuditMode() == 0
+                    ? element?.G_NAME
+                    : element?.G_NAME?.search("CNDB") == -1
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
+                G_NAME_KD:
+                  getAuditMode() == 0
+                    ? element?.G_NAME_KD
+                    : element?.G_NAME?.search("CNDB") == -1
+                    ? element?.G_NAME_KD
+                    : "TEM_NOI_BO",
                 id: index,
               };
-            },
+            }
           );
           setPOFullSummary(temp_summary);
           setPOFULLDataTable(loadeddata);
@@ -802,7 +831,7 @@ const POandStockFull = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -824,6 +853,7 @@ const POandStockFull = () => {
       showConfirmButton: false,
     });
     await f_load_BTP_Summary_Auto();
+    await f_updateTONKIEM_M100();
     setisLoading(true);
     setColumnDefinition(column_codeKD2);
     //traPOFullKD2_NEW
@@ -834,22 +864,50 @@ const POandStockFull = () => {
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
+          let temp_summary: POFullSummary = {
+            PO_BALANCE: 0,
+            TP: 0,
+            BTP: 0,
+            CK: 0,
+            BLOCK: 0,
+            TONG_TON: 0,
+            THUATHIEU: 0,
+          };
           const loadeddata: POFullCMS[] = response.data.data.map(
             (element: POFullCMS, index: number) => {
+              temp_summary.PO_BALANCE += element.PO_BALANCE;
+              temp_summary.TP += element.TON_TP;
+              temp_summary.BTP += element.BTP;
+              temp_summary.CK += element.TONG_TON_KIEM;
+              temp_summary.BLOCK += element.BLOCK_QTY;
+              temp_summary.TONG_TON += element.GRAND_TOTAL_STOCK;
+              temp_summary.THUATHIEU +=
+                element.THUA_THIEU < 0 ? element.THUA_THIEU : 0;
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME:
+                  getAuditMode() == 0
+                    ? element?.G_NAME
+                    : element?.G_NAME?.search("CNDB") == -1
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
+                G_NAME_KD:
+                  getAuditMode() == 0
+                    ? element?.G_NAME_KD
+                    : element?.G_NAME?.search("CNDB") == -1
+                    ? element?.G_NAME_KD
+                    : "TEM_NOI_BO",
                 id: index,
               };
-            },
+            }
           );
+          setPOFullSummary(temp_summary);
           setPOFULLDataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -860,11 +918,14 @@ const POandStockFull = () => {
         console.log(error);
       });
   };
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
-    <div className="poandstockfull">     
+    <div className="poandstockfull">
       <Tabs className="tabs">
-        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
+        <TabList
+          className="tablist"
+          style={{ backgroundImage: theme.CMS.backgroundImage, color: "gray" }}
+        >
           <Tab>
             <span className="mininavtext">PO+TK FULL</span>
           </Tab>
@@ -974,7 +1035,7 @@ const POandStockFull = () => {
               </div>
               <div
                 className="ag-theme-quartz" // applying the grid theme
-                style={{ height: '100%' }} // the grid will fill the size of the parent container
+                style={{ height: "100%" }} // the grid will fill the size of the parent container
               >
                 <AgGridReact
                   rowData={pofulldatatable}

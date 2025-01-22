@@ -7072,3 +7072,17 @@ export const f_setCaDiemDanh = async (DATA: any) => {
     });
   return kq;
 };
+
+export const f_updateTONKIEM_M100 = async () => {
+  let kq: boolean = false;
+  await generalQuery("updateTONKIEM_M100", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};  
