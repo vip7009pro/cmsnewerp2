@@ -20,6 +20,7 @@ import {
   CustomerListData,
   DAILY_YCSX_RESULT,
   DEFECT_PROCESS_DATA,
+  DEPARTMENT_DATA,
   DINHMUC_QSLX,
   DTC_TEST_POINT,
   EQ_STT,
@@ -7086,3 +7087,17 @@ export const f_updateTONKIEM_M100 = async () => {
     });
   return kq;
 };  
+
+export const f_getDepartmentList = async () => {
+  let kq: DEPARTMENT_DATA[] = [];
+  await generalQuery("getDepartmentList", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}

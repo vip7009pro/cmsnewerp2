@@ -1,4 +1,6 @@
 import React from "react";
+import { POST_DATA } from "../../api/GlobalInterface";
+import moment from "moment";
 
 interface NewsItem {
   thumbnail: string;
@@ -7,8 +9,8 @@ interface NewsItem {
 }
 
 interface NewsListProps {
-  newsItems: NewsItem[];
-  onNewsClick: (newsItem: NewsItem) => void;
+  newsItems: POST_DATA[];
+  onNewsClick: (newsItem: POST_DATA) => void;
 }
 
 const NewsList: React.FC<NewsListProps> = ({ newsItems, onNewsClick }) => {
@@ -20,13 +22,17 @@ const NewsList: React.FC<NewsListProps> = ({ newsItems, onNewsClick }) => {
           key={index}
           onClick={() => onNewsClick(item)} // Gọi hàm khi click vào tin
         >
-          <img src={item.thumbnail} alt={`Thumbnail ${index + 1}`}/>
-          <div className="news-imagelist-footer">
-          <div style={{ fontSize: "1.0rem", }}>{item.title}</div>
-          <div style={{ fontSize: "0.7rem" }}>
-            <span style={{ fontSize: "0.7rem", color: "#09a9b4" }}>EHS</span> 
-            <span style={{ fontSize: "0.7rem",}}> {` `}2025-01-22</span>
+          <div className="thumbnail" style={{ fontSize: "1.0rem" }}>
+            <img src={encodeURI(`/informationboard/${item.FILE_NAME}`)} alt={`Thumbnail ${index + 1}`} />
+            <div className="deptinfo" style={{ fontSize: "0.7rem" }}>
+              <span style={{ fontSize: "0.7rem", color: "#09a9b4" }}>{item.MAINDEPT}</span>
+              <span style={{ fontSize: "0.7rem" }}> {` `}{moment.utc(item.INS_DATE).format('YYYY-MM-DD')}</span>
+            </div>
           </div>
+          <div className="news-imagelist-footer">
+            <div className="element_title" style={{ fontSize: "1.2rem" }}>
+              {item.TITLE}
+            </div>
           </div>
         </div>
       ))}

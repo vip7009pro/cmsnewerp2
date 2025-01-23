@@ -32,7 +32,7 @@ import {
   FaFileImport,
   FaChalkboardTeacher,
 } from "react-icons/fa";
-import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp } from "react-icons/bi";
+import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp, BiUpload } from "react-icons/bi";
 import {
   FcPlanner,
   FcSettings,
@@ -629,12 +629,19 @@ const NavMenu = () => {
         {
           title: getlang("information_board", lang),
           path: "information_board/news",
-          icon: <FaFileImport color="#0c1eb8" size={15} />,
+          icon: <FaChalkboardTeacher color="#0dc453" size={15} />,
           MENU_CODE: "IF1",
           cName: "sub-nav",
         },
-            ],
-    },
+        {
+          title: getlang("information_register", lang),
+          path: "information_board/register",
+          icon: <BiUpload color="#0c1eb8" size={15} />,
+          MENU_CODE: "IF2",
+          cName: "sub-nav",
+        },
+        ],
+    },    
     {
       title: getlang("tool", lang),
       path: "#",

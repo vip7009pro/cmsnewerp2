@@ -29,7 +29,9 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
-import Information from "./pages/information_board/Information";
+const Info = React.lazy(() => import("./pages/information_board/Info"));
+const Information = React.lazy(() => import("./pages/information_board/Information"));
+const AddInfo = React.lazy(() => import("./pages/information_board/AddInfo"));
 const QuanLyCapCao_NS = React.lazy(() => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
 const FileTransfer = React.lazy(() => import("./pages/tools/FileTransfer/FileTransfer"));
 const CAPASX2 = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX2"));
@@ -980,7 +982,7 @@ function App() {
                             maindeptname='all'
                             jobname='Leader'
                           >
-                            <Information />
+                            <Info />
                           </ProtectedRoute>
                         }
                       >
@@ -989,8 +991,11 @@ function App() {
                           path='news'
                           element={<Information />}
                         />  
+                        <Route
+                          path='register'
+                          element={<AddInfo />}
+                        />  
                       </Route>
-
                       <Route
                         path='sx'
                         element={

@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  information_register: "Đăng tin",
   information_board: "Bảng truyền thông",
   filetransfer: "Chuyển file",
   tool: "Công cụ",
@@ -159,6 +160,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  information_register: "Post Info",
   information_board: "Information Board",
   filetransfer: "File Transfer",
   tool: "Tool",
@@ -306,6 +308,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  information_register: "정보 등록",
   information_board: "계시판",
   filetransfer: "파일 전송",
   tool: "도구",

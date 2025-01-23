@@ -1,0 +1,115 @@
+.addinfo {
+  width: 100%;    
+  height: fit-content;
+  display: flex;
+  flex-direction: column; 
+
+  .tracuuDataInspection {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+
+    .inputform {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;        
+      * {
+        font-size: 0.9rem;          
+      }
+      gap: 10px;
+      background-image: linear-gradient(0deg, #ececec, #eed995);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(133, 228, 56, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      
+      .tracuuDataInspectionform {
+        display: flex;
+        width: 100%; 
+        height: 100%;
+        flex-direction: column;    
+        align-items: center;     
+        justify-items: flex-start;          
+        
+        border-radius: 3px;          
+        font-size: 0.8rem;
+        .forminput {
+          display: flex;
+          flex-direction: row;            
+          align-items: flex-start;            
+          justify-content: space-evenly;
+          padding: 10px;
+          width: 100%;
+          height: 100%;            
+          .forminputcolumn {
+            display: flex;
+            width: 93%;              
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            justify-content: flex-end;        
+            
+            .scanQR {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              width: 100%;
+              height: 300px;
+            }
+            input {
+              width: 90vw;
+              height: 30px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #a595ee);
+            }
+            select {
+              width: 90vw;
+              height: 40px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #a595ee);
+            }
+            textarea {
+              width: 90vw;
+              height: 100px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #a595ee);
+            }
+          }
+        }
+      }
+    }      
+    .inputbutton {
+      display: flex;
+      width:90vw;
+      align-self: center;
+      align-items: center;
+      justify-content: space-around;
+      
+      padding: 5px;
+      .forminputcolumn {
+        display: flex;
+        width: 100%;
+        align-self: center;
+        align-items: center;
+        justify-content: space-around;
+      }
+    }
+  }
+}
+
+
+
