@@ -4474,3 +4474,32 @@ export interface DEPARTMENT_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
 }
+
+
+export interface LONGTERM_PLAN_DATA {
+  CTR_CD: string;
+  G_CODE: string;
+  PROCESS_NUMBER: number;
+  EQ_NAME: string;
+  PROD_REQUEST_QTY: number;
+  KETQUASX: number;
+  TON_YCSX: number;
+  PLAN_DATE: string;
+  D1: number;
+  D2: number;
+  D3: number;
+  D4: number;
+  D5: number;
+  D6: number;
+  D7: number;
+  D8: number;
+  D9: number;
+  D10: number;
+  D11: number;
+  D12: number;
+  D13: number;
+  D14: number;
+  D15: number;
+  D16: number;
+}
+

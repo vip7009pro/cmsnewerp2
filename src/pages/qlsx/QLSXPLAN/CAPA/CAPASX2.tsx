@@ -284,8 +284,7 @@ const CAPASX2 = () => {
         pointInfo.valueText
       ).toLocaleString("en-US", { maximumFractionDigits: 1 })} days`,
     };
-  }
- 
+  } 
   const STD_CAPA = (
     FACTORY: string,
     EQ: string,

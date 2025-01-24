@@ -30,6 +30,7 @@ import {
   LICHSUINPUTLIEU_DATA,
   LICHSUNHAPKHOAO,
   LICHSUXUATKHOAO,
+  LONGTERM_PLAN_DATA,
   LOSS_TABLE_DATA,
   MACHINE_LIST,
   MAT_DOC_DATA,
@@ -7101,3 +7102,93 @@ export const f_getDepartmentList = async () => {
     });
   return kq;
 }
+
+export const f_loadLongTermPlan = async (PLAN_DATE: string) => {
+  let kq: LONGTERM_PLAN_DATA[] = [];
+  await generalQuery("loadKHSXDAIHAN", {
+    PLAN_DATE: PLAN_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: LONGTERM_PLAN_DATA[] =[];
+        loaded_data = response.data.data.map((element: LONGTERM_PLAN_DATA, index: number)=> {
+          return (
+            {
+              ...element,
+              PLAN_DATE: element.PLAN_DATE !==null?  moment.utc(element.PLAN_DATE).format('YYYY-MM-DD'):'',
+              id: index
+            }
+          )
+        })
+        kq = loaded_data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    if(kq.length===0) {
+      Swal.fire('Thông báo','Không có dòng nào','error');
+    }
+  return kq;
+}
+
+export const f_insertLongTermPlan = async (DATA: LONGTERM_PLAN_DATA, PLAN_DATE: string) => {
+  let kq: string = '';
+  console.log(PLAN_DATE)
+  let insertData =  {
+    ...DATA,
+    PLAN_DATE: PLAN_DATE
+  }
+  console.log('insertData',insertData)
+  await generalQuery("insertKHSXDAIHAN", insertData)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+                
+      }
+      else {
+        f_updateLongTermPlan(insertData);
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      kq = error.message;
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_updateLongTermPlan = async (DATA: LONGTERM_PLAN_DATA) => {
+  let kq: string = '';
+  await generalQuery("updateKHSXDAIHAN", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      kq = error.message;
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_moveLongTermPlan = async (FROM_DATE: string, TO_DATE: string) => {
+  let kq: string = '';
+  await generalQuery("moveKHSXDAIHAN", {
+    FROM_DATE: FROM_DATE,
+    TO_DATE: TO_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+  
+})};
