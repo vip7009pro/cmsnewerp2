@@ -26,7 +26,7 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
     Array<MonthlyClosingData>
   >([]);
   const formatCash = (n: number) => {
-    return nFormatter(n, 0) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
+    return nFormatter(n, 1) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
   };
   const CustomTooltip = ({
     active,
