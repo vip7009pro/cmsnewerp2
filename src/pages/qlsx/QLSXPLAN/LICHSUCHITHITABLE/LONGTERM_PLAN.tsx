@@ -1,22 +1,26 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { checkBP, f_getMachineListData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../../../../api/GlobalFunction";
+import { checkBP, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { MACHINE_LIST, LONGTERM_PLAN_DATA, UserData } from "../../../../api/GlobalInterface";
+import { MACHINE_LIST, LONGTERM_PLAN_DATA, UserData, PROD_PLAN_CAPA_DATA } from "../../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
+import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
 const LONGTERM_PLAN = () => {
   const [showQuickPlan, setShowQuickPlan] = useState(false);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+    const [productionplancapadata, setProductionPlanCapaData] = useState<PROD_PLAN_CAPA_DATA[]>([]);
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
   };
 
-
+  const getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
+    setProductionPlanCapaData(await f_getProductionPlanLeadTimeCapaData(PLAN_DATE));    
+  }
 
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -109,6 +113,19 @@ const LONGTERM_PLAN = () => {
         return (
           <span style={{ color: "red" }}>
             {params.data.TON_YCSX?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: "UPH",
+      headerName: "UPH",
+      width: 60,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.data.UPH?.toLocaleString("en-US")}
           </span>
         );
       }
@@ -372,6 +389,11 @@ const LONGTERM_PLAN = () => {
   const handleMovePlan = async (FROM_DATE: string, TO_DATE: string) => {
     await f_moveLongTermPlan(FROM_DATE, TO_DATE);
   }
+  const chartCapa = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
   const KHSXDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -386,15 +408,28 @@ const LONGTERM_PLAN = () => {
           >
          
           </div>}
+          suppressRowClickSelection={false}
         columns={columns_longterm_plan}
         data={longterm_plan}
         onCellEditingStopped={async (e) => {
-          console.log(e.data)
-          console.log(fromdate);
-          f_insertLongTermPlan(e.data, fromdate);
-          await loadQLSXPlan(fromdate);
-        }} onRowClick={(e) => {
           //console.log(e.data)
+          //console.log(fromdate);
+          await f_insertLongTermPlan(e.data, fromdate);
+          let kq: PROD_PLAN_CAPA_DATA[] = [];
+          kq = (await f_getProductionPlanLeadTimeCapaData(fromdate));
+          let filteredkq: PROD_PLAN_CAPA_DATA[] = [];
+          filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
+          //console.log(kq);
+          setProductionPlanCapaData(filteredkq);   
+          await loadQLSXPlan(fromdate);
+        }} onRowClick={async (e) => {
+          //console.log(e.data)
+          let kq: PROD_PLAN_CAPA_DATA[] = [];
+          kq = (await f_getProductionPlanLeadTimeCapaData(fromdate));
+          let filteredkq: PROD_PLAN_CAPA_DATA[] = [];
+          filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
+          //console.log(kq);
+          setProductionPlanCapaData(filteredkq);   
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
@@ -466,15 +501,7 @@ const LONGTERM_PLAN = () => {
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
-                  <button
-                    className='tranhatky'
-                    onClick={() => {
-                      setShowQuickPlan(!showQuickPlan);
-                    }}
-                  >
-                    QUICK PLAN
-                  </button>
+                <div className='forminputcolumn'>                  
                   <button
                     className='tranhatky'
                     onClick={() => {                
@@ -504,6 +531,7 @@ const LONGTERM_PLAN = () => {
               </div>              
             </div>
           </div>
+          {chartCapa}
           {KHSXDataTableAG}
         </div>
       </div>     

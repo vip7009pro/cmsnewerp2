@@ -60,6 +60,12 @@ const CODE_MANAGER = () => {
       editable: enableEdit,
     },
     {
+      field: "PACKING_TYPE",
+      headerName: "PACKING_TYPE",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
       field: "BEP",
       headerName: "BEP",
       width: 80,
@@ -926,6 +932,12 @@ const CODE_MANAGER = () => {
       editable: enableEdit,
     },
     {
+      field: "PACKING_TYPE",
+      headerName: "PACKING_TYPE",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
       field: "BEP",
       headerName: "BEP",
       width: 50,
@@ -1769,6 +1781,7 @@ const CODE_MANAGER = () => {
         }
       },
     },
+    { field: "INSPECT_SPEED", headerName: "INSPECT_SPEED", width: 80, cellRenderer: (params: any) => (<span style={{ fontWeight: "bold" }}>{params.data.INSPECT_SPEED?.toLocaleString("en-US", { maximumFractionDigits: 0 })}</span>) },
     { field: "NOTE", headerName: "NOTE", width: 150 },
   ];
   const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);

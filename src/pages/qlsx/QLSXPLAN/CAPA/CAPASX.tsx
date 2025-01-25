@@ -23,14 +23,17 @@ import {
   DELIVERY_PLAN_CAPA,
   EQ_STT,
   MACHINE_COUNTING,
+  PROD_PLAN_CAPA_DATA,
   WEB_SETTING_DATA,
   YCSX_BALANCE_CAPA_DATA,
 } from "../../../../api/GlobalInterface";
-import { CustomResponsiveContainer, f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
+import { CustomResponsiveContainer, f_getProductionPlanLeadTimeCapaData, f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
+import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
 const CAPASX = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime+300;
   const [trigger, setTrigger] = useState(true);
+  const [productionplancapadata, setProductionPlanCapaData] = useState<PROD_PLAN_CAPA_DATA[]>([]);
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedMachine, setSelectedMachine] = useState("FR");
   const [selectedPlanDate, setSelectedPlanDate] = useState(  moment.utc().format("YYYY-MM-DD"));
@@ -454,6 +457,9 @@ const CAPASX = () => {
         console.log(error);
       });
   };
+  const getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
+    setProductionPlanCapaData(await f_getProductionPlanLeadTimeCapaData(PLAN_DATE));    
+  }
   function customizeTooltip(pointInfo: any) {
     return {
       text: `${pointInfo.argumentText}<br/>${Number(
@@ -1028,6 +1034,7 @@ const CAPASX = () => {
       </Chart>
     );
   }, [dlleadtime]);
+  
   const DeliveryLeadTimeMMED = useMemo(() => {
     return (
       <Chart
@@ -1082,6 +1089,7 @@ const CAPASX = () => {
       </Chart>
     );
   }, [dlleadtime]);
+
   const leadtimechartMM = useMemo(() => {
     return (
       <Chart
@@ -1133,6 +1141,28 @@ const CAPASX = () => {
       </Chart>
     );
   }, [ycsxbalance]);
+
+  const chartFRCapa = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((e: PROD_PLAN_CAPA_DATA, index: number) => e.EQ_SERIES === "FR")} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+  const chartSRCapa = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((e: PROD_PLAN_CAPA_DATA, index: number) => e.EQ_SERIES === "SR")} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+  const chartDCCapa = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((e: PROD_PLAN_CAPA_DATA, index: number) => e.EQ_SERIES === "DC")} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+  const chartEDCapa = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((e: PROD_PLAN_CAPA_DATA, index: number) => e.EQ_SERIES === "ED")} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+
   useEffect(() => {
     console.log("rerender");
     getDiemDanhAllBP();
@@ -1140,6 +1170,7 @@ const CAPASX = () => {
     getYCSXBALANCE();
     handle_loadEQ_STATUS();
     getDeliveryLeadTime(selectedFactory, selectedMachine, selectedPlanDate);
+    getProductionPlanLeadTimeCapaData(selectedPlanDate);
     /* let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
       getDeliveryLeadTime(selectedFactory,selectedMachine,selectedPlanDate); 
@@ -1233,7 +1264,7 @@ const CAPASX = () => {
       </div>
       <div className='dailydeliverycapa'>
         <div className='sectiondiv'>
-          <div className='title'>3. PRODUCTION BY DELIVERY PLAN</div>
+          <div className='title' style={{ fontSize: "1.2rem" }}>3. PRODUCTION BY DELIVERY PLAN</div>
           <div className='selectcontrol'>
             Plan Date:
             <input
@@ -1241,11 +1272,12 @@ const CAPASX = () => {
               value={selectedPlanDate}
               onChange={(e) => {
                 setSelectedPlanDate(e.target.value);
-                getDeliveryLeadTime(
+                getProductionPlanLeadTimeCapaData(e.target.value);
+                /* getDeliveryLeadTime(
                   selectedFactory,
                   selectedMachine,
                   e.target.value
-                );
+                ); */
               }}
             ></input>
             Factory:
@@ -1799,14 +1831,23 @@ const CAPASX = () => {
               </tbody>
             </table>
           </div>
-          <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
+          <div className='header' style={{fontSize: '1.2rem', fontWeight: 'bold', alignSelf: 'center'}}>FR PLAN CAPA</div>
+          <div className='starndardworkforce' style={{height: '500px'}}>{chartFRCapa}</div>
+          <div className='header' style={{fontSize: '1.2rem', fontWeight: 'bold', alignSelf: 'center'}}>SR PLAN CAPA</div>
+          <div className='starndardworkforce' style={{height: '500px'}}>{chartSRCapa}</div>
+          <div className='header' style={{fontSize: '1.2rem', fontWeight: 'bold', alignSelf: 'center'}}>DC PLAN CAPA</div>
+          <div className='starndardworkforce' style={{height: '500px'}}>{chartDCCapa}</div>
+          <div className='header' style={{fontSize: '1.2rem', fontWeight: 'bold', alignSelf: 'center'}}>ED PLAN CAPA</div>
+          <div className='starndardworkforce' style={{height: '500px'}}>{chartEDCapa}</div>
+
+         {/*  <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
           <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
           {selectedFactory === "NM1" && (
             <div className='starndardworkforce'>{DeliveryLeadTimeMMSR}</div>
           )}
           {selectedFactory === "NM1" && (
             <div className='starndardworkforce'>{DeliveryLeadTimeMMDC}</div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

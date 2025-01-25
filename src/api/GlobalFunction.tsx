@@ -39,6 +39,7 @@ import {
   POTableData,
   PRICEWITHMOQ,
   PROD_OVER_DATA,
+  PROD_PLAN_CAPA_DATA,
   PROD_PROCESS_DATA,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
@@ -7192,3 +7193,65 @@ export const f_moveLongTermPlan = async (FROM_DATE: string, TO_DATE: string) => 
     .catch((error) => {
   
 })};
+
+export const f_deleteNotExistLongTermPlan = async (PLAN_DATE: string) => {
+  let kq: string = '';
+  await generalQuery("deleteNotExistKHSXDAIHAN", {
+    PLAN_DATE: PLAN_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+  
+})
+}
+
+export const f_deleteLongTermPlan = async (PLAN_DATE: string) => {
+  let kq: string = '';
+  await generalQuery("deleteKHSXDAIHAN", {
+    PLAN_DATE: PLAN_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+  
+})
+}
+
+export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
+   let kq: PROD_PLAN_CAPA_DATA[] = [];
+  await generalQuery("getProductionPlanCapaData", {PLAN_DATE: PLAN_DATE})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: PROD_PLAN_CAPA_DATA[] = response.data.data.map(
+            (element: PROD_PLAN_CAPA_DATA, index: number) => {
+              return {
+                ...element,
+                PROD_DATE: element.PROD_DATE !==null?  moment.utc().add(Number(element.PROD_DATE.substring(2,4))-1,'day').format('YYYY-MM-DD'):'',
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;          
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      return kq;
+  }

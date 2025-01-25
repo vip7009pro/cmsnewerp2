@@ -651,7 +651,7 @@ const SX_REPORT = () => {
   }
   useEffect(() => {
     handle_getMachineList("ALL");
-    initFunction();
+    //initFunction();
   }, []);
   return (
     <div className="sxreport">

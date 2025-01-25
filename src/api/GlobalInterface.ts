@@ -4479,6 +4479,7 @@ export interface DEPARTMENT_DATA {
 export interface LONGTERM_PLAN_DATA {
   CTR_CD: string;
   G_CODE: string;
+  UPH: number;
   PROCESS_NUMBER: number;
   EQ_NAME: string;
   PROD_REQUEST_QTY: number;
@@ -4503,3 +4504,14 @@ export interface LONGTERM_PLAN_DATA {
   D16: number;
 }
 
+export interface PROD_PLAN_CAPA_DATA {
+  EQ_SERIES: string,
+  PROD_DATE: string,
+  LEADTIME: number,
+  EQ_CAPA: number,
+  EQ_CAPA_12H: number,
+  RETAIN_WF_CAPA: number,
+  ATT_WF_CAPA: number,
+  RETAIN_WF_CAPA_12H: number,
+  ATT_WF_CAPA_12H: number,
+}
