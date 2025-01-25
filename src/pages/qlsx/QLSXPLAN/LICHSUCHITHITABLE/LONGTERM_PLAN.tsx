@@ -389,11 +389,27 @@ const LONGTERM_PLAN = () => {
   const handleMovePlan = async (FROM_DATE: string, TO_DATE: string) => {
     await f_moveLongTermPlan(FROM_DATE, TO_DATE);
   }
-  const chartCapa = useMemo(() => {
+  const chartCapaFR = useMemo(() => {
     return (
-      <ProductionPlanCapaChart dldata={productionplancapadata} materialColor="#3DC23D" processColor="#3DC23D"/>     
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === 'FR')} materialColor="#3DC23D" processColor="#3DC23D"/>     
     );
   }, [productionplancapadata]);
+  const chartCapaSR = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === 'SR')} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+  const chartCapaDC = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === 'DC')} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+  const chartCapaED = useMemo(() => {
+    return (
+      <ProductionPlanCapaChart dldata={productionplancapadata.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === 'ED')} materialColor="#3DC23D" processColor="#3DC23D"/>     
+    );
+  }, [productionplancapadata]);
+ 
   const KHSXDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -420,7 +436,7 @@ const LONGTERM_PLAN = () => {
           let filteredkq: PROD_PLAN_CAPA_DATA[] = [];
           filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
           //console.log(kq);
-          setProductionPlanCapaData(filteredkq);   
+          setProductionPlanCapaData(kq);   
           await loadQLSXPlan(fromdate);
         }} onRowClick={async (e) => {
           //console.log(e.data)
@@ -429,7 +445,7 @@ const LONGTERM_PLAN = () => {
           let filteredkq: PROD_PLAN_CAPA_DATA[] = [];
           filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
           //console.log(kq);
-          setProductionPlanCapaData(filteredkq);   
+          setProductionPlanCapaData(kq);   
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
         }}
@@ -531,7 +547,26 @@ const LONGTERM_PLAN = () => {
               </div>              
             </div>
           </div>
-          {chartCapa}
+          <div className="chardiv" style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <div className="subchart" style={{display:'flex', flexDirection:'column', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+              <span style={{fontSize: '1rem', fontWeight: 'bold'}}>FR PLAN CAPA</span>
+            {chartCapaFR}
+            </div>
+            <div className="subchart" style={{display:'flex', flexDirection:'column', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+              <span style={{fontSize: '1rem', fontWeight: 'bold'}}>SR PLAN CAPA</span>
+            {chartCapaSR}
+            </div>
+            <div className="subchart" style={{display:'flex', flexDirection:'column', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+              <span style={{fontSize: '1rem', fontWeight: 'bold'}}>DC PLAN CAPA</span>
+            {chartCapaDC}
+            </div>
+            <div className="subchart" style={{display:'flex', flexDirection:'column', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+              <span style={{fontSize: '1rem', fontWeight: 'bold'}}>ED PLAN CAPA</span>
+            {chartCapaED}
+            </div>
+          
+          </div>
+         
           {KHSXDataTableAG}
         </div>
       </div>     

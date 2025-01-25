@@ -35,7 +35,7 @@ const ProductionPlanCapaChart = ({
     return formatCash(value); 
   };
   const labelFormatterPercent = (value: number) => {
-    return (value.toLocaleString('en-US',{style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1})); 
+    return (value.toLocaleString('en-US',{style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1,})); 
   };
 
   const CustomTooltip = ({
@@ -135,35 +135,35 @@ const ProductionPlanCapaChart = ({
           fill={processColor}
           /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */     
         >          
-          <LabelList dataKey="LEADTIME" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="LEADTIME" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.5rem"} />
         </Bar>       
         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='EQ_CAPA'
           stroke='#1548d4'
-          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.5rem', fontWeight:'bold', color:'black' }} 
         />
         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='EQ_CAPA_12H'
           stroke='#1548d4'
-          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.5rem', fontWeight:'bold', color:'black' }} 
         />
         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='RETAIN_WF_CAPA_12H'
           stroke='#d00ae2'
-          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.5rem', fontWeight:'bold', color:'black' }} 
         />
         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='RETAIN_WF_CAPA'
           stroke='#d00ae2'
-          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+          label={{ position: "top", fill:'black', formatter: labelFormatter, fontSize:'0.5rem', fontWeight:'bold', color:'black' }} 
         />
       </ComposedChart>
     </CustomResponsiveContainer>
