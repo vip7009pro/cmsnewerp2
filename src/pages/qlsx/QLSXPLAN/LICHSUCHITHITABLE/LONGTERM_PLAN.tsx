@@ -455,6 +455,8 @@ const LONGTERM_PLAN = () => {
 
   useEffect(() => {
     getMachineList();
+    getProductionPlanLeadTimeCapaData(fromdate);
+    loadQLSXPlan(fromdate);
     return () => {
     };
     //setColumnDefinition(column_inspect_output);
@@ -522,6 +524,7 @@ const LONGTERM_PLAN = () => {
                     className='tranhatky'
                     onClick={() => {                
                       loadQLSXPlan(fromdate);
+                      getProductionPlanLeadTimeCapaData(fromdate);
                       //updatePlanOrder();
                     }}
                   >
