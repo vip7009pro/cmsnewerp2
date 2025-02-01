@@ -5,12 +5,13 @@ interface MainNewsProps {
   title: string;
   dept: string;
   date: string;
+  onClick: () => void;
 }
 
-const MainNews: React.FC<MainNewsProps> = ({ imageSrc, title,dept, date }) => {
+const MainNews: React.FC<MainNewsProps> = ({ imageSrc, title,dept, date, onClick }) => {
   console.log(date);
   return (
-    <div className="main-news">
+    <div className="main-news" onClick={onClick}>
       <img src={imageSrc} alt="Main News" width={"100%"} height="200px" />
       <div className="main-news-footer">
         <span style={{ fontSize: "3.0rem" }}>{title}</span>

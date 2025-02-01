@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import "./DiemDanhNhom.scss";
 import Swal from "sweetalert2";
-import { f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { DiemDanhNhomData } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
@@ -289,18 +289,59 @@ const DiemDanhNhomNS = () => {
         if (params.row.ON_OFF === null) {
           return (
             <div className={`onoffdiv ${typeclass}`}>
-              <button className='onbutton' onClick={() => onClick(1, 1)}>
+              <button className='onbutton' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick(1, 1)                    
+                  },
+                ); 
+                
+                }}>
                 Làm Ngày
               </button>{" "}
               <br></br>
-              <button className='onbutton' onClick={() => onClick(1, 2)}>
+              <button className='onbutton' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick(1, 2)                    
+                  },
+                ); 
+               }}>
                 Làm Đêm
               </button>{" "}
               <br></br>
-              <button className='offbutton' onClick={() => onClick(0, 1)}>
+              <button className='offbutton' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick(0, 1)                    
+                  },
+                ); 
+                }}>
                 Nghỉ
               </button>
-              <button className='off50button' onClick={() => onClick(2)}>
+              <button className='off50button' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick(2)                    
+                  },
+                ); 
+               }}>
                 50%
               </button>
             </div>
@@ -311,7 +352,17 @@ const DiemDanhNhomNS = () => {
             <span className={`onoffshowtext A${params.row.ON_OFF}`}>
               {params.row.ON_OFF === 1 ? "ON" : "OFF"}
             </span>
-            <button className='resetbutton' onClick={() => onReset()}>
+            <button className='resetbutton' onClick={() =>{
+               checkBP(
+                getUserData(),
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                ()=> {
+                  onReset()                
+                },
+              ); 
+              }}>
               RESET
             </button>
           </div>
@@ -391,22 +442,93 @@ const DiemDanhNhomNS = () => {
         if (params.row.OVERTIME === null) {
           return (
             <div className={`onoffdiv ${typeclass}`}>
-              <button className='tcbutton' onClick={() => onClick("KTC")}>
+              <button className='tcbutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick("KTC")               
+                  },
+                );
+                
+
+              }}>
                 KTC
               </button>
-              <button className='tcbutton' onClick={() => onClick("0500-0800")}>
+              <button className='tcbutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick("0500-0800")     
+                  },
+                );
+                
+
+              }}>
                 05-08
               </button>
-              <button className='tcbutton' onClick={() => onClick("1700-2000")}>
+              <button className='tcbutton' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  ()=> {
+                    onClick("1700-2000")   
+                  },
+                );
+                
+
+              }}>
                 17-20
               </button>
-              <button className='tcbutton' onClick={() => onClick("1700-1800")}>
+              <button className='tcbutton' onClick={() => {
+                  checkBP(
+                    getUserData(),
+                    ["NHANSU"],
+                    ["ALL"],
+                    ["ALL"],
+                    ()=> {
+                      onClick("1700-1800")   
+                    },
+                  );
+              
+
+              }}>
                 17-18
               </button>
-              <button className='tcbutton' onClick={() => onClick("1400-1800")}>
+              <button className='tcbutton' onClick={() => {
+                  checkBP(
+                    getUserData(),
+                    ["NHANSU"],
+                    ["ALL"],
+                    ["ALL"],
+                    ()=> {
+                      onClick("1400-1800")   
+                    },
+                  );
+                
+
+              }}>
                 14-18
               </button>
-              <button className='tcbutton' onClick={() => onClick("1600-2000")}>
+              <button className='tcbutton' onClick={() => {
+                  checkBP(
+                    getUserData(),
+                    ["NHANSU"],
+                    ["ALL"],
+                    ["ALL"],
+                    ()=> {
+                      onClick("1600-2000")   
+                    },
+                  );               
+
+              }}>
                 16-20
               </button>
             </div>

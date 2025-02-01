@@ -7,10 +7,10 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getUserData } from "../../../api/Api";
 import "./PheDuyetNghi.scss";
 import Swal from "sweetalert2";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { PheDuyetNghiData } from "../../../api/GlobalInterface";
 import moment from "moment";
 const PheDuyetNghiNS = () => {
@@ -156,10 +156,30 @@ const PheDuyetNghiNS = () => {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
-              <button className='resetbutton' onClick={() => onReset()}>
+              <button className='resetbutton' onClick={() => {
+                 checkBP(
+                    getUserData(),
+                    ["NHANSU"],
+                    ["ALL"],
+                    ["ALL"],
+                    () => {
+                      onReset()
+                    },
+                  );
+                }}>
                 RESET
               </button>
-              <button className='deletebutton' onClick={() => onClick(3)}>
+              <button className='deletebutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(3)
+                  },
+                );
+              }}>
                 XÓA
               </button>
             </div>
@@ -170,10 +190,30 @@ const PheDuyetNghiNS = () => {
               <span style={{ fontWeight: "bold", color: "green" }}>
                 Phê Duyệt
               </span>
-              <button className='resetbutton' onClick={() => onReset()}>
+              <button className='resetbutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onReset()
+                  },
+                );
+              }}>
                 RESET
               </button>
-              <button className='deletebutton' onClick={() => onClick(3)}>
+              <button className='deletebutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(3)
+                  },
+                );
+              }}>
                 XÓA
               </button>
             </div>
@@ -187,10 +227,30 @@ const PheDuyetNghiNS = () => {
         } else {
           return (
             <div className='onoffdiv'>
-              <button className='onbutton' onClick={() => onClick(1)}>
+              <button className='onbutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(1)
+                  },
+                );
+              }}>
                 Duyệt
               </button>
-              <button className='offbutton' onClick={() => onClick(0)}>
+              <button className='offbutton' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(0)
+                  },
+                );
+              }}>
                 Từ chối
               </button>
             </div>

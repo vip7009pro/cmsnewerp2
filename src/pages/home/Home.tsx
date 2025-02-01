@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = 2560;
+export const current_ver: number = 2561;
 /* export const current_ver: number = 419; */
 const Information = React.lazy(() => import("../information_board/Information"));
 const AddInfo = React.lazy(() => import("../information_board/AddInfo"));

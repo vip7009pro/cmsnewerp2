@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
-import { f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -111,10 +111,30 @@ const DieuChuyenTeamNS = () => {
         if (params.row.WORK_SHIF_NAME === "Hành Chính") {
           return (
             <div className='onoffdiv'>
-              <button className='team1bt' onClick={() => onClick(1)}>
+              <button className='team1bt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(1)
+                  },
+                );
+              }}>
                 TEAM1
               </button>
-              <button className='team2bt' onClick={() => onClick(2)}>
+              <button className='team2bt' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(2)
+                  },
+                );
+              }}>
                 TEAM2
               </button>
             </div>
@@ -122,10 +142,30 @@ const DieuChuyenTeamNS = () => {
         } else if (params.row.WORK_SHIF_NAME === "TEAM 1") {
           return (
             <div className='onoffdiv'>
-              <button className='hcbt' onClick={() => onClick(0)}>
+              <button className='hcbt' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(0)
+                  },
+                );
+              }}>
                 HanhChinh
               </button>
-              <button className='team2bt' onClick={() => onClick(2)}>
+              <button className='team2bt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(2)
+                  },
+                );
+              }}>
                 TEAM2
               </button>
             </div>
@@ -133,10 +173,30 @@ const DieuChuyenTeamNS = () => {
         } else {
           return (
             <div className='onoffdiv'>
-              <button className='team1bt' onClick={() => onClick(1)}>
+              <button className='team1bt' onClick={() => {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(1)
+                  },
+                );
+              }}>
                 TEAM1
               </button>
-              <button className='hcbt' onClick={() => onClick(0)}>
+              <button className='hcbt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(0)
+                  },
+                );
+              }}>
                 HanhChinh
               </button>
             </div>
@@ -208,13 +268,43 @@ const DieuChuyenTeamNS = () => {
         if (params.row.CALV === null) {
           return (
             <div className={`calvdiv`}>
-              <button className='tcbutton' onClick={() => onClick("0")}>
+              <button className='tcbutton' onClick={() =>{
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick("0")
+                  },
+                );
+                }}>
                 Ca HC
               </button>
-              <button className='tcbutton' onClick={() => onClick("1")}>
+              <button className='tcbutton' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick("1")
+                  },
+                );
+              }}>
                 Ca ngày
               </button>
-              <button className='tcbutton' onClick={() => onClick("2")}>
+              <button className='tcbutton' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick("2")
+                  },
+                );
+              }}>
                 Ca đêm
               </button>
             </div>
@@ -225,7 +315,17 @@ const DieuChuyenTeamNS = () => {
             <span className={`onoffshowtext A${params.row.CALV}`}>
             {params.row.CALV === 0 ? "Ca HC" : params.row.CALV === 1 ? "Ca ngày" : params.row.CALV === 2 ? "Ca đêm" :  "Chưa có ca"}
             </span>
-            <button className='resetbutton' onClick={() => onReset()}>
+            <button className='resetbutton' onClick={() => {
+              checkBP(
+                getUserData(),
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                () => {
+                  onReset()
+                },
+              );
+              }}>
               RESET
             </button>
           </div>
@@ -272,7 +372,17 @@ const DieuChuyenTeamNS = () => {
         if (params.row.FACTORY_NAME === "Nhà máy 1") {
           return (
             <div className='onoffdiv'>
-              <button className='team2bt' onClick={() => onClick(2)}>
+              <button className='team2bt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(2)
+                  },
+                );
+              }}>
                 SET NM2
               </button>
             </div>
@@ -280,7 +390,17 @@ const DieuChuyenTeamNS = () => {
         } else if (params.row.FACTORY_NAME === "Nhà máy 2") {
           return (
             <div className='onoffdiv'>
-              <button className='hcbt' onClick={() => onClick(1)}>
+              <button className='hcbt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(1)
+                  },
+                );
+              }}>
                 SET NM1
               </button>
             </div>
@@ -288,10 +408,30 @@ const DieuChuyenTeamNS = () => {
         } else {
           return (
             <div className='onoffdiv'>
-              <button className='team1bt' onClick={() => onClick(1)}>
+              <button className='team1bt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(1)
+                  },
+                );
+              }}>
                 SET NM1
               </button>
-              <button className='hcbt' onClick={() => onClick(2)}>
+              <button className='hcbt' onClick={() => {
+                 checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  () => {
+                    onClick(2)
+                  },
+                );
+              }}>
                 SET NM2
               </button>
             </div>
@@ -370,7 +510,16 @@ const DieuChuyenTeamNS = () => {
                 name='vitrilamviec'
                 value={params.row.WORK_POSITION_CODE}
                 onChange={(e) => {
-                  onClick(Number(e.target.value));
+                  checkBP(
+                    getUserData(),
+                    ["NHANSU"],
+                    ["ALL"],
+                    ["ALL"],
+                    () => {
+                      onClick(Number(e.target.value));
+                    },
+                  );
+                  
                 }}
               >
                 {workpositionload.map((element, index) => (

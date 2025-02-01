@@ -566,8 +566,7 @@ const LONGTERM_PLAN = () => {
             <div className="subchart" style={{display:'flex', flexDirection:'column', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
               <span style={{fontSize: '1rem', fontWeight: 'bold'}}>ED PLAN CAPA</span>
             {chartCapaED}
-            </div>
-          
+            </div>          
           </div>
          
           {KHSXDataTableAG}
