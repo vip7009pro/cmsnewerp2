@@ -6,11 +6,7 @@ import { DEPARTMENT_DATA, POST_DATA } from '../../api/GlobalInterface';
 import { generalQuery } from '../../api/Api';
 import moment from 'moment';
 import { f_getDepartmentList } from '../../api/GlobalFunction';
-interface NewsItem {
-  thumbnail: string;
-  imageSrc: string;
-  title: string;
-}
+
 const Information = () => {
   const [deptlist, setDeptList] = useState<DEPARTMENT_DATA[]>([]);
   const [postList, setPostList] = useState<POST_DATA[]>([]);
@@ -48,9 +44,10 @@ const Information = () => {
   useEffect(() => {
     getDepartmentList();
     fetchPostList();
-    let intervalID = window.setInterval(() => {
+    let intervalID = window.setInterval(async () => {
       console.log('stt', stt.current);
       console.log('postlist length', postList.length);
+      await fetchPostList();
       if (stt.current >= postList.length - 1) {
         stt.current = 0;
       }
@@ -70,7 +67,7 @@ const Information = () => {
     <div className="information" style={{
       position: fullScreen ? `fixed` : `relative`,
       top: fullScreen ? `0` : `0`,
-      left: fullScreen ? `0` : `0`      
+      left: fullScreen ? `0` : `0`
     }}>
       <div className="header">
         <div className="menu">
@@ -90,7 +87,7 @@ const Information = () => {
         BẢNG TIN TRUYỀN THÔNG CMS VINA
       </div>
       <div className="content">
-        <MainNews onClick={()=> {setFullScreen(prev=> !prev)}} imageSrc={encodeURI(`/informationboard/${selectedNews?.FILE_NAME}`)} title={selectedNews?.TITLE ?? ""} dept={selectedNews?.SUBDEPT ?? ""} date={selectedNews?.INS_DATE ?? ""} />
+        <MainNews onClick={() => { setFullScreen(prev => !prev) }} imageSrc={encodeURI(`/informationboard/${selectedNews?.FILE_NAME}`)} title={selectedNews?.TITLE ?? ""} dept={selectedNews?.SUBDEPT ?? ""} date={selectedNews?.INS_DATE ?? ""} />
         <NewsList newsItems={postList} onNewsClick={handleNewsClick} />
       </div>
     </div>
