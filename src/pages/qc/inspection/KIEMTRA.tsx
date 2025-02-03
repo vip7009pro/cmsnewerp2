@@ -110,7 +110,7 @@ const KIEMTRA = () => {
         )}
         </TabPanel>
         <TabPanel>
-          {getCompany() ==='CMS' ? <INSPECT_REPORT /> : <INSPECT_REPORT2 />}
+          {(getCompany() ==='CMS' || getCompany() ==='PVN')  ? <INSPECT_REPORT /> : <INSPECT_REPORT2 />}
         </TabPanel>
         <TabPanel>
           <INSPECT_STATUS />
