@@ -25,7 +25,7 @@ const NewsList: React.FC<NewsListProps> = ({ newsItems, onNewsClick }) => {
           <div className="thumbnail" style={{ fontSize: "1.0rem" }}>
             <img src={encodeURI(`/informationboard/${item.FILE_NAME}`)} alt={`Thumbnail ${index + 1}`} />
             <div className="deptinfo" style={{ fontSize: "0.7rem" }}>
-              <span style={{ fontSize: "0.7rem", color: "#09a9b4" }}>{item.MAINDEPT}</span>
+              <span style={{ fontSize: "0.7rem", color: "#09a9b4" }}>{item.SUBDEPT}</span>
               <span style={{ fontSize: "0.7rem" }}> {` `}{moment.utc(item.INS_DATE).format('YYYY-MM-DD')}</span>
             </div>
           </div>

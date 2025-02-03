@@ -16,7 +16,7 @@ const MainNews: React.FC<MainNewsProps> = ({ imageSrc, title,dept, date, onClick
       <div className="main-news-footer">
         <span style={{ fontSize: "3.0rem" }}>{title}</span>
         <div className="deptinfo">
-          <span style={{ fontSize: "2.0rem", color: "#09a9b4" }}>{dept}</span>
+          <span style={{ fontSize: "2.0rem", color: "#09a9b4" }}>{dept}</span> {` `}
           <span style={{ fontSize: "1.5rem" }}>{date}</span>
         </div>
       </div>

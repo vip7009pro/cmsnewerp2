@@ -20,11 +20,12 @@
                 margin: 0;
                 gap: 10px;
                 li {
-                    font-size: 0.8rem;
+                    font-size: 0.8rem;                    
                     a { 
                         color: white;
-                        text-decoration: none;
-                    }
+                        text-decoration: none;                        
+                    }      
+                    border-right: 10px;                           
                 }   
             }
         }
@@ -88,7 +89,7 @@
                 .thumbnail {
                     display: flex;
                     flex-direction: column;
-                    width: 146px;
+                    width: 200px;
                     img {
                         border: 1px solid #ccc;
                         padding: 2px;

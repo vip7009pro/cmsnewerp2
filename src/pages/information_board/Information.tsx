@@ -5,34 +5,22 @@ import "./Information.scss";
 import { DEPARTMENT_DATA, POST_DATA } from '../../api/GlobalInterface';
 import { generalQuery } from '../../api/Api';
 import moment from 'moment';
-import { f_getDepartmentList } from '../../api/GlobalFunction';
+import { f_fetchPostList, f_getDepartmentList } from '../../api/GlobalFunction';
 
 const Information = () => {
   const [deptlist, setDeptList] = useState<DEPARTMENT_DATA[]>([]);
   const [postList, setPostList] = useState<POST_DATA[]>([]);
   const [selectedNews, setSelectedNews] = useState<POST_DATA>();
+  const [menustate, setMenuState]= useState(0)
   const [fullScreen, setFullScreen] = useState(false);
   const stt = useRef(0);
   const fetchPostList = async () => {
-    try {
-      let res = await generalQuery('loadPost', {});
-      console.log(res);
-      if (res.data.tk_status !== 'NG') {
-        console.log(res.data.data);
-        let loaded_data: POST_DATA[] = res.data.data.map((ele: POST_DATA, index: number) => {
-          return {
-            ...ele,
-            INS_DATE: moment.utc(ele.INS_DATE).format('YYYY-MM-DD'),
-            id: index
-          }
-        })
-        setPostList(loaded_data);
-        setSelectedNews(loaded_data[0]);
-      } else {
-        console.log('fetch error');
-      }
-    } catch (error) {
-      console.log(error);
+    let kq: POST_DATA[] = [];
+    kq = await f_fetchPostList();
+    setPostList(kq);
+    if(kq.length > 0)
+    {
+      setSelectedNews(kq[0]);   
     }
   };
   const handleShowSTTPost = () => {
@@ -72,10 +60,12 @@ const Information = () => {
       <div className="header">
         <div className="menu">
           <ul className="menu-list">
-            <li className="menu-item"><a href="#" className="menu-link">Home</a></li>
+            <li className="menu-item" onClick={()=> {setMenuState(0)}} style={{padding:'5px', borderRadius:'2px', backgroundColor:`${menustate===0 ? '#ffffff6a' :''}`}}><a href="#" className="menu-link">Home</a></li> <span style={{color:'white'}}>|</span>
             {
               deptlist.map((ele, index) => (
-                <li className="menu-item"><a href="#" className="menu-link">{ele.SUBDEPT}</a></li>
+                <>
+                <li className="menu-item" onClick={()=> {setMenuState(ele.DEPT_CODE)}} style={{padding:'5px', borderRadius:'2px', backgroundColor:`${menustate===ele.DEPT_CODE ? '#ffffff6a' :''}`}}><a href="#" className="menu-link">{ele.SUBDEPT}</a></li> <span style={{color:'white'}}>|</span>
+                </>
               ))
             }
           </ul>
