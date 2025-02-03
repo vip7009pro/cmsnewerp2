@@ -14,9 +14,10 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
+import PostManager from "../information_board/PostManager";
 
 export const current_ver: number = 2561;
-/* export const current_ver: number = 419; */
+/* export const current_ver: number = 420; */
 const Information = React.lazy(() => import("../information_board/Information"));
 const AddInfo = React.lazy(() => import("../information_board/AddInfo"));
 const QuanLyCapCao_NS = React.lazy(() => import("../nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
@@ -505,6 +506,11 @@ function Home() {
       MENU_CODE: "IF2",
       MENU_NAME: getlang("information_register", lang),
       MENU_ITEM: <AddInfo />,
+    },
+    {
+      MENU_CODE: "IF3",
+      MENU_NAME: getlang("post_manager", lang),
+      MENU_ITEM: <PostManager />,
     },
     {
       MENU_CODE: "TL1",
