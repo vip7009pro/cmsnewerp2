@@ -4456,6 +4456,7 @@ export interface POST_DATA {
   FILE_NAME: string;
   TITLE: string;
   CONTENT: string;
+  IS_PINNED: string;
   INS_DATE: string;
   INS_EMPL: string;
   UPD_DATE: string;
