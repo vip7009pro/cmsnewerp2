@@ -1,0 +1,361 @@
+@media only screen and (max-width: 5000px) {
+  .postmanager {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .tracuuDataInspection {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      .tracuuDataInspectionform {
+        display: flex;
+        width: 230px;
+        flex-direction: column;
+        align-items: center;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+        padding: 5px;
+        font-size: 0.8rem;
+        
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+
+        .forminput {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-around;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            input {
+              width: 125px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 20px;
+          .tranhapkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #99f86d;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #67c73a;
+            }
+          }
+          .traxuatkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #3ebdf8;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #3f9eca;
+            }
+          }
+          .tranhapxuatkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #f04dff;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+          .tranhatky {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #ccff14;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+        }
+        .formsummary {
+          display: flex;
+          flex-direction: row;
+          background-image: linear-gradient(0deg, #ececec, #99f86d);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          gap: 20px;
+          border-radius: 5px;
+          margin-top: 5px;
+
+          .summarygroup {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-items: flex-start;
+            gap: 10px;
+            .summaryvalue {
+              display: flex;
+              font-size: 16px;
+              justify-self: flex-end;
+              align-self: flex-end;
+              padding: 5px;
+              color: rgb(83, 36, 255);
+            }
+          }
+        }
+      }
+      .tracuuYCSXTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 92vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .postmanager {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .tracuuDataInspection {
+      display: flex;
+      flex-direction: column;
+      .tracuuDataInspectionform {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+        padding: 5px;
+        font-size: 0.8rem;
+
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+
+        .forminput {
+          display: flex;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-around;
+          padding: 2px;
+          width: 100%;
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: center;
+            flex-wrap: wrap;
+            input {
+              width: 150px;
+              height: 20px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+            select {
+              width: 160px;
+              height: 30px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 20px;
+          .tranhapkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #99f86d;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #67c73a;
+            }
+          }
+          .traxuatkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #3ebdf8;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #3f9eca;
+            }
+          }
+          .tranhapxuatkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #f04dff;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+          .tranhatky {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #ccff14;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+        }
+        .formsummary {
+          display: flex;
+          flex-direction: row;
+          background-image: linear-gradient(0deg, #ececec, #99f86d);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          gap: 20px;
+          border-radius: 5px;
+          margin-top: 5px;
+
+          .summarygroup {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-items: flex-start;
+            gap: 10px;
+            .summaryvalue {
+              display: flex;
+              font-size: 16px;
+              justify-self: flex-end;
+              align-self: flex-end;
+              padding: 5px;
+              color: rgb(83, 36, 255);
+            }
+          }
+        }
+      }
+      .tracuuYCSXTable {
+        display: flex;
+        margin-top: 10px;
+        height: 68vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+      }
+    }
+  }
+}
