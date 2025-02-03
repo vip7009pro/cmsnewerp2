@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   FcAbout,
   FcAcceptDatabase,
+  FcAdvertising,
   FcApprove,
   FcCapacitor,
   FcCustomerSupport,
@@ -638,6 +639,13 @@ const NavMenu = () => {
           path: "information_board/register",
           icon: <BiUpload color="#0c1eb8" size={15} />,
           MENU_CODE: "IF2",
+          cName: "sub-nav",
+        },
+        {
+          title: getlang("post_manager", lang),
+          path: "information_board/postmanager",
+          icon: <FcAdvertising  color="#0c1eb8" size={15} />,
+          MENU_CODE: "IF3",
           cName: "sub-nav",
         },
         ],
