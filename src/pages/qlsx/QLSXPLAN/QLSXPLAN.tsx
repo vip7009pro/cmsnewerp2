@@ -42,7 +42,7 @@ const QLSXPLAN = () => {
             {getCompany() === "CMS" && <Tab>QUICK PLAN</Tab>}
             {getCompany() === "CMS" &&  getUserData()?.EMPL_NO  ==='NHU1903' && <Tab>AUTO PLAN</Tab>}
             <Tab>PLAN TABLE</Tab>
-            <Tab>LONGTERM PLAN</Tab>
+            {getCompany() === "CMS" && <Tab>LONGTERM PLAN</Tab>}           
             <Tab>LỊCH SỬ</Tab>
             <Tab>DATA SX</Tab>
             <Tab>PLAN STATUS</Tab>
@@ -50,7 +50,7 @@ const QLSXPLAN = () => {
             <Tab>EQ STATUS</Tab>
             <Tab>Kho SX Main</Tab>
             <Tab>PLAN_RESULT</Tab>
-            <Tab>BTP</Tab>
+            {getCompany() === "CMS" && <Tab>BTP</Tab>}               
           </TabList>
           <TabPanel>
             {(getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z') ? <MACHINE /> : <MACHINE_OLD />}
@@ -64,9 +64,9 @@ const QLSXPLAN = () => {
           <TabPanel>
             {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
           </TabPanel>
-          <TabPanel>
+          {getCompany() ==='CMS' &&  <TabPanel>
             <LONGTERM_PLAN />
-          </TabPanel>
+          </TabPanel>}
           <TabPanel>
             <LICHSUINPUTLIEU />
           </TabPanel>
@@ -89,7 +89,7 @@ const QLSXPLAN = () => {
             <ACHIVEMENTTB />
           </TabPanel>
           <TabPanel>
-            <BTP_AUTO />
+            {getCompany() ==='CMS' && <BTP_AUTO />}
           </TabPanel>
         </Tabs>
       </Suspense>

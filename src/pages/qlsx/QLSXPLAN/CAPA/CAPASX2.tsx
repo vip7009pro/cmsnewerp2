@@ -885,7 +885,7 @@ const CAPASX2 = () => {
                   <CIRCLE_COMPONENT
                     key={index} 
                     type='machine'
-                    value={e.EQ_QTY.toString()}
+                    value={e.EQ_QTY?.toString()}
                     title={e.EQ_SERIES} 
                     color={'blue'}
                   />
