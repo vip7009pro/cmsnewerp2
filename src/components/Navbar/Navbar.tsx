@@ -134,7 +134,7 @@ export default function Navbar() {
     { value: "linear-gradient(90deg, #1A2A6C 0%, #B21F1F 50%, #FDBB2D 100%)", label: "Navy-Red-Yellow" },
     { value: "linear-gradient(90deg, #f8dd55 0%, #caf52d 100%)", label: "Yellow-Orange" },
   ] : company === "PVN" ? [
-    { value: "linear-gradient(90deg, #f8dd55 0%, #caf52d 100%)", label: "Yellow-Orange" },
+    { value: "linear-gradient(90deg, #f1da67 0%, #d1ce17 100%)", label: "Yellow-Orange" },
   ] : company === "NHATHAN" ? [
     { value: "linear-gradient(90deg, hsla(0, 0%, 74%, 1) 0%, hsla(60, 23%, 95%, 1) 100%)", label: "Gray-White" },
   ] : [
