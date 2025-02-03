@@ -29,6 +29,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
+const PostManager = React.lazy(() => import("./pages/information_board/PostManager"));
 const Info = React.lazy(() => import("./pages/information_board/Info"));
 const Information = React.lazy(() => import("./pages/information_board/Information"));
 const AddInfo = React.lazy(() => import("./pages/information_board/AddInfo"));
@@ -994,6 +995,10 @@ function App() {
                         <Route
                           path='register'
                           element={<AddInfo />}
+                        />  
+                        <Route
+                          path='postmanager'
+                          element={<PostManager />}
                         />  
                       </Route>
                       <Route
