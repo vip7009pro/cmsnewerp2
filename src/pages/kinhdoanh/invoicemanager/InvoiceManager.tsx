@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState, useTransition } from "reac
 import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting, getSocket, getUserData } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting, getSocket, getUserData } from "../../../api/Api";
 import { checkBP, f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insert_Notification_Data, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
@@ -675,7 +675,7 @@ const InvoiceManager = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 Invoice để update invoice no !", "error");
     }
   }
-  const column_invoicetable = [
+  const column_invoicetable = getCompany()==='CMS'?  [
     { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "CUST_CD", headerName: "CUST_CD", width: 70 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
@@ -792,6 +792,127 @@ const InvoiceManager = () => {
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
+    { field: "YEARNUM", cellDataType: "number", headerName: "YEARNUM", width: 80 },
+    { field: "WEEKNUM", cellDataType: "number", headerName: "WEEKNUM", width: 80 },
+    { field: "INVOICE_NO", cellDataType: "string", headerName: "INVOICE_NO", width: 120 },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+  ]:[
+    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
+    { field: "CUST_CD", headerName: "CUST_CD", width: 70 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 110 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      flex: 1,
+      minWidth: 180,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#0660c7" }}>
+            <b>{params.data.G_NAME}</b>
+          </span>
+        );
+      },
+    },   
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+    { field: "PO_ID", headerName: "PO_ID", width: 70 },
+    { field: "PO_NO", headerName: "PO_NO", width: 80 },
+    { field: "PO_DATE", headerName: "PO_DATE", width: 100, },
+    { field: "RD_DATE", headerName: "RD_DATE", width: 100, },
+    { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 100, },
+    { field: "OVERDUE", headerName: "OVERDUE", width: 100, },
+    {
+      field: "DELIVERY_QTY",
+      cellDataType: "number",
+      headerName: "DELIVERY_QTY",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.DELIVERY_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BEP",
+      cellDataType: "number",
+      headerName: "BEP",
+      width: 60,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#5983f8" }}>
+            <b>
+              {params.data.BEP?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PROD_PRICE",
+      cellDataType: "number",
+      headerName: "PROD_PRICE",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.data.PROD_PRICE?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_AMOUNT",
+      cellDataType: "number",
+      headerName: "DELIVERED_AMOUNT",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.data.DELIVERED_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_BEP_AMOUNT",
+      cellDataType: "number",
+      headerName: "DELIVERED_BEP_AMOUNT",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#1485cfFF" }}>
+            <b>
+              {params.data.DELIVERED_BEP_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
+    { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
+    { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
+    { field: "DESCR", headerName: "DESCR", width: 120 },
     { field: "YEARNUM", cellDataType: "number", headerName: "YEARNUM", width: 80 },
     { field: "WEEKNUM", cellDataType: "number", headerName: "WEEKNUM", width: 80 },
     { field: "INVOICE_NO", cellDataType: "string", headerName: "INVOICE_NO", width: 120 },

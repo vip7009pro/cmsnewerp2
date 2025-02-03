@@ -1222,8 +1222,7 @@ const PoManager = () => {
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 120 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
-    { field: "DESCR", headerName: "DESCR", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },   
     { field: "G_CODE", headerName: "G_CODE", width: 70 },
     { field: "PO_DATE", headerName: "PO_DATE", width: 70 },
     { field: "RD_DATE", headerName: "RD_DATE", width: 70 },
@@ -1382,6 +1381,7 @@ const PoManager = () => {
       headerName: "PROD_MAIN_MATERIAL",
       width: 110,
     },
+    { field: "DESCR", headerName: "DESCR", width: 80 },
     { field: "POMONTH", cellDataType: "number", headerName: "POMONTH", width: 80 },
     { field: "POWEEKNUM", cellDataType: "number", headerName: "POWEEKNUM", width: 80 },
     { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
@@ -1880,7 +1880,7 @@ const PoManager = () => {
                   onClick={() => { handletraPO(); }}
                 >
                   <FcSearch color='green' size={15} />
-                  Show/Hide
+                  Search
                 </IconButton>
               </div>
             </div>}
