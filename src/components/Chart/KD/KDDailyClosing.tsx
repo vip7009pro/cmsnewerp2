@@ -15,7 +15,7 @@ import {
   Line,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
@@ -29,10 +29,11 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
   const endOfMonth = moment().endOf("month").format("YYYY-MM-DD"); */
   const startOfMonth = moment().add(-12, "day").format("YYYY-MM-DD");
   const endOfMonth = moment().format("YYYY-MM-DD");
+  const digit: number = getCompany()==='CMS' ? 0: 2;
   const formatCash = (n: number) => {
     /*  if (n < 1e3) return n;
      if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$"; */
-    return nFormatter(n, 0) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
+    return nFormatter(n, digit) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
   };
   const labelFormatter = (value: number) => {
     return formatCash(value);

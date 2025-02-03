@@ -15,18 +15,19 @@ import {
   Line,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
 import { WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
 const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
+  const digit: number = getCompany()==='CMS' ? 0: 2;
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
   >([]);
   const formatCash = (n: number) => {
-    return nFormatter(n,0) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
+    return nFormatter(n,digit) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
   };
   const labelFormatter = (value: number) => {
     return formatCash(value);
