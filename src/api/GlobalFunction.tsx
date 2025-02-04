@@ -7241,7 +7241,7 @@ export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => 
             (element: PROD_PLAN_CAPA_DATA, index: number) => {
               return {
                 ...element,
-                PROD_DATE: element.PROD_DATE !==null?  moment.utc().add(Number(element.PROD_DATE.substring(2,4))-1,'day').format('YYYY-MM-DD'):'',
+                PROD_DATE: element.PROD_DATE !==null?  moment.utc(PLAN_DATE).add(Number(element.PROD_DATE.substring(2,4))-1,'day').format('YYYY-MM-DD'):'',
                 id: index,
               };
             }
@@ -7256,10 +7256,34 @@ export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => 
       });
       return kq;
   }
-export const  f_fetchPostList = async () => {
+export const  f_fetchPostListAll = async () => {
   let kq: POST_DATA[] = [];
     try {
-      let res = await generalQuery('loadPost', {});
+      let res = await generalQuery('loadPostAll', {});
+      //console.log(res);
+      if (res.data.tk_status !== 'NG') {
+        //console.log(res.data.data);
+        let loaded_data: POST_DATA[] = res.data.data.map((ele: POST_DATA, index: number) => {
+          return {
+            ...ele,
+            INS_DATE: moment.utc(ele.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
+            UPD_DATE: moment.utc(ele.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'),
+            id: index
+          }
+        })
+        kq = loaded_data;       
+      } else {
+        console.log('fetch error');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return kq;
+  };
+export const  f_fetchPostList = async (DEPT_CODE: number) => {
+  let kq: POST_DATA[] = [];
+    try {
+      let res = await generalQuery('loadPost', {DEPT_CODE: DEPT_CODE});
       //console.log(res);
       if (res.data.tk_status !== 'NG') {
         //console.log(res.data.data);
