@@ -5,7 +5,7 @@ import "./PostManager.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { POST_DATA } from "../../api/GlobalInterface";
-import { f_deletePostData, f_fetchPostList, f_updatePostData, } from "../../api/GlobalFunction";
+import { f_deletePostData, f_fetchPostList, f_fetchPostListAll, f_updatePostData, } from "../../api/GlobalFunction";
 import AGTable from "../../components/DataTable/AGTable";
 import AddInfo from "./AddInfo";
 import { getUserData } from "../../api/Api";
@@ -38,8 +38,9 @@ const PostManager = () => {
   const [postList, setPostList] = useState<POST_DATA[]>([]);
   const selectedPostList = useRef<POST_DATA[]>([]);
   const fetchPostList = async () => {
+    console.log('vao day')
     let kq: POST_DATA[] = [];
-    kq = await f_fetchPostList();
+    kq = await f_fetchPostListAll();
     if (kq.length > 0) {
       Swal.fire('Thông báo', 'Đã load ' + kq.length + ' dòng', 'success');
     }
@@ -209,6 +210,10 @@ const PostManager = () => {
               className='tranhapxuatkiembutton'
               onClick={() => {
                 setShowHideAddInfo(prev => !prev)
+                if(showhideAddInfo)
+                {
+                  fetchPostList();
+                }
               }}
             >
               Add

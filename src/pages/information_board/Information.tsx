@@ -6,21 +6,19 @@ import { DEPARTMENT_DATA, POST_DATA } from '../../api/GlobalInterface';
 import { generalQuery } from '../../api/Api';
 import moment from 'moment';
 import { f_fetchPostList, f_getDepartmentList } from '../../api/GlobalFunction';
-
 const Information = () => {
   const [deptlist, setDeptList] = useState<DEPARTMENT_DATA[]>([]);
   const [postList, setPostList] = useState<POST_DATA[]>([]);
   const [selectedNews, setSelectedNews] = useState<POST_DATA>();
-  const [menustate, setMenuState]= useState(0)
+  const [menustate, setMenuState] = useState(0)
   const [fullScreen, setFullScreen] = useState(false);
   const stt = useRef(0);
-  const fetchPostList = async () => {
+  const fetchPostList = async (DEPT_CODE: number) => {
     let kq: POST_DATA[] = [];
-    kq = await f_fetchPostList();
+    kq = await f_fetchPostList(DEPT_CODE);
     setPostList(kq);
-    if(kq.length > 0)
-    {
-      setSelectedNews(kq[0]);   
+    if (kq.length > 0) {
+      setSelectedNews(kq[0]);
     }
   };
   const handleShowSTTPost = () => {
@@ -31,11 +29,11 @@ const Information = () => {
   }
   useEffect(() => {
     getDepartmentList();
-    fetchPostList();
+    fetchPostList(menustate);
     let intervalID = window.setInterval(async () => {
       console.log('stt', stt.current);
       console.log('postlist length', postList.length);
-      await fetchPostList();
+      await fetchPostList(menustate);
       if (stt.current >= postList.length - 1) {
         stt.current = 0;
       }
@@ -60,11 +58,11 @@ const Information = () => {
       <div className="header">
         <div className="menu">
           <ul className="menu-list">
-            <li className="menu-item" onClick={()=> {setMenuState(0)}} style={{padding:'5px', borderRadius:'2px', backgroundColor:`${menustate===0 ? '#ffffff6a' :''}`}}><a href="#" className="menu-link">Home</a></li> <span style={{color:'white'}}>|</span>
+            <li className="menu-item" onClick={() => { setMenuState(0); fetchPostList(0) }} style={{ padding: '5px', borderRadius: '2px', backgroundColor: `${menustate === 0 ? '#ffffff6a' : ''}` }}><a href="#" className="menu-link">Home</a></li> <span style={{ color: 'white' }}>|</span>
             {
               deptlist.map((ele, index) => (
                 <>
-                <li className="menu-item" onClick={()=> {setMenuState(ele.DEPT_CODE)}} style={{padding:'5px', borderRadius:'2px', backgroundColor:`${menustate===ele.DEPT_CODE ? '#ffffff6a' :''}`}}><a href="#" className="menu-link">{ele.SUBDEPT}</a></li> <span style={{color:'white'}}>|</span>
+                  <li className="menu-item" onClick={() => { setMenuState(ele.DEPT_CODE); fetchPostList(ele.DEPT_CODE) }} style={{ padding: '5px', borderRadius: '2px', backgroundColor: `${menustate === ele.DEPT_CODE ? '#ffffff6a' : ''}` }}><a href="#" className="menu-link">{ele.SUBDEPT}</a></li> <span style={{ color: 'white' }}>|</span>
                 </>
               ))
             }
@@ -72,7 +70,7 @@ const Information = () => {
         </div>
       </div>
       <div className="title" onClick={() => {
-        fetchPostList();
+        fetchPostList(menustate);
       }}>
         BẢNG TIN TRUYỀN THÔNG CMS VINA
       </div>
