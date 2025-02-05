@@ -173,7 +173,7 @@ const CODE_MANAGER = () => {
           });
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {         
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
             <span style={{ color: "gray" }}>
               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
@@ -1160,19 +1160,19 @@ const CODE_MANAGER = () => {
         if (params.data.APPSHEET !== "N" && params.data.APPSHEET !== null) {
           return (
             <div>
-            <IconButton
-              className="buttonIcon"
-              onClick={(e) => {
-                f_downloadFile(hreftlink, params.data.G_CODE + "_" + params.data.G_NAME + ".docx");
-              }}>
-              Download{` `}<BiDownload color="green" size={20} />
-            </IconButton>
-          </div>
-           /*  <span style={{ color: "gray" }}>
-              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
-                LINK
-              </a>
-            </span> */
+              <IconButton
+                className="buttonIcon"
+                onClick={(e) => {
+                  f_downloadFile(hreftlink, params.data.G_CODE + "_" + params.data.G_NAME + ".docx");
+                }}>
+                Download{` `}<BiDownload color="green" size={20} />
+              </IconButton>
+            </div>
+            /*  <span style={{ color: "gray" }}>
+               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                 LINK
+               </a>
+             </span> */
           );
         } else {
           return (

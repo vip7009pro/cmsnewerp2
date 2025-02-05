@@ -127,8 +127,7 @@ const AddInfo = () => {
               <div className="forminputcolumn">
                 <label>
                   <b>DEPARTMENT</b>
-                  <select
-                    disabled={userData?.EMPL_NO !== "NHU1903"}
+                  <select                   
                     name="factory"
                     value={selectedDept}
                     onChange={(e) => {
