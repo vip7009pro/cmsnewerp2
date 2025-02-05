@@ -22,6 +22,7 @@ import {
   f_checkG_CODE_PO_BALANCE,
   f_checkStock_G_CODE,
   f_checkYCSX_EXIST,
+  f_downloadFile,
   f_generateNextProdRequestNo,
   f_getcodelist,
   f_getcustomerlist,
@@ -67,6 +68,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { BiDownload } from "react-icons/bi";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tabIndex, setTabIndex] = useState(0);
@@ -554,13 +556,22 @@ const YCSXManager = () => {
         let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
         if (params.data.BANVE === "Y")
           return (
-            <span style={{ color: "green" }}>
+            <div>
+              <IconButton
+                className="buttonIcon"
+                onClick={(e) => {
+                  f_downloadFile(hreftlink, params.data.G_CODE + "_" + params.data.G_NAME + ".pdf");
+                }}>
+                Download{` `}<BiDownload color="green" size={20} />
+              </IconButton>
+            </div>
+           /*  <span style={{ color: "green" }}>
               <b>
                 <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
                   LINK
                 </a>
               </b>
-            </span>
+            </span> */
           );
         else
           return (

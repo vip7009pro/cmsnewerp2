@@ -6,6 +6,7 @@ import toast from 'devextreme-react/toast';
 import { FILE } from 'dns';
 import { FaFile, FaFileExcel, FaFileImage, FaFilePdf, FaFileWord } from 'react-icons/fa';
 import { FaFileZipper } from 'react-icons/fa6';
+import { f_downloadFile } from '../../../api/GlobalFunction';
 
 interface FileProgress {
   file: File;
@@ -272,8 +273,24 @@ const FileTransfer = () => {
                   }
                   return <FaFile color='gray' size={20}/>
                 })()}
-                <span style={{ flex: 1 }}>{index + 1}. {moment.utc(file.INS_DATE).format('DD/MM/YYYY HH:mm:ss')} {file.INS_EMPL} - <a href={`/globalfiles/${file.CTR_CD}_${file.FILE_NAME}`} target="_blank" style={{ display: 'inline-block', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.FILE_NAME}</a> - {(file.FILE_SIZE / 1024).toLocaleString('en-US', { maximumFractionDigits: 2 })} kB</span>
+                <span style={{ flex: 1 }}>{index + 1}. {moment.utc(file.INS_DATE).format('DD/MM/YYYY HH:mm:ss')} {file.INS_EMPL} - <p style={{ display: 'inline-block', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.FILE_NAME}</p> - {(file.FILE_SIZE / 1024).toLocaleString('en-US', { maximumFractionDigits: 2 })} kB</span>
               </div>
+              <button 
+                onClick={() => {
+                  const hreftlink = `http://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;
+                  f_downloadFile(hreftlink, `${getCtrCd()}_${file.FILE_NAME}`);
+                }}
+                style={{
+                  padding: '5px 10px',
+                  backgroundColor: '#09be27',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer' 
+                }}
+              >
+                Download
+              </button> 
               <button 
                 onClick={() => {
                   const fileUrl = `http://${window.location.host}/globalfiles/${file.CTR_CD}_${file.FILE_NAME}`;

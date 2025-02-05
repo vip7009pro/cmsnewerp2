@@ -3248,7 +3248,7 @@ export const f_addQLSXPLAN = async (
         selectedPlanDate,
         selectedMachine,
         selectedFactory
-      );
+      ); 
       let NextPlanID = nextPlan.NEXT_PLAN_ID;
       let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
       if (check_ycsx_hethongcu === false) {
@@ -3290,7 +3290,7 @@ export const f_addQLSXPLAN = async (
             : 0;
         if (proc_number === 0 && tempDM === false) {
           err_code += "Không đúng máy trong BOM | ";
-        } else {
+        } else {          
           err_code += await f_addPLANRaw({
             PLAN_ID: NextPlanID,
             PLAN_DATE: selectedPlanDate,
@@ -7337,4 +7337,40 @@ export const f_deletePostData = async (DATA: POST_DATA) => {
     .catch((error) => {
   
 })
+}
+
+export const f_downloadFile = async (fileURL: string, fileName: string) => {
+    try {
+      // Tải file từ server dưới dạng blob
+      const response = await fetch(fileURL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/octet-stream",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to download file");
+      }
+
+      // Chuyển response thành blob
+      const blob = await response.blob();
+
+      // Tạo URL tạm thời cho file
+      const tempUrl = window.URL.createObjectURL(blob);
+
+      // Tạo một thẻ <a> để tải file
+      const a = document.createElement("a");
+      a.href = tempUrl;
+      a.download = fileName; // Tên file khi tải xuống
+      document.body.appendChild(a);
+      a.click();
+
+      // Xóa URL tạm thời và thẻ <a>
+      window.URL.revokeObjectURL(tempUrl);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      Swal.fire("Thống báo", "Download file thất bại !", "error");
+    }
 }

@@ -12,6 +12,7 @@ import { generalQuery, uploadQuery } from "../../../api/Api";
 import {
   SaveExcel,
   checkBP,
+  f_downloadFile,
   f_getCodeInfo,
   f_handleSaveLossSX,
   f_handleSaveQLSX,
@@ -22,7 +23,7 @@ import {
   f_updateLossKT,
 } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
-import { BiReset } from "react-icons/bi";
+import { BiDownload, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
@@ -172,7 +173,7 @@ const CODE_MANAGER = () => {
           });
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {         
           return (
             <span style={{ color: "gray" }}>
               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
@@ -1058,12 +1059,23 @@ const CODE_MANAGER = () => {
         let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
         if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
           return (
+            <div>
+              <IconButton
+                className="buttonIcon"
+                onClick={(e) => {
+                  f_downloadFile(hreftlink, params.data.G_CODE + "_" + params.data.G_NAME + ".pdf");
+                }}>
+                Download{` `}<BiDownload color="green" size={20} />
+              </IconButton>
+            </div>
+          );
+          /* return (
             <span style={{ color: "gray" }}>
               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
                 LINK
               </a>
             </span>
-          );
+          ); */
         } else {
           return (
             <div className="uploadfile">
@@ -1147,11 +1159,20 @@ const CODE_MANAGER = () => {
         let hreftlink = "/appsheet/Appsheet_" + params.data.G_CODE + ".docx";
         if (params.data.APPSHEET !== "N" && params.data.APPSHEET !== null) {
           return (
-            <span style={{ color: "gray" }}>
+            <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={(e) => {
+                f_downloadFile(hreftlink, params.data.G_CODE + "_" + params.data.G_NAME + ".docx");
+              }}>
+              Download{` `}<BiDownload color="green" size={20} />
+            </IconButton>
+          </div>
+           /*  <span style={{ color: "gray" }}>
               <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
                 LINK
               </a>
-            </span>
+            </span> */
           );
         } else {
           return (

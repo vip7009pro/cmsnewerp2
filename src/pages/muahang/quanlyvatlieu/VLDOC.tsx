@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import { MAT_DOC_DATA } from "../../../api/GlobalInterface";
-import { checkBP, f_autoUpdateDocUSE_YN, f_checkDocVersion, f_getMaterialDocData, f_insertMaterialDocData, f_updateDtcApp, f_updateMaterialDocData, f_updatePurApp, f_updateRndApp } from "../../../api/GlobalFunction";
+import { checkBP, f_autoUpdateDocUSE_YN, f_checkDocVersion, f_downloadFile, f_getMaterialDocData, f_insertMaterialDocData, f_updateDtcApp, f_updateMaterialDocData, f_updatePurApp, f_updateRndApp } from "../../../api/GlobalFunction";
 import AGTable from "../../../components/DataTable/AGTable";
 import { getUserData, uploadQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
 import moment from "moment";
 import DocumentComponent from "../../../components/DocumentComponent/DocumentComponent";
+import { BiDownload } from "react-icons/bi";
 
 // Move SearchForm outside the main component
 const SearchForm = ({
@@ -173,14 +174,22 @@ const VLDOC = ({ M_ID, M_NAME }: { M_ID: number, M_NAME: string }) => {
       }
 
       return (
+       
+
         <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           <button style={{ fontSize: '0.7rem', padding: '2px 4px', minWidth: '60px', height: '20px', marginRight: '4px' }} onClick={() => handleViewDoc()}>View</button>
-           {(params.data.PUR_APP === 'Y' && params.data.DTC_APP === 'Y' && params.data.RND_APP === 'Y') && <a href={`/materialdocs/${params.data.FILE_NAME}`} target="_blank" rel="noopener noreferrer">
-          LINK
-        </a>}
-
+           {(params.data.PUR_APP === 'Y' && params.data.DTC_APP === 'Y' && params.data.RND_APP === 'Y') &&  <div>
+        <IconButton
+          className="buttonIcon"
+          onClick={(e) => {
+            let hreftlink = `/materialdocs/${params.data.FILE_NAME}`;
+            f_downloadFile(hreftlink, params.data.FILE_NAME + "_" + params.data.M_NAME + ".pdf");
+          }}>
+          <BiDownload color="green" size={10} />
+        </IconButton>
+      </div>          
+        }
         </div>
-       
       )
     }},
     { field: "FILE_UPLOADED", headerName: "FILE_UPLOADED", width: 80 },

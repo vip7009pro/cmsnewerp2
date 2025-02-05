@@ -1932,6 +1932,7 @@ const MACHINE_OLD = () => {
   };
   const handle_AddPlan = async () => {
     console.log('handle_AddPlan', tempDM);
+    console.log(ycsxdatatablefilter.current);
     let err_code: string = await f_addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory, tempDM);
     if (err_code !== '0') {
       Swal.fire("Thông báo", err_code, "error");
