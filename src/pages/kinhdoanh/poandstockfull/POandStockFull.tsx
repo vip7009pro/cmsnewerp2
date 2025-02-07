@@ -25,6 +25,7 @@ const POandStockFull = () => {
     TP: 0,
     BTP: 0,
     CK: 0,
+    CNK:0,
     BLOCK: 0,
     TONG_TON: 0,
     THUATHIEU: 0,
@@ -137,7 +138,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.PO_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -150,7 +151,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_DELIVERED?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -163,7 +164,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.PO_BALANCE.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_BALANCE?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -176,7 +177,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -189,7 +190,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -202,7 +203,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -215,7 +216,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -228,7 +229,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.BTP.toLocaleString("en-US")}</b>
+            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -241,7 +242,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.TON_TP.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -254,7 +255,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -266,7 +267,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.data.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -279,7 +280,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.THUA_THIEU.toLocaleString("en-US")}</b>
+            <b>{params.data.THUA_THIEU?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -350,7 +351,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.PO_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -363,7 +364,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_DELIVERED?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -376,7 +377,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.PO_BALANCE.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_BALANCE?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -388,8 +389,8 @@ const POandStockFull = () => {
       width: 90,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_KIEM.toLocaleString("en-US")}</b>
+          <span style={{ color: "black" }}>
+            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -401,8 +402,8 @@ const POandStockFull = () => {
       width: 90,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+          <span style={{ color: "black" }}>
+            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -414,21 +415,8 @@ const POandStockFull = () => {
       width: 90,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TONG_TON_KIEM",
-      cellDataType: "number",
-      headerName: "Total TKiem",
-      width: 110,
-      cellRenderer: (params: any) => {
-        return (
           <span style={{ color: "black" }}>
-            <b>{params.data.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -440,8 +428,34 @@ const POandStockFull = () => {
       width: 90,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "black" }}>
-            <b>{params.data.BTP.toLocaleString("en-US")}</b>
+          <span style={{ color: "blue" }}>
+            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TONG_TON_KIEM",
+      cellDataType: "number",
+      headerName: "Total TKiem",
+      width: 110,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },    
+    {
+      field: "WAIT_INPUT_WH",
+      cellDataType: "number",
+      headerName: "CHO_NHAP_KHO",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.WAIT_INPUT_WH?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -454,7 +468,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.TON_TP.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -467,7 +481,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -479,7 +493,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.data.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -492,7 +506,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.THUA_THIEU.toLocaleString("en-US")}</b>
+            <b>{params.data.THUA_THIEU?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -580,7 +594,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.PO_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -593,7 +607,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
+            <b>{params.data.TOTAL_DELIVERED?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -606,7 +620,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "red" }}>
-            <b>{params.data.PO_BALANCE.toLocaleString("en-US")}</b>
+            <b>{params.data.PO_BALANCE?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -619,7 +633,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -632,7 +646,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_CS_CHECK.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -645,20 +659,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.CHO_KIEM_RMA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TONG_TON_KIEM",
-      cellDataType: "number",
-      headerName: "Total TKiem",
-      width: 90,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "black" }}>
-            <b>{params.data.TONG_TON_KIEM.toLocaleString("en-US")}</b>
+            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -671,7 +672,34 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.BTP.toLocaleString("en-US")}</b>
+            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TONG_TON_KIEM",
+      cellDataType: "number",
+      headerName: "Total TKiem",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+   
+    {
+      field: "WAIT_INPUT_WH",
+      cellDataType: "number",
+      headerName: "CHO_NHAP_KHO",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.data.WAIT_INPUT_WH?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -684,7 +712,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "black" }}>
-            <b>{params.data.TON_TP.toLocaleString("en-US")}</b>
+            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -697,7 +725,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.BLOCK_QTY.toLocaleString("en-US")}</b>
+            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -710,7 +738,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
-            <b>{params.data.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
+            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -723,7 +751,7 @@ const POandStockFull = () => {
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            <b>{params.data.THUA_THIEU.toLocaleString("en-US")}</b>
+            <b>{params.data.THUA_THIEU?.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -792,6 +820,7 @@ const POandStockFull = () => {
           TP: 0,
           BTP: 0,
           CK: 0,
+          CNK:0,
           BLOCK: 0,
           TONG_TON: 0,
           THUATHIEU: 0,
@@ -803,6 +832,7 @@ const POandStockFull = () => {
               temp_summary.TP += element.TON_TP;
               temp_summary.BTP += element.BTP;
               temp_summary.CK += element.TONG_TON_KIEM;
+              temp_summary.CNK += element.WAIT_INPUT_WH;
               temp_summary.BLOCK += element.BLOCK_QTY;
               temp_summary.TONG_TON += element.GRAND_TOTAL_STOCK;
               temp_summary.THUATHIEU +=
@@ -869,6 +899,7 @@ const POandStockFull = () => {
             TP: 0,
             BTP: 0,
             CK: 0,
+            CNK:0,
             BLOCK: 0,
             TONG_TON: 0,
             THUATHIEU: 0,
@@ -879,6 +910,7 @@ const POandStockFull = () => {
               temp_summary.TP += element.TON_TP;
               temp_summary.BTP += element.BTP;
               temp_summary.CK += element.TONG_TON_KIEM;
+              temp_summary.CNK += element.WAIT_INPUT_WH;
               temp_summary.BLOCK += element.BLOCK_QTY;
               temp_summary.TONG_TON += element.GRAND_TOTAL_STOCK;
               temp_summary.THUATHIEU +=
@@ -986,9 +1018,10 @@ const POandStockFull = () => {
                         <thead>
                           <tr>
                             <td>PO BALANCE</td>
-                            <td>TP</td>
                             <td>BTP</td>
                             <td>CK</td>
+                            <td>CNK</td>
+                            <td>TP</td>
                             <td>BLOCK</td>
                             <td>TONG TON</td>
                             <td>THUA THIEU</td>
@@ -997,25 +1030,29 @@ const POandStockFull = () => {
                         <tbody>
                           <tr>
                             <td style={{ color: "blue" }}>
-                              {pofullSummary.PO_BALANCE.toLocaleString("en-US")}
+                              {pofullSummary.PO_BALANCE?.toLocaleString("en-US")}
+                            </td>
+                           
+                            <td style={{ color: "purple" }}>
+                              {pofullSummary.BTP?.toLocaleString("en-US")}
                             </td>
                             <td style={{ color: "purple" }}>
-                              {pofullSummary.TP.toLocaleString("en-US")}
+                              {pofullSummary.CK?.toLocaleString("en-US")}
                             </td>
                             <td style={{ color: "purple" }}>
-                              {pofullSummary.BTP.toLocaleString("en-US")}
+                              {pofullSummary.CNK?.toLocaleString("en-US")}
                             </td>
                             <td style={{ color: "purple" }}>
-                              {pofullSummary.CK.toLocaleString("en-US")}
+                              {pofullSummary.TP?.toLocaleString("en-US")}
                             </td>
                             <td style={{ color: "red" }}>
-                              {pofullSummary.BLOCK.toLocaleString("en-US")}
+                              {pofullSummary.BLOCK?.toLocaleString("en-US")}
                             </td>
                             <td style={{ color: "blue", fontWeight: "bold" }}>
-                              {pofullSummary.TONG_TON.toLocaleString("en-US")}
+                              {pofullSummary.TONG_TON?.toLocaleString("en-US")}
                             </td>
                             <td style={{ color: "brown", fontWeight: "bold" }}>
-                              {pofullSummary.THUATHIEU.toLocaleString("en-US")}
+                              {pofullSummary.THUATHIEU?.toLocaleString("en-US")}
                             </td>
                           </tr>
                         </tbody>

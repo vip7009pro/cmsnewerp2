@@ -255,6 +255,7 @@ export interface POFullCMS {
   CHO_KIEM_RMA: number;
   TONG_TON_KIEM: number;
   BTP: number;
+  WAIT_INPUT_WH: number;
   TON_TP: number;
   BLOCK_QTY: number;
   GRAND_TOTAL_STOCK: number;
@@ -267,6 +268,7 @@ export interface POFullCMS {
 export interface POFullSummary {
   PO_BALANCE: number;
   TP: number;
+  CNK: number;
   BTP: number;
   CK: number;
   BLOCK: number;
