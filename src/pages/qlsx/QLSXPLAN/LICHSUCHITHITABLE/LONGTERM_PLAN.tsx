@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { checkBP, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../../../../api/GlobalFunction";
+import { checkBP, f_deleteLongtermPlan, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -28,6 +28,7 @@ const LONGTERM_PLAN = () => {
   const [factory, setFactory] = useState("NM1");
   const [machine, setMachine] = useState("ALL");
   const [longterm_plan, setLongterm_plan] = useState<LONGTERM_PLAN_DATA[]>([]);
+  const selectedLongTermPlan = useRef<LONGTERM_PLAN_DATA[]>([]);
   const weekdayarray = [
     "CN",
     "T2",
@@ -347,7 +348,6 @@ const LONGTERM_PLAN = () => {
     
   ]
  
-  const qlsxplandatafilter = useRef<LONGTERM_PLAN_DATA[]>([]);
   const loadQLSXPlan = async (plan_date: string) => {
     setLongterm_plan(await f_loadLongTermPlan(plan_date));   
   };
@@ -381,11 +381,24 @@ const LONGTERM_PLAN = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành xóa PLAN", "Đang xóa plan", "success");     
-        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], ()=> {});   
+        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], ()=> {
+          handleDeletePlan(selectedLongTermPlan.current);
+        });   
       }
     });
   };
-
+  
+  const handleDeletePlan = async (longTermPlanList: LONGTERM_PLAN_DATA[]) => {
+    if(longTermPlanList.length ===0) {
+      Swal.fire('Thông báo', 'Chọn ít nhất 1 dòng để xóa', 'error');
+      return;
+    }
+    for (let index = 0; index < longTermPlanList.length; index++) {
+      const element = longTermPlanList[index];
+      await f_deleteLongtermPlan(element);
+    }
+    await loadQLSXPlan(fromdate);
+  }
   const handleMovePlan = async (FROM_DATE: string, TO_DATE: string) => {
     await f_moveLongTermPlan(FROM_DATE, TO_DATE);
   }
@@ -448,6 +461,7 @@ const LONGTERM_PLAN = () => {
           setProductionPlanCapaData(kq);   
         }} onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
+          selectedLongTermPlan.current = e!.api.getSelectedRows();
         }}
       />
     )
