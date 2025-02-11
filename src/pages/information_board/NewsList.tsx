@@ -29,8 +29,8 @@ const NewsList: React.FC<NewsListProps> = ({ newsItems, onNewsClick }) => {
               <span style={{ fontSize: "0.7rem" }}> {` `}{moment.utc(item.INS_DATE).format('YYYY-MM-DD')}</span>
             </div>
           </div>
-          <div className="news-imagelist-footer">
-            <div className="element_title" style={{ fontSize: "1.2rem" }}>
+          <div className="news-imagelist-footer" style={{ fontSize: "0.8rem", height: "100%" }}>
+            <div className="element_title" style={{ fontSize: "1.2rem", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
               {item.TITLE}
             </div>
           </div>
