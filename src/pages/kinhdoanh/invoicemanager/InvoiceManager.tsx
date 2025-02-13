@@ -910,14 +910,14 @@ const InvoiceManager = () => {
         );
       },
     },
+    { field: "INVOICE_NO", cellDataType: "string", headerName: "INVOICE_NO", width: 120 },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
     { field: "DESCR", headerName: "DESCR", width: 120 },
     { field: "YEARNUM", cellDataType: "number", headerName: "YEARNUM", width: 80 },
-    { field: "WEEKNUM", cellDataType: "number", headerName: "WEEKNUM", width: 80 },
-    { field: "INVOICE_NO", cellDataType: "string", headerName: "INVOICE_NO", width: 120 },
+    { field: "WEEKNUM", cellDataType: "number", headerName: "WEEKNUM", width: 80 },   
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
   const column_xuatkho = [
