@@ -17,7 +17,7 @@ import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import PostManager from "../information_board/PostManager";
 
 export const current_ver: number = 2565;
-/* export const current_ver: number = 421; */
+/* export const current_ver: number = 422; */
 const Information = React.lazy(() => import("../information_board/Information"));
 const AddInfo = React.lazy(() => import("../information_board/AddInfo"));
 const QuanLyCapCao_NS = React.lazy(() => import("../nhansu/QuanLyCapCao/QuanLyCapCao_NS"));

@@ -70,7 +70,6 @@ const InvoiceManager = () => {
   const [newpono, setNewPoNo] = useState("");
   const [newpoprice, setNewPoPrice] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
-  const [oldinvoiceQTY, setOldInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(moment().format("YYYY-MM-DD"));
   const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [invoiceSummary, setInvoiceSummary] = useState<InvoiceSummaryData>({
@@ -538,8 +537,7 @@ const InvoiceManager = () => {
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewInvoiceQty(clickedRow.current?.DELIVERY_QTY ?? 0);
-      setOldInvoiceQty(clickedRow.current?.DELIVERY_QTY ?? 0);
+      setNewInvoiceQty(clickedRow.current?.DELIVERY_QTY ?? 0);      
       setNewPoNo(clickedRow.current?.PO_NO ?? "");
       setNewInvoiceDate(moment().format("YYYY-MM-DD"));
       setNewInvoiceRemark(clickedRow.current?.REMARK ?? "");
@@ -551,10 +549,18 @@ const InvoiceManager = () => {
     }
   };
   const updateInvoice = async () => {
+   
+    console.log('old_invoice_qty', old_invoice_qty);
+    console.log('new_invoice_qty', newinvoiceQTY);
     let err_code: number = 0;
     //validating invoice information
     let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
-    err_code = po_info.length > 0 ? (newinvoiceQTY > (po_info[0].PO_BALANCE+old_invoice_qty)) ? 5 : err_code : 1;
+    console.log('po_info[0].PO_BALANCE', po_info[0].PO_BALANCE); 
+    console.log('po_info[0].PO_BALANCE+old_invoice_qty', po_info[0].PO_BALANCE+old_invoice_qty); 
+    console.log('(newinvoiceQTY > (po_info[0].PO_BALANCE+old_invoice_qty))',(newinvoiceQTY > (po_info[0].PO_BALANCE+old_invoice_qty)))
+    console.log('err_code', err_code);
+    err_code = po_info.length > 0 ? ((newinvoiceQTY > (po_info[0].PO_BALANCE+old_invoice_qty)) ? 5 : err_code) : 1;
+    console.log('err_code', err_code);
     let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10));
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
     err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
@@ -562,7 +568,7 @@ const InvoiceManager = () => {
     if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newinvoicedate === "" || userData?.EMPL_NO === "" || newinvoiceQTY === 0) {
       err_code = 4;
     }
-    err_code = newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code;
+    ///err_code = newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code;
     if (err_code === 0) {
       let kq = await f_updateInvoice({
         G_CODE: selectedCode?.G_CODE,
