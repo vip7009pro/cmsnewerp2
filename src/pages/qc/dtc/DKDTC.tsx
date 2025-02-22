@@ -1,26 +1,10 @@
-import { Button, Checkbox, FormControlLabel, IconButton, Typography } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
+import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./DKDTC.scss";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  KeyboardNavigation,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  Toolbar,
-} from "devextreme-react/data-grid";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable, UserData } from "../../../api/GlobalInterface";
@@ -52,7 +36,6 @@ const DKDTC = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
-  const [trigger, setTrigger] = useState(false);  
   const dtcdatacolumn = [
     { field: 'DTC_ID', headerName: 'DTC_ID', resizable: true, width: 50 },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },

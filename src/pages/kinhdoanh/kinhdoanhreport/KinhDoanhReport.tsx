@@ -556,10 +556,10 @@ const KinhDoanhReport = () => {
           let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
           let column_map = keysArray.map((e, index) => {
             return {
-              dataField: e,
-              caption: e,
+              field: e,
+              headerName: e,
               width: 100,
-              cellRender: (ele: any) => {
+              cellRenderer: (ele: any) => {
                 //console.log(ele);
                 if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                   return <span>{ele.data[e]}</span>;
@@ -616,10 +616,10 @@ const KinhDoanhReport = () => {
                 let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
                 let column_map = keysArray.map((e, index) => {
                   return {
-                    dataField: e,
-                    caption: e,
+                    field: e,
+                    headerName: e,
                     width: 100,
-                    cellRender: (ele: any) => {
+                    cellRenderer: (ele: any) => {
                       //console.log(ele);
                       if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                         return <span>{ele.data[e]}</span>;
@@ -689,10 +689,10 @@ const KinhDoanhReport = () => {
             let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
             let column_map = keysArray.map((e, index) => {
               return {
-                dataField: e,
-                caption: e,
+                field: e,
+                header: e,
                 width: 100,
-                cellRender: (ele: any) => {
+                cellRenderer: (ele: any) => {
                   //console.log(ele);
                   if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                     return <span>{ele.data[e]}</span>;
@@ -763,10 +763,10 @@ const KinhDoanhReport = () => {
                   let keysArray = Object.getOwnPropertyNames(loadeddata[0] ?? []);
                   let column_map = keysArray.map((e, index) => {
                     return {
-                      dataField: e,
-                      caption: e,
+                      field: e,
+                      headerName: e,
                       width: 100,
-                      cellRender: (ele: any) => {
+                      cellRenderer: (ele: any) => {
                         //console.log(ele);
                         if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                           return <span>{ele.data[e]}</span>;
@@ -966,10 +966,10 @@ const KinhDoanhReport = () => {
           let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
           let column_map = keysArray.map((e, index) => {
             return {
-              dataField: e,
-              caption: e,
+              field: e,
+              headerName: e,
               width: 100,
-              cellRender: (ele: any) => {
+              cellRenderer: (ele: any) => {
                 //console.log(ele);
                 if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                   return <span>{ele.data[e]}</span>;
@@ -1027,7 +1027,7 @@ const KinhDoanhReport = () => {
       });
   }
   const initFunction = async () => {
-    Swal.fire({
+   /*  Swal.fire({
       title: "Đang tải báo cáo",
       text: "Đang tải dữ liệu, hãy chờ chút",
       icon: "info",
@@ -1035,7 +1035,7 @@ const KinhDoanhReport = () => {
       allowOutsideClick: false,
       confirmButtonText: "OK",
       showConfirmButton: false,
-    });
+    }); */
     Promise.all([
       getcustomerlist(),
       handleGetDailyClosing(),
@@ -1057,7 +1057,7 @@ const KinhDoanhReport = () => {
       loadMonthlyRevenueByCustomer()
     ]
     ).then(() => {
-      Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
+      //Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     })
   }
   useEffect(() => {

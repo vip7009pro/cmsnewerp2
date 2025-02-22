@@ -2,7 +2,6 @@ import { Button, Autocomplete, TextField, createFilterOptions, Typography, IconB
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { CustomerListData, MaterialListData, WH_M_INPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
 import { checkBP, f_getI221NextIN_NO, f_getI222Next_M_LOT_NO, f_Insert_I221, f_Insert_I222, f_updateStockM090, zeroPad } from "../../../../api/GlobalFunction";
@@ -35,11 +34,10 @@ const NHAPLIEU = () => {
     useState<CustomerListData | null>({
       CUST_CD: getCompany() === "CMS" ? "0049" : "KH000",
       CUST_NAME: getCompany() === "CMS" ? "SSJ CO., LTD" : "PVN",
-      CUST_NAME_KD: getCompany() === "CMS" ? "SSJ" : "PVN", 
+      CUST_NAME_KD: getCompany() === "CMS" ? "SSJ" : "PVN",
     });
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-
   const addMaterial = async () => {
     let temp_m_invoie: WH_M_INPUT_DATA = {
       id: moment().format("YYYYMMDD_HHmmsss") + material_table_data.length.toString(),
@@ -63,31 +61,24 @@ const NHAPLIEU = () => {
       set_material_table_data([...material_table_data, temp_m_invoie]);
     }
   };
-  
-const nhapkho = async () => {
-  if (material_table_data.length === 0) {
-    Swal.fire("Thông báo", "Không có dữ liệu nhập kho", "error");
-    return;
-  }
-  let checkmet: boolean = true;
-  for (let i = 0; i < material_table_data.length; i++) {
-    let ttmet = material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL;
-    if (ttmet === 0) checkmet = false;
-  }
-
-  if (!checkmet) {    
-    Swal.fire("Thông báo", "Lỗi: Có dòng tổng met = 0 , check lại", "error");
-    return;
-  }
-
-  let next_in_no: string = await f_getI221NextIN_NO();
-//  console.log(next_in_no);
-  let err_code: string = '';
-
- 
-
-
-  for (let i = 0; i < material_table_data.length; i++) {   
+  const nhapkho = async () => {
+    if (material_table_data.length === 0) {
+      Swal.fire("Thông báo", "Không có dữ liệu nhập kho", "error");
+      return;
+    }
+    let checkmet: boolean = true;
+    for (let i = 0; i < material_table_data.length; i++) {
+      let ttmet = material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL;
+      if (ttmet === 0) checkmet = false;
+    }
+    if (!checkmet) {
+      Swal.fire("Thông báo", "Lỗi: Có dòng tổng met = 0 , check lại", "error");
+      return;
+    }
+    let next_in_no: string = await f_getI221NextIN_NO();
+    //  console.log(next_in_no);
+    let err_code: string = '';
+    for (let i = 0; i < material_table_data.length; i++) {
       let next_in_seq: string = zeroPad(i + 1, 3);
       let kq: string = await f_Insert_I221({
         IN_NO: next_in_no,
@@ -102,50 +93,42 @@ const nhapkho = async () => {
         ROLL_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT,
         EXP_DATE: material_table_data[i].EXP_DATE
       });
-      
       if (kq !== '') {
         err_code += `Lỗi: ${kq} | `;
       }
-      else 
-      {
-       
-        for(let j=0;j<material_table_data[i].LOT_QTY;j++) {
+      else {
+        for (let j = 0; j < material_table_data[i].LOT_QTY; j++) {
           let next_m_lot_no: string = await f_getI222Next_M_LOT_NO();
           let kq: string = '';
           kq = await f_Insert_I222({
             IN_NO: next_in_no,
             IN_SEQ: next_in_seq,
             M_LOT_NO: next_m_lot_no,
-            LOC_CD: selectedFactory==='NM1' ? 'BE010': 'HD001',
-            WAHS_CD: selectedFactory==='NM1' ? 'B': 'H',
+            LOC_CD: selectedFactory === 'NM1' ? 'BE010' : 'HD001',
+            WAHS_CD: selectedFactory === 'NM1' ? 'B' : 'H',
             M_CODE: material_table_data[i].M_CODE,
-            IN_CFM_QTY:  material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,                    
-            FACTORY: selectedFactory, 
+            IN_CFM_QTY: material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,
+            FACTORY: selectedFactory,
             CUST_CD: selectedCustomer?.CUST_CD,
-            ROLL_QTY: material_table_data[i].ROLL_PER_LOT,        
-            PROD_REQUEST_NO: material_table_data[i].PROD_REQUEST_NO,                   
+            ROLL_QTY: material_table_data[i].ROLL_PER_LOT,
+            PROD_REQUEST_NO: material_table_data[i].PROD_REQUEST_NO,
           });
           if (kq !== '') {
             err_code += `Lỗi: ${kq} | `;
           }
         }
       }
-    
-
+    }
+    if (err_code !== '') {
+      set_material_table_data([]);
+      Swal.fire('Thông báo', 'Nhập kho vật liệu thất bại: ' + err_code, 'error');
+    }
+    else {
+      Swal.fire('Thông báo', 'Nhập kho vật liệu thành công', 'success');
+    }
+    f_updateStockM090();
   }
-
-
-  if (err_code !== '') {
-    set_material_table_data([]);
-    Swal.fire('Thông báo', 'Nhập kho vật liệu thất bại: ' + err_code, 'error');
-  }
-  else {
-    Swal.fire('Thông báo', 'Nhập kho vật liệu thành công', 'success');
-  }
-  f_updateStockM090();
-
-}
-  const handleConfirmNhapKho= () => {
+  const handleConfirmNhapKho = () => {
     Swal.fire({
       title: "Nhập liệu vào kho",
       text: "Chắc chắn muốn nhập kho các liệu đã nhập ?",
@@ -155,17 +138,15 @@ const nhapkho = async () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Nhập!",
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         checkBP(getUserData(), ["KHO"], ["ALL"], ["ALL"], async () => {
           nhapkho();
         });
       }
     });
   };
-
-
   const columns_inputMaterial = [
-    { field: "CUST_NAME_KD", headerName: "VENDOR", width: 100, headerCheckboxSelection: true, checkboxSelection: true },    
+    { field: "CUST_NAME_KD", headerName: "VENDOR", width: 100, headerCheckboxSelection: true, checkboxSelection: true },
     { field: "M_CODE", headerName: "M_CODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 100 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 100 },
@@ -177,7 +158,7 @@ const nhapkho = async () => {
     { field: "EXP_DATE", headerName: "EXP_DATE", width: 100 },
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 100 },
   ];
-  const materialInputTable = React.useMemo(()=> {
+  const materialInputTable = React.useMemo(() => {
     return (
       <AGTable
         toolbar={
@@ -194,13 +175,11 @@ const nhapkho = async () => {
                     )
                   );
                 }
-                
               }}
             >
               <MdDelete color="red" size={15} />
               Delete Seleceted
-            </IconButton>     
-
+            </IconButton>
           </div>}
         columns={columns_inputMaterial}
         data={material_table_data}
@@ -214,8 +193,7 @@ const nhapkho = async () => {
         }}
       />
     )
-  },[material_table_data,columns_inputMaterial])
-
+  }, [material_table_data, columns_inputMaterial])
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -246,7 +224,6 @@ const nhapkho = async () => {
         //console.log(error);
       });
   };
-
   useEffect(() => {
     getcustomerlist();
     getmateriallist();
@@ -275,9 +252,9 @@ const nhapkho = async () => {
                     renderInput={(params) => (
                       <TextField {...params} label="Select material" />
                     )}
-                    renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                    {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
-                  </Typography>}
+                    renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                      {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
+                    </Typography>}
                     defaultValue={{
                       M_CODE: "A0007770",
                       M_NAME: "SJ-203020HC",
@@ -317,9 +294,9 @@ const nhapkho = async () => {
                   renderInput={(params) => (
                     <TextField {...params} style={{ height: "10px" }} />
                   )}
-                  renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                  {`${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""}`}
-                 </Typography>}
+                  renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                    {`${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""}`}
+                  </Typography>}
                   defaultValue={{
                     CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
                     CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
@@ -409,7 +386,7 @@ const nhapkho = async () => {
             }}>Nhập kho</Button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{materialInputTable}</div>       
+        <div className="tracuuYCSXTable">{materialInputTable}</div>
       </div>
     </div>
   );

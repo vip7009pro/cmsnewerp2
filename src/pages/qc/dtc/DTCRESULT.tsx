@@ -1,24 +1,9 @@
-import { Button, FormControlLabel, IconButton, Radio, RadioGroup, Typography } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import { Button, FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { CustomResponsiveContainer, f_loadDTC_TestList, SaveExcel } from "../../../api/GlobalFunction";
+import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./DTCRESULT.scss";
-import DataGrid, {
-  Column,
-  ColumnChooser,
-  Editing,
-  Export,
-  FilterRow,
-  Item,
-  KeyboardNavigation,
-  Pager,
-  Paging,
-  Scrolling,
-  SearchPanel,
-  Toolbar,
-} from "devextreme-react/data-grid";
 import {
   DTC_REG_DATA,
   DTC_RESULT_INPUT,

@@ -6,33 +6,13 @@ import {
   createFilterOptions,
   Typography,
 } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { MdDelete, MdOutlinePivotTableChart } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
+import { MdDelete } from "react-icons/md";
+import { CustomerListData, DKXL_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
-import { checkBP, CustomResponsiveContainer, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateStockM090, f_updateUSE_YN_I222_RETURN_NVL, SaveExcel } from "../../../../api/GlobalFunction";
-import PivotTable from "../../../../components/PivotChart/PivotChart";
+import { checkBP, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateStockM090 } from "../../../../api/GlobalFunction";
 import './XUATLIEU.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
 const XUATLIEU = () => {

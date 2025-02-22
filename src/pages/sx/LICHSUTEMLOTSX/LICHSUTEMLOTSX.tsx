@@ -1,30 +1,17 @@
 import { Button, IconButton } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
-import { CustomResponsiveContainer, f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart, MdPrint } from "react-icons/md";
-import PivotTable from "../../../components/PivotChart/PivotChart";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement } from "../../../api/GlobalFunction";
+import { MdPrint } from "react-icons/md";
 import { COMPONENT_DATA, TEMLOTSX_DATA } from "../../../api/GlobalInterface";
-import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
+import {
+  DataDiv,
+  DataTBDiv,
+  FormButtonColumn,
+  FromInputColumn,
+  FromInputDiv,
+  QueryFormDiv,
+} from "../../../components/StyledComponents/ComponentLib";
 import { useReactToPrint } from "react-to-print";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -194,147 +181,6 @@ const LICHSUTEMLOTSX = () => {
       load_lichsutemlot_data();
     }
   };
-  const LichSuTemLotSXDataTable = React.useMemo(
-    () => (
-      <CustomResponsiveContainer>
-        <DataGrid
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={lichsutemlotdata}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"75vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //setFilterData(e.selectedRowsData[0]);
-          }}
-          onRowClick={(params) => {
-            //console.log(e.data);
-            setComponentList(
-              componentList.map((e: COMPONENT_DATA, index: number) => {
-                let value: string = e.GIATRI;
-                if (e.DOITUONG_NAME === "G_NAME") {
-                  value = params.data.G_NAME?.substring(0, 34) ?? "";
-                } else if (e.DOITUONG_NAME === "LOTSX_BARCODE") {
-                  value = params.data.PROCESS_LOT_NO ?? "";                
-                } else if (e.DOITUONG_NAME === "LOTSX_TEXT") {
-                  value = params.data.PROCESS_LOT_NO ?? "";
-                } else if (e.DOITUONG_NAME === "LOT_QTY") {
-                  value = (params.data.TEMP_QTY?.toLocaleString('en-US') ?? "") + "(" + params.data.TEMP_MET?.toLocaleString('en-US',{maximumFractionDigits: 2}) + "m)";
-                } else if (e.DOITUONG_NAME === "LOT_NVL") {
-                  value = "Lot NVL: " + (params.data.M_LOT_NO ?? "");
-                } else if (e.DOITUONG_NAME === "SETTING") {
-                  value = "SET " + (params.data.SETTING_MET?.toString() ?? "") +  "m | NG CĐ " +( params.data.PR_NG?.toString() ?? "") + "m";
-                } else if (e.DOITUONG_NAME === "NM_CD_CT") {
-                  value = (params.data.FACTORY ?? "" )+ "/" + (params.data.EQUIPMENT_CD ?? "") + "/CĐ:" + (params.data.PR_NB ?? "") + "/" + (params.data.PLAN_ID ?? "");
-                } else if (e.DOITUONG_NAME === "PLAN_QTY") {
-                    value = "SL Chỉ thị: " + (params.data.PLAN_QTY?.toLocaleString('en-US') ?? "") + "EA";
-                } else if (e.DOITUONG_NAME === "NVL") {
-                  value = "NVL: " + (params.data.M_NAME ?? "") + "| " + (params.data.WIDTH_CD ?? "") + " mm";
-                } else if (e.DOITUONG_NAME === "NHANVIEN") {
-                  value = "NV: " + (params.data.INS_EMPL ?? "") + "_Time: " + (params.data.INS_DATE ?? "");
-                } else if (e.DOITUONG_NAME === "LOTSX_BARCODE2") {
-                  value = params.data.PROCESS_LOT_NO ?? "";
-                } 
-                return {
-                  ...e,
-                  GIATRI: value,
-                };
-              }),
-            );
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Selection mode="single" selectAllMode="allPages" />
-          <Editing
-            allowUpdating={false}
-            allowAdding={true}
-            allowDeleting={false}
-            mode="batch"
-            confirmDelete={true}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(lichsutemlotdata, "Lich Su Tem Lot Table");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  setShowHideTemLot(prev => !prev);
-                }}
-              >
-                <MdPrint color="#611ad3" size={15} />
-                Show LOT
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooser" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Column dataField='INS_DATE' caption='INS_DATE' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
-          <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
-          <Column dataField='LOTNCC' caption='LOTNCC' width={100}></Column>
-          <Column dataField='PROD_REQUEST_NO' caption='YCSX' width={110}></Column>
-          <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' width={110}></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100}></Column>
-          <Column dataField='EMPL_NAME' caption='EMPL_NAME' width={100}></Column>
-          <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
-          <Column dataField='TEMP_QTY' caption='TEMP_QTY' width={100} cellRender={(ele: any) => {
-            return (
-              <span style={{ color: 'blue', fontWeight: 'bold' }}>{ele.data.TEMP_QTY?.toLocaleString('en-US')}</span>
-            )
-          }}></Column>
-          <Column dataField='PROCESS_NUMBER' caption='PROCESS_NUMBER' width={100}></Column>
-          <Column dataField='LOT_STATUS' caption='LOT_STATUS' width={100}></Column>
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="id"
-              summaryType="count"
-              valueFormat={"decimal"}
-            />
-          </Summary>
-        </DataGrid>
-      </CustomResponsiveContainer>
-    ),
-    [lichsutemlotdata],
-  );
-  
   const columns_lichsutemlot = [
     { field: 'INS_DATE', headerName: 'INS_DATE', width: 100 },
     { field: 'G_CODE', headerName: 'G_CODE', width: 60 },

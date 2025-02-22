@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./CSTOTAL.scss";
-import CS from "./CS";
 import CS_DATA_TB from "./CS_DATA";
 import CSREPORT from "./CSREPORT";
 import { useSelector } from "react-redux";

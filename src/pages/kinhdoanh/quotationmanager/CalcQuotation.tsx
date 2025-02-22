@@ -26,8 +26,6 @@ import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import moment from "moment";
-import DrawComponent from "../ycsxmanager/DrawComponent/DrawComponent";
-import DrawComponentTBG from "../ycsxmanager/DrawComponent/DrawComponentTBG";
 import { BiSave } from "react-icons/bi";
 import { GrUpdate } from "react-icons/gr";
 import { TbLogout } from "react-icons/tb";

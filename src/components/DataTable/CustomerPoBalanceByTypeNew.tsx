@@ -1,173 +1,404 @@
-import React, { useState, useEffect } from 'react'
-import { CustomResponsiveContainer, SaveExcel } from '../../api/GlobalFunction';
-import { DataGrid } from 'devextreme-react';
-import { Column, FilterRow, KeyboardNavigation, Scrolling, Selection, Summary, TotalItem } from 'devextreme-react/data-grid';
+import { useState, useEffect, useMemo } from 'react';
 import { generalQuery, getGlobalSetting } from '../../api/Api';
-import Swal from 'sweetalert2';
-import moment from 'moment';
-import { AiFillFileExcel } from 'react-icons/ai';
-import {
-    IconButton,
-} from "@mui/material";
 import './CustomerPoBalanceByTypeNew.scss'
 import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
+import AGTable from './AGTable';
 const CustomerPobalancebyTypeNew = () => {
-    const [pobalancecustomerbytypedata, setPoBalanceCustomerData] = useState<any>([]);
-    const [columns, setColumns] = useState<Array<any>>([]);
-    const loadpobalance = () => {
-        generalQuery("customerpobalancebyprodtype_new", {
-        })
-            .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                    let loadeddata =
-                        response.data.data.map(
-                            (element: any, index: number) => {
-                                return {                                   
-                                    ...element,
-                                    id: index,                                    
-                                };
-                            },
-                        );
-                    setPoBalanceCustomerData(loadeddata);
-                    let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-                    let column_map = keysArray.map((e, index) => {
-                        return {
-                            dataField: e,
-                            caption: e,
-                            width: 100,
-                            cellRender: (ele: any) => {
-                                //console.log(ele);
-                                if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
-                                    return <span style={{fontWeight:'bold'}}>{ele.data[e]}</span>;
-                                }
-                                else if (e === 'TOTAL_QTY') {
-                                    return <span style={{ color: "#2515fc", fontWeight: "bold" }}>
-                                        {ele.data[e]?.toLocaleString("en-US", )}
-                                    </span>
-                                }
-                                else if (e === 'TOTAL_AMOUNT') {
-                                    return <span style={{ color: "#8105a0", fontWeight: "bold" }}>
-                                        {ele.data[e]?.toLocaleString("en-US", {
-                                            style: "currency",
-                                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                                        })}
-                                    </span>
-                                }
-                                else if (e.indexOf('QTY') > -1) {
-                                    return <span style={{ color: "#0011ff", fontWeight: "normal" }}>
-                                        {ele.data[e]?.toLocaleString("en-US", )}
-                                    </span>
-                                }
-                                else {
-                                    return <span style={{ color: "green", fontWeight: "normal" }}>
-                                        {ele.data[e]?.toLocaleString("en-US", {
-                                            style: "currency",
-                                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                                        })}
-                                    </span>
-                                }
-                            },
-                        };
-                    });
-                    setColumns(column_map);
-                } else {
-                    //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+  const [pobalancecustomerbytypedata, setPoBalanceCustomerData] = useState<any>([]);
+  const loadpobalance = () => {
+    generalQuery("customerpobalancebyprodtype_new", {
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loadeddata =
+            response.data.data.map(
+              (element: any, index: number) => {
+                return {
+                  ...element,
+                  id: index,
+                };
+              },
+            );
+          setPoBalanceCustomerData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const columnsAG = [
+    {
+      field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "left" }
+          );
+        } else {
+          return;
+        }
+      }
+    },
+    {
+      field: "TOTAL_QTY", headerName: "TOTAL_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "TOTAL_AMOUNT", headerName: "TOTAL_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "TSP_QTY", headerName: "TSP_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "LABEL_QTY", headerName: "LABEL_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "UV_QTY", headerName: "UV_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "OLED_QTY", headerName: "OLED_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "TAPE_QTY", headerName: "TAPE_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "RIBBON_QTY", headerName: "RIBBON_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "SPT_QTY", headerName: "SPT_QTY", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal' }}>{params.value?.toLocaleString('en-US')}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "TSP_AMOUNT", headerName: "TSP_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "LABEL_AMOUNT", headerName: "LABEL_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "UV_AMOUNT", headerName: "UV_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "OLED_AMOUNT", headerName: "OLED_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "TAPE_AMOUNT", headerName: "TAPE_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "RIBBON_AMOUNT", headerName: "RIBBON_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
+    },
+    {
+      field: "SPT_AMOUNT", headerName: "SPT_AMOUNT", width: 95, cellRenderer: (params: any) => {
+        if (params.data.CUST_NAME_KD === 'TOTAL') {
+          return <span style={{ fontWeight: 'bold' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+        else {
+          return <span style={{ fontWeight: 'normal', color: '#099b2d' }}>{params.value?.toLocaleString('en-US', { style: "currency", currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD", })}</span>
+        }
+      }, cellStyle: (params: any) => {
+        if (params.data.CUST_NAME_KD === "TOTAL") {
+          return (
+            { backgroundColor: "#22e622", color: "#0905ec", textAlign: "right" }
+          );
+        } else {
+          return (
+            { textAlign: "right" }
+          );
+        }
+      }
     }
-    
-    const pobalancecustomerbytypedatatable = React.useMemo(
-        () => (
-            <div className="datatb">
-                <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                        SaveExcel(pobalancecustomerbytypedata, "POBalanceTable");
-                    }}
-                >
-                    <AiFillFileExcel color='green' size={15} />
-                    Excel
-                </IconButton>
-                <CustomResponsiveContainer>
-                    <DataGrid
-                        style={{ fontSize: "0.7rem" }}
-                        autoNavigateToFocusedRow={true}
-                        allowColumnReordering={true}
-                        allowColumnResizing={true}
-                        columnAutoWidth={false}
-                        cellHintEnabled={true}
-                        columnResizingMode={"widget"}
-                        showColumnLines={true}
-                        dataSource={pobalancecustomerbytypedata}
-                        columnWidth="auto"
-                        keyExpr="id"
-                        height={"100%"}
-                        showBorders={true}
-                        onSelectionChanged={(e) => {
-                            //console.log(e.selectedRowsData);
-                            //setselecterowfunction(e.selectedRowsData);
-                            //setSelectedRowsData(e.selectedRowsData);
-                        }}
-                        onRowClick={(e) => {
-                            //console.log(e.data);                  
-                        }}
-                        onRowUpdated={(e) => {
-                            //console.log(e);
-                        }}
-                        onRowPrepared={(e: any) => {
-                            if (e.data?.CUST_NAME_KD === 'TOTAL') {
-                                e.rowElement.style.background = "#e9fc40";
-                                e.rowElement.style.fontWeight = "bold";
-                            }
-
-                        }}
-                    >
-                        <FilterRow visible={true} />
-                        <KeyboardNavigation
-                            editOnKeyPress={true}
-                            enterKeyAction={"moveFocus"}
-                            enterKeyDirection={"column"}
-                        />
-                        <Selection mode="single" selectAllMode="allPages" />
-                        <Scrolling
-                            useNative={false}
-                            scrollByContent={true}
-                            scrollByThumb={true}
-                            showScrollbar="onHover"
-                            mode="virtual"
-                        />
-                        {columns.map((column, index) => {
-                            //console.log(column);
-                            return <Column key={index} {...column}></Column>;
-                        })}
-                        <Summary>
-                            <TotalItem
-                                alignment="right"
-                                column="PQC1_ID"
-                                summaryType="count"
-                                valueFormat={"decimal"}
-                            />
-                        </Summary>
-                    </DataGrid>
-                </CustomResponsiveContainer>
-            </div>
-        ),
-        [pobalancecustomerbytypedata]
-    );
-    useEffect(() => {
-        loadpobalance();
-        return () => {
-        }
-    }, [])
-    return (
-        <div className='customerpobalance'>
-        {
-         pobalancecustomerbytypedatatable
-        }
-        </div>
-    )
+  ]
+  const poDataAGTable = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <></>
+      }
+      columns={columnsAG}
+      data={pobalancecustomerbytypedata}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //console.log(params.data)
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())            
+      }}
+    />
+    , [pobalancecustomerbytypedata, columnsAG]);
+  useEffect(() => {
+    loadpobalance();
+    return () => {
+    }
+  }, [])
+  return (
+    <div className='customerpobalance'>
+      {
+        poDataAGTable
+      }
+    </div>
+  )
 }
 export default CustomerPobalancebyTypeNew
