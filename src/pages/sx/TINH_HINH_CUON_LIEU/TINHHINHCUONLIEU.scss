@@ -7,7 +7,7 @@
   .tracuuDataInspection {
     width: 100%;
     display: flex;
-    gap: 5px;
+    gap: 1px;
     .tracuuDataInspectionform {
       display: flex;
       flex-direction: column;
@@ -38,14 +38,14 @@
         .forminputcolumn {
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 5px;
           align-items: flex-end;
           justify-content: center;
           flex-wrap: wrap;
 
           input {
             width: 125px;
-            height: 20px;
+            height: 15px;
             font-size: 0.6rem;
             outline: none;
             border-radius: 5px;
@@ -57,7 +57,7 @@
 
           select {
             width: 135px;
-            height: 28px;
+            height: 25px;
             font-size: 0.8rem;
             outline: none;
             border-radius: 5px;
@@ -65,6 +65,7 @@
             padding: 5px;
             margin-left: 5px;
             background-image: linear-gradient(0deg, #ececec, #9dee95);
+            font-size: 0.6rem;
           }
         }
       }
@@ -194,6 +195,35 @@
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
+      .losstable {
+        display: flex;
+        flex-direction: row;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        gap: 20px;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 0.6rem;
+        align-self: center;
+
+        table {
+          border: 2px solid gray;          
+          text-align: center;
+        }
+
+        table thead tr td {
+          font-weight: bold;
+          border: 0.5px solid gray;
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+
+        table tbody tr td {
+          border: 1px solid gray;
+          text-align: center;
+        }
+      }
 
       .datatb {
         justify-items: center;
@@ -201,35 +231,7 @@
         height: 84vh;
         padding: 5px;
 
-        .losstable {
-          display: flex;
-          flex-direction: row;
-          background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          gap: 20px;
-          border-radius: 5px;
-          padding: 10px;
-          font-size: 0.8rem;
-
-          table {
-            border: 2px solid gray;
-            width: 100%;
-            text-align: center;
-          }
-
-          table thead tr td {
-            font-weight: bold;
-            border: 0.5px solid gray;
-            padding-left: 10px;
-            padding-right: 10px;
-          }
-
-          table tbody tr td {
-            border: 1px solid gray;
-            text-align: center;
-          }
-        }
+        
 
         .dx-datagrid-rowsview
           .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)

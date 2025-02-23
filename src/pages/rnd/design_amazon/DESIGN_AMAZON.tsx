@@ -1,25 +1,16 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import BARCODE from "./design_components/BARCODE";
-import RECTANGLE from "./design_components/RECTANGLE";
-import TEXT from "./design_components/TEXT";
-import QRCODE from "./design_components/QRCODE";
-import QRCode from "qrcode.react";
-import DATAMATRIX from "./design_components/DATAMATRIX";
-import IMAGE from "./design_components/IMAGE";
+import React, { useEffect, useRef, useState } from "react";
 import Draggable from "devextreme-react/draggable";
 import "./DESIGN_AMAZON.scss";
 import {
   Avatar,
   IconButton,
-  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { FcAddImage, FcAddRow, FcDeleteRow } from "react-icons/fc";
+import { FcDeleteRow } from "react-icons/fc";
 import { TbComponents } from "react-icons/tb";
 import Swal from "sweetalert2";
 import { GrAdd } from "react-icons/gr";
@@ -38,7 +29,6 @@ import { SaveExcel, checkBP, renderElement } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import { BiPrinter, BiSave, BiShow } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
-import { UserContext } from "../../../api/Context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {

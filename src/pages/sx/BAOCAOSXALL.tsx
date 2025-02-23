@@ -55,22 +55,22 @@ const BAOCAOSXALL = () => {
               <span className="mininavtext">{getlang("sxrolldata", lang)}</span>
             </Tab>
             <Tab>
-              <span className="mininavtext">PLAN-RESULT</span>
+              <span className="mininavtext">Plan-Result</span>
             </Tab>
             <Tab>
-              <span className="mininavtext">DATA DAO-FILM</span>
+              <span className="mininavtext">Data Dao Film</span>
             </Tab>
             { getCompany() === "CMS" && <Tab>
-              <span className="mininavtext">FAILING</span>
+              <span className="mininavtext">Failing</span>
             </Tab>}
             <Tab>
-              <span className="mininavtext">PATROL</span>
+              <span className="mininavtext">Patrol</span>
             </Tab>
             { getCompany() === "CMS" && <Tab>
-              <span className="mininavtext">MAIN DEFECTS</span>
+              <span className="mininavtext">Main Defects</span>
             </Tab>}
             { getCompany() === "CMS" && <Tab>
-              <span className="mininavtext">BTP DATA</span>
+              <span className="mininavtext">BTP Data</span>
             </Tab>}
           </TabList>
           <TabPanel>

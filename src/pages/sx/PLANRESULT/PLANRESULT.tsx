@@ -1,30 +1,24 @@
-import React, { useEffect, useMemo, useState, useTransition } from "react";
-import Swal from "sweetalert2";
+import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import {
   Chart,
-  Connector,
   Legend,
   Label,
   Series,
   Title,
-  Tooltip,
   CommonSeriesSettings,
   Format,
   ArgumentAxis,
   ValueAxis,
-  AdaptiveLayout,
 } from "devextreme-react/chart";
-import PieChart, { Export, Font } from "devextreme-react/pie-chart";
 import "./PLANRESULT.scss";
 import { generalQuery } from "../../../api/Api";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-import { ProgressBar } from "devextreme-react/progress-bar";
-import { CircularProgress, IconButton, LinearProgress } from "@mui/material";
+import { IconButton, LinearProgress } from "@mui/material";
 import { BiSearch } from "react-icons/bi";
 import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   ACHIVEMENT_DATA,

@@ -4,6 +4,8 @@ import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { SaveExcel } from '../../api/GlobalFunction';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 interface AGInterface {
   data: Array<any>,
   columns: Array<any>,
@@ -73,12 +75,13 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
       gridRefDefault.current!.api.exportDataAsCsv();
     }
   };
+    const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
 
   useEffect(() => {
   }, [])
   return (
     <div className='agtable'>
-      {ag_data.toolbar !== undefined && <div className="toolbar">
+      {ag_data.toolbar !== undefined && <div className="toolbar" style={{ backgroundImage: theme.CMS.backgroundImage }}>
         {ag_data.toolbar}
         <IconButton
           className="buttonIcon"
@@ -134,7 +137,8 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
           onRowDragMove={ (e) => {}}
           onRowDragEnd={ag_data.onRowDragEnd ?? onRowDragEnd}
           onCellEditingStopped={ag_data.onCellEditingStopped}
-          onCellClicked={ag_data.onCellClick}                 
+          onCellClicked={ag_data.onCellClick}
+          
         />
       </div>
       <div className="bottombar">

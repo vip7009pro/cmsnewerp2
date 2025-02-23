@@ -8,7 +8,7 @@
       display: flex;
       flex-direction: row;
       height: 92vh;
-      gap: 5px;
+      gap: 2px;
       .tracuuDataInspectionform {
         display: flex;
         width: 250px;
@@ -283,6 +283,13 @@
               width: 300px;
             }
           }
+        }
+        .upgiatable {
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
         }
 
         * {

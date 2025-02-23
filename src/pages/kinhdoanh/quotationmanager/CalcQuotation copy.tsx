@@ -1,8 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import Swal from "sweetalert2";
+import {
+  Column,
+  Editing,
+  FilterRow,
+  Pager,
+  Scrolling,
+  SearchPanel,
+  Selection,
+  DataGrid,
+  Paging,
+  Toolbar,
+  Item,
+  Export,
+  ColumnChooser,
+  Summary,
+  TotalItem,
+} from "devextreme-react/data-grid";
 import { IconButton } from "@mui/material";
-import { AiFillFolderAdd } from "react-icons/ai";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { AiFillFileExcel, AiFillFolderAdd } from "react-icons/ai";
 import "./CalcQuotation.scss";
 import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
 import { useSelector } from "react-redux";
@@ -19,7 +37,7 @@ import {
   GIANVL,
   UserData,
 } from "../../../api/GlobalInterface";
-import AGTable from "../../../components/DataTable/AGTable";
+import { KeyboardNavigation } from "devextreme-react/tree-list";
 const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
@@ -305,106 +323,66 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-  const columns_listcode = [    
-    { field: "CUST_NAME_KD", headerName: "KHACH", width: 80 },
-    { field: "G_CODE", headerName: "G_CODE", width: 60 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 80 },
-    { field: "G_WIDTH", headerName: "RỘNG", width: 40 },
-    { field: "G_LENGTH", headerName: "DÀI", width: 40 },
-    { field: "G_C", headerName: "CỘT", width: 40 },
-    { field: "G_C_R", headerName: "HÀNG", width: 40 },
-    { field: "G_LG", headerName: "K/C HÀNG", width: 60 },
-    { field: "G_CG", headerName: "K/C CỘT", width: 60 },
-    { field: "G_SG_L", headerName: "MÉP TRÁI", width: 50 },
-    { field: "G_SG_R", headerName: "MÉP PHẢI", width: 50 },
-    { field: "PROD_PRINT_TIMES", headerName: "SỐ MÀU", width: 50 },
-    { field: "WIDTH_OFFSET", headerName: "WIDTH_OFFSET", width: 90 },
-    { field: "LENGTH_OFFSET", headerName: "LENGTH_OFFSET", width: 90 },
-    { field: "KNIFE_UNIT", headerName: "KNIFE_UNIT", width: 90 },
-    { field: "FILM_UNIT", headerName: "FILM_UNIT", width: 90 },
-    { field: "INK_UNIT", headerName: "INK_UNIT", width: 90 },
-    { field: "LABOR_UNIT", headerName: "LABOR_UNIT", width: 90 },
-    { field: "DELIVERY_UNIT", headerName: "DELIVERY_UNIT", width: 90 },
-    { field: "DEPRECATION_UNIT", headerName: "DEPRECATION_UNIT", width: 90 },
-    { field: "GMANAGEMENT_UNIT", headerName: "GMANAGEMENT_UNIT", width: 90 },
-    { field: "M_LOSS_UNIT", headerName: "M_LOSS_UNIT", width: 90 },
-    { field: "KNIFE_COST", headerName: "KNIFE_COST", width: 90 },
-    { field: "FILM_COST", headerName: "FILM_COST", width: 90 },
-    { field: "INK_COST", headerName: "INK_COST", width: 90 },
-    { field: "LABOR_COST", headerName: "LABOR_COST", width: 90 },
-    { field: "DELIVERY_COST", headerName: "DELIVERY_COST", width: 90 },
-    { field: "DEPRECATION_COST", headerName: "DEPRECATION_COST", width: 90 },
-    { field: "GMANAGEMENT_COST", headerName: "GMANAGEMENT_COST", width: 90 },
-    { field: "MATERIAL_COST", headerName: "MATERIAL_COST", width: 90 },
-    { field: "TOTAL_COST", headerName: "TOTAL_COST", width: 90 },
-    { field: "SALE_PRICE", headerName: "SALE_PRICE", width: 90 },
-    { field: "PROFIT", headerName: "PROFIT", width: 90 },
-  ];
-
-  const columns_listbomvl = [
-    { field: "G_CODE", headerName: "G_CODE", width: 60 },
-    { field: "G_SEQ", headerName: "STT", width: 40 },
-    { field: "M_CODE", headerName: "M_CODE", width: 60 },
-    { field: "M_NAME", headerName: "M_NAME", width: 100 },
-    { field: "MAT_CUTWIDTH", headerName: "SIZE", width: 50 },
-    { field: "M_CMS_PRICE", headerName: "GIÁ NỘI BỘ", width: 60 },
-    { field: "M_SS_PRICE", headerName: "GIÁ OPEN", width: 60 },
-    { field: "USAGE", headerName: "VAI TRÒ", width: 60 },
-    { field: "MAT_MASTER_WIDTH", headerName: "KHỔ CÂY", width: 50 },
-    { field: "M_QTY", headerName: "SỐ LỚP LIỆU", width: 90 },
-  ];
-  const columns_banggia = [
-    { field: "CUST_CD", headerName: "MÃ KH", width: 50 },
-    { field: "G_CODE", headerName: "G_CODE", width: 60 },
-    { field: "PRICE_DATE", headerName: "PRICE_DATE", width: 60 },
-    { field: "MOQ", headerName: "MOQ", width: 50 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 90 },
-    { field: "BEP", headerName: "BEP", width: 90 },
-    { field: "FINAL", headerName: "APPROVAL", width: 90, cellRenderer: (e: any) => {
-      if (e.data.FINAL === "Y") {
-        return (
-          <div
-            style={{
-              color: "white",
-              backgroundColor: "#13DC0C",
-              width: "80px",
-              textAlign: "center",
+  const listcodeTable = React.useMemo(
+    () => (
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={listcode}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"75vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //setSelectedRows(e.selectedRowsData[0]);
+            }}
+            onRowClick={(e) => {
+              console.log(e.data.CUST_CD);
+              setSelectedRows(e.data);
+              loadbomNVLQuotation(e.data);
+              loadbanggia(e.data.CUST_CD, e.data.G_CODE);
+              setCust_KhauHao("0");
+              setCust_NhanCong("0");
+              setCust_QuanLyChung("0");
+              setCust_VanChuyen("0");
             }}
           >
-            Y
-          </div>
-        );
-      } else {
-        return (
-          <div
-            style={{
-              color: "white",
-              backgroundColor: "red",
-              width: "80px",
-              textAlign: "center",
-            }}
-          >
-            Not Approved
-          </div>
-        );
-      }
-    } },
-    { field: "DELETE", headerName: "DELETE", width: 90, cellRenderer: (e: any) => {
-      return (
-        <button style={{backgroundColor:'red', color:'white'}} onClick={()=> {
-          setBangGia(banggia.filter((item) => item.id !== e.data.id));
-        }}>Delete</button>  
-      )}}
-      
-    ,
-  ];
-  const listCodeTableAG = useMemo(() =>
-    <AGTable      
-      showFilter={true}
-      toolbar={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <IconButton
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="single" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode="batch"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(listcode, "ListCode");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+                <IconButton
                   className="buttonIcon"
                   onClick={() => {
                     showhidesearchdiv.current = !showhidesearchdiv.current;
@@ -414,38 +392,214 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   <TbLogout color="green" size={15} />
                   Show/Hide
                 </IconButton>
-          
-        </div>
-      }
-      columns={columns_listcode}
-      data={listcode}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(e: any) => {
-        //clickedRow.current = params.data;
-        //clickedRow.current = params.data;
-        //console.log(e.data) 
-        //console.log(e.data.CUST_CD);
-        setSelectedRows(e.data);
-        loadbomNVLQuotation(e.data);
-        loadbanggia(e.data.CUST_CD, e.data.G_CODE);
-        setCust_KhauHao("0");
-        setCust_NhanCong("0");
-        setCust_QuanLyChung("0");
-        setCust_VanChuyen("0");
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())        
-      }}
-    />
-    , [listcode]);
-  const listBOMVLTableAG = useMemo(() =>
-    <AGTable      
-      showFilter={true}
-      toolbar={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>          
-          <IconButton
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column
+              dataField="CUST_NAME_KD"
+              caption="KHÁCH HÀNG"
+              width={100}
+            ></Column>
+            <Column
+              dataField="G_NAME_KD"
+              caption="G_NAME_KD"
+              width={100}
+            ></Column>
+            <Column dataField="G_WIDTH" caption="RỘNG" width={50}></Column>
+            <Column dataField="G_LENGTH" caption="DÀI" width={50}></Column>
+            <Column dataField="G_C" caption="SỐ CỘT" width={70}></Column>
+            <Column dataField="G_C_R" caption="SỐ HÀNG" width={70}></Column>
+            <Column dataField="G_LG" caption="K/C HÀNG" width={100}></Column>
+            <Column dataField="G_CG" caption="K/C CỘT" width={100}></Column>
+            <Column dataField="G_SG_L" caption="MÉP TRÁI" width={100}></Column>
+            <Column dataField="G_SG_R" caption="MÉP PHẢI" width={100}></Column>
+            <Column
+              dataField="PROD_PRINT_TIMES"
+              caption="SỐ MÀU"
+              width={100}
+            ></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
+            {/*  <Column
+              dataField='MATERIAL_COST'
+              caption='Tiền Liệu'
+              width={100}
+            ></Column>
+            <Column
+              dataField='KNIFE_COST'
+              caption='Tiền Dao'
+              width={100}
+            ></Column>
+            <Column
+              dataField='FILM_COST'
+              caption='Tiền Film'
+              width={100}
+            ></Column>
+            <Column
+              dataField='INK_COST'
+              caption='Tiền mực'
+              width={100}
+            ></Column>
+            <Column
+              dataField='LABOR_COST'
+              caption='Nhân công'
+              width={100}
+            ></Column>
+            <Column
+              dataField='DELIVERY_COST'
+              caption='Vận chuyển'
+              width={100}
+            ></Column>
+            <Column
+              dataField='DEPRECATION_COST'
+              caption='Khấu hao'
+              width={100}
+            ></Column>
+            <Column
+              dataField='GMANAGEMENT_COST'
+              caption='Quản lý'
+              width={100}
+            ></Column>
+            <Column
+              dataField='TOTAL_COST'
+              caption='Tổng Chi Phí'
+              width={100}
+            ></Column>  
+            <Column
+              dataField='SALE_PRICE'
+              caption='Giá Bán'
+              width={100}
+            ></Column>
+            <Column dataField='PROFIT' caption='Lãi' width={100}></Column> */}
+            <Column
+              dataField="WIDTH_OFFSET"
+              caption="OFFSET RỘNG"
+              width={100}
+            ></Column>
+            <Column
+              dataField="LENGTH_OFFSET"
+              caption="OFFSET DÀI"
+              width={100}
+            ></Column>
+            <Column
+              dataField="KNIFE_UNIT"
+              caption="DAO ĐƠN VỊ"
+              width={100}
+            ></Column>
+            <Column
+              dataField="FILM_UNIT"
+              caption="FILM ĐƠN VỊ"
+              width={100}
+            ></Column>
+            <Column
+              dataField="INK_UNIT"
+              caption="MỰC ĐƠN VỊ"
+              width={100}
+            ></Column>
+            <Column
+              dataField="LABOR_UNIT"
+              caption="NHÂN CÔNG ĐV"
+              width={100}
+            ></Column>
+            <Column
+              dataField="DELIVERY_UNIT"
+              caption="VẬN CHUYỂN ĐV"
+              width={100}
+            ></Column>
+            <Column
+              dataField="DEPRECATION_UNIT"
+              caption="KHẤU HAO ĐV"
+              width={100}
+            ></Column>
+            <Column
+              dataField="GMANAGEMENT_UNIT"
+              caption="QUẢN LÝ ĐV"
+              width={100}
+            ></Column>
+            <Column
+              dataField="M_LOSS_UNIT"
+              caption="HAO HỤT ĐV"
+              width={100}
+            ></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="id"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [listcode],
+  );
+  const listBOMVLTable = React.useMemo(
+    () => (
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={listVL}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"30vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => { }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="single" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(listVL, "ListVL");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+                <IconButton
                   className="buttonIcon"
                   onClick={() => {
                     updateGIAVLBOM2();
@@ -454,49 +608,212 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   <GrUpdate color="green" size={15} />
                   Update Giá Liệu
                 </IconButton>
-        </div>
-      }
-      columns={columns_listbomvl}
-      data={listVL}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(e: any) => {
-        //clickedRow.current = params.data;
-        //clickedRow.current = params.data;
-        //console.log(e.data) 
-        //console.log(e.data.CUST_CD);
-       
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())        
-      }}
-    />
-    , [listVL]);
-  const banggiamoinhatAG = useMemo(() =>
-    <AGTable      
-      showFilter={true}
-      toolbar={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        </div>
-      }
-      columns={columns_banggia}
-      data={banggia}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(e: any) => {
-        //clickedRow.current = params.data;
-        //clickedRow.current = params.data;
-        //console.log(e.data) 
-        //console.log(e.data.CUST_CD);
-       
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())        
-      }}
-    />
-    , [banggia]);
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column dataField="G_CODE" caption="G_CODE" width={70}></Column>
+            <Column dataField="G_SEQ" caption="STT" width={50}></Column>
+            <Column dataField="M_CODE" caption="MÃ LIỆU" width={70}></Column>
+            <Column dataField="M_NAME" caption="TÊN LIỆU" width={120}></Column>
+            <Column dataField="MAT_CUTWIDTH" caption="SIZE" width={70}></Column>
+            <Column
+              dataField="M_CMS_PRICE"
+              caption="GIÁ NỘI BỘ"
+              width={80}
+            ></Column>
+            <Column
+              dataField="M_SS_PRICE"
+              caption="GIÁ OPEN"
+              width={70}
+            ></Column>
+            <Column dataField="USAGE" caption="VAI TRÒ" width={70}></Column>
+            <Column
+              dataField="MAT_MASTER_WIDTH"
+              caption="KHỔ CÂY"
+              width={70}
+            ></Column>
+            <Column
+              dataField="M_QTY"
+              caption="SỐ LƯỢNG LIỆU"
+              width={70}
+            ></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="id"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [listVL],
+  );
+  const banggiamoinhat = React.useMemo(
+    () => (
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={banggia}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"40vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => { }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+              setTempQty(e.data.MOQ);
+              setTempQty(e.data.MOQ);
+              setSalePriceNB(
+                tinhgia(selectedRows, listVL, e.data.MOQ).total_costCMS *
+                (1 + profit / 100),
+              );
+              setSalePriceOP(
+                tinhgia(selectedRows, listVL, e.data.MOQ).total_costSS *
+                (1 + profit / 100),
+              );
+              tinhgia(selectedRows, listVL, e.data.MOQ);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
+            />
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="single" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={true}
+              mode="cell"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(banggia, "BangGia");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column dataField="CUST_CD" caption="MÃ KH" width={50}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={60}></Column>
+            <Column
+              dataField="PRICE_DATE"
+              caption="PRICE_DATE"
+              width={80}
+            ></Column>
+            <Column dataField="MOQ" caption="MOQ" width={50}></Column>
+            <Column
+              dataField="PROD_PRICE"
+              caption="PROD_PRICE"
+              width={80}
+            ></Column>
+            <Column
+              dataField="BEP"
+              caption="BEP"
+              width={80}
+            ></Column>
+            <Column
+              dataField="FINAL"
+              caption="PHÊ DUYỆT"
+              width={100}
+              cellRender={(e: any) => {
+                if (e.data.FINAL === "Y") {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "#13DC0C",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Y
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Not Approved
+                    </div>
+                  );
+                }
+              }}
+            ></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="id"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [banggia],
+  );
   const addRowBG = () => {
     const addBangGiaRow: BANGGIA_DATA_CALC = {
       CUST_CD: selectedRows.CUST_CD,
@@ -634,7 +951,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           .then((response) => {
             //console.log(response.data);
             if (response.data.tk_status !== "NG") {
-              //Swal.fire("Thông báo", "Lưu giá liệu thành công", "success");
+              Swal.fire("Thông báo", "Lưu giá liệu thành công", "success");
             } else {
               Swal.fire(
                 "Thông báo",
@@ -647,7 +964,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             console.log(error);
           });
       }
-      Swal.fire("Thông báo", "Lưu giá liệu thành công", "success");
     } else {
       Swal.fire("Thông báo", "Code này chưa có bom liệu", "error");
     }
@@ -661,14 +977,14 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       <div className="calc_title">BẢNG TÍNH GIÁ</div>
       <div className="calc_wrap">
         <div className="left" /* style={{ width: sh ? "20%" : "100%" }} */>
-          <div className="listcode">{listCodeTableAG}</div>
+          <div className="listcode">{listcodeTable}</div>
           <div className="moqlist"></div>
           <div className="insert_button"></div>
         </div>
         {sh && (
           <div className="right">
             <div className="up">
-              <div className="bomnvl">{listBOMVLTableAG}</div>
+              <div className="bomnvl">{listBOMVLTable}</div>
               <div className="product_visualize">
                 <CodeVisualLize DATA={selectedRows} />
                 <div className="banve">
@@ -1283,7 +1599,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   Add to List
                 </IconButton>
               </div>
-              <div className="listbaogia">{banggiamoinhatAG}</div>
+              <div className="listbaogia">{banggiamoinhat}</div>
               <div className="buttondiv">
                 <IconButton
                   className="buttonIcon"

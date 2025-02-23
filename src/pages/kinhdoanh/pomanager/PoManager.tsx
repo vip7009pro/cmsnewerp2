@@ -1391,7 +1391,7 @@ const PoManager = () => {
     { field: "PO_ID", cellDataType: "number", headerName: "PO_ID", width: 90, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 120 },
+    { field: "G_NAME", headerName: "G_NAME", width: 120, pivot: true },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
     { field: "DESCR", headerName: "DESCR", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 70 },
@@ -1513,6 +1513,7 @@ const PoManager = () => {
       cellDataType: "number",
       headerName: "BALANCE_AMOUNT",
       width: 90,
+      aggFunc: 'sum',
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green" }}>
