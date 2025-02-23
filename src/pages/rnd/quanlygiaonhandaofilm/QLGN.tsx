@@ -1,37 +1,13 @@
-import {
-  Autocomplete,
-  IconButton,
-  TextField,
-  createFilterOptions,
-} from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
+import { Autocomplete, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useState, useTransition } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import "./QLGN.scss";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart } from "react-icons/md";
 import { CodeListData, CustomerListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 const QLGN = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([
@@ -47,7 +23,6 @@ const QLGN = () => {
       CUST_NAME_KD: "CMSV",
       CUST_NAME: "CMSV",
     });
-  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [handoverdatatable, setHandoverDataTable] = useState<Array<HANDOVER_DATA>>([]);
   const [fromdate, setFromDate] = useState(moment.utc().format("YYYY-MM-DD"));
   const [daofimltotalqty, setDaoFilmTotalQty] = useState(0);
@@ -123,7 +98,7 @@ const QLGN = () => {
                 NGAYBANGIAO: moment
                   .utc(element.NGAYBANGIAO)
                   .format("YYYY-MM-DD"),
-                CFM_DATE: moment.utc(element.CFM_DATE).format("YYYY-MM-DD"),
+                CFM_DATE: element.CFM_DATE === null ? '' : moment.utc(element.CFM_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
             },
@@ -151,196 +126,178 @@ const QLGN = () => {
     //console.log(tempcodefullinfo);
     setSelectedRows(tempHandoverData);
   };
-  const HandoverDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={handoverdatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => { }}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(handoverdatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column
-              dataField="KNIFE_FILM_ID"
-              caption="KNIFE_FILM_ID"
-              width={100}
-            ></Column>
-            <Column
-              dataField="FACTORY_NAME"
-              caption="FACTORY_NAME"
-              width={100}
-            ></Column>
-            <Column
-              dataField="NGAYBANGIAO"
-              caption="NGAYBANGIAO"
-              width={100}
-            ></Column>
-            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
-            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
-            <Column
-              dataField="PROD_TYPE"
-              caption="PROD_TYPE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CUST_NAME_KD"
-              caption="CUST_NAME_KD"
-              width={100}
-            ></Column>
-            <Column
-              dataField="LOAIBANGIAO_PDP"
-              caption="LOAIBANGIAO_PDP"
-              width={100}
-            ></Column>
-            <Column
-              dataField="LOAIPHATHANH"
-              caption="LOAIPHATHANH"
-              width={100}
-            ></Column>
-            <Column dataField="SOLUONG" caption="SOLUONG" width={100}></Column>
-            <Column
-              dataField="SOLUONGOHP"
-              caption="SOLUONGOHP"
-              width={100}
-            ></Column>
-            <Column
-              dataField="LYDOBANGIAO"
-              caption="LYDOBANGIAO"
-              width={100}
-            ></Column>
-            <Column
-              dataField="PQC_EMPL_NO"
-              caption="PQC_EMPL_NO"
-              width={100}
-            ></Column>
-            <Column
-              dataField="RND_EMPL_NO"
-              caption="RND_EMPL_NO"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SX_EMPL_NO"
-              caption="SX_EMPL_NO"
-              width={100}
-            ></Column>
-            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
-            <Column
-              dataField="CFM_GIAONHAN"
-              caption="CFM_GIAONHAN"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CFM_INS_EMPL"
-              caption="CFM_INS_EMPL"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CFM_DATE"
-              caption="CFM_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="KNIFE_FILM_STATUS"
-              caption="KNIFE_FILM_STATUS"
-              width={100}
-            ></Column>
-            <Column dataField="MA_DAO" caption="MA_DAO" width={100}></Column>
-            <Column
-              dataField="TOTAL_PRESS"
-              caption="TOTAL_PRESS"
-              width={100}
-            ></Column>
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
-            <Column
-              dataField="KNIFE_TYPE"
-              caption="KNIFE_TYPE"
-              width={100}
-            ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [handoverdatatable],
-  );
+  const columns_handoverdata = [
+    {
+      field: "KNIFE_FILM_ID",
+      headerName: "KNIFE_FILM_ID",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "FACTORY_NAME",
+      headerName: "FACTORY_NAME",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "NGAYBANGIAO",
+      headerName: "NGAYBANGIAO",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "G_CODE",
+      headerName: "G_CODE",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "PROD_TYPE",
+      headerName: "PROD_TYPE",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "CUST_NAME_KD",
+      headerName: "CUST_NAME_KD",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "LOAIBANGIAO_PDP",
+      headerName: "LOAIBANGIAO_PDP",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "LOAIPHATHANH",
+      headerName: "LOAIPHATHANH",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "SOLUONG",
+      headerName: "SOLUONG",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "SOLUONGOHP",
+      headerName: "SOLUONGOHP",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "LYDOBANGIAO",
+      headerName: "LYDOBANGIAO",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "PQC_EMPL_NO",
+      headerName: "PQC_EMPL_NO",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "RND_EMPL_NO",
+      headerName: "RND_EMPL_NO",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "SX_EMPL_NO",
+      headerName: "SX_EMPL_NO",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "REMARK",
+      headerName: "REMARK",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "CFM_GIAONHAN",
+      headerName: "CFM_GIAONHAN",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "CFM_INS_EMPL",
+      headerName: "CFM_INS_EMPL",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "CFM_DATE",
+      headerName: "CFM_DATE",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "KNIFE_FILM_STATUS",
+      headerName: "KNIFE_FILM_STATUS",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "MA_DAO",
+      headerName: "MA_DAO",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "TOTAL_PRESS",
+      headerName: "TOTAL_PRESS",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "CUST_CD",
+      headerName: "CUST_CD",
+      width: 100,
+      editable: false,
+    },
+    {
+      field: "KNIFE_TYPE",
+      headerName: "KNIFE_TYPE",
+      width: 100,
+      editable: false,
+    },
+  ]
+  const HandoverDataTableAG = useMemo(() =>
+    <AGTable
+      showFilter={true}
+      toolbar={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+
+
+        </div>
+      }
+      columns={columns_handoverdata}
+      data={handoverdatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(e: any) => {
+        //clickedRow.current = params.data;
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+        //console.log(e.data.CUST_CD);       
+
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())        
+      }}
+    />
+    , [handoverdatatable]);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
     limit: 100,
@@ -377,10 +334,10 @@ const QLGN = () => {
       }
     });
   }
-  const checkBanGiaoData = ()=> {
-    let err_code: string ='';
-    if(rndEmpl.length<7 || qcEmpl.length <7) err_code = "NG: Mã nhân viên phải bằng 7 ký tự";
-    if(daofimltotalqty<=0) err_code = "NG: Tổng số lượng dao/film phải lớn hơn 0";
+  const checkBanGiaoData = () => {
+    let err_code: string = '';
+    if (rndEmpl.length < 7 || qcEmpl.length < 7) err_code = "NG: Mã nhân viên phải bằng 7 ký tự";
+    if (daofimltotalqty <= 0) err_code = "NG: Tổng số lượng dao/film phải lớn hơn 0";
     return err_code;
   }
   const addBanGiao = () => {
@@ -692,7 +649,7 @@ const QLGN = () => {
             </button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{HandoverDataTable}</div>
+        <div className="tracuuYCSXTable">{HandoverDataTableAG}</div>
       </div>
     </div>
   );

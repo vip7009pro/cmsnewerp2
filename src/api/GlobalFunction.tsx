@@ -7331,3 +7331,18 @@ export const f_deleteLongtermPlan = async (DATA: LONGTERM_PLAN_DATA) => {
     })
     return kq;
 }
+
+export const f_cancelProductionLot = async (DATA: any) => { 
+  let kq: string = '';
+  await generalQuery("cancelProductionLot", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+    return kq;
+}

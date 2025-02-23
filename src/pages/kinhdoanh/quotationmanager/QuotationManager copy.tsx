@@ -5,14 +5,30 @@ import {
   TextField,
   createFilterOptions,
 } from "@mui/material";
+import DataGrid, {
+  Column,
+  ColumnChooser,
+  Editing,
+  Export,
+  FilterRow,
+  Item,
+  Pager,
+  Paging,
+  Scrolling,
+  SearchPanel,
+  Selection,
+  Summary,
+  Toolbar,
+  TotalItem,
+} from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel, AiOutlinePrinter } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QuotationManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import { generalQuery, getAuditMode, getCompany, getSever } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
@@ -29,14 +45,17 @@ import {
   CustomerListData,
   UserData,
 } from "../../../api/GlobalInterface";
-import AGTable from "../../../components/DataTable/AGTable";
 const QuotationManager = () => {
   const dataGridRef = useRef<any>(null);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
+  const [trigger, setTrigger] = useState(true);
   const [sh, setSH] = useState(false);
   const showhidesearchdiv = useRef(true);
+  const [selectedUploadExcelRow, setSelectedUploadExcelRow] = useState<
+    BANGGIA_DATA2[]
+  >([]);
   const [selectedBangGiaDocRow, setselectedBangGiaDocRow] = useState<
     BANGGIA_DATA2[]
   >([]);
@@ -87,6 +106,7 @@ const QuotationManager = () => {
   );
   const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
   const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
+  const [banggiachung, setBangGiaChung] = useState<Array<any>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -95,11 +115,10 @@ const QuotationManager = () => {
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
   const [m_name, setM_Name] = useState("");
+  const [selectbutton, setSelectButton] = useState(false);
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [showhideQuotationForm, setShowHideQuotationForm] = useState(false);
-
-  const [rows, setRows] = useState<Array<any>>([]);
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
@@ -137,6 +156,27 @@ const QuotationManager = () => {
       }
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để phê duyệt", "error");
+    }
+  };
+  const handleShowHideSearchBar = () => {
+    console.log(showhidesearchdiv.current);
+    showhidesearchdiv.current = !showhidesearchdiv.current;
+    setSH(!showhidesearchdiv.current);
+  };
+  const clearuploadrow = () => {
+    if (selectedUploadExcelRow.length > 0) {
+      let tempexceltable: BANGGIA_DATA2[] = uploadExcelJson;
+      for (let j = 0; j < tempexceltable.length; j++) {
+        for (let i = 0; i < selectedUploadExcelRow.length; i++) {
+          if (selectedUploadExcelRow[i].id === tempexceltable[j].id) {
+            tempexceltable.splice(j, 1);
+          }
+        }
+      }
+      console.log(tempexceltable);
+      setUploadExcelJSon(tempexceltable);
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để clear", "error");
     }
   };
   const uploadgia = async () => {
@@ -1122,155 +1162,630 @@ const QuotationManager = () => {
         store: banggia,
       }),
     );
-  const  column_giangang=[
-  { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
-  { field: "G_CODE", headerName: "G_CODE", width: 90 },
-  { field: "G_NAME", headerName: "G_NAME", width: 90 },
-  { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90 },
-  { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 90 },
-  { field: "MOQ", headerName: "MOQ", width: 90 },
-  { field: "PRICE1", headerName: "PRICE1", width: 90 },
-  { field: "PRICE2", headerName: "PRICE2", width: 90 },
-  { field: "PRICE3", headerName: "PRICE3", width: 90 },
-  { field: "PRICE4", headerName: "PRICE4", width: 90 },
-  { field: "PRICE5", headerName: "PRICE5", width: 90 },
-  { field: "PRICE6", headerName: "PRICE6", width: 90 },
-  { field: "PRICE7", headerName: "PRICE7", width: 90 },
-  { field: "PRICE8", headerName: "PRICE8", width: 90 },
-  { field: "PRICE9", headerName: "PRICE9", width: 90 },
-  { field: "PRICE10", headerName: "PRICE10", width: 90 },
-  { field: "PRICE11", headerName: "PRICE11", width: 90 },
-  { field: "PRICE12", headerName: "PRICE12", width: 90 },
-  { field: "PRICE13", headerName: "PRICE13", width: 90 },
-  { field: "PRICE14", headerName: "PRICE14", width: 90 },
-  { field: "PRICE15", headerName: "PRICE15", width: 90 },
-  { field: "PRICE16", headerName: "PRICE16", width: 90 },
-  { field: "PRICE17", headerName: "PRICE17", width: 90 },
-  { field: "PRICE18", headerName: "PRICE18", width: 90 },
-  { field: "PRICE19", headerName: "PRICE19", width: 90 },
-  { field: "PRICE20", headerName: "PRICE20", width: 90 },
-  { field: "PRICE_DATE1", headerName: "PRICE_DATE1", width: 90 },
-  { field: "PRICE_DATE2", headerName: "PRICE_DATE2", width: 90 },
-  { field: "PRICE_DATE3", headerName: "PRICE_DATE3", width: 90 },
-  { field: "PRICE_DATE4", headerName: "PRICE_DATE4", width: 90 },
-  { field: "PRICE_DATE5", headerName: "PRICE_DATE5", width: 90 },
-  { field: "PRICE_DATE6", headerName: "PRICE_DATE6", width: 90 },
-  { field: "PRICE_DATE7", headerName: "PRICE_DATE7", width: 90 },
-  { field: "PRICE_DATE8", headerName: "PRICE_DATE8", width: 90 },
-  { field: "PRICE_DATE9", headerName: "PRICE_DATE9", width: 90 },
-  { field: "PRICE_DATE10", headerName: "PRICE_DATE10", width: 90 },
-  { field: "PRICE_DATE11", headerName: "PRICE_DATE11", width: 90 },
-  { field: "PRICE_DATE12", headerName: "PRICE_DATE12", width: 90 },
-  { field: "PRICE_DATE13", headerName: "PRICE_DATE13", width: 90 },
-  { field: "PRICE_DATE14", headerName: "PRICE_DATE14", width: 90 },
-  { field: "PRICE_DATE15", headerName: "PRICE_DATE15", width: 90 },
-  { field: "PRICE_DATE16", headerName: "PRICE_DATE16", width: 90 },
-  { field: "PRICE_DATE17", headerName: "PRICE_DATE17", width: 90 },
-  { field: "PRICE_DATE18", headerName: "PRICE_DATE18", width: 90 },
-  { field: "PRICE_DATE19", headerName: "PRICE_DATE19", width: 90 },
-  { field: "PRICE_DATE20", headerName: "PRICE_DATE20", width: 90 } 
-  ];
-  const column_gia_doc = [
-  { field: "PROD_ID", headerName: "PROD_ID", width: 50, headerCheckboxSelection: true, checkboxSelection: true  },
-  { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },  
-  { field: "CUST_CD", headerName: "CUST_CD", width: 50 },
-  { field: "G_CODE", headerName: "G_CODE", width: 60 },
-  { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90 },
-  { field: "G_NAME", headerName: "G_NAME", width: 90 },
-  { field: "PROD_MAIN_MATERIAL", headerName: "MATERIAL", width: 70 },
-  { field: "DESCR", headerName: "DESCR", width: 120 },
-  { field: "PRICE_DATE", headerName: "PRICE_DATE", width: 70 },
-  { field: "MOQ", headerName: "MOQ", width: 60 },
-  { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 70, cellRenderer:(e: any) => {
-    return (
-      <span style={{ color: "blue", fontWeight: "normal" }}>
-        {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 6,
-        })}
-      </span>
-    );
-  } },
-  { field: "BEP", headerName: "BEP", width: 60, cellRenderer:(e: any) => {
-    return (
-      <span style={{ color: "blue", fontWeight: "normal" }}>
-        {e.data.BEP?.toFixed(6).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 6,
-        })}
-      </span>
-    );
-  }  },  
-  { field: "FINAL", headerName: "APPROVAL", width: 90, cellRenderer:(e: any) => {
-    if (e.data.FINAL === "Y") {
-      return (
-        <div
-          style={{
-            color: "white",
-            backgroundColor: "#13DC0C",
-            width: "80px",
-            textAlign: "center",
-          }}
-        >
-          Y
-        </div>
-      );
-    } else {
-      return (
-        <div
-          style={{
-            color: "white",
-            backgroundColor: "red",
-            width: "80px",
-            textAlign: "center",
-          }}
-        >
-          Not Approved
-        </div>
-      );
-    }
-  }  },
-  { field: "DUPLICATE", headerName: "DUPLICATE", width: 90,cellRenderer:(e: any) => {
-    if (e.data.DUPLICATE ===1) {
-      return (
-        <div
-          style={{
-            color: "white",
-            backgroundColor: "#13DC0C",
-            width: "80px",
-            textAlign: "center",
-          }}
-        >
-          OK
-        </div>
-      );
-    } else {
-      return (
-        <div
-          style={{
-            color: "white",
-            backgroundColor: "red",
-            width: "80px",
-            textAlign: "center",
-          }}
-        >
-          NG
-        </div>
-      );
-    }
-  } },
-  { field: "INS_DATE", headerName: "INS_DATE", width: 95 },
-  { field: "INS_EMPL", headerName: "INS_EMPL", width: 60 },
-  { field: "UPD_DATE", headerName: "UPD_DATE", width: 95 },
-  { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 60 },
-  ];
-  const [columns, setColumns] = useState<Array<any>>(column_gia_doc);
-  const priceTableDataAG = useMemo(() =>
-    <AGTable      
-      showFilter={true}
-      toolbar={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <IconButton
+  const banggiaMM = React.useMemo(
+    () => (
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={banggia}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"70vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={false}
+              allowAdding={false}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={false}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color="green" size={15} />
+                  Show/Hide
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(banggia, "PriceTable");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                  Pivot
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
+                    loadCodeList();
+                    getcustomerlist();
+                    setShowHideUpPrice(true);
+                  }}
+                >
+                  <BiCloudUpload color="#070EFA" size={15} />
+                  Up Giá
+                </IconButton>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column
+              dataField="CUST_NAME_KD"
+              caption="CUST_NAME_KD"
+              width={100}
+            ></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
+            <Column
+              dataField="G_NAME_KD"
+              caption="G_NAME_KD"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PROD_MAIN_MATERIAL"
+              caption="PROD_MAIN_MATERIAL"
+              width={100}
+            ></Column>
+            <Column dataField="MOQ" caption="MOQ" width={100}></Column>
+            <Column
+              dataField="PRICE1"
+              caption="PRICE1"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE1?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE2"
+              caption="PRICE2"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE2?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE3"
+              caption="PRICE3"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE3?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE4"
+              caption="PRICE4"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE4?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE5"
+              caption="PRICE5"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE5?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE6"
+              caption="PRICE6"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE6?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE7"
+              caption="PRICE7"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE7?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE8"
+              caption="PRICE8"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE8?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE9"
+              caption="PRICE9"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE9?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE10"
+              caption="PRICE10"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE10?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE11"
+              caption="PRICE11"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE11?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE12"
+              caption="PRICE12"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE12?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE13"
+              caption="PRICE13"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE13?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE14"
+              caption="PRICE14"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE14?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE15"
+              caption="PRICE15"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE15?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE16"
+              caption="PRICE16"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE16?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE17"
+              caption="PRICE17"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE17?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE18"
+              caption="PRICE18"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE18?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE19"
+              caption="PRICE19"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE19?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE20"
+              caption="PRICE20"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PRICE20?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE1"
+              caption="PRICE_DATE1"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE2"
+              caption="PRICE_DATE2"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE3"
+              caption="PRICE_DATE3"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE4"
+              caption="PRICE_DATE4"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE5"
+              caption="PRICE_DATE5"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE6"
+              caption="PRICE_DATE6"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE7"
+              caption="PRICE_DATE7"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE8"
+              caption="PRICE_DATE8"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE9"
+              caption="PRICE_DATE9"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE10"
+              caption="PRICE_DATE10"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE11"
+              caption="PRICE_DATE11"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE12"
+              caption="PRICE_DATE12"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE13"
+              caption="PRICE_DATE13"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE14"
+              caption="PRICE_DATE14"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE15"
+              caption="PRICE_DATE15"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE16"
+              caption="PRICE_DATE16"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE17"
+              caption="PRICE_DATE17"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE18"
+              caption="PRICE_DATE18"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE19"
+              caption="PRICE_DATE19"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE20"
+              caption="PRICE_DATE20"
+              width={100}
+            ></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="G_CODE"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [banggia],
+  );
+  const banggiaMM2 = React.useMemo(
+    () => (
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            ref={dataGridRef}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={banggia2}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"70vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              setselectedBangGiaDocRow(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={false}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
                   className="buttonIcon"
                   onClick={() => {
                     showhidesearchdiv.current = !showhidesearchdiv.current;
@@ -1325,118 +1840,361 @@ const QuotationManager = () => {
                   <AiOutlinePrinter color="#F900C8" size={15} />
                   In báo giá
                 </IconButton>
-         
-        </div>
-      }
-      columns={columns}
-      data={rows}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(params: any) => {
-        //clickedRow.current = params.data;
-        //clickedRow.current = params.data;
-        //console.log(e.data) 
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())
-        setselectedBangGiaDocRow(params!.api.getSelectedRows());
-      }}
-    />
-    , [rows, columns]);
-  
-  const columns_uploadexcel = [
-    { field: "PROD_ID", headerName: "PROD_ID", width: 50 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
-    { field: "CUST_CD", headerName: "CUST_CD", width: 60 },
-    { field: "G_CODE", headerName: "G_CODE", width: 70 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 120 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "MATERIAL", width: 90 },
-    { field: "MOQ", headerName: "MOQ", width: 90 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 90, cellRenderer:(e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "normal" }}>
-          {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 6,
-          })}
-        </span>
-      );
-    } },
-    { field: "BEP", headerName: "BEP", width: 90, cellRenderer: (e: any) => {
-      return (
-        <span style={{ color: "blue", fontWeight: "normal" }}>
-          {e.data.BEP?.toFixed(6).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 6,
-          })}
-        </span>
-      );
-    } },
-    { field: "PRICE_DATE", headerName: "PRICE_DATE", width: 90, cellRenderer: (e: any) => {
-      return (
-        <span style={{ color: "black", fontWeight: "normal" }}>
-          {moment.utc(e.data.PRICE_DATE).format("YYYY-MM-DD")}
-        </span>
-      );
-    } },
-    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 90, cellRenderer: (e: any) => {
-      return (
-        <span
-          style={{
-            backgroundColor:
-              e.data.CHECKSTATUS === "READY" ? "green" : "red",
-            color: "white",
-            padding: "5px",
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column
+              dataField="PROD_ID"
+              caption="PROD_ID"
+              width={50}
+            ></Column>
+            <Column
+              dataField="CUST_NAME_KD"
+              caption="CUST_NAME_KD"
+              width={100}
+            ></Column>
+            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
+            <Column
+              dataField="G_NAME_KD"
+              caption="G_NAME_KD"
+              width={100}
+            ></Column>
+            <Column
+              dataField="PROD_MAIN_MATERIAL"
+              caption="PROD_MAIN_MATERIAL"
+              width={200}
+            ></Column>
+            <Column dataField="MOQ" caption="MOQ" width={100}></Column>
+            <Column
+              dataField="PROD_PRICE"
+              caption="PROD_PRICE"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="BEP"
+              caption="BEP"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.BEP?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="PRICE_DATE"
+              caption="PRICE_DATE"
+              width={100}
+              dataType="date"
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "black", fontWeight: "normal" }}>
+                    {moment.utc(e.data.PRICE_DATE).format("YYYY-MM-DD")}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
+              dataField="FINAL"
+              caption="APPROVAL"
+              width={100}
+              cellRender={(e: any) => {
+                if (e.data.FINAL === "Y") {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "#13DC0C",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Y
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Not Approved
+                    </div>
+                  );
+                }
+              }}
+            ></Column>
+            <Column
+              dataField="DUPLICATE"
+              caption="DUPLICATE"
+              width={100}
+              cellRender={(e: any) => {
+                if (e.data.DUPLICATE ===1) {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "#13DC0C",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      OK
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      NG
+                    </div>
+                  );
+                }
+              }}
+            ></Column>
+            <Column dataField="INS_DATE" caption="INS_DATE" width={120}></Column>
+            <Column dataField="INS_EMPL" caption="INS_EMPL" width={80}></Column>
+            <Column dataField="UPD_DATE" caption="UPD_DATE" width={120}></Column>
+            <Column dataField="UPD_EMPL" caption="UPD_EMPL" width={80}></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="G_CODE"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [banggia2],
+  );
+  const upgiaMM2 = React.useMemo(
+    () => (
+      <div className="datatb">
+        <DataGrid
+          style={{ fontSize: "0.7rem" }}
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={uploadExcelJson}
+          columnWidth="auto"
+          keyExpr="id"
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+            setSelectedUploadExcelRow(e.selectedRowsData);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
           }}
         >
-          {e.data.CHECKSTATUS}
-        </span>
-      );
-    } },
-    { field: "EDIT", headerName: "EDIT", width: 90, cellRenderer:(e: any) => {
-      return (
-        <button
-          style={{
-            color: "white",
-            backgroundColor: "red",
-            width: "80px",
-            textAlign: "center",
-          }}
-          onClick={() => {
-            setUploadExcelJSon(uploadExcelJson.filter((item) => item.PROD_ID !== e.data.PROD_ID));
-          }}
-        >
-          Delete
-        </button>
-      );
-    }},
-  ]
-  const uploadPriceTableDataAG = useMemo(() =>
-    <AGTable      
-      showFilter={true}
-      toolbar={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>          
-         
-        </div>
-      }
-      columns={columns_uploadexcel}
-      data={uploadExcelJson}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(params: any) => {
-        //clickedRow.current = params.data;
-        //clickedRow.current = params.data;
-        //console.log(e.data) 
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())
-        setselectedBangGiaDocRow(params!.api.getSelectedRows());
-      }}
-    />
-    , [uploadExcelJson, columns_uploadexcel]);
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar="onHover"
+            mode="virtual"
+          />
+          <Selection mode="multiple" selectAllMode="allPages" />
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={true}
+            mode="cell"
+            confirmDelete={false}
+            onChangesChange={(e) => { }}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location="before">
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  SaveExcel(banggia2, "PriceTable");
+                }}
+              >
+                <AiFillFileExcel color="green" size={15} />
+                SAVE
+              </IconButton>
+            </Item>
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooserButton" />
+            <Item name="addRowButton" />
+            <Item name="saveButton" />
+            <Item name="revertButton" />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
+          />
+          <Column
+            dataField="PROD_ID"
+            caption="PROD_ID"
+            width={50}
+          ></Column>
+          <Column
+            dataField="CUST_NAME_KD"
+            caption="CUST_NAME_KD"
+            width={100}
+          ></Column>
+          <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+          <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+          <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
+          <Column
+            dataField="G_NAME_KD"
+            caption="G_NAME_KD"
+            width={100}
+          ></Column>
+          <Column
+            dataField="PROD_MAIN_MATERIAL"
+            caption="PROD_MAIN_MATERIAL"
+            width={200}
+          ></Column>
+          <Column dataField="MOQ" caption="MOQ" width={100}></Column>
+          <Column
+            dataField="PROD_PRICE"
+            caption="PROD_PRICE"
+            width={100}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 6,
+                  })}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField="BEP"
+            caption="BEP"
+            width={100}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.BEP?.toFixed(6).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 6,
+                  })}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField="PRICE_DATE"
+            caption="PRICE_DATE"
+            width={100}
+            dataType="date"
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "normal" }}>
+                  {moment.utc(e.data.PRICE_DATE).format("YYYY-MM-DD")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column dataField="FINAL" caption="APPROVAL" width={100}></Column>
+          <Column
+            dataField="CHECKSTATUS"
+            caption="CHECKSTATUS"
+            width={100}
+            cellRender={(e: any) => {
+              return (
+                <span
+                  style={{
+                    backgroundColor:
+                      e.data.CHECKSTATUS === "READY" ? "green" : "red",
+                    color: "white",
+                    padding: "5px",
+                  }}
+                >
+                  {e.data.CHECKSTATUS}
+                </span>
+              );
+            }}
+          ></Column>
+          <Summary>
+            <TotalItem
+              alignment="right"
+              column="G_CODE"
+              summaryType="count"
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </div>
+    ),
+    [uploadExcelJson],
+  );
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -1598,8 +2356,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             },
           );
           setBangGia(loaded_data);
-          setRows(loaded_data);
-          setColumns(column_giangang);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia,
@@ -1647,8 +2403,6 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
             },
           );
           setBangGia2(loaded_data);
-          setRows(loaded_data);
-          setColumns(column_gia_doc);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia2,
@@ -1720,7 +2474,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
       if (err_code === "") {
         Swal.fire("Thông báo", "Cập nhật thông tin giá thành công", "success");
         checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
-        
+        setSelectButton(false);
       } else {
         Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
       }
@@ -1788,8 +2542,6 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
             },
           );
           setBangGia2(loaded_data);
-          setRows(loaded_data);
-          setColumns(column_gia_doc);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia2,
@@ -1898,15 +2650,15 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
             <div className="formbutton">
               <div className="buttoncolumn">
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
-                  
+                  setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGiaMoiNhat);
                 }}>Last Price</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
-                  
+                  setSelectButton(true);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia);
                 }}>Giá Ngang</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
-                  
+                  setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
                 }}>Giá Dọc</Button>
               </div>
@@ -1915,19 +2667,20 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
                   checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
                 }}>Approve</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue', color: 'yellow' }} onClick={() => {
-                  
+                  setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], confirmUpdateGiaHangLoat);
                 }}>Update</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red', color: 'black' }} onClick={() => {
-                  
+                  setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], confirmDeleteGiaHangLoat);
                 }}>Delete</Button>
               </div>
             </div>
           </div>
         )}
-        <div className="tracuuYCSXTable">          
-          {priceTableDataAG}
+        <div className="tracuuYCSXTable">
+          {selectbutton && banggiaMM}
+          {!selectbutton && banggiaMM2}
         </div>
         {showhidePivotTable && (
           <div className="pivottable1">
@@ -2126,7 +2879,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
                 Add
               </IconButton>
             </div>
-            <div className="upgiatable">{uploadPriceTableDataAG}</div>
+            <div className="upgiatable">{upgiaMM2}</div>
           </div>
         )}
         {showhideQuotationForm && (

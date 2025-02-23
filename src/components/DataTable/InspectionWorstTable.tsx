@@ -1,97 +1,94 @@
-import React, { useState, useEffect } from 'react'
-import { CustomResponsiveContainer, SaveExcel } from '../../api/GlobalFunction';
-import { DataGrid } from 'devextreme-react';
-import { Column, FilterRow, KeyboardNavigation, Scrolling, Selection, Summary, TotalItem } from 'devextreme-react/data-grid';
-import { AiFillFileExcel } from 'react-icons/ai';
-import {
-  IconButton,
-} from "@mui/material";
+import { useState, useEffect, useMemo } from 'react';
 import { WEB_SETTING_DATA, WorstCodeData, WorstData } from '../../api/GlobalInterface';
 import ChartWorstCodeByErrCode from '../Chart/INSPECTION/ChartWorstCodeByErrCode';
 import { generalQuery, getGlobalSetting } from '../../api/Api';
 import Swal from 'sweetalert2';
 import './InspectionWorstTable.scss'
+import AGTable from './AGTable';
 const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, ng_type, listCode, cust_name }: { dailyClosingData: Array<WorstData>, worstby: string, from_date: string, to_date: string, ng_type: string, listCode: string[], cust_name: string }) => {
-  //console.log(dailyClosingData)
-  const [columns, setColumns] = useState<Array<any>>([]);
+  console.log(dailyClosingData)
+
   const [worstByCodeData, setWorstByCodeData] = useState<Array<WorstCodeData>>([]); 
-  const dailyClosingDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(dailyClosingData, "DailyClosingData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton>
-        <CustomResponsiveContainer>
-          <DataGrid
-            style={{ fontSize: "0.7rem" }}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={dailyClosingData}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"100%"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //console.log(e.selectedRowsData);
-              //setselecterowfunction(e.selectedRowsData);
-              //setSelectedRowsData(e.selectedRowsData);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);     
-              getWorstByErrCode(e.data.ERR_CODE);
-            }}
-            onRowUpdated={(e) => {
-              //console.log(e);
-            }}
-            onRowPrepared={(e: any) => {
-              /*  if (e.data?.CUST_NAME_KD === 'TOTAL') {
-                e.rowElement.style.background = "#e9fc40";
-                e.rowElement.style.fontWeight = "bold";
-              } */
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Scrolling
-              useNative={false}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            {columns.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [dailyClosingData, columns,getGlobalSetting()]
-  );
+  const columns = [
+    {
+      field: "ERR_CODE",
+      headerName: "ERR_CODE",
+      width: 60,
+      cellRenderer: (ele: any) => {
+        return (<span style={{ color: "black", fontWeight: "normal" }}>
+          {ele.data.ERR_CODE}
+        </span>)
+      },
+    },
+    {
+      field: "ERR_NAME_VN",
+      headerName: "ERR_NAME_VN",
+      width: 90,
+      cellRenderer: (ele: any) => {
+        return (<span style={{ color: "black", fontWeight: "normal" }}>
+          {ele.data.ERR_NAME_VN}
+        </span>)
+      },
+    },
+    {
+      field: "ERR_NAME_KR",
+      headerName: "ERR_NAME_KR",
+      width: 90,
+      cellRenderer: (ele: any) => {
+        return (<span style={{ color: "black", fontWeight: "normal" }}>
+          {ele.data.ERR_NAME_KR}
+        </span>)
+      },
+    },
+    {
+      field: "NG_QTY",
+      headerName: "NG_QTY",
+      width: 90,
+      cellRenderer: (ele: any) => {
+        return (<span style={{ color: "#050505", fontWeight: "bold" }}>
+          {ele.data.NG_QTY.toLocaleString("en-US")}
+        </span>)
+      },
+    },
+    {
+      field: "NG_AMOUNT",
+      headerName: "NG_AMOUNT",
+      width: 90,
+      cellRenderer: (ele: any) => {
+        return (<span style={{ color: "#050505", fontWeight: "bold" }}>
+          {ele.data.NG_AMOUNT.toLocaleString("en-US", {
+            style: "currency",
+            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+          })}
+        </span>)
+      },
+    },   
+  ]
+
+  const worstDataAGTable = useMemo(() =>
+    <AGTable
+      suppressRowClickSelection={false}
+      showFilter={true}
+      toolbar={
+        <></>
+      }
+      columns={columns}
+      data={dailyClosingData}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //console.log(params.data)
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())            
+      }}
+    />
+    , [dailyClosingData, columns]);
+
+
+
+
   const getWorstByErrCode = (err_code: string) => {
     generalQuery("getInspectionWorstByCode", { FROM_DATE: from_date, TO_DATE: to_date, WORSTBY: worstby, NG_TYPE: ng_type, ERR_CODE: err_code, codeArray: listCode, CUST_NAME_KD: cust_name })
       .then((response) => {
@@ -123,10 +120,10 @@ const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, n
     let column_map = keysArray.map((e, index) => {
       if (e !== 'id')
         return {
-          dataField: e,
-          caption: e,
+          field: e,
+          headerName: e,
           width: 90,
-          cellRender: (ele: any) => {
+          cellRenderer: (ele: any) => {
             if (e === 'NG_AMOUNT') {
               return <span style={{ color: "#050505", fontWeight: "bold" }}>
                 {ele.data[e]?.toLocaleString("en-US", {
@@ -147,17 +144,16 @@ const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, n
             }
           },
         };
-    });
-    setColumns(column_map);    
+    });     
     getWorstByErrCode(dailyClosingData[0].ERR_CODE);
     return () => {
     }
   }, [dailyClosingData])
   return (
-    <div className='worstable'>
+    <div className='worstable' style={{ height: '100%', width: '100%' }}>
       <div className="table">
         {
-          dailyClosingDataTable
+          worstDataAGTable
         }
       </div>
       <div className="chartworstcode">

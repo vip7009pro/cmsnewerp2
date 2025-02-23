@@ -1,20 +1,11 @@
-import {
-  Button,
-  Autocomplete,
-  IconButton,
-  TextField,
-  createFilterOptions,
-  DialogContent,
-  DialogTitle,
-  Dialog,
-} from "@mui/material";
+import { Button, Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import React, { useEffect, useMemo, useState } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLVL.scss";
 import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
-import { MdAdd, MdOutlinePivotTableChart } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {

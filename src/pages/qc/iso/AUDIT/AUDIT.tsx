@@ -5,32 +5,19 @@ import {
   TextField,
   createFilterOptions,
 } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-  KeyboardNavigation,
-} from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { MdOutlinePivotTableChart } from "react-icons/md";
-import { generalQuery, getGlobalSetting, getUserData, uploadQuery } from "../../../../api/Api";
-import { AUDIT_CHECKLIST_RESULT, AUDIT_CHECK_LIST, AUDIT_LIST, AUDIT_RESULT, CSCONFIRM_DATA, CS_CNDB_DATA, CS_RMA_DATA, CS_TAXI_DATA, CustomerListData, WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
-import { CustomResponsiveContainer, SaveExcel,} from "../../../../api/GlobalFunction";
+import { generalQuery, getUserData, uploadQuery } from "../../../../api/Api";
+import {
+  AUDIT_CHECKLIST_RESULT,
+  AUDIT_CHECK_LIST,
+  AUDIT_LIST,
+  AUDIT_RESULT,
+  CustomerListData,
+} from "../../../../api/GlobalInterface";
+import { SaveExcel } from "../../../../api/GlobalFunction";
 import './AUDIT.scss'
 import { HiSave } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
@@ -67,7 +54,6 @@ const AUDIT = () => {
   const [auditResultCheckList, setAuditResultCheckList] = useState<AUDIT_CHECKLIST_RESULT[]>([]);
   const selectedauditResultCheckListRows = useRef<AUDIT_CHECKLIST_RESULT[]>([]);
   const [selectedAuditID, setSelectedAuditID] = useState(1);
-  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [filterData, setFilterData] = useState({
     FROM_DATE: moment().format("YYYY-MM-DD"),
     TO_DATE: moment().format("YYYY-MM-DD"),
@@ -232,104 +218,101 @@ const AUDIT = () => {
       Swal.fire("Thông báo", "Hãy nhập tên Audit", "error");
     }
   }
-  const upFormAuditTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={uploadExcelJson}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"80vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
-            setSelectedUploadExcelRow(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Selection mode="multiple" selectAllMode="allPages" />
-          <Editing
-            allowUpdating={false}
-            allowAdding={false}
-            allowDeleting={true}
-            mode="cell"
-            confirmDelete={false}
-            onChangesChange={(e) => { }}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(uploadExcelJson, "AuditCheckListTable");
-                }}
-              >
-                <AiFillFileExcel color="green" size={15} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooserButton" />
-            <Item name="addRowButton" />
-            <Item name="saveButton" />
-            <Item name="revertButton" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Column dataField="id" caption="ID" width={60} allowEditing={false} />
-          <Column dataField="MAIN_ITEM_NO" caption="MAIN_ITEM_NO" width={60} allowEditing={false} />
-          <Column dataField="MAIN_ITEM_CONTENT" caption="MAIN_ITEM_CONTENT" width={150} allowEditing={false} />
-          <Column dataField="SUB_ITEM_NO" caption="SUB_ITEM_NO" width={60} allowEditing={false} />
-          <Column dataField="SUB_ITEM_CONTENT" caption="SUB_ITEM_CONTENT" width={150} allowEditing={false} />
-          <Column dataField="LEVEL_CAT" caption="LEVEL_CAT" width={100} allowEditing={false} />
-          <Column dataField="DETAIL_VN" caption="DETAIL_VN" width={200} allowEditing={false} />
-          <Column dataField="DETAIL_KR" caption="DETAIL_KR" width={200} allowEditing={false} />
-          <Column dataField="DETAIL_EN" caption="DETAIL_EN" width={200} allowEditing={false} />
-          <Column dataField="MAX_SCORE" caption="MAX_SCORE" width={100} allowEditing={false} />
-          <Column dataField="DEPARTMENT" caption="DEPARTMENT" width={100} allowEditing={false} />
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="G_CODE"
-              summaryType="count"
-              valueFormat={"decimal"}
-            />
-          </Summary>
-        </DataGrid>
-      </div>
-    ),
-    [uploadExcelJson],
-  );
+  const columns_excelupload=[
+    {
+      field: 'MAIN_ITEM_NO',
+      headerName: 'MAIN_ITEM_NO',
+      width: 90
+    },
+    {
+      field: 'MAIN_ITEM_CONTENT',
+      headerName: 'MAIN_ITEM_CONTENT',
+      width: 150
+    },
+    {
+      field: 'SUB_ITEM_NO',
+      headerName: 'SUB_ITEM_NO',
+      width: 90
+    },
+    {
+      field: 'SUB_ITEM_CONTENT',
+      headerName: 'SUB_ITEM_CONTENT',
+      width: 150
+    },
+    {
+      field: 'LEVEL_CAT',
+      headerName: 'LEVEL_CAT',
+      width: 100
+    },
+    {
+      field: 'DETAIL_VN',
+      headerName: 'DETAIL_VN',
+      width: 200
+    },
+    {
+      field: 'DETAIL_KR',
+      headerName: 'DETAIL_KR',
+      width: 200
+    },
+    {
+      field: 'DETAIL_EN',
+      headerName: 'DETAIL_EN',
+      width: 200
+    },
+    {
+      field: 'MAX_SCORE',
+      headerName: 'MAX_SCORE',
+      width: 100
+    },
+    {
+      field: 'DEPARTMENT',
+      headerName: 'DEPARTMENT',
+      width: 100
+    },
+    {
+      field: 'DELETE',
+      headerName: 'DELETE',
+      width: 50,
+      cellRenderer: (ele: any) => {
+        return (
+          <div>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                let tempdata = uploadExcelJson.filter((element: any) => element.id !== ele.data.id);
+                setUploadExcelJSon(tempdata);
+              }}
+            >
+              <AiFillCloseCircle color='red' size={15} />
+            </IconButton>
+          </div>
+        )
+      }
+    }
+  ];
+  const upFormAuditTableAG = useMemo(() =>
+    <AGTable      
+      showFilter={true}
+      toolbar={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        </div>
+      }
+      columns={columns_excelupload}
+      data={uploadExcelJson}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(e: any) => {
+        //clickedRow.current = params.data;
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+        //console.log(e.data.CUST_CD);
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())        
+      }}
+    />
+    , [uploadExcelJson]);  
   const loadAuditList = () => {
     generalQuery("auditlistcheck", filterData)
       .then((response) => {
@@ -391,7 +374,7 @@ const AUDIT = () => {
           let loadeddata = response.data.data.map(
             (element: AUDIT_CHECKLIST_RESULT, index: number) => {
               return {
-                ...element,                
+                ...element,
                 INS_DATE: moment(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
                 UPD_DATE: element.UPD_DATE !== null ? moment(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss') : '',
                 id: index,
@@ -631,324 +614,6 @@ const AUDIT = () => {
     if (e.key === "Enter") {
     }
   };
-  const auditListResultCheckListTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            ref={dataGridRef}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={auditResultCheckList}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            /* wordWrapEnabled={true} */
-            onSelectionChanged={(e) => {
-              //setFilterData(e.selectedRowsData[0]);
-              //console.log(e.selectedRowsData)
-              selectedauditResultCheckListRows.current = e.selectedRowsData
-            }}
-            onRowPrepared={(e) => {
-              /*  e.rowElement.style.height = "20px"; */
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="multiple" selectAllMode="allPages" />
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Editing
-              allowUpdating={true}
-              allowAdding={false}
-              allowDeleting={false}
-              mode="cell"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    showhidesearchdiv.current = !showhidesearchdiv.current;
-                    setSH(!showhidesearchdiv.current);
-                  }}
-                >
-                  <TbLogout color='green' size={15} />
-                  Show/Hide
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(auditResultCheckList, "auditResultCheckList");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    confirmSaveCheckSheet();
-                  }}
-                >
-                  <HiSave color="#05db5e" size={15} />
-                  Lưu Checksheet
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    if (getUserData()?.SUBDEPTNAME === 'ISO' || getUserData()?.EMPL_NO === 'NHU1903') {
-                      confirmResetEvident();
-                    }
-                    else {
-                      Swal.fire("Cánh báo", "Không đủ quyền hạn", 'warning');
-                    }
-                  }}
-                >
-                  <HiSave color="#ff0000" size={15} />
-                  Reset Evident
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    if (selectedAuditResultID !== -1) {
-                      loadAuditResultCheckList(selectedAuditResultID);
-                    }
-                    else {
-                      Swal.fire('Thông báo', 'Chọn ít nhất một checksheet kết quả audit để refresh (bảng bên phải)', 'error');
-                    }
-                    loadAuditList();
-                  }}
-                >
-                  <BiRefresh color='yellow' size={20} />
-                  Refresh
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="AUDIT_RESULT_DETAIL_ID" caption="RS_DT_ID" width={50} allowEditing={false} />
-            <Column dataField="AUDIT_RESULT_ID" caption="RS_ID" width={50} allowEditing={false} />
-            <Column dataField="AUDIT_DETAIL_ID" caption="DT_ID" width={50} allowEditing={false} />
-            <Column dataField="AUDIT_ID" caption="AD_ID" width={50} allowEditing={false} />
-            <Column dataField="AUDIT_NAME" caption="AUDIT_NAME" width={100} allowEditing={false} />
-            <Column dataField="MAIN_ITEM_NO" caption="MAIN_NO" width={60} allowEditing={false} />
-            <Column dataField="MAIN_ITEM_CONTENT" caption="MAIN_CONTENT" width={150} allowEditing={false} />
-            <Column dataField="SUB_ITEM_NO" caption="SUB_NO" width={60} allowEditing={false} />
-            <Column dataField="SUB_ITEM_CONTENT" caption="SUB_CONTENT" width={150} allowEditing={false} />
-            <Column dataField="LEVEL_CAT" caption="LEVEL_CAT" width={100} allowEditing={false} />
-            <Column dataField="DETAIL_VN" caption="DETAIL_VN" width={200} allowEditing={false} />
-            <Column dataField="DETAIL_KR" caption="DETAIL_KR" width={200} allowEditing={false} />
-            <Column dataField="DETAIL_EN" caption="DETAIL_EN" width={200} allowEditing={false} />
-            <Column dataField="MAX_SCORE" caption="MAX_SCORE" width={100} allowEditing={false} />
-            <Column dataField="AUDIT_SCORE" caption="AUDIT_SCORE" width={100} allowEditing={true} />
-            <Column dataField="AUDIT_EVIDENT" caption="EVIDENT_FILE" width={100} allowEditing={false} />
-            <Column dataField="EVIDENT_IMAGE" caption="EVIDENT_IMAGE" width={250} allowEditing={false} cellRender={(ele: any) => {
-              if (ele.data.AUDIT_EVIDENT !== null) {
-                let fileList: string[] = ele.data.AUDIT_EVIDENT.split(',');
-                return (
-                  <div className="evident_div" style={{ display: 'flex', gap: '10px' }}>
-                    {
-                      fileList.map((element: string, index: number) => {
-                        let href = `/audit/AUDIT_${ele.data.AUDIT_RESULT_ID}_${ele.data.AUDIT_RESULT_DETAIL_ID}_${element}`;
-                        return (
-                          <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={50} height={50}></img></a>
-                        )
-                      })
-                    }
-                  </div>
-                )
-              }
-              else {
-              }
-            }} />
-            <Column dataField='AUDIT_EVIDENT2' caption='UPLOAD EVIDENT' width={200} cellRender={(ele: any) => {
-              let href = `/audit/AUDIT_${ele.data.AUDIT_RESULT_DETAIL_ID}.jpg`;
-              let file: any = null;
-              if (ele.data.AUDIT_EVIDENT === 'Y') {
-                return (
-                  <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
-                )
-              }
-              else {
-                return (
-                  <div className="csuploadbutton">
-                    <button onClick={() => {
-                      uploadAuditEvident(ele.data.AUDIT_RESULT_ID, ele.data.AUDIT_RESULT_DETAIL_ID, file);
-                    }}>Upload</button>
-                    <input
-                      accept='.jpg'
-                      type='file'
-                      multiple={true}
-                      onChange={(e: any) => {
-                        file = e.target.files;
-                      }}
-                    />
-                  </div>
-                )
-              }
-            }} allowEditing={false}></Column>
-            <Column dataField="REMARK" caption="REMARK" width={100} allowEditing={true} />
-            <Column dataField="DEPARTMENT" caption="DEPARTMENT" width={100} allowEditing={false} />
-            <Column dataField="INS_DATE" caption="INS_DATE" width={100} allowEditing={false} />
-            <Column dataField="INS_EMPL" caption="INS_EMPL" width={100} allowEditing={false} />
-            <Column dataField="UPD_DATE" caption="UPD_DATE" width={100} allowEditing={false} />
-            <Column dataField="UPD_EMPL" caption="UPD_EMPL" width={100} allowEditing={false} />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [auditResultCheckList],
-  );
-  const auditListResultTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={auditResultList}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //setFilterData(e.selectedRowsData[0]);
-            }}
-            onRowClick={async (e) => {
-              //console.log(e.data);
-              setSelectedAuditResultID(e.data.AUDIT_RESULT_ID);
-              if (await checkAuditResultCheckListExist(e.data.AUDIT_RESULT_ID)) {
-                loadAuditResultCheckList(e.data.AUDIT_RESULT_ID);
-              }
-              else {
-                insertNewResultCheckList(e.data.AUDIT_RESULT_ID, e.data.AUDIT_ID);
-              }
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(auditResultList, "auditResultList");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="AUDIT_RESULT_ID" caption="RS_ID" width={50} />
-            <Column dataField="AUDIT_ID" caption="AD_ID" width={50} />
-            <Column dataField="AUDIT_NAME" caption="AUDIT_NAME" width={100} />
-            <Column dataField="AUDIT_DATE" caption="AUDIT_DATE" width={80} />
-            <Column dataField="REMARK" caption="REMARK" width={100} />
-            <Column dataField="INS_DATE" caption="INS_DATE" width={100} />
-            <Column dataField="INS_EMPL" caption="INS_EMPL" width={100} />
-            <Column dataField="UPD_DATE" caption="UPD_DATE" width={100} />
-            <Column dataField="UPD_EMPL" caption="UPD_EMPL" width={100} />
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [auditResultList],
-  );
   const columns_Audit_List_Table = [
     {
       field: 'AUDIT_RESULT_ID',
@@ -995,7 +660,6 @@ const AUDIT = () => {
       headerName: 'UPD_EMPL',
       width: 60
     },
-
   ];
   const columns_Audit_CheckList_Table = [
     {
@@ -1052,7 +716,7 @@ const AUDIT = () => {
       field: 'DETAIL_VN',
       headerName: 'DETAIL_VN',
       width: 200
-    },   
+    },
     {
       field: 'MAX_SCORE',
       headerName: 'MAX_SCORE',
@@ -1072,11 +736,11 @@ const AUDIT = () => {
       field: 'EVIDENT_IMAGE',
       headerName: 'EVD_IMAGE',
       width: 200,
-      cellRenderer :(ele: any) => {
+      cellRenderer: (ele: any) => {
         if (ele.data.AUDIT_EVIDENT !== null) {
           let fileList: string[] = ele.data.AUDIT_EVIDENT.split(',');
           return (
-            <div className="evident_div" style={{ display: 'flex', gap: '10px',}}>
+            <div className="evident_div" style={{ display: 'flex', gap: '10px', }}>
               {
                 fileList.map((element: string, index: number) => {
                   let href = `/audit/AUDIT_${ele.data.AUDIT_RESULT_ID}_${ele.data.AUDIT_RESULT_DETAIL_ID}_${element}`;
@@ -1091,19 +755,18 @@ const AUDIT = () => {
         else {
         }
       }
-
     },
     {
       field: 'AUDIT_EVIDENT2',
       headerName: 'UPLOAD EVIDENT',
       width: 200,
-      cellRenderer :(ele: any) => {
+      cellRenderer: (ele: any) => {
         let href = `/audit/AUDIT_${ele.data.AUDIT_RESULT_DETAIL_ID}.jpg`;
         let file: any = null;
         if (ele.data.AUDIT_EVIDENT === 'Y') {
           return (
             <div>
-            <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
+              <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
             </div>
           )
         }
@@ -1166,74 +829,73 @@ const AUDIT = () => {
       headerName: 'UPD_EMPL',
       width: 60
     },
-
   ];
   const audit_checklist_data_ag_table = useMemo(() => {
     return (
-      <AGTable        
+      <AGTable
         suppressRowClickSelection={false}
         showFilter={true}
         toolbar={
           <div>
             <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    showhidesearchdiv.current = !showhidesearchdiv.current;
-                    setSH(!showhidesearchdiv.current);
-                  }}
-                >
-                  <TbLogout color='green' size={15} />
-                  Show/Hide
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(auditResultCheckList, "auditResultCheckList");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    confirmSaveCheckSheet();
-                  }}
-                >
-                  <HiSave color="#05db5e" size={15} />
-                  Lưu Checksheet
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    if (getUserData()?.SUBDEPTNAME === 'ISO' || getUserData()?.EMPL_NO === 'NHU1903') {
-                      confirmResetEvident();
-                    }
-                    else {
-                      Swal.fire("Cánh báo", "Không đủ quyền hạn", 'warning');
-                    }
-                  }}
-                >
-                  <HiSave color="#ff0000" size={15} />
-                  Reset Evident
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    if (selectedAuditResultID !== -1) {
-                      loadAuditResultCheckList(selectedAuditResultID);
-                    }
-                    else {
-                      Swal.fire('Thông báo', 'Chọn ít nhất một checksheet kết quả audit để refresh (bảng bên phải)', 'error');
-                    }
-                    loadAuditList();
-                  }}
-                >
-                  <BiRefresh color='yellow' size={20} />
-                  Refresh
-                </IconButton>
-          </div>}        
-          rowHeight={50}
+              className='buttonIcon'
+              onClick={() => {
+                showhidesearchdiv.current = !showhidesearchdiv.current;
+                setSH(!showhidesearchdiv.current);
+              }}
+            >
+              <TbLogout color='green' size={15} />
+              Show/Hide
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                SaveExcel(auditResultCheckList, "auditResultCheckList");
+              }}
+            >
+              <AiFillFileExcel color="green" size={15} />
+              SAVE
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                confirmSaveCheckSheet();
+              }}
+            >
+              <HiSave color="#05db5e" size={15} />
+              Lưu Checksheet
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                if (getUserData()?.SUBDEPTNAME === 'ISO' || getUserData()?.EMPL_NO === 'NHU1903') {
+                  confirmResetEvident();
+                }
+                else {
+                  Swal.fire("Cánh báo", "Không đủ quyền hạn", 'warning');
+                }
+              }}
+            >
+              <HiSave color="#ff0000" size={15} />
+              Reset Evident
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                if (selectedAuditResultID !== -1) {
+                  loadAuditResultCheckList(selectedAuditResultID);
+                }
+                else {
+                  Swal.fire('Thông báo', 'Chọn ít nhất một checksheet kết quả audit để refresh (bảng bên phải)', 'error');
+                }
+                loadAuditList();
+              }}
+            >
+              <BiRefresh color='yellow' size={20} />
+              Refresh
+            </IconButton>
+          </div>}
+        rowHeight={50}
         columns={columns_Audit_CheckList_Table}
         data={auditResultCheckList}
         onCellEditingStopped={(params: any) => {
@@ -1244,16 +906,16 @@ const AUDIT = () => {
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedauditResultCheckListRows.current = params!.api.getSelectedRows()
-        }}     />   
+        }} />
     )
   }, [auditResultCheckList, columns_Audit_CheckList_Table]);
   const audit_list_data_ag_table = useMemo(() => {
     return (
-      <AGTable        
+      <AGTable
         suppressRowClickSelection={false}
         showFilter={true}
         toolbar={
-          <div>           
+          <div>
           </div>}
         columns={columns_Audit_List_Table}
         data={auditResultList}
@@ -1268,15 +930,13 @@ const AUDIT = () => {
           else {
             insertNewResultCheckList(params.data.AUDIT_RESULT_ID, params.data.AUDIT_ID);
           }
-
         }}
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedauditResultCheckListRows.current = params!.api.getSelectedRows()
-        }}     />   
+        }} />
     )
   }, [auditResultList, columns_Audit_List_Table]);
-
   useEffect(() => {
     getcustomerlist();
     loadAuditList();
@@ -1331,7 +991,7 @@ const AUDIT = () => {
                     })
                   }
                 </select>
-              </label>             
+              </label>
             </div>
           </div>
           <div className="formbutton">
@@ -1348,8 +1008,8 @@ const AUDIT = () => {
               setSelectedAuditResultID(-1);
             }}>Load Data</Button>
           </div>
-          <div className="auditlist">          
-          {audit_list_data_ag_table}
+          <div className="auditlist">
+            {audit_list_data_ag_table}
           </div>
         </div>}
         <div className="tracuuYCSXTable">
@@ -1445,7 +1105,7 @@ const AUDIT = () => {
               <BiCloudUpload color="#FA0022" size={15} />
               Up Form
             </IconButton>
-            {/* <IconButton
+            <IconButton
               className="buttonIcon"
               onClick={() => {
                 let temp_row: AUDIT_CHECK_LIST = {
@@ -1472,9 +1132,9 @@ const AUDIT = () => {
             >
               <AiFillFileAdd color="#F50354" size={15} />
               Add Row
-            </IconButton> */}
+            </IconButton>
           </div>
-          <div className="upgiatable">{upFormAuditTable}</div>
+          <div className="upgiatable">{upFormAuditTableAG}</div>
         </div>
       )}
     </div>

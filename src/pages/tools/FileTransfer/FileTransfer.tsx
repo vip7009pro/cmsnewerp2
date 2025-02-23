@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { generalQuery, getCtrCd, uploadQuery } from '../../../api/Api';
 import Swal from 'sweetalert2';
 import moment from 'moment';
-import toast from 'devextreme-react/toast';
-import { FILE } from 'dns';
 import { FaFile, FaFileExcel, FaFileImage, FaFilePdf, FaFileWord } from 'react-icons/fa';
 import { FaFileZipper } from 'react-icons/fa6';
 import { f_downloadFile } from '../../../api/GlobalFunction';

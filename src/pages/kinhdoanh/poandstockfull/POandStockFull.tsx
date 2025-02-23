@@ -950,6 +950,11 @@ const POandStockFull = () => {
         console.log(error);
       });
   };
+  const onExportClick = () => {
+    if (gridRef !== null) {
+      gridRef.current!.api.exportDataAsCsv();
+    }    
+  };
   useEffect(() => {}, []);
   return (
     <div className="poandstockfull">
@@ -1068,6 +1073,15 @@ const POandStockFull = () => {
                 >
                   <AiFillFileExcel color="green" size={15} />
                   SAVE
+                </IconButton>
+                <IconButton
+                          className="buttonIcon"
+                          onClick={() => {
+                            onExportClick();            
+                          }}
+                        >
+                          <AiFillFileExcel color="green" size={15} />
+                          CSV
                 </IconButton>
               </div>
               <div

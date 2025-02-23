@@ -20,15 +20,15 @@ const CSFCOSTTABLE = ({ data }: { data: CSFCOST }) => {
         <tbody>
           <tr>
             <td>RMA AMOUNT</td>
-            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter(totalRMAAmount, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') ?? "$"}</td>
+            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter(totalRMAAmount, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') }</td>
           </tr>
           <tr>
             <td>TAXI AMOUNT</td>
-            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter(totalTaxiAmount, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') ?? "$"}</td>
+            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter(totalTaxiAmount, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') }</td>
           </tr>
           <tr>
             <td>TOTAL AMOUNT</td>
-            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter((totalTaxiAmount + totalRMAAmount), 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') ?? "$"}</td>
+            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter((totalTaxiAmount + totalRMAAmount), 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') }</td>
           </tr>
         </tbody>
       </table>

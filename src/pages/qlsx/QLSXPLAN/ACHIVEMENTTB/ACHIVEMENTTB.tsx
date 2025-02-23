@@ -1,50 +1,11 @@
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-  KeyboardNavigation,
-} from "devextreme-react/data-grid";
 import moment from "moment";
-import React, {
-  ReactElement,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
-import {
-  checkBP,
-  CustomResponsiveContainer,
-  f_getMachineListData,
-  SaveExcel,
-  zeroPad,
-} from "../../../../api/GlobalFunction";
+import { f_getMachineListData } from "../../../../api/GlobalFunction";
 import "./ACHIVEMENTTB.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import {
-  MACHINE_LIST,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
-  SX_ACHIVE_DATE,
-  UserData,
-} from "../../../../api/GlobalInterface";
+import { MACHINE_LIST, SX_ACHIVE_DATE } from "../../../../api/GlobalInterface";
+import AGTable from "../../../../components/DataTable/AGTable";
 
 const ACHIVEMENTTB = () => {
   const dataGridRef = useRef<any>(null);
@@ -159,367 +120,290 @@ const ACHIVEMENTTB = () => {
         console.log(error);
       });
   };
-   const planDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            ref={dataGridRef}
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={plandatatable}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"93vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              qlsxplandatafilter.current = e.selectedRowsData;
-              //console.log(e.selectedRowKeys);
-              setSelectedRowKeys(e.selectedRowKeys);
-            }}
-            /* selectedRowKeys={selectedRowKeys} */
-            onRowClick={(e) => {
-              //console.log(e.data);
-              clickedRow.current = e.data;                  
-            }}
-            onRowPrepared={(e: any) => {
-              if(e.data?.EQ_NAME !=='TOTAL')
-              {
-                if (parseInt(e.data?.EQ_NAME.substring(2, 4)) % 2 === 0)
-                e.rowElement.style.background = "#BEC7C0";
-              }
-              else
-              {                
-                e.rowElement.style.background = "#ccec3a";
-                e.rowElement.style.fontSize = "0.9rem";
-              }
-              
-            }}
-            onRowDblClick={(params: any) => {
-              //console.log(params.data);
-              
-            }}
-          >
-            <KeyboardNavigation
-              editOnKeyPress={true}
-              enterKeyAction={"moveFocus"}
-              enterKeyDirection={"column"}
-            />
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />            
-            <Editing
-              allowUpdating={true}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='cell'
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>               
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />                       
-            <Column
-              dataField='EQ_NAME'
-              caption='EQ_NAME'
-              width={80}
-              allowEditing={false}
-            ></Column>            
-            <Column
-              dataField='PROD_REQUEST_NO'
-              caption='YCSX_NO'
-              width={100}
-              allowEditing={false}
-            ></Column>            
-            <Column
-              dataField='G_NAME_KD'
-              caption='CODE KD'
-              width={120}
-              cellRender={(params: any) => {
-                if (
-                  params.data.FACTORY === null ||
-                  params.data.EQ1 === null ||
-                  params.data.EQ2 === null ||
-                  params.data.Setting1 === null ||
-                  params.data.Setting2 === null ||
-                  params.data.UPH1 === null ||
-                  params.data.UPH2 === null ||
-                  params.data.Step1 === null ||
-                  params.data.Step1 === null ||
-                  params.data.LOSS_SX1 === null ||
-                  params.data.LOSS_SX2 === null ||
-                  params.data.LOSS_SETTING1 === null ||
-                  params.data.LOSS_SETTING2 === null
-                ) {
-                  return (
-                    <span style={{ color: "red" }}>
-                      {params.data.G_NAME_KD}
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span style={{ color: "green" }}>
-                      {params.data.G_NAME_KD}
-                    </span>
-                  );
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-                  
-            <Column
-              dataField='STEP'
-              caption='STEP'
-              width={50}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_DAY'
-              caption='PLAN_DAY'
-              width={90}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "gray", fontWeight: "normal" }}>
-                    {params.data.PLAN_DAY?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_NIGHT'
-              caption='PLAN_NIGHT'
-              width={90}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "gray", fontWeight: "normal" }}>
-                    {params.data.PLAN_NIGHT?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='PLAN_TOTAL'
-              caption='PLAN_TOTAL'
-              width={90}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "gray", fontWeight: "bold" }}>
-                    {params.data.PLAN_TOTAL?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='RESULT_DAY'
-              caption='RESULT_DAY'
-              width={110}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#175dff", fontWeight: "normal" }}>
-                    {params.data.RESULT_DAY?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='RESULT_NIGHT'
-              caption='RESULT_NIGHT'
-              width={110}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#175dff", fontWeight: "normal" }}>
-                    {params.data.RESULT_NIGHT?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='RESULT_TOTAL'
-              caption='RESULT_TOTAL'
-              width={110}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#175dff", fontWeight: "bold" }}>
-                    {params.data.RESULT_TOTAL?.toLocaleString("en-US")}
-                  </span>
-                );
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='DAY_RATE'
-              caption='DAY_RATE'
-              width={100}
-              cellRender={(params: any) => {
-                if (params.data.DAY_RATE !== undefined) {
-                  if(params.data.PLAN_DAY !==0)
-                  {
-                    if (params.data.DAY_RATE === 100) {
-                      return (
-                        <span style={{ color: "green", fontWeight: "normal" }}>
-                          {params.data.DAY_RATE.toLocaleString("en-US", {
-                            maximumFractionDigits: 0,
-                          })}
-                          %
-                        </span>
-                      );
-                    } else {
-                      return (
-                        <span style={{ color: "red", fontWeight: "normal" }}>
-                          {params.data.DAY_RATE.toLocaleString("en-US", {
-                            maximumFractionDigits: 0,
-                          })}
-                          %
-                        </span>
-                      );
-                    }
+  const columns_planresult = [
+    {
+      headerName: "EQ_NAME",
+      field: "EQ_NAME",
+      width: 80,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+    },
+    {
+      headerName: "YCSX_NO",
+      field: "PROD_REQUEST_NO",
+      width: 100,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+    },
+    {
+      headerName: "CODE KD",
+      field: "G_NAME_KD",
+      width: 120,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellStyle: function (params: any) {
+        if (
+          params.data.FACTORY === null ||
+          params.data.EQ1 === null ||
+          params.data.EQ2 === null ||
+          params.data.Setting1 === null ||
+          params.data.Setting2 === null ||
+          params.data.UPH1 === null ||
+          params.data.UPH2 === null ||
+          params.data.Step1 === null ||
+          params.data.Step1 === null ||
+          params.data.LOSS_SX1 === null ||
+          params.data.LOSS_SX2 === null ||
+          params.data.LOSS_SETTING1 === null ||
+          params.data.LOSS_SETTING2 === null
+        ) {
+          return { color: "red" };
+        } else {
+          return { color: "green" };
+        }
+      },
+    },
+    {
+      headerName: "STEP",
+      field: "STEP",
+      width: 50,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+    },
+    {
+      headerName: "PLAN_DAY",
+      field: "PLAN_DAY",
+      width: 90,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "normal" }}>
+            {params.data.PLAN_DAY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      headerName: "PLAN_NIGHT",
+      field: "PLAN_NIGHT",
+      width: 90,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "normal" }}>
+            {params.data.PLAN_NIGHT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      headerName: "PLAN_TOTAL",
+      field: "PLAN_TOTAL",
+      width: 90,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.PLAN_TOTAL?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      headerName: "RESULT_DAY",
+      field: "RESULT_DAY",
+      width: 110,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#175dff", fontWeight: "normal" }}>
+            {params.data.RESULT_DAY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      headerName: "RESULT_NIGHT",
+      field: "RESULT_NIGHT",
+      width: 110,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "#175dff", fontWeight: "normal" }}>
+            {params.data.RESULT_NIGHT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      headerName: "RESULT_TOTAL",
+      field: "RESULT_TOTAL",
+      width: 110,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "#175dff", fontWeight: "bold" }}>
+            {params.data.RESULT_TOTAL?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      headerName: "DAY_RATE",
+      field: "DAY_RATE",
+      width: 100,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer: (params: any) => {
+        if (params.data.DAY_RATE !== undefined) {
+          if(params.data.PLAN_DAY !==0)
+          {
+            if (params.data.DAY_RATE === 100) {
+              return (
+                <span style={{ color: "green", fontWeight: "normal" }}>
+                  {params.data.DAY_RATE.toLocaleString("en-US", {
+                    maximumFractionDigits: 0,
+                  })}
+                  %
+                </span>
+              );
+            } else {
+              return (
+                <span style={{ color: "red", fontWeight: "normal" }}>
+                  {params.data.DAY_RATE.toLocaleString("en-US", {
+                    maximumFractionDigits: 0,
+                  })}
+                  %
+                </span>
+              );
+            }
 
-                  }
-                  else 
-                  {
-                    return (
-                      <span style={{ color: "gray", fontWeight: "normal" }}>
-                       N/A
-                      </span>
-                    );
-                  }
-                  
-                } else {
-                  return <span>0</span>;
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='NIGHT_RATE'
-              caption='NIGHT_RATE'
-              width={100}
-              cellRender={(params: any) => {
+          }
+          else 
+          {
+            return (
+              <span style={{ color: "gray", fontWeight: "normal" }}>
+               N/A
+              </span>
+            );
+          }
+          
+        } else {
+          return <span>0</span>;
+        }
+      }
+    },
+    {
+      headerName: "NIGHT_RATE",
+      field: "NIGHT_RATE",
+      width: 100,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer: (params: any) => {
                 
-                if (params.data.NIGHT_RATE !== undefined) {
-                  if(params.data.PLAN_NIGHT !==0)
-                  {
-                    if (params.data.NIGHT_RATE === 100) {
-                      return (
-                        <span style={{ color: "green", fontWeight: "normal" }}>
-                          {params.data.NIGHT_RATE.toLocaleString("en-US", {
-                            maximumFractionDigits: 0,
-                          })}
-                          %
-                        </span>
-                      );
-                    } else {
-                      return (
-                        <span style={{ color: "red", fontWeight: "normal" }}>
-                          {params.data.NIGHT_RATE.toLocaleString("en-US", {
-                            maximumFractionDigits: 0,
-                          })}
-                          %
-                        </span>
-                      );
-                    }
+        if (params.data.NIGHT_RATE !== undefined) {
+          if(params.data.PLAN_NIGHT !==0)
+          {
+            if (params.data.NIGHT_RATE === 100) {
+              return (
+                <span style={{ color: "green", fontWeight: "normal" }}>
+                  {params.data.NIGHT_RATE.toLocaleString("en-US", {
+                    maximumFractionDigits: 0,
+                  })}
+                  %
+                </span>
+              );
+            } else {
+              return (
+                <span style={{ color: "red", fontWeight: "normal" }}>
+                  {params.data.NIGHT_RATE.toLocaleString("en-US", {
+                    maximumFractionDigits: 0,
+                  })}
+                  %
+                </span>
+              );
+            }
 
-                  }
-                  else 
-                  {
-                    return (
-                      <span style={{ color: "gray", fontWeight: "normal" }}>
-                       N/A
-                      </span>
-                    );
-                  }
+          }
+          else 
+          {
+            return (
+              <span style={{ color: "gray", fontWeight: "normal" }}>
+               N/A
+              </span>
+            );
+          }
 
-                  
-                } else {
-                  return <span>0</span>;
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='TOTAL_RATE'
-              caption='TOTAL_RATE'
-              width={100}
-              cellRender={(params: any) => {
-                if (params.data.TOTAL_RATE !== undefined) {
-                  if (params.data.TOTAL_RATE === 100) {
-                    return (
-                      <span style={{ color: "green", fontWeight: "bold" }}>
-                        {params.data.TOTAL_RATE.toLocaleString("en-US", {
-                          maximumFractionDigits: 0,
-                        })}
-                        %
-                      </span>
-                    );
-                  } else {
-                    return (
-                      <span style={{ color: "red", fontWeight: "bold" }}>
-                        {params.data.TOTAL_RATE.toLocaleString("en-US", {
-                          maximumFractionDigits: 0,
-                        })}
-                        %
-                      </span>
-                    );
-                  }
-                } else {
-                  return <span>0</span>;
-                }
-              }}
-              allowEditing={false}
-            ></Column>
-            <Column
-              dataField='id'
-              caption='ID'
-              width={50}
-              allowEditing={false}
-            ></Column> 
-                   
-            <Summary>
-              {/* <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />      */}         
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [plandatatable, columns, trigger]
-  ); 
-
+          
+        } else {
+          return <span>0</span>;
+        }
+      }
+    },
+    {
+      headerName: "TOTAL_RATE",
+      field: "TOTAL_RATE",
+      width: 100,
+      editable: false,
+      cellClass: "ag-header-cell-content",
+      cellRenderer:(params: any) => {
+        if (params.data.TOTAL_RATE !== undefined) {
+          if (params.data.TOTAL_RATE === 100) {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {params.data.TOTAL_RATE.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })}
+                %
+              </span>
+            );
+          } else {
+            return (
+              <span style={{ color: "red", fontWeight: "bold" }}>
+                {params.data.TOTAL_RATE.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })}
+                %
+              </span>
+            );
+          }
+        } else {
+          return <span>0</span>;
+        }
+      }
+    },
+  ]
+  const planDataTableAG = useMemo(() =>
+    <AGTable      
+      showFilter={true}
+      toolbar={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        
+          
+        </div>
+      }
+      columns={columns_planresult}
+      data={plandatatable}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(e: any) => {
+        //clickedRow.current = params.data;
+        //clickedRow.current = params.data;
+        //console.log(e.data) 
+        //console.log(e.data.CUST_CD);       
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())        
+      }}
+    />
+    , [plandatatable]);
   useEffect(() => {
     getMachineList();
     return () => {     
@@ -589,7 +473,9 @@ const ACHIVEMENTTB = () => {
               </div>
             </div>
           </div>
-          {planDataTable}
+          <div className="agtb">
+          {planDataTableAG}
+          </div>
         </div>
       </div> 
     </div>

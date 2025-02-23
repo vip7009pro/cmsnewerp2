@@ -1,4 +1,8 @@
 .customerpobalance {
+  display: flex;
+  flex-direction: column;
+  height: 1200px;
+  padding: 25px;
   .datatb {
     justify-items: center;
     width: 100%;
