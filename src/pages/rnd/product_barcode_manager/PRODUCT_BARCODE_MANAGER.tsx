@@ -5,78 +5,27 @@ import {
   TextField,
   createFilterOptions,
 } from "@mui/material";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
-import moment from "moment";
-import React, {
-  startTransition,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./PRODUCT_BARCODE_MANAGER.scss";
-import { UserContext } from "../../../api/Context";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import QRCODE from "../design_amazon/design_components/QRCODE";
 import BARCODE from "../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
-import {
-  BARCODE_DATA,
-  CodeListData,
-  CustomerListData,
-  MATERIAL_TABLE_DATA,
-} from "../../../api/GlobalInterface";
+import { BARCODE_DATA, CodeListData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import AGTable from "../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
 const PRODUCT_BARCODE_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [material_table_data, set_material_table_data] = useState<
-    Array<MATERIAL_TABLE_DATA>
-  >([]);
   const [barcodedatatable, setBarCodeDataTable] = useState<Array<BARCODE_DATA>>(
     [],
   );
-  const [custinfodatatable, setBarCodeInfoDataTable] = useState<Array<any>>([]);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
-  const [factory, setFactory] = useState("ALL");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(true);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
   const [selectedRows, setSelectedRows] = useState<BARCODE_DATA>({
     G_CODE: "",
     BARCODE_INSP: "",
@@ -206,13 +155,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
       }
     });
   };
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Enter") {
-      load_barcode_table();
-    }
-  };
   const columns_def = [
     { field: 'G_CODE', headerName: 'G_CODE', width: 60 },
     { field: 'G_NAME', headerName: 'G_NAME', width: 160 },
@@ -325,29 +267,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
       }
     }},
     { field: 'SX_STATUS', headerName: 'SX_STATUS', width: 100 },
-  ];  
-  const product_barcode_data_ag_table = useMemo(() => {
-    return (
-      <AGTable
-        suppressRowClickSelection={false}
-        showFilter={true}
-        toolbar={
-          <div>
-           
-          </div>}
-        columns={columns_def}
-        data={barcodedatatable}
-        onCellEditingStopped={(params: any) => {
-        }}
-        onCellClick={(params: any) => {
-          setSelectedRows(params.data)
-        }}
-        onSelectionChange={(params: any) => {
-          //console.log(e!.api.getSelectedRows())
-        }}     />   
-    )
-  }, [barcodedatatable, columns_def]);
-
+  ];    
   const gridRef = useRef<AgGridReact<any>>(null);
   const setHeaderHeight = useCallback((value?: number) => {
     gridRef.current!.api.setGridOption("headerHeight", value);
@@ -357,7 +277,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
   const getRowStyle = (params: any) => {
     return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
   };
-
   const defaultColDef = useMemo(() => {
     return {
       initialWidth: 100,
@@ -369,7 +288,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
       headerCheckboxSelectionFilteredOnly: true,
     };
   }, []);
-
   const product_barcode_data_ag_table2 = useMemo(() => {
     return (
       <div className="agtable">       
@@ -422,296 +340,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
         </div>
       </div>
     )
-  }, [barcodedatatable,   columns_def])
-
-  const BarcodeDataTable = React.useMemo(
-    () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={barcodedatatable}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onRowPrepared={(e) => {
-              e.rowElement.style.height = "15mm";
-              e.rowElement.style.alignSelf = "center";
-              e.rowElement.style.alignContent = "center";
-              e.rowElement.style.alignItems = "center";
-              e.rowElement.style.justifyContent = "center";
-              e.rowElement.style.justifyItems = "center";
-              e.rowElement.style.justifySelf = "center";
-            }}
-            onSelectionChanged={(e) => {
-              //setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              setSelectedRows(e.data);
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
-            />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
-            <Column dataField="G_NAME" caption="G_NAME" width={200}></Column>
-            <Column
-              dataField="BARCODE_STT"
-              caption="BARCODE_STT"
-              width={100}
-            ></Column>
-            <Column
-              dataField="BARCODE_TYPE"
-              caption="BARCODE_TYPE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="BARCODE_RND"
-              caption="BARCODE_RND"
-              width={100}
-            ></Column>
-            <Column
-              dataField="BARCODE_INSP"
-              caption="BARCODE_INSP"
-              width={100}
-            ></Column>
-            <Column
-              dataField="BARCODE_RELI"
-              caption="BARCODE_RELI"
-              width={100}
-            ></Column>
-            <Column
-              dataField="STATUS"
-              caption="STATUS"
-              width={100}
-              cellRender={(e: any) => {
-                if (e.data.STATUS === "OK") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        backgroundColor: "#13DC0C",
-                        width: "80px",
-                        textAlign: "center",
-                      }}
-                    >
-                      OK
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        backgroundColor: "red",
-                        width: "80px",
-                        textAlign: "center",
-                      }}
-                    >
-                      NG
-                    </div>
-                  );
-                }
-              }}
-            ></Column>
-            <Column
-              dataField="BARCODE_RND"
-              caption="CODE VISUALIZE"
-              width={100}
-              cellRender={(e: any) => {
-                if (e.data.BARCODE_TYPE === "QR") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        backgroundColor: "#5d855b",
-                        width: "80px",
-                        textAlign: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <QRCODE
-                        DATA={{
-                          CAVITY_PRINT: 2,
-                          DOITUONG_NAME: "bc",
-                          DOITUONG_NO: 1,
-                          DOITUONG_STT: "0",
-                          FONT_NAME: "Arial",
-                          FONT_SIZE: 6,
-                          FONT_STYLE: "normal",
-                          G_CODE_MAU: "",
-                          GIATRI: e.data.BARCODE_RND,
-                          PHANLOAI_DT: "QR CODE",
-                          POS_X: 0,
-                          POS_Y: 0,
-                          SIZE_W: 10,
-                          SIZE_H: 10,
-                          REMARK: "",
-                          ROTATE: 0,
-                        }}
-                      />
-                    </div>
-                  );
-                } else if (e.data.BARCODE_TYPE === "1D") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        backgroundColor: "#13DC0C",
-                        width: "80px",
-                        textAlign: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <BARCODE
-                        DATA={{
-                          CAVITY_PRINT: 2,
-                          DOITUONG_NAME: "bc",
-                          DOITUONG_NO: 1,
-                          DOITUONG_STT: "0",
-                          FONT_NAME: "Arial",
-                          FONT_SIZE: 6,
-                          FONT_STYLE: "normal",
-                          G_CODE_MAU: "",
-                          GIATRI: e.data.BARCODE_RND,
-                          PHANLOAI_DT: "QR CODE",
-                          POS_X: 0,
-                          POS_Y: 0,
-                          SIZE_W: 60,
-                          SIZE_H: 10,
-                          REMARK: "",
-                          ROTATE: 0,
-                        }}
-                      />
-                    </div>
-                  );
-                } else if (e.data.BARCODE_TYPE === "MATRIX") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        backgroundColor: "#13DC0C",
-                        width: "80px",
-                        textAlign: "center",
-                        position: "relative",
-                      }}
-                    >
-                      <DATAMATRIX
-                        DATA={{
-                          CAVITY_PRINT: 2,
-                          DOITUONG_NAME: "bc",
-                          DOITUONG_NO: 1,
-                          DOITUONG_STT: "0",
-                          FONT_NAME: "Arial",
-                          FONT_SIZE: 6,
-                          FONT_STYLE: "normal",
-                          G_CODE_MAU: "",
-                          GIATRI: e.data.BARCODE_RND,
-                          PHANLOAI_DT: "QR CODE",
-                          POS_X: 0,
-                          POS_Y: 0,
-                          SIZE_W: 10,
-                          SIZE_H: 10,
-                          REMARK: "",
-                          ROTATE: 0,
-                        }}
-                      />
-                    </div>
-                  );
-                }
-              }}
-            ></Column>
-            <Column
-              dataField="SX_STATUS"
-              caption="SX_STATUS"
-              width={100}
-            ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [barcodedatatable],
-  );
-  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  }, [barcodedatatable,   columns_def]);
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1370,7 +999,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
   };
   useEffect(() => {
     load_barcode_table();
-    getcustomerlist();
     getcodelist("");
     //setColumnDefinition(column_inspect_output);
   }, []);

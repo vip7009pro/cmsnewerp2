@@ -1,7 +1,7 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement } from "../../../api/GlobalFunction";
+import { checkBP, f_cancelProductionLot, f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement } from "../../../api/GlobalFunction";
 import { MdPrint } from "react-icons/md";
 import { COMPONENT_DATA, TEMLOTSX_DATA } from "../../../api/GlobalInterface";
 import {
@@ -16,10 +16,11 @@ import { useReactToPrint } from "react-to-print";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
+import { FcCancel } from "react-icons/fc";
+import { getUserData } from "../../../api/Api";
+import Swal from "sweetalert2";
 const LICHSUTEMLOTSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [option, setOption] = useState("dataconfirm");
-  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [lichsutemlotdata, setlichsutemlotdata] = useState<Array<TEMLOTSX_DATA>>([]);
   const [filterData, setFilterData] = useState({
     FROM_DATE: moment().format("YYYY-MM-DD"),
@@ -164,6 +165,7 @@ const LICHSUTEMLOTSX = () => {
     let kq = await f_LichSuTemLot(filterData);    
     setlichsutemlotdata(kq);
   };
+  const selectedRow = useRef<TEMLOTSX_DATA | null>(null) as React.MutableRefObject<TEMLOTSX_DATA | null>;
   const handlePrint = useReactToPrint({
     content: () => labelprintref.current,
   });
@@ -204,6 +206,7 @@ const LICHSUTEMLOTSX = () => {
     }},
     { field: 'PROCESS_NUMBER', headerName: 'PROCESS_NUMBER', width: 100 },
     { field: 'LOT_STATUS', headerName: 'LOT_STATUS', width: 100 },
+    { field: 'REMARK', headerName: 'REMARK', width: 100 },
   ]
 
   const audit_list_data_ag_table = useMemo(() => {
@@ -222,13 +225,27 @@ const LICHSUTEMLOTSX = () => {
                 <MdPrint color="#611ad3" size={15} />
                 Show LOT
               </IconButton>      
+            <IconButton
+                className="buttonIcon"
+                onClick={async () => {
+                  if(selectedRow !== null && selectedRow !== undefined)
+                  {
+                    if (selectedRow.current?.PROCESS_LOT_NO) {
+                      await handleCancelLot(selectedRow.current.PROCESS_LOT_NO);
+                    }
+                  }
+                }}
+              >
+                <FcCancel color="#e60611" size={15} />
+                Cancel LOT
+              </IconButton>      
           </div>}
         columns={columns_lichsutemlot}
         data={lichsutemlotdata}
         onCellEditingStopped={(params: any) => {
         }}
         onCellClick={async (params: any) => {
-          //setSelectedRows(params.data)
+          selectedRow.current = params.data
           setComponentList(
             componentList.map((e: COMPONENT_DATA, index: number) => {
               let value: string = e.GIATRI;
@@ -269,6 +286,26 @@ const LICHSUTEMLOTSX = () => {
     )
   }, [lichsutemlotdata, columns_lichsutemlot]);
 
+  const handleCancelLot = async (PROCESS_LOT_NO: string) => {
+      checkBP(getUserData(), ["SX"], ["Leader"], ["DTL1906","THU1402"], async () => {
+        Swal.fire({
+          title: "Hủy LOT",
+          text: "Chắc chắn muốn Hủy LOT ?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Vẫn hủy!",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            await f_cancelProductionLot({
+              PROCESS_LOT_NO: PROCESS_LOT_NO,
+            }); 
+            Swal.fire('Thông báo','Hủy thành công','success');
+          }
+        });      
+      });   
+  }
 
   const loadLabelDesign = async() => {
     setComponentList(await f_handleGETBOMAMAZON("6E00002A"));

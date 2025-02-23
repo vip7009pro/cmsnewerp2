@@ -20,7 +20,7 @@ const SAVINGTABLE = ({ data }: { data: CS_REDUCE_AMOUNT_DATA[] }) => {
         <tbody>
           <tr>
             <td>SAVING AMOUNT</td>
-            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter(totalSavingAmount, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') ?? "$"}</td>
+            <td style={{ color: 'blue', fontWeight: 'bold' }}>{nFormatter(totalSavingAmount, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ')}</td>
           </tr>          
         </tbody>
       </table>
