@@ -1083,215 +1083,258 @@ const BaoCaoNhanSu = () => {
       headerName: "MAINDEPTNAME",
       width: 80,
       editable: false,
-    },
-    {
-      field: "COUNT_TOTAL",
-      headerName: "TOTAL",
-      width: 40,
-      editable: false,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue", fontWeight: "bold" }}>
+          <span style={{ color: "black", fontWeight: "bold" }}>
             {params.value}
           </span>
         );
-      },
+      }
     },
     {
-      field: "COUNT_ON",
-      headerName: "ON",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
+      headerName:'TOTAL',
+      children:[
+        {
+          field: "COUNT_TOTAL",
+          headerName: "TOTAL",
+          width: 40,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "bold" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "COUNT_ON",
+          headerName: "ON",
+          width: 50,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "COUNT_OFF",
+          headerName: "OFF",
+          width: 50,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "COUNT_CDD",
+          headerName: "CDD",
+          width: 50,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "blue", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+      ],
+      headerClass:'header'  
     },
     {
-      field: "COUNT_OFF",
-      headerName: "OFF",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
+      headerName:'TEAM 1',
+      children:[
+        {
+          field: "T1_TOTAL",
+          headerName: "T1_TOTAL",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "T1_ON",
+          headerName: "T1_ON",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "T1_OFF",
+          headerName: "T1_OFF",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "T1_CDD",
+          headerName: "T1_CDD",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "green", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+      ],
+      headerClass:'header'       
+
     },
     {
-      field: "COUNT_CDD",
-      headerName: "CDD",
-      width: 50,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
+      headerName:'TEAM 2',
+      children:[
+        {
+          field: "T2_TOTAL",
+          headerName: "T2_TOTAL",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#F705FB", fontWeight: "bold" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "T2_ON",
+          headerName: "T2_ON",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#F705FB", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "T2_OFF",
+          headerName: "T2_OFF",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#F705FB", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "T2_CDD",
+          headerName: "T2_CDD",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#F705FB", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+      ],
+      headerClass:'header'       
+
     },
     {
-      field: "T1_TOTAL",
-      headerName: "T1_TOTAL",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {params.value}
-          </span>
-        );
-      },
+      headerName:'HANH CHINH',
+      children:[
+        {
+          field: "HC_TOTAL",
+          headerName: "HC_TOTAL",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#01C0A3", fontWeight: "bold" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "HC_ON",
+          headerName: "HC_ON",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "HC_OFF",
+          headerName: "HC_OFF",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "HC_CDD",
+          headerName: "HC_CDD",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },        
+      ],
+      headerClass:'header'       
+
     },
     {
-      field: "T1_ON",
-      headerName: "T1_ON",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
+      headerName:'TEAM 2',
+      children:[
+        
+      ],
+      headerClass:'header'       
+
     },
-    {
-      field: "T1_OFF",
-      headerName: "T1_OFF",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "T1_CDD",
-      headerName: "T1_CDD",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "T2_TOTAL",
-      headerName: "T2_TOTAL",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#F705FB", fontWeight: "bold" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "T2_ON",
-      headerName: "T2_ON",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#F705FB", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "T2_OFF",
-      headerName: "T2_OFF",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#F705FB", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "T2_CDD",
-      headerName: "T2_CDD",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#F705FB", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "HC_TOTAL",
-      headerName: "HC_TOTAL",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#01C0A3", fontWeight: "bold" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "HC_ON",
-      headerName: "HC_ON",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "HC_OFF",
-      headerName: "HC_OFF",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "HC_CDD",
-      headerName: "HC_CDD",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
+    
     {
       field: "ON_RATE",
       headerName: "ON_RATE",
@@ -1306,57 +1349,65 @@ const BaoCaoNhanSu = () => {
       },
     },
     {
-      field: "TOTAL",
-      headerName: "TOTAL",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red", fontWeight: "bold" }}>
-            {params.value}
-          </span>
-        );
-      },
+      headerName:'CHI TIET NGHI',
+      children:[
+        {
+          field: "TOTAL",
+          headerName: "TOTAL",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "bold" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "PHEP_NAM",
+          headerName: "PHEP_NAM",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "NUA_PHEP",
+          headerName: "NUA_PHEP",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },
+        {
+          field: "NGHI_VIEC_RIENG",
+          headerName: "VIECRIENG",
+          width: 70,
+          editable: false,
+          cellRenderer: (params: any) => {
+            return (
+              <span style={{ color: "red", fontWeight: "normal" }}>
+                {params.value}
+              </span>
+            );
+          },
+        },        
+      ],
+      headerClass:'header' 
     },
-    {
-      field: "PHEP_NAM",
-      headerName: "PHEP_NAM",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "NUA_PHEP",
-      headerName: "NUA_PHEP",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
-    {
-      field: "NGHI_VIEC_RIENG",
-      headerName: "VIECRIENG",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red", fontWeight: "normal" }}>
-            {params.value}
-          </span>
-        );
-      },
-    },
+    
+    
   ]
   const mainDeptSummaryAGTable = useMemo(() =>
     <AGTable
