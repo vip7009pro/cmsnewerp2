@@ -10,11 +10,7 @@ import AGTable from "../../../../components/DataTable/AGTable";
 const ACHIVEMENTTB = () => {
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
-  const [showhideM, setShowHideM] = useState(false);
-  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const clickedRow = useRef<any>(null);
-  const [trigger, setTrigger] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]); 
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
@@ -24,10 +20,8 @@ const ACHIVEMENTTB = () => {
   };  
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());    
-  };
-  const [columns, setColumns] = useState<Array<any>>([]);
-  const [readyRender, setReadyRender] = useState(false);
-  const [isLoading, setisLoading] = useState(false);
+  }; 
+
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [factory, setFactory] = useState("NM1");
@@ -101,16 +95,8 @@ const ACHIVEMENTTB = () => {
           setSummaryData(temp_plan_data);
 
           setPlanDataTable([temp_plan_data, ...loadeddata, ]);
-          datatbTotalRow.current = loadeddata.length;
-          setReadyRender(true);
-          setisLoading(false);
-          clearSelection();
-          if (!showhideM)
-            Swal.fire(
-              "Thông báo",
-              "Đã load: " + response.data.data.length + " dòng",
-              "success"
-            );
+          datatbTotalRow.current = loadeddata.length;   
+          clearSelection();      
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -383,9 +369,7 @@ const ACHIVEMENTTB = () => {
     <AGTable      
       showFilter={true}
       toolbar={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        
-          
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}> 
         </div>
       }
       columns={columns_planresult}
@@ -463,8 +447,7 @@ const ACHIVEMENTTB = () => {
                 <button
                   className='tranhatky'
                   onClick={() => {
-                    setisLoading(true);
-                    setReadyRender(false);
+                
                     loadTiLeDat(fromdate);
                   }}
                 >

@@ -15,9 +15,9 @@ import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
 import { AgGridReact } from "ag-grid-react";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import MyTabs from "../../../components/MyTab/MyTab";
 const POandStockFull = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
@@ -690,7 +690,6 @@ const POandStockFull = () => {
         );
       },
     },
-   
     {
       field: "WAIT_INPUT_WH",
       cellDataType: "number",
@@ -957,26 +956,9 @@ const POandStockFull = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className="poandstockfull">
-      <Tabs className="tabs">
-        <TabList
-          className="tablist"
-          style={{ backgroundImage: theme.CMS.backgroundImage, color: "gray" }}
-        >
-          <Tab>
-            <span className="mininavtext">PO+TK FULL</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Phòng Kiểm Tra</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Kho Thành Phẩm</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Kho Liệu</span>
-          </Tab>
-        </TabList>
-        <TabPanel>
+    <div className="poandstockfull">    
+      <MyTabs defaultActiveTab={0}>
+          <MyTabs.Tab title="PO+TK FULL">
           <div className="tracuuFcst">
             <div className="tracuuFcstTable">
               <div className="toolbar">
@@ -1037,7 +1019,6 @@ const POandStockFull = () => {
                             <td style={{ color: "blue" }}>
                               {pofullSummary.PO_BALANCE?.toLocaleString("en-US")}
                             </td>
-                           
                             <td style={{ color: "purple" }}>
                               {pofullSummary.BTP?.toLocaleString("en-US")}
                             </td>
@@ -1123,24 +1104,24 @@ const POandStockFull = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Phòng Kiểm Tra">
           <div className="inspection">
             <INSPECTION />
           </div>
-        </TabPanel>
-        <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Kho Thành Phẩm">
           <div className="inspection">
             {getCompany() === "CMS" && <KHOTP />}
             {getCompany() !== "CMS" && <KHOTPNEW />}
           </div>
-        </TabPanel>
-        <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Kho Liệu">
           <div className="inspection">
             <KHOLIEU />
           </div>
-        </TabPanel>
-      </Tabs>
+          </MyTabs.Tab>
+        </MyTabs>
     </div>
   );
 };

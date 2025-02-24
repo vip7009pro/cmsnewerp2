@@ -305,8 +305,7 @@ const CUST_MANAGER = () => {
   }, []);
   return (
     <div className="cust_manager">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+      <div className="tracuuDataInspection">       
           <CustomDialog
             isOpen={openDialog}
             onClose={handleCloseDialog}
@@ -483,8 +482,6 @@ const CUST_MANAGER = () => {
               }}>Update</Button>
             </div>}
           />
-
-        </div>
         <div className="tracuuYCSXTable">{customerDataTableAG}</div>
       </div>
     </div>

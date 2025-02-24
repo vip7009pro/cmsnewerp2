@@ -5,7 +5,6 @@ import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
-import 'react-tabs/style/react-tabs.css';
 import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,
@@ -36,7 +35,6 @@ const AddInfo = React.lazy(() => import("./pages/information_board/AddInfo"));
 const QuanLyCapCao_NS = React.lazy(() => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
 const FileTransfer = React.lazy(() => import("./pages/tools/FileTransfer/FileTransfer"));
 const CAPASX2 = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX2"));
-const Home2 = React.lazy(() => import("./pages/home/Home2"));
 const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
 const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
 const KHOTP = React.lazy(() => import("./pages/kho/khotp/KHOTP"));

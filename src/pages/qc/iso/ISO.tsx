@@ -1,48 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./ISO.scss";
 import RNR from "./RNR/RNR";
 import AUDIT from "./AUDIT/AUDIT";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import ALLDOC from "./DOCUMENT/ALLDOC";
+import MyTabs from "../../../components/MyTab/MyTab";
 const ISO = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
     <div className="iso">
-      <Tabs className="tabs" style={{
-        fontSize: "0.6rem",
-        width: "100%",
-      }}>
-        <TabList className="tablist" style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "left",
-          backgroundImage: theme.CMS.backgroundImage,
-          color: 'gray'
-        }}>
-          <Tab>EMPL G_RNR</Tab>
-          <Tab>SELF AUDIT</Tab>
-          <Tab>DOCUMENT</Tab>
-        </TabList>
-        <TabPanel>
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="EMPL G_RNR">
           <div className="rnr">
             <RNR />
           </div>
-        </TabPanel>
-        <TabPanel>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="SELF AUDIT">
           <div className="audit">
             <AUDIT />
           </div>
-        </TabPanel>
-        <TabPanel>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="DOCUMENT">
           <div className="audit">
             <ALLDOC />
           </div>
-        </TabPanel>
-      </Tabs>
+        </MyTabs.Tab>
+      </MyTabs>
     </div>
   );
 };

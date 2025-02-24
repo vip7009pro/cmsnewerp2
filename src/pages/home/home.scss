@@ -3,7 +3,7 @@
   flex-direction: column;
   width: 100%;
   margin-left: 0px;
-
+  
   @media only screen and (max-width: 5000px) {
     .homeContainer {
       display: flex;
@@ -41,7 +41,6 @@
       }
     }
   }
-
   @media only screen and (max-width: 768px) {
     .homeContainer {
       display: flex;
@@ -62,15 +61,15 @@
           flex-direction: column;
           margin-top: 0px;
           width: 100%;
+          
           .component_element {
             position: absolute;
-            top: 60px;
+            top: 25px;
           }
         }
       }
     }
   }
-
   @media only screen and (max-width: 320px) {
     .homeContainer {
       display: flex;

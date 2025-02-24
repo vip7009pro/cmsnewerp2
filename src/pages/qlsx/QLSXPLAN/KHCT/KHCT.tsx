@@ -2024,7 +2024,7 @@ const handleCreatePlan = async (FRleadtimeData: LEADTIME_DATA[], SRleadtimeData:
 
   useEffect(() => {
     //handleLoadEQ_STATUS();
-    handleLoadLeadtimeData();
+    //handleLoadLeadtimeData();
   }, []);
   return (
     <div style={{display: 'flex', flexDirection: 'row', gap: '10px', height: '88vh'}}>

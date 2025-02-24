@@ -1,4 +1,12 @@
-import React, { forwardRef, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  forwardRef,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
@@ -21,7 +29,7 @@ interface AGInterface {
   onRowDragEnd?: (e: any) => void,
   getRowStyle?: (e: any) => any
 }
-const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
+const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
   const [selectedrow, setSelectedrow] = useState(0);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
@@ -33,7 +41,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
   }
   const gridRefDefault = useRef<AgGridReact<any>>(null);
   const tableSelectionChange = useCallback(() => {
-      if (gridRef !== null) {
+    if (gridRef !== null) {
       const selectedrows = gridRef.current!.api.getSelectedRows().length;
       setSelectedrow(selectedrows);
     }
@@ -75,8 +83,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
       gridRefDefault.current!.api.exportDataAsCsv();
     }
   };
-    const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {
   }, [])
   return (
@@ -86,7 +93,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            onExportClick();            
+            onExportClick();
           }}
         >
           <AiFillFileExcel color="green" size={15} />
@@ -94,7 +101,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
         </IconButton>
         <IconButton
           className="buttonIcon"
-          onClick={() => {           
+          onClick={() => {
             SaveExcel(ag_data.data, "Data Table");
           }}
         >
@@ -108,7 +115,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
           animateRows={true}
           rowData={ag_data.data ?? []}
           columnDefs={ag_data.columns ?? []}
-          rowHeight={ag_data.rowHeight? ag_data.rowHeight : 25}
+          rowHeight={ag_data.rowHeight ? ag_data.rowHeight : 25}
           defaultColDef={defaultColDef}
           ref={gridRef ?? gridRefDefault}
           onGridReady={() => {
@@ -134,11 +141,10 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef:any) => {
           }}
           onRowClicked={ag_data.onRowClick}
           onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
-          onRowDragMove={ (e) => {}}
+          onRowDragMove={(e) => { }}
           onRowDragEnd={ag_data.onRowDragEnd ?? onRowDragEnd}
           onCellEditingStopped={ag_data.onCellEditingStopped}
           onCellClicked={ag_data.onCellClick}
-          
         />
       </div>
       <div className="bottombar">

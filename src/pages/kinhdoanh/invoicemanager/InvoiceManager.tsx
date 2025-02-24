@@ -25,8 +25,8 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import MyTabs from "../../../components/MyTab/MyTab";
 const InvoiceManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
@@ -413,40 +413,7 @@ const InvoiceManager = () => {
   };
   const getcodelist = async (G_NAME: string) => {
     setCodeList(await f_getcodelist(G_NAME));
-  };
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-        checkkho: false
-      });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: true,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-        checkkho: false
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        testinvoicetable: false,
-        checkkho: true
-      });
-    }
-  };
+  }; 
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
     let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
@@ -1442,14 +1409,10 @@ const InvoiceManager = () => {
     getcodelist("");
   }, []);
   return (
-    <div className="invoicemanager">     
-      <Tabs className="tabs">
-        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
-          <Tab><span className="mininavtext">Tra Invoice</span></Tab>
-          <Tab><span className="mininavtext">Thêm Invoice</span></Tab>
-        </TabList>
-        <TabPanel>
-        <div className="tracuuInvoice">
+    <div className="invoicemanager">
+      <MyTabs defaultActiveTab={0}>
+          <MyTabs.Tab title="Quản lý Invoice">
+          <div className="tracuuInvoice">
           {sh && (
             <div className="tracuuInvoiceform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <div className="forminput">
@@ -1670,10 +1633,10 @@ const InvoiceManager = () => {
           <div className="tracuuInvoiceTable">
             {invoiceDataAGTable}
           </div>
-        </div>
-        </TabPanel>
-        <TabPanel>
-        <div className="newinvoice">
+        </div>            
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Thêm Invoice">
+          <div className="newinvoice">
           <div className="batchnewinvoice">
             <h3>Thêm Invoice Hàng Loạt</h3>
             <form className="formupload">
@@ -1715,9 +1678,10 @@ const InvoiceManager = () => {
               {excelDataAGTable}
             </div>
           </div>
-        </div>          
-        </TabPanel>        
-        </Tabs>
+        </div>   
+            
+          </MyTabs.Tab>
+        </MyTabs>
      
       <CustomDialog
         isOpen={openDialog}

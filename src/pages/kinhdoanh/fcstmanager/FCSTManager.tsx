@@ -12,9 +12,9 @@ import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { FCSTTableData } from "../../../api/GlobalInterface";
-import { Tab, TabList, Tabs, TabPanel } from "react-tabs";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import MyTabs from "../../../components/MyTab/MyTab";
 
 const FCSTManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -43,8 +43,8 @@ const FCSTManager = () => {
   const fcstdatatablefilter = useRef<Array<FCSTTableData>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [trigger, setTrigger] = useState(true);
-  const column_fcsttable:any = [
-    { field: "FCST_ID", headerName: "FCST_ID", width: 80,  headerCheckboxSelection: true, checkboxSelection: true,  },
+  const column_fcsttable: any = [
+    { field: "FCST_ID", headerName: "FCST_ID", width: 80, headerCheckboxSelection: true, checkboxSelection: true, },
     { field: "FCSTYEAR", headerName: "FCSTYEAR", width: 80 },
     { field: "FCSTWEEKNO", headerName: "FCSTWEEKNO", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -374,7 +374,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W1A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -392,7 +392,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W2A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -410,7 +410,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W3A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -428,7 +428,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W4A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -446,7 +446,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W5A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -464,7 +464,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W6A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -482,7 +482,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W7A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -500,7 +500,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W8A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -518,7 +518,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W9A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -536,7 +536,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W10A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -554,7 +554,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W11A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -572,7 +572,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W12A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -590,7 +590,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W13A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -608,7 +608,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W14A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -626,7 +626,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W15A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -644,7 +644,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W16A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -662,7 +662,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W17A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -680,7 +680,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W18A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -698,7 +698,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W19A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -716,7 +716,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W20A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -734,7 +734,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W21A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -752,7 +752,7 @@ const FCSTManager = () => {
             <b>
               {params.data.W22A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -1078,7 +1078,7 @@ const FCSTManager = () => {
     if (e.key === "Enter") {
       handletraFcst();
     }
-  }; 
+  };
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -1298,8 +1298,8 @@ const FCSTManager = () => {
             (element: FCSTTableData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME_KD: getAuditMode() == 0 ? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
               };
             },
           );
@@ -1483,16 +1483,15 @@ const FCSTManager = () => {
       NOTI_ID: -1,
       NOTI_TYPE: "success",
       TITLE: 'Thêm FCST mới',
-      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm forecast mới`, 
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm forecast mới`,
       SUBDEPTNAME: "KD",
       MAINDEPTNAME: "KD",
       INS_EMPL: 'NHU1903',
       INS_DATE: '2024-12-30',
       UPD_EMPL: 'NHU1903',
       UPD_DATE: '2024-12-30',
-    }  
-    if(await f_insert_Notification_Data(newNotification))
-    {
+    }
+    if (await f_insert_Notification_Data(newNotification)) {
       getSocket().emit("notification_panel", newNotification);
     }
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
@@ -1559,17 +1558,16 @@ const FCSTManager = () => {
           NOTI_ID: -1,
           NOTI_TYPE: 'warning',
           TITLE: 'Xóa FCST',
-          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa FCST`, 
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa FCST`,
           SUBDEPTNAME: "KD",
           MAINDEPTNAME: "KD",
           INS_EMPL: 'NHU1903',
           INS_DATE: '2024-12-30',
           UPD_EMPL: 'NHU1903',
           UPD_DATE: '2024-12-30',
-        }  
-        if(await f_insert_Notification_Data(newNotification))
-        {
-          getSocket().emit("notification_panel",newNotification);
+        }
+        if (await f_insert_Notification_Data(newNotification)) {
+          getSocket().emit("notification_panel", newNotification);
         }
         Swal.fire(
           "Thông báo",
@@ -1606,33 +1604,33 @@ const FCSTManager = () => {
       suppressRowClickSelection={false}
       showFilter={true}
       toolbar={
-        <>       
-         <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handleConfirmDeleteFcst,
-            );
-            //handleConfirmDeleteFcst();
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA FCST
-        </IconButton>        
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          Pivot
-        </IconButton>  
+        <>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
+              checkBP(
+                userData,
+                ["KD"],
+                ["ALL"],
+                ["ALL"],
+                handleConfirmDeleteFcst,
+              );
+              //handleConfirmDeleteFcst();
+            }}
+          >
+            <MdOutlineDelete color="red" size={15} />
+            XÓA FCST
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
+            }}
+          >
+            <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+            Pivot
+          </IconButton>
         </>
       }
       columns={column_fcsttable}
@@ -1655,7 +1653,7 @@ const FCSTManager = () => {
       suppressRowClickSelection={false}
       showFilter={true}
       toolbar={
-        <>       
+        <>
         </>
       }
       columns={column_excelplan2}
@@ -1670,255 +1668,246 @@ const FCSTManager = () => {
       }}
     />
     , [uploadExcelJson, trigger]);
-
   useEffect(() => { }, []);
   return (
     <div className="fcstmanager">
-     <Tabs className="tabs">
-        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
-          <Tab>
-            <span className="mininavtext">Tra FCST</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Thêm FCST</span>
-          </Tab>
-        </TabList>
-        <TabPanel>
-        <div className="tracuuFcst">
-          {showhidesearchdiv && (
-            <div className="tracuuFcstform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-              <div className="forminput">
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Từ ngày:</b>
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="date"
-                      value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Tới ngày:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="date"
-                      value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
-                    ></input>
-                  </label>
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="Quản lý FCST">
+          <div className="tracuuFcst">
+            {showhidesearchdiv && (
+              <div className="tracuuFcstform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+                <div className="forminput">
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Từ ngày:</b>
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="date"
+                        value={fromdate.slice(0, 10)}
+                        onChange={(e) => setFromDate(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Tới ngày:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="date"
+                        value={todate.slice(0, 10)}
+                        onChange={(e) => setToDate(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Code KD:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="GH63-xxxxxx"
+                        value={codeKD}
+                        onChange={(e) => setCodeKD(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Code ERP:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="7C123xxx"
+                        value={codeCMS}
+                        onChange={(e) => setCodeCMS(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Tên nhân viên:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="Trang"
+                        value={empl_name}
+                        onChange={(e) => setEmpl_Name(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Khách:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="SEVT"
+                        value={cust_name}
+                        onChange={(e) => setCust_Name(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Loại sản phẩm:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="TSP"
+                        value={prod_type}
+                        onChange={(e) => setProdType(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>ID:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="12345"
+                        value={id}
+                        onChange={(e) => setID(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>PO NO:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="123abc"
+                        value={po_no}
+                        onChange={(e) => setPo_No(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Vật liệu:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="SJ-203020HC"
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className="forminputcolumn">
+                    <label>
+                      <b>Over/OK:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="OVER"
+                        value={over}
+                        onChange={(e) => setOver(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      <b>Invoice No:</b>{" "}
+                      <input
+                        onKeyDown={(e) => {
+                          handleSearchCodeKeyDown(e);
+                        }}
+                        type="text"
+                        placeholder="số invoice"
+                        value={invoice_no}
+                        onChange={(e) => setInvoice_No(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
                 </div>
-                <div className="forminputcolumn">
+                <div className="formbutton">
                   <label>
-                    <b>Code KD:</b>{" "}
+                    <b style={{ fontSize: '0.6rem' }}>All Time:</b>
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="GH63-xxxxxx"
-                      value={codeKD}
-                      onChange={(e) => setCodeKD(e.target.value)}
+                      type="checkbox"
+                      name="alltimecheckbox"
+                      defaultChecked={alltime}
+                      onChange={() => setAllTime(!alltime)}
                     ></input>
                   </label>
-                  <label>
-                    <b>Code ERP:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="7C123xxx"
-                      value={codeCMS}
-                      onChange={(e) => setCodeCMS(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Tên nhân viên:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="Trang"
-                      value={empl_name}
-                      onChange={(e) => setEmpl_Name(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Khách:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="SEVT"
-                      value={cust_name}
-                      onChange={(e) => setCust_Name(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Loại sản phẩm:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="TSP"
-                      value={prod_type}
-                      onChange={(e) => setProdType(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>ID:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="12345"
-                      value={id}
-                      onChange={(e) => setID(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>PO NO:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="123abc"
-                      value={po_no}
-                      onChange={(e) => setPo_No(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Vật liệu:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="SJ-203020HC"
-                      value={material}
-                      onChange={(e) => setMaterial(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-                <div className="forminputcolumn">
-                  <label>
-                    <b>Over/OK:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="OVER"
-                      value={over}
-                      onChange={(e) => setOver(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Invoice No:</b>{" "}
-                    <input
-                      onKeyDown={(e) => {
-                        handleSearchCodeKeyDown(e);
-                      }}
-                      type="text"
-                      placeholder="số invoice"
-                      value={invoice_no}
-                      onChange={(e) => setInvoice_No(e.target.value)}
-                    ></input>
-                  </label>
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      handletraFcst();
+                    }}
+                  >
+                    <FcSearch color="green" size={30} />
+                    Search
+                  </IconButton>
                 </div>
               </div>
-              <div className="formbutton">
-                <label>
-                  <b style={{fontSize: '0.6rem'}}>All Time:</b>
+            )}
+            <div className="tracuuFcstTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+              {fcstDataAGTable}
+            </div>
+          </div>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Thêm FCST">
+          <div className="newfcst">
+            <div className="batchnewplan">
+              <h3>Thêm FCST Hàng Loạt</h3>
+              <form className="formupload">
+                <label htmlFor="upload">
+                  <b>Chọn file Excel: </b>
                   <input
                     onKeyDown={(e) => {
                       handleSearchCodeKeyDown(e);
                     }}
-                    type="checkbox"
-                    name="alltimecheckbox"
-                    defaultChecked={alltime}
-                    onChange={() => setAllTime(!alltime)}
-                  ></input>
+                    className="selectfilebutton"
+                    type="file"
+                    name="upload"
+                    id="upload"
+                    onChange={(e: any) => {
+                      readUploadFile(e);
+                    }}
+                  />
                 </label>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    handletraFcst();
+                <div
+                  className="checkpobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmCheckFcstHangLoat();
                   }}
                 >
-                  <FcSearch color="green" size={30} />
-                  Search
-                </IconButton>
+                  Check FCST
+                </div>
+                <div
+                  className="uppobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmUpFcstHangLoat();
+                  }}
+                >
+                  Up FCST
+                </div>
+              </form>
+              <div className="insertPlanTable">
+                {fcstDataAGTableExcel}
               </div>
             </div>
-          )}
-          <div className="tracuuFcstTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            {fcstDataAGTable}            
           </div>
-        </div>
-        </TabPanel>
-        <TabPanel>
-        <div className="newfcst">
-          <div className="batchnewplan">
-            <h3>Thêm FCST Hàng Loạt</h3>
-            <form className="formupload">
-              <label htmlFor="upload">
-                <b>Chọn file Excel: </b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  className="selectfilebutton"
-                  type="file"
-                  name="upload"
-                  id="upload"
-                  onChange={(e: any) => {
-                    readUploadFile(e);
-                  }}
-                />
-              </label>
-              <div
-                className="checkpobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckFcstHangLoat();
-                }}
-              >
-                Check FCST
-              </div>
-              <div
-                className="uppobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpFcstHangLoat();
-                }}
-              >
-                Up FCST
-              </div>
-            </form>
-            <div className="insertPlanTable">
-              {fcstDataAGTableExcel}              
-            </div>
-          </div>
-        </div>
-        </TabPanel>
-      </Tabs> 
+        </MyTabs.Tab>
+      </MyTabs>
     </div>
   );
 };

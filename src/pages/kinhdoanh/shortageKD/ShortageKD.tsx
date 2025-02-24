@@ -1,4 +1,4 @@
-import { IconButton, LinearProgress } from "@mui/material";
+import { IconButton } from "@mui/material";
 import {
   DataGrid,
   GridRowSelectionModel,
@@ -9,13 +9,12 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useContext, useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete } from "react-icons/md";
 import "./ShortageKD.scss";
@@ -23,7 +22,7 @@ import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ShortageData } from "../../../api/GlobalInterface";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import MyTabs from "../../../components/MyTab/MyTab";
 const ShortageKD = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({
@@ -727,7 +726,7 @@ const ShortageKD = () => {
             (element: ShortageData, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               };
             },
@@ -748,248 +747,237 @@ const ShortageKD = () => {
         console.log(error);
       });
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
-    (<div className="shortage">      
-      <Tabs className="tabs">
-        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
-          <Tab>
-            <span className="mininavtext">Tra Shortage</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Thêm Shortage</span>
-          </Tab>
-        </TabList>
-        <TabPanel>
-        <div className="tracuuPlan">
-          <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            <div className="forminput">
-              <div className="forminputcolumn">
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    type="date"
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    type="date"
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
+    <div className="shortage">
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="Quản lý Shortage">
+          <div className="tracuuPlan">
+            <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      type="date"
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      type="date"
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="GH63-xxxxxx"
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="7C123xxx"
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Trang"
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="SEVT"
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="TSP"
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>ID:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="12345"
+                      value={id}
+                      onChange={(e) => setID(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>PO NO:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="123abc"
+                      value={po_no}
+                      onChange={(e) => setPo_No(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="SJ-203020HC"
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Over/OK:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="OVER"
+                      value={over}
+                      onChange={(e) => setOver(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Invoice No:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="số invoice"
+                      value={invoice_no}
+                      onChange={(e) => setInvoice_No(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
               </div>
-              <div className="forminputcolumn">
+              <div className="formbutton">
                 <label>
-                  <b>Code KD:</b>{" "}
+                  <b>All Time:</b>
                   <input
-                    type="text"
-                    placeholder="GH63-xxxxxx"
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={alltime}
+                    onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
-                <label>
-                  <b>Code ERP:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="7C123xxx"
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className="forminputcolumn">
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Trang"
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="SEVT"
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className="forminputcolumn">
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="TSP"
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>ID:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="12345"
-                    value={id}
-                    onChange={(e) => setID(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className="forminputcolumn">
-                <label>
-                  <b>PO NO:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="123abc"
-                    value={po_no}
-                    onChange={(e) => setPo_No(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Vật liệu:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="SJ-203020HC"
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className="forminputcolumn">
-                <label>
-                  <b>Over/OK:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="OVER"
-                    value={over}
-                    onChange={(e) => setOver(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Invoice No:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="số invoice"
-                    value={invoice_no}
-                    onChange={(e) => setInvoice_No(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-            </div>
-            <div className="formbutton">
-              <label>
-                <b>All Time:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  handletraShortage();
-                }}
-              >
-                <FcSearch color="green" size={30} />
-                Search
-              </IconButton>
-            </div>
-          </div>
-          <div className="tracuuPlanTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            <DataGrid
-              slots={{
-                toolbar: CustomToolbarPOTable,
-                
-              }}
-              sx={{ fontSize: "0.7rem" }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={shortagedatatable}
-              columns={column_shortage}
-              pageSizeOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode="row"
-              getRowId={(row) => row.ST_ID}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(ids) => {
-                handleShortageSelectionforUpdate(ids);
-              }}
-            />
-          </div>
-        </div>
-        </TabPanel>
-        <TabPanel>
-        <div className="newplan">
-          <div className="batchnewplan">
-            <h3>Thêm Shortage Hàng Loạt</h3>
-            <form className="formupload">
-              <label htmlFor="upload">
-                <b>Chọn file Excel: </b>
-                <input
-                  className="selectfilebutton"
-                  type="file"
-                  name="upload"
-                  id="upload"
-                  onChange={(e: any) => {
-                    readUploadFile(e);
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    handletraShortage();
                   }}
-                />
-              </label>
-              <div
-                className="checkpobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckShortageHangLoat();
-                }}
-              >
-                Check
+                >
+                  <FcSearch color="green" size={30} />
+                  Search
+                </IconButton>
               </div>
-              <div
-                className="uppobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpShortageHangLoat();
+            </div>
+            <div className="tracuuPlanTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+              <DataGrid
+                slots={{
+                  toolbar: CustomToolbarPOTable,
                 }}
-              >
-                Up Shortage
-              </div>
-            </form>
-            <div className="insertPlanTable">
-              {true && (
-                <DataGrid
-                  sx={{ fontSize: "0.7rem" }}
-                  slots={{
-                    toolbar: CustomToolbar,
-                    
-                  }}
-                  loading={isLoading}
-                  rowHeight={35}
-                  rows={uploadExcelJson}
-                  columns={column_excel_shortage}
-                  pageSizeOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode="row"
-                />
-              )}
+                sx={{ fontSize: "0.7rem" }}
+                loading={isLoading}
+                rowHeight={30}
+                rows={shortagedatatable}
+                columns={column_shortage}
+                pageSizeOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                ]}
+                editMode="row"
+                getRowId={(row) => row.ST_ID}
+                checkboxSelection
+                disableRowSelectionOnClick
+                onRowSelectionModelChange={(ids) => {
+                  handleShortageSelectionforUpdate(ids);
+                }}
+              />
             </div>
           </div>
-        </div>
-
-        </TabPanel>
-      </Tabs>     
-    </div>)
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Thêm Shortage">
+          <div className="newplan">
+            <div className="batchnewplan">
+              <h3>Thêm Shortage Hàng Loạt</h3>
+              <form className="formupload">
+                <label htmlFor="upload">
+                  <b>Chọn file Excel: </b>
+                  <input
+                    className="selectfilebutton"
+                    type="file"
+                    name="upload"
+                    id="upload"
+                    onChange={(e: any) => {
+                      readUploadFile(e);
+                    }}
+                  />
+                </label>
+                <div
+                  className="checkpobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmCheckShortageHangLoat();
+                  }}
+                >
+                  Check
+                </div>
+                <div
+                  className="uppobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmUpShortageHangLoat();
+                  }}
+                >
+                  Up Shortage
+                </div>
+              </form>
+              <div className="insertPlanTable">
+                {true && (
+                  <DataGrid
+                    sx={{ fontSize: "0.7rem" }}
+                    slots={{
+                      toolbar: CustomToolbar,
+                    }}
+                    loading={isLoading}
+                    rowHeight={35}
+                    rows={uploadExcelJson}
+                    columns={column_excel_shortage}
+                    pageSizeOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                    ]}
+                    editMode="row"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </MyTabs.Tab>
+      </MyTabs>
+    </div>
   );
 };
 export default ShortageKD;

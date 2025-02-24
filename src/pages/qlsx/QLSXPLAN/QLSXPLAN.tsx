@@ -3,9 +3,9 @@ import "./QLSXPLAN.scss";
 import KHCT from "./KHCT/KHCT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { getCompany, getUserData } from "../../../api/Api";
 import LONGTERM_PLAN from "./LICHSUCHITHITABLE/LONGTERM_PLAN";
+import MyTabs from "../../../components/MyTab/MyTab";
 const BTP_AUTO = React.lazy(() => import("../../sx/BTP_AUTO/BTP_AUTO"));
 const MACHINE_OLD = React.lazy(() => import("./Machine/MACHINE_backup"));
 const PLAN_DATATB_OLD = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB_backup"));
@@ -25,73 +25,68 @@ const QLSXPLAN = () => {
   useEffect(() => { }, []);
   return (
     <div className="qlsxplan">
-      <Suspense fallback={<div> Loading...</div>}>
-        <Tabs className="tabs" style={{
-          fontSize: "0.6rem",
-          width: "100%",
-        }}>
-          <TabList className="tablist" style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "left",
-            backgroundImage: theme.CMS.backgroundImage,
-            color: 'gray'
-          }}>
-            <Tab>PLAN VISUAL</Tab>
-            {getCompany() === "CMS" && <Tab>QUICK PLAN</Tab>}
-            {getCompany() === "CMS" &&  getUserData()?.EMPL_NO  ==='NHU1903' && <Tab>AUTO PLAN</Tab>}
-            <Tab>PLAN TABLE</Tab>
-            {getCompany() === "CMS" && <Tab>LONGTERM PLAN</Tab>}           
-            <Tab>LỊCH SỬ</Tab>
-            <Tab>DATA SX</Tab>
-            <Tab>PLAN STATUS</Tab>
-            <Tab>TV SHOW</Tab>
-            <Tab>EQ STATUS</Tab>
-            <Tab>Kho SX Main</Tab>
-            <Tab>PLAN_RESULT</Tab>
-            {getCompany() === "CMS" && <Tab>BTP</Tab>}               
-          </TabList>
-          <TabPanel>
-            {(getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z') ? <MACHINE /> : <MACHINE_OLD />}
-          </TabPanel>
-          {getCompany() === "CMS" && <TabPanel>
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <QUICKPLAN2 /> : <QUICKPLAN2_OLD />}
-          </TabPanel>}
-          {getCompany() === "CMS" && getUserData()?.EMPL_NO  ==='NHU1903' &&<TabPanel>
-            <KHCT />
-          </TabPanel>}
-          <TabPanel>
-            {getCompany() === "CMS" && getUserData()?.EMPL_NO === 'NHU1903z' ? <PLAN_DATATB /> : <PLAN_DATATB_OLD />}
-          </TabPanel>
-          {getCompany() ==='CMS' &&  <TabPanel>
-            <LONGTERM_PLAN />
-          </TabPanel>}
-          <TabPanel>
+      <Suspense fallback={<div>Loading...</div>}>
+        <MyTabs defaultActiveTab={0}>
+          <MyTabs.Tab title="PLAN VISUAL">
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? (
+              <MACHINE />
+            ) : (
+              <MACHINE_OLD />
+            )}
+          </MyTabs.Tab>
+          {getCompany() === "CMS" && (
+            <MyTabs.Tab title="QUICK PLAN">
+              {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? (
+                <QUICKPLAN2 />
+              ) : (
+                <QUICKPLAN2_OLD />
+              )}
+            </MyTabs.Tab>
+          )}
+          {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903" && (
+            <MyTabs.Tab title="AUTO PLAN">
+              <KHCT />
+            </MyTabs.Tab>
+          )}
+          <MyTabs.Tab title="PLAN TABLE">
+            {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? (
+              <PLAN_DATATB />
+            ) : (
+              <PLAN_DATATB_OLD />
+            )}
+          </MyTabs.Tab>
+          {getCompany() === "CMS" && (
+            <MyTabs.Tab title="LONGTERM PLAN">
+              <LONGTERM_PLAN />
+            </MyTabs.Tab>
+          )}
+          <MyTabs.Tab title="LỊCH SỬ">
             <LICHSUINPUTLIEU />
-          </TabPanel>
-          <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="DATA SX">
             <DATASX />
-          </TabPanel>
-          <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="PLAN STATUS">
             <PLAN_STATUS />
-          </TabPanel>
-          <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="TV SHOW">
             <EQ_STATUS />
-          </TabPanel>
-          <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="EQ STATUS">
             <EQ_STATUS2 />
-          </TabPanel>
-          <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Kho SX Main">
             <KHOAO />
-          </TabPanel>
-          <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="PLAN_RESULT">
             <ACHIVEMENTTB />
-          </TabPanel>
-          <TabPanel>
-            {getCompany() ==='CMS' && <BTP_AUTO />}
-          </TabPanel>
-        </Tabs>
+          </MyTabs.Tab>
+          {getCompany() === "CMS" && (
+            <MyTabs.Tab title="BTP">
+              <BTP_AUTO />
+            </MyTabs.Tab>
+          )}
+        </MyTabs>
       </Suspense>
     </div>
   );

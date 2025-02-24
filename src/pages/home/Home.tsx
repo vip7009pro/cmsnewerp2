@@ -2,9 +2,9 @@ import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
-import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
+import { generalQuery, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
-import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
+import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = 2567;
+export const current_ver: number = 2569;
 /* export const current_ver: number = 422; */
 const PostManager = React.lazy(() => import("../information_board/PostManager"));
 const Information = React.lazy(() => import("../information_board/Information"));
@@ -1065,7 +1065,9 @@ function Home() {
                 (ele: ELE_ARRAY, index: number) =>
                   ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
               ).length > 0 && (
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <div className="tabsdiv">
+
+
                   <Tabs
                     value={tabIndex}
                     onChange={(
@@ -1078,6 +1080,7 @@ function Home() {
                     aria-label='ERP TABS'
                     scrollButtons
                     allowScrollButtonsMobile
+                    className="tabs"
                     style={{
                       backgroundImage: `${company === "CMS"
                         ? theme.CMS.backgroundImage
@@ -1087,6 +1090,8 @@ function Home() {
                       minHeight: "2px",
                       boxSizing: "border-box",
                       borderRadius: "2px",
+                      overflow: 'scroll',
+                      height: 'fit-content'
                     }}
                   >
                     {tabs.map((ele: ELE_ARRAY, index: number) => {
@@ -1096,13 +1101,13 @@ function Home() {
                             <CustomTab
                               key={index}
                               label={
-                                <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black" }}
+                                <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black", borderRadius: '5px', margin: '5px', cursor: 'pointer' }}
                                   onClick={() => {
                                     dispatch(settabIndex(index));
                                   }}
                                 >
-                                  <CustomTabLabel style={{ fontSize: "0.7rem", }}>
-                                    {index + 1}.{ele.ELE_NAME}
+                                  <CustomTabLabel style={{ fontSize: "0.7rem", display: 'flex', whiteSpace: 'nowrap', alignItems: 'center' }}>
+                                    <span style={{ marginRight: '5px' }}>{index + 1}.{ele.ELE_NAME}</span>
                                     <IconButton key={index + 'A'} onClick={() => {
                                       dispatch(closeTab(index));
                                     }}>
@@ -1124,7 +1129,8 @@ function Home() {
                       }
                     })}
                   </Tabs>
-                </Box>
+                </div>
+
               )}
             {tabModeSwap &&
               tabs.map((ele: ELE_ARRAY, index: number) => {

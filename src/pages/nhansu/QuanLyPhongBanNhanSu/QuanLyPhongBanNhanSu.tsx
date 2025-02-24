@@ -27,15 +27,16 @@ import { changeUserData } from "../../../redux/slices/globalSlice";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { IconButton } from "@mui/material";
 import { getlang } from "../../../components/String/String";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import MyTabs from "../../../components/MyTab/MyTab";
+
+
 const QuanLyPhongBanNhanSu = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
   const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang,
+    (state: RootState) => state.totalSlice.lang
   );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [isLoading, setisLoading] = useState(false);
   const [workpositionload, setWorkPositionLoad] = useState<
     Array<WorkPositionTableData>
@@ -64,7 +65,7 @@ const QuanLyPhongBanNhanSu = () => {
   const [JOB_CODE, setJOB_CODE] = useState(1);
   const [FACTORY_CODE, setFACTORY_CODE] = useState(1);
   const [WORK_STATUS_CODE, setWORK_STATUS_CODE] = useState(0);
-  const [EMPL_IMAGE, setEMPL_IMAGE] = useState('N');
+  const [EMPL_IMAGE, setEMPL_IMAGE] = useState("N");
   const [employeeTable, setEmployeeTable] = useState<Array<EmployeeTableData>>(
     []
   );
@@ -90,6 +91,7 @@ const QuanLyPhongBanNhanSu = () => {
   const [resigned_check, setResignedCheck] = useState(true);
   const [file, setFile] = useState<any>(null);
   const dispatch = useDispatch();
+
   const uploadFile2 = async (empl_no: string) => {
     if (file !== null && file !== undefined) {
       if (EMPL_NO !== "") {
@@ -123,15 +125,14 @@ const QuanLyPhongBanNhanSu = () => {
           .catch((error) => {
             console.log(error);
           });
+      } else {
+        Swal.fire("Thông báo", "Chọn nhân viên trước", "error");
       }
-      else {
-        Swal.fire('Thông báo', 'Chọn nhân viên trước', 'error');
-      }
-    }
-    else {
-      Swal.fire('Thông báo', 'Chọn file trước', 'error');
+    } else {
+      Swal.fire("Thông báo", "Chọn file trước", "error");
     }
   };
+
   const handle_them_maindept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -166,6 +167,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_sua_maindept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -200,6 +202,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_xoa_maindept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -234,6 +237,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_them_subdept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -269,6 +273,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_sua_subdept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -304,6 +309,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_xoa_subdept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -339,6 +345,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_them_workposition = () => {
     const insertData = {
       CTR_CD: "002",
@@ -375,6 +382,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_sua_workposition = () => {
     const insertData = {
       CTR_CD: "002",
@@ -411,6 +419,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_xoa_workposition = () => {
     const insertData = {
       CTR_CD: "002",
@@ -447,6 +456,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_them_employee = () => {
     const insertData = {
       NV_CCID: NV_CCID,
@@ -499,6 +509,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_sua_employee = () => {
     const insertData = {
       NV_CCID: NV_CCID,
@@ -537,7 +548,6 @@ const QuanLyPhongBanNhanSu = () => {
                 setEmployeeTable(response.data.data);
                 generalQuery("updateM010", insertData)
                   .then((response) => {
-                    //console.log(response.data.data);
                     if (response.data.tk_status === "OK") {
                     } else {
                     }
@@ -562,6 +572,7 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   const handle_xoa_employee = () => {
     setEMPL_NO("");
     setCMS_ID("");
@@ -587,6 +598,7 @@ const QuanLyPhongBanNhanSu = () => {
     setWORK_POSITION_CODE(1);
     setATT_GROUP_CODE(1);
   };
+
   const [subdeptTable, setSubDeptTable] = useState<Array<SubDeptTableData>>([]);
   const [subdeptDataFilter, setSubDeptDataFilter] = useState<
     Array<SubDeptTableData>
@@ -597,6 +609,7 @@ const QuanLyPhongBanNhanSu = () => {
   const [workpositionDataFilter, setWorkPositionDataFilter] = useState<
     Array<WorkPositionTableData>
   >([]);
+
   const columns_maindept = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "CTR_CD", headerName: "CTR_CD", width: 70 },
@@ -604,6 +617,7 @@ const QuanLyPhongBanNhanSu = () => {
     { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130 },
     { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 170 },
   ];
+
   const columns_subdept = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "CTR_CD", headerName: "CTR_CD", width: 70 },
@@ -612,6 +626,7 @@ const QuanLyPhongBanNhanSu = () => {
     { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130 },
     { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 170 },
   ];
+
   const columns_work_position = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "CTR_CD", headerName: "CTR_CD", width: 70 },
@@ -633,86 +648,64 @@ const QuanLyPhongBanNhanSu = () => {
     },
     { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170 },
   ];
+
   const columns_employee_table = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120, resizable: true, headerClassName: 'super-app-theme--header', },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120, headerClassName: 'super-app-theme--header', },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120, resizable: true, headerClassName: "super-app-theme--header" },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120, headerClassName: "super-app-theme--header" },
     {
       field: "NV_CCID",
       headerName: "NV_CCID",
       width: 120,
       renderCell: (params: any) => {
         return <span>{zeroPad(params.row.NV_CCID, 6)}</span>;
-      }, headerClassName: 'super-app-theme--header',
+      },
+      headerClassName: "super-app-theme--header",
     },
-    { field: "FULL_NAME", headerName: "FULL_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    {
-      field: "DOB",
-      headerName: "DOB",
-      width: 100, headerClassName: 'super-app-theme--header',
-    },
-    { field: "HOMETOWN", headerName: "HOMETOWN", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "ADD_PROVINCE", headerName: "ADD_PROVINCE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "ADD_DISTRICT", headerName: "ADD_DISTRICT", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "ADD_COMMUNE", headerName: "ADD_COMMUNE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "ADD_VILLAGE", headerName: "ADD_VILLAGE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 100, headerClassName: 'super-app-theme--header', },
-    {
-      field: "WORK_START_DATE",
-      headerName: "WORK_START_DATE",
-      width: 100, headerClassName: 'super-app-theme--header',
-    },
-    /*  { field: "PASSWORD", headerName: "PASSWORD", width: 100},   */
-    { field: "EMAIL", headerName: "EMAIL", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "REMARK", headerName: "REMARK", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "ONLINE_DATETIME", headerName: "ONLINE_DATETIME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "CTR_CD", headerName: "CTR_CD", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "SEX_CODE", headerName: "SEX_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "SEX_NAME_KR", headerName: "SEX_NAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "WORK_STATUS_CODE", headerName: "WORK_STATUS_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    {
-      field: "WORK_STATUS_NAME_KR",
-      headerName: "WORK_STATUS_NAME_KR",
-      width: 100, headerClassName: 'super-app-theme--header',
-    },
-    { field: "FACTORY_CODE", headerName: "FACTORY_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "FACTORY_NAME_KR", headerName: "FACTORY_NAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "JOB_CODE", headerName: "JOB_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "JOB_NAME_KR", headerName: "JOB_NAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "POSITION_CODE", headerName: "POSITION_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "POSITION_NAME_KR", headerName: "POSITION_NAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "WORK_SHIFT_CODE", headerName: "WORK_SHIFT_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "WORK_SHIF_NAME_KR", headerName: "WORK_SHIF_NAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
-    {
-      field: "WORK_POSITION_CODE",
-      headerName: "WORK_POSITION_CODE",
-      width: 100, headerClassName: 'super-app-theme--header',
-    },
-    {
-      field: "WORK_POSITION_NAME",
-      headerName: "WORK_POSITION_NAME",
-      width: 100, headerClassName: 'super-app-theme--header',
-    },
-    {
-      field: "WORK_POSITION_NAME_KR",
-      headerName: "WORK_POSITION_NAME_KR",
-      width: 100, headerClassName: 'super-app-theme--header',
-    },
-    { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "SUBDEPTCODE", headerName: "SUBDEPTCODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 100, headerClassName: 'super-app-theme--header', },
-    { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 100, headerClassName: 'super-app-theme--header', },
+    { field: "FULL_NAME", headerName: "FULL_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "DOB", headerName: "DOB", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "HOMETOWN", headerName: "HOMETOWN", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "ADD_PROVINCE", headerName: "ADD_PROVINCE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "ADD_DISTRICT", headerName: "ADD_DISTRICT", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "ADD_COMMUNE", headerName: "ADD_COMMUNE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "ADD_VILLAGE", headerName: "ADD_VILLAGE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_START_DATE", headerName: "WORK_START_DATE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "EMAIL", headerName: "EMAIL", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "REMARK", headerName: "REMARK", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "ONLINE_DATETIME", headerName: "ONLINE_DATETIME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "CTR_CD", headerName: "CTR_CD", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "SEX_CODE", headerName: "SEX_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "SEX_NAME_KR", headerName: "SEX_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_STATUS_CODE", headerName: "WORK_STATUS_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_STATUS_NAME_KR", headerName: "WORK_STATUS_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "FACTORY_CODE", headerName: "FACTORY_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "FACTORY_NAME_KR", headerName: "FACTORY_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "JOB_CODE", headerName: "JOB_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "JOB_NAME_KR", headerName: "JOB_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "POSITION_CODE", headerName: "POSITION_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "POSITION_NAME", headerName: "POSITION_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "POSITION_NAME_KR", headerName: "POSITION_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_SHIFT_CODE", headerName: "WORK_SHIFT_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_SHIF_NAME_KR", headerName: "WORK_SHIF_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_POSITION_CODE", headerName: "WORK_POSITION_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_POSITION_NAME", headerName: "WORK_POSITION_NAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "WORK_POSITION_NAME_KR", headerName: "WORK_POSITION_NAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "SUBDEPTCODE", headerName: "SUBDEPTCODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "SUBDEPTNAME_KR", headerName: "SUBDEPTNAME_KR", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 100, headerClassName: "super-app-theme--header" },
+    { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 100, headerClassName: "super-app-theme--header" },
   ];
+
   const handleMainDeptSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = maindeptTable.filter((element: any) =>
@@ -729,8 +722,7 @@ const QuanLyPhongBanNhanSu = () => {
           if (response.data.tk_status === "OK") {
             console.log(response.data.data);
             setSubDeptTable(response.data.data);
-          }
-          else {
+          } else {
             setSubDeptTable([]);
           }
         })
@@ -739,8 +731,8 @@ const QuanLyPhongBanNhanSu = () => {
         });
     }
     setMainDeptDataFilter(datafilter);
-    //console.log(datafilter);
   };
+
   const handlesubDeptSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = subdeptTable.filter((element: any) =>
@@ -757,8 +749,7 @@ const QuanLyPhongBanNhanSu = () => {
           if (response.data.tk_status === "OK") {
             console.log(response.data.data);
             setWorkPositionTable(response.data.data);
-          }
-          else {
+          } else {
             setWorkPositionTable([]);
           }
           setWorkPositionCode(0);
@@ -771,8 +762,8 @@ const QuanLyPhongBanNhanSu = () => {
         });
     }
     setSubDeptDataFilter(datafilter);
-    //console.log(datafilter);
   };
+
   const handleworkPositionSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = workpositionTable.filter((element: any) =>
@@ -787,8 +778,8 @@ const QuanLyPhongBanNhanSu = () => {
       setATT_GROUP_CODE(datafilter[datafilter.length - 1].ATT_GROUP_CODE);
     }
     setWorkPositionDataFilter(datafilter);
-    //console.log(datafilter);
   };
+
   const handleEmployeeSelection = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = employeeTable.filter((element: any) =>
@@ -823,8 +814,8 @@ const QuanLyPhongBanNhanSu = () => {
       setNV_CCID(datafilter[datafilter.length - 1].NV_CCID);
       setEMPL_IMAGE(datafilter[datafilter.length - 1].EMPL_IMAGE);
     }
-    //console.log(datafilter);
   };
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -833,7 +824,7 @@ const QuanLyPhongBanNhanSu = () => {
         <GridToolbarDensitySelector />
         <GridToolbarQuickFilter />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(
               employeeTable.map((element: EmployeeTableData, index: number) => {
@@ -850,19 +841,19 @@ const QuanLyPhongBanNhanSu = () => {
           Save Excel
         </button>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             loademployeefull();
           }}
         >
-          <BiRefresh color='green' size={15} />
+          <BiRefresh color="green" size={15} />
           Search
         </IconButton>
         <label>
           <b>Trừ người đã nghỉ_</b>
           <input
-            type='checkbox'
-            name='alltimecheckbox'
+            type="checkbox"
+            name="alltimecheckbox"
             defaultChecked={resigned_check}
             onChange={() => setResignedCheck(!resigned_check)}
           ></input>
@@ -870,21 +861,22 @@ const QuanLyPhongBanNhanSu = () => {
       </GridToolbarContainer>
     );
   }
+
   const zeroPad = (num: number, places: number) =>
     String(num).padStart(places, "0");
+
   const loademployeefull = () => {
     generalQuery("getemployee_full", {})
       .then((response) => {
-        //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: EmployeeTableData[] = response.data.data.map(
             (element: EmployeeTableData, index: number) => {
               return {
                 ...element,
-                DOB: element.DOB !== null ? moment.utc(element.DOB).format('YYYY-MM-DD') : '',
-                WORK_START_DATE: element.WORK_START_DATE !== null ? moment.utc(element.WORK_START_DATE).format('YYYY-MM-DD') : '',
-                RESIGN_DATE: element.RESIGN_DATE !== null ? moment.utc(element.RESIGN_DATE).format('YYYY-MM-DD') : '',
-                ONLINE_DATETIME: element.ONLINE_DATETIME !== null ? moment.utc(element.ONLINE_DATETIME).format('YYYY-MM-DD HH:mm:ss') : '',
+                DOB: element.DOB !== null ? moment.utc(element.DOB).format("YYYY-MM-DD") : "",
+                WORK_START_DATE: element.WORK_START_DATE !== null ? moment.utc(element.WORK_START_DATE).format("YYYY-MM-DD") : "",
+                RESIGN_DATE: element.RESIGN_DATE !== null ? moment.utc(element.RESIGN_DATE).format("YYYY-MM-DD") : "",
+                ONLINE_DATETIME: element.ONLINE_DATETIME !== null ? moment.utc(element.ONLINE_DATETIME).format("YYYY-MM-DD HH:mm:ss") : "",
                 FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
               };
             }
@@ -904,11 +896,11 @@ const QuanLyPhongBanNhanSu = () => {
         console.log(error);
       });
   };
+
   useEffect(() => {
     setisLoading(true);
     generalQuery("getmaindept", {})
       .then((response) => {
-        //console.log(response.data.data);
         setMainDeptTable(response.data.data);
         setisLoading(false);
       })
@@ -917,7 +909,6 @@ const QuanLyPhongBanNhanSu = () => {
       });
     generalQuery("workpositionlist", {})
       .then((response) => {
-        //console.log(response.data.data);
         setWorkPositionLoad(response.data.data);
         setisLoading(false);
       })
@@ -926,78 +917,69 @@ const QuanLyPhongBanNhanSu = () => {
       });
     loademployeefull();
   }, []);
+
   return (
-    (<div className='quanlyphongbannhansu'>
-      <Tabs className="tabs" style={{
-        fontSize: "0.6rem",
-        width: "100%",
-      }}>
-        <TabList className="tablist" style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundImage: theme.CMS.backgroundImage,
-          justifyContent: "left",
-        }}>
-          <Tab>
-            <span className="mininavtext">Quản lý Nhân Sự</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Quản Lý Phòng Ban</span>
-          </Tab>
-        </TabList>
-        <TabPanel>
-          <div className='quanlynhansu'>
-            <div className='maindept'>
+    <div className="quanlyphongbannhansu">
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="Quản lý Nhân Sự">
+          <div className="quanlynhansu">
+            <div className="maindept">
               <h3>{getlang("thongtinnhanvien", glbLang!)}</h3>
-              <div className='maindeptform'>
-                <div className='inputform'>
-                  <div className='emplpicture'>
-                    {
-                      EMPL_IMAGE === 'Y' &&
+              <div className="maindeptform">
+                <div className="inputform">
+                  <div className="emplpicture">
+                    {EMPL_IMAGE === "Y" && (
                       <img
                         width={220}
                         height={300}
                         src={"/Picture_NS/NS_" + avatar + ".jpg"}
                         alt={avatar}
                       ></img>
-                    }
-                    {
-                      EMPL_IMAGE !== 'Y' &&
+                    )}
+                    {EMPL_IMAGE !== "Y" && (
                       <img
                         width={220}
                         height={300}
                         src={"/noimage.webp"}
                         alt={avatar}
                       ></img>
-                    }
+                    )}
                     <div className="uploadavatardiv">
                       Change Avatar:
                       <input
-                        accept='.jpg'
-                        type='file'
+                        accept=".jpg"
+                        type="file"
                         onChange={(e: any) => {
                           setFile(e.target.files[0]);
                           console.log(e.target.files[0]);
                         }}
                       />
-                      <IconButton className='buttonIcon' onClick={() => {
-                        checkBP(userData, ['NHANSU'], ['ALL'], ['ALL'], async () => {
-                          uploadFile2(EMPL_NO)
-                        })
-                      }}>
-                        <AiOutlineCloudUpload color='yellow' size={15} />
+                      <IconButton
+                        className="buttonIcon"
+                        onClick={() => {
+                          checkBP(
+                            userData,
+                            ["NHANSU"],
+                            ["ALL"],
+                            ["ALL"],
+                            async () => {
+                              uploadFile2(EMPL_NO);
+                            }
+                          );
+                        }}
+                      >
+                        <AiOutlineCloudUpload color="yellow" size={15} />
                         Upload
                       </IconButton>
                     </div>
                   </div>
-                  <div className='maindeptinput'>
-                    <div className='maindeptinputbox'>
+                  <div className="maindeptinput">
+                    <div className="maindeptinputbox">
                       <label>
                         {getlang("maerp", glbLang!)}{" "}
                         <input
                           disabled={enableEdit}
-                          type='text'
+                          type="text"
                           value={EMPL_NO}
                           onChange={(e) => setEMPL_NO(e.target.value)}
                         ></input>
@@ -1006,7 +988,7 @@ const QuanLyPhongBanNhanSu = () => {
                         {getlang("manhansu", glbLang!)}{" "}
                         <input
                           disabled={enableEdit}
-                          type='text'
+                          type="text"
                           value={CMS_ID}
                           onChange={(e) => setCMS_ID(e.target.value)}
                         ></input>
@@ -1014,7 +996,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("machamcong", glbLang!)}
                         <input
-                          name='gioitinh'
+                          name="gioitinh"
                           value={NV_CCID}
                           onChange={(e) => setNV_CCID(Number(e.target.value))}
                         ></input>
@@ -1023,7 +1005,7 @@ const QuanLyPhongBanNhanSu = () => {
                         {getlang("ten", glbLang!)}{" "}
                         <input
                           disabled={enableEdit}
-                          type='text'
+                          type="text"
                           value={FIRST_NAME}
                           onChange={(e) => setFIRST_NAME(e.target.value)}
                         ></input>
@@ -1032,7 +1014,7 @@ const QuanLyPhongBanNhanSu = () => {
                         {getlang("hovadem", glbLang!)}
                         <input
                           disabled={enableEdit}
-                          type='text'
+                          type="text"
                           value={MIDLAST_NAME}
                           onChange={(e) => setMIDLAST_NAME(e.target.value)}
                         ></input>
@@ -1040,7 +1022,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("ngaythangnamsinh", glbLang!)}
                         <input
-                          type='date'
+                          type="date"
                           value={DOB.slice(0, 10)}
                           onChange={(e) => setDOB(e.target.value)}
                         ></input>
@@ -1048,7 +1030,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("quequan", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={HOMETOWN}
                           onChange={(e) => setHOMETOWN(e.target.value)}
                         ></input>
@@ -1056,7 +1038,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("gioitinh", glbLang!)}
                         <select
-                          name='gioitinh'
+                          name="gioitinh"
                           value={SEX_CODE}
                           onChange={(e) => setSEX_CODE(Number(e.target.value))}
                         >
@@ -1065,11 +1047,11 @@ const QuanLyPhongBanNhanSu = () => {
                         </select>
                       </label>
                     </div>
-                    <div className='maindeptinputbox'>
+                    <div className="maindeptinputbox">
                       <label>
                         {getlang("tinhthanhpho", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={ADD_PROVINCE}
                           onChange={(e) => setADD_PROVINCE(e.target.value)}
                         ></input>
@@ -1077,7 +1059,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("quanhuyen", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={ADD_DISTRICT}
                           onChange={(e) => setADD_DISTRICT(e.target.value)}
                         ></input>
@@ -1085,7 +1067,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("xathitran", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={ADD_COMMUNE}
                           onChange={(e) => setADD_COMMUNE(e.target.value)}
                         ></input>
@@ -1093,7 +1075,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("thonxom", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={ADD_VILLAGE}
                           onChange={(e) => setADD_VILLAGE(e.target.value)}
                         ></input>
@@ -1101,7 +1083,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("sodienthoai", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={PHONE_NUMBER}
                           onChange={(e) => setPHONE_NUMBER(e.target.value)}
                         ></input>
@@ -1109,7 +1091,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("ngaybatdaulamviec", glbLang!)}
                         <input
-                          type='date'
+                          type="date"
                           value={WORK_START_DATE.slice(0, 10)}
                           onChange={(e) => setWORK_START_DATE(e.target.value)}
                         ></input>
@@ -1118,7 +1100,7 @@ const QuanLyPhongBanNhanSu = () => {
                         {getlang("ngaynghiviec", glbLang!)}
                         <input
                           disabled={WORK_STATUS_CODE !== 0}
-                          type='date'
+                          type="date"
                           value={RESIGN_DATE.slice(0, 10)}
                           onChange={(e) => setRESIGN_DATE(e.target.value)}
                         ></input>
@@ -1126,17 +1108,17 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("password", glbLang!)}
                         <input
-                          type='password'
+                          type="password"
                           value={PASSWORD}
                           onChange={(e) => setPASSWORD(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='maindeptinputbox'>
+                    <div className="maindeptinputbox">
                       <label>
                         {getlang("email", glbLang!)}
                         <input
-                          type='text'
+                          type="text"
                           value={EMAIL}
                           onChange={(e) => setEMAIL(e.target.value)}
                         ></input>
@@ -1144,7 +1126,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("vitrilamviec", glbLang!)}
                         <select
-                          name='vitrilamviec'
+                          name="vitrilamviec"
                           value={WORK_POSITION_CODE}
                           onChange={(e) => {
                             setWORK_POSITION_CODE(Number(e.target.value));
@@ -1163,7 +1145,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("teamlamviec", glbLang!)}
                         <select
-                          name='calamviec'
+                          name="calamviec"
                           value={WORK_SHIFT_CODE}
                           onChange={(e) =>
                             setWORK_SHIFT_CODE(Number(e.target.value))
@@ -1172,13 +1154,12 @@ const QuanLyPhongBanNhanSu = () => {
                           <option value={0}>Hành chính</option>
                           <option value={1}>TEAM 1</option>
                           <option value={2}>TEAM 2</option>
-                          {/* <option value={3}>TEAM 12T</option> */}
                         </select>
                       </label>
                       <label>
                         {getlang("capbac", glbLang!)}
                         <select
-                          name='chucdanh'
+                          name="chucdanh"
                           value={POSITION_CODE}
                           onChange={(e) =>
                             setPOSITION_CODE(Number(e.target.value))
@@ -1194,7 +1175,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("chucvu", glbLang!)}
                         <select
-                          name='chucvu'
+                          name="chucvu"
                           value={JOB_CODE}
                           onChange={(e) => setJOB_CODE(Number(e.target.value))}
                         >
@@ -1207,7 +1188,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("nhamay", glbLang!)}
                         <select
-                          name='nhamay'
+                          name="nhamay"
                           value={FACTORY_CODE}
                           onChange={(e) =>
                             setFACTORY_CODE(Number(e.target.value))
@@ -1220,7 +1201,7 @@ const QuanLyPhongBanNhanSu = () => {
                       <label>
                         {getlang("trangthailamviec", glbLang!)}
                         <select
-                          name='trangthailamviec'
+                          name="trangthailamviec"
                           value={WORK_STATUS_CODE}
                           onChange={(e) =>
                             setWORK_STATUS_CODE(Number(e.target.value))
@@ -1233,9 +1214,9 @@ const QuanLyPhongBanNhanSu = () => {
                       </label>
                     </div>
                   </div>
-                  <div className='maindeptbutton'>
+                  <div className="maindeptbutton">
                     <button
-                      className='thembutton'
+                      className="thembutton"
                       onClick={() => {
                         if (getCompany() !== "CMS") {
                           checkBP(
@@ -1253,7 +1234,7 @@ const QuanLyPhongBanNhanSu = () => {
                       {getlang("them", glbLang!)}
                     </button>
                     <button
-                      className='suabutton'
+                      className="suabutton"
                       onClick={() => {
                         if (getCompany() !== "CMS") {
                           checkBP(
@@ -1271,7 +1252,7 @@ const QuanLyPhongBanNhanSu = () => {
                       {getlang("update", glbLang!)}
                     </button>
                     <button
-                      className='xoabutton'
+                      className="xoabutton"
                       onClick={() => {
                         if (getCompany() !== "CMS") {
                           checkBP(
@@ -1291,13 +1272,14 @@ const QuanLyPhongBanNhanSu = () => {
                   </div>
                 </div>
               </div>
-              <div className='maindept_table'>
+              <div className="maindept_table">
                 <DataGrid
                   sx={{
-                    fontSize: "0.7rem", '& .super-app-theme--header': {
-                      backgroundColor: 'rgb(7, 180, 85)',
-                      fontSize: '0.8rem',
-                      color: 'white'
+                    fontSize: "0.7rem",
+                    "& .super-app-theme--header": {
+                      backgroundColor: "rgb(7, 180, 85)",
+                      fontSize: "0.8rem",
+                      color: "white",
                     },
                   }}
                   slots={{
@@ -1311,14 +1293,13 @@ const QuanLyPhongBanNhanSu = () => {
                   rows={
                     resigned_check
                       ? employeeTable.filter(
-                        (ele: EmployeeTableData, index: number) =>
-                          ele.WORK_STATUS_CODE !== 0
-                      )
+                          (ele: EmployeeTableData) => ele.WORK_STATUS_CODE !== 0
+                        )
                       : employeeTable
                   }
                   columns={columns_employee_table}
                   pageSizeOptions={[5, 10, 50, 100, 500]}
-                  editMode='row'
+                  editMode="row"
                   onRowSelectionModelChange={(ids) => {
                     handleEmployeeSelection(ids);
                   }}
@@ -1326,53 +1307,54 @@ const QuanLyPhongBanNhanSu = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
-          <div className='quanlyphongban'>
-            <div className='maindept'>
-              <div className='maindept_table'>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Quản Lý Phòng Ban">
+          <div className="quanlyphongban">
+            <div className="maindept">
+              <div className="maindept_table">
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
                   rowHeight={25}
                   rows={maindeptTable}
                   columns={columns_maindept}
                   pageSizeOptions={[5, 10, 50, 100]}
-                  /* checkboxSelection */
                   onRowSelectionModelChange={(ids) => {
                     handleMainDeptSelection(ids);
                   }}
                 />
               </div>
-              <div className='maindeptform'>
-                <div className='maindeptinput'>
-                  <div className='maindeptinputlabel'>
-                    MAIN DEPT CODE:<br></br>
+              <div className="maindeptform">
+                <div className="maindeptinput">
+                  <div className="maindeptinputlabel">
+                    MAIN DEPT CODE:
                     <br></br>
-                    MAIN DEPT NAME:<br></br>
+                    <br></br>
+                    MAIN DEPT NAME:
+                    <br></br>
                     <br></br>
                     MAIN DEPT NAME KR:
                   </div>
-                  <div className='maindeptinputbox'>
+                  <div className="maindeptinputbox">
                     <input
-                      type='text'
+                      type="text"
                       value={maindeptcode}
                       onChange={(e) => setMainDeptCode(Number(e.target.value))}
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={maindeptname}
                       onChange={(e) => setMainDeptName(e.target.value)}
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={maindeptnamekr}
                       onChange={(e) => setMainDeptNameKR(e.target.value)}
                     ></input>
                   </div>
                 </div>
-                <div className='maindeptbutton'>
+                <div className="maindeptbutton">
                   <button
-                    className='thembutton'
+                    className="thembutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1390,7 +1372,7 @@ const QuanLyPhongBanNhanSu = () => {
                     {getlang("them", glbLang!)}
                   </button>
                   <button
-                    className='suabutton'
+                    className="suabutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1408,7 +1390,7 @@ const QuanLyPhongBanNhanSu = () => {
                     {getlang("update", glbLang!)}
                   </button>
                   <button
-                    className='xoabutton'
+                    className="xoabutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1428,50 +1410,51 @@ const QuanLyPhongBanNhanSu = () => {
                 </div>
               </div>
             </div>
-            <div className='subdept'>
-              <div className='subdept_table'>
+            <div className="subdept">
+              <div className="subdept_table">
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
                   rowHeight={25}
                   rows={subdeptTable}
                   columns={columns_subdept}
                   pageSizeOptions={[5, 10, 50, 100]}
-                  /* checkboxSelection */
                   onRowSelectionModelChange={(ids) => {
                     handlesubDeptSelection(ids);
                   }}
                 />
               </div>
-              <div className='subdeptform'>
-                <div className='subdeptinput'>
-                  <div className='subdeptinputlabel'>
-                    SUB DEPT CODE:<br></br>
+              <div className="subdeptform">
+                <div className="subdeptinput">
+                  <div className="subdeptinputlabel">
+                    SUB DEPT CODE:
                     <br></br>
-                    SUB DEPT NAME:<br></br>
+                    <br></br>
+                    SUB DEPT NAME:
+                    <br></br>
                     <br></br>
                     SUB DEPT NAME KR:
                   </div>
-                  <div className='subdeptinputbox'>
+                  <div className="subdeptinputbox">
                     <input
-                      type='text'
+                      type="text"
                       value={subdeptcode}
                       onChange={(e) => setSubDeptCode(Number(e.target.value))}
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={subdeptname}
                       onChange={(e) => setSubDeptName(e.target.value)}
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={subdeptnamekr}
                       onChange={(e) => setSubDeptNameKR(e.target.value)}
                     ></input>
                   </div>
                 </div>
-                <div className='subdeptbutton'>
+                <div className="subdeptbutton">
                   <button
-                    className='thembutton'
+                    className="thembutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1489,7 +1472,7 @@ const QuanLyPhongBanNhanSu = () => {
                     {getlang("them", glbLang!)}
                   </button>
                   <button
-                    className='suabutton'
+                    className="suabutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1507,7 +1490,7 @@ const QuanLyPhongBanNhanSu = () => {
                     {getlang("update", glbLang!)}
                   </button>
                   <button
-                    className='xoabutton'
+                    className="xoabutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1527,59 +1510,61 @@ const QuanLyPhongBanNhanSu = () => {
                 </div>
               </div>
             </div>
-            <div className='workposition'>
-              <div className='workposition_table'>
+            <div className="workposition">
+              <div className="workposition_table">
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
                   rowHeight={25}
                   rows={workpositionTable}
                   columns={columns_work_position}
                   pageSizeOptions={[5, 10, 50, 100]}
-                  /* checkboxSelection */
                   onRowSelectionModelChange={(ids) => {
                     handleworkPositionSelection(ids);
                   }}
                 />
               </div>
-              <div className='workpositionform'>
-                <div className='workpositioninput'>
-                  <div className='workpositioninputlabel'>
-                    WORK POSITION CODE:<br></br>
+              <div className="workpositionform">
+                <div className="workpositioninput">
+                  <div className="workpositioninputlabel">
+                    WORK POSITION CODE:
                     <br></br>
-                    WORK POSITION NAME:<br></br>
                     <br></br>
-                    WORK POSITION NAME KR: <br></br>
+                    WORK POSITION NAME:
+                    <br></br>
+                    <br></br>
+                    WORK POSITION NAME KR:
+                    <br></br>
                     <br></br>
                     ATT GROUP CODE:
                   </div>
-                  <div className='workpositioninputbox'>
+                  <div className="workpositioninputbox">
                     <input
-                      type='text'
+                      type="text"
                       value={workpositioncode}
                       onChange={(e) =>
                         setWorkPositionCode(Number(e.target.value))
                       }
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={workpositionname}
                       onChange={(e) => setWorkPositionName(e.target.value)}
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={workpositionnamekr}
                       onChange={(e) => setWorkPositionNameKR(e.target.value)}
                     ></input>
                     <input
-                      type='text'
+                      type="text"
                       value={att_group_code}
                       onChange={(e) => setATT_GROUP_CODE(Number(e.target.value))}
                     ></input>
                   </div>
                 </div>
-                <div className='workpositionbutton'>
+                <div className="workpositionbutton">
                   <button
-                    className='thembutton'
+                    className="thembutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1597,7 +1582,7 @@ const QuanLyPhongBanNhanSu = () => {
                     {getlang("them", glbLang!)}
                   </button>
                   <button
-                    className='suabutton'
+                    className="suabutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1615,7 +1600,7 @@ const QuanLyPhongBanNhanSu = () => {
                     {getlang("update", glbLang!)}
                   </button>
                   <button
-                    className='xoabutton'
+                    className="xoabutton"
                     onClick={() => {
                       if (getCompany() !== "CMS") {
                         checkBP(
@@ -1636,9 +1621,10 @@ const QuanLyPhongBanNhanSu = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-      </Tabs>
-    </div>)
+        </MyTabs.Tab>
+      </MyTabs>
+    </div>
   );
 };
+
 export default QuanLyPhongBanNhanSu;

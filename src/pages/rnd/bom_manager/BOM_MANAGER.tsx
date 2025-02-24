@@ -8,10 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { GridRowSelectionModel } from "@mui/x-data-grid";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FcAdvertising, FcDeleteRow } from "react-icons/fc";
+import { FcDeleteRow } from "react-icons/fc";
 import {
   AiFillDelete,
   AiFillEdit,
@@ -23,7 +22,18 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
-import { checkBP, f_addProcessDataTotal, f_addProdProcessData, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_insert_Notification_Data, f_loadProdProcessData, renderElement } from "../../../api/GlobalFunction";
+import {
+  checkBP,
+  f_addProcessDataTotal,
+  f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST,
+  f_checkProcessNumberContinuos,
+  f_deleteProcessNotInCurrentListFromDataBase,
+  f_deleteProdProcessData,
+  f_getMachineListData,
+  f_insert_Notification_Data,
+  f_loadProdProcessData,
+  renderElement,
+} from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -51,10 +61,9 @@ import {
 import UpHangLoat from "./UpHangLoat";
 import BOM_DESIGN from "./BOM_DESIGN";
 import AGTable from "../../../components/DataTable/AGTable";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import MyTabs from "../../../components/MyTab/MyTab";
 const BOM_MANAGER = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [activeOnly, setActiveOnly] = useState(true)
   const [cndb, setCNDB] = useState(false)
   const labelprintref = useRef(null);
@@ -409,7 +418,6 @@ const BOM_MANAGER = () => {
     },
     { field: "PD", headerName: "PD", width: 30, editable: enableEdit },
     { field: "CAVITY", headerName: "CAVITY", width: 50, editable: enableEdit },
-    
     {
       field: "G_WIDTH",
       headerName: "G_WIDTH",
@@ -445,7 +453,7 @@ const BOM_MANAGER = () => {
       headerName: "PRICE",
       width: 80,
       editable: enableEdit,
-    },   
+    },
     {
       field: "PROD_PROJECT",
       headerName: "PROD_PROJECT",
@@ -675,27 +683,26 @@ const BOM_MANAGER = () => {
   ];
   let column_eqlist = [
     { field: "PROCESS_NUMBER", headerName: "CD", width: 100, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ", width: 100, editable: true },   
+    { field: "EQ_SERIES", headerName: "EQ", width: 100, editable: true },
   ];
   const [currentProcessList, setCurrentProcessList] = useState<PROD_PROCESS_DATA[]>([]);
   const eqListAGTable = useMemo(() => {
     return (
-      <AGTable      
-      showFilter={false}
-      columns={column_eqlist}
-      data={currentProcessList}
-      suppressRowClickSelection={true}
-      onCellEditingStopped={(params: any) => {
-      }} onRowClick={(params: any) => {       
-        ////console.log(datafilter[0]);        
-        //console.log([params.data]);
-        tempSelectedProcess.current = params.data;
-       
-      }} onSelectionChange={(params: any) => {
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-        //console.log(e!.api.getSelectedRows())
-        //setCodeDataTableFilter(params!.api.getSelectedRows());
-      }} />
+      <AGTable
+        showFilter={false}
+        columns={column_eqlist}
+        data={currentProcessList}
+        suppressRowClickSelection={true}
+        onCellEditingStopped={(params: any) => {
+        }} onRowClick={(params: any) => {
+          ////console.log(datafilter[0]);        
+          //console.log([params.data]);
+          tempSelectedProcess.current = params.data;
+        }} onSelectionChange={(params: any) => {
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
+          //console.log(e!.api.getSelectedRows())
+          //setCodeDataTableFilter(params!.api.getSelectedRows());
+        }} />
     );
   }, [currentProcessList]);
   const codeInfoAGTable = useMemo(() => {
@@ -900,11 +907,10 @@ const BOM_MANAGER = () => {
       }}
     />
     , [bomgiatable, column_bomgia, selectedMaterial, selectedMasterMaterial, enableEdit]);
-  
   const loadProcessList = async (G_CODE: string) => {
     let loadeddata = await f_loadProdProcessData(G_CODE);
-    setCurrentProcessList(loadeddata);    
-  } 
+    setCurrentProcessList(loadeddata);
+  }
   const loadMasterMaterialList = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
@@ -1182,7 +1188,7 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
-   const getFSCList = () => {
+  const getFSCList = () => {
     generalQuery("getFSCList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -1775,9 +1781,8 @@ const BOM_MANAGER = () => {
               INS_DATE: '2024-12-30',
               UPD_EMPL: 'NHU1903',
               UPD_DATE: '2024-12-30',
-            }  
-            if(await f_insert_Notification_Data(newNotification))
-            {
+            }
+            if (await f_insert_Notification_Data(newNotification)) {
               getSocket().emit("notification_panel", newNotification);
             }
             Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
@@ -1852,9 +1857,8 @@ const BOM_MANAGER = () => {
               INS_DATE: '2024-12-30',
               UPD_EMPL: 'NHU1903',
               UPD_DATE: '2024-12-30',
-            }  
-            if(await f_insert_Notification_Data(newNotification))
-            {
+            }
+            if (await f_insert_Notification_Data(newNotification)) {
               getSocket().emit("notification_panel", newNotification);
             }
             Swal.fire("Thông báo", "Code ver mới: " + newGCODE, "success");
@@ -1935,9 +1939,8 @@ const BOM_MANAGER = () => {
                   INS_DATE: '2024-12-30',
                   UPD_EMPL: 'NHU1903',
                   UPD_DATE: '2024-12-30',
-                }  
-                if(await f_insert_Notification_Data(newNotification))
-                {
+                }
+                if (await f_insert_Notification_Data(newNotification)) {
                   getSocket().emit("notification_panel", newNotification);
                 }
                 Swal.fire(
@@ -2866,185 +2869,177 @@ const BOM_MANAGER = () => {
     loadProcessList(codefullinfo.G_CODE);
   }, []);
   return (
-    <div className="bom_manager">      
-      <Tabs className="tabs">
-        <TabList className="tablist" style={{backgroundImage: theme.CMS.backgroundImage, color: 'gray'}}>
-          <Tab>
-            <span className="mininavtext">Thông tin code</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Up hàng loạt</span>
-          </Tab>
-        </TabList>
-        <TabPanel>
-        <div className="bom_manager_wrapper">
-          <div className="left">
-            <div className="bom_manager_button">
-              <div className="buttonrow1">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    confirmAddNewCode();
-                  }}
-                >
-                  <AiFillFileAdd color="#3366ff" size={15} />
-                  ADD
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    confirmUpdateCode();
-                  }}
-                >
-                  <MdOutlineUpdate color="#ffff00" size={15} />
-                  UPDATE
-                </IconButton>
+    <div className="bom_manager">
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="BOM Manager">
+          <div className="bom_manager_wrapper">
+            <div className="left">
+              <div className="bom_manager_button">
+                <div className="buttonrow1">
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      confirmAddNewCode();
+                    }}
+                  >
+                    <AiFillFileAdd color="#3366ff" size={15} />
+                    ADD
+                  </IconButton>
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      confirmUpdateCode();
+                    }}
+                  >
+                    <MdOutlineUpdate color="#ffff00" size={15} />
+                    UPDATE
+                  </IconButton>
+                </div>
+                <div className="buttonrow2">
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      confirmAddNewVer();
+                    }}
+                  >
+                    <MdUpgrade color="#cc33ff" size={15} />
+                    ADD VER
+                  </IconButton>
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      handleClearInfo();
+                    }}
+                  >
+                    <AiFillDelete color="red" size={15} />
+                    Clear
+                  </IconButton>
+                </div>
               </div>
-              <div className="buttonrow2">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    confirmAddNewVer();
-                  }}
-                >
-                  <MdUpgrade color="#cc33ff" size={15} />
-                  ADD VER
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    handleClearInfo();
-                  }}
-                >
-                  <AiFillDelete color="red" size={15} />
-                  Clear
-                </IconButton>
-              </div>
-            </div>
-            <div className="codemanager">
-              <div className="tracuuFcst">
-                <div className="tracuuFcstform">
-                  <div className="forminput">
-                    <div className="forminputcolumn">
-                      <input
-                        className="checkbox1"
-                        type="checkbox"
-                        placeholder="Active"
-                        checked={cndb}
-                        onChange={(e) => setCNDB(e.target.checked)}
-                      ></input>
-                      <label>
-                        <b>Code:</b>{" "}
+              <div className="codemanager">
+                <div className="tracuuFcst">
+                  <div className="tracuuFcstform">
+                    <div className="forminput">
+                      <div className="forminputcolumn">
                         <input
-                          type="text"
-                          placeholder="Nhập code vào đây"
-                          value={codeCMS}
-                          onChange={(e) => setCodeCMS(e.target.value)}
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
+                          className="checkbox1"
+                          type="checkbox"
+                          placeholder="Active"
+                          checked={cndb}
+                          onChange={(e) => setCNDB(e.target.checked)}
                         ></input>
-                      </label>
-                      Active
-                      <input
-                        className="checkbox1"
-                        type="checkbox"
-                        placeholder="Active"
-                        checked={activeOnly}
-                        onChange={(e) => setActiveOnly(e.target.checked)}
-                      ></input>
-                      <button
-                        className="traxuatkiembutton"
-                        onClick={() => {
-                          handleCODEINFO();
-                        }}
-                      >
-                        Tìm code
-                      </button>
+                        <label>
+                          <b>Code:</b>{" "}
+                          <input
+                            type="text"
+                            placeholder="Nhập code vào đây"
+                            value={codeCMS}
+                            onChange={(e) => setCodeCMS(e.target.value)}
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                          ></input>
+                        </label>
+                        Active
+                        <input
+                          className="checkbox1"
+                          type="checkbox"
+                          placeholder="Active"
+                          checked={activeOnly}
+                          onChange={(e) => setActiveOnly(e.target.checked)}
+                        ></input>
+                        <button
+                          className="traxuatkiembutton"
+                          onClick={() => {
+                            handleCODEINFO();
+                          }}
+                        >
+                          Tìm code
+                        </button>
+                      </div>
                     </div>
                   </div>
+                  <div className="codeinfotable">
+                    {codeInfoAGTable}
+                  </div>
                 </div>
-                <div className="codeinfotable">
-                  {codeInfoAGTable}
+              </div>
+              <div className="product_visualize">
+                <CodeVisualLize
+                  DATA={{
+                    id: 0,
+                    Q_ID: "",
+                    G_CODE: "",
+                    WIDTH_OFFSET: 0,
+                    LENGTH_OFFSET: 0,
+                    KNIFE_UNIT: 0,
+                    FILM_UNIT: 0,
+                    INK_UNIT: 0,
+                    LABOR_UNIT: 0,
+                    DELIVERY_UNIT: 0,
+                    DEPRECATION_UNIT: 0,
+                    GMANAGEMENT_UNIT: 0,
+                    M_LOSS_UNIT: 0,
+                    G_WIDTH: codefullinfo?.G_WIDTH ?? 0,
+                    G_LENGTH: codefullinfo?.G_LENGTH ?? 0,
+                    G_C: codefullinfo?.G_C ?? 0,
+                    G_C_R: codefullinfo?.G_C_R ?? 0,
+                    G_LG: codefullinfo?.G_LG ?? 0,
+                    G_CG: codefullinfo?.G_CG ?? 0,
+                    G_SG_L: codefullinfo?.G_SG_L ?? 0,
+                    G_SG_R: codefullinfo?.G_SG_R ?? 0,
+                    PROD_PRINT_TIMES: 0,
+                    KNIFE_COST: 0,
+                    FILM_COST: 0,
+                    INK_COST: 0,
+                    LABOR_COST: 0,
+                    DELIVERY_COST: 0,
+                    DEPRECATION_COST: 0,
+                    GMANAGEMENT_COST: 0,
+                    MATERIAL_COST: 0,
+                    TOTAL_COST: 0,
+                    SALE_PRICE: 0,
+                    PROFIT: 0,
+                    G_NAME: "",
+                    G_NAME_KD: "",
+                    CUST_NAME_KD: "",
+                    CUST_CD: "",
+                  }}
+                />
+                <div className="banve">
+                  <span style={{ color: "green" }}>
+                    <b>
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`/banve/${codefullinfo.G_CODE}.pdf`}
+                      >
+                        LINK
+                      </a>
+                    </b>
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="product_visualize">
-              <CodeVisualLize
-                DATA={{
-                  id: 0,
-                  Q_ID: "",
-                  G_CODE: "",
-                  WIDTH_OFFSET: 0,
-                  LENGTH_OFFSET: 0,
-                  KNIFE_UNIT: 0,
-                  FILM_UNIT: 0,
-                  INK_UNIT: 0,
-                  LABOR_UNIT: 0,
-                  DELIVERY_UNIT: 0,
-                  DEPRECATION_UNIT: 0,
-                  GMANAGEMENT_UNIT: 0,
-                  M_LOSS_UNIT: 0,
-                  G_WIDTH: codefullinfo?.G_WIDTH ?? 0,
-                  G_LENGTH: codefullinfo?.G_LENGTH ?? 0,
-                  G_C: codefullinfo?.G_C ?? 0,
-                  G_C_R: codefullinfo?.G_C_R ?? 0,
-                  G_LG: codefullinfo?.G_LG ?? 0,
-                  G_CG: codefullinfo?.G_CG ?? 0,
-                  G_SG_L: codefullinfo?.G_SG_L ?? 0,
-                  G_SG_R: codefullinfo?.G_SG_R ?? 0,
-                  PROD_PRINT_TIMES: 0,
-                  KNIFE_COST: 0,
-                  FILM_COST: 0,
-                  INK_COST: 0,
-                  LABOR_COST: 0,
-                  DELIVERY_COST: 0,
-                  DEPRECATION_COST: 0,
-                  GMANAGEMENT_COST: 0,
-                  MATERIAL_COST: 0,
-                  TOTAL_COST: 0,
-                  SALE_PRICE: 0,
-                  PROFIT: 0,
-                  G_NAME: "",
-                  G_NAME_KD: "",
-                  CUST_NAME_KD: "",
-                  CUST_CD: "",
+            <div className="right">
+              <div className="codeinfobig">
+                <div className="biginfocms">
+                  {" "}
+                  {codedatatablefilter.current[0]?.G_CODE}:{" "}
+                </div>
+                <div className="biginfokd">
+                  {codedatatablefilter.current[0]?.G_NAME}
+                </div>
+              </div>
+              <div
+                className="down"
+                style={{
+                  backgroundImage:
+                    codefullinfo.USE_YN === "Y"
+                      ? `linear-gradient(0deg, #afd3d1,#72cf34)`
+                      : `linear-gradient(0deg, #6C6B6B,#EFE5E5)`,
                 }}
-              />
-              <div className="banve">
-                <span style={{ color: "green" }}>
-                  <b>
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={`/banve/${codefullinfo.G_CODE}.pdf`}
-                    >
-                      LINK
-                    </a>
-                  </b>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="right">
-            <div className="codeinfobig">
-              <div className="biginfocms">
-                {" "}
-                {codedatatablefilter.current[0]?.G_CODE}:{" "}
-              </div>
-              <div className="biginfokd">
-                {codedatatablefilter.current[0]?.G_NAME}
-              </div>
-            </div>
-            <div
-              className="down"
-              style={{
-                backgroundImage:
-                  codefullinfo.USE_YN === "Y"
-                    ? `linear-gradient(0deg, #afd3d1,#72cf34)`
-                    : `linear-gradient(0deg, #6C6B6B,#EFE5E5)`,
-              }}
-            >
+              >
                 <div className="codeinfo">
                   <div className="info12">
                     <div className="info1">
@@ -3992,10 +3987,10 @@ const BOM_MANAGER = () => {
                         </div>
                       )}
                     </div>
-                    {getCompany() === 'CMS' &&  getUserData()?.EMPL_NO==='NHU1903'  &&   <div className="processlist">
+                    {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
                       <div className="selectmachine">
-                      Máy:
-                        <label>                         
+                        Máy:
+                        <label>
                           <select
                             disabled={enableform}
                             name="may1"
@@ -4005,20 +4000,20 @@ const BOM_MANAGER = () => {
                             }}
                           >
                             {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
-                            map(
-                              (ele: MACHINE_LIST, index: number) => {
-                                return (
-                                  <option key={index} value={ele.EQ_NAME}>
-                                    {ele.EQ_NAME}
-                                  </option>
-                                );
-                              },
-                            )}
+                              map(
+                                (ele: MACHINE_LIST, index: number) => {
+                                  return (
+                                    <option key={index} value={ele.EQ_NAME}>
+                                      {ele.EQ_NAME}
+                                    </option>
+                                  );
+                                },
+                              )}
                           </select>
                         </label>
                         <Button
                           onClick={async () => {
-                            if(codefullinfo.G_CODE !== '-------'){
+                            if (codefullinfo.G_CODE !== '-------') {
                               if (currentProcessList.length > 0) {
                                 let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
                                 let tempProcess: PROD_PROCESS_DATA = {
@@ -4064,8 +4059,7 @@ const BOM_MANAGER = () => {
                                   UPD_EMPL: '',
                                   FACTORY: 'NM1'
                                 }
-                                setCurrentProcessList([tempProcess]); 
-
+                                setCurrentProcessList([tempProcess]);
                                 /* let kq = await f_addProdProcessData({
                                   G_CODE: codefullinfo.G_CODE,
                                   PROCESS_NUMBER: 1,
@@ -4087,11 +4081,10 @@ const BOM_MANAGER = () => {
                         </Button>
                         <Button
                           color="error"
-                          onClick={async () => { 
-                            setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));                            
+                          onClick={async () => {
+                            setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));
                           }
                           }
-
                         >
                           Delete
                         </Button>
@@ -4106,25 +4099,23 @@ const BOM_MANAGER = () => {
                               confirmButtonText: "OK",
                               showConfirmButton: false,
                             });
-
-                            if(!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)){  
+                            if (!(await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list))) {
                               Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
                               return;
                             }
-
-                            if(await f_checkProcessNumberContinuos(currentProcessList)){  
+                            if (await f_checkProcessNumberContinuos(currentProcessList)) {
                               //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
                             } else {
                               Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
                               return;
                             }
-                            if(currentProcessList.length > 0){
+                            if (currentProcessList.length > 0) {
                               await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
                               loadProcessList(codefullinfo.G_CODE);
                             } else {
                               await f_deleteProdProcessData({
-                              G_CODE: codefullinfo.G_CODE
-                              }); 
+                                G_CODE: codefullinfo.G_CODE
+                              });
                               loadProcessList(codefullinfo.G_CODE);
                             }
                             await f_addProcessDataTotal(currentProcessList);
@@ -4132,93 +4123,89 @@ const BOM_MANAGER = () => {
                           }}
                         >
                           Save
-                        </Button>                        
-
+                        </Button>
                       </div>
                       {
                         eqListAGTable
                       }
                     </div>}
                   </div>
-                
-                <div className="info34">
-                  <div className="info3"></div>
-                  <div className="info4"></div>
+                  <div className="info34">
+                    <div className="info3"></div>
+                    <div className="info4"></div>
+                  </div>
                 </div>
               </div>
-              
-            </div>
-            <div className="updatehistory">
-              Update {codefullinfo.UPD_COUNT ?? 0} lần / Người update cuối {codefullinfo.UPD_EMPL ?? ''} / Thời điểm update cuối {moment.utc(codefullinfo.UPD_DATE ?? '').format("YYYY-MM-DD HH:mm:ss")}
-            </div>
-            <div className="materiallist">
-              <Autocomplete
-                disabled={column_bomsx[0].editable || column_bomgia[0].editable}
-                size="small"
-                disablePortal
-                options={materialList}
-                className="autocomplete"
-                filterOptions={filterOptions1}
-                isOptionEqualToValue={(option: any, value: any) =>
-                  option.M_CODE === value.M_CODE
-                }
-                getOptionLabel={(option: MaterialListData | any) =>
-                  `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
-                }
-                renderInput={(params) => (
-                  <TextField {...params} label="Select material" />
-                )}
-                renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                  {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
-                </Typography>}
-                defaultValue={{
-                  M_CODE: "A0007770",
-                  M_NAME: "SJ-203020HC",
-                  WIDTH_CD: 208,
-                }}
-                value={selectedMaterial}
-                onChange={(event: any, newValue: MaterialListData | any) => {
-                  //console.log(newValue);
-                  setSelectedMaterial(newValue);
-                }}
-              />
-            </div>
-            <div className="up">
-              <div className="bomsx" style={{ backgroundColor: `${pinBOM ? 'blue' : ''}` }}>
-                <div className="bomsxtable">
-                  <span
-                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10, color: `${pinBOM ? 'white' : ''}`, backgroundColor: `${pinBOM ? 'blue' : ''}` }}
-                  >
-                    BOM SẢN XUẤT (
-                    {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
-                    {pinBOM ? "(Đang ghim BOM)" : ""}
-                  </span>
-                  {bomsx_AGTable}
+              <div className="updatehistory">
+                Update {codefullinfo.UPD_COUNT ?? 0} lần / Người update cuối {codefullinfo.UPD_EMPL ?? ''} / Thời điểm update cuối {moment.utc(codefullinfo.UPD_DATE ?? '').format("YYYY-MM-DD HH:mm:ss")}
+              </div>
+              <div className="materiallist">
+                <Autocomplete
+                  disabled={column_bomsx[0].editable || column_bomgia[0].editable}
+                  size="small"
+                  disablePortal
+                  options={materialList}
+                  className="autocomplete"
+                  filterOptions={filterOptions1}
+                  isOptionEqualToValue={(option: any, value: any) =>
+                    option.M_CODE === value.M_CODE
+                  }
+                  getOptionLabel={(option: MaterialListData | any) =>
+                    `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select material" />
+                  )}
+                  renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                    {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
+                  </Typography>}
+                  defaultValue={{
+                    M_CODE: "A0007770",
+                    M_NAME: "SJ-203020HC",
+                    WIDTH_CD: 208,
+                  }}
+                  value={selectedMaterial}
+                  onChange={(event: any, newValue: MaterialListData | any) => {
+                    //console.log(newValue);
+                    setSelectedMaterial(newValue);
+                  }}
+                />
+              </div>
+              <div className="up">
+                <div className="bomsx" style={{ backgroundColor: `${pinBOM ? 'blue' : ''}` }}>
+                  <div className="bomsxtable">
+                    <span
+                      style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10, color: `${pinBOM ? 'white' : ''}`, backgroundColor: `${pinBOM ? 'blue' : ''}` }}
+                    >
+                      BOM SẢN XUẤT (
+                      {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
+                      {pinBOM ? "(Đang ghim BOM)" : ""}
+                    </span>
+                    {bomsx_AGTable}
+                  </div>
+                </div>
+                <div className="bomgia">
+                  <div className="bomgiatable">
+                    <span
+                      style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10, color: `${pinBOM ? 'white' : ''}`, backgroundColor: `${pinBOM ? 'blue' : ''}` }}
+                    >
+                      BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
+                      {pinBOM ? "(Đang ghim BOM)" : ""}
+                    </span>
+                    {bomgia_AGTable}
+                  </div>
                 </div>
               </div>
-              <div className="bomgia">
-                <div className="bomgiatable">
-                  <span
-                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10, color: `${pinBOM ? 'white' : ''}`, backgroundColor: `${pinBOM ? 'blue' : ''}` }}
-                  >
-                    BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
-                    {pinBOM ? "(Đang ghim BOM)" : ""}
-                  </span>
-                  {bomgia_AGTable}
-                </div>
-              </div>
+              <div className="bottom"></div>
             </div>
-            <div className="bottom"></div>
           </div>
-        </div>          
-        </TabPanel>
-        <TabPanel>
-        <div className="uphangloat">
-          <UpHangLoat />
-        </div>
-
-        </TabPanel>
-      </Tabs>      
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Up hàng loạt">
+          <div className="uphangloat">
+            <UpHangLoat />
+          </div>
+        </MyTabs.Tab>
+      </MyTabs>
       {showHideDesignBom &&
         <div className="design_panel">
           <div className="closediv">
@@ -4234,7 +4221,7 @@ const BOM_MANAGER = () => {
           </div>
           <BOM_DESIGN />
         </div>
-      }      
+      }
     </div>
   );
 };

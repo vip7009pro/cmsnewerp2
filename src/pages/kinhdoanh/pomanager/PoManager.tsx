@@ -44,8 +44,8 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import MyTabs from "../../../components/MyTab/MyTab";
 const PoManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openNewPODialog, setOpenNewPODialog] = useState(false);
@@ -327,17 +327,16 @@ const PoManager = () => {
       NOTI_ID: -1,
       NOTI_TYPE: 'success',
       TITLE: 'PO vừa được thêm hàng loạt',
-      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm hàng loạt PO mới`, 
+      CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm hàng loạt PO mới`,
       SUBDEPTNAME: "KD",
       MAINDEPTNAME: "KD",
       INS_EMPL: 'NHU1903',
       INS_DATE: '2024-12-30',
       UPD_EMPL: 'NHU1903',
       UPD_DATE: '2024-12-30',
-    }  
-    if(await f_insert_Notification_Data(newNotification))
-    {
-      getSocket().emit("notification_panel",newNotification);
+    }
+    if (await f_insert_Notification_Data(newNotification)) {
+      getSocket().emit("notification_panel", newNotification);
     }
     Swal.fire("Thông báo", "Đã hoàn thành thêm PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
@@ -434,16 +433,15 @@ const PoManager = () => {
           NOTI_ID: -1,
           NOTI_TYPE: "success",
           TITLE: 'PO mới được thêm',
-          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm PO mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newpoqty} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`, 
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm PO mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newpoqty} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`,
           SUBDEPTNAME: "KD",
           MAINDEPTNAME: "KD",
           INS_EMPL: 'NHU1903',
           INS_DATE: '2024-12-30',
           UPD_EMPL: 'NHU1903',
           UPD_DATE: '2024-12-30',
-        }  
-        if(await f_insert_Notification_Data(newNotification))
-        {
+        }
+        if (await f_insert_Notification_Data(newNotification)) {
           getSocket().emit("notification_panel", newNotification);
         }
         setSelection({
@@ -515,17 +513,16 @@ const PoManager = () => {
           NOTI_ID: -1,
           NOTI_TYPE: "success",
           TITLE: 'Invoice mới',
-          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm Invoice mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newinvoiceQTY} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`, 
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm Invoice mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${newinvoiceQTY} cho khách hàng ${selectedCust_CD?.CUST_CD} - ${selectedCust_CD?.CUST_NAME_KD} .`,
           SUBDEPTNAME: "KD",
           MAINDEPTNAME: "KD",
           INS_EMPL: 'NHU1903',
           INS_DATE: '2024-12-30',
           UPD_EMPL: 'NHU1903',
           UPD_DATE: '2024-12-30',
-        }  
-        if(await f_insert_Notification_Data(newNotification))
-        {
-          getSocket().emit("notification_panel",newNotification);
+        }
+        if (await f_insert_Notification_Data(newNotification)) {
+          getSocket().emit("notification_panel", newNotification);
         }
         Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
       } else {
@@ -666,17 +663,16 @@ const PoManager = () => {
           NOTI_ID: -1,
           NOTI_TYPE: 'info',
           TITLE: 'Update PO',
-          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update PO po_id: ${selectedID} - ${selectedCode?.G_NAME_KD} - (${selectedCust_CD?.CUST_NAME_KD}) - PO NO: ${newpono} - PO QTY: ${newpoqty} - PO DATE: ${newpodate} - RD DATE: ${newrddate} - PROD PRICE: ${newpoprice} - BEP: ${newpoBEP} - REMARK: ${newporemark}`, 
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update PO po_id: ${selectedID} - ${selectedCode?.G_NAME_KD} - (${selectedCust_CD?.CUST_NAME_KD}) - PO NO: ${newpono} - PO QTY: ${newpoqty} - PO DATE: ${newpodate} - RD DATE: ${newrddate} - PROD PRICE: ${newpoprice} - BEP: ${newpoBEP} - REMARK: ${newporemark}`,
           SUBDEPTNAME: "KD",
           MAINDEPTNAME: "KD",
           INS_EMPL: 'NHU1903',
           INS_DATE: '2024-12-30',
           UPD_EMPL: 'NHU1903',
           UPD_DATE: '2024-12-30',
-        }  
-        if(await f_insert_Notification_Data(newNotification))
-        {
-          getSocket().emit("notification_panel",newNotification);
+        }
+        if (await f_insert_Notification_Data(newNotification)) {
+          getSocket().emit("notification_panel", newNotification);
         }
         Swal.fire("Thông báo", "Update Po thành công", "success");
       } else {
@@ -714,17 +710,16 @@ const PoManager = () => {
           NOTI_ID: -1,
           NOTI_TYPE: 'warning',
           TITLE: 'Xóa PO',
-          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa PO_NO ${podatatablefilter.current.map((x: POTableData) => x.PO_NO).join(', ')} - CODE: ${podatatablefilter.current.map((x: POTableData) => x.G_NAME_KD).join(', ')}`, 
+          CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa PO_NO ${podatatablefilter.current.map((x: POTableData) => x.PO_NO).join(', ')} - CODE: ${podatatablefilter.current.map((x: POTableData) => x.G_NAME_KD).join(', ')}`,
           SUBDEPTNAME: "KD",
           MAINDEPTNAME: "KD",
           INS_EMPL: 'NHU1903',
           INS_DATE: '2024-12-30',
           UPD_EMPL: 'NHU1903',
           UPD_DATE: '2024-12-30',
-        }  
-        if(await f_insert_Notification_Data(newNotification))
-        {
-          getSocket().emit("notification_panel",newNotification);
+        }
+        if (await f_insert_Notification_Data(newNotification)) {
+          getSocket().emit("notification_panel", newNotification);
         }
         Swal.fire(
           "Thông báo",
@@ -1222,7 +1217,7 @@ const PoManager = () => {
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
     { field: "PO_NO", headerName: "PO_NO", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 120 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },   
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 70 },
     { field: "PO_DATE", headerName: "PO_DATE", width: 70 },
     { field: "RD_DATE", headerName: "RD_DATE", width: 70 },
@@ -1693,12 +1688,8 @@ const PoManager = () => {
   }, []);
   return (
     <div className="pomanager">
-      <Tabs className="tabs">
-        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
-          <Tab><span className="mininavtext">Tra PO</span></Tab>
-          <Tab><span className="mininavtext">Thêm PO</span></Tab>
-        </TabList>
-        <TabPanel>
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="Quản lý PO">
           <div className='tracuuPO'>
             {sh && <div className="tracuuPOform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
               <div className="forminput">
@@ -1947,8 +1938,8 @@ const PoManager = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Thêm PO">
           <div className='newpo'>
             <div className='batchnewpo'>
               <h3>Thêm PO Hàng Loạt</h3>
@@ -1977,8 +1968,8 @@ const PoManager = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-      </Tabs>
+        </MyTabs.Tab>
+      </MyTabs>
       <CustomDialog
         isOpen={openNewPODialog}
         onClose={handleCloseNewPODialog}

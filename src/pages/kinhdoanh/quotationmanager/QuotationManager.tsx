@@ -1813,8 +1813,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {
     //loadBangGia();
-    console.log('getSever()',getSever());
-    if (getCompany() === 'CMS' && getSever() !=='http://222.252.1.63:3007' ) {
+    if (getCompany() === 'CMS' && getSever() !=='http://222.252.1.63:3007' && getSever() !=='http://222.252.1.214:3007' ) {
       dongboGiaPO();
     }
   }, [sh]);

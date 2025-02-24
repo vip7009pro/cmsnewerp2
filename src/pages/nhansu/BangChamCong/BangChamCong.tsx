@@ -22,12 +22,10 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from '../../../components/DataTable/AGTable';
-
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-
   const [cainfo, setCaInfo] = useState<CA_INFO[]>([]);
   const [bangchamcong, setBangChamCong] = useState<BANGCHAMCONG_DATA[]>([]);
   const [bangchamcong2, setBangChamCong2] = useState<BANGCHAMCONG_DATA2[]>([]);
@@ -74,7 +72,7 @@ const BANGCHAMCONG = () => {
       width: 100,
       cellRenderer: (params: any) => {
         return <span style={{ color: "#013b92", fontWeight: "bold" }}>{params.data.FULL_NAME}</span>;
-      } 
+      }
     },
     {
       field: 'FACTORY_NAME',
@@ -213,7 +211,7 @@ const BANGCHAMCONG = () => {
     }
   ];
   const toolbar = (
-    <>     
+    <>
       <IconButton
         className='buttonIcon'
         onClick={() => {
@@ -925,18 +923,18 @@ const BANGCHAMCONG = () => {
       })
     );
   const chamcongTBMM = React.useMemo(
-    () => {    
-      return (       
-          <AGTable
+    () => {
+      return (
+        <AGTable
           suppressRowClickSelection={false}
-            data={bangchamcong2}
-            columns={columns}
-            toolbar={toolbar}
-            onSelectionChange={(e) => {
-              // Handle selection change
-              selectedRows.current = e!.api.getSelectedRows();
-            }}
-          />       
+          data={bangchamcong2}
+          columns={columns}
+          toolbar={toolbar}
+          onSelectionChange={(e) => {
+            // Handle selection change
+            selectedRows.current = e!.api.getSelectedRows();
+          }}
+        />
       );
     },
     [bangchamcong2, showhidePivotTable]
@@ -1298,18 +1296,18 @@ const BANGCHAMCONG = () => {
         if (response.data.tk_status !== "NG") {
           const loaded_data: BANGCHAMCONG_DATA2[] = response.data.data.map(
             (element: BANGCHAMCONG_DATA2, index: number) => {
-              let inoutdata: { IN_TIME: string; OUT_TIME: string; } = tinhInOutTime3({                
-                CALV:element.CALV,          
-                CHECK1:element.CHECK1 !== null  ? moment.utc(element.CHECK1).format("HH:mm")  : "",
-                CHECK2:element.CHECK2 !== null  ? moment.utc(element.CHECK2).format("HH:mm")  : "",
-                CHECK3:element.CHECK3 !== null  ? moment.utc(element.CHECK3).format("HH:mm")  : "",
-                PREV_CHECK1:element.PREV_CHECK1 !== null  ? moment.utc(element.PREV_CHECK1).format("HH:mm")  : "",
-                PREV_CHECK2:element.PREV_CHECK2 !== null  ? moment.utc(element.PREV_CHECK2).format("HH:mm")  : "",
-                PREV_CHECK3:element.PREV_CHECK3 !== null  ? moment.utc(element.PREV_CHECK3).format("HH:mm")  : "",
-                NEXT_CHECK1:element.NEXT_CHECK1 !== null  ? moment.utc(element.NEXT_CHECK1).format("HH:mm")  : "",
-                NEXT_CHECK2:element.NEXT_CHECK2 !== null  ? moment.utc(element.NEXT_CHECK2).format("HH:mm")  : "",
-                NEXT_CHECK3:element.NEXT_CHECK3 !== null  ? moment.utc(element.NEXT_CHECK3).format("HH:mm")  : "",
-              },);       
+              let inoutdata: { IN_TIME: string; OUT_TIME: string; } = tinhInOutTime3({
+                CALV: element.CALV,
+                CHECK1: element.CHECK1 !== null ? moment.utc(element.CHECK1).format("HH:mm") : "",
+                CHECK2: element.CHECK2 !== null ? moment.utc(element.CHECK2).format("HH:mm") : "",
+                CHECK3: element.CHECK3 !== null ? moment.utc(element.CHECK3).format("HH:mm") : "",
+                PREV_CHECK1: element.PREV_CHECK1 !== null ? moment.utc(element.PREV_CHECK1).format("HH:mm") : "",
+                PREV_CHECK2: element.PREV_CHECK2 !== null ? moment.utc(element.PREV_CHECK2).format("HH:mm") : "",
+                PREV_CHECK3: element.PREV_CHECK3 !== null ? moment.utc(element.PREV_CHECK3).format("HH:mm") : "",
+                NEXT_CHECK1: element.NEXT_CHECK1 !== null ? moment.utc(element.NEXT_CHECK1).format("HH:mm") : "",
+                NEXT_CHECK2: element.NEXT_CHECK2 !== null ? moment.utc(element.NEXT_CHECK2).format("HH:mm") : "",
+                NEXT_CHECK3: element.NEXT_CHECK3 !== null ? moment.utc(element.NEXT_CHECK3).format("HH:mm") : "",
+              },);
               /* const intime_calc: string = tinhInOutTime22({                
                 SHIFT_NAME: element.WORK_SHIF_NAME,
                 CHECK1:
@@ -1389,7 +1387,6 @@ const BANGCHAMCONG = () => {
                     : "",
               }).OUT_TIME;
  */
-
               return {
                 ...element,
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
@@ -2000,7 +1997,6 @@ const BANGCHAMCONG = () => {
       const check2_end_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-      
       //ca dem
       const minStartRange: number = Math.min.apply(Math, check1_start_range);
       const maxEndRange: number = Math.max.apply(Math, check2_end_range);
@@ -2170,16 +2166,14 @@ const BANGCHAMCONG = () => {
       const in_end2: number = moment("20:00", "HH:mm").valueOf();
       const out_start2: number = moment("08:00", "HH:mm").valueOf();
       const out_end2: number = moment("10:00", "HH:mm").valueOf();
-
-    /*const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
-      const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
-      const out_start1: number = moment(cainfo[1].OUT_START.substring(11,16),'HH:mm').valueOf();
-      const out_end1: number = moment(cainfo[1].OUT_END.substring(11,16),'HH:mm').valueOf();
-      const in_start2: number = moment(cainfo[2].IN_START.substring(11,16),'HH:mm').valueOf();
-      const in_end2: number = moment(cainfo[2].IN_END.substring(11,16),'HH:mm').valueOf();
-      const out_start2: number = moment(cainfo[2].OUT_START.substring(11,16),'HH:mm').valueOf();
-      const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();  */
-
+      /*const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
+        const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
+        const out_start1: number = moment(cainfo[1].OUT_START.substring(11,16),'HH:mm').valueOf();
+        const out_end1: number = moment(cainfo[1].OUT_END.substring(11,16),'HH:mm').valueOf();
+        const in_start2: number = moment(cainfo[2].IN_START.substring(11,16),'HH:mm').valueOf();
+        const in_end2: number = moment(cainfo[2].IN_END.substring(11,16),'HH:mm').valueOf();
+        const out_start2: number = moment(cainfo[2].OUT_START.substring(11,16),'HH:mm').valueOf();
+        const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();  */
       /* console.log("check1check", check1check);
       console.log("check0check", check0check);
       console.log("check0maxcheck", check0maxcheck); */
@@ -2206,7 +2200,6 @@ const BANGCHAMCONG = () => {
       const check2_end_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       //ca dem
       const minStartRange: number = Math.min.apply(Math, check1_start_range);
       const maxEndRange: number = Math.max.apply(Math, check2_end_range);
@@ -2222,8 +2215,7 @@ const BANGCHAMCONG = () => {
       const maxAllCheck1: number = Math.max.apply(Math, check1_nozero);
       //max all check2
       const minAllCheck2: number = Math.min.apply(Math, check2_nozero);
-      const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);     
-      
+      const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);
       switch (IO_DATA.CALV) {
         case 1:
           let temp1_intime =
@@ -2261,8 +2253,6 @@ const BANGCHAMCONG = () => {
             IN_TIME: temp1_intime2,
             OUT_TIME: temp1_outtime2,
           }
-          
-
           break;
         default:
           let temp_intime =
@@ -2349,7 +2339,7 @@ const BANGCHAMCONG = () => {
   };
   const handleFixTime = () => {
     //swal confirm to fix time
-    Swal.fire({ 
+    Swal.fire({
       title: 'Bạn có chắc chắn muốn fix time không?',
       icon: 'warning',
       showCancelButton: true,
@@ -2361,30 +2351,30 @@ const BANGCHAMCONG = () => {
         console.log(selectedRows.current);
         for (let i = 0; i < selectedRows.current.length; i++) {
           const row = selectedRows.current[i];
-            if(row.ON_OFF === null) {
-              await generalQuery("setdiemdanhnhom2", {
-                APPLY_DATE: row.DATE_COLUMN,
-                diemdanhvalue: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 0 : 1,
-                EMPL_NO: row.EMPL_NO,
-                CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,    
-                CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
+          if (row.ON_OFF === null) {
+            await generalQuery("setdiemdanhnhom2", {
+              APPLY_DATE: row.DATE_COLUMN,
+              diemdanhvalue: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 0 : 1,
+              EMPL_NO: row.EMPL_NO,
+              CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,
+              CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
+            })
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status === "OK") {
+                } else {
+                  Swal.fire(
+                    "Có lỗi",
+                    "Nội dung: " + response.data.message,
+                    "error"
+                  );
+                }
               })
-                .then((response) => {
-                  //console.log(response.data);
-                  if (response.data.tk_status === "OK") {                    
-                  } else {
-                    Swal.fire(
-                      "Có lỗi",
-                      "Nội dung: " + response.data.message,
-                      "error"
-                    );
-                  }
-                })
-                .catch((error) => {
-                  //console.log(error);
-                });
-            }
-           await generalQuery("fixTime", {
+              .catch((error) => {
+                //console.log(error);
+              });
+          }
+          await generalQuery("fixTime", {
             APPLY_DATE: row.DATE_COLUMN,
             EMPL_NO: row.EMPL_NO,
             IN_TIME: row.FIXED_IN_TIME,
@@ -2393,23 +2383,21 @@ const BANGCHAMCONG = () => {
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
-              
               } else {
-                
               }
             })
             .catch((error) => {
               console.log(error);
               Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-            });          
-        } 
+            });
+        }
         Swal.fire("Thông báo", "Fix time thành công", "success");
       }
     })
   }
   const handleFixTimeAuto = () => {
     //swal confirm to fix time
-    Swal.fire({ 
+    Swal.fire({
       title: 'Bạn có chắc chắn muốn fix time không?',
       icon: 'warning',
       showCancelButton: true,
@@ -2420,18 +2408,18 @@ const BANGCHAMCONG = () => {
       if (result.isConfirmed) {
         console.log(selectedRows.current);
         for (let i = 0; i < selectedRows.current.length; i++) {
-          const row = selectedRows.current[i];       
-          if(row.ON_OFF === null) {
-           await generalQuery("setdiemdanhnhom2", {
+          const row = selectedRows.current[i];
+          if (row.ON_OFF === null) {
+            await generalQuery("setdiemdanhnhom2", {
               APPLY_DATE: row.DATE_COLUMN,
               diemdanhvalue: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 0 : 1,
               EMPL_NO: row.EMPL_NO,
-              CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,    
+              CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,
               CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
             })
               .then((response) => {
                 //console.log(response.data);
-                if (response.data.tk_status === "OK") {                    
+                if (response.data.tk_status === "OK") {
                 } else {
                   Swal.fire(
                     "Có lỗi",
@@ -2448,32 +2436,30 @@ const BANGCHAMCONG = () => {
             APPLY_DATE: row.DATE_COLUMN,
             EMPL_NO: row.EMPL_NO,
             IN_TIME: row.IN_TIME.includes("Thiếu") && row.OUT_TIME.includes("Thiếu") ? 'OFF' : row.IN_TIME,
-            OUT_TIME: row.OUT_TIME.includes("Thiếu") && row.IN_TIME.includes("Thiếu") ? 'OFF' : row.OUT_TIME  
+            OUT_TIME: row.OUT_TIME.includes("Thiếu") && row.IN_TIME.includes("Thiếu") ? 'OFF' : row.OUT_TIME
           })
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
-              
               } else {
-                
               }
             })
             .catch((error) => {
               console.log(error);
               Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-            });          
-        } 
+            });
+        }
         Swal.fire("Thông báo", "Fix time thành công", "success");
       }
     })
   }
   const handleSETCA = (CALV: number) => {
     //swal confirm to fix time
-    if(selectedRows.current.length ===0) {
-      Swal.fire('Thông báo','Chưa chọn dòng nào','error');
+    if (selectedRows.current.length === 0) {
+      Swal.fire('Thông báo', 'Chưa chọn dòng nào', 'error');
       return;
     }
-    Swal.fire({ 
+    Swal.fire({
       title: 'Bạn có set Ca không ?',
       icon: 'warning',
       showCancelButton: true,
@@ -2481,15 +2467,15 @@ const BANGCHAMCONG = () => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Có!'
     }).then(async (result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         for (let i = 0; i < selectedRows.current.length; i++) {
           const row = selectedRows.current[i];
           await f_setCaDiemDanh({
             EMPL_NO: row.EMPL_NO,
             APPLY_DATE: row.DATE_COLUMN,
             CALV: CALV
-          });                    
-        } 
+          });
+        }
         loadBangChamCong2();
         Swal.fire("Thông báo", "Set Ca thành công", "success");
       }
@@ -2522,8 +2508,6 @@ const BANGCHAMCONG = () => {
                 ></input>
               </label>
             </div>
-          </div>
-          <div className='formbutton'>
             <label>
               <b>Trừ nghỉ việc:</b>
               <input
@@ -2575,7 +2559,7 @@ const BANGCHAMCONG = () => {
                 ["NHANSU"],
                 ["ALL"],
                 ["ALL"],
-                ()=> {
+                () => {
                   handleSETCA(0);
                 }
               );
@@ -2586,7 +2570,7 @@ const BANGCHAMCONG = () => {
                 ["NHANSU"],
                 ["ALL"],
                 ["ALL"],
-                ()=> {
+                () => {
                   handleSETCA(1);
                 }
               );
@@ -2597,12 +2581,12 @@ const BANGCHAMCONG = () => {
                 ["NHANSU"],
                 ["ALL"],
                 ["ALL"],
-                ()=> {
+                () => {
                   handleSETCA(2);
                 }
               );
             }}>SET CA ĐÊM</Button>
-          </div>
+          </div>        
         </div>
         <div className='tracuuYCSXTable'>{chamcongTBMM}</div>
         {showhidePivotTable && (

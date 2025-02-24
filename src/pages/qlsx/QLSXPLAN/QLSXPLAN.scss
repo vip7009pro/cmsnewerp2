@@ -2,28 +2,38 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  .mininavbar {
+  .tabs {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    font-size: 0.6rem;
+    width: 100%;
+    display:flex;
+    flex-direction:column;
+    overflow:'scroll'; 
+    .tablist {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start; // Thay "left" bằng "flex-start" cho chuẩn CSS
+      color: gray;
+      overflow-x: scroll; // Cho phép scroll ngang
+      white-space: nowrap; // Ngăn xuống dòng
+      padding: 0 10px; // Thêm padding để đẹp hơn (tùy chọn)
+      scroll-behavior: smooth; // Cuộn mượt mà (tùy chọn)
+      overflow:scroll;
+      width:100%
+    } 
 
-    .mininavitem {
-      padding: 10px;
-      background-color: rgb(240, 53, 100);
-      margin-left: 5px;
-      border-radius: 5px;
-      font-size: 0.7rem;
-      padding: 5px;
-      color: white;
-      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
-      &:hover {
-        background-color: rgb(127, 219, 255);
-        cursor: pointer;
-        color: black;
-      }
+    .tablist::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .tablist::-webkit-scrollbar-thumb {
+      background-color: #888;
+      border-radius: 4px;
+    }
+    
+    .tablist::-webkit-scrollbar-track {
+      background: #f1f1f1;
     }
   }
 }

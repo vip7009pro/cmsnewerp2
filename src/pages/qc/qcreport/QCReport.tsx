@@ -1,52 +1,31 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, Suspense } from "react";
 import "./QCReport.scss";
 const PQC_REPORT = React.lazy(() => import("../pqc/PQC_REPORT"));
 const INSPECT_REPORT = React.lazy(() => import("../inspection/INSPECT_REPORT"));
 const CSREPORT = React.lazy(() => import("../cs/CSREPORT"));
 const OQC_REPORT = React.lazy(() => import("../oqc/OQC_REPORT"));
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { getCompany } from "../../../api/Api";
 import INSPECT_REPORT2 from "../inspection/INSPECT_REPORT2";
-
+import MyTabs from "../../../components/MyTab/MyTab";
 const QCReport = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {}, []);
-
   return (
     <div className="qcreport">
-      <Suspense fallback={<div> Loading...</div>}>     
-        <Tabs className="tabs" style={{
-        fontSize: "0.6rem",
-        width: "100%",
-      }}>
-        <TabList className="tablist" style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "left",
-          backgroundImage: theme.CMS.backgroundImage, 
-          color: 'gray'
-        }}>
-          <Tab>PQC REPORT</Tab>
-          <Tab>INSPECTION REPORT</Tab>
-          <Tab>CS REPORT</Tab>
-          <Tab>OQC REPORT</Tab>
-        </TabList>
-        <TabPanel>
-          <PQC_REPORT/>
-        </TabPanel>
-        <TabPanel>
-          {getCompany() ==='CMS' ? <INSPECT_REPORT/> : <INSPECT_REPORT2/>}
-        </TabPanel>
-        <TabPanel>
-          <CSREPORT/>
-        </TabPanel>
-        <TabPanel>
-          <OQC_REPORT/>
-        </TabPanel>
-        </Tabs>
+      <Suspense fallback={<div>Loading...</div>}>
+        <MyTabs defaultActiveTab={0}>
+          <MyTabs.Tab title="PQC REPORT">
+            <PQC_REPORT />
+          </MyTabs.Tab>
+          <MyTabs.Tab title="INSPECTION REPORT">
+            {getCompany() === "CMS" ? <INSPECT_REPORT /> : <INSPECT_REPORT2 />}
+          </MyTabs.Tab>
+          <MyTabs.Tab title="CS REPORT">
+            <CSREPORT />
+          </MyTabs.Tab>
+          <MyTabs.Tab title="OQC REPORT">
+            <OQC_REPORT />
+          </MyTabs.Tab>
+        </MyTabs>
       </Suspense>
     </div>
   );

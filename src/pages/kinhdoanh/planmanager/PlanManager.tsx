@@ -11,9 +11,9 @@ import "./PlanManager.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { PlanTableData, UserData } from "../../../api/GlobalInterface";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import MyTabs from "../../../components/MyTab/MyTab";
 const PlanManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
@@ -984,13 +984,9 @@ const PlanManager = () => {
     , [uploadExcelJson, trigger]);
   useEffect(() => { }, []);
   return (
-    <div className="planmanager">
-      <Tabs className="tabs">
-        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
-          <Tab><span className="mininavtext">Tra PLAN</span></Tab>
-          <Tab><span className="mininavtext">Thêm PLAN</span></Tab>
-        </TabList>
-        <TabPanel>
+    <div className="planmanager">      
+      <MyTabs defaultActiveTab={0}>
+          <MyTabs.Tab title="Quản lý Plan">
           <div className="tracuuPlan">
             {showhidesearchdiv && (
               <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
@@ -1140,8 +1136,8 @@ const PlanManager = () => {
               {planDataAGTable}
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Thêm Plan">
           <div className="newplan">
             <div className="batchnewplan">
               <h3>Thêm Plan Hàng Loạt</h3>
@@ -1182,8 +1178,8 @@ const PlanManager = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-      </Tabs>
+          </MyTabs.Tab>
+        </MyTabs>
     </div>
   );
 };

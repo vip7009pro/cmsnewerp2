@@ -66,9 +66,9 @@ import {
   YCSXTableData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { BiDownload } from "react-icons/bi";
+import MyTabs from "../../../components/MyTab/MyTab";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tabIndex, setTabIndex] = useState(0);
@@ -565,13 +565,13 @@ const YCSXManager = () => {
                 Download{` `}<BiDownload color="green" size={20} />
               </IconButton>
             </div>
-           /*  <span style={{ color: "green" }}>
-              <b>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </b>
-            </span> */
+            /*  <span style={{ color: "green" }}>
+               <b>
+                 <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                   LINK
+                 </a>
+               </b>
+             </span> */
           );
         else
           return (
@@ -2638,23 +2638,9 @@ const YCSXManager = () => {
     getcodelist("");
   }, []);
   return (
-    (<div className='ycsxmanager'>
-      <Tabs className="tabs" selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-        <TabList className="tablist" style={{ backgroundImage: theme.CMS.backgroundImage, color: 'gray' }}>
-          <Tab>
-            <span className="mininavtext">Tra YCSX</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Thêm YCSX</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Add AMZ Data</span>
-          </Tab>
-          <Tab>
-            <span className="mininavtext">Tra AMZ Data</span>
-          </Tab>
-        </TabList>
-        <TabPanel>
+    <div className='ycsxmanager'>
+      <MyTabs defaultActiveTab={0}>
+        <MyTabs.Tab title="Tra YCSX">
           <div className='tracuuYCSX'>
             {showhidesearchdiv && (
               <div className='tracuuYCSXform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
@@ -2828,23 +2814,23 @@ const YCSXManager = () => {
                       </select>
                     </label>
                     <label>
-                          <b>All Time:</b>
-                          <input
-                            type='checkbox'
-                            name='alltimecheckbox'
-                            checked={alltime}
-                            onChange={() => setAllTime(!alltime)}
-                          ></input>
-                        </label>                  
+                      <b>All Time:</b>
+                      <input
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        checked={alltime}
+                        onChange={() => setAllTime(!alltime)}
+                      ></input>
+                    </label>
                     <label>
-                          <b>Material YES Only:</b>
-                          <input
-                            type='checkbox'
-                            name='alltimecheckbox'
-                            checked={materialYES}
-                            onChange={() => setMaterialYES(!materialYES)}
-                          ></input>
-                        </label>                  
+                      <b>Material YES Only:</b>
+                      <input
+                        type='checkbox'
+                        name='alltimecheckbox'
+                        checked={materialYES}
+                        onChange={() => setMaterialYES(!materialYES)}
+                      ></input>
+                    </label>
                   </div>
                   <div className='forminputcolumn'>
                     <label>
@@ -3129,8 +3115,8 @@ const YCSXManager = () => {
               {ycsxDataTableAG}
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Thêm YCSX">
           <div className='newycsx' style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className='batchnewycsx'>
               <div className='them1ycsx'>
@@ -3388,8 +3374,8 @@ const YCSXManager = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Add AMZ Data">
           <div className='amazonetab'>
             <div className='newamazon'>
               <div className='amazonInputform'>
@@ -3464,13 +3450,13 @@ const YCSXManager = () => {
               </div>
             </div>
           </div>
-        </TabPanel>
-        <TabPanel>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="Tra AMZ Data">
           <div className='traamazdata'>
             <TraAMZ />
           </div>
-        </TabPanel>
-      </Tabs>
+        </MyTabs.Tab>
+      </MyTabs>
       {selection.renderycsx && (
         <div className='printycsxpage'>
           <div className='buttongroup'>
@@ -3519,7 +3505,7 @@ const YCSXManager = () => {
           </div>
         </div>
       )}
-    </div>)
+    </div>
   );
 };
 export default YCSXManager;
