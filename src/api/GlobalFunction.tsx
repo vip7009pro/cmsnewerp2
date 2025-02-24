@@ -23,6 +23,7 @@ import {
   DEPARTMENT_DATA,
   DINHMUC_QSLX,
   DTC_TEST_POINT,
+  EmployeeTableData,
   EQ_STT,
   FCSTTDYCSX,
   InvoiceTableData,
@@ -53,6 +54,7 @@ import {
   UploadAmazonData,
   UserData,
   WEB_SETTING_DATA,
+  WORK_POSITION_DATA,
   YCSX_SLC_DATA,
   YCSX_SX_DATA,
   YCSXTableData,
@@ -7345,4 +7347,55 @@ export const f_cancelProductionLot = async (DATA: any) => {
     .catch((error) => {
     })
     return kq;
+}
+
+export const f_getEmployeeList = async () => {
+  let kq: EmployeeTableData[] = [];
+  try {
+    let res = await generalQuery('getemployee_full', {});
+    //console.log(res);
+    if (res.data.tk_status !== 'NG') {
+      //console.log(res.data.data);
+      let loaded_data: EmployeeTableData[] = res.data.data.map((element: EmployeeTableData, index: number) => {
+         return {
+            ...element,
+            DOB: element.DOB !== null ? moment.utc(element.DOB).format("YYYY-MM-DD") : "",
+            WORK_START_DATE: element.WORK_START_DATE !== null ? moment.utc(element.WORK_START_DATE).format("YYYY-MM-DD") : "",
+            RESIGN_DATE: element.RESIGN_DATE !== null ? moment.utc(element.RESIGN_DATE).format("YYYY-MM-DD") : "",
+            ONLINE_DATETIME: element.ONLINE_DATETIME !== null ? moment.utc(element.ONLINE_DATETIME).format("YYYY-MM-DD HH:mm:ss") : "",
+            FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
+            PASS_WORD: getUserData()?.EMPL_NO === 'NHU1903' ? element.PASSWORD : '********',
+          };
+      })
+      kq = loaded_data;
+    } else {
+      console.log('fetch error');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+}
+
+export const f_loadWorkPositionList = async () => {
+  let kq: WORK_POSITION_DATA[] = [];
+  try {
+    let res = await generalQuery('workpositionlist', {});
+    //console.log(res);
+    if (res.data.tk_status !== 'NG') {
+      console.log(res.data.data);
+      let loaded_data: WORK_POSITION_DATA[] = res.data.data.map((element: WORK_POSITION_DATA, index: number) => {
+        return {
+          ...element,         
+          id: index
+        }
+      })
+      kq = loaded_data;
+    } else {
+      console.log('fetch error');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
 }

@@ -4518,3 +4518,12 @@ export interface PROD_PLAN_CAPA_DATA {
   RETAIN_WF_CAPA_12H: number,
   ATT_WF_CAPA_12H: number,
 }
+
+export interface WORK_POSITION_DATA {
+  CTR_CD: string;
+  SUBDEPTCODE: number;
+  WORK_POSITION_CODE: number;
+  WORK_POSITION_NAME: string;
+  WORK_POSITION_NAME_KR: string;
+  ATT_GROUP: number;
+}
