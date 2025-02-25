@@ -118,7 +118,7 @@ const FAILING = () => {
         )
       }
     } },
-    { field: 'QC_PASS', headerName: 'QC_PASS/FAIL', resizable: true, width: 50, cellRenderer: (params: any) => {
+    { field: 'QC_PASS', headerName: 'QC_PASS/FAIL', resizable: true, width: 70, cellRenderer: (params: any) => {
       if(params.data.QC_PASS === 'Y') { 
         return (
           <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>PASSED</div>

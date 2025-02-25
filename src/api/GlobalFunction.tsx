@@ -4565,7 +4565,7 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
     } else {
       Swal.fire(
         "Thông báo",
-        "Có lỗi: Có thể ycsx này đã được đăng ký xuất liệu",
+        "Có lỗi: Yêu cầu đã được chỉ thị sản xuất, không xóa được",
         "error"
       );
     }
