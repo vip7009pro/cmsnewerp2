@@ -4525,5 +4525,5 @@ export interface WORK_POSITION_DATA {
   WORK_POSITION_CODE: number;
   WORK_POSITION_NAME: string;
   WORK_POSITION_NAME_KR: string;
-  ATT_GROUP: number;
+  ATT_GROUP_CODE: number;
 }

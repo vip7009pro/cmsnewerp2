@@ -34,6 +34,7 @@ import {
   LONGTERM_PLAN_DATA,
   LOSS_TABLE_DATA,
   MACHINE_LIST,
+  MainDeptTableData,
   MAT_DOC_DATA,
   POBALANCETDYCSX,
   PONOLIST,
@@ -46,6 +47,7 @@ import {
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
+  SubDeptTableData,
   SX_DATA,
   TEMLOTSX_DATA,
   TestListTable,
@@ -7379,7 +7381,7 @@ export const f_loadWorkPositionList = async () => {
     let res = await generalQuery('workpositionlist', {});
     //console.log(res);
     if (res.data.tk_status !== 'NG') {
-      console.log(res.data.data);
+      //console.log(res.data.data);
       let loaded_data: WORK_POSITION_DATA[] = res.data.data.map((element: WORK_POSITION_DATA, index: number) => {
         return {
           ...element,         
@@ -7413,6 +7415,67 @@ export const f_addEmployee = async (DATA: any) => {
 export const f_updateEmployee = async (DATA: any) => {
   let kq: string = '';
   await generalQuery("updateemployee", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_loadMainDepList = async () => {
+  let kq: MainDeptTableData[] = [];
+  try {
+    let res = await generalQuery('getmaindept', {});
+    //console.log(res);
+    if (res.data.tk_status !== 'NG') {
+      //console.log(res.data.data);
+      let loaded_data: MainDeptTableData[] = res.data.data.map((element: MainDeptTableData, index: number) => {
+        return {
+          ...element,
+          id: index
+        }
+      })
+      kq = loaded_data;
+    } else {
+      console.log('fetch error');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+}
+
+export const f_loadSubDepList = async () => { 
+  let kq: SubDeptTableData[] = [];
+  try {
+    let res = await generalQuery('getsubdeptall', {});
+    //console.log(res);
+    if (res.data.tk_status !== 'NG') {
+      console.log(res.data.data);
+      let loaded_data: SubDeptTableData[] = res.data.data.map((element: SubDeptTableData, index: number) => {
+        return {
+          ...element,
+          id: index
+        }
+      })
+      kq = loaded_data;
+    } else {
+      console.log('fetch error');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+}
+
+export const f_addMainDept = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertmaindept", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
       }
