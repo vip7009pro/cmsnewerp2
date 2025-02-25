@@ -1,18 +1,22 @@
 import { IconButton, Button } from "@mui/material";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./UserManager.scss";
-import { generalQuery, getSocket, getUserData, uploadQuery } from "../../../api/Api";
-import { CUST_INFO, EmployeeTableData } from "../../../api/GlobalInterface";
+import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
+import { EmployeeTableData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { checkBP, f_getEmployeeList, f_insert_Notification_Data, f_loadWorkPositionList, zeroPad } from "../../../api/GlobalFunction";
+import {
+  checkBP,
+  f_addEmployee,
+  f_getEmployeeList,
+  f_loadWorkPositionList,
+  f_updateEmployee,
+} from "../../../api/GlobalFunction";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
@@ -26,7 +30,6 @@ const UserManager = () => {
     setOpenDialog(false);
   };
   const [resigned_check, setResignedCheck] = useState(true);
-  const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
   const [empl_info, setEmplInfo] = useState<Array<EmployeeTableData>>([]);
   const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
   const loadWorkPosition = async () => {
@@ -104,69 +107,68 @@ const UserManager = () => {
         return <span style={{ color: 'blue', fontWeight: 'bold' }}>{params.value}</span>
       }
     },
-    { field: 'NV_CCID', headerName: 'NV_CCID', resizable: true, width: 50 },
-    { field: 'CMS_ID', headerName: 'NS_ID', resizable: true, width: 60 },
-    { field: 'FIRST_NAME', headerName: 'FIRST_NAME', resizable: true, width: 70 },
-    { field: 'MIDLAST_NAME', headerName: 'MIDLAST_NAME', resizable: true, width: 90 },
+    { field: 'NV_CCID', headerName: 'NV_CCID', resizable: true, editable: false, width: 50 },
+    { field: 'CMS_ID', headerName: 'NS_ID', resizable: true, editable: false, width: 60 },
     {
-      field: 'FULL_NAME', headerName: 'FULL_NAME', resizable: true, width: 100, cellRenderer: (params: any) => {
+      field: 'IMAGE', headerName: 'IMAGE', resizable: true, editable: false, width: 50, cellRenderer: (params: any) => {
+        if (params.data.EMPL_IMAGE === "Y")
+          return (
+            <img
+              width={50}
+              height={50}
+              src={"/Picture_NS/NS_" + params.data.EMPL_NO + ".jpg"}
+              alt={selectedRows.EMPL_NO}
+            ></img>
+          )
+        else {
+          return (
+            <img
+              width={50}
+              height={50}
+              src={"/noimage.webp"}
+              alt={selectedRows.EMPL_NO}
+            ></img>
+          )
+        }
+      }
+    },
+    { field: 'FIRST_NAME', headerName: 'FIRST_NAME', resizable: true, editable: false, width: 70 },
+    { field: 'MIDLAST_NAME', headerName: 'MIDLAST_NAME', resizable: true, editable: false, width: 90 },
+    {
+      field: 'FULL_NAME', headerName: 'FULL_NAME', resizable: true, editable: false, width: 100, cellRenderer: (params: any) => {
         return <span style={{ color: 'green', fontWeight: 'bold' }}>{params.value}</span>
       }
     },
-    { field: 'SUBDEPTNAME', headerName: 'SUBDEPT', resizable: true, width: 60 },
-    { field: 'MAINDEPTNAME', headerName: 'MAINDEPT', resizable: true, width: 60 },
-    { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION', resizable: true, width: 80 },
-    { field: 'POSITION_NAME', headerName: 'POSITION', resizable: true, width: 80 },
-    { field: 'JOB_NAME', headerName: 'JOB_NAME', resizable: true, width: 60 },
-    { field: 'WORK_SHIF_NAME', headerName: 'WORK_SHIFT', resizable: true, width: 80 },
-    { field: 'DOB', headerName: 'DOB', resizable: true, width: 70 },
-    { field: 'HOMETOWN', headerName: 'HOMETOWN', resizable: true, width: 150 },
-    { field: 'ADD_PROVINCE', headerName: 'ADD_PROVINCE', resizable: true, width: 80 },
-    { field: 'ADD_DISTRICT', headerName: 'ADD_DISTRICT', resizable: true, width: 80 },
-    { field: 'ADD_COMMUNE', headerName: 'ADD_COMMUNE', resizable: true, width: 80 },
-    { field: 'ADD_VILLAGE', headerName: 'ADD_VILLAGE', resizable: true, width: 80 },
-    { field: 'PHONE_NUMBER', headerName: 'PHONE_NUMBER', resizable: true, width: 80 },
-    { field: 'WORK_START_DATE', headerName: 'NGAY_VAO', resizable: true, width: 60 },
-    { field: 'PASSWORD', headerName: 'PASSWORD', resizable: true, width: 70 },
-    { field: 'EMAIL', headerName: 'EMAIL', resizable: true, width: 100 },
-    { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 100 },
-    { field: 'ONLINE_DATETIME', headerName: 'ONLINE_DATETIME', resizable: true, width: 100 },
-    { field: 'SEX_NAME', headerName: 'SEX', resizable: true, width: 50 },
-    { field: 'WORK_STATUS_NAME', headerName: 'WORK_STATUS', resizable: true, width: 80 },
-    { field: 'FACTORY_NAME', headerName: 'FACTORY_NAME', resizable: true, width: 80 },
-    { field: 'ATT_GROUP_CODE', headerName: 'ATT_GROUP', resizable: true, width: 60 },
-    { field: 'RESIGN_DATE', headerName: 'RESIGN_DATE', resizable: true, width: 100 },
+    { field: 'SUBDEPTNAME', headerName: 'SUBDEPT', resizable: true, editable: false, width: 60 },
+    { field: 'MAINDEPTNAME', headerName: 'MAINDEPT', resizable: true, editable: false, width: 60 },
+    { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION', resizable: true, editable: false, width: 80 },
+    { field: 'POSITION_NAME', headerName: 'POSITION', resizable: true, editable: false, width: 80 },
+    { field: 'JOB_NAME', headerName: 'JOB_NAME', resizable: true, editable: false, width: 60 },
+    { field: 'WORK_SHIF_NAME', headerName: 'WORK_SHIFT', resizable: true, editable: false, width: 80 },
+    { field: 'DOB', headerName: 'DOB', resizable: true, editable: false, width: 70 },
+    { field: 'HOMETOWN', headerName: 'HOMETOWN', resizable: true, editable: false, width: 150 },
+    { field: 'ADD_PROVINCE', headerName: 'ADD_PROVINCE', resizable: true, editable: false, width: 80 },
+    { field: 'ADD_DISTRICT', headerName: 'ADD_DISTRICT', resizable: true, editable: false, width: 80 },
+    { field: 'ADD_COMMUNE', headerName: 'ADD_COMMUNE', resizable: true, editable: false, width: 80 },
+    { field: 'ADD_VILLAGE', headerName: 'ADD_VILLAGE', resizable: true, editable: false, width: 80 },
+    { field: 'PHONE_NUMBER', headerName: 'PHONE_NUMBER', resizable: true, editable: false, width: 80 },
+    { field: 'WORK_START_DATE', headerName: 'NGAY_VAO', resizable: true, editable: false, width: 60 },
+    { field: 'PASSWORD', headerName: 'PASSWORD', resizable: true, editable: false, width: 70 },
+    { field: 'EMAIL', headerName: 'EMAIL', resizable: true, editable: false, width: 100 },
+    { field: 'REMARK', headerName: 'REMARK', resizable: true, editable: false, width: 100 },
+    { field: 'ONLINE_DATETIME', headerName: 'ONLINE_DATETIME', resizable: true, editable: false, width: 100 },
+    { field: 'SEX_NAME', headerName: 'SEX', resizable: true, editable: false, width: 50 },
+    { field: 'WORK_STATUS_NAME', headerName: 'WORK_STATUS', resizable: true, editable: false, width: 80 },
+    { field: 'FACTORY_NAME', headerName: 'FACTORY_NAME', resizable: true, editable: false, width: 80 },
+    { field: 'ATT_GROUP_CODE', headerName: 'ATT_GROUP', resizable: true, editable: false, width: 60 },
+    { field: 'RESIGN_DATE', headerName: 'RESIGN_DATE', resizable: true, editable: false, width: 100 },
   ];
   const setCustInfo = (keyname: string, value: any) => {
     let tempCustInfo: EmployeeTableData = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
     setSelectedRows(tempCustInfo);
   };
-  const autogenerateCUST_CD = async (company_type: string) => {
-    let next_cust_cd: string = company_type + "001";
-    await generalQuery("checkcustcd", {
-      COMPANY_TYPE: company_type,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let stt =
-            company_type === "KH"
-              ? response.data.data[0].CUST_CD.substring(2, 5)
-              : response.data.data[0].CUST_CD.substring(3, 6);
-          next_cust_cd = company_type + zeroPad(parseInt(stt) + 1, 3);
-          console.log("nex cust_cd", next_cust_cd);
-        } else {
-          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
-    return next_cust_cd;
-  };
-  const createNewCustomer = async () => {
+  const createNewUser = async () => {
     setSelectedRows({
       id: "",
       EMPL_NO: "",
@@ -220,128 +222,6 @@ const UserManager = () => {
       RESIGN_DATE: "",
     });
   };
-  const handleCUSTINFO = () => {
-    Swal.fire({
-      title: "Tra data",
-      text: "Đang tra data",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    generalQuery("get_listcustomer", {})
-      .then((response) => {
-        /// console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: CUST_INFO[] = response.data.data.map(
-            (element: CUST_INFO, index: number) => {
-              return {
-                ...element,
-                CUST_NAME: element.CUST_NAME ?? "",
-                CUST_NAME_KD: element.CUST_NAME_KD ?? "",
-                CUST_ADDR1: element.CUST_ADDR1 !== 'undefined' ? element.CUST_ADDR1 ?? "" : "",
-                CUST_ADDR2: element.CUST_ADDR2 !== 'undefined' ? element.CUST_ADDR2 ?? "" : "",
-                CUST_ADDR3: element.CUST_ADDR3 !== 'undefined' ? element.CUST_ADDR3 ?? "" : "",
-                EMAIL: element.EMAIL ?? "",
-                TAX_NO: element.TAX_NO ?? "",
-                CUST_NUMBER: element.CUST_NUMBER ?? "",
-                BOSS_NAME: element.BOSS_NAME ?? "",
-                TEL_NO1: element.TEL_NO1 ?? "",
-                FAX_NO: element.FAX_NO ?? "",
-                CUST_POSTAL: element.CUST_POSTAL ?? "",
-                REMK: element.REMK ?? "",
-                INS_DATE: element.INS_DATE !== null ? moment.utc(element.INS_DATE).format("YYYY-MM-DD") : "",
-                UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD") : "",
-                id: index,
-              };
-            },
-          );
-          setCUSTINFODataTable(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          setCUSTINFODataTable([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_addCustomer = () => {
-    generalQuery("add_customer", selectedRows)
-      .then(async (response) => {
-        /// console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let newNotification: NotificationElement = {
-            CTR_CD: '002',
-            NOTI_ID: -1,
-            NOTI_TYPE: "success",
-            TITLE: 'Thêm nhân viên mới',
-            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm một nhân viên mới:${selectedRows.EMPL_NO}  - ${selectedRows.MIDLAST_NAME}  -  ${selectedRows.FIRST_NAME} `,
-            SUBDEPTNAME: "ALL",
-            MAINDEPTNAME: "ALL",
-            INS_EMPL: 'NHU1903',
-            INS_DATE: '2024-12-30',
-            UPD_EMPL: 'NHU1903',
-            UPD_DATE: '2024-12-30',
-          }
-          if (await f_insert_Notification_Data(newNotification)) {
-            getSocket().emit("notification_panel", newNotification);
-          }
-          Swal.fire("Thông báo", "Thêm khách thành công", "success");
-          handleCUSTINFO();
-        } else {
-          Swal.fire(
-            "Thông báo",
-            "Thêm khách thất bại: " + response.data.message,
-            "error",
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_editCustomer = () => {
-    generalQuery("edit_customer", selectedRows)
-      .then(async (response) => {
-        /// console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let newNotification: NotificationElement = {
-            CTR_CD: '002',
-            NOTI_ID: -1,
-            NOTI_TYPE: "info",
-            TITLE: 'Update thông tin nhân viên',
-            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã sửa một nhân viên:${selectedRows.EMPL_NO}  - ${selectedRows.MIDLAST_NAME}  -  ${selectedRows.FIRST_NAME} `,
-            SUBDEPTNAME: "ALL",
-            MAINDEPTNAME: "ALL",
-            INS_EMPL: 'NHU1903',
-            INS_DATE: '2024-12-30',
-            UPD_EMPL: 'NHU1903',
-            UPD_DATE: '2024-12-30',
-          }
-          if (await f_insert_Notification_Data(newNotification)) {
-            getSocket().emit("notification_panel", newNotification);
-          }
-          Swal.fire("Thông báo", "Sửa khách thành công", "success");
-          handleCUSTINFO();
-        } else {
-          Swal.fire(
-            "Thông báo",
-            "Sửa khách thất bại: " + response.data.message,
-            "error",
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang
   );
@@ -391,6 +271,7 @@ const UserManager = () => {
     return (
       <AGTable
         suppressRowClickSelection={false}
+        rowHeight={50}
         toolbar={
           <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <IconButton
@@ -432,6 +313,8 @@ const UserManager = () => {
           //console.log(params)
           //setSelectedRows(params!.api.getSelectedRows()[0]);
           //console.log(e!.api.getSelectedRows())
+        }} onRowDoubleClick={(params: any) => {
+          handleOpenDialog();
         }}
       />
     )
@@ -676,13 +559,39 @@ const UserManager = () => {
           </div>}
           actions={<div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
-              createNewCustomer();
+              createNewUser();
             }}>Clear</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
-              handle_addCustomer();
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={async () => {
+              if (getCompany() !== "CMS") {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  async () => {
+                    await f_addEmployee(selectedRows);
+                  }
+                );
+              } else {
+                await f_addEmployee(selectedRows);
+              }
+              loadEmplInfo();
             }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={() => {
-              handle_editCustomer();
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
+              if (getCompany() !== "CMS") {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  async () => {
+                    await f_updateEmployee(selectedRows);
+                  }
+                );
+              } else {
+                await f_updateEmployee(selectedRows);
+              }
+              loadEmplInfo();
             }}>Update</Button>
           </div>}
         />
@@ -690,6 +599,12 @@ const UserManager = () => {
       </div>
       <div className="updateform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <div className="emplpicture">
+          <div className="emplinfo" style={{ fontWeight: 'bold' }}>
+            {selectedRows.FULL_NAME} ({selectedRows.DOB})
+          </div>
+          <div className="emplinfo" style={{ fontStyle: 'italic' }}>
+            ({selectedRows.MAINDEPTNAME}- {selectedRows.SUBDEPTNAME})
+          </div>
           {selectedRows.EMPL_IMAGE === "Y" && (
             <img
               width={220}

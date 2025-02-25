@@ -7187,7 +7187,6 @@ export const f_deleteNotExistLongTermPlan = async (PLAN_DATE: string) => {
     .catch((error) => {
     })
 }
-
 export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
   let kq: PROD_PLAN_CAPA_DATA[] = [];
   await generalQuery("getProductionPlanCapaData", { PLAN_DATE: PLAN_DATE })
@@ -7333,7 +7332,6 @@ export const f_deleteLongtermPlan = async (DATA: LONGTERM_PLAN_DATA) => {
     })
     return kq;
 }
-
 export const f_cancelProductionLot = async (DATA: any) => { 
   let kq: string = '';
   await generalQuery("cancelProductionLot", DATA)
@@ -7348,7 +7346,6 @@ export const f_cancelProductionLot = async (DATA: any) => {
     })
     return kq;
 }
-
 export const f_getEmployeeList = async () => {
   let kq: EmployeeTableData[] = [];
   try {
@@ -7376,7 +7373,6 @@ export const f_getEmployeeList = async () => {
   }
   return kq;
 }
-
 export const f_loadWorkPositionList = async () => {
   let kq: WORK_POSITION_DATA[] = [];
   try {
@@ -7397,5 +7393,34 @@ export const f_loadWorkPositionList = async () => {
   } catch (error) {
     console.log(error);
   }
+  return kq;
+}
+export const f_addEmployee = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertemployee", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_updateEmployee = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updateemployee", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
   return kq;
 }
