@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
-import { generalQuery, getUserData, logout } from "../../api/Api";
+import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -15,8 +15,8 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = 2570;
-/* export const current_ver: number = 422; */
+export const current_ver: number = getCompany() === "CMS" ? 2571 : 422;
+
 const PostManager = React.lazy(() => import("../information_board/PostManager"));
 const Information = React.lazy(() => import("../information_board/Information"));
 const AddInfo = React.lazy(() => import("../information_board/AddInfo"));
