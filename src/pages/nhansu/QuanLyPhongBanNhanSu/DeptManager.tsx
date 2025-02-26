@@ -2,28 +2,33 @@ import { IconButton, Button } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./DeptManager.scss";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WORK_POSITION_DATA, WorkPositionTableData } from "../../../api/GlobalInterface";
+import { getCompany, getUserData } from "../../../api/Api";
+import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WORK_POSITION_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import {
   checkBP,
   f_addEmployee,
+  f_addMainDept,
+  f_addSubDept,
+  f_addWorkPosition,
   f_getEmployeeList,
   f_loadMainDepList,
   f_loadSubDepList,
   f_loadWorkPositionList,
   f_updateEmployee,
+  f_updateMainDept,
+  f_updateSubDept,
+  f_updateWorkPosition,
 } from "../../../api/GlobalFunction";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { AiOutlineCloudUpload } from "react-icons/ai";
-import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
 const DeptManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const [tableSelection, setTableSelection] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -33,45 +38,25 @@ const DeptManager = () => {
   };
   const [resigned_check, setResignedCheck] = useState(true);
   const [empl_info, setEmplInfo] = useState<Array<EmployeeTableData>>([]);
-  const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
-
+  const [workpositionload, setWorkPositionLoad] = useState<Array<WORK_POSITION_DATA>>([]);
   const [subdeptTable, setSubDeptTable] = useState<Array<SubDeptTableData>>([]);
   const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>([]);
-
   const handleLoadMainDept = async () => {
     let kq: MainDeptTableData[] = [];
     kq = await f_loadMainDepList();
     setMainDeptTable(kq);
-  } 
-
-  const handleLoadsubDept = async () => {
+  }
+  const handleLoadsubDept = async (MAINDEPTCODE?: number) => {    
     let kq: SubDeptTableData[] = [];
-    kq = await f_loadSubDepList();
+    kq = await f_loadSubDepList(MAINDEPTCODE);
     //console.log('subdept',kq)
     setSubDeptTable(kq);
   }
-
-  const loadWorkPosition = async () => {
+  const loadWorkPosition = async (SUBDEPTCODE?: number) => {
     let kq: any[] = [];
-    kq = await f_loadWorkPositionList();
+    kq = await f_loadWorkPositionList(SUBDEPTCODE);
     //console.log(kq);
     setWorkPositionLoad(kq);
-  }
-
-
-
-
-
-  const loadEmplInfo = async () => {
-    let kq: EmployeeTableData[] = [];
-    kq = await f_getEmployeeList();
-    setEmplInfo(kq);
-    if (kq.length > 0) {
-      Swal.fire('Thông báo', 'Có ' + kq.length + ' nhân viên', 'success');
-    }
-    else {
-      Swal.fire('Thông báo', 'Không có nhân viên nào', 'error');
-    }
   }
   const [selectedRows, setSelectedRows] = useState<EmployeeTableData>({
     id: "",
@@ -125,6 +110,29 @@ const DeptManager = () => {
     EMPL_IMAGE: "",
     RESIGN_DATE: "",
   });
+  const [selectedMainDept, setselectedMainDept] = useState<MainDeptTableData>({
+    id: 0,
+    CTR_CD: '002',
+    MAINDEPTCODE: 0,
+    MAINDEPTNAME: "",
+    MAINDEPTNAME_KR: "",
+  });
+  const [selectedSubDept, setselectedSubDept] = useState<SubDeptTableData>({
+    id: 0,
+    CTR_CD: '002',
+    MAINDEPTCODE: 0,
+    SUBDEPTCODE: 0,
+    SUBDEPTNAME: "",
+    SUBDEPTNAME_KR: "",
+  })
+  const [selectedWorkPosition, setSelectedWorkPosition] = useState<WORK_POSITION_DATA>({
+    SUBDEPTCODE: 0,
+    ATT_GROUP_CODE: 0,
+    CTR_CD: '002',
+    WORK_POSITION_CODE: 0,
+    WORK_POSITION_NAME: "",
+    WORK_POSITION_NAME_KR: "",
+  })
   const columns = [
     {
       field: 'EMPL_NO', headerName: 'ERP_ID', resizable: true, editable: false, width: 90, headerCheckboxSelection: true, checkboxSelection: true, cellRenderer: (params: any) => {
@@ -187,28 +195,43 @@ const DeptManager = () => {
     { field: 'ATT_GROUP_CODE', headerName: 'ATT_GROUP', resizable: true, editable: false, width: 60 },
     { field: 'RESIGN_DATE', headerName: 'RESIGN_DATE', resizable: true, editable: false, width: 100 },
   ];
-  const columns_maindept= [
+  const columns_maindept = [
     { field: 'MAINDEPTCODE', headerName: 'DEPTCODE', resizable: true, editable: false, width: 100 },
     { field: 'MAINDEPTNAME', headerName: 'MAINDEPTNAME', resizable: true, editable: true, width: 100 },
     { field: 'MAINDEPTNAME_KR', headerName: 'MAINDEPTNAME_KR', resizable: true, editable: true, width: 100 },
   ];
-  const columns_subdept= [
-    { field: 'SUBDEPTCODE', headerName: 'DEPTCODE', resizable: true, editable: false, width: 100 },
+  const columns_subdept = [
+    { field: 'MAINDEPTCODE', headerName: 'MAINDEPTCODE', resizable: true, editable: false, width: 100 },
+    { field: 'SUBDEPTCODE', headerName: 'SUBDEPTCODE', resizable: true, editable: false, width: 100 },
     { field: 'SUBDEPTNAME', headerName: 'SUBDEPTNAME', resizable: true, editable: true, width: 100 },
     { field: 'SUBDEPTNAME_KR', headerName: 'SUBDEPTNAME_KR', resizable: true, editable: true, width: 100 },
   ]
-  const columns_workposition= [
-    { field: 'SUBDEPTCODE', headerName: 'DEPTCODE', resizable: true, editable: false, width: 100 },
-    { field: 'WORK_POSITION_CODE', headerName: 'WORK_POSITION_CODE', resizable: true, editable: false, width: 100 },
-    { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION_NAME', resizable: true, editable: true, width: 100 },
-    { field: 'WORK_POSITION_NAME_KR', headerName: 'WORK_POSITION_NAME_KR', resizable: true, editable: true, width: 100 },
+  const columns_workposition = [
+    { field: 'SUBDEPTCODE', headerName: 'SUBDEPTCODE', resizable: true, editable: false, width: 80 },
+    { field: 'WORK_POSITION_CODE', headerName: 'WORK_POSITION_CODE', resizable: true, editable: false, width: 110 },
+    { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION_NAME', resizable: true, editable: true, width: 120 },
+    { field: 'WORK_POSITION_NAME_KR', headerName: 'WORK_POSITION_NAME_KR', resizable: true, editable: true, width: 130 },
     { field: 'ATT_GROUP_CODE', headerName: 'ATT_GROUP_CODE', resizable: true, editable: true, width: 100 },
-
   ]
   const setCustInfo = (keyname: string, value: any) => {
     let tempCustInfo: EmployeeTableData = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
     setSelectedRows(tempCustInfo);
+  };
+  const setMainDeptInfo = (keyname: string, value: any) => {
+    let tempMainDept: MainDeptTableData = { ...selectedMainDept, [keyname]: value };
+    //console.log(tempcodefullinfo);
+    setselectedMainDept(tempMainDept);
+  };
+  const setSubDeptInfo = (keyname: string, value: any) => {
+    let tempSubDept: SubDeptTableData = { ...selectedSubDept, [keyname]: value };
+    //console.log(tempcodefullinfo);
+    setselectedSubDept(tempSubDept);
+  };
+  const setWorkPositionInfo = (keyname: string, value: any) => {
+    let tempWorkPosition: WORK_POSITION_DATA = { ...selectedWorkPosition, [keyname]: value };
+    //console.log(tempcodefullinfo);
+    setSelectedWorkPosition(tempWorkPosition);
   };
   const createNewUser = async () => {
     setSelectedRows({
@@ -270,22 +293,23 @@ const DeptManager = () => {
   const mainDeptAGTable = useMemo(() => {
     return (
       <AGTable
-        suppressRowClickSelection={false}        
+        suppressRowClickSelection={false}
         toolbar={
           <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                loadEmplInfo();
+                handleLoadMainDept();
               }}
             >
               <BiLoaderCircle color="#06cc70" size={15} />
               Load Data
-            </IconButton>        
+            </IconButton>
             <IconButton
               className="buttonIcon"
               onClick={() => {
                 handleOpenDialog();
+                setTableSelection(1);
               }}
             >
               <MdAdd color="#1c44f5" size={15} />
@@ -297,36 +321,37 @@ const DeptManager = () => {
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
         }} onRowClick={(params: any) => {
-          setSelectedRows(params.data);
+          setselectedMainDept(params.data);
+          handleLoadsubDept(params.data.MAINDEPTCODE);
           //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {         
+        }} onSelectionChange={(params: any) => {
           //setSelectedRows(params!.api.getSelectedRows()[0]);
           //console.log(e!.api.getSelectedRows())
         }} onRowDoubleClick={(params: any) => {
-          
         }}
       />
     )
-  }, [maindeptTable])
+  }, [maindeptTable, tableSelection])
   const subDeptAGTable = useMemo(() => {
     return (
       <AGTable
-        suppressRowClickSelection={false}        
+        suppressRowClickSelection={false}
         toolbar={
           <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                loadEmplInfo();
+                handleLoadsubDept();
               }}
             >
               <BiLoaderCircle color="#06cc70" size={15} />
               Load Data
-            </IconButton>        
+            </IconButton>
             <IconButton
               className="buttonIcon"
               onClick={() => {
                 handleOpenDialog();
+                setTableSelection(2);
               }}
             >
               <MdAdd color="#1c44f5" size={15} />
@@ -338,36 +363,37 @@ const DeptManager = () => {
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
         }} onRowClick={(params: any) => {
-          setSelectedRows(params.data);
+          setselectedSubDept(params.data);
+          loadWorkPosition(params.data.SUBDEPTCODE);
           //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {         
+        }} onSelectionChange={(params: any) => {
           //setSelectedRows(params!.api.getSelectedRows()[0]);
           //console.log(e!.api.getSelectedRows())
         }} onRowDoubleClick={(params: any) => {
-          
         }}
       />
     )
-  }, [subdeptTable])
+  }, [subdeptTable,tableSelection])
   const workPositionAGTable = useMemo(() => {
     return (
       <AGTable
-        suppressRowClickSelection={false}        
+        suppressRowClickSelection={false}
         toolbar={
           <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                loadEmplInfo();
+                loadWorkPosition();
               }}
             >
               <BiLoaderCircle color="#06cc70" size={15} />
               Load Data
-            </IconButton>        
+            </IconButton>
             <IconButton
               className="buttonIcon"
               onClick={() => {
                 handleOpenDialog();
+                setTableSelection(3);
               }}
             >
               <MdAdd color="#1c44f5" size={15} />
@@ -379,17 +405,79 @@ const DeptManager = () => {
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
         }} onRowClick={(params: any) => {
-          setSelectedRows(params.data);
+          setSelectedWorkPosition(params.data);
           //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {         
+        }} onSelectionChange={(params: any) => {
           //setSelectedRows(params!.api.getSelectedRows()[0]);
           //console.log(e!.api.getSelectedRows())
         }} onRowDoubleClick={(params: any) => {
-          
         }}
       />
     )
-  }, [workpositionload])
+  }, [workpositionload,tableSelection])
+
+  const init = ()=> {
+    handleLoadMainDept();
+    loadWorkPosition();
+    handleLoadsubDept();
+  }
+  const handleAddInfo = async () => {
+    if (tableSelection === 1) {
+      let kq: string = await f_addMainDept(selectedMainDept);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }      
+    } else if (tableSelection === 2) {
+      let kq: string = await f_addSubDept(selectedSubDept);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }
+    } else if (tableSelection === 3) {
+      let kq: string = await f_addWorkPosition(selectedWorkPosition);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }
+    }
+    init();
+  };
+  const handleUpdateInfo = async () => {
+    if (tableSelection === 1) {
+      let kq: string = await f_updateMainDept(selectedMainDept);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }      
+    } else if (tableSelection === 2) {
+      let kq: string = await f_updateSubDept(selectedSubDept);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }
+    } else if (tableSelection === 3) {
+      let kq: string = await f_updateWorkPosition(selectedWorkPosition);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }
+    }
+    init();
+  };
+
   useEffect(() => {
     handleLoadMainDept();
     loadWorkPosition();
@@ -401,233 +489,112 @@ const DeptManager = () => {
         <CustomDialog
           isOpen={openDialog}
           onClose={handleCloseDialog}
-          title={`Add/Update Employee (EMPL_NO: ${selectedRows?.EMPL_NO})`}
+          title={`Add/Update info (${tableSelection === 1 ? selectedMainDept.MAINDEPTNAME : tableSelection === 2 ? selectedSubDept.SUBDEPTNAME : selectedWorkPosition.WORK_POSITION_NAME})`}
           content={<div className="forminput" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            <div className="maindeptinputbox">
+            {
+              tableSelection === 1 &&  <div className="maindeptinputbox">
               <label>
-                {getlang("maerp", glbLang!)}{" "}
+                MAINDEPTCODE:{" "}
                 <input
                   type="text"
-                  value={selectedRows.EMPL_NO}
-                  onChange={(e) => setCustInfo("EMPL_NO", e.target.value)}
+                  value={selectedMainDept.MAINDEPTCODE}
+                  onChange={(e) => setMainDeptInfo("MAINDEPTCODE", Number(e.target.value))}
                 ></input>
               </label>
               <label>
-                {getlang("manhansu", glbLang!)}{" "}
+                MAINDEPTNAME{" "}
                 <input
                   type="text"
-                  value={selectedRows.CMS_ID}
-                  onChange={(e) => setCustInfo("CMS_ID", e.target.value)}
+                  value={selectedMainDept.MAINDEPTNAME}
+                  onChange={(e) => setMainDeptInfo("MAINDEPTNAME", e.target.value)}
                 ></input>
               </label>
               <label>
-                {getlang("machamcong", glbLang!)}
-                <input
-                  name="gioitinh"
-                  value={selectedRows.NV_CCID}
-                  onChange={(e) => setCustInfo("NV_CCID", Number(e.target.value))}
-                ></input>
-              </label>
-              <label>
-                {getlang("ten", glbLang!)}{" "}
+                MAINDEPTNAME_KR
                 <input
                   type="text"
-                  value={selectedRows.FIRST_NAME}
-                  onChange={(e) => setCustInfo("FIRST_NAME", e.target.value)}
+                  value={selectedMainDept.MAINDEPTNAME_KR}
+                  onChange={(e) => setMainDeptInfo("MAINDEPTNAME_KR", e.target.value)}
                 ></input>
               </label>
+             
+            </div> 
+            }
+            {
+              tableSelection === 2 &&  <div className="maindeptinputbox">
               <label>
-                {getlang("hovadem", glbLang!)}
+                SUBDEPTCODE:{" "}
                 <input
                   type="text"
-                  value={selectedRows.MIDLAST_NAME}
-                  onChange={(e) => setCustInfo("MIDLAST_NAME", e.target.value)}
+                  value={selectedSubDept.SUBDEPTCODE}
+                  onChange={(e) => setSubDeptInfo("SUBDEPTCODE", Number(e.target.value))}
                 ></input>
               </label>
               <label>
-                {getlang("ngaythangnamsinh", glbLang!)}
-                <input
-                  type="date"
-                  value={selectedRows.DOB}
-                  onChange={(e) => setCustInfo("DOC", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("quequan", glbLang!)}
+                SUBDEPTNAME{" "}
                 <input
                   type="text"
-                  value={selectedRows.HOMETOWN}
-                  onChange={(e) => setCustInfo("HOMETOWN", e.target.value)}
+                  value={selectedSubDept.SUBDEPTNAME}
+                  onChange={(e) => setSubDeptInfo("SUBDEPTNAME", e.target.value)}
                 ></input>
               </label>
               <label>
-                {getlang("gioitinh", glbLang!)}
-                <select
-                  name="gioitinh"
-                  value={selectedRows.SEX_CODE}
-                  onChange={(e) => setCustInfo("SEX_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Nữ</option>
-                  <option value={1}>Nam</option>
-                </select>
-              </label>
-            </div>
-            <div className="maindeptinputbox">
-              <label>
-                {getlang("tinhthanhpho", glbLang!)}
+                SUBDEPTNAME_KR
                 <input
                   type="text"
-                  value={selectedRows.ADD_PROVINCE}
-                  onChange={(e) => setCustInfo("ADD_PROVINCE", e.target.value)}
+                  value={selectedSubDept.SUBDEPTNAME_KR}
+                  onChange={(e) => setSubDeptInfo("SUBDEPTNAME_KR", e.target.value)}
                 ></input>
               </label>
+             
+            </div> 
+            }
+            {
+              tableSelection === 3 &&  <div className="maindeptinputbox">
               <label>
-                {getlang("quanhuyen", glbLang!)}
+                SUBDEPTCODE:{" "}
                 <input
                   type="text"
-                  value={selectedRows.ADD_DISTRICT}
-                  onChange={(e) => setCustInfo("ADD_DISTRICT", e.target.value)}
+                  value={selectedWorkPosition.SUBDEPTCODE}
+                  onChange={(e) => setWorkPositionInfo("SUBDEPTCODE", Number(e.target.value))}
                 ></input>
               </label>
               <label>
-                {getlang("xathitran", glbLang!)}
+                WORK_POSITION_CODE:{" "}
                 <input
                   type="text"
-                  value={selectedRows.ADD_COMMUNE}
-                  onChange={(e) => setCustInfo("ADD_COMMUNE", e.target.value)}
+                  value={selectedWorkPosition.WORK_POSITION_CODE}
+                  onChange={(e) => setWorkPositionInfo("WORK_POSITION_CODE", Number(e.target.value))}
                 ></input>
               </label>
               <label>
-                {getlang("thonxom", glbLang!)}
+                ATT_GROUP_CODE:{" "}
                 <input
                   type="text"
-                  value={selectedRows.ADD_VILLAGE}
-                  onChange={(e) => setCustInfo("ADD_VILLAGE", e.target.value)}
+                  value={selectedWorkPosition.ATT_GROUP_CODE}
+                  onChange={(e) => setWorkPositionInfo("ATT_GROUP_CODE", Number(e.target.value))}
                 ></input>
               </label>
               <label>
-                {getlang("sodienthoai", glbLang!)}
+              WORK_POSITION_NAME{" "}
                 <input
                   type="text"
-                  value={selectedRows.PHONE_NUMBER}
-                  onChange={(e) => setCustInfo("PHONE_NUMBER", e.target.value)}
+                  value={selectedWorkPosition.WORK_POSITION_NAME}
+                  onChange={(e) => setWorkPositionInfo("WORK_POSITION_NAME", e.target.value)}
                 ></input>
               </label>
               <label>
-                {getlang("ngaybatdaulamviec", glbLang!)}
-                <input
-                  type="date"
-                  value={selectedRows.WORK_START_DATE.slice(0, 10)}
-                  onChange={(e) => setCustInfo("WORK_START_DATE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("ngaynghiviec", glbLang!)}
-                <input
-                  disabled={selectedRows.WORK_STATUS_CODE !== 0}
-                  type="date"
-                  value={selectedRows.RESIGN_DATE.slice(0, 10)}
-                  onChange={(e) => setCustInfo("RESIGN_DATE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("password", glbLang!)}
-                <input
-                  type="password"
-                  value={selectedRows.PASSWORD}
-                  onChange={(e) => setCustInfo("PASSWORD", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="maindeptinputbox">
-              <label>
-                {getlang("email", glbLang!)}
+              WORK_POSITION_NAME_KR
                 <input
                   type="text"
-                  value={selectedRows.EMAIL}
-                  onChange={(e) => setCustInfo("EMAIL", e.target.value)}
+                  value={selectedWorkPosition.WORK_POSITION_NAME_KR}
+                  onChange={(e) => setWorkPositionInfo("WORK_POSITION_NAME_KR", e.target.value)}
                 ></input>
               </label>
-              <label>
-                {getlang("vitrilamviec", glbLang!)}
-                <select
-                  name="vitrilamviec"
-                  value={selectedRows.WORK_POSITION_CODE}
-                  onChange={(e) => setCustInfo("WORK_POSITION_CODE", Number(e.target.value))}
-                >
-                  {workpositionload.map((element, index) => (
-                    <option
-                      key={index}
-                      value={element.WORK_POSITION_CODE}
-                    >
-                      {element.WORK_POSITION_NAME}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {getlang("teamlamviec", glbLang!)}
-                <select
-                  name="calamviec"
-                  value={selectedRows.WORK_SHIFT_CODE}
-                  onChange={(e) => setCustInfo("WORK_SHIFT_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Hành chính</option>
-                  <option value={1}>TEAM 1</option>
-                  <option value={2}>TEAM 2</option>
-                </select>
-              </label>
-              <label>
-                {getlang("capbac", glbLang!)}
-                <select
-                  name="chucdanh"
-                  value={selectedRows.POSITION_CODE}
-                  onChange={(e) => setCustInfo("POSITION_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Manager</option>
-                  <option value={1}>AM</option>
-                  <option value={2}>Senior</option>
-                  <option value={3}>Staff</option>
-                  <option value={4}>No Pos</option>
-                </select>
-              </label>
-              <label>
-                {getlang("chucvu", glbLang!)}
-                <select
-                  name="chucvu"
-                  value={selectedRows.JOB_CODE}
-                  onChange={(e) => setCustInfo("JOB_CODE", Number(e.target.value))}
-                >
-                  <option value={1}>Dept Staff</option>
-                  <option value={2}>Leader</option>
-                  <option value={3}>Sub Leader</option>
-                  <option value={4}>Worker</option>
-                </select>
-              </label>
-              <label>
-                {getlang("nhamay", glbLang!)}
-                <select
-                  name="nhamay"
-                  value={selectedRows.FACTORY_CODE}
-                  onChange={(e) => setCustInfo("FACTORY_CODE", Number(e.target.value))}
-                >
-                  <option value={1}>Nhà máy 1</option>
-                  <option value={2}>Nhà máy 2</option>
-                </select>
-              </label>
-              <label>
-                {getlang("trangthailamviec", glbLang!)}
-                <select
-                  name="trangthailamviec"
-                  value={selectedRows.WORK_STATUS_CODE}
-                  onChange={(e) => setCustInfo("WORK_STATUS_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Đã nghỉ</option>
-                  <option value={1}>Đang làm</option>
-                  <option value={2}>Nghỉ sinh</option>
-                </select>
-              </label>
-            </div>
+             
+            </div> 
+            }
+                     
           </div>}
           actions={<div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
@@ -641,13 +608,12 @@ const DeptManager = () => {
                   ["ALL"],
                   ["ALL"],
                   async () => {
-                    await f_addEmployee(selectedRows);
+                    await handleAddInfo();
                   }
                 );
               } else {
-                await f_addEmployee(selectedRows);
-              }
-              loadEmplInfo();
+                await handleAddInfo();
+              }         
             }}>Add</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
               if (getCompany() !== "CMS") {
@@ -657,13 +623,12 @@ const DeptManager = () => {
                   ["ALL"],
                   ["ALL"],
                   async () => {
-                    await f_updateEmployee(selectedRows);
+                    await handleUpdateInfo();
                   }
                 );
               } else {
-                await f_updateEmployee(selectedRows);
-              }
-              loadEmplInfo();
+                await handleUpdateInfo();
+              }           
             }}>Update</Button>
           </div>}
         />
@@ -671,7 +636,6 @@ const DeptManager = () => {
         <div className="tracuuYCSXTable">{subDeptAGTable}</div>
         <div className="tracuuYCSXTable">{workPositionAGTable}</div>
       </div>
-
     </div>
   );
 };

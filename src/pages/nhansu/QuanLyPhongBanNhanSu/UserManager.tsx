@@ -35,7 +35,7 @@ const UserManager = () => {
   const loadWorkPosition = async () => {
     let kq: any[] = [];
     kq = await f_loadWorkPositionList();
-    console.log(kq);
+//    console.log(kq);
     setWorkPositionLoad(kq);
   }
   const loadEmplInfo = async () => {
@@ -132,8 +132,8 @@ const UserManager = () => {
         }
       }
     },
-    { field: 'FIRST_NAME', headerName: 'FIRST_NAME', resizable: true, editable: false, width: 70 },
     { field: 'MIDLAST_NAME', headerName: 'MIDLAST_NAME', resizable: true, editable: false, width: 90 },
+    { field: 'FIRST_NAME', headerName: 'FIRST_NAME', resizable: true, editable: false, width: 70 },
     {
       field: 'FULL_NAME', headerName: 'FULL_NAME', resizable: true, editable: false, width: 100, cellRenderer: (params: any) => {
         return <span style={{ color: 'green', fontWeight: 'bold' }}>{params.value}</span>

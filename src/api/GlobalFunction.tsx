@@ -5951,7 +5951,7 @@ export const f_handleSaveLossSX = async (codeList: CODE_FULL_INFO[]) => {
           LOSS_ST_SX4: codeList[i].LOSS_ST_SX4,
         })
           .then((response) => {
-            console.log(response.data.tk_status);
+            //console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
             } else {
               err_code = "1";
@@ -7375,10 +7375,10 @@ export const f_getEmployeeList = async () => {
   }
   return kq;
 }
-export const f_loadWorkPositionList = async () => {
+export const f_loadWorkPositionList = async (SUBDEPTCODE?: number) => {
   let kq: WORK_POSITION_DATA[] = [];
   try {
-    let res = await generalQuery('workpositionlist', {});
+    let res = await generalQuery('workpositionlist', SUBDEPTCODE === undefined ? {} : { SUBDEPTCODE: SUBDEPTCODE });
     //console.log(res);
     if (res.data.tk_status !== 'NG') {
       //console.log(res.data.data);
@@ -7450,13 +7450,13 @@ export const f_loadMainDepList = async () => {
   return kq;
 }
 
-export const f_loadSubDepList = async () => { 
+export const f_loadSubDepList = async (MAINDEPTCODE?: number) => { 
   let kq: SubDeptTableData[] = [];
   try {
-    let res = await generalQuery('getsubdeptall', {});
+    let res = await generalQuery('getsubdeptall', MAINDEPTCODE === undefined ? {} : { MAINDEPTCODE: MAINDEPTCODE });
     //console.log(res);
     if (res.data.tk_status !== 'NG') {
-      console.log(res.data.data);
+      //console.log(res.data.data);
       let loaded_data: SubDeptTableData[] = res.data.data.map((element: SubDeptTableData, index: number) => {
         return {
           ...element,
@@ -7476,6 +7476,82 @@ export const f_loadSubDepList = async () => {
 export const f_addMainDept = async (DATA: any) => {
   let kq: string = '';
   await generalQuery("insertmaindept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      kq = error.message;
+    })
+  return kq;
+}
+
+export const f_addSubDept = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertsubdept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_addWorkPosition = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertworkposition", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;  
+}
+
+export const f_updateMainDept = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updatemaindept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_updateSubDept = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updatesubdept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_updateWorkPosition = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updateworkposition", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
       }
