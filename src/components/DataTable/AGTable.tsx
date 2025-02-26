@@ -14,6 +14,8 @@ import { AiFillFileExcel } from 'react-icons/ai';
 import { SaveExcel } from '../../api/GlobalFunction';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import * as XLSX from 'xlsx';
+import { ColDef, GridApi } from 'ag-grid-community';
 interface AGInterface {
   data: Array<any>,
   columns: Array<any>,
@@ -83,6 +85,55 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
       gridRefDefault.current!.api.exportDataAsCsv();
     }
   };
+
+// Định nghĩa kiểu dữ liệu đầu vào
+interface RowData {
+  name: string;
+  age: number;
+  country: string;
+}
+
+interface FilteredRow {
+  [key: string]: any; // Key là headerName, giá trị là dữ liệu tương ứng
+}
+
+/**
+ * Lấy các dòng đang được lọc và hiển thị từ AG Grid
+ * @param gridApi - GridApi từ AG Grid
+ * @returns Mảng các dòng đã lọc với key là headerName
+ */
+ const getFilteredDisplayedRows = (gridApi: GridApi<RowData> | null): FilteredRow[] => {
+  // Kiểm tra xem gridApi có tồn tại không
+  if (!gridApi) {
+    console.warn('GridApi chưa được khởi tạo.');
+    return [];
+  }
+
+  // Lấy các cột đang hiển thị từ GridApi
+  const displayedColumns = (gridApi.getColumnDefs() || [])
+    .filter((col): col is ColDef<RowData> => {
+      // Kiểm tra xem col có phải là ColDef không (loại bỏ ColGroupDef)
+      return 'field' in col && col.hide !== true;
+    })
+    .map((col) => ({
+      field: col.field as keyof RowData,
+      headerName: col.headerName || col.field || '',
+    }));
+
+  // Lấy dữ liệu đã lọc và hiển thị
+  const filteredRows: FilteredRow[] = [];
+  gridApi.forEachNodeAfterFilter((node) => {
+    const row: FilteredRow = {};
+    displayedColumns.forEach((col) => {
+      row[col.headerName] = node.data?.[col.field];
+    });
+    filteredRows.push(row);
+  });
+  return filteredRows;
+};
+
+
+
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {
   }, [])
@@ -93,7 +144,11 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            onExportClick();
+            //onExportClick();
+            //onExportExcelClick();
+            let kq = gridRef ? getFilteredDisplayedRows(gridRef?.current?.api!) :  getFilteredDisplayedRows(gridRefDefault?.current?.api!);
+            //console.log(kq);
+            SaveExcel(kq, "Data Table");
           }}
         >
           <AiFillFileExcel color="green" size={15} />

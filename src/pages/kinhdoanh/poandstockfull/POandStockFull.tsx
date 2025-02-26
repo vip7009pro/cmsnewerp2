@@ -18,6 +18,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import MyTabs from "../../../components/MyTab/MyTab";
+import AGTable from "../../../components/DataTable/AGTable";
 const POandStockFull = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
@@ -954,6 +955,29 @@ const POandStockFull = () => {
       gridRef.current!.api.exportDataAsCsv();
     }    
   };
+  const poStockFullAGTable = useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+        toolbar={
+          <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>            
+          </div>}
+        columns={columnDefinition}
+        data={pofulldatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+         
+          //console.log(e.data) 
+        }} onSelectionChange={(params: any) => {
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+        }} onRowDoubleClick={(params: any) => {
+        }}
+      />
+    )
+  }, [pofulldatatable, columnDefinition])
+
   useEffect(() => {}, []);
   return (
     <div className="poandstockfull">    
@@ -1045,63 +1069,9 @@ const POandStockFull = () => {
                       </table>
                     </div>
                   </div>
-                </div>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(pofulldatatable, "Ton kho full Table");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                          className="buttonIcon"
-                          onClick={() => {
-                            onExportClick();            
-                          }}
-                        >
-                          <AiFillFileExcel color="green" size={15} />
-                          CSV
-                </IconButton>
+                </div>               
               </div>
-              <div
-                className="ag-theme-quartz" // applying the grid theme
-                style={{ height: "100%" }} // the grid will fill the size of the parent container
-              >
-                <AgGridReact
-                  rowData={pofulldatatable}
-                  columnDefs={columnDefinition}
-                  rowHeight={25}
-                  defaultColDef={defaultColDef}
-                  ref={gridRef}
-                  onGridReady={() => {
-                    setHeaderHeight(20);
-                  }}
-                  columnHoverHighlight={true}
-                  rowStyle={rowStyle}
-                  getRowStyle={getRowStyle}
-                  getRowId={(params: any) => params.data.id}
-                  rowSelection={"multiple"}
-                  rowMultiSelectWithClick={true}
-                  suppressRowClickSelection={true}
-                  enterNavigatesVertically={true}
-                  enterNavigatesVerticallyAfterEdit={true}
-                  stopEditingWhenCellsLoseFocus={true}
-                  enableCellTextSelection={true}
-                  rowBuffer={10}
-                  debounceVerticalScrollbar={false}
-                  floatingFiltersHeight={23}
-                  onSelectionChanged={onSelectionChanged}
-                  onRowClicked={(params: any) => {
-                    //setClickedRows(params.data)
-                    //console.log(params.data)
-                  }}
-                  onCellEditingStopped={(params: any) => {
-                    //console.log(params)
-                  }}
-                />
-              </div>
+              {poStockFullAGTable}              
             </div>
           </div>
           </MyTabs.Tab>
