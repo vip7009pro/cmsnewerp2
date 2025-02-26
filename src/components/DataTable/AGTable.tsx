@@ -200,6 +200,7 @@ interface FilteredRow {
           onRowDragEnd={ag_data.onRowDragEnd ?? onRowDragEnd}
           onCellEditingStopped={ag_data.onCellEditingStopped}
           onCellClicked={ag_data.onCellClick}
+          
         />
       </div>
       <div className="bottombar">

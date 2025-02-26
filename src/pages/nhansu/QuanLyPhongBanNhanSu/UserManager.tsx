@@ -377,7 +377,7 @@ const UserManager = () => {
                 <input
                   type="date"
                   value={selectedRows.DOB.slice(0, 10)}
-                  onChange={(e) => setCustInfo("DOC", e.target.value)}
+                  onChange={(e) => setCustInfo("DOB", e.target.value)}
                 ></input>
               </label>
               <label>

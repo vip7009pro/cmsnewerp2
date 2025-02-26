@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  background-color: transparent;
   .toolbar {
     display: flex;
     height: auto;
@@ -82,25 +83,25 @@
       }
     }
     .ag-row {
-      background-color: white;
+      background-color: rgba(187, 247, 147, 0) !important;
       /* Set your desired background color */
     }
     .ag-row-selected {
-      background-color: #ecb4b4 !important;
+      background-color: #bff38f !important;
       /* Set your desired background color */
     }
     
     .ag-root-wrapper {
-      background-color: white
+      background-color: rgb(255, 255, 255)
         /* #b2ffa0 */
       ;
     }
     .ag-header-container {
-      background-color: rgb(246, 250, 252);
+      background-color: rgba(255, 255, 255, 0);
     }
     /* Add border to the right of each data cell */
     .ag-cell {
-      border-right: 1px solid #ccc !important;
+      border-right: 1px solid #c2cdf3 !important;
       padding: 0;
       /* Light gray border */
     }
