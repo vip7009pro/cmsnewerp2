@@ -231,7 +231,14 @@ const LICHSUTEMLOTSX = () => {
                   if(selectedRow !== null && selectedRow !== undefined)
                   {
                     if (selectedRow.current?.PROCESS_LOT_NO) {
-                      await handleCancelLot(selectedRow.current.PROCESS_LOT_NO);
+                      console.log(selectedRow.current.LOT_STATUS);
+                      if(selectedRow.current.LOT_STATUS === null)
+                      {
+                        await handleCancelLot(selectedRow.current.PROCESS_LOT_NO);
+                      }
+                      else {
+                        Swal.fire('Thông báo','Lot đã chuyển công đoạn, không hủy được','error')
+                      }
                     }
                   }
                 }}

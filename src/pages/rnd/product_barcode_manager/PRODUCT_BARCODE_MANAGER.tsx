@@ -1,10 +1,4 @@
-import {
-  Autocomplete,
-  Button,
-  IconButton,
-  TextField,
-  createFilterOptions,
-} from "@mui/material";
+import { Button, IconButton, createFilterOptions } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -19,6 +13,8 @@ import { BARCODE_DATA, CodeListData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { AgGridReact } from "ag-grid-react";
+import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
+import AGTable from "../../../components/DataTable/AGTable";
 const PRODUCT_BARCODE_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -341,6 +337,31 @@ const PRODUCT_BARCODE_MANAGER = () => {
       </div>
     )
   }, [barcodedatatable,   columns_def]);
+  const product_barcode_data_ag_table = useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+        rowHeight={40}
+        toolbar={
+          <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>           
+          </div>}
+        columns={columns_def}
+        data={barcodedatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          let rowData = params.data;
+          setSelectedRows(rowData);
+          //console.log(e.data) 
+        }} onSelectionChange={(params: any) => {
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+        }} onRowDoubleClick={(params: any) => {
+        }}
+      />
+    )
+  }, [barcodedatatable, columns_def])
+
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1007,39 +1028,29 @@ const PRODUCT_BARCODE_MANAGER = () => {
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <Autocomplete
-                  sx={{ fontSize: "0.6rem", border: "none" }}
-                  ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                  size="small"
-                  disablePortal
-                  options={codeList}
-                  className="autocomplete1"
-                  filterOptions={filterOptions1}
-                  getOptionLabel={(option: CodeListData | any) =>
-                    `${option.G_CODE}: ${option.G_NAME}`
-                  }
-                  renderInput={(params) => (
-                    <TextField {...params} label="Select code" />
-                  )}
-                  onChange={(event: any, newValue: CodeListData | any) => {
-                    console.log(newValue);
-                    setSelectedCode(newValue);
-                    setBarCodeInfo("G_CODE", newValue.G_CODE);
-                  }}
-                  value={
-                    codeList.filter(
-                      (e: CodeListData, index: number) =>
-                        e.G_CODE === selectedRows.G_CODE,
-                    )[0]
-                  }
-                  isOptionEqualToValue={(option: any, value: any) =>
-                    option.G_CODE === value.G_CODE
-                  }
-                />
-              </label>
-            </div>
+          <div className="codesearch">
+              
+              <div className="name">
+              Product Code:
+                {/* <span style={{fontSize:'0.6rem'}}>Product Code:</span> */}
+              </div>
+            <div>
+              <DropdownSearch
+                options={codeList.map((x) => ({ label: x.G_CODE +':'+ x.G_NAME, value: x.G_CODE }))}
+                value={selectedCode?.G_CODE ?? ""}
+                onChange={(e) => setSelectedCode(codeList.find((x) => x.G_CODE === e) ??{
+                  G_CODE: "6A00001B",
+                  G_NAME: "GT-I9500_SJ68-01284A",
+                  PROD_LAST_PRICE: 0,
+                  USE_YN: "N",
+                }) }
+                style={{ width: "160px", height:'25px',border:'none', borderRadius:'5px'}}
+                itemHeight={25}
+
+              ></DropdownSearch>
+            </div> 
+
+            </div>           
             <div className="forminputcolumn">
               <label>
                 <b>STT BARCODE:</b>{" "}
@@ -1142,7 +1153,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
             </Button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{product_barcode_data_ag_table2}</div>
+        <div className="tracuuYCSXTable">{product_barcode_data_ag_table}</div>
         {showhidePivotTable && (
           <div className="pivottable1">
             <IconButton

@@ -26,6 +26,7 @@ import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getlang } from "../../../components/String/String";
+import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 const DeptManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tableSelection, setTableSelection] = useState(1);
@@ -492,7 +493,7 @@ const DeptManager = () => {
           title={`Add/Update info (${tableSelection === 1 ? selectedMainDept.MAINDEPTNAME : tableSelection === 2 ? selectedSubDept.SUBDEPTNAME : selectedWorkPosition.WORK_POSITION_NAME})`}
           content={<div className="forminput" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             {
-              tableSelection === 1 &&  <div className="maindeptinputbox">
+              tableSelection === 1 &&  <div className="maindeptinputbox">              
               <label>
                 MAINDEPTCODE:{" "}
                 <input

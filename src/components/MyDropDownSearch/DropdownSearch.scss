@@ -1,0 +1,81 @@
+.dropdown-search {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  .dropdown-selected {
+    padding: 1px 5px;
+    border: 1px solid #7686a8;   
+    cursor: pointer;
+    background: white;
+    height: 24px; // Chiều cao cố định cho selected item
+    display: flex; // Sử dụng flex để căn chỉnh nội dung
+    align-items: center; // Căn giữa theo chiều dọc
+    box-sizing: border-box; // Đảm bảo padding không làm tăng chiều cao
+    overflow: hidden; // Ẩn nội dung vượt quá
+    text-overflow: ellipsis; // Hiển thị ... khi quá dài
+    white-space: nowrap; // Ngăn xuống dòng
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    z-index: 1000;
+    margin-top: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    align-items: flex-start;
+    justify-content: flex-start;      
+    overflow-y: hidden; // Ẩn thanh cuộn dọc
+    overflow-x: hidden; // Ẩn thanh cuộn ngang
+   
+    
+
+    -ms-overflow-style: none; // IE và Edge
+    scrollbar-width: none; // Firefox
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari
+    }
+
+    .search-input {
+      width: 100% !important; 
+      padding: 0px !important;
+      border: none !important;
+      border-bottom: 1px solid #eee !important;
+      outline: none !important;
+      box-sizing: border-box !important;
+    }
+
+    .dropdown-item {
+      display: flex;
+      margin-top: 5px;
+      padding: 1px 8px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+      overflow: hidden; // Ẩn nội dung vượt quá
+      text-overflow: ellipsis; // Hiển thị ... khi quá dài
+      white-space: nowrap; // Ngăn xuống dòng
+      
+      
+
+      &:hover {
+        background-color: #69b5e7;
+      }
+
+      &.selected {
+        background-color: #e6f3ff;
+      }
+      &.highlighted {
+        background-color: #d0eaff; // Màu nổi bật cho item được highlight
+      }
+    }
+  }
+}
