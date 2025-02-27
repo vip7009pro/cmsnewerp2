@@ -1,5 +1,5 @@
-import { Button, IconButton, createFilterOptions } from "@mui/material";
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { Button, IconButton } from "@mui/material";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./PRODUCT_BARCODE_MANAGER.scss";
@@ -12,7 +12,6 @@ import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
 import { BARCODE_DATA, CodeListData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { AgGridReact } from "ag-grid-react";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 import AGTable from "../../../components/DataTable/AGTable";
 const PRODUCT_BARCODE_MANAGER = () => {
@@ -263,80 +262,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
       }
     }},
     { field: 'SX_STATUS', headerName: 'SX_STATUS', width: 100 },
-  ];    
-  const gridRef = useRef<AgGridReact<any>>(null);
-  const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    //setIdText("headerHeight", value);
-  }, []);
-  const rowStyle = { backgroundColor: 'transparent', height: '150px' };
-  const getRowStyle = (params: any) => {
-    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
-  };
-  const defaultColDef = useMemo(() => {
-    return {
-      initialWidth: 100,
-      wrapHeaderText: true,
-      autoHeaderHeight: false,
-      editable: true,
-      floatingFilter:  true,
-      filter: true,
-      headerCheckboxSelectionFilteredOnly: true,
-    };
-  }, []);
-  const product_barcode_data_ag_table2 = useMemo(() => {
-    return (
-      <div className="agtable">       
-        <div className="ag-theme-quartz"
-          style={{ height: '100%', }}
-        >
-          <AgGridReact
-            rowData={barcodedatatable}
-            columnDefs={columns_def}
-            rowHeight={50}            
-            ref={gridRef}
-            onGridReady={() => {
-              setHeaderHeight(20);
-            }}
-            defaultColDef={defaultColDef}            
-            columnHoverHighlight={true}
-            rowStyle={rowStyle}
-            getRowStyle={getRowStyle}
-            getRowId={(params: any) => params.data.G_CODE}
-            rowSelection={"multiple"}
-            rowMultiSelectWithClick={true}
-            suppressRowClickSelection={true}
-            enterNavigatesVertically={true}
-            enterNavigatesVerticallyAfterEdit={true}
-            stopEditingWhenCellsLoseFocus={true}
-            rowBuffer={10}
-            debounceVerticalScrollbar={false}
-            enableCellTextSelection={true}
-            floatingFiltersHeight={23}
-            onSelectionChanged={(params: any) => {
-              
-            }}
-            onCellClicked={async (params: any) => {
-              let rowData = params.data;
-              setSelectedRows(rowData);
-              
-            }}
-            onRowDoubleClicked={
-              (params: any) => {
-
-              }
-            }
-            onCellEditingStopped={(params: any) => {
-              //console.log(params)
-            }}
-          />
-        </div>
-        <div className="bottombar">
-        
-        </div>
-      </div>
-    )
-  }, [barcodedatatable,   columns_def]);
+  ];
   const product_barcode_data_ag_table = useMemo(() => {
     return (
       <AGTable
@@ -361,7 +287,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
       />
     )
   }, [barcodedatatable, columns_def])
-
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -997,10 +922,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
     ],
     store: datasxtable,
   });
-  const filterOptions1 = createFilterOptions({
-    matchFrom: "any",
-    limit: 100,
-  });
   const [isPending, startTransition] = useTransition();
   const getcodelist = (G_NAME: string) => {
     generalQuery("selectcodeList", { G_NAME: G_NAME })
@@ -1029,7 +950,6 @@ const PRODUCT_BARCODE_MANAGER = () => {
         <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
           <div className="codesearch">
-              
               <div className="name">
               Product Code:
                 {/* <span style={{fontSize:'0.6rem'}}>Product Code:</span> */}
@@ -1046,10 +966,8 @@ const PRODUCT_BARCODE_MANAGER = () => {
                 }) }
                 style={{ width: "160px", height:'25px',border:'none', borderRadius:'5px'}}
                 itemHeight={25}
-
               ></DropdownSearch>
             </div> 
-
             </div>           
             <div className="forminputcolumn">
               <label>
