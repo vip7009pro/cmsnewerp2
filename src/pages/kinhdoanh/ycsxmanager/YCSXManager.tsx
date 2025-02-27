@@ -476,7 +476,7 @@ const YCSXManager = () => {
       },
     },
     {
-      field: "",
+      field: "G_NAME",
       headerName: "G_NAME",
       width: 250,
       cellRenderer: (params: any) => {
@@ -914,7 +914,7 @@ const YCSXManager = () => {
       },
     },
     {
-      field: "",
+      field: "G_NAME",
       headerName: "G_NAME",
       width: 250,
       cellRenderer: (params: any) => {
