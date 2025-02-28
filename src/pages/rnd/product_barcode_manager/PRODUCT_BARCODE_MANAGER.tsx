@@ -278,6 +278,14 @@ const PRODUCT_BARCODE_MANAGER = () => {
         }} onRowClick={(params: any) => {
           let rowData = params.data;
           setSelectedRows(rowData);
+          setSelectedCode({
+            G_CODE: rowData.G_CODE,
+            G_NAME: rowData.G_NAME,
+            PROD_LAST_PRICE: rowData.PROD_LAST_PRICE,
+            USE_YN: rowData.USE_YN,
+            G_NAME_KD: rowData.G_NAME_KD,
+            PO_BALANCE: rowData.PO_BALANCE
+          })
           //console.log(e.data) 
         }} onSelectionChange={(params: any) => {
           //setSelectedRows(params!.api.getSelectedRows()[0]);
@@ -958,12 +966,15 @@ const PRODUCT_BARCODE_MANAGER = () => {
               <DropdownSearch
                 options={codeList.map((x) => ({ label: x.G_CODE +':'+ x.G_NAME, value: x.G_CODE }))}
                 value={selectedCode?.G_CODE ?? ""}
-                onChange={(e) => setSelectedCode(codeList.find((x) => x.G_CODE === e) ??{
+                onChange={(e) => {setSelectedCode(codeList.find((x) => x.G_CODE === e) ??{
                   G_CODE: "6A00001B",
                   G_NAME: "GT-I9500_SJ68-01284A",
                   PROD_LAST_PRICE: 0,
                   USE_YN: "N",
-                }) }
+                });
+                setBarCodeInfo("G_CODE", e); 
+                }
+               }
                 style={{ width: "160px", height:'25px',border:'none', borderRadius:'5px'}}
                 itemHeight={25}
               ></DropdownSearch>

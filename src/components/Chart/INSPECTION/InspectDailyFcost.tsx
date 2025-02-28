@@ -80,13 +80,13 @@ const InspectionDailyFcost = ({
             TOTAL_NG: {`${payload[0].payload?.T_NG_AMOUNT?.toLocaleString("en-US")}`} $
           </p>         
           <p className='label' style={{color:'blue'}}>
-            PROCESS_PPM: {`${payload[0].payload?.PROCESS_PPM?.toLocaleString("en-US")}`} %
+            PROCESS_NG_RATE: {`${payload[0].payload?.PROCESS_PPM?.toLocaleString("en-US")}`} %
           </p>
           <p className='label' style={{color:'blue'}}>
-            MATERIAL_PPM: {`${payload[0].payload?.MATERIAL_PPM?.toLocaleString("en-US")}`} %
+            MATERIAL_NG_RATE: {`${payload[0].payload?.MATERIAL_PPM?.toLocaleString("en-US")}`} %
           </p>
           <p className='label' style={{color:'blue'}}>
-            TOTAL_PPM: {`${payload[0].payload?.TOTAL_PPM?.toLocaleString("en-US")}`} %
+            TOTAL_NG_RATE: {`${payload[0].payload?.TOTAL_PPM?.toLocaleString("en-US")}`} %
           </p>
         </div>
       );

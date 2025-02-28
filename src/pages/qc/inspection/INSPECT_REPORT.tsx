@@ -2,10 +2,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
-import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
-import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
-import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/InspectionYearlyPPM";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/INSPECTION/ChartInspectionWorst";
@@ -29,7 +25,6 @@ import {
   createFilterOptions,
   IconButton,
 } from "@mui/material";
-import FCOSTTABLE from "./FCOSTTABLE";
 import InspectionDailyFcost from "../../../components/Chart/INSPECTION/InspectDailyFcost";
 import InspectionWeeklyFcost from "../../../components/Chart/INSPECTION/InspectWeeklyFcost";
 import InspectionMonthlyFcost from "../../../components/Chart/INSPECTION/InspectMonthlyFcost";
