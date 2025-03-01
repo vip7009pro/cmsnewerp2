@@ -394,7 +394,7 @@
         }
         .dangkyform {
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           margin-bottom: 10px;
           width: 100%;
           gap: 10px;
@@ -405,7 +405,7 @@
           .dangkyinput {
             display: flex;
             flex-direction: row;
-            gap: 20px;
+            gap: 5px;
             align-items: center;
             justify-content: flex-end;
             justify-self: center;
@@ -415,9 +415,10 @@
             font-size: 0.8rem;
             .dangkyinputbox {
               display: flex;
-              flex-direction: column;
-              align-items: flex-end;
-              gap: 10px;
+              flex-direction: row;
+              align-items: center;
+              gap: 5px;
+              justify-content: flex-end;
               .autocomplete1 {
                 width: 335px;
                 * {
@@ -443,28 +444,26 @@
                 margin-left: 20px;
               }
               select {
-                width: 135px;
-                height: 30px;
+                width: 105px;
+                height: 25px;
                 outline: none;
                 border-radius: 5px;
                 margin-left: 2px;
                 padding-left: 5px;
-                margin-left: 20px;
                 background-color: transparent;
                 font-size: 0.7rem;
               }
               .inputdata {
                 padding-left: 5px;
                 margin-left: 2px;
-                width: 130px;
-                height: 30px;
+                width: 100px;
+                height: 23px;
                 font-size: 0.7rem;
                 background-color: transparent;
                 outline: none;
                 border: solid 0.5px;
                 border-color: rgba(0, 0, 0, 0.3);
                 border-radius: 5px;
-                margin-left: 20px;
                 color: black;
               }
               label {

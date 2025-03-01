@@ -178,7 +178,7 @@ const DropdownSearch: React.FC<DropdownSearchProps> = ({
             height={itemHeight * Math.min(visibleItems, filteredOptions.length)}
             width="100%"
             itemCount={filteredOptions.length}
-            itemSize={itemHeight}            
+            itemSize={itemHeight}
           >
             {Row}
           </FixedSizeList>

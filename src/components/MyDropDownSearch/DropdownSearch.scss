@@ -34,8 +34,20 @@
     justify-content: flex-start;      
     overflow-y: hidden; // Ẩn thanh cuộn dọc
     overflow-x: hidden; // Ẩn thanh cuộn ngang
-   
+    width: 230px;
+    scrollbar-width: none;
     
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      display: none;
+    }
+    
+    ::-webkit-scrollbar-track {
+      display: none;
+    }
 
     -ms-overflow-style: none; // IE và Edge
     scrollbar-width: none; // Firefox
@@ -50,6 +62,7 @@
       border-bottom: 1px solid #eee !important;
       outline: none !important;
       box-sizing: border-box !important;
+      height: 30px !important;
     }
 
     .dropdown-item {
@@ -57,14 +70,14 @@
       margin-top: 5px;
       padding: 1px 8px;
       cursor: pointer;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-start;
       text-align: left;
       overflow: hidden; // Ẩn nội dung vượt quá
       text-overflow: ellipsis; // Hiển thị ... khi quá dài
       white-space: nowrap; // Ngăn xuống dòng
       
-      
+    
 
       &:hover {
         background-color: #69b5e7;

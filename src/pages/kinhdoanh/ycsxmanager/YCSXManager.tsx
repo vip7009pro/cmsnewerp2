@@ -1,4 +1,4 @@
-import { Autocomplete, Button, IconButton, TextField, createFilterOptions } from "@mui/material";
+import { Button, IconButton, createFilterOptions } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
@@ -69,6 +69,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { BiDownload } from "react-icons/bi";
 import MyTabs from "../../../components/MyTab/MyTab";
+import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tabIndex, setTabIndex] = useState(0);
@@ -2879,210 +2880,146 @@ const YCSXManager = () => {
                     <div className='dangkyform'>
                       <div className='dangkyinput'>
                         <div className='dangkyinputbox'>
-                          <label>
-                            <b>Khách hàng:</b>{" "}
-                            <Autocomplete
-                              sx={{ fontSize: "0.6rem" }}
-                              ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                              size='small'
-                              disablePortal
-                              options={customerList}
-                              className='autocomplete1'
-                              getOptionLabel={(option: CustomerListData) => {
-                                return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
-                              }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  fullWidth={true}
-                                  label='Select customer'
-                                />
-                              )}
-                              value={selectedCust_CD}
-                              onChange={(
-                                event: any,
-                                newValue: CustomerListData | null
-                              ) => {
-                                console.log(newValue);
-                                setSelectedCust_CD(newValue);
-                                loadPONO(selectedCode?.G_CODE, newValue?.CUST_CD);
-                              }}
-                              isOptionEqualToValue={(option, value) =>
-                                option.CUST_CD === value.CUST_CD
-                              }
-                            />
-                          </label>
-                          <label>
-                            <b>Code hàng:</b>{" "}
-                            <Autocomplete
-                              sx={{ fontSize: "0.6rem" }}
-                              ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                              size='small'
-                              disablePortal
-                              options={codeList}
-                              className='autocomplete1'
-                              filterOptions={filterOptions1}
-                              getOptionLabel={(option: CodeListData | any) =>
-                                `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
-                              }
-                              renderInput={(params) => (
-                                <TextField {...params} label='Select code' />
-                              )}
-                              onChange={(event: any, newValue: CodeListData | any) => {
-                                console.log(newValue);
-                                setSelectedCode(newValue);
-                                loadPONO(newValue?.G_CODE, selectedCust_CD?.CUST_CD);
-                              }}
-                              value={selectedCode}
-                              isOptionEqualToValue={(option: any, value: any) =>
-                                option.G_CODE === value.G_CODE
-                              }
-                            />
-                          </label>
+                          KH:
+                          <DropdownSearch
+                            options={customerList.map((x) => ({ label: x.CUST_CD + ':' + x.CUST_NAME_KD, value: x.CUST_CD }))}
+                            value={selectedCust_CD?.CUST_CD ?? ""}
+                            onChange={(e) => {
+                              let customer = customerList.find((x) => x.CUST_CD === e) ?? {
+                                CUST_CD: "0000",
+                                CUST_NAME_KD: "SEOJIN",
+                                CUST_NAME: "SEOJIN",
+                              };
+                              setSelectedCust_CD(customer);
+                              loadPONO(selectedCode?.G_CODE, customer.CUST_CD);
+                            }}
+                            style={{ width: "120px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                            itemHeight={25}
+                          />
+                          CODE:
+                          <DropdownSearch
+                            options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME, value: x.G_CODE }))}
+                            value={selectedCode?.G_CODE ?? ""}
+                            onChange={(e) => {
+                              let code = codeList.find((x) => x.G_CODE === e) ?? {
+                                G_CODE: "6A00001B",
+                                G_NAME: "GT-I9500_SJ68-01284A",
+                                G_NAME_KD: "GT-I9500_SJ68-01284A",
+                                PROD_LAST_PRICE: 0,
+                                USE_YN: "N",
+                              };
+                              setSelectedCode(code);
+                              loadPONO(code?.G_CODE, selectedCust_CD?.CUST_CD);
+                            }}
+                            style={{ width: "180px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                            itemHeight={25}
+                          />
                         </div>
                         <div className='dangkyinputbox'>
-                          <label>
-                            <b>Delivery Date:</b>
-                            <input
-                              className='inputdata'
-                              type='date'
-                              value={deliverydate.slice(0, 10)}
-                              onChange={(e) => setNewDeliveryDate(e.target.value)}
-                            ></input>
-                          </label>
-                          <label>
-                            <b>Loại hàng:</b>
-                            <select
-                              name='phanloaihang'
-                              value={newphanloai}
-                              onChange={(e) => {
-                                setNewPhanLoai(e.target.value);
-                              }}
-                            >
-                              <option value='TT'>Hàng Thường (TT)</option>
-                              <option value='SP'>Sample sang FL (SP)</option>
-                              <option value='RB'>Ribbon (RB)</option>
-                              <option value='HQ'>Hàn Quốc (HQ)</option>
-                              <option value='VN'>Việt Nam (VN)</option>
-                              <option value='AM'>Amazon (AM)</option>
-                              <option value='DL'>Đổi LOT (DL)</option>
-                              <option value='M4'>NM4 (M4)</option>
-                              <option value='GC'>Hàng Gia Công (GC)</option>
-                              <option value='TM'>Hàng Thương Mại (TM)</option>
-                              {getCompany() !== 'CMS' && <>
-                                <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                                <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                                <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                                <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                                <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                                <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                                <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                                <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                                <option value='I9'>Hàng In Nhanh 9 (I9)</option>
-                              </>}
-                            </select>
-                          </label>
+                          DELIVERY DT:
+                          <input
+                            className='inputdata'
+                            type='date'
+                            value={deliverydate.slice(0, 10)}
+                            onChange={(e) => setNewDeliveryDate(e.target.value)}
+                          ></input>
+                          Loại SP:
+                          <select
+                            name='phanloaihang'
+                            value={newphanloai}
+                            onChange={(e) => {
+                              setNewPhanLoai(e.target.value);
+                            }}
+                          >
+                            <option value='TT'>Hàng Thường (TT)</option>
+                            <option value='SP'>Sample sang FL (SP)</option>
+                            <option value='RB'>Ribbon (RB)</option>
+                            <option value='HQ'>Hàn Quốc (HQ)</option>
+                            <option value='VN'>Việt Nam (VN)</option>
+                            <option value='AM'>Amazon (AM)</option>
+                            <option value='DL'>Đổi LOT (DL)</option>
+                            <option value='M4'>NM4 (M4)</option>
+                            <option value='GC'>Hàng Gia Công (GC)</option>
+                            <option value='TM'>Hàng Thương Mại (TM)</option>
+                            {getCompany() !== 'CMS' && <>
+                              <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                              <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                              <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                              <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                              <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                              <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                              <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                              <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                              <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                            </>}
+                          </select>
                         </div>
                         <div className='dangkyinputbox'>
-                          <label>
-                            <b>Loại sản xuất:</b>
-                            <select
-                              name='loasx'
-                              value={loaisx}
-                              onChange={(e) => {
-                                setLoaiSX(e.target.value);
-                              }}
-                            >
-                              <option value='01'>Thông Thường</option>
-                              <option value='02'>SDI</option>
-                              <option value='03'>ETC</option>
-                              <option value='04'>SAMPLE</option>
-                            </select>
-                          </label>
-                          <label>
-                            <b>Loại xuất hàng</b>
-                            <select
-                              name='loaixh'
-                              value={loaixh}
-                              onChange={(e) => {
-                                setLoaiXH(e.target.value);
-                              }}
-                            >
-                              <option value='01'>GC</option>
-                              <option value='02'>SK</option>
-                              <option value='03'>KD</option>
-                              <option value='04'>VN</option>
-                              <option value='05'>SAMPLE</option>
-                              <option value='06'>Vai bac 4</option>
-                              <option value='07'>ETC</option>
-                            </select>
-                          </label>
+                          Loại SX:
+                          <select
+                            name='loasx'
+                            value={loaisx}
+                            onChange={(e) => {
+                              setLoaiSX(e.target.value);
+                            }}
+                          >
+                            <option value='01'>Thông Thường</option>
+                            <option value='02'>SDI</option>
+                            <option value='03'>ETC</option>
+                            <option value='04'>SAMPLE</option>
+                          </select>
+                          Loại XH:
+                          <select
+                            name='loaixh'
+                            value={loaixh}
+                            onChange={(e) => {
+                              setLoaiXH(e.target.value);
+                            }}
+                          >
+                            <option value='01'>GC</option>
+                            <option value='02'>SK</option>
+                            <option value='03'>KD</option>
+                            <option value='04'>VN</option>
+                            <option value='05'>SAMPLE</option>
+                            <option value='06'>Vai bac 4</option>
+                            <option value='07'>ETC</option>
+                          </select>
                         </div>
                         <div className='dangkyinputbox'>
-                          <label>
-                            <b>YCSX QTY:</b>{" "}
-                            <TextField
-                              value={newycsxqty}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setNewYcsxQty(Number(e.target.value))
+                          PO NO:
+                          <DropdownSearch
+                            options={ponolist.map((x) => ({ label: x.PO_NO + ' | ' + moment.utc(x.RD_DATE).format('YYYY-MM-DD') + ' | ' + x.PO_QTY, value: x.PO_NO }))}
+                            value={selectedPoNo?.PO_NO ?? ""}
+                            onChange={(e) => {
+                              let selectedPONO = ponolist.find((x) => x.PO_NO === e) ?? {
+                                CUST_CD: "",
+                                G_CODE: "",
+                                PO_NO: "",
+                                PO_DATE: "",
+                                RD_DATE: "",
+                                PO_QTY: 0,
                               }
-                              size='small'
-                              color='success'
-                              className='autocomplete'
-                              id='outlined-basic'
-                              label='YCSX QTY'
-                              variant='outlined'
-                            />
-                          </label>
-                          <label>
-                            <b>Remark:</b>{" "}
-                            <TextField
-                              value={newycsxremark}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setNewYcsxRemark(e.target.value)
-                              }
-                              size='small'
-                              color='success'
-                              className='autocomplete'
-                              id='outlined-basic'
-                              label='Remark'
-                              variant='outlined'
-                            />
-                          </label>
+                              setSelectedPoNo(selectedPONO);
+                              setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format("YYYY-MM-DD"));
+                              setNewYcsxQty(selectedPONO?.PO_QTY ?? 0)
+                            }}
+                            style={{ width: "100px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                            itemHeight={25}
+                          />
                         </div>
                         <div className='dangkyinputbox'>
-                          <label>
-                            <b>PO NO:</b>
-                            <Autocomplete
-                              size='small'
-                              disablePortal
-                              options={ponolist}
-                              className='pono_autocomplete'
-                              getOptionLabel={(option: PONOLIST | any) => {
-                                return `${moment.utc(option.PO_DATE).isValid()
-                                  ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
-                                  : ""
-                                  }| ${option.PO_NO}`;
-                              }}
-                              renderInput={(params) => (
-                                <TextField {...params} label='Select PO NO' />
-                              )}
-                              value={selectedPoNo}
-                              onChange={(event: any, newValue: PONOLIST | null) => {
-                                console.log(newValue);
-                                setSelectedPoNo(newValue);
-                                setNewDeliveryDate(
-                                  newValue?.RD_DATE === undefined
-                                    ? moment.utc().format("YYYY-MM-DD")
-                                    : newValue?.RD_DATE
-                                );
-                                setNewYcsxQty(newValue?.PO_QTY ?? 0)
-                              }}
-                              isOptionEqualToValue={(option, value) =>
-                                option.PO_NO === value.PO_NO
-                              }
-                            />
-                          </label>
+                          YCSX QTY:
+                          <input className='inputdata' type='number' value={newycsxqty}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              setNewYcsxQty(Number(e.target.value))
+                            }>
+                          </input>
+                          Remark:
+                          <input className='inputdata' type='text' value={newycsxremark}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              setNewYcsxRemark(e.target.value)
+                            }>
+                          </input>
                         </div>
                       </div>
                       <div className='dangkybutton'>
@@ -3124,66 +3061,40 @@ const YCSXManager = () => {
                   <div className='dangkyform'>
                     <div className='dangkyinput'>
                       <div className='dangkyinputbox'>
-                        <label>
-                          <b>Khách hàng:</b>{" "}
-                          <Autocomplete
-                            sx={{ fontSize: "0.6rem" }}
-                            ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                            size='small'
-                            disablePortal
-                            options={customerList}
-                            className='autocomplete1'
-                            getOptionLabel={(option: CustomerListData) => {
-                              return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
-                            }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                fullWidth={true}
-                                label='Select customer'
-                              />
-                            )}
-                            value={selectedCust_CD}
-                            onChange={(
-                              event: any,
-                              newValue: CustomerListData | null
-                            ) => {
-                              console.log(newValue);
-                              setSelectedCust_CD(newValue);
-                              loadPONO(selectedCode?.G_CODE, newValue?.CUST_CD);
-                            }}
-                            isOptionEqualToValue={(option, value) =>
-                              option.CUST_CD === value.CUST_CD
-                            }
-                          />
-                        </label>
-                        <label>
-                          <b>Code hàng:</b>{" "}
-                          <Autocomplete
-                            sx={{ fontSize: "0.6rem" }}
-                            ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                            size='small'
-                            disablePortal
-                            options={codeList}
-                            className='autocomplete1'
-                            filterOptions={filterOptions1}
-                            getOptionLabel={(option: CodeListData | any) =>
-                              `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
-                            }
-                            renderInput={(params) => (
-                              <TextField {...params} label='Select code' />
-                            )}
-                            onChange={(event: any, newValue: CodeListData | any) => {
-                              console.log(newValue);
-                              setSelectedCode(newValue);
-                              loadPONO(newValue?.G_CODE, selectedCust_CD?.CUST_CD);
-                            }}
-                            value={selectedCode}
-                            isOptionEqualToValue={(option: any, value: any) =>
-                              option.G_CODE === value.G_CODE
-                            }
-                          />
-                        </label>
+                        KH:
+                        <DropdownSearch
+                          options={customerList.map((x) => ({ label: x.CUST_CD + ':' + x.CUST_NAME_KD, value: x.CUST_CD }))}
+                          value={selectedCust_CD?.CUST_CD ?? ""}
+                          onChange={(e) => {
+                            let customer = customerList.find((x) => x.CUST_CD === e) ?? {
+                              CUST_CD: "0000",
+                              CUST_NAME_KD: "SEOJIN",
+                              CUST_NAME: "SEOJIN",
+                            };
+                            setSelectedCust_CD(customer);
+                            loadPONO(selectedCode?.G_CODE, customer.CUST_CD);
+                          }}
+                          style={{ width: "120px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                          itemHeight={25}
+                        />
+                        CODE:
+                        <DropdownSearch
+                          options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME, value: x.G_CODE }))}
+                          value={selectedCode?.G_CODE ?? ""}
+                          onChange={(e) => {
+                            let code = codeList.find((x) => x.G_CODE === e) ?? {
+                              G_CODE: "6A00001B",
+                              G_NAME: "GT-I9500_SJ68-01284A",
+                              G_NAME_KD: "GT-I9500_SJ68-01284A",
+                              PROD_LAST_PRICE: 0,
+                              USE_YN: "N",
+                            };
+                            setSelectedCode(code);
+                            loadPONO(code?.G_CODE, selectedCust_CD?.CUST_CD);
+                          }}
+                          style={{ width: "180px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                          itemHeight={25}
+                        />
                       </div>
                       <div className='dangkyinputbox'>
                         <label>
@@ -3264,70 +3175,69 @@ const YCSXManager = () => {
                         </label>
                       </div>
                       <div className='dangkyinputbox'>
-                        <label>
-                          <b>YCSX QTY:</b>{" "}
-                          <TextField
-                            value={newycsxqty}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                              setNewYcsxQty(Number(e.target.value))
+                        PO NO:
+                        <DropdownSearch
+                          options={ponolist.map((x) => ({ label: x.PO_NO + ' | ' + moment.utc(x.RD_DATE).format('YYYY-MM-DD') + ' | ' + x.PO_QTY, value: x.PO_NO }))}
+                          value={selectedPoNo?.PO_NO ?? ""}
+                          onChange={(e) => {
+                            let selectedPONO = ponolist.find((x) => x.PO_NO === e) ?? {
+                              CUST_CD: "",
+                              G_CODE: "",
+                              PO_NO: "",
+                              PO_DATE: "",
+                              RD_DATE: "",
+                              PO_QTY: 0,
                             }
-                            size='small'
-                            color='success'
-                            className='autocomplete'
-                            id='outlined-basic'
-                            label='YCSX QTY'
-                            variant='outlined'
-                          />
-                        </label>
-                        <label>
-                          <b>Remark:</b>{" "}
-                          <TextField
-                            value={newycsxremark}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                              setNewYcsxRemark(e.target.value)
-                            }
-                            size='small'
-                            color='success'
-                            className='autocomplete'
-                            id='outlined-basic'
-                            label='Remark'
-                            variant='outlined'
-                          />
-                        </label>
+                            setSelectedPoNo(selectedPONO);
+                            setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format("YYYY-MM-DD"));
+                            setNewYcsxQty(selectedPONO?.PO_QTY ?? 0)
+                          }}
+                          style={{ width: "100px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                          itemHeight={25}
+                        />
+                        {/* <Autocomplete
+                              size='small'
+                              disablePortal
+                              options={ponolist}
+                              className='pono_autocomplete'
+                              getOptionLabel={(option: PONOLIST | any) => {
+                                return `${moment.utc(option.PO_DATE).isValid()
+                                  ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
+                                  : ""
+                                  }| ${option.PO_NO}`;
+                              }}
+                              renderInput={(params) => (
+                                <TextField {...params} label='Select PO NO' />
+                              )}
+                              value={selectedPoNo}
+                              onChange={(event: any, newValue: PONOLIST | null) => {
+                                console.log(newValue);
+                                setSelectedPoNo(newValue);
+                                setNewDeliveryDate(
+                                  newValue?.RD_DATE === undefined
+                                    ? moment.utc().format("YYYY-MM-DD")
+                                    : newValue?.RD_DATE
+                                );
+                                setNewYcsxQty(newValue?.PO_QTY ?? 0)
+                              }}
+                              isOptionEqualToValue={(option, value) =>
+                                option.PO_NO === value.PO_NO
+                              }
+                            /> */}
                       </div>
                       <div className='dangkyinputbox'>
-                        <label>
-                          <b>PO NO:</b>
-                          <Autocomplete
-                            size='small'
-                            disablePortal
-                            options={ponolist}
-                            className='pono_autocomplete'
-                            getOptionLabel={(option: PONOLIST | any) => {
-                              return `${moment.utc(option.PO_DATE).isValid()
-                                ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
-                                : ""
-                                }| ${option.PO_NO}`;
-                            }}
-                            renderInput={(params) => (
-                              <TextField {...params} label='Select PO NO' />
-                            )}
-                            value={selectedPoNo}
-                            onChange={(event: any, newValue: PONOLIST | null) => {
-                              console.log(newValue);
-                              setSelectedPoNo(newValue);
-                              setNewDeliveryDate(
-                                newValue?.RD_DATE === undefined
-                                  ? moment.utc().format("YYYY-MM-DD")
-                                  : newValue?.RD_DATE
-                              );
-                              setNewYcsxQty(newValue?.PO_QTY ?? 0)
-                            }}
-                            isOptionEqualToValue={(option, value) =>
-                              option.PO_NO === value.PO_NO
-                            }
-                          />
-                        </label>
+                        YCSX QTY:
+                        <input className='inputdata' type='number' value={newycsxqty}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setNewYcsxQty(Number(e.target.value))
+                          }>
+                        </input>
+                        Remark:
+                        <input className='inputdata' type='text' value={newycsxremark}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setNewYcsxRemark(e.target.value)
+                          }>
+                        </input>
                       </div>
                     </div>
                     <div className='dangkybutton'>
