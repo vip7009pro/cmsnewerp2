@@ -7563,3 +7563,48 @@ export const f_updateWorkPosition = async (DATA: any) => {
     })
   return kq;
 }
+
+export const f_deleteWorkPosition = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deleteworkposition", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_deleteMainDept = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deletemaindept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_deleteSubDept = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deletesubdept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
