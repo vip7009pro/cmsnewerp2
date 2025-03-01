@@ -11,6 +11,9 @@ import {
   f_addMainDept,
   f_addSubDept,
   f_addWorkPosition,
+  f_deleteMainDept,
+  f_deleteSubDept,
+  f_deleteWorkPosition,
   f_getEmployeeList,
   f_loadMainDepList,
   f_loadSubDepList,
@@ -314,7 +317,7 @@ const DeptManager = () => {
               }}
             >
               <MdAdd color="#1c44f5" size={15} />
-              Add/Update
+              Add/Update/Delete
             </IconButton>
           </div>}
         columns={columns_maindept}
@@ -356,7 +359,7 @@ const DeptManager = () => {
               }}
             >
               <MdAdd color="#1c44f5" size={15} />
-              Add/Update
+              Add/Update/Delete
             </IconButton>
           </div>}
         columns={columns_subdept}
@@ -398,7 +401,7 @@ const DeptManager = () => {
               }}
             >
               <MdAdd color="#1c44f5" size={15} />
-              Add/Update
+              Add/Update/Delete
             </IconButton>
           </div>}
         columns={columns_workposition}
@@ -469,6 +472,34 @@ const DeptManager = () => {
       }
     } else if (tableSelection === 3) {
       let kq: string = await f_updateWorkPosition(selectedWorkPosition);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }
+    }
+    init();
+  };
+  const handleDeleteInfo = async () => {
+    if (tableSelection === 1) {
+      let kq: string = await f_deleteMainDept(selectedMainDept);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }      
+    } else if (tableSelection === 2) {
+      let kq: string = await f_deleteSubDept(selectedSubDept);
+      if (kq === '') {
+        Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
+      }
+      else {
+        Swal.fire("Thông báo", "Lỗi, " + kq, "error");
+      }
+    } else if (tableSelection === 3) {
+      let kq: string = await f_deleteWorkPosition(selectedWorkPosition);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -631,6 +662,21 @@ const DeptManager = () => {
                 await handleUpdateInfo();
               }           
             }}>Update</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ff0000' }} onClick={async () => {
+              if (getCompany() !== "CMS") {
+                checkBP(
+                  getUserData(),
+                  ["NHANSU"],
+                  ["ALL"],
+                  ["ALL"],
+                  async () => {
+                    await handleDeleteInfo();
+                  }
+                );
+              } else {
+                await handleDeleteInfo();
+              }           
+            }}>Delete</Button>
           </div>}
         />
         <div className="tracuuYCSXTable">{mainDeptAGTable}</div>
