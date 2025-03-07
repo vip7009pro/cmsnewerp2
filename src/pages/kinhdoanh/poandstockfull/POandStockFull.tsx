@@ -1,13 +1,7 @@
-import { IconButton } from "@mui/material";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import {
-  f_load_BTP_Summary_Auto,
-  f_updateTONKIEM_M100,
-  SaveExcel,
-} from "../../../api/GlobalFunction";
+import { f_updateBTP_M100, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
 import KHOTP from "../../kho/khotp/KHOTP";
@@ -760,35 +754,7 @@ const POandStockFull = () => {
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
     getCompany() === "CMS" ? column_codeCMS2 : column_codeERP_PVN2
   );
-  const rowStyle = { backgroundColor: "transparent", height: "20px" };
-  const getRowStyle = (params: any) => {
-    return { backgroundColor: "white", fontSize: "0.6rem" };
-    /* if (params.data.M_ID % 2 === 0) {
-        return { backgroundColor: 'white', fontSize:'0.6rem'};
-    }
-    else {
-      return { backgroundColor: '#fbfbfb',fontSize:'0.6rem' };
-    } */
-  };
-  const onSelectionChanged = useCallback(() => {
-    const selectedrow = gridRef.current!.api.getSelectedRows();
-    //setCodeDataTableFilter(selectedrow);
-  }, []);
-  const setHeaderHeight = useCallback((value?: number) => {
-    gridRef.current!.api.setGridOption("headerHeight", value);
-    //setIdText("headerHeight", value);
-  }, []);
   const gridRef = useRef<AgGridReact<any>>(null);
-  const defaultColDef = useMemo(() => {
-    return {
-      initialWidth: 100,
-      wrapHeaderText: true,
-      autoHeaderHeight: false,
-      editable: true,
-      floatingFilter: true,
-      filter: true,
-    };
-  }, []);
   const handletraPOFullCMS = async () => {
     Swal.fire({
       title: "Tra data",
@@ -799,7 +765,7 @@ const POandStockFull = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    await f_load_BTP_Summary_Auto();
+    await f_updateBTP_M100();
     await f_updateTONKIEM_M100();
     setisLoading(true);
     //traPOFullCMS2_NEW
@@ -882,7 +848,7 @@ const POandStockFull = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    await f_load_BTP_Summary_Auto();
+    await f_updateBTP_M100();
     await f_updateTONKIEM_M100();
     setisLoading(true);
     setColumnDefinition(column_codeKD2);
@@ -949,11 +915,6 @@ const POandStockFull = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const onExportClick = () => {
-    if (gridRef !== null) {
-      gridRef.current!.api.exportDataAsCsv();
-    }    
   };
   const poStockFullAGTable = useMemo(() => {
     return (
