@@ -7608,3 +7608,18 @@ export const f_deleteSubDept = async (DATA: any) => {
     })
   return kq;
 }
+
+export const f_update_Stock_M100_CMS = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updateTONTP_M100_CMS", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
