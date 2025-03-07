@@ -604,6 +604,7 @@ const PlanManager = () => {
                 D13: element.D13 === null ? 0 : element.D13,
                 D14: element.D14 === null ? 0 : element.D14,
                 D15: element.D15 === null ? 0 : element.D15,
+                id: index
               };
             },
           );
