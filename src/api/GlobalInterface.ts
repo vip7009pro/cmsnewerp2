@@ -4527,3 +4527,50 @@ export interface WORK_POSITION_DATA {
   WORK_POSITION_NAME_KR: string;
   ATT_GROUP_CODE: number;
 }
+
+export interface KHKT_DATA {
+  PLAN_DATE: string;
+  FACTORY: string;
+  G_CODE: string;
+  G_NAME: string;
+  INSPECT_SPEED: number;
+  INS_STOCK_14H: number;
+  PROD_TYPE: string;
+  UNIT: string;
+  INIT_WH_STOCK: number;
+  PL_TG: number;
+  TONKIEM_QTY: number;
+  KQ_D1: number;
+  KQ_OK: number;
+  INS_STOCK: number;
+  TON_THUA: number;
+  D1_YESTD: number;
+  D2_YESTD: number;
+  OUTPUT_YESTD: number;
+  OUTPUT_QTY_EA: number;
+  D1: number;
+  D2: number;
+  D3: number;
+  D4: number;
+  D5: number;
+  D6: number;
+  D1D2_H: number;
+  D1_H: number;
+  D2_H: number;
+  D3_H: number;
+  D4_H: number;
+  D5_H: number;
+  D6_H: number;
+  INPUT_14_18H: number;
+  INPUT_18_2H: number;
+  INPUT_2_6H: number;
+  INPUT_6_10H: number;
+  BTP_QTY: number;
+  INPUT_14_18H_YESTD: number;
+  INPUT_18_2H_YESTD: number;
+  INPUT_2_6H_YESTD: number;
+  INPUT_6_10H_YESTD: number;
+  INPUT_10_14H_YESTD: number;
+  TOTAL_INPUT_SAU_14H_YESTD: number;
+  TOTAL_INPUT_SAU_14H: number;
+}
