@@ -19,7 +19,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
+import { f_loadKHKT_ADUNG, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 const INSPECTION = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -416,6 +416,53 @@ const INSPECTION = () => {
     { field: 'CUST_CD', headerName: 'CUST_CD', width: 80 },
     { field: 'FACTORY', headerName: 'FACTORY', width: 80 },
   ];
+  const column_khkt = [
+    { field: 'PLAN_DATE', headerName: 'PLAN_DATE', width: 60 },
+    { field: 'FACTORY', headerName: 'FACTORY', width: 50 },
+    { field: 'G_CODE', headerName: 'G_CODE', width: 50 },
+    { field: 'G_NAME', headerName: 'G_NAME', width: 100 },
+    { field: 'INSPECT_SPEED', headerName: 'INSPECT_SPEED', width: 80 },
+    { field: 'INS_STOCK_14H', headerName: 'INS_STOCK_14H', width: 100 },
+    { field: 'PROD_TYPE', headerName: 'PROD_TYPE', width: 80 },
+    { field: 'UNIT', headerName: 'UNIT', width: 60 },
+    { field: 'INIT_WH_STOCK', headerName: 'INIT_WH_STOCK', width: 100 },
+    { field: 'PL_TG', headerName: 'PL_TG', width: 80 },
+    { field: 'TONKIEM_QTY', headerName: 'TONKIEM_QTY', width: 100 },
+    { field: 'KQ_D1', headerName: 'KQ_D1', width: 50 },
+    { field: 'KQ_OK', headerName: 'KQ_OK', width: 50 },
+    { field: 'INS_STOCK', headerName: 'INS_STOCK', width: 60 },
+    { field: 'TON_THUA', headerName: 'TON_THUA', width: 60 },
+    { field: 'D1_YESTD', headerName: 'D1_YESTD', width: 60 },
+    { field: 'D2_YESTD', headerName: 'D2_YESTD', width: 60 },
+    { field: 'OUTPUT_YESTD', headerName: 'OUTPUT_YESTD', width: 80 },
+    { field: 'OUTPUT_QTY_EA', headerName: 'OUTPUT_QTY_EA', width: 100 },
+    { field: 'D1', headerName: 'D1', width: 60 },
+    { field: 'D2', headerName: 'D2', width: 60 },
+    { field: 'D3', headerName: 'D3', width: 60 },
+    { field: 'D4', headerName: 'D4', width: 60 },
+    { field: 'D5', headerName: 'D5', width: 60 },
+    { field: 'D6', headerName: 'D6', width: 60 },
+    { field: 'D1D2_H', headerName: 'D1D2_H', width: 80 },
+    { field: 'D1_H', headerName: 'D1_H', width: 60 },
+    { field: 'D2_H', headerName: 'D2_H', width: 60 },
+    { field: 'D3_H', headerName: 'D3_H', width: 60 },
+    { field: 'D4_H', headerName: 'D4_H', width: 60 },
+    { field: 'D5_H', headerName: 'D5_H', width: 60 },
+    { field: 'D6_H', headerName: 'D6_H', width: 60 },
+    { field: 'INPUT_14_18H', headerName: 'INPUT_14_18H', width: 100 },
+    { field: 'INPUT_18_2H', headerName: 'INPUT_18_2H', width: 100 },
+    { field: 'INPUT_2_6H', headerName: 'INPUT_2_6H', width: 100 },
+    { field: 'INPUT_6_10H', headerName: 'INPUT_6_10H', width: 100 },
+    { field: 'BTP_QTY', headerName: 'BTP_QTY', width: 80 },
+    { field: 'INPUT_14_18H_YESTD', headerName: 'INPUT_14_18H_YESTD', width: 120 },
+    { field: 'INPUT_18_2H_YESTD', headerName: 'INPUT_18_2H_YESTD', width: 120 },
+    { field: 'INPUT_2_6H_YESTD', headerName: 'INPUT_2_6H_YESTD', width: 120 },
+    { field: 'INPUT_6_10H_YESTD', headerName: 'INPUT_6_10H_YESTD', width: 120 },
+    { field: 'INPUT_10_14H_YESTD', headerName: 'INPUT_10_14H_YESTD', width: 120 },
+    { field: 'TOTAL_INPUT_SAU_14H_YESTD', headerName: 'TOTAL_INPUT_SAU_14H_YESTD', width: 160 },
+    { field: 'TOTAL_INPUT_SAU_14H', headerName: 'TOTAL_INPUT_SAU_14H', width: 140 },
+  ];
+  
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_inspect_input);
   const handletraInspectionInput = () => {
@@ -820,6 +867,21 @@ const INSPECTION = () => {
       .catch((error) => {
         console.log(error);
       });
+  }
+  const handleGetInspectionPlan = async () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    setSummaryInspect("");
+    setisLoading(true);
+    setInspectionDataTable(await f_loadKHKT_ADUNG(fromdate));
+   
   }
   const fieldsinspectbalance: any = [
     {
@@ -2875,6 +2937,12 @@ const INSPECTION = () => {
               setColumnDefinition(column_inspect_patrol);
               handleGetInspectionPatrol();
             }}> Data Patrol</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#30cdd8' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_khkt);
+              handleGetInspectionPlan();
+            }}> KHKT</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">
