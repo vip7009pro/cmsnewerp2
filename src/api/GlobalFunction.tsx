@@ -27,6 +27,7 @@ import {
   EQ_STT,
   FCSTTDYCSX,
   InvoiceTableData,
+  KHKT_DATA,
   LEADTIME_DATA,
   LICHSUINPUTLIEU_DATA,
   LICHSUNHAPKHOAO,
@@ -7623,3 +7624,59 @@ export const f_update_Stock_M100_CMS = async (DATA: any) => {
     })
   return kq;
 }
+
+export const f_update_btp_p400 = async () => {
+  let kq: string = '';
+  await generalQuery("updateBTP_P400", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_update_tonkiem_p400 = async () => {
+  let kq: string = '';
+  await generalQuery("updatetonkiemP400", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_loadKHKT_ADUNG = async (FROM_DATE: string) => {
+  let kq: KHKT_DATA[] = [];
+  await generalQuery("khkt_a_dung", {
+    FROM_DATE: FROM_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo', 'Load data thành công', 'success');
+        let loaded_data: KHKT_DATA[] = response.data.data.map((element: KHKT_DATA, index: number) => {
+          return {
+            ...element,
+            PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+            id: index
+          }
+        })
+        kq = loaded_data;
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
