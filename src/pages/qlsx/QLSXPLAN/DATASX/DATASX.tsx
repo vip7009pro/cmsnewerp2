@@ -24,6 +24,8 @@ import {
   f_load_nhapkhoao,
   f_loadDataSX_YCSX,
   f_loadDataSXChiThi,
+  f_update_btp_p400,
+  f_update_tonkiem_p400,
   f_YCSXDailyChiThiData,
 } from "../../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
@@ -2183,10 +2185,28 @@ const DATASX = () => {
       }
     },
     {
+      field: 'BTP_QTY', headerName: 'BTP_QTY', resizable: true, width: 60, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.BTP_QTY?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'INS_INPUT', headerName: 'INS_INPUT', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>
             {e.data.INS_INPUT?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'INSPECT_BALANCE_QTY', headerName: 'INSP_BALANCE', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {e.data.INSPECT_BALANCE_QTY?.toLocaleString("en-US")}
           </span>
         );
       }
@@ -2231,7 +2251,7 @@ const DATASX = () => {
       field: 'INSPECT_MATERIAL_NG', headerName: 'INSPECT_MATERIAL_NG', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "red", fontWeight: "bold" }}>
-            {e.data.INS_INPUT?.toLocaleString("en-US")}
+            {e.data.INSPECT_MATERIAL_NG?.toLocaleString("en-US")}
           </span>
         );
       }
@@ -2992,7 +3012,7 @@ const DATASX = () => {
   };
   const handle_loaddatasxYCSX = async () => {
     Swal.fire({
-      title: "Tra data chỉ thị",
+      title: "Tra data theo YCSX",
       text: "Đang tải dữ liệu, hãy chờ chút",
       icon: "info",
       showCancelButton: false,
@@ -3000,6 +3020,8 @@ const DATASX = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+    await f_update_btp_p400();
+    await f_update_tonkiem_p400();
     let kq: {
       datasx: YCSX_SX_DATA[],
       summary: LOSS_TABLE_DATA
