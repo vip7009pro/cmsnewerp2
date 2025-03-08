@@ -17,7 +17,7 @@ import { RootState } from '../../redux/store';
 import { ColDef, GridApi } from 'ag-grid-community';
 interface AGInterface {
   data: Array<any>,
-  columns: Array<any>,
+  columns?: Array<any>,
   toolbar?: ReactElement,
   showFilter?: boolean,
   suppressRowClickSelection?: boolean,
@@ -76,6 +76,17 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
       headerCheckboxSelectionFilteredOnly: true,
     };
   }, []);
+  const defaultColumns = useMemo(() => {
+    if(ag_data.data.length > 0){
+      let keys = Object.keys(ag_data.data[0]);    
+      return keys.map((key) => {        
+        return {field: key,
+          headerName: key,
+          width: 100}        
+      })
+    }  
+    else return []  
+  },[ag_data.data])
   const onExportClick = () => {
     if (gridRef !== null) {
       gridRef.current!.api.exportDataAsCsv();
@@ -160,7 +171,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
           rowDragManaged={true} // Bật tính năng kéo hàng
           animateRows={true}
           rowData={ag_data.data ?? []}
-          columnDefs={ag_data.columns ?? []}
+          columnDefs={ag_data.columns ?? defaultColumns}
           rowHeight={ag_data.rowHeight ? ag_data.rowHeight : 25}
           defaultColDef={defaultColDef}
           ref={gridRef ?? gridRefDefault}
