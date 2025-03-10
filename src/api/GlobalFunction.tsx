@@ -26,6 +26,7 @@ import {
   EmployeeTableData,
   EQ_STT,
   FCSTTDYCSX,
+  INSPECT_STATUS_DATA,
   InvoiceTableData,
   KHKT_DATA,
   LEADTIME_DATA,
@@ -7680,3 +7681,27 @@ export const f_loadKHKT_ADUNG = async (FROM_DATE: string) => {
   return kq;
 }
 
+export const f_loadInspect_status_G_CODE = async (PLAN_DATE: string) => {
+  let kq: INSPECT_STATUS_DATA[] = [];
+  await generalQuery("tinh_hinh_kiemtra_G_CODE", {
+    PLAN_DATE: PLAN_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: INSPECT_STATUS_DATA[] = response.data.data.map((element: INSPECT_STATUS_DATA, index: number) => {
+          return {
+            ...element,
+            PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+            id: index
+          }
+        })
+        kq = loaded_data;
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;  
+}
