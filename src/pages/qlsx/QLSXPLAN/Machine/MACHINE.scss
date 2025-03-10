@@ -1042,10 +1042,13 @@
           display: flex;
           flex-direction: column;
           flex: 3;
-          height: 100%;
+          height: 1000px;
           padding: 10px;
           margin-bottom: 300px;
           .tracuuYCSX {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
             .tracuuYCSXform {
               display: flex;
               flex-direction: column;
@@ -1267,6 +1270,7 @@
           .datadinhmuc {
             display: flex;
             flex-direction: column;
+            height: fit-content;
             justify-content: flex-start;
             background-image: linear-gradient(0deg, #afd3d1, #25d468);
             padding: 20px;
@@ -1280,7 +1284,8 @@
           }
           .listlieuchithi {
             display: flex;
-            height: 700px;
+            flex-direction: column;
+            height: 800px;
             .chithitable {
               display: flex;
               background-image: linear-gradient(0deg, #afd3d1, #f5df7e);
