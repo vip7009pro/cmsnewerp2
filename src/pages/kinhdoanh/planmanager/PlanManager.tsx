@@ -5,7 +5,7 @@ import { FcSearch } from "react-icons/fc";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getAuditMode, getSocket, getUserData } from "../../../api/Api";
-import { checkBP, f_insert_Notification_Data, f_loadInspect_status_G_CODE } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data, f_loadInspect_status_G_CODE, f_update_Stock_M100_CMS, f_updateBTP_M100, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
 import { useSelector } from "react-redux";
@@ -267,21 +267,24 @@ const PlanManager = () => {
   const column_planstatus: any = [
     { field: "PLAN_DATE", type: "date", headerName: "PLAN_DATE", width: 70 },
     { field: "G_CODE", headerName: "G_CODE", width: 70 },
-    { field: "IS_INSPECTING", headerName: "IS_INSPECTING", width: 80, cellRenderer: (params: any) => {
+    { field: "G_NAME", headerName: "G_NAME", width: 150 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 90 },
+    { field: "IS_INSPECTING", headerName: "IS_INSPECTING", width: 110, cellRenderer: (params: any) => {
       if(params.value !== null)
       return (
         <span style={{ color: "green" }}>
-          <b>INSPECTING</b>
+          <b>INSPECTING</b> <img alt="running" src="/blink.gif" width={50} height={20}></img>
         </span>
       );
       return  <span style={{ color: "gray" }}>
       <b>NOT INSPECTING</b>
     </span>
     },},
+    { field: "INS_DATE", headerName: "INIT_TIME", width: 100 },
     {
       field: "INIT_INSP_STOCK",
       type: "number",
-      headerName: "INIT_INSP_STOCK",
+      headerName: "TON_KIEM_BAN_DAU",
       width: 100,
       cellRenderer: (params: any) => {
         return (
@@ -294,7 +297,7 @@ const PlanManager = () => {
     {
       field: "INPUT_QTY",
       type: "number",
-      headerName: "INPUT_QTY",
+      headerName: "NHAP_KIEM",
       width: 70,
       cellRenderer: (params: any) => {
         return (
@@ -305,10 +308,23 @@ const PlanManager = () => {
       },
     },
     {
+      field: "CURRENT_INSP_STOCK",
+      type: "number",
+      headerName: "TON_KIEM_HIEN_TAI",
+      width: 110,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CURRENT_INSP_STOCK?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "INIT_WH_STOCK",
       type: "number",
-      headerName: "INIT_WH_STOCK",
-      width: 90,
+      headerName: "TON_KHO_BAN_DAU",
+      width: 100,
       cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -320,7 +336,7 @@ const PlanManager = () => {
     {
       field: "OUTPUT_QTY",
       type: "number",
-      headerName: "OUTPUT_QTY",
+      headerName: "XUAT_KIEM",
       width: 70,
       cellRenderer: (params: any) => {
         return (
@@ -333,14 +349,41 @@ const PlanManager = () => {
     {
       field: "TOTAL_OUTPUT",
       type: "number",
-      headerName: "TOTAL_OUTPUT",
-      width: 80,
+      headerName: "TONG_VAO_KHO",
+      width: 100,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{ color: "green" }}>
             <b>{params.data.TOTAL_OUTPUT?.toLocaleString("en-US")}</b>
           </span>
         );
+      },
+    },
+    {
+      field: "CURRENT_WH_STOCK",
+      type: "number",
+      headerName: "TON_KHO_HIEN_TAI",
+      width: 110,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.CURRENT_WH_STOCK?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "COVER_D1",      
+      headerName: "COVER_D1",
+      width: 60,
+      cellStyle: (params: any) => {
+        if (params.value === 'OK') {
+          return { backgroundColor: "#43d2eb" };      
+        }
+        else {
+          return { backgroundColor: "#fe7a7a", color: 'white' };
+        }
+       
       },
     },
     {
@@ -350,11 +393,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{  }}>
             <b>{params.data.D1?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if (params.data.D1 > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D2",
@@ -363,11 +415,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D2?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D3",
@@ -376,11 +437,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D3?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D4",
@@ -389,11 +459,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D4?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D5",
@@ -402,11 +481,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D5?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D6",
@@ -415,11 +503,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D6?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D7",
@@ -428,11 +525,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D7?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D8",
@@ -441,11 +547,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D8?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D9",
@@ -454,11 +569,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D9?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D10",
@@ -467,11 +591,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D10?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9 + params.data.D10) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D11",
@@ -480,11 +613,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D11?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9 + params.data.D10 + params.data.D11) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D12",
@@ -493,11 +635,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D12?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9 + params.data.D10 + params.data.D11 + params.data.D12) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D13",
@@ -506,11 +657,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D13?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9 + params.data.D10 + params.data.D11 + params.data.D12 + params.data.D13) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D14",
@@ -519,11 +679,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D14?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9 + params.data.D10 + params.data.D11 + params.data.D12 + params.data.D13 + params.data.D14) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     {
       field: "D15",
@@ -532,11 +701,20 @@ const PlanManager = () => {
       width: 50,
       cellRenderer: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
+          <span style={{}}>
             <b>{params.data.D15?.toLocaleString("en-US")}</b>
           </span>
         );
       },
+      cellStyle: (params: any) => {
+        if ((params.data.D1 + params.data.D2 + params.data.D3 + params.data.D4 + params.data.D5 + params.data.D6 + params.data.D7 + params.data.D8 + params.data.D9 + params.data.D10 + params.data.D11 + params.data.D12 + params.data.D13 + params.data.D14 + params.data.D15) > params.data.TOTAL_OUTPUT) {
+          return { backgroundColor: "red", color: 'white' };
+        }
+        else 
+        {
+          return { backgroundColor: "#12e928" };
+        }
+      }
     },
     { field: "STATUS", headerName: "STATUS", width: 70 },
   ]
@@ -902,6 +1080,10 @@ const PlanManager = () => {
       });
   };
   const handleloadPlanStatus = async() => {
+    await f_update_Stock_M100_CMS({});
+    await f_updateBTP_M100();
+    await f_updateTONKIEM_M100();
+
     let kq: INSPECT_STATUS_DATA[] = [];
     kq = await f_loadInspect_status_G_CODE(fromdate)
     if(kq.length > 0)

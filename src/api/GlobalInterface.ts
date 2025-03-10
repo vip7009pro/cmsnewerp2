@@ -4577,13 +4577,17 @@ export interface KHKT_DATA {
 
 export interface INSPECT_STATUS_DATA {
   PLAN_DATE: string;
+  INS_DATE: string;
   G_CODE: string;
   IS_INSPECTING: string;
   INIT_INSP_STOCK: number;
+  CURRENT_INSP_STOCK: number;
   INPUT_QTY: number;
   INIT_WH_STOCK: number;
   OUTPUT_QTY: number;
+  CURRENT_WH_STOCK: number;
   TOTAL_OUTPUT: number; // This represents INIT_WH_STOCK + OUTPUT_QTY
+  COVER_D1: string;
   D1: number;
   D2: number;
   D3: number;
