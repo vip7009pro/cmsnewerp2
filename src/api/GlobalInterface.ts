@@ -4585,6 +4585,7 @@ export interface INSPECT_STATUS_DATA {
   INPUT_QTY: number;
   INIT_WH_STOCK: number;
   OUTPUT_QTY: number;
+  WH_OUTPUT_QTY: number;
   CURRENT_WH_STOCK: number;
   TOTAL_OUTPUT: number; // This represents INIT_WH_STOCK + OUTPUT_QTY
   COVER_D1: string;
