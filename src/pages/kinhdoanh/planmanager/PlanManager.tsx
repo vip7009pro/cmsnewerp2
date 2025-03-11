@@ -1080,19 +1080,29 @@ const PlanManager = () => {
       });
   };
   const handleloadPlanStatus = async() => {
+    Swal.fire({
+      title: "Load Plan",
+      text: "Đang load Plan, hãy chờ một chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    }); 
     await f_update_Stock_M100_CMS({});
     await f_updateBTP_M100();
     await f_updateTONKIEM_M100();
 
     let kq: INSPECT_STATUS_DATA[] = [];
     kq = await f_loadInspect_status_G_CODE(fromdate)
+    console.log(kq);
     if(kq.length > 0)
     {
-      Swal.fire('Thông báo','Đã load '+ kq.length + 'dòng','success');
+      Swal.fire('Thông báo','Đã load '+ kq.length + ' dòng','success');
       setPlanStatus(kq);
     }
     else {
-      Swal.fire('Thông báo','Chưa chốt kế hoạch ngày,tra lại sau 14h ' + fromdate,'success');
+      Swal.fire('Thông báo','Chưa chốt kế hoạch ngày '+fromdate+', chọn ngày khác hoặc tra lại sau 14h ' + fromdate,'success');
       setPlanStatus([]);
     }
   }
@@ -1452,11 +1462,10 @@ const PlanManager = () => {
       }} onSelectionChange={(params: any) => {
         //console.log(params)
         //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())
-        plandatatablefilter.current = params!.api.getSelectedRows();
+        //console.log(e!.api.getSelectedRows())     
       }}
     />
-    , [planStatus,column_planstatus]);
+    , [planStatus]);
 
   const planDataAGTableExcel = useMemo(() =>
     <AGTable
@@ -1636,7 +1645,7 @@ const PlanManager = () => {
           <MyTabs.Tab title="Plan Status">
           <div className="newplan">
             <div className="batchnewplan">
-              <h3>Thêm Plan Hàng Loạt</h3>
+              <h3>Trạng thái kiểm tra Plan</h3>
               <form className="formupload">
                 <label htmlFor="upload">
                   <b>Plan Date: </b>
@@ -1651,8 +1660,7 @@ const PlanManager = () => {
                 </label>
                 <div
                   className="checkpobutton"
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={(e) => {                    
                     handleloadPlanStatus();
                   }}
                 >
