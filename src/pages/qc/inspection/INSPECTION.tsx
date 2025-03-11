@@ -449,6 +449,7 @@ const INSPECTION = () => {
     { field: 'D4_H', headerName: 'D4_H', width: 60 },
     { field: 'D5_H', headerName: 'D5_H', width: 60 },
     { field: 'D6_H', headerName: 'D6_H', width: 60 },
+    { field: 'FINAL_INPUT', headerName: 'FINAL_INPUT', width: 100 },
     { field: 'INPUT_14_18H', headerName: 'INPUT_14_18H', width: 100 },
     { field: 'INPUT_18_2H', headerName: 'INPUT_18_2H', width: 100 },
     { field: 'INPUT_2_6H', headerName: 'INPUT_2_6H', width: 100 },
