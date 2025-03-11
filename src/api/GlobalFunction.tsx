@@ -7673,7 +7673,7 @@ export const f_loadKHKT_ADUNG = async (FROM_DATE: string) => {
         kq = loaded_data;
       }
       else {
-        kq = response.data.message;
+        //kq = response.data.message;
       }
     })
     .catch((error) => {
@@ -7701,7 +7701,7 @@ export const f_loadInspect_status_G_CODE = async (PLAN_DATE: string) => {
         kq = loaded_data;
       }
       else {
-        kq = response.data.message;
+        //kq = response.data.message;
       }
     })
     .catch((error) => {
