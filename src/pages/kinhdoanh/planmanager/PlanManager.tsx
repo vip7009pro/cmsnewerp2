@@ -360,6 +360,19 @@ const PlanManager = () => {
       },
     },
     {
+      field: "WH_OUTPUT_QTY",
+      type: "number",
+      headerName: "XUAT_KHO",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.WH_OUTPUT_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "CURRENT_WH_STOCK",
       type: "number",
       headerName: "TON_KHO_HIEN_TAI",
