@@ -4,10 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./TINHLIEU.scss";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { MaterialPOData, MaterialPOSumData } from "../../../api/GlobalInterface";
+import { MaterialPOData, MaterialPOSumData, MRPDATA } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
+import { f_loadMRPPlan } from "../../../api/GlobalFunction";
 const TINHLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
@@ -168,6 +169,295 @@ const TINHLIEU = () => {
         });
     }
   };
+  const load_MRP_PlanTable = async () => {
+    let kq: MRPDATA[] = [];
+    kq = await f_loadMRPPlan(formdata.FROM_DATE);
+    if (kq.length > 0) {
+      Swal.fire('Thông báo', 'Đã load ' + kq.length + ' dòng', 'success');
+      setCurrentTable(kq);
+    }
+    else {
+      Swal.fire('Thông báo', 'Chưa chốt kế hoạch ngày ' + formdata.FROM_DATE + ', chọn ngày khác hoặc tra lại sau 14h ' + formdata.FROM_DATE, 'success');
+      setCurrentTable([]);
+    }
+    setColumns(column_mrp_plan);
+  }
+  const column_mrp_plan= [
+    { field: 'CUST_NAME_KD', headerName: 'VENDOR', width: 100,  resizable: true,floatingFilter: true, filter: true, editable: false, headerCheckboxSelection: true,
+      checkboxSelection: true },
+{ field: 'M_NAME', headerName: 'M_NAME', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span style={{color:'blue'}}>
+      <b>{params.value}</b>
+    </span>
+  );
+}  },
+{ field: 'WIDTH_CD', headerName: 'SIZE', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'M_CODE', headerName: 'M_CODE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'M_INIT_WH_STOCK', headerName: 'TP_STOCK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span style={{color:'green'}}>
+      <b>{params.value?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} },
+{ field: 'M_INIT_INSP_STOCK', headerName: 'CK_STOCK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span style={{color:'green'}}>
+      <b>{params.value?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} },
+{ field: 'M_INIT_BTP_STOCK', headerName: 'BTP_STOCK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span style={{color:'green'}}>
+      <b>{params.value?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} },
+{ field: 'RAW_M_STOCK', headerName: 'VL_STOCK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span style={{color:'green'}}>
+      <b>{params.value?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} },
+{ field: 'TOTAL_STOCK', headerName: 'TOTAL_STOCK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span style={{color:'blue'}}>
+      <b>{params.value?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} },
+{ field: 'MD1', headerName: 'MD1', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD1?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+}, cellStyle: (params: any) => {
+  if (params.data.MD1 > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}
+},
+{ field: 'MD2', headerName: 'MD2', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD2?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+}, cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+} },
+{ field: 'MD3', headerName: 'MD3', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD3?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+}, cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD4', headerName: 'MD4', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD4?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3 + params.data.MD4) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD5', headerName: 'MD5', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD5?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD6', headerName: 'MD6', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD6?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD7', headerName: 'MD7', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD7?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD8', headerName: 'MD8', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD8?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD9', headerName: 'MD9', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD9?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD10', headerName: 'MD10', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD10?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9 + params.data.MD10) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD11', headerName: 'MD11', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD11?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9 + params.data.MD10 + params.data.MD11) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD12', headerName: 'MD12', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD12?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9 + params.data.MD10 + params.data.MD11 + params.data.MD12) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD13', headerName: 'MD13', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD13?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9 + params.data.MD10 + params.data.MD11 + params.data.MD12+ params.data.MD13) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD14', headerName: 'MD14', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD14?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9 + params.data.MD10 + params.data.MD11 + params.data.MD12+ params.data.MD13 + params.data.MD14) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+{ field: 'MD15', headerName: 'MD15', width: 50,  resizable: true,floatingFilter: true, filter: true, editable: false, cellRenderer: (params: any) => {
+  return (
+    <span>
+      <b>{params.data.MD15?.toLocaleString("en-US", {maximumFractionDigits:0})}</b>
+    </span>
+  );
+} , cellStyle: (params: any) => {
+  if ((params.data.MD1 + params.data.MD2 + params.data.MD3+ params.data.MD4+ params.data.MD5 + params.data.MD6 + params.data.MD7 + params.data.MD8 + params.data.MD9 + params.data.MD10 + params.data.MD11 + params.data.MD12+ params.data.MD13 + params.data.MD14+ params.data.MD15) > params.data.TOTAL_STOCK) {
+    return { backgroundColor: "red", color: 'white' };
+  }
+  else 
+  {
+    return { backgroundColor: "#12e928" };
+  }
+}  },
+
+
+  ];
   const column_mrp_tableCMS = [
     { field: "CUST_CD", headerName: "CUST_CD", width: 90 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
@@ -415,6 +705,9 @@ const TINHLIEU = () => {
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
               load_material_table('ALL');
             }}>MRP SUMMARY</Button>
+           {getCompany()==='CMS' && <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
+              load_MRP_PlanTable();
+            }}>MRP BY PLAN</Button>}
           </div>
           <br></br>
           <div className="formbutton">

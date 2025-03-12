@@ -4649,3 +4649,31 @@ export interface TEMLOTKT_DATA {
   FSC_CODE:string
 
 }
+
+export interface MRPDATA {
+  CUST_NAME_KD: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  CTR_CD: string,
+  M_CODE: string,
+  M_INIT_WH_STOCK: number,
+  M_INIT_INSP_STOCK: number,
+  M_INIT_BTP_STOCK: number,
+  MD1: number,
+  MD2: number,
+  MD3: number,
+  MD4: number,
+  MD5: number,
+  MD6: number,
+  MD7: number,
+  MD8: number,
+  MD9: number,
+  MD10: number,
+  MD11: number,
+  MD12: number,
+  MD13: number,
+  MD14: number,
+  MD15: number,
+  RAW_M_STOCK: number,
+  TOTAL_STOCK: number,
+}

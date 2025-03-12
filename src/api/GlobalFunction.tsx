@@ -38,6 +38,7 @@ import {
   MACHINE_LIST,
   MainDeptTableData,
   MAT_DOC_DATA,
+  MRPDATA,
   POBALANCETDYCSX,
   PONOLIST,
   POST_DATA,
@@ -7725,6 +7726,32 @@ export const f_loadTemLotKTHistory = async (FROM_DATE: string, TO_DATE: string) 
             LOT_PRINT_DATE: moment.utc(element.LOT_PRINT_DATE).format("YYYY-MM-DD HH:mm:ss"),     
             EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),     
             MFT_DATE: moment.utc(element.MFT_DATE).format("YYYY-MM-DD"),     
+            id: index
+          }
+        })
+        kq = loaded_data;
+      }
+      else {
+        //kq = response.data.message;
+        Swal.fire('Thông báo', 'Không có data', 'error');
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;  
+}
+
+export const f_loadMRPPlan = async (PLAN_DATE: string) => {
+  let kq: MRPDATA[] = [];
+  await generalQuery("loadMRPPlan", {
+    PLAN_DATE: PLAN_DATE,    
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo', 'Load data thành công', 'success');
+        let loaded_data: MRPDATA[] = response.data.data.map((element: MRPDATA, index: number) => {
+          return {
+            ...element, 
             id: index
           }
         })
