@@ -19,7 +19,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_loadKHKT_ADUNG, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
+import { f_loadKHKT_ADUNG, f_loadTemLotKTHistory, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 const INSPECTION = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -36,9 +36,7 @@ const INSPECTION = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    [],
-  );
+  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([],);
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const column_inspect_input = [
     {
@@ -417,7 +415,8 @@ const INSPECTION = () => {
     { field: 'FACTORY', headerName: 'FACTORY', width: 80 },
   ];
   const column_khkt = [
-    { field: 'PLAN_DATE', headerName: 'PLAN_DATE', width: 60 },
+    { field: 'PLAN_DATE', headerName: 'PLAN_DATE', width: 60, headerCheckboxSelection: true,
+      checkboxSelection: true, },
     { field: 'FACTORY', headerName: 'FACTORY', width: 50 },
     { field: 'G_CODE', headerName: 'G_CODE', width: 50 },
     { field: 'G_NAME', headerName: 'G_NAME', width: 100 },
@@ -463,7 +462,51 @@ const INSPECTION = () => {
     { field: 'TOTAL_INPUT_SAU_14H_YESTD', headerName: 'TOTAL_INPUT_SAU_14H_YESTD', width: 160 },
     { field: 'TOTAL_INPUT_SAU_14H', headerName: 'TOTAL_INPUT_SAU_14H', width: 140 },
   ];
-  
+  const column_lothistory = [
+    { field: 'PROCESS_LOT_NO', headerName: 'PROCESS_LOT_NO', width: 100,  resizable: true,floatingFilter: true, filter: true, editable: false, headerCheckboxSelection: true,
+      checkboxSelection: true,cellStyle: (params: any)=> {
+      if(params.data.INS_STATUS ==='E') {
+        return {backgroundColor:'green', color: 'white'}
+      }
+      else {
+        return {backgroundColor:'red', color: 'white'}
+      }
+    } },
+    { field: 'INS_STATUS', headerName: 'INS_STATUS', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+    { field: 'G_NAME', headerName: 'G_NAME', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false,  },
+{ field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'DESCR', headerName: 'DESCR', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'PROD_TYPE', headerName: 'PROD_TYPE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'PROD_MAIN_MATERIAL', headerName: 'PROD_MAIN_MATERIAL', width: 100,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'CTR_CD', headerName: 'CTR_CD', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'FACTORY', headerName: 'FACTORY', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+
+{ field: 'LOT_PRINT_DATE', headerName: 'LOT_PRINT_DATE', width: 100,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'EMPL_NO', headerName: 'EMPL_NO', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'PACKING_QTY', headerName: 'PACKING_QTY', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LOT_QTY', headerName: 'LOT_QTY', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'REMARK', headerName: 'REMARK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'REMARK2', headerName: 'REMARK2', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LABEL_ID', headerName: 'LABEL_ID', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LINEQC_EMPL_NO', headerName: 'LINEQC_EMPL_NO', width: 100,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'CNDB_ENCODES', headerName: 'CNDB_ENCODES', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'EXP_DATE', headerName: 'EXP_DATE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'MFT_DATE', headerName: 'MFT_DATE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LABEL_ID2', headerName: 'LABEL_ID2', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LABEL_SEQ', headerName: 'LABEL_SEQ', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LABEL_ID_OLD', headerName: 'LABEL_ID_OLD', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'MFT_WEEK', headerName: 'MFT_WEEK', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'PLAN_ID', headerName: 'PLAN_ID', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'G_CODE', headerName: 'G_CODE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'MACHINE_NO', headerName: 'MACHINE_NO', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'TABLE_NO', headerName: 'TABLE_NO', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+
+{ field: 'PO_TYPE', headerName: 'PO_TYPE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', width: 100,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'LABEL_QTY_BY_DATE', headerName: 'LABEL_QTY_BY_DATE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+{ field: 'G_EXP_DATE', headerName: 'G_EXP_DATE', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: false },
+
+  ]
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_inspect_input);
   const handletraInspectionInput = () => {
@@ -882,6 +925,21 @@ const INSPECTION = () => {
     setSummaryInspect("");
     setisLoading(true);
     setInspectionDataTable(await f_loadKHKT_ADUNG(fromdate));
+   
+  }
+  const handleGetTemLotHistory = async () => {
+    Swal.fire({
+      title: "Loading data",
+      text: "Data is being loaded, please wait",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    setSummaryInspect("");
+    setisLoading(true);
+    setInspectionDataTable(await f_loadTemLotKTHistory(fromdate,todate));
    
   }
   const fieldsinspectbalance: any = [
@@ -2771,6 +2829,16 @@ const INSPECTION = () => {
             </IconButton>
             {sumaryINSPECT}
           </div>}
+         /*  getRowStyle={(e)=> {
+            //console.log(e.data.INS_STATUS)
+            if(e.data.INS_STATUS==='S' && columnDefinition === column_lothistory)
+            {
+              return {color:'red', fontSize:'0.6rem'}
+            }
+            else {
+              return {color:'green', fontSize:'0.6rem'}
+            }
+          }} */
         columns={columnDefinition}
         data={inspectiondatatable}
         onCellEditingStopped={(e) => {
@@ -2944,6 +3012,12 @@ const INSPECTION = () => {
               setColumnDefinition(column_khkt);
               handleGetInspectionPlan();
             }}> KHKT</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#a08b30' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_lothistory);
+              handleGetTemLotHistory();
+            }}> TEM LOT HISTORY</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">

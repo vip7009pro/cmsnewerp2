@@ -51,6 +51,7 @@ import {
   RecentDM,
   SubDeptTableData,
   SX_DATA,
+  TEMLOTKT_DATA,
   TEMLOTSX_DATA,
   TestListTable,
   TONKHOTDYCSX,
@@ -7703,6 +7704,35 @@ export const f_loadInspect_status_G_CODE = async (PLAN_DATE: string) => {
       }
       else {
         //kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;  
+}
+export const f_loadTemLotKTHistory = async (FROM_DATE: string, TO_DATE: string) => {
+  let kq: TEMLOTKT_DATA[] = [];
+  await generalQuery("temlotktraHistory", {
+    FROM_DATE: FROM_DATE,
+    TO_DATE: TO_DATE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo', 'Load data thành công', 'success');
+        let loaded_data: TEMLOTKT_DATA[] = response.data.data.map((element: TEMLOTKT_DATA, index: number) => {
+          return {
+            ...element,      
+            LOT_PRINT_DATE: moment.utc(element.LOT_PRINT_DATE).format("YYYY-MM-DD HH:mm:ss"),     
+            EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),     
+            MFT_DATE: moment.utc(element.MFT_DATE).format("YYYY-MM-DD"),     
+            id: index
+          }
+        })
+        kq = loaded_data;
+      }
+      else {
+        //kq = response.data.message;
+        Swal.fire('Thông báo', 'Không có data', 'error');
       }
     })
     .catch((error) => {

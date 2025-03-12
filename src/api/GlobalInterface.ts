@@ -4609,3 +4609,43 @@ export interface INSPECT_STATUS_DATA {
   D15: number;
   STATUS: string;
 }
+
+export interface TEMLOTKT_DATA {
+  G_NAME:string
+  G_NAME_KD:string
+  DESCR:string
+  PROD_TYPE:string
+  PROD_MAIN_MATERIAL:string
+  CTR_CD:string
+  FACTORY:string
+  PROCESS_LOT_NO:string
+  LOT_PRINT_DATE:string
+  EMPL_NO:string
+  PACKING_QTY:number
+  LOT_QTY:string
+  REMARK:string
+  REMARK2:string
+  LABEL_ID:string
+  LINEQC_EMPL_NO:string
+  CNDB_ENCODES:string
+  EXP_DATE:string
+  MFT_DATE:string
+  LABEL_ID2:string
+  LABEL_SEQ:string
+  LABEL_ID_OLD:string
+  MFT_WEEK:string
+  PLAN_ID:string
+  G_CODE:string
+  MACHINE_NO:string
+  TABLE_NO:string
+  INS_STATUS:string
+  PO_TYPE:string
+  PROD_REQUEST_NO:string
+  LABEL_QTY_BY_DATE:string
+  G_EXP_DATE:string
+  G_QL_HSD:string
+  SORTING:string
+  FSC:string
+  FSC_CODE:string
+
+}
