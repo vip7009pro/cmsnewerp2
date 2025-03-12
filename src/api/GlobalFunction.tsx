@@ -7692,6 +7692,7 @@ export const f_loadInspect_status_G_CODE = async (PLAN_DATE: string) => {
           return {
             ...element,
             PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+            FIRST_INPUT_TIME: element.FIRST_INPUT_TIME !== null ? moment.utc(element.FIRST_INPUT_TIME).format("YYYY-MM-DD HH:mm:ss") : '',
             INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
             TOTAL_OUTPUT: element.INIT_WH_STOCK + element.OUTPUT_QTY,
             COVER_D1: element.INIT_WH_STOCK + element.OUTPUT_QTY >= element.D1 ? "OK" : "NG",

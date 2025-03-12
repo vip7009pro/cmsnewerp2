@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getAuditMode, getSocket, getUserData } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
 import { checkBP, f_insert_Notification_Data, f_loadInspect_status_G_CODE, f_update_Stock_M100_CMS, f_updateBTP_M100, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
@@ -303,6 +303,45 @@ const PlanManager = () => {
         return (
           <span style={{ color: "blue" }}>
             <b>{params.data.INPUT_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "FIRST_INPUT_TIME",
+      type: "number",
+      headerName: "FIRST_INPUT_TIME",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>{params.data.FIRST_INPUT_TIME?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PRIORITY",
+      type: "number",
+      headerName: "PRIORITY",
+      width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PRIORITY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PLAN_KT",
+      type: "number",
+      headerName: "PLAN_KT",
+      width: 70,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.PLAN_KT}</b>
           </span>
         );
       },
@@ -1655,7 +1694,7 @@ const PlanManager = () => {
             </div>
           </div>
           </MyTabs.Tab>
-          <MyTabs.Tab title="Plan Status">
+          {getCompany()==='CMS' &&  <MyTabs.Tab title="Plan Status">
           <div className="newplan">
             <div className="batchnewplan">
               <h3>Trạng thái kiểm tra Plan</h3>
@@ -1685,7 +1724,7 @@ const PlanManager = () => {
               </div>
             </div>
           </div>
-          </MyTabs.Tab>
+          </MyTabs.Tab>}
           <MyTabs.Tab title="Thêm Plan">
           <div className="newplan">
             <div className="batchnewplan">

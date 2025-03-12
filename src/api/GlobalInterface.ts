@@ -4583,6 +4583,9 @@ export interface INSPECT_STATUS_DATA {
   INIT_INSP_STOCK: number;
   CURRENT_INSP_STOCK: number;
   INPUT_QTY: number;
+  FIRST_INPUT_TIME: string;
+  PRIORITY: number;
+  PLAN: string;
   INIT_WH_STOCK: number;
   OUTPUT_QTY: number;
   WH_OUTPUT_QTY: number;
