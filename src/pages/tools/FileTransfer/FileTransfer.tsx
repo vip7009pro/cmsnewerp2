@@ -275,7 +275,9 @@ const FileTransfer = () => {
               </div>
               <button 
                 onClick={() => {
-                  const hreftlink = `http://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;
+                  const fullUrl = `http://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;         
+                  //console.log('fullUrl', fullUrl);      
+                  const hreftlink = encodeURI(fullUrl);                 
                   f_downloadFile(hreftlink, `${getCtrCd()}_${file.FILE_NAME}`);
                 }}
                 style={{
@@ -291,7 +293,9 @@ const FileTransfer = () => {
               </button> 
               <button 
                 onClick={() => {
-                  const fileUrl = `http://${window.location.host}/globalfiles/${file.CTR_CD}_${file.FILE_NAME}`;
+                  const fullUrl = `http://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;            
+                  //console.log('fullUrl', fullUrl);      
+                  const fileUrl = encodeURI(fullUrl);
                   if (navigator.clipboard) {
                     navigator.clipboard.writeText(fileUrl)
                       .then(() => {
