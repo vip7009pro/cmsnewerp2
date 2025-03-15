@@ -70,6 +70,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
     LOSS_SETTING2: 0,
     LOSS_SETTING3: 0,
     LOSS_SETTING4: 0,
+    LOSS_KT:0,
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);

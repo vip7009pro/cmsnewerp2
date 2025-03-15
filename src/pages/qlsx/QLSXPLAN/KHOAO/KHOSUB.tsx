@@ -4,16 +4,11 @@ import Swal from "sweetalert2";
 import {
   checkBP,
   datediff,
-  f_anrackhoao,
   f_checkMlotTonKhoSub,
   f_checkNextPlanFSC,
   f_checkNhapKhoTPDuHayChua,
   f_checktontaiMlotPlanIdSuDung,
-  f_delete_IN_KHO_AO,
-  f_delete_OUT_KHO_AO,
-  f_is2MCODE_IN_KHO_AO,
   f_isM_CODE_CHITHI,
-  f_isM_LOT_NO_in_P500,
   f_isNextPlanClosed,
   f_load_nhapkhosub,
   f_load_tonkhosub,
@@ -321,115 +316,6 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     } else {
       Swal.fire("Thông báo", "Chưa nhập next PLAN", "error");
     }
-  };
-  const handle_nhappassword_xoarac = async () => {
-    const { value: pass1 } = await Swal.fire({
-      title: "Xác nhận xóa rác",
-      input: "password",
-      inputLabel: "Nhập mật mã",
-      inputValue: "",
-      inputPlaceholder: "Mật mã",
-      showCancelButton: true,
-    });
-    if (
-      pass1 === "quantrisanxuat2023" &&
-      (userData?.EMPL_NO === "DTL1906" ||
-        userData?.EMPL_NO === "THU1402" ||
-        userData?.EMPL_NO === "NHU1903")
-    ) {
-      handleConfirmXoaRac();
-    } else {
-      Swal.fire(
-        "Thông báo",
-        "Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!",
-        "error",
-      );
-    }
-  };
-  const handle_nhappassword_anrac = async () => {
-    const { value: pass1 } = await Swal.fire({
-      title: "Xác nhận ẩn rác",
-      input: "password",
-      inputLabel: "Nhập mật mã",
-      inputValue: "",
-      inputPlaceholder: "Mật mã",
-      showCancelButton: true,
-    });
-    if (
-      pass1 === "quantrisanxuat2023" &&
-      (userData?.EMPL_NO === "DTL1906" ||
-        userData?.EMPL_NO === "THU1402" ||
-        userData?.EMPL_NO === "NHU1903")
-    ) {
-      handleConfirmAnRac();
-    } else {
-      Swal.fire(
-        "Thông báo",
-        "Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!",
-        "error",
-      );
-    }
-  };
-  const handleConfirmXoaRac = () => {
-    Swal.fire({
-      title: "Chắc chắn muốn Xóa liệu đã chọn ?",
-      text: "Sẽ bắt đầu Xóa liệu đã chọn",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Vẫn Xóa!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành Xóa", "Đang xóa hàng loạt", "success");
-        checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_xoa_rac);
-      }
-    });
-  };
-  const handleConfirmAnRac = () => {
-    Swal.fire({
-      title: "Chắc chắn muốn Ẩn liệu đã chọn ?",
-      text: "Sẽ bắt đầu Ẩn liệu đã chọn",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Vẫn Ẩn!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành Ẩn", "Đang Ẩn hàng loạt", "success");
-        checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_an_rac);
-      }
-    });
-  };
-  const handle_xoa_rac = async () => {
-    if (tonkhoaodatafilter.current.length > 0) {
-      let err_code: string = "0";
-      for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-        let check_2_m_code_in_kho_ao: boolean = await f_is2MCODE_IN_KHO_AO(tonkhoaodatafilter.current[i].PLAN_ID_INPUT);
-        let check_m_lot_exist_p500: boolean = await f_isM_LOT_NO_in_P500(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
-        if (check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) {
-          await f_delete_IN_KHO_AO(tonkhoaodatafilter.current[i].IN_KHO_ID);
-          await f_delete_OUT_KHO_AO(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
-          Swal.fire("Thông báo", "Xóa Kho SX Main thành công", "success");
-        } else {
-          if (!check_2_m_code_in_kho_ao) {
-            err_code += ` | ${tonkhoaodatafilter.current[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
-          } else if (check_m_lot_exist_p500) {
-            err_code += ` | ${tonkhoaodatafilter.current[i].M_LOT_NO}: Liệu đã input sx ko xóa được`;
-          }
-        }
-      }
-      if (err_code !== "0") {
-        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
-      }
-      //handle_loadKhoAo();
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xóa", "error");
-    }
-  };
-  const handle_an_rac = async () => {
-    f_anrackhoao(tonkhoaodatafilter.current);
   };
   useEffect(() => {
     if (NEXT_PLAN === undefined) setNextPlan("");
