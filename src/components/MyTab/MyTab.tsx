@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, ReactNode, Suspense } from 'react';
 import './MyTab.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -98,6 +98,7 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
               : renderedTabs[index] || activeTab === index; // Giữ render nếu đã render trước đó
 
           return (
+            <Suspense fallback={<div>Loading...</div>}>
             <div
               key={index}
               style={{
@@ -106,6 +107,7 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
             >
               {shouldRenderTab ? tab.props.children : null}
             </div>
+            </Suspense>
           );
         })}
       </div>
