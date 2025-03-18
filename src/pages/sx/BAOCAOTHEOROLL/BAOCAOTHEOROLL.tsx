@@ -98,7 +98,8 @@ const BAOCAOTHEOROLL = () => {
     LOSS_SQM: 0,
     USED_SQM: 0,
     PURE_INPUT:0,
-    PURE_OUTPUT:0
+    PURE_OUTPUT:0,
+    INSPECT_COMPLETED_DATE:'',
   });
   const qlsxplandatafilter = useRef<SX_BAOCAOROLLDATA[]>([]);
   const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
@@ -123,6 +124,7 @@ const BAOCAOTHEOROLL = () => {
               return {
                 ...element,
                 INPUT_DATE: moment(element.INPUT_DATE).format('YYYY-MM-DD'),
+                INSPECT_COMPLETED_DATE: moment(element.INSPECT_COMPLETED_DATE).format('YYYY-MM-DD'),
                 id: index,
               };
             }
@@ -173,7 +175,8 @@ const BAOCAOTHEOROLL = () => {
             LOSS_SQM: 0,
             USED_SQM: 0,
             PURE_INPUT:0,
-            PURE_OUTPUT:0
+            PURE_OUTPUT:0,
+            INSPECT_COMPLETED_DATE: "",
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
@@ -582,6 +585,18 @@ const BAOCAOTHEOROLL = () => {
       }
     },
     {
+      field: 'USED_EA',
+      headerName: 'USED_EA',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "blue", fontWeight: "bold" }}>
+            {params.data.USED_EA?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'RPM',
       headerName: 'RPM',
       width: 70
@@ -599,6 +614,18 @@ const BAOCAOTHEOROLL = () => {
       }
     },
     {
+      field: 'SETTING_EA',
+      headerName: 'SETTING_EA',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.SETTING_EA?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'PR_NG',
       headerName: 'PR_NG',
       width: 70,
@@ -606,6 +633,18 @@ const BAOCAOTHEOROLL = () => {
         return (
           <span style={{ color: "red", fontWeight: "bold" }}>
             {params.data.PR_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'SX_NG_EA',
+      headerName: 'SX_NG_EA',
+      width: 70,
+      cellRenderer:(params: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {params.data.SX_NG_EA?.toLocaleString("en-US")}
           </span>
         );
       }
@@ -788,6 +827,42 @@ const BAOCAOTHEOROLL = () => {
       }
     },
     {
+      field: 'TOTAL_NG',
+      headerName: 'TOTAL_NG',
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.TOTAL_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'PROCESS_NG',
+      headerName: 'PROCESS_NG',
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.PROCESS_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'MATERIAL_NG',
+      headerName: 'MATERIAL_NG',
+      width: 90,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "gray", fontWeight: "bold" }}>
+            {params.data.MATERIAL_NG?.toLocaleString("en-US")}
+          </span>
+        );
+      }
+    },
+    {
       field: 'INSPECT_OK_SQM',
       headerName: 'INSPECT_OK_SQM',
       width: 90,
@@ -798,6 +873,11 @@ const BAOCAOTHEOROLL = () => {
           </span>
         );
       }
+    },
+    {
+      field: 'INSPECT_COMPLETED_DATE',
+      headerName: 'INSP_DATE',
+      width: 80
     },
     {
       field: 'REMARK',

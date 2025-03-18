@@ -3340,6 +3340,7 @@ export interface SX_BAOCAOROLLDATA {
   LOSS_SQM: number;
   PURE_INPUT: number;
   PURE_OUTPUT: number;
+  INSPECT_COMPLETED_DATE: string;
 }
 export interface OQC_DATA {
   OQC_ID: number;
