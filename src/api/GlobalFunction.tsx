@@ -4107,7 +4107,7 @@ export const f_insertYCSX = async (ycsxData: any) => {
   let err_code: string = "NG";
   await generalQuery("insert_ycsx", {
     PHANLOAI: ycsxData.PHANLOAI,
-    G_CODE: ycsxData.G_CODE,
+    G_CODE: ycsxData.G_CODE?.trim(),
     CUST_CD: ycsxData.CUST_CD,
     REMK: ycsxData.REMK,
     PROD_REQUEST_DATE: ycsxData.PROD_REQUEST_DATE,

@@ -21,7 +21,7 @@ const TINHHINHCUONLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());     
+    setMachine_List(await f_getMachineListData());
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA_ROLL>({
@@ -83,10 +83,11 @@ const TINHHINHCUONLIEU = () => {
           const loaded_data: MATERIAL_STATUS[] = response.data.data.map(
             (element: MATERIAL_STATUS, index: number) => {
               return {
-                ID: index,
+                id: index,
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-                INS_DATE: element.INS_DATE === null ? "" : moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),};
+                G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
+                INS_DATE: element.INS_DATE === null ? "" : moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              };
             },
           );
           //setShowLoss(false);
@@ -115,114 +116,125 @@ const TINHHINHCUONLIEU = () => {
             1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_MET;
           let keysArray = Object.getOwnPropertyNames(loaded_data[0]);
           let column_map = keysArray.map((e, index) => {
-            if(e.substring(0, 4) === "VAO_" ||
-            e === "XUAT_KHO" ||
-            e === "CONFIRM_GIAONHAN" ||
-            e === "NHATKY_KT" ||
-            e === "RA_KIEM")
-            return {
-              field: e,
-              headerName: e,
-              width: 70,
-              cellRenderer: (ele: any) => {
-                //console.log(ele);
-                if (
-                  e.substring(0, 4) === "VAO_" ||
-                  e === "XUAT_KHO" ||
-                  e === "CONFIRM_GIAONHAN" ||
-                  e === "NHATKY_KT" ||
-                  e === "RA_KIEM"
-                ) {
-                  if (ele.data[e] === "Y") {
+            if (e.substring(0, 4) === "VAO_" ||
+              e === "XUAT_KHO" ||
+              e === "CONFIRM_GIAONHAN" ||
+              e === "NHATKY_KT" ||
+              e === "RA_KIEM") {
+              return {
+                field: e,
+                headerName: e,
+                width: 70,
+                cellRenderer: (ele: any) => {
+                  //console.log(ele);
+                  if (
+                    e.substring(0, 4) === "VAO_" ||
+                    e === "XUAT_KHO" ||
+                    e === "CONFIRM_GIAONHAN" ||
+                    e === "NHATKY_KT" ||
+                    e === "RA_KIEM"
+                  ) {
+                    if (ele.data[e] === "Y") {
+                      return (
+                        <div
+                          style={{
+                            color: "white",
+                            fontWeight: "bold",
+                            height: "20px",
+                            width: "80px",
+                            backgroundColor: "#54e00d",
+                            textAlign: "center",
+                          }}
+                        >
+                          Y
+                        </div>
+                      );
+                    } else if (ele.data[e] === "R") {
+                      return (
+                        <div
+                          style={{
+                            color: "black",
+                            fontWeight: "bold",
+                            height: "20px",
+                            width: "80px",
+                            backgroundColor: "yellow",
+                            textAlign: "center",
+                          }}
+                        >
+                          R
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div
+                          style={{
+                            color: "white",
+                            fontWeight: "bold",
+                            height: "20px",
+                            width: "50px",
+                            backgroundColor: "red",
+                            textAlign: "center",
+                          }}
+                        >
+                          N
+                        </div>
+                      );
+                    }
+                  } else if (
+                    [
+                      "TOTAL_OUT_QTY",
+                      "INSPECT_TOTAL_QTY",
+                      "INSPECT_OK_QTY",
+                      "INS_OUT",
+                    ].indexOf(e) > -1 ||
+                    e.indexOf("RESULT") > -1
+                  ) {
                     return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "80px",
-                          backgroundColor: "#54e00d",
-                          textAlign: "center",
-                        }}
-                      >
-                        Y
-                      </div>
+                      <span style={{ color: "blue", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US")}
+                      </span>
                     );
-                  } else if (ele.data[e] === "R") {
+                  } else if (
+                    [
+                      "TOTAL_OUT_EA",
+                      "INSPECT_TOTAL_EA",
+                      "INSPECT_OK_EA",
+                      "INS_OUTPUT_EA",
+                    ].indexOf(e) > -1 ||
+                    e.indexOf("_EA") > -1
+                  ) {
                     return (
-                      <div
-                        style={{
-                          color: "black",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "80px",
-                          backgroundColor: "yellow",
-                          textAlign: "center",
-                        }}
-                      >
-                        R
-                      </div>
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US")}
+                      </span>
+                    );
+                  } else if (e.indexOf("_LOSS") > -1) {
+                    return (
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        {100 *
+                          ele.data[e]?.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}{" "}
+                        %
+                      </span>
                     );
                   } else {
-                    return (
-                      <div
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          height: "20px",
-                          width: "50px",
-                          backgroundColor: "red",
-                          textAlign: "center",
-                        }}
-                      >
-                        N
-                      </div>
-                    );
+                    return <span>{ele.data[e]}</span>;
                   }
-                } else if (
-                  [
-                    "TOTAL_OUT_QTY",
-                    "INSPECT_TOTAL_QTY",
-                    "INSPECT_OK_QTY",
-                    "INS_OUT",
-                  ].indexOf(e) > -1 ||
-                  e.indexOf("RESULT") > -1
-                ) {
-                  return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US")}
-                    </span>
-                  );
-                } else if (
-                  [
-                    "TOTAL_OUT_EA",
-                    "INSPECT_TOTAL_EA",
-                    "INSPECT_OK_EA",
-                    "INS_OUTPUT_EA",
-                  ].indexOf(e) > -1 ||
-                  e.indexOf("_EA") > -1
-                ) {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US")}
-                    </span>
-                  );
-                } else if (e.indexOf("_LOSS") > -1) {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {100 *
-                        ele.data[e]?.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}{" "}
-                      %
-                    </span>
-                  );
-                } else {
-                  return <span>{ele.data[e]}</span>;
-                }
-              },
-            };
+                },
+              };
+            }
+
+            else if (e === 'id') {
+              return {
+                field: e,
+                headerName: 'ID',
+                width: 60,
+                headerCheckboxSelection: true,
+                checkboxSelection: true,
+              }
+            }
             return {
               field: e,
               headerName: e,
@@ -234,6 +246,7 @@ const TINHHINHCUONLIEU = () => {
                   e === "XUAT_KHO" ||
                   e === "CONFIRM_GIAONHAN" ||
                   e === "NHATKY_KT" ||
+                  e === "RETURN_KHO" ||
                   e === "RA_KIEM"
                 ) {
                   if (ele.data[e] === "Y") {
@@ -352,9 +365,9 @@ const TINHHINHCUONLIEU = () => {
       onCellEditingStopped={(params: any) => {
         //console.log(e.data)
       }} onRowClick={(params: any) => {
-        
+
       }} onSelectionChange={(params: any) => {
-        
+
       }}
     />
     , [datasxtable, columns]);
@@ -1139,7 +1152,7 @@ const TINHHINHCUONLIEU = () => {
                   value={machine}
                   onChange={(e) => {
                     setMachine(e.target.value);
-                  }}                  
+                  }}
                 >
                   {machine_list.map((ele: MACHINE_LIST, index: number) => {
                     return (
@@ -1176,72 +1189,72 @@ const TINHHINHCUONLIEU = () => {
           </div>
         </div>
         <div className="tracuuYCSXTable">
-        <div className="losstable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-          <table>
-            <thead>
-              <tr>
-                <th style={{ color: "black", fontWeight: "bold" }}>
-                  1.XUAT KHO MET
-                </th>
-                <th style={{ color: "black", fontWeight: "bold" }}>
-                  7.KT INPUT MET
-                </th>
-                <th style={{ color: "black", fontWeight: "bold" }}>
-                  7.KT OK MET
-                </th>
-                <th style={{ color: "black", fontWeight: "bold" }}>
-                  8.KT OUTPUT MET
-                </th>
-                <th style={{ color: "black", fontWeight: "bold" }}>
-                  9.TOTAL_LOSS_KT
-                </th>
-                <th style={{ color: "black", fontWeight: "bold" }}>
-                  9.TOTAL_LOSS
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ color: "blue", fontWeight: "bold" }}>
-                  {losstableinfo.XUATKHO_MET.toLocaleString("en-US")}
-                </td>
-                <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
-                  {losstableinfo.INSPECTION_INPUT.toLocaleString("en-US", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-                <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
-                  {losstableinfo.INSPECTION_OK.toLocaleString("en-US", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-                <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
-                  {losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-                <td style={{ color: "green", fontWeight: "bold" }}>
-                  {losstableinfo.TOTAL_LOSS_KT.toLocaleString("en-US", {
-                    style: "percent",
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </td>
-                <td style={{ color: "green", fontWeight: "bold" }}>
-                  {losstableinfo.TOTAL_LOSS.toLocaleString("en-US", {
-                    style: "percent",
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-         
+          <div className="losstable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ color: "black", fontWeight: "bold" }}>
+                    1.XUAT KHO MET
+                  </th>
+                  <th style={{ color: "black", fontWeight: "bold" }}>
+                    7.KT INPUT MET
+                  </th>
+                  <th style={{ color: "black", fontWeight: "bold" }}>
+                    7.KT OK MET
+                  </th>
+                  <th style={{ color: "black", fontWeight: "bold" }}>
+                    8.KT OUTPUT MET
+                  </th>
+                  <th style={{ color: "black", fontWeight: "bold" }}>
+                    9.TOTAL_LOSS_KT
+                  </th>
+                  <th style={{ color: "black", fontWeight: "bold" }}>
+                    9.TOTAL_LOSS
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "bold" }}>
+                    {losstableinfo.XUATKHO_MET.toLocaleString("en-US")}
+                  </td>
+                  <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.INSPECTION_INPUT.toLocaleString("en-US", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.INSPECTION_OK.toLocaleString("en-US", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                    {losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "green", fontWeight: "bold" }}>
+                    {losstableinfo.TOTAL_LOSS_KT.toLocaleString("en-US", {
+                      style: "percent",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </td>
+                  <td style={{ color: "green", fontWeight: "bold" }}>
+                    {losstableinfo.TOTAL_LOSS.toLocaleString("en-US", {
+                      style: "percent",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           {materialDataTableAG}
         </div>
         {showhidePivotTable && (
