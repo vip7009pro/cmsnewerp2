@@ -442,6 +442,892 @@ const KHOTP = () => {
     { field: "INSPECT_EMPL", headerName: "INSPECT_EMPL", width: 100 },
     { field: "EXP_DATE", headerName: "EXP_DATE", width: 100 },
     { field: "Outtype", headerName: "Outtype", width: 90 },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 },
+    { field: 'PROD_REQUEST_NO', headerName: 'YCSX_NO', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true },
+    { field: 'KQ_Kích_thước', headerName: 'KQ_Kích_thước', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      }
+     },
+    { field: 'KQ_Kéo_keo', headerName: 'KQ_Kéo_keo', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_XRF', headerName: 'KQ_XRF', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Điện_trở', headerName: 'KQ_Điện_trở', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Tĩnh_điện', headerName: 'KQ_Tĩnh_điện', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Độ_bóng', headerName: 'KQ_Độ_bóng', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Phtalate', headerName: 'KQ_Phtalate', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_FTIR', headerName: 'KQ_FTIR', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Mài_mòn', headerName: 'KQ_Mài_mòn', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Màu_sắc', headerName: 'KQ_Màu_sắc', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_TVOC', headerName: 'KQ_TVOC', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Cân_nặng', headerName: 'KQ_Cân_nặng', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Scanbarcode', headerName: 'KQ_Scanbarcode', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Nhiệt_cao_Ẩm_cao', headerName: 'KQ_Nhiệt_Ẩm', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Shock_nhiệt', headerName: 'KQ_Shock_nhiệt', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Kéo_keo_2', headerName: 'KQ_Kéo_keo_2', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Ngoại_quan', headerName: 'KQ_Ngoại_quan', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+    { field: 'KQ_Độ_dày', headerName: 'KQ_Độ_dày', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
+      cellRenderer: (params: any) => {
+        if (params.value < 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>N/A</b>
+            </span>
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>OK</b>
+            </span>
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            <span style={{ color: "white" }}>
+              <b>NG</b>
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "white" }}>
+            <b>Unkown</b>
+          </span>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.value < 0) {
+          return (
+            {backgroundColor: "gray", color: "white", textAlign: "center"}
+          );
+        } 
+        else if (params.value > 0) {
+          return (
+            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
+          );
+        }
+        else if (params.value === 0) {
+          return (
+            {backgroundColor: "red", color: "white", textAlign: "center"}
+          );
+        }
+        return (
+          {backgroundColor: "gray", color: "white", textAlign: "center"}
+        )
+      } },
+
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_STOCK_CMS);
