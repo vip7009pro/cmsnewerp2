@@ -59,10 +59,13 @@ const SXWeeklyLossRoll = ({
         >
           <p>Tuần {label}:</p>
           <p className='label'>
-            PLAN: {`${payload[0].value?.toLocaleString("en-US")}`} lot
+            MASS_ROLL: {`${payload[0].value?.toLocaleString("en-US")}`} lot
           </p>          
           <p className='label'>
-            RESULT: {`${payload[1].value?.toLocaleString("en-US")}`} lot
+            SAMPLE_ROLL: {`${payload[1].value?.toLocaleString("en-US")}`} lot
+          </p>          
+          <p className='label'>
+            TOTAL_ROLL: {`${payload[2].value?.toLocaleString("en-US")}`} lot
           </p>          
           
         </div>
@@ -122,9 +125,9 @@ const SXWeeklyLossRoll = ({
           dataKey='MASS_ROLL'
           stroke='white'
           fill={processColor}
-          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+          /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */      
         >          
-          <LabelList dataKey="PLAN_QTY" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="MASS_ROLL" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
         <Bar
           stackId='a'
@@ -133,9 +136,9 @@ const SXWeeklyLossRoll = ({
           dataKey='SAMPLE_ROLL'
           stroke='white'
           fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+          /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}        */  
         >
-          <LabelList dataKey="SX_RESULT" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="SAMPLE_ROLL" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
         <Line
           yAxisId='left-axis'
