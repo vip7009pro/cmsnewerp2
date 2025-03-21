@@ -96,6 +96,7 @@ const TINHHINHCUONLIEU = () => {
                 ...element,
                 G_NAME: getAuditMode() == 0 ? element?.G_NAME : element?.G_NAME?.search('CNDB') == -1 ? element?.G_NAME : 'TEM_NOI_BO',
                 INS_DATE: element.INS_DATE === null ? "" : moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+                FIRST_INPUT_DATE: element.FIRST_INPUT_DATE === null ? "" : moment.utc(element.FIRST_INPUT_DATE).format("YYYY-MM-DD HH:mm:ss"),
               };
             },
           );

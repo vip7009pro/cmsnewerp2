@@ -2967,6 +2967,7 @@ export interface TINH_HINH_CHOT_BC {
 }
 //tinh hinh cuon lieu
 export interface MATERIAL_STATUS {
+  FIRST_INPUT_DATE: string;
   INS_DATE: string;
   FACTORY: string;
   M_LOT_NO: string;
