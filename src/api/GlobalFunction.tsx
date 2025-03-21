@@ -52,6 +52,7 @@ import {
   RecentDM,
   SubDeptTableData,
   SX_DATA,
+  SX_LOSS_ROLL_DATA,
   TEMLOTKT_DATA,
   TEMLOTSX_DATA,
   TestListTable,
@@ -7008,6 +7009,26 @@ export const f_load_BTP_Auto = async () => {
     });
   return kq;
 };
+
+export const f_loadRollLossData = async (FROM_DATE: string, TO_DATE: string) => {
+  let kq: SX_LOSS_ROLL_DATA[] = [];
+  await generalQuery("checkRollLieuBienMat", {
+    FROM_DATE: FROM_DATE,
+    TO_DATE: TO_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data.map((element: any, index: number) => {
+          return { ...element, 
+            id: index };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
 export const f_load_BTP_Summary_Auto = async () => {
   let kq: BTP_AUTO_DATA_SUMMARY[] = [];
   await generalQuery("loadBTPSummaryAuto2", {})

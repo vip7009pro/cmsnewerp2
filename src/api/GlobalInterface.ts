@@ -3960,6 +3960,14 @@ export interface SX_ACHIVE_DATA {
   PLAN_QTY: number;
   ACHIVE_RATE: number;
 }
+export interface SX_LOSS_ROLL_DATA {
+  YEAR_NUM: number,
+  WEEK_NUM: number,
+  YEAR_WEEK: string,
+  TOTAL_ROLL: number,
+  MASS_ROLL: number,
+  SAMPLE_ROLL: number,
+}
 export interface SX_LOSSTIME_REASON_DATA {
   REASON: string;
   LOSS_TIME: number;

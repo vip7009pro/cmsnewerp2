@@ -5,17 +5,19 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./TINHHINHCUONLIEU.scss";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { f_getMachineListData } from "../../../api/GlobalFunction";
+import { f_getMachineListData, f_loadRollLossData } from "../../../api/GlobalFunction";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
   LOSS_TABLE_DATA_ROLL,
   MACHINE_LIST,
   MATERIAL_STATUS,
+  SX_LOSS_ROLL_DATA,
 } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
+import SXWeeklyLossRoll from "../../../components/Chart/SX/SXWeeklyLossRoll";
 
 const TINHHINHCUONLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -46,6 +48,12 @@ const TINHHINHCUONLIEU = () => {
   const [m_code, setM_Code] = useState("");
   const [cust_name_kd, setCUST_NAME_KD] = useState("");
   const [columns, setColumns] = useState<Array<any>>([]);
+  const [loss_roll_data, setLossRollData] = useState<SX_LOSS_ROLL_DATA[]>([])
+  const handleLoadRollLossData = async () => {
+    let kq: SX_LOSS_ROLL_DATA[] = [];
+    kq = await f_loadRollLossData(fromdate, todate)
+    setLossRollData(kq);
+  }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -63,6 +71,7 @@ const TINHHINHCUONLIEU = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+    handleLoadRollLossData();
     generalQuery("materialLotStatus", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -120,6 +129,8 @@ const TINHHINHCUONLIEU = () => {
               e === "XUAT_KHO" ||
               e === "CONFIRM_GIAONHAN" ||
               e === "NHATKY_KT" ||
+              e === "RETURN_IQC" ||
+              e === "VAO_SX" ||
               e === "RA_KIEM") {
               return {
                 field: e,
@@ -132,6 +143,8 @@ const TINHHINHCUONLIEU = () => {
                     e === "XUAT_KHO" ||
                     e === "CONFIRM_GIAONHAN" ||
                     e === "NHATKY_KT" ||
+                    e === "RETURN_IQC" ||
+                    e === "VAO_SX" ||
                     e === "RA_KIEM"
                   ) {
                     if (ele.data[e] === "Y") {
@@ -1013,6 +1026,9 @@ const TINHHINHCUONLIEU = () => {
   }, []);
   return (
     <div className="tinhinhcuonlieu">
+      <div className="chartcuonlieu" style={{ height: '300px' }}>
+        <SXWeeklyLossRoll dldata={loss_roll_data} materialColor="#ffff64aa" processColor="#7df7fc" />
+      </div>
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">

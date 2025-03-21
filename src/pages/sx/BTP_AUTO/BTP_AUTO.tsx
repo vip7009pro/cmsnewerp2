@@ -95,6 +95,7 @@ const BTP_AUTO = () => {
     { field: "PD", headerName: "PD", width: 50, type: "number" },
     { field: "CAVITY", headerName: "CAVITY", width: 60, type: "number" },
     { field: "TRANS_LOT_NO", headerName: "TRANS_LOT_NO", width: 90 },
+    { field: "BTP_TYPE", headerName: "BTP_TYPE", width: 90 },
   ];
 
   const columns_btp2 = [
