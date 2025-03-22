@@ -7315,6 +7315,77 @@ export const f_deletePostData = async (DATA: POST_DATA) => {
     })
     return kq;
 }
+
+export const f_downloadFile2 = async (
+  fileURL: string, 
+  fileName: string, 
+  onProgress: (percentage: number) => void // Callback để cập nhật tiến trình
+) => {
+  try {
+    const response = await fetch(fileURL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/octet-stream",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to download file");
+    }
+
+    // Lấy reader từ body
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("Failed to get response reader");
+    }
+
+    // Lấy kích thước file từ header
+    const contentLength = Number(response.headers.get('Content-Length')) || 0;
+    let receivedLength = 0;
+
+    // Tạo mảng để chứa các chunk
+    const chunks: Uint8Array[] = [];
+
+    // Đọc dữ liệu theo từng chunk
+    while (true) {
+      const { done, value } = await reader.read();
+      
+      if (done) break;
+
+      if (value) {
+        chunks.push(value);
+        receivedLength += value.length;
+        
+        // Tính phần trăm và gọi callback
+        if (contentLength > 0) {
+          const percentage = Math.round((receivedLength * 100) / contentLength);
+          onProgress(percentage);
+        }
+      }
+    }
+
+    // Gộp các chunk thành blob
+    const blob = new Blob(chunks);
+    const tempUrl = window.URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = tempUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    
+    window.URL.revokeObjectURL(tempUrl);
+    document.body.removeChild(a);
+    
+    // Reset progress về 0 sau khi hoàn thành
+    onProgress(0);
+
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    Swal.fire("Thống báo", "Download file thất bại !", "error");
+    onProgress(0); // Reset progress nếu lỗi
+  }
+};
 export const f_downloadFile = async (fileURL: string, fileName: string) => {
   try {
     // Tải file từ server dưới dạng blob

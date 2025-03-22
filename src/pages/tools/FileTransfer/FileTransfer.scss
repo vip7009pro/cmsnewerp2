@@ -1,0 +1,391 @@
+.file-transfer-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 20px;
+
+  .upload-section {
+    flex: 1;
+    margin-right: 20px;
+    height: 100%;
+
+    .file-upload-header {
+      margin-bottom: 20px;
+      height: 100%;
+
+      .drag-drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 4px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          color: white;
+
+          &:nth-child(1) {
+            background-color: #4CAF50;
+          }
+          &:nth-child(2) {
+            background-color: #008CBA;
+          }
+          &:nth-child(3) {
+            background-color: #008CBA;
+          }
+        }
+      }
+    }
+
+    .overall-progress {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+
+      h3 {
+        margin-bottom: 10px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .progress-fill {
+          height: 10px;
+          background-color: #4CAF50;
+          transition: width 0.3s ease-in-out;
+        }
+      }
+
+      .progress-text {
+        text-align: right;
+        margin-top: 5px;
+      }
+    }
+
+    .file-list {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      height: 62.5vh;
+      overflow-y: auto;
+
+      .file-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+
+        span {
+          flex: 1;
+        }
+
+        .file-actions {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 5px;
+
+          .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+
+            .progress-fill {
+              height: 5px;
+              background-color: #4CAF50;
+              transition: width 0.3s ease-in-out;
+            }
+          }
+
+          .button-group {
+            button {
+              padding: 5px 10px;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              color: white;
+
+              &:first-child {
+                background-color: #4CAF50;
+                margin-right: 5px;
+              }
+              &:last-child {
+                background-color: #f44336;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .database-files-section {
+    flex: 1;
+    height: 100%;
+
+    h3 {
+      button {
+        margin-left: 10px;
+      }
+    }
+
+    .file-list {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      height: 85vh;
+      overflow-y: auto;
+
+      .file-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+
+        .file-info {
+          display: flex;
+          align-items: center;
+          flex: 1;
+
+          .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 10px;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          span {
+            flex: 1;
+
+            p {
+              display: inline-block;
+              max-width: 250px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
+
+        button {
+          padding: 5px 10px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          color: white;
+
+          &:nth-child(2) {
+            background-color: #2196F3;
+            margin-right: 5px;
+          }
+          &:nth-child(3) {
+            background-color: #f44336;
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive design cho điện thoại
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+
+    .upload-section {
+      margin-right: 0;
+      margin-bottom: 20px;
+
+      .file-upload-header {
+        .drag-drop-area {
+          padding: 15px;
+          font-size: 14px;
+        }
+
+        .button-group {
+          flex-direction: column;
+          gap: 10px;
+
+          button {
+            padding: 8px 12px;
+            font-size: 14px;
+          }
+        }
+      }
+
+      .overall-progress {
+        padding: 8px;
+
+        h3 {
+          font-size: 16px;
+        }
+
+        .progress-bar {
+          .progress-fill {
+            height: 8px;
+          }
+        }
+
+        .progress-text {
+          font-size: 12px;
+        }
+      }
+
+      .file-list {
+        height: 50vh;
+
+        .file-item {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 8px;
+
+          span {
+            font-size: 14px;
+          }
+
+          .file-actions {
+            width: 100%;
+            align-items: flex-start;
+
+            .button-group {
+              display: flex;
+              width: 100%;
+              justify-content: space-between;
+
+              button {
+                padding: 5px 8px;
+                font-size: 12px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .database-files-section {
+      h3 {
+        font-size: 16px;
+
+        button {
+          padding: 5px 8px;
+          font-size: 12px;
+        }
+      }
+
+      .file-list {
+        height: 50vh;
+
+        .file-item {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 8px;
+
+          .file-info {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .avatar {
+              width: 25px;
+              height: 25px;
+              margin-right: 0;
+              margin-bottom: 5px;
+            }
+
+            span {
+              font-size: 14px;
+
+              p {
+                max-width: 100%;
+              }
+            }
+          }
+
+          button {
+            padding: 5px 8px;
+            font-size: 12px;
+            width: 100%;
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+  }
+
+  // Tinh chỉnh thêm cho màn hình điện thoại nhỏ (dưới 480px)
+  @media (max-width: 480px) {
+    padding: 5px;
+
+    .upload-section {
+      .file-upload-header {
+        .drag-drop-area {
+          padding: 10px;
+          font-size: 12px;
+        }
+
+        .button-group {
+          gap: 5px;
+
+          button {
+            padding: 6px 10px;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .file-list {
+        .file-item {
+          span {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .database-files-section {
+      .file-list {
+        .file-item {
+          .file-info {
+            span {
+              font-size: 12px;
+            }
+          }
+
+          button {
+            padding: 4px 6px;
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}
