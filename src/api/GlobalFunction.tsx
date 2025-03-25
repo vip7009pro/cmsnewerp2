@@ -7029,6 +7029,27 @@ export const f_loadRollLossData = async (FROM_DATE: string, TO_DATE: string) => 
     });
   return kq;
 }
+
+export const f_loadRollLossDataDaily = async (FROM_DATE: string, TO_DATE: string) => {
+  let kq: SX_LOSS_ROLL_DATA[] = [];
+  await generalQuery("checkRollLieuBienMatDaily", {
+    FROM_DATE: FROM_DATE,
+    TO_DATE: TO_DATE
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data.map((element: any, index: number) => {
+          return { ...element, 
+            OUT_DATE: element.OUT_DATE !== null ? moment.utc(element.OUT_DATE).format('YYYY-MM-DD') : '',
+            id: index };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}
 export const f_load_BTP_Summary_Auto = async () => {
   let kq: BTP_AUTO_DATA_SUMMARY[] = [];
   await generalQuery("loadBTPSummaryAuto2", {})

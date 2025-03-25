@@ -5,7 +5,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./TINHHINHCUONLIEU.scss";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { f_getMachineListData, f_loadRollLossData } from "../../../api/GlobalFunction";
+import { f_getMachineListData, f_loadRollLossData, f_loadRollLossDataDaily } from "../../../api/GlobalFunction";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import SXWeeklyLossRoll from "../../../components/Chart/SX/SXWeeklyLossRoll";
+import SXDailyRollLoss from "../../../components/Chart/SX/SXDailyRollLoss";
 
 const TINHHINHCUONLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -26,6 +27,7 @@ const TINHHINHCUONLIEU = () => {
     setMachine_List(await f_getMachineListData());
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const [dailyGraph, setDailyGraph] = useState(false);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA_ROLL>({
     XUATKHO_MET: 0,
     INSPECTION_INPUT: 0,
@@ -54,6 +56,11 @@ const TINHHINHCUONLIEU = () => {
     kq = await f_loadRollLossData(fromdate, todate)
     setLossRollData(kq);
   }
+  const handleLoadRollLossDataDaily = async () => {
+    let kq: SX_LOSS_ROLL_DATA[] = [];
+    kq = await f_loadRollLossDataDaily(fromdate, todate)
+    setLossRollData(kq);
+  }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -71,7 +78,15 @@ const TINHHINHCUONLIEU = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    handleLoadRollLossData();
+    if(dailyGraph)
+    {
+      handleLoadRollLossDataDaily();
+    }
+    else 
+    {
+      handleLoadRollLossData();
+    }     
+    
     generalQuery("materialLotStatus", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -1028,7 +1043,8 @@ const TINHHINHCUONLIEU = () => {
   return (
     <div className="tinhinhcuonlieu">
       <div className="chartcuonlieu" style={{ height: '300px' }}>
-        <SXWeeklyLossRoll dldata={loss_roll_data} materialColor="#ffff64aa" processColor="#7df7fc" />
+        {dailyGraph && <SXDailyRollLoss dldata={loss_roll_data} materialColor="#ffff64aa" processColor="#7df7fc" />}
+        {(!dailyGraph) && <SXWeeklyLossRoll dldata={loss_roll_data} materialColor="#ffff64aa" processColor="#7df7fc" />}
       </div>
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
@@ -1270,8 +1286,8 @@ const TINHHINHCUONLIEU = () => {
                 </tr>
               </tbody>
             </table>
+            {<input type='checkbox' checked={dailyGraph} onChange={() => { setDailyGraph(prev => !prev) }} />}
           </div>
-
           {materialDataTableAG}
         </div>
         {showhidePivotTable && (
