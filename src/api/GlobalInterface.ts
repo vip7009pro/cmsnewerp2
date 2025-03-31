@@ -4688,3 +4688,56 @@ export interface MRPDATA {
   RAW_M_STOCK: number,
   TOTAL_STOCK: number,
 }
+
+
+  export interface DOCUMENT_DATA {
+    FILE_ID: number,
+    REG_DATE: string,
+    EXP_DATE: string,
+    FORMAT_X: string,
+    DOC_ID: number;
+    CAT_ID: number;
+    CAT_NAME: string;
+    DOC_CAT_NAME: string;
+    DOC_CAT_ID: number;
+    DOC_NAME: string;
+    HSD_YN: string;
+    USE_YN: string;
+    INS_DATE: string;
+    INS_EMPL: string;
+    UPD_DATE: string;
+    UPD_EMPL: string;  
+}
+
+export interface DOC_CATEGORY1_DATA {
+  CAT_ID: number,
+  CAT_NAME: string,
+  SUBDEPTCODE: number,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string;
+}
+
+export interface DOC_CATEGORY2_DATA {
+  DOC_CAT_ID: number,
+  DOC_CAT_NAME: string,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string;
+  MAINDEPTCODE: number,
+}
+
+export interface DOC_LIST_DATA {
+  DOC_ID: number,
+  DOC_NAME: string,
+  HSD_YN: string,
+  USE_YN: string,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string;
+  CAT_ID: number,
+  DOC_CAT_ID: number,
+}
