@@ -15,7 +15,9 @@ import * as XLSX from "xlsx";
 export interface DTC_RESULT_INPUT {
   DTC_ID: number;
   G_CODE: string;
+  G_NAME: string;
   M_CODE: string;
+  M_NAME: string;
   TEST_NAME: string;
   TEST_CODE: number;
   POINT_NAME: string;
@@ -50,7 +52,9 @@ export interface OutputData {
   TEST_CODE: number;
   TEST_NAME: string;
   G_CODE: string;
+  G_NAME: string;
   M_CODE: string;
+  M_NAME: string;
   POINT_CODE: number;
   POINT_NAME: string;
   SAMPLE_NO: number;
@@ -60,7 +64,7 @@ export interface OutputData {
   RESULT: number;
   REMARK: string;
 }
-export const unpivotJsonArray = (DTC_ID: number, TEST_CODE: number, G_CODE: string, M_CODE: string, TEST_NAME: string, defaultResultArray: DTC_RESULT_INPUT[], inputArray: InputData[]): OutputData[] => {
+export const unpivotJsonArray = (DTC_ID: number, TEST_CODE: number, G_CODE: string,G_NAME: string,  M_CODE: string, M_NAME: string, TEST_NAME: string, defaultResultArray: DTC_RESULT_INPUT[], inputArray: InputData[]): OutputData[] => {
   const result: OutputData[] = [];
   let pointCodeCounter = 1; // Bộ đếm POINT_CODE tăng liên tục  
   inputArray.forEach((item, index) => {
@@ -74,7 +78,9 @@ export const unpivotJsonArray = (DTC_ID: number, TEST_CODE: number, G_CODE: stri
         TEST_CODE: TEST_CODE,
         TEST_NAME: TEST_NAME,
         G_CODE: G_CODE,
+        G_NAME: G_NAME,
         M_CODE: M_CODE,
+        M_NAME: M_NAME,
         POINT_CODE: pointCodeCounter,       
         POINT_NAME: key + (index+1),       
         SAMPLE_NO: sampleNo,
@@ -121,13 +127,14 @@ const DTCRESULT = () => {
   );
   const [empl_name, setEmplName] = useState("");
   const dtcResultColumn = [
-    { field: 'DTC_ID', headerName: 'DTC_ID', resizable: true, width: 100, headerCheckboxSelection: true, checkboxSelection: true, },
-    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 100 },
-    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 100 },
-    { field: 'TEST_NAME', headerName: 'TEST_NAME', resizable: true, width: 100 },
-    { field: 'TEST_CODE', headerName: 'TEST_CODE', resizable: true, width: 100 },
-    { field: 'POINT_NAME', headerName: 'POINT_NAME', resizable: true, width: 100 },
-    { field: 'POINT_CODE', headerName: 'POINT_CODE', resizable: true, width: 100 },
+    { field: 'DTC_ID', headerName: 'DTC_ID', resizable: true, width: 80, headerCheckboxSelection: true, checkboxSelection: true, },
+    { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 60 },
+    { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 120 },
+    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 60 },
+    { field: 'TEST_NAME', headerName: 'TEST_NAME', resizable: true, width: 80 },
+    { field: 'TEST_CODE', headerName: 'TEST_CODE', resizable: true, width: 60 },
+    { field: 'POINT_NAME', headerName: 'POINT_NAME', resizable: true, width: 70 },
+    { field: 'POINT_CODE', headerName: 'POINT_CODE', resizable: true, width: 70 },
     { field: 'CENTER_VALUE', headerName: 'CENTER_VALUE', resizable: true, width: 100 },
     { field: 'UPPER_TOR', headerName: 'UPPER_TOR', resizable: true, width: 100 },
     { field: 'LOWER_TOR', headerName: 'LOWER_TOR', resizable: true, width: 100 },
@@ -190,7 +197,7 @@ const DTCRESULT = () => {
           return;
         }
         let newInputArray: DTC_RESULT_INPUT[] = [];
-        newInputArray = unpivotJsonArray(inspectiondatatable[0].DTC_ID, inspectiondatatable[0].TEST_CODE, inspectiondatatable[0].G_CODE, inspectiondatatable[0].M_CODE, inspectiondatatable[0].TEST_NAME, inspectiondatatable, inputArray);
+        newInputArray = unpivotJsonArray(inspectiondatatable[0].DTC_ID, inspectiondatatable[0].TEST_CODE, inspectiondatatable[0].G_CODE, inspectiondatatable[0].G_NAME,inspectiondatatable[0].M_CODE,inspectiondatatable[0].M_NAME, inspectiondatatable[0].TEST_NAME, inspectiondatatable, inputArray);
         setInspectionDataTable(newInputArray);
         //setUploadExcelJSon(finalJson);
       };

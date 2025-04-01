@@ -4741,3 +4741,73 @@ export interface DOC_LIST_DATA {
   CAT_ID: number,
   DOC_CAT_ID: number,
 }
+
+export interface FULL_ROLL_DATA {
+  PLAN_ID: string;
+  M_LOT_NO: string;
+  IQC_IN: number;
+  OUT_KHO_QTY: number;
+  LOCK_QTY: number;
+  INPUT_QTY: number;
+  USED_QTY: number;
+  REMAIN_QTY: number;
+  SETTING_MET: number;
+  PR_NG: number;
+  RESULT_MET: number;
+  BTP_REMAIN_QTY: number;
+  TON_KHO_SX: number;
+  RETURN_KHO_QTY: number;
+  RETURN_IQC_QTY: number;
+  PD: number;
+  CAVITY: number;
+  INS_INPUT_MET: number;
+  TON_KIEM_MET: number;
+  INSPECT_TOTAL_MET: number;
+  INSPECT_OK_MET: number;
+  IQC_IN_EA: number;
+  OUT_KHO_EA: number;
+  LOCK_EA: number;
+  INPUT_EA: number;
+  USED_EA: number;
+  REMAIN_EA: number;
+  SETTING_EA: number;
+  PR_NG_EA: number;
+  RESULT_EA: number;
+  BTP_REMAIN_EA: number;
+  TON_KHO_SX_EA: number;
+  RETURN_EA: number;
+  RETURN_IQC_EA: number;
+  INS_INPUT_EA: number;
+  TON_KIEM_EA: number;
+  INSPECT_TOTAL_EA: number;
+  INSPECT_OK_EA: number;
+
+  IQC_IN_M2: number;
+  OUT_KHO_M2: number;
+  LOCK_M2: number;
+  INPUT_M2: number;
+  USED_M2: number;
+  REMAIN_M2: number;
+  SETTING_M2: number;
+  PR_NG_M2: number;
+  RESULT_M2: number;
+  BTP_REMAIN_M2: number;
+  TON_KHO_SX_M2: number;
+  RETURN_KHO_M2: number;
+  RETURN_IQC_M2: number;
+  INS_INPUT_M2: number;
+  TON_KIEM_M2: number;
+  INSPECT_TOTAL_M2: number;
+  INSPECT_OK_M2: number;
+  
+  PROCESS_NUMBER: number;
+  STEP: number;
+  PLAN_DATE: string;
+  G_NAME_KD: string;
+  PROD_MAIN_MATERIAL: string;
+  PROD_REQUEST_NO: string;
+  PHAN_LOAI: string;
+
+   
+  
+}

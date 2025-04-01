@@ -11,6 +11,7 @@ const DAOFILMDATA = React.lazy(() => import("./LICHSUDAOFILM/DAOFILMDATA"));
 const BTP_AUTO = React.lazy(() => import("./BTP_AUTO/BTP_AUTO"));
 const FAILING = React.lazy(() => import("../qc/iqc/FAILING"));
 const MAINDEFECTS = React.lazy(() => import("./MAINDEFECTS/MAINDEFECTS"));
+const BAOCAOFULLROLL = React.lazy(() => import("./BAOCAOTHEOROLL/BAOCAOFULLROLL"));
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { getCompany } from "../../api/Api";
@@ -36,6 +37,9 @@ const BAOCAOSXALL = () => {
           </MyTabs.Tab>
           <MyTabs.Tab title={getlang("sxrolldata", lang)}>
             <BAOCAOTHEOROLL />
+          </MyTabs.Tab>
+          <MyTabs.Tab title={getlang("baocaofullroll", lang)}>
+            <BAOCAOFULLROLL />
           </MyTabs.Tab>
           <MyTabs.Tab title="Plan-Result">
             <ACHIVEMENTTB />

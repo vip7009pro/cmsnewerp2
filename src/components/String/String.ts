@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  baocaofullroll: "Báo cáo full Roll",
   post_manager: "Quản lý bảng tin",
   information_register: "Đăng tin",
   information_board: "Bảng truyền thông",
@@ -161,6 +162,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  baocaofullroll: "Full Roll Report",
   post_manager: "Post Manager",
   information_register: "Post Info",
   information_board: "Information Board",
@@ -310,6 +312,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  baocaofullroll: "풀 롤 리포트",
   post_manager: "계시판 관리",
   information_register: "정보 등록",
   information_board: "계시판",
