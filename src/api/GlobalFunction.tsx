@@ -2427,12 +2427,16 @@ export const f_saveChiThiMaterialTable = async (
             console.log(error);
           });
         //console.log('checktontai',checktontaiM_CODE);
+        let m_dang_ky: number = chithidatatable[i].M_MET_QTY;
+        if(selectedPlan.PROCESS_NUMBER !== 1 && chithidatatable[i].LIEUQL_SX ===1){
+          m_dang_ky = 0;
+        }
         if (checktontaiM_CODE) {
           await generalQuery("updateChiThi", {
             PLAN_ID: selectedPlan?.PLAN_ID,
             M_CODE: chithidatatable[i].M_CODE,
             M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
-            M_MET_QTY: chithidatatable[i].M_MET_QTY,
+            M_MET_QTY: m_dang_ky,
             M_QTY: chithidatatable[i].M_QTY,
             LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
           })
@@ -2452,7 +2456,7 @@ export const f_saveChiThiMaterialTable = async (
             PLAN_ID: selectedPlan?.PLAN_ID,
             M_CODE: chithidatatable[i].M_CODE,
             M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
-            M_MET_QTY: chithidatatable[i].M_MET_QTY,
+            M_MET_QTY: m_dang_ky,
             M_QTY: chithidatatable[i].M_QTY,
             LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
           })
@@ -2974,8 +2978,8 @@ export const f_handleDangKyXuatLieu = async (
     .map((x) => "'" + x.M_CODE + "'")
     .join(",");
   await f_deleteM_CODE_O301(selectedPlan.PLAN_ID, M_CODE_LIST);
-  for (let i = 0; i < chithidatatable.length; i++) {
-    //console.log('chithidatatable[i]',chithidatatable[i]);
+  for (let i = 0; i < chithidatatable.length; i++) {  
+
     if (chithidatatable[i].M_MET_QTY > 0) {
       //console.log("M_MET", chithidatatable[i].M_MET_QTY);
       let TonTaiM_CODE_O301: boolean =
@@ -2985,6 +2989,10 @@ export const f_handleDangKyXuatLieu = async (
         );
       if (chithidatatable[i].LIEUQL_SX === 1) {
         await f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
+      }
+      let met_dang_ky: number = chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY;
+      if(selectedPlan.PROCESS_NUMBER !== 1 && chithidatatable[i].LIEUQL_SX === 1){
+        met_dang_ky = 0;
       }
       if (!TonTaiM_CODE_O301) {
         //console.log("Next Out NO", NEXT_OUT_NO);
@@ -2999,13 +3007,13 @@ export const f_handleDangKyXuatLieu = async (
           OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
           USE_YN: "Y",
           M_CODE: chithidatatable[i].M_CODE,
-          OUT_PRE_QTY: chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
+          OUT_PRE_QTY:  met_dang_ky,
           PLAN_ID: selectedPlan.PLAN_ID,
         });
       } else {
         await f_updateO301({
           M_CODE: chithidatatable[i].M_CODE,
-          OUT_PRE_QTY: chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
+          OUT_PRE_QTY: met_dang_ky,
           PLAN_ID: selectedPlan.PLAN_ID,
         });
       }
