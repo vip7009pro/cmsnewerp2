@@ -455,6 +455,27 @@ const ADDSPECTDTC = () => {
         console.log(error);
       });
   };
+
+  const copyXRFSpecSDI = (
+    m_code: string | undefined,
+    g_code: string | undefined,
+  ) => {
+    generalQuery("copyXRFSpecSDI", {
+      M_CODE: checkNVL ? m_code : "B0000035",
+      G_CODE: checkNVL ? "7A07540A" : g_code,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          //setAddedSpec(response.data.data);
+          Swal.fire("Thông báo: ", "Copy XRF Spec thành công", "success");
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
     limit: 100,
@@ -628,9 +649,15 @@ const ADDSPECTDTC = () => {
             }}>Update Spec</Button>
             
           </div>
+          <div className="copydiv" style={{ gap: '10px',display: "flex", alignItems:'center', justifyContent: "space-between", marginTop: "20px", marginBottom: "20px" }}>
           {(testname === "3") && <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#3642b6' }} onClick={() => {
               copyXRFSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
-            }}>Copy XRF Spec</Button>}
+            }}>Copy XRF Spec SS</Button>}
+
+          {(testname === "3") && <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#24ad96' }} onClick={() => {
+              copyXRFSpecSDI(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
+            }}>Copy XRF Spec SDI</Button>}
+          </div>         
           <div
             className="formbutton"
             style={{
