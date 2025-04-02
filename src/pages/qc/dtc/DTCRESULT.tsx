@@ -316,6 +316,8 @@ const DTCRESULT = () => {
             console.log(error);
           });
       }
+      setTestName("1003");
+      setInspectionDataTable([]); 
       if (err_code === "") {
         updateDTCTESEMPL(
           inspectiondatatable[0].DTC_ID,
@@ -375,9 +377,9 @@ const DTCRESULT = () => {
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
                       name="controlled-radio-buttons-group"
-                      value={testname}
+                      value={testname}                     
                       onChange={(e) => {
-                        console.log(e.target.value);
+                        //console.log(e.target.value);
                         setTestName(e.target.value);
                         setTestCode_tenthat(
                           testList.filter( (element: TestListTable) => element.TEST_CODE.toString() === e.target.value)[0].TEST_NAME
@@ -427,7 +429,7 @@ const DTCRESULT = () => {
                                     </Typography>
                                   }
                                   sx={{ fontSize: 5, padding: 0, margin: 0 }}
-                                  control={<Radio />}
+                                  control={<Radio onClick={(e)=> console.log(e.target)}/>}
                                 />
                               </div>
                             );
