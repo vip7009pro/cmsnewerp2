@@ -1644,7 +1644,7 @@ const DATASX = () => {
         { field: 'EQ1', headerName: 'EQ1', resizable: true, width: 50 },
         { field: 'EQ2', headerName: 'EQ2', resizable: true, width: 50 },
         { field: 'PLAN_EQ', headerName: 'PLAN_EQ', resizable: true, width: 50 },
-        { field: 'PLAN_FACTORY', headerName: 'PLAN_FACTORY', resizable: true, width: 50 },
+        { field: 'PLAN_FACTORY', headerName: 'PLAN_FACTORY', resizable: true, width: 50},
         { field: 'PROCESS_NUMBER', headerName: 'PROCESS_NUMBER', resizable: true, width: 50 },
         { field: 'STEP', headerName: 'STEP', resizable: true, width: 50 },
         { field: 'PD', headerName: 'PD', resizable: true, width: 50 },

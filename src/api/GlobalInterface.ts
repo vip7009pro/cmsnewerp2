@@ -4764,6 +4764,7 @@ export interface FULL_ROLL_DATA {
   TON_KIEM_MET: number;
   INSPECT_TOTAL_MET: number;
   INSPECT_OK_MET: number;
+  INSPECT_OUTPUT_MET: number;
   IQC_IN_EA: number;
   OUT_KHO_EA: number;
   LOCK_EA: number;
@@ -4781,6 +4782,7 @@ export interface FULL_ROLL_DATA {
   TON_KIEM_EA: number;
   INSPECT_TOTAL_EA: number;
   INSPECT_OK_EA: number;
+  INSPECT_OUTPUT_EA: number;
 
   IQC_IN_M2: number;
   OUT_KHO_M2: number;
@@ -4799,6 +4801,7 @@ export interface FULL_ROLL_DATA {
   TON_KIEM_M2: number;
   INSPECT_TOTAL_M2: number;
   INSPECT_OK_M2: number;
+  INSPECT_OUTPUT_M2: number;
   
   PROCESS_NUMBER: number;
   STEP: number;

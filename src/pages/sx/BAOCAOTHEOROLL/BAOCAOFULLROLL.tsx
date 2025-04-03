@@ -115,6 +115,9 @@ const BAOCAOFULLROLL = () => {
     { field: 'INSPECT_OK_MET', headerName: 'INSPECT_OK_MET', width: 70, cellRenderer: (params: any) => {
       return <span style={{color: 'blue'}}>{params.value?.toLocaleString('en-US')}</span>;
     } },
+    { field: 'INSPECT_OUTPUT_MET', headerName: 'INSPECT_OUTPUT_MET', width: 70, cellRenderer: (params: any) => {
+      return <span style={{color: 'blue'}}>{params.value?.toLocaleString('en-US')}</span>;
+    } },
     { field: 'IQC_IN_EA', headerName: 'IQC_IN_EA', width: 70, cellRenderer: (params: any) => {
       return <span style={{color: '#17a736'}}>{params.value?.toLocaleString('en-US')}</span>;
     } },
@@ -166,6 +169,9 @@ const BAOCAOFULLROLL = () => {
     { field: 'INSPECT_OK_EA', headerName: 'INSPECT_OK_EA', width: 70, cellRenderer: (params: any) => {
       return <span style={{color: '#17a736'}}>{params.value?.toLocaleString('en-US')}</span>;
     }  },
+    { field: 'INSPECT_OUTPUT_EA', headerName: 'INSPECT_OUTPUT_EA', width: 70, cellRenderer: (params: any) => {
+      return <span style={{color: '#17a736'}}>{params.value?.toLocaleString('en-US')}</span>;
+    }  },
     { field: 'IQC_IN_M2', headerName: 'IQC_IN_M2', width: 70, cellRenderer: (params: any) => {
       return <span style={{color: '#df0000'}}>{params.value?.toLocaleString('en-US')}</span>;
     }  },
@@ -215,6 +221,9 @@ const BAOCAOFULLROLL = () => {
       return <span style={{color: '#df0000'}}>{params.value?.toLocaleString('en-US')}</span>;
     }   },
     { field: 'INSPECT_OK_M2', headerName: 'INSPECT_OK_M2', width: 70, cellRenderer: (params: any) => {
+      return <span style={{color: '#df0000'}}>{params.value?.toLocaleString('en-US')}</span>;
+    }   },
+    { field: 'INSPECT_OUTPUT_M2', headerName: 'INSPECT_OUTPUT_M2', width: 70, cellRenderer: (params: any) => {
       return <span style={{color: '#df0000'}}>{params.value?.toLocaleString('en-US')}</span>;
     }   },
     { field: 'PD', headerName: 'PD', width: 70, cellRenderer: (params: any) => {

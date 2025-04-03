@@ -69,7 +69,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
     return {
       initialWidth: 100,
       wrapHeaderText: true,
-      autoHeaderHeight: false,
+      autoHeaderHeight: true,
       editable: true,
       floatingFilter: ag_data.showFilter ?? true,
       filter: true,
