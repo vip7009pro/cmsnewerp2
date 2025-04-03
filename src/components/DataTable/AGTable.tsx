@@ -10,11 +10,14 @@ import {
 import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
-import { AiFillFileExcel } from 'react-icons/ai';
+import { AiFillCloseCircle, AiFillFileExcel } from 'react-icons/ai';
 import { SaveExcel } from '../../api/GlobalFunction';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ColDef, GridApi } from 'ag-grid-community';
+import PivotTable from '../PivotChart/PivotChart';
+import PivotGridDataSource, { PivotGridDataType } from 'devextreme/ui/pivot_grid/data_source';
+import { MdOutlinePivotTableChart } from 'react-icons/md';
 interface AGInterface {
   data: Array<any>,
   columns?: Array<any>,
@@ -31,6 +34,7 @@ interface AGInterface {
   getRowStyle?: (e: any) => any
 }
 const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
+  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [selectedrow, setSelectedrow] = useState(0);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
@@ -87,6 +91,42 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
     }  
     else return []  
   },[ag_data.data])
+
+
+
+
+  const pivotDatasourcefiels = useMemo(() => {
+    if(ag_data.data.length > 0){
+      let keys = Object.keys(ag_data.data[0]);    
+      return keys.map((key) => {        
+        return {
+          caption: key,
+          width: 80,
+          dataField: key,
+          allowSorting: true,
+          allowFiltering: true,          
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        }        
+      })
+    } 
+    else {
+      return [] 
+    } 
+  },[ag_data.data])
+
+
+ let pvdts =  new PivotGridDataSource({
+    fields: pivotDatasourcefiels,
+    store: ag_data.data,
+  })
+
+
   const onExportClick = () => {
     if (gridRef !== null) {
       gridRef.current!.api.exportDataAsCsv();
@@ -165,6 +205,15 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
           <AiFillFileExcel color="green" size={15} />
           EX2
         </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+          PIVOT
+        </IconButton>
       </div>}
       <div className="ag-theme-quartz">
         <AgGridReact
@@ -216,6 +265,23 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
           </span>
         </div>
       </div>
+      {showhidePivotTable && (
+          <div className="pivottable1">
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(false);
+              }}
+            >
+              <AiFillCloseCircle color="blue" size={15} />
+              Close
+            </IconButton>
+            <PivotTable
+              datasource={pvdts}
+              tableID="datasxtablepivot"
+            />
+          </div>
+        )}       
     </div>
   )
 });
