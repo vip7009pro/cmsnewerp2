@@ -2373,6 +2373,7 @@ const YCSXManager = () => {
     limit: 100,
   });
   const getRowStyle = (params: any) => {
+    //console.log(params.data.USE_YN);
     if (params.data.USE_YN === 'N') {
       return { backgroundColor: '#f5e799', fontSize: '0.6rem' };
     }
