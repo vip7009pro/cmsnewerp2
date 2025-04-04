@@ -3504,6 +3504,8 @@ export const f_handle_xuatdao_sample = async (selectedPlan: QLSXPLANDATA) => {
           CA_LAM_VIEC: "Day",
           EMPL_NO: getUserData()?.EMPL_NO,
           KNIFE_FILM_NO: "1K22LH20",
+          PD: selectedPlan?.PD,
+          CAVITY: selectedPlan?.CAVITY
         })
           .then((response) => {
             //console.log(response.data.data);
