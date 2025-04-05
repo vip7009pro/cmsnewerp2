@@ -4055,7 +4055,7 @@ export const f_traYCSX = async (searchFilter: any) => {
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
+        console.log(response.data);
         const loadeddata: YCSXTableData[] = response.data.data.map(
           (element: YCSXTableData, index: number) => {
             return {

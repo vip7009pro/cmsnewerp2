@@ -2,7 +2,7 @@ import { Button, Autocomplete, TextField, createFilterOptions } from "@mui/mater
 import moment from "moment";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
 import { useSelector } from "react-redux";
@@ -649,7 +649,7 @@ const ADDSPECTDTC = () => {
             }}>Update Spec</Button>
             
           </div>
-          <div className="copydiv" style={{ gap: '10px',display: "flex", alignItems:'center', justifyContent: "space-between", marginTop: "20px", marginBottom: "20px" }}>
+          {(getCompany()==='CMS') &&<div className="copydiv" style={{ gap: '10px',display: "flex", alignItems:'center', justifyContent: "space-between", marginTop: "20px", marginBottom: "20px" }}>
           {(testname === "3") && <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#3642b6' }} onClick={() => {
               copyXRFSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
             }}>Copy XRF Spec SS</Button>}
@@ -657,7 +657,7 @@ const ADDSPECTDTC = () => {
           {(testname === "3") && <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#24ad96' }} onClick={() => {
               copyXRFSpecSDI(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
             }}>Copy XRF Spec SDI</Button>}
-          </div>         
+          </div>  }       
           <div
             className="formbutton"
             style={{

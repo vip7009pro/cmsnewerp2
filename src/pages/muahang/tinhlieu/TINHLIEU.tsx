@@ -757,14 +757,14 @@ const TINHLIEU = () => {
             }}>MRP BY PLAN</Button>}
           </div>
           <br></br>
-          <div className="formbutton">
+          {(getCompany() ==='CMS' || getCompany()==='PVN') && <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#19fc51', color: 'black' }} onClick={() => {
               handleConfirmUnLockMaterial();
             }}>MỞ LIỆU</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f80404' }} onClick={() => {
               handleConfirmLockMaterial();
             }}>KHÓA LIỆU</Button>
-          </div>
+          </div>}
         </div>
         <div className="tracuuYCSXTable">{materialDataTable2}</div>
       </div>

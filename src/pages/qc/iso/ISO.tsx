@@ -4,6 +4,7 @@ import RNR from "./RNR/RNR";
 import AUDIT from "./AUDIT/AUDIT";
 import ALLDOC from "./DOCUMENT/ALLDOC";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { getCompany } from "../../../api/Api";
 const ISO = () => {
   useEffect(() => {}, []);
   return (
@@ -19,11 +20,11 @@ const ISO = () => {
             <AUDIT />
           </div>
         </MyTabs.Tab>
-        <MyTabs.Tab title="DOCUMENT">
+        {(getCompany() ==='CMS') && <MyTabs.Tab title="DOCUMENT">
           <div className="audit">
             <ALLDOC />
           </div>
-        </MyTabs.Tab>
+        </MyTabs.Tab>}
       </MyTabs>
     </div>
   );

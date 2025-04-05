@@ -4814,3 +4814,40 @@ export interface FULL_ROLL_DATA {
    
   
 }
+
+export interface LUONGP3_DATA {
+  PLAN_ID: string;
+  PLAN_DATE: string;
+  PLAN_QTY: number;
+  SX_DATE: string;
+  PLAN_EQ: string;
+  EQ_NAME: string;
+  INS_EMPL: string;
+  FULL_NAME: string;
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  DESCR: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_PRICE: number;
+  USED_QTY: number;
+  PR_NG: number;
+  SETTING_MET: number;
+  OK_MET: number;
+  OK_EA: number;
+  DM_SETTING: number;
+  DM_LOSS_SX: number;
+  PD: number;
+  DON_GIA_IN: number;
+  PROD_PRINT_TIMES: number;
+  FILM_OUT_TIMES: number;
+  THUA_THIEU_MET: number;
+  THUA_THIEU_M2: number;
+  THUA_THIEU_AMOUNT: number;
+  PRINT_QTY_AMOUNT: number;
+  OUT_FILM_AMOUNT: number;
+  TOTAL_P3_AMOUNT: number;
+}

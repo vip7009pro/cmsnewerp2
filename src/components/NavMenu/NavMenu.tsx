@@ -33,7 +33,7 @@ import {
   FaFileImport,
   FaChalkboardTeacher,
 } from "react-icons/fa";
-import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp, BiUpload } from "react-icons/bi";
+import { BiCart, BiMoney, BiSortAZ, BiTrendingDown, BiTrendingUp, BiUpload } from "react-icons/bi";
 import {
   FcPlanner,
   FcSettings,
@@ -595,6 +595,12 @@ const NavMenu = () => {
           icon: <FcBullish color="#ec3ede" size={15} />,
           MENU_CODE: "SX13",
         },
+        /* {
+          title: getlang("tinhluongP3", lang),
+          path: "sx/tinhluongP3",
+          icon: <BiMoney color="green" size={15} />,
+          MENU_CODE: "SX18",
+        }, */
       ],
     },
     {
@@ -1052,6 +1058,12 @@ const NavMenu = () => {
           icon: <AiOutlineCalendar color="blue" size={15} />,
           MENU_CODE: "QL6",
         },
+        {
+          title: getlang("tinhluongP3", lang),
+          path: "sx/tinhluongP3",
+          icon: <BiMoney color="green" size={15} />,
+          MENU_CODE: "SX18",
+        },
       ],
     },
     {
@@ -1127,6 +1139,12 @@ const NavMenu = () => {
           path: "sx/planresult",
           icon: <BiTrendingUp color="green" size={15} />,
           MENU_CODE: "SX12",
+        },
+        {
+          title: getlang("tinhluongP3", lang),
+          path: "sx/tinhluongP3",
+          icon: <BiMoney color="green" size={15} />,
+          MENU_CODE: "SX18",
         },
       ],
     },

@@ -15,8 +15,9 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = getCompany() === "CMS" ? 2593 : 422;
 
+export const current_ver: number = getCompany() === "CMS" ? 2593 : 422;
+const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
 const PostManager = React.lazy(() => import("../information_board/PostManager"));
 const Information = React.lazy(() => import("../information_board/Information"));
 const AddInfo = React.lazy(() => import("../information_board/AddInfo"));
@@ -473,6 +474,11 @@ function Home() {
       MENU_ITEM: <KHOSX />,
     },
     {
+      MENU_CODE: "SX18",
+      MENU_NAME: getlang("tinhluongP3", lang),
+      MENU_ITEM: <TINHLUONGP3 />,
+    },
+    {
       MENU_CODE: "SX11",
       MENU_NAME: getlang("quanlycapa", lang),
       MENU_ITEM: <CAPA_MANAGER />,
@@ -892,6 +898,11 @@ function Home() {
       MENU_CODE: "SX12",
       MENU_NAME: getlang("hieusuatsx", lang),
       MENU_ITEM: <PLANRESULT />,
+    },
+    {
+      MENU_CODE: "SX18",
+      MENU_NAME: getlang("tinhluongP3", lang),
+      MENU_ITEM: <TINHLUONGP3 />,
     },
     {
       MENU_CODE: "KO1",

@@ -33,6 +33,7 @@ export const f_handleLoadFullRollData = async (data: any) => {
   return kq;
 }
 const BAOCAOFULLROLL = () => {
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
@@ -295,7 +296,7 @@ const BAOCAOFULLROLL = () => {
   return (
     <div className='baocaofullroll'>
       <div className='tracuuDataInspection'>
-        <div className="tracuuDataInspectionform">
+        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>

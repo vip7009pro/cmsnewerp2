@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  tinhluongP3: "Tính lương P3",
   baocaofullroll: "Báo cáo full Roll",
   post_manager: "Quản lý bảng tin",
   information_register: "Đăng tin",
@@ -162,6 +163,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  tinhluongP3: "P3 Salary calculation",
   baocaofullroll: "Full Roll Report",
   post_manager: "Post Manager",
   information_register: "Post Info",
@@ -312,6 +314,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  tinhluongP3: "P3 급여 계산",
   baocaofullroll: "풀 롤 리포트",
   post_manager: "계시판 관리",
   information_register: "정보 등록",
