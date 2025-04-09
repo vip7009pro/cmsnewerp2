@@ -30,7 +30,7 @@ import { getlang } from "../../../components/String/String";
 import MyTabs from "../../../components/MyTab/MyTab";
 
 
-const QuanLyPhongBanNhanSu = () => {
+const QuanLyPhongBanNhanSu_Old = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -1627,4 +1627,4 @@ const QuanLyPhongBanNhanSu = () => {
   );
 };
 
-export default QuanLyPhongBanNhanSu;
+export default QuanLyPhongBanNhanSu_Old;

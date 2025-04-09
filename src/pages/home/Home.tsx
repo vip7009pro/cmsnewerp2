@@ -15,8 +15,9 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-
 export const current_ver: number = getCompany() === "CMS" ? 2593 : 422;
+
+const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
 const PostManager = React.lazy(() => import("../information_board/PostManager"));
 const Information = React.lazy(() => import("../information_board/Information"));
@@ -552,7 +553,7 @@ function Home() {
     {
       MENU_CODE: "NS1",
       MENU_NAME: getlang("quanlyphongban", lang),
-      MENU_ITEM: <QuanLyPhongBanNhanSu />,
+      MENU_ITEM: <QuanLyPhongBanNhanSu_Old />,
     },
     {
       MENU_CODE: "NS2",
