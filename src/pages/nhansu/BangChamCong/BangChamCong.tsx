@@ -2543,7 +2543,7 @@ const BANGCHAMCONG = () => {
                 ["ALL"],
                 handleFixTime
               );
-            }}>FIX MANUAL TIME</Button>
+            }}>UPDATE FIX TIME</Button>
             <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f78923' }} onClick={() => {
               checkBP(
                 userData,

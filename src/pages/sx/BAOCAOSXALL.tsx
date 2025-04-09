@@ -38,9 +38,9 @@ const BAOCAOSXALL = () => {
           <MyTabs.Tab title={getlang("sxrolldata", lang)}>
             <BAOCAOTHEOROLL />
           </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("baocaofullroll", lang)}>
+          {getCompany()==='CMS' && <MyTabs.Tab title={getlang("baocaofullroll", lang)}>
             <BAOCAOFULLROLL />
-          </MyTabs.Tab>
+          </MyTabs.Tab>}
           <MyTabs.Tab title="Plan-Result">
             <ACHIVEMENTTB />
           </MyTabs.Tab>
