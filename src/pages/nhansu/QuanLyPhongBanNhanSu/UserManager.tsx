@@ -20,6 +20,7 @@ import { RootState } from "../../../redux/store";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
+import moment from "moment";
 const UserManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
@@ -56,14 +57,14 @@ const UserManager = () => {
     FIRST_NAME: "",
     MIDLAST_NAME: "",
     FULL_NAME: "",
-    DOB: "",
+    DOB: moment().format("YYYY-MM-DD"),
     HOMETOWN: "",
     ADD_PROVINCE: "",
     ADD_DISTRICT: "",
     ADD_COMMUNE: "",
     ADD_VILLAGE: "",
     PHONE_NUMBER: "",
-    WORK_START_DATE: "",
+    WORK_START_DATE:  moment().format("YYYY-MM-DD"),
     PASSWORD: "",
     EMAIL: "",
     REMARK: "",
@@ -75,7 +76,7 @@ const UserManager = () => {
     WORK_STATUS_CODE: 0,
     WORK_STATUS_NAME: "",
     WORK_STATUS_NAME_KR: "",
-    FACTORY_CODE: 0,
+    FACTORY_CODE: 1,
     FACTORY_NAME: "",
     FACTORY_NAME_KR: "",
     JOB_CODE: 0,
@@ -87,7 +88,7 @@ const UserManager = () => {
     WORK_SHIFT_CODE: 0,
     WORK_SHIF_NAME: "",
     WORK_SHIF_NAME_KR: "",
-    WORK_POSITION_CODE: 0,
+    WORK_POSITION_CODE: 1,
     WORK_POSITION_NAME: "",
     WORK_POSITION_NAME_KR: "",
     ATT_GROUP_CODE: 0,
@@ -99,7 +100,7 @@ const UserManager = () => {
     MAINDEPTNAME_KR: "",
     NV_CCID: 0,
     EMPL_IMAGE: "",
-    RESIGN_DATE: "",
+    RESIGN_DATE:  moment().format("YYYY-MM-DD"),
   });
   const columns = [
     {
