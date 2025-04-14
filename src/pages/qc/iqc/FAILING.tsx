@@ -26,10 +26,11 @@ const FAILING = () => {
   );
   const [testtype, setTestType] = useState("NVL");
   const [m_lot_no, setM_LOT_NO] = useState("");
+  const [process_lot_no, setProcessLotNo] = useState("");
   const [request_empl, setrequest_empl] = useState("");
   const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
+  const [inspectiondatatable, setInspectionDataTable] = useState<Array<QC_FAIL_DATA>>([]);
   const selectedRowsDataA = useRef<Array<QC_FAIL_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
@@ -80,6 +81,13 @@ const FAILING = () => {
           <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', backgroundColor: '#ff0000', borderRadius: '5px'}}>{params.data.VENDOR_LOT}</div>
         )
       }
+    } },
+    { field: 'PROCESS_LOT_NO', headerName: 'LOT_SX', resizable: true, width: 70, cellRenderer: (params: any) => {
+     
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', backgroundColor: '#aae1f1', borderRadius: '5px'}}>{params.data.PROCESS_LOT_NO}</div>
+        )
+      
     } },
     { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80, cellRenderer: (params: any) => {
       if(params.data.IN2_EMPL === null || params.data.IN2_EMPL === "") {  
@@ -519,7 +527,7 @@ const FAILING = () => {
         console.log(error);
       });
   };
-  const checkLotNVL = (M_LOT_NO: string) => {
+  const checkLotNVL = async (M_LOT_NO: string) => {
     generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -555,6 +563,67 @@ const FAILING = () => {
           setOut_Date("");
           setVendorLot("");
           //setPlanId("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const checkLotNVL_BTP = async (M_LOT_NO: string) => {
+    generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          setM_Name(
+            response.data.data[0].M_NAME +
+            " | " +
+            response.data.data[0].WIDTH_CD,
+          );
+          setM_Code(response.data.data[0].M_CODE);
+          setWidthCD(response.data.data[0].WIDTH_CD);         
+          setVendorLot(response.data.data[0].LOTNCC ?? "");
+          //setPlanId(response.data.data[0].PLAN_ID ?? "");
+        
+          setLieuQL_SX(
+            response.data.data[0].LIEUQL_SX === null
+              ? "0"
+              : response.data.data[0].LIEUQL_SX,
+          );
+          setOut_Date(response.data.data[0].OUT_DATE);
+        } else {
+          setM_Name("");
+          setM_Code("");
+          setWidthCD(0);
+          setRollQty(0);
+          setInCFMQTY(0);
+          setLieuQL_SX(0);
+          setOut_Date("");
+          setVendorLot("");
+          //setPlanId("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const checkLotProcess = (PROCESS_LOT_NO: string) => {
+    generalQuery("checkProcessLotNoInfo", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+      .then(async (response) => {
+        if (response.data.tk_status !== "NG") {
+          let M_LOT_NO: string = response.data.data[0].M_LOT_NO;
+          let TOTAL_IN_QTY: number = response.data.data[0].BTP_MET;       
+          let LOT_PLAN_ID: string = response.data.data[0].PLAN_ID;
+
+          console.log('BTP_MET', TOTAL_IN_QTY);
+          setPlanId(LOT_PLAN_ID);
+          setM_LOT_NO(M_LOT_NO);
+          await checkLotNVL_BTP(M_LOT_NO);
+          await checkPlanID(LOT_PLAN_ID);
+          await checkPQC3_ID(LOT_PLAN_ID);
+          setRollQty(1);
+          setInCFMQTY(TOTAL_IN_QTY);        
+        } else {
+         
         }
       })
       .catch((error) => {
@@ -615,7 +684,9 @@ const FAILING = () => {
       REMARK_OUT: "",
       FAIL_ID: 0,
       NCR_ID: 0,
+      PROCESS_LOT_NO: process_lot_no
     };
+    console.log(temp_row)
     setInspectionDataTable((prev) => {
       return [...prev, temp_row];
     });
@@ -658,6 +729,7 @@ const FAILING = () => {
           OUT_PLAN_ID: inspectiondatatable[i].OUT_PLAN_ID,
           IN_CUST_CD: inspectiondatatable[i].IN_CUST_CD,
           OUT_CUST_CD: inspectiondatatable[i].OUT_CUST_CD,
+          PROCESS_LOT_NO: inspectiondatatable[i].PROCESS_LOT_NO,
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {
@@ -671,7 +743,23 @@ const FAILING = () => {
             console.log(error);
           });
         if(await f_isM_LOT_NO_in_P500(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO)){
-          await f_resetIN_KHO_SX_IQC2(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO);        
+          await f_resetIN_KHO_SX_IQC2(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO);
+          if(inspectiondatatable[i].PHANLOAI ==='BTP') {
+            await generalQuery("updateLOT_SX_STATUS", { PROCESS_LOT_NO : inspectiondatatable[i].PROCESS_LOT_NO, LOT_STATUS: 'IQ' })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                //console.log(response.data.data);
+                
+              } else {
+                
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+          }
+          
         }  
         else 
         {
@@ -823,7 +911,7 @@ const FAILING = () => {
               </div>
               <div className="forminputcolumn">
                 <label>
-                  <b>Số chỉ thị sản xuất:</b>
+                  <b>Số chỉ thị SX:</b>
                   <input
                     type="text"
                     placeholder="1F80008A"
@@ -852,11 +940,11 @@ const FAILING = () => {
                   </span>
                 )}
                 <label>
-                  <b>LOT NVL ERP:</b>
+                  <b>{testtype==='NVL' ? 'LOT NVL':'LOT SX'}:</b>
                   <input
                     type="text"
-                    placeholder="202304190123"
-                    value={m_lot_no}
+                    placeholder={testtype==='NVL' ? '202304190123':'1E75DC03'}
+                    value={testtype==='NVL' ? m_lot_no : process_lot_no}
                     onKeyDown={(e) => {
                       handleKeyDown(e);
                     }}
@@ -864,9 +952,18 @@ const FAILING = () => {
                       //console.log(e.target.value.length);
                       if (e.target.value.length >= 7) {
                         //console.log(e.target.value);
-                        checkLotNVL(e.target.value);
+                        if (testtype === 'NVL') {
+                          checkLotNVL(e.target.value);
+                        } else {
+                          checkLotProcess(e.target.value);
+                        }                       
                       }
+                      if(testtype === 'NVL') {
                       setM_LOT_NO(e.target.value);
+                      }
+                      else {
+                        setProcessLotNo(e.target.value);
+                      }
                     }}
                   ></input>
                 </label>

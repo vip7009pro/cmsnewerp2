@@ -1527,6 +1527,7 @@ export interface QC_FAIL_DATA {
   REMARK_OUT: string;
   FAIL_ID: number;
   NCR_ID: number;
+  PROCESS_LOT_NO: string;
 }
 //error table
 export interface ERROR_TABLE {

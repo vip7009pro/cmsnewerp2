@@ -15,7 +15,7 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 
-export const current_ver: number = getCompany() === "CMS" ? 2594 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2595 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));

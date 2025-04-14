@@ -294,7 +294,7 @@ const LICHSUTEMLOTSX = () => {
   }, [lichsutemlotdata, columns_lichsutemlot]);
 
   const handleCancelLot = async (PROCESS_LOT_NO: string) => {
-      checkBP(getUserData(), ["SX"], ["Leader"], ["DTL1906","THU1402"], async () => {
+      if(getUserData()?.EMPL_NO==='NHU1903') {
         Swal.fire({
           title: "Hủy LOT",
           text: "Chắc chắn muốn Hủy LOT ?",
@@ -311,7 +311,10 @@ const LICHSUTEMLOTSX = () => {
             Swal.fire('Thông báo','Hủy thành công','success');
           }
         });      
-      });   
+      }
+      else {
+        Swal.fire("Thông báo", "Bạn không có quyền hủy lot", "error");
+      };   
   }
 
   const loadLabelDesign = async() => {
