@@ -11,9 +11,9 @@ import {
   GridRowsProp,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { generalQuery, getCompany } from "../../../api/Api";
-import "./LichSu.scss";
+import "./LichSu_New.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel, weekdayarray } from "../../../api/GlobalFunction";
@@ -21,8 +21,11 @@ import moment from "moment";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
+import AGTable from "../../../components/DataTable/AGTable";
+import { IconButton } from "@mui/material";
+import { BiLoaderCircle } from "react-icons/bi";
 
-const LichSu = () => {
+const LichSu_New = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -36,19 +39,19 @@ const LichSu = () => {
   const columns_diemdanhnhom = getCompany()==='CMS' ? [
     {
       field: "DATE_COLUMN",
-      headerName: "DATE_COLUMN",
-      width: 120,headerClassName: 'super-app-theme--header',      
+      headerName: "DATE",
+      width: 60,headerClassName: 'super-app-theme--header',      
     },
     {
       field: "WEEKDAY",
       headerName: "WEEKDAY",
-      width: 120,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if (params.row.WEEKDAY === "Sunday") {
+      width: 60,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
+        if (params.data.WEEKDAY === "Sunday") {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>
-                {params.row.WEEKDAY}
+                {params.data.WEEKDAY}
               </span>
             </div>
           );
@@ -56,7 +59,7 @@ const LichSu = () => {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "#4268F4" }}>
-                {params.row.WEEKDAY}
+                {params.data.WEEKDAY}
               </span>
             </div>
           );
@@ -66,15 +69,15 @@ const LichSu = () => {
     {
       field: "ON_OFF",
       headerName: "ON_OFF",
-      width: 120,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if (params.row.ON_OFF === 1) {
+      width: 70,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
+        if (params.data.ON_OFF === 1) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>Đi làm</span>
             </div>
           );
-        } else if (params.row.ON_OFF === 0) {
+        } else if (params.data.ON_OFF === 0) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
@@ -94,12 +97,12 @@ const LichSu = () => {
     {
       field: "CHECK1",
       headerName: "CHECK1",
-      width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.CHECK1}
+              {params.data.CHECK1}
             </span>
           </div>
         );
@@ -108,12 +111,12 @@ const LichSu = () => {
     {
       field: "CHECK2",
       headerName: "CHECK2",
-      width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.CHECK2}
+              {params.data.CHECK2}
             </span>
           </div>
         );
@@ -122,12 +125,12 @@ const LichSu = () => {
     {
       field: "CHECK3",
       headerName: "CHECK3",
-      width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.CHECK3}
+              {params.data.CHECK3}
             </span>
           </div>
         );
@@ -136,14 +139,14 @@ const LichSu = () => {
     {
       field: "IN_TIME",
       headerName: "FIXED_IN",
-      width: 90,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if(params.row.IN_TIME !== 'OFF')
+      width: 70,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
+        if(params.data.IN_TIME !== 'OFF')
         {
           return (
             <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>
-                {params.row.IN_TIME}
+              <span style={{ fontWeight: "bold", color: "blue" }}>
+                {params.data.IN_TIME}
               </span>
             </div>
           );    
@@ -151,7 +154,7 @@ const LichSu = () => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "red" }}>
-              {params.row.IN_TIME}
+              {params.data.IN_TIME}
             </span>
           </div>
         );
@@ -160,14 +163,14 @@ const LichSu = () => {
     {
       field: "OUT_TIME",
       headerName: "FIXED_OUT",
-      width: 90,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if(params.row.OUT_TIME !== 'OFF')
+      width: 70,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
+        if(params.data.OUT_TIME !== 'OFF')
         {
           return (
             <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>
-                {params.row.OUT_TIME}
+              <span style={{ fontWeight: "bold", color: "blue" }}>
+                {params.data.OUT_TIME}
               </span>
             </div>
           );    
@@ -175,7 +178,7 @@ const LichSu = () => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "red" }}>
-              {params.row.OUT_TIME}
+              {params.data.OUT_TIME}
             </span>
           </div>
         );
@@ -184,12 +187,12 @@ const LichSu = () => {
     {
       field: "EARLY_IN_MINUTES",
       headerName: "DI_SOM",
-      width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "green" }}>
-              {params.row.EARLY_IN_MINUTES}
+              {params.data.EARLY_IN_MINUTES}
             </span>
           </div>
         );
@@ -198,12 +201,12 @@ const LichSu = () => {
     {
       field: "LATE_IN_MINUTES",
       headerName: "DI_MUON",
-      width: 80,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "red" }}>
-              {params.row.LATE_IN_MINUTES}
+              {params.data.LATE_IN_MINUTES}
             </span>
           </div>
         );
@@ -212,12 +215,12 @@ const LichSu = () => {
     {
       field: "EARLY_OUT_MINUTES",
       headerName: "VE_SOM",
-      width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "red" }}>
-              {params.row.EARLY_OUT_MINUTES}
+              {params.data.EARLY_OUT_MINUTES}
             </span>
           </div>
         );
@@ -226,12 +229,12 @@ const LichSu = () => {
     {
       field: "OVERTIME_MINUTES",
       headerName: "TANG_CA",
-      width: 80,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 50,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "green" }}>
-              {params.row.OVERTIME_MINUTES}
+              {params.data.OVERTIME_MINUTES}
             </span>
           </div>
         );
@@ -240,12 +243,12 @@ const LichSu = () => {
     {
       field: "WORKING_MINUTES",
       headerName: "HANH_CHINH",
-      width: 100,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 70,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "blue" }}>
-              {params.row.WORKING_MINUTES}
+              {params.data.WORKING_MINUTES}
             </span>
           </div>
         );
@@ -254,12 +257,12 @@ const LichSu = () => {
     {
       field: "FINAL_OVERTIMES",
       headerName: "FIX_TANG_CA",
-      width: 100,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      width: 70,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "blue" }}>
-              {params.row.FINAL_OVERTIMES}
+              {params.data.FINAL_OVERTIMES}
             </span>
           </div>
         );
@@ -268,15 +271,15 @@ const LichSu = () => {
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 100,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if (params.row.APPROVAL_STATUS === 0) {
+      width: 60,headerClassName: 'super-app-theme--header',
+      cellRenderer: (params: any) => {
+        if (params.data.APPROVAL_STATUS === 0) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
             </div>
           );
-        } else if (params.row.APPROVAL_STATUS === 1) {
+        } else if (params.data.APPROVAL_STATUS === 1) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>
@@ -284,7 +287,7 @@ const LichSu = () => {
               </span>
             </div>
           );
-        } else if (params.row.APPROVAL_STATUS === 2) {
+        } else if (params.data.APPROVAL_STATUS === 2) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "white" }}>
@@ -297,12 +300,12 @@ const LichSu = () => {
         }
       },
     },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 80,headerClassName: 'super-app-theme--header' },
     { field: "REMARK", headerName: "REMARK", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClassName: 'super-app-theme--header' },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 50,headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 50,headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 90,headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 70,headerClassName: 'super-app-theme--header' },
     { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClassName: 'super-app-theme--header' },
     { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClassName: 'super-app-theme--header' },
     { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClassName: 'super-app-theme--header' },
@@ -325,11 +328,11 @@ const LichSu = () => {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
       width: 120,headerClassName: 'super-app-theme--header',  
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
          
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.REQUEST_DATE}
+              {params.data.REQUEST_DATE}
             </span>
           
         );
@@ -346,12 +349,12 @@ const LichSu = () => {
       field: "WEEKDAY",
       headerName: "WEEKDAY",
       width: 120,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if (params.row.WEEKDAY === "Sunday") {
+      cellRenderer: (params: any) => {
+        if (params.data.WEEKDAY === "Sunday") {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>
-                {params.row.WEEKDAY}
+                {params.data.WEEKDAY}
               </span>
             </div>
           );
@@ -359,7 +362,7 @@ const LichSu = () => {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "#4268F4" }}>
-                {params.row.WEEKDAY}
+                {params.data.WEEKDAY}
               </span>
             </div>
           );
@@ -370,14 +373,14 @@ const LichSu = () => {
       field: "ON_OFF",
       headerName: "ON_OFF",
       width: 120,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if (params.row.ON_OFF === 1) {
+      cellRenderer: (params: any) => {
+        if (params.data.ON_OFF === 1) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>Đi làm</span>
             </div>
           );
-        } else if (params.row.ON_OFF === 0) {
+        } else if (params.data.ON_OFF === 0) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
@@ -398,11 +401,11 @@ const LichSu = () => {
       field: "CHECK1",
       headerName: "CHECK1",
       width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.CHECK1}
+              {params.data.CHECK1}
             </span>
           </div>
         );
@@ -412,11 +415,11 @@ const LichSu = () => {
       field: "CHECK2",
       headerName: "CHECK2",
       width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.CHECK2}
+              {params.data.CHECK2}
             </span>
           </div>
         );
@@ -426,11 +429,11 @@ const LichSu = () => {
       field: "CHECK3",
       headerName: "CHECK3",
       width: 70,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.CHECK3}
+              {params.data.CHECK3}
             </span>
           </div>
         );
@@ -440,14 +443,14 @@ const LichSu = () => {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
       width: 100,headerClassName: 'super-app-theme--header',
-      renderCell: (params: any) => {
-        if (params.row.APPROVAL_STATUS === 0) {
+      cellRenderer: (params: any) => {
+        if (params.data.APPROVAL_STATUS === 0) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
             </div>
           );
-        } else if (params.row.APPROVAL_STATUS === 1) {
+        } else if (params.data.APPROVAL_STATUS === 1) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>
@@ -455,7 +458,7 @@ const LichSu = () => {
               </span>
             </div>
           );
-        } else if (params.row.APPROVAL_STATUS === 2) {
+        } else if (params.data.APPROVAL_STATUS === 2) {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "white" }}>
@@ -496,11 +499,11 @@ const LichSu = () => {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
       width: 120,headerClassName: 'super-app-theme--header',  
-      renderCell: (params: any) => {
+      cellRenderer: (params: any) => {
         return (
          
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {params.row.REQUEST_DATE}
+              {params.data.REQUEST_DATE}
             </span>
           
         );
@@ -580,12 +583,47 @@ const LichSu = () => {
       });
   };
 
+  const workHistoryAGTable = useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+       
+        toolbar={
+          <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleSearch();                
+              }}
+            >
+              <BiLoaderCircle color="#06cc70" size={15} />
+              Load Data
+            </IconButton>  
+          </div>}
+        columns={columns_diemdanhnhom}
+        data={diemdanhnhomtable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onRowClick={(params: any) => {
+          
+          //console.log(e.data) 
+        }} onSelectionChange={(params: any) => {
+          //console.log(params)
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+        }} onRowDoubleClick={(params: any) => {
+          
+        }}
+      />
+    )
+  }, [columns_diemdanhnhom, diemdanhnhomtable])
+
   useEffect(() => {
     setisLoading(true);
     handleSearch();
   }, []);
   return (
-    (<div className='lichsu'>
+    (<div className='lichsu_new'>
       <div className='filterform'>
         <label>
           <b>From Date:</b>
@@ -613,29 +651,12 @@ const LichSu = () => {
         </button>
       </div>
       <div className='maindept_table'>
-        <DataGrid
-          sx={{
-            fontSize: "0.7rem", '& .super-app-theme--header': {
-              backgroundColor: 'rgba(10, 138, 170, 0.775)',
-              fontSize:'0.8rem',
-              color:'white'
-            },
-          }}
-          columnHeaderHeight={20}
-          slots={{
-            toolbar: CustomToolbar,
-            
-          }}
-          loading={isLoading}
-          rowHeight={35}
-          rows={diemdanhnhomtable}
-          columns={columns_diemdanhnhom}
-          pageSizeOptions={[5, 10, 50, 100, 500]}
-          editMode='row'
-          getRowHeight={() => "auto"}
-        />
+        {
+          workHistoryAGTable
+        }
+       
       </div>
     </div>)
   );
 };
-export default LichSu;
+export default LichSu_New;

@@ -14,6 +14,7 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
+import LichSu_New from "../nhansu/LichSu/LichSu_New";
 
 export const current_ver: number = getCompany() === "CMS" ? 2596 : 423;
 
@@ -162,7 +163,7 @@ function Home() {
     {
       MENU_CODE: "NS6",
       MENU_NAME: getlang("lichsudilam", lang),
-      MENU_ITEM: <LichSu />,
+      MENU_ITEM: <LichSu_New />,
     },
     {
       MENU_CODE: "NS7",
