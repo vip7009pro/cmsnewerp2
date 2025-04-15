@@ -94,7 +94,7 @@ const LichSu = () => {
     {
       field: "CHECK1",
       headerName: "CHECK1",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 70,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -108,7 +108,7 @@ const LichSu = () => {
     {
       field: "CHECK2",
       headerName: "CHECK2",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 70,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -122,7 +122,7 @@ const LichSu = () => {
     {
       field: "CHECK3",
       headerName: "CHECK3",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 70,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -134,9 +134,121 @@ const LichSu = () => {
       },
     },
     {
+      field: "IN_TIME",
+      headerName: "FIXED_IN",
+      width: 90,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.IN_TIME}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "OUT_TIME",
+      headerName: "FIXED_OUT",
+      width: 90,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.OUT_TIME}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "EARLY_IN_MINUTES",
+      headerName: "DI_SOM",
+      width: 70,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "green" }}>
+              {params.row.EARLY_IN_MINUTES}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "LATE_IN_MINUTES",
+      headerName: "DI_MUON",
+      width: 80,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "red" }}>
+              {params.row.LATE_IN_MINUTES}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "EARLY_OUT_MINUTES",
+      headerName: "VE_SOM",
+      width: 70,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "red" }}>
+              {params.row.EARLY_OUT_MINUTES}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "OVERTIME_MINUTES",
+      headerName: "TANG_CA",
+      width: 80,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "green" }}>
+              {params.row.OVERTIME_MINUTES}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "WORKING_MINUTES",
+      headerName: "HANH_CHINH",
+      width: 100,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "blue" }}>
+              {params.row.WORKING_MINUTES}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "FINAL_OVERTIMES",
+      headerName: "FIX_TANG_CA",
+      width: 100,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "blue" }}>
+              {params.row.FINAL_OVERTIMES}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 100,headerClassName: 'super-app-theme--header',
       renderCell: (params: any) => {
         if (params.row.APPROVAL_STATUS === 0) {
           return (
@@ -165,6 +277,8 @@ const LichSu = () => {
         }
       },
     },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 100,headerClassName: 'super-app-theme--header' },
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClassName: 'super-app-theme--header' },
     { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header' },
     { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClassName: 'super-app-theme--header' },
@@ -172,8 +286,7 @@ const LichSu = () => {
     { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClassName: 'super-app-theme--header' },
     { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClassName: 'super-app-theme--header' },
     { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "REMARK", headerName: "REMARK", width: 170,headerClassName: 'super-app-theme--header' },
+   
     { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClassName: 'super-app-theme--header' },
     { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClassName: 'super-app-theme--header' },
     { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClassName: 'super-app-theme--header' },
@@ -254,7 +367,7 @@ const LichSu = () => {
                 CHECK3:
                   element.CHECK3 !== null
                     ? moment.utc(element.CHECK3).format("HH:mm:ss")
-                    : "",
+                    : "",               
                 id: index,
               };
             }

@@ -945,6 +945,14 @@ export interface DiemDanhLichSuData {
   CHECK1: string;
   CHECK2: string;
   CHECK3: string;
+  IN_TIME: string;
+  OUT_TIME: string;
+  EARLY_IN_MINUTES: number,
+  EARLY_OUT_MINUTES: number,
+  LATE_IN_MINUTES: number,
+  OVERTIME_MINUTES: number,
+  WORKING_MINUTES: number,
+  FINAL_OVERTIMES: number 
 }
 export interface PheDuyetNghiData {
   id: string;
