@@ -12,7 +12,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import "./LichSu.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -33,7 +33,7 @@ const LichSu = () => {
   >([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-01"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const columns_diemdanhnhom = [
+  const columns_diemdanhnhom = getCompany()==='CMS' ? [
     {
       field: "DATE_COLUMN",
       headerName: "DATE_COLUMN",
@@ -245,6 +245,177 @@ const LichSu = () => {
         );
       },
     },
+    {
+      field: "PHE_DUYET",
+      headerName: "PHE_DUYET",
+      width: 100,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        if (params.row.APPROVAL_STATUS === 0) {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
+            </div>
+          );
+        } else if (params.row.APPROVAL_STATUS === 1) {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "green" }}>
+                Phê duyệt
+              </span>
+            </div>
+          );
+        } else if (params.row.APPROVAL_STATUS === 2) {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "white" }}>
+                Chờ duyệt
+              </span>
+            </div>
+          );
+        } else {
+          return <div className='onoffdiv'></div>;
+        }
+      },
+    },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClassName: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClassName: 'super-app-theme--header' },
+   
+    { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    {
+      field: "WORK_POSITION_NAME",
+      headerName: "WORK_POSITION_NAME",
+      width: 120,headerClassName: 'super-app-theme--header',
+    },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
+    {
+      field: "REQUEST_DATE",
+      headerName: "REQUEST_DATE",
+      width: 120,headerClassName: 'super-app-theme--header',  
+      renderCell: (params: any) => {
+        return (
+         
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.REQUEST_DATE}
+            </span>
+          
+        );
+      },  
+    },
+    { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClassName: 'super-app-theme--header' },
+  ]: [
+    {
+      field: "DATE_COLUMN",
+      headerName: "DATE_COLUMN",
+      width: 120,headerClassName: 'super-app-theme--header',      
+    },
+    {
+      field: "WEEKDAY",
+      headerName: "WEEKDAY",
+      width: 120,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        if (params.row.WEEKDAY === "Sunday") {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "red" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
+        } else {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "#4268F4" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
+        }
+      },
+    },
+    {
+      field: "ON_OFF",
+      headerName: "ON_OFF",
+      width: 120,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        if (params.row.ON_OFF === 1) {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "green" }}>Đi làm</span>
+            </div>
+          );
+        } else if (params.row.ON_OFF === 0) {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
+            </div>
+          );
+        } else {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "#754EFA" }}>
+                Chưa điểm danh
+              </span>
+            </div>
+          );
+        }
+      },
+    },
+    {
+      field: "CHECK1",
+      headerName: "CHECK1",
+      width: 70,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK1}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "CHECK2",
+      headerName: "CHECK2",
+      width: 70,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK2}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "CHECK3",
+      headerName: "CHECK3",
+      width: 70,headerClassName: 'super-app-theme--header',
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK3}
+            </span>
+          </div>
+        );
+      },
+    },    
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
