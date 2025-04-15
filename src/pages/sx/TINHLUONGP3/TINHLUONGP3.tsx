@@ -40,14 +40,7 @@ export const f_handleUpdate_M_PRICE_P500 = async () => {
     let res = await generalQuery('update_M_PRICE_P500', {});
     //console.log(res);
     if (res.data.tk_status !== 'NG') {
-      //console.log(res.data.data);
-      let loaded_data: LUONGP3_DATA[] = res.data.data.map((element: LUONGP3_DATA, index: number) => {
-        return {
-          ...element,
-          PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-          id: index
-        }
-      })
+      //console.log(res.data.data);  
      
     } else {
       console.log('fetch error', res.data.message);
