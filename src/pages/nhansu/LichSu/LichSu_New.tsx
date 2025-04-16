@@ -1,25 +1,11 @@
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
-  GridCsvExportOptions,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
-  GridRowsProp,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { generalQuery, getCompany } from "../../../api/Api";
 import "./LichSu_New.scss";
 import Swal from "sweetalert2";
-import LinearProgress from "@mui/material/LinearProgress";
-import { SaveExcel, weekdayarray } from "../../../api/GlobalFunction";
+import { weekdayarray } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { RootState } from "../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { IconButton } from "@mui/material";
@@ -30,7 +16,6 @@ const LichSu_New = () => {
     (state: RootState) => state.totalSlice.userData
   );
 
-  const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhLichSuData>
   >([]);
@@ -510,25 +495,7 @@ const LichSu_New = () => {
       },  
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClassName: 'super-app-theme--header' },
-  ];
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className='saveexcelbutton'
-          onClick={() => {
-            SaveExcel(diemdanhnhomtable, "LichSuLamViec");
-          }}
-        >
-          Save Excel
-        </button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
+  ]; 
   const handleSearch = () => {
     generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })
       .then((response) => {
@@ -567,8 +534,7 @@ const LichSu_New = () => {
             }
           );
           //console.log(loaded_data )
-          setDiemDanhNhomTable(loaded_data);
-          setisLoading(false);
+          setDiemDanhNhomTable(loaded_data);         
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -619,7 +585,6 @@ const LichSu_New = () => {
   }, [columns_diemdanhnhom, diemdanhnhomtable])
 
   useEffect(() => {
-    setisLoading(true);
     handleSearch();
   }, []);
   return (
