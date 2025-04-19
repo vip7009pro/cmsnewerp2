@@ -312,6 +312,7 @@ const YCSXManager = () => {
         }
       },
     },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 60 },
     {
       field: "PROD_REQUEST_QTY",
       cellDataType: "number",
