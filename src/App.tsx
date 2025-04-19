@@ -478,7 +478,14 @@ function App() {
           //console.log(data.data.data);
           /* checkERPLicense(); */
           setUserData(data.data.data);
-          dispatch(changeUserData(data.data.data));          
+          dispatch(changeUserData(data.data.data));   
+          console.log('data.data.data.JOB_NAME',data.data.data.JOB_NAME)
+          if(data.data.data.JOB_NAME ==='Worker') 
+          {
+            console.log('set tab mode')
+            dispatch(setTabModeSwap(false));
+          }
+                
           if (data.data.data.POSITION_CODE === 4) {
             dispatch(setTabModeSwap(false));
           }
@@ -865,7 +872,7 @@ function App() {
                             <ProtectedRoute
                               user={globalUserData}
                               maindeptname='all'
-                              jobname='Leader'
+                              jobname='all'
                             >
                               <IQC />
                             </ProtectedRoute>
