@@ -219,7 +219,12 @@ const LICHSUTEMLOTSX = () => {
             <IconButton
                 className="buttonIcon"
                 onClick={() => {
-                  setShowHideTemLot(prev => !prev);
+                  if  (getUserData()?.EMPL_NO==='NHU1903') {
+                    setShowHideTemLot(prev => !prev);
+                  }
+                  else {
+                    Swal.fire("Thông báo", "Bạn không có quyền xem lot", "error");
+                  }
                 }}
               >
                 <MdPrint color="#611ad3" size={15} />
