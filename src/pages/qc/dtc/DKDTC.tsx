@@ -2,7 +2,7 @@ import { Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./DKDTC.scss";
 import { useSelector } from "react-redux";
@@ -19,7 +19,7 @@ const DKDTC = () => {
   const [checkNVL, setCheckNVL] = useState(
     userData?.SUBDEPTNAME === "IQC" ? true : false,
   );
-  const [request_empl, setrequest_empl] = useState("");
+  const [request_empl, setrequest_empl] = useState(getUserData()?.EMPL_NO);
   const [remark, setReMark] = useState("");
   const [testList, setTestList] = useState<TestListTable[]>([]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
@@ -412,7 +412,7 @@ const DKDTC = () => {
                                       );
                                     },
                                   );
-                                if (selected_test[0].CHECKADDED === null) {
+                                if (selected_test[0].CHECKADDED === null && (checkNVL=== false)) {
                                   Swal.fire(
                                     "Thông báo",
                                     "Hạng mục " +
