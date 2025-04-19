@@ -282,9 +282,8 @@
           }
 
           .forminput {
-            display: flex;
+            display: flex;           
             gap: 2px;
-            flex-wrap: wrap;
             align-items: flex-start;
             justify-content: space-around;
             padding: 2px;
@@ -292,17 +291,17 @@
 
             .forminputcolumn {
               display: flex;
-              flex-direction: row;
+              flex-direction: column;
               width: 100%;
               gap: 5px;
               flex-wrap: wrap;
-              align-items: center;
+              align-items: flex-start;
               justify-content: space-between;
               padding: 2px;
               font-size: 0.6rem;
 
               input {
-                width: 100px;
+                width: 350px;
                 height: 15px;
                 font-size: 0.6rem;
                 outline: none;

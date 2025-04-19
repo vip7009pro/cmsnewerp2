@@ -3,7 +3,7 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import "./INCOMMING.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
@@ -17,7 +17,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 const INCOMMING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [isNewRegister, setNewRegister] = useState(false);
+  const [isNewRegister, setNewRegister] = useState(true);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
     { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
@@ -182,7 +182,7 @@ const INCOMMING = () => {
     (state: RootState) => state.totalSlice.userData,
   );
   const [inputno, setInputNo] = useState("");
-  const [request_empl, setrequest_empl] = useState("");
+  const [request_empl, setrequest_empl] = useState(getUserData()?.EMPL_NO);
   const [remark, setReMark] = useState("");
   const [iqc1datatable, setIQC1DataTable] = useState<
     Array<IQC_INCOMMING_DATA>
@@ -519,7 +519,7 @@ const INCOMMING = () => {
               }}
             >
               <FcCancel color="red" size={15} />
-              RESET PASS
+              SET FAIL
             </IconButton>
           </div>}
         columns={column_iqcdatatable}
@@ -699,7 +699,7 @@ const INCOMMING = () => {
       TOTAL_ROLL: total_roll,
       NQ_CHECK_ROLL: nq_qty,
       DTC_ID: dtc_id,
-      TEST_EMPL: request_empl,
+      TEST_EMPL: request_empl ?? "",
       TOTAL_RESULT: "",
       AUTO_JUDGEMENT: "",
       NGOAIQUAN: "",
@@ -792,7 +792,7 @@ const INCOMMING = () => {
                     {m_name}
                   </span>
                 )}
-                <b>VENDOR LOT</b>
+                {/* <b>VENDOR LOT</b>
                 <label>
                   <input
                     type="text"
@@ -802,10 +802,10 @@ const INCOMMING = () => {
                       setVendorLot(e.target.value);
                     }}
                   ></input>
-                </label>
+                </label> */}
               </div>
               <div className="forminputcolumn">
-                <b>Hạn sử dụng</b>
+               {/*  <b>Hạn sử dụng</b>
                 <label>
                   <input
                     type="date"
@@ -814,7 +814,7 @@ const INCOMMING = () => {
                       setEXP_DATE(e.target.value);
                     }}
                   ></input>
-                </label>
+                </label> */}
                 <b>RL NgQuan</b>
                 <label>
                   <input
