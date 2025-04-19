@@ -59,6 +59,7 @@ const FAILING = () => {
     { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 50 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
     { field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 60 },
+    { field: 'MAKER', headerName: 'MAKER', resizable: true, width: 60 },
     { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 60 },
     { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 60, cellRenderer: (params: any) => {
       if(params.data.QC_PASS === "Y") {
@@ -371,7 +372,7 @@ const FAILING = () => {
                 }}
               >
                 <FcCancel color="red" size={15} />
-                RESET PASS
+                SET FAIL
               </IconButton>
               <IconButton
                 className="buttonIcon"
