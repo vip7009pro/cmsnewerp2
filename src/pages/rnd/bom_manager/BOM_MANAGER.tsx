@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FcDeleteRow } from "react-icons/fc";
+import { FcAdvertising, FcDeleteRow } from "react-icons/fc";
 import {
   AiFillDelete,
   AiFillEdit,
@@ -881,7 +881,7 @@ const BOM_MANAGER = () => {
             <FaRegClone color="red" size={20} />
             Clone BOMSX
           </IconButton>
-          {/* <IconButton
+          <IconButton
           className="buttonIcon"
           onClick={() => {
             setShowHideDesignBOM(prev=> !prev)
@@ -889,7 +889,7 @@ const BOM_MANAGER = () => {
         >
           <FcAdvertising color="red" size={20} />
           DESIGN BOM
-        </IconButton> */}
+        </IconButton>
         </div>
       }
       columns={column_bomgia}
@@ -4219,7 +4219,7 @@ const BOM_MANAGER = () => {
               Close
             </IconButton>
           </div>
-          <BOM_DESIGN />
+          <BOM_DESIGN/>
         </div>
       }
     </div>
