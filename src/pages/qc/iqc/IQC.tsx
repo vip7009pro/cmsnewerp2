@@ -7,12 +7,22 @@ import NCR_MANAGER from "./NCR_MANAGER";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import MyTabs from "../../../components/MyTab/MyTab";
+import DKDTC from "../dtc/DKDTC";
+import { getUserData } from "../../../api/Api";
+import INCOMMING from "./INCOMMING";
 const IQC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => { }, []);
   return (
     <div className="iqc">      
       <MyTabs defaultActiveTab={0}>
+        {getUserData()?.JOB_NAME==='Worker' &&  <MyTabs.Tab title={"ĐKÝ TEST ĐTC"}>
+          <DKDTC />
+        </MyTabs.Tab>}
+        {getUserData()?.JOB_NAME==='Worker' &&  <MyTabs.Tab title={"INCOMMING DATA INPUT"}>
+          <INCOMMING />
+        </MyTabs.Tab>}
+        {getUserData()?.JOB_NAME !== 'Worker' && <>
           <MyTabs.Tab title="Kho Liệu">
           <KHOLIEU />
           </MyTabs.Tab>
@@ -25,7 +35,9 @@ const IQC = () => {
           <MyTabs.Tab title="NCR MANAGEMENT">
           <NCR_MANAGER />
           </MyTabs.Tab>
+          </>}
         </MyTabs>
+       
     </div>
   );
 };
