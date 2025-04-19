@@ -7,7 +7,6 @@ import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import getsentence from "../../String/String";
 import { Button, IconButton } from "@mui/material";
 import { AiOutlineCloudUpload } from "react-icons/ai";
@@ -20,6 +19,7 @@ import {
 } from "../../../redux/slices/globalSlice";
 import Cookies from "universal-cookie";
 import { UserData } from "../../../api/GlobalInterface";
+import Box from "@mui/material/Box";
 interface MYCHAMCONG {
   MIN_TIME: string;
   MAX_TIME: string;

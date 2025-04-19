@@ -1,7 +1,6 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -23,6 +22,7 @@ import { toggleSidebar } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
 import { UserData } from "../../api/GlobalInterface";
+import Box from "@mui/material/Box";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
