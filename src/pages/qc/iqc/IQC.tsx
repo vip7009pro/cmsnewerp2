@@ -10,34 +10,47 @@ import MyTabs from "../../../components/MyTab/MyTab";
 import DKDTC from "../dtc/DKDTC";
 import { getUserData } from "../../../api/Api";
 import INCOMMING from "./INCOMMING";
+import HOLDING from "./HOLDING";
+import FAILING from "./FAILING";
 const IQC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
-    <div className="iqc">      
+    <div className="iqc">
       <MyTabs defaultActiveTab={0}>
-        {getUserData()?.JOB_NAME==='Worker' &&  <MyTabs.Tab title={"ĐKÝ TEST ĐTC"}>
-          <DKDTC />
-        </MyTabs.Tab>}
-        {getUserData()?.JOB_NAME==='Worker' &&  <MyTabs.Tab title={"INCOMMING DATA INPUT"}>
-          <INCOMMING />
-        </MyTabs.Tab>}
-        {getUserData()?.JOB_NAME !== 'Worker' && <>
+        {getUserData()?.JOB_NAME !== "Worker" && (
           <MyTabs.Tab title="Kho Liệu">
-          <KHOLIEU />
+            <KHOLIEU />
           </MyTabs.Tab>
+        )}
+        {getUserData()?.JOB_NAME !== "Worker" && (
           <MyTabs.Tab title="ĐỘ TIN CẬY">
-          <DTC />
+            <DTC />
           </MyTabs.Tab>
-          <MyTabs.Tab title="IN-HOLD-FAIL">
+        )}
+        {getUserData()?.JOB_NAME === "Worker" && (
+          <MyTabs.Tab title={"ĐKÝ TEST ĐTC"}>
+            <DKDTC />
+          </MyTabs.Tab>
+        )}
+        <MyTabs.Tab title={"INCOMING"}>
+          <INCOMMING />
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"HOLDING"}>
+          <HOLDING />
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"FAILING"}>
+          <FAILING />
+        </MyTabs.Tab>
+        {/* {getUserData()?.JOB_NAME!=='Worker' &&   <MyTabs.Tab title="IN-HOLD-FAIL">
           <HOLD_FAIL />
-          </MyTabs.Tab>
+          </MyTabs.Tab>} */}
+        {getUserData()?.JOB_NAME !== "Worker" && (
           <MyTabs.Tab title="NCR MANAGEMENT">
-          <NCR_MANAGER />
+            <NCR_MANAGER />
           </MyTabs.Tab>
-          </>}
-        </MyTabs>
-       
+        )}
+      </MyTabs>
     </div>
   );
 };

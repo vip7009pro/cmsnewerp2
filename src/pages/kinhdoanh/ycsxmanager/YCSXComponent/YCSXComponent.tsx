@@ -314,7 +314,17 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
 
   return (
     <div className="ycsxcomponent">
-      {DATA.PDBV === "Y" && checklieuchinh === true && (
+      {DATA.PDBV === "Y" && checklieuchinh === true && DATA.IS_TAM_THOI === "Y" && (
+        <div className="tamthoi">
+          <img
+            alt="qcpass"
+            src="/tamthoi.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        </div>
+      )}
+      {DATA.PDBV === "Y" && checklieuchinh === true  && DATA.IS_TAM_THOI === "N" && (
         <div className="qcpass">
           <img
             alt="qcpass"

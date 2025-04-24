@@ -372,7 +372,15 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA }: { DATA: QLSXPLANDATA }, ref) =>
   return (
     <div className="chithicomponent">
       <div className="qcpass">
-        {(checkApprove() && request_codeinfo[0].CODE_55 !== '04') && (
+      {(checkApprove() && request_codeinfo[0].CODE_55 !== '04' && DATA.IS_TAM_THOI === "Y") && (
+          <img
+            alt="qcpass"
+            src="/tamthoi.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
+        {(checkApprove() && request_codeinfo[0].CODE_55 !== '04' && DATA.IS_TAM_THOI === "N") && (
           <img
             alt="qcpass"
             src="/QC PASS20.png"

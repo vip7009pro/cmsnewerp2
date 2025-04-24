@@ -310,7 +310,15 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
   return (
     <div className="chithicomponent2">
       <div className="qcpass">
-        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && (
+        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && request_codeinfo[0].IS_TAM_THOI ==='Y' && (
+          <img
+            alt="qcpass"
+            src="/tamthoi.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
+        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && request_codeinfo[0].IS_TAM_THOI ==='N' &&(
           <img
             alt="qcpass"
             src="/QC PASS20.png"

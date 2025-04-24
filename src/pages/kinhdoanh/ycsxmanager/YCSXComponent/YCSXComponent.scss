@@ -16,6 +16,12 @@
   outline: 0;
   pointer-events: none;
 
+  .tamthoi {
+    position: absolute;
+    top: 65mm;
+    left: 60mm;
+    opacity: 0.7;
+  }
   .qcpass {
     position: absolute;
     top: 65mm;

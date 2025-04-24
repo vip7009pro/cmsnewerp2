@@ -423,6 +423,7 @@ export interface YCSXTableData {
   INS_DATE?: string;
   UPD_DATE?: string;
   MATERIAL_YN?: string;
+  IS_TAM_THOI?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
@@ -559,6 +560,7 @@ export interface FullBOM {
   EXP_DATE?: number;
   PD_HSD?: string;
   QL_HSD?: string;
+  IS_TAM_THOI?: string;
 }
 //quan ly vat lieu
 export interface MATERIAL_TABLE_DATA {
@@ -1953,7 +1955,8 @@ export interface QLSXPLANDATA {
   SLC_CD2?: number;
   SLC_CD3?: number;
   SLC_CD4?: number;
-  CURRENT_SLC?: number
+  CURRENT_SLC?: number;
+  IS_TAM_THOI?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -2505,6 +2508,7 @@ export interface CODE_FULL_INFO {
   UPD_DATE?: string;
   UPD_EMPL?: string;
   UPDATE_REASON?: string;
+  APPROVED_YN?: string;
 }
 export interface LIST_BOM_AMAZON {
   id: string;

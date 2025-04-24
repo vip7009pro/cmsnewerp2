@@ -375,7 +375,15 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
   return (
     <div className="chithicomponent">
       <div className="qcpass">
-        {(checkApprove() && request_codeinfo[0].CODE_55 !== '04') && (
+        {(checkApprove() && request_codeinfo[0].CODE_55 !== '04' && DATA.IS_TAM_THOI === "Y") && (
+          <img
+            alt="qcpass"
+            src="/tamthoi.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
+        {(checkApprove() && request_codeinfo[0].CODE_55 !== '04' && DATA.IS_TAM_THOI === "N") && (
           <img
             alt="qcpass"
             src="/QC PASS20.png"
@@ -471,7 +479,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         DATA.CHOTBC !== 'V' &&
         checkApprove() && 
         request_codeinfo[0].PL_HANG==='TT' && 
-        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX') &&
+        (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx ==='XXX' || DATA.PROCESS_NUMBER !== 1) &&
         request_codeinfo[0].USE_YN==='Y'
         &&
         (
@@ -1056,7 +1064,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       )}
       {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
       {request_codeinfo[0].PL_HANG !== 'TT' && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc, báo lại kinh doanh</div>}
-      {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
+      {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX' && DATA.PROCESS_NUMBER === 1) && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );
 });

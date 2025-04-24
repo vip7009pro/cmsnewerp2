@@ -33,6 +33,10 @@ import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
 import InspectDailyDefectTrending from "../../../components/Chart/INSPECTION/InspectDailyDefectTrending";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import { AiFillFileExcel } from "react-icons/ai";
+import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/InspectionYearlyPPM";
+import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
+import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
+import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -880,7 +884,7 @@ const INSPECT_REPORT = () => {
               </div>
             </div>
           </div>
-         {/*  <span className="section_title">2. NG Trending</span>
+          {/* <span className="section_title">2. NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">

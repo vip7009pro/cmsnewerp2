@@ -201,7 +201,8 @@ const BOM_MANAGER = () => {
     PROD_DVT: "01",
     QL_HSD: "Y",
     EXP_DATE: '0',
-    FSC_CODE: '01'
+    FSC_CODE: '01',
+    APPROVED_YN: "Y",
   });
   const [file, setFile] = useState<any>(null);
   const [file2, setFile2] = useState<any>(null);
@@ -1278,6 +1279,7 @@ const BOM_MANAGER = () => {
                 QL_HSD: element.QL_HSD ?? 'N',
                 EXP_DATE: element.EXP_DATE ?? 0,
                 FSC_CODE: element.FSC_CODE ?? '01',
+                APPROVED_YN: element.APPROVED_YN ?? 'Y',
                 id: index,
               };
             },
@@ -3846,6 +3848,24 @@ const BOM_MANAGER = () => {
                           }
                           onChange={(e) => {
                             handleSetCodeInfo("QL_HSD", e.target.value);
+                          }}
+                        >
+                          <option value="Y">YES</option>
+                          <option value="N">NO</option>
+                        </select>
+                      </label>}
+                      {getCompany() === 'CMS' && <label>
+                        PHE_DUYET:
+                        <select
+                          disabled={enableform}
+                          name="may1"
+                          value={
+                            codefullinfo?.APPROVED_YN === null || codefullinfo?.APPROVED_YN === ""
+                              ? "N"
+                              : codefullinfo?.APPROVED_YN
+                          }
+                          onChange={(e) => {
+                            handleSetCodeInfo("APPROVED_YN", e.target.value);
                           }}
                         >
                           <option value="Y">YES</option>

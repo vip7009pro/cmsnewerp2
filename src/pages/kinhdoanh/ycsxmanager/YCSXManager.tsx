@@ -135,6 +135,7 @@ const YCSXManager = () => {
   const [phanloai, setPhanLoai] = useState("00");
   const [newphanloai, setNewPhanLoai] = useState("TT");
   const [phanloaihang, setPhanLoaiHang] = useState("ALL");
+  const [is_tam_thoi, setIs_Tam_Thoi] = useState('N');
   const [loaisx, setLoaiSX] = useState("01");
   const [loaixh, setLoaiXH] = useState("02");
   const [material, setMaterial] = useState("");
@@ -615,6 +616,24 @@ const YCSXManager = () => {
         );
       },
     },
+    {
+      field: "IS_TAM_THOI",
+      headerName: "YCSX_TAM_THOI",
+      width: 80,
+      cellRenderer: (params: any) => {
+        if (params.data.IS_TAM_THOI === "Y")
+          return (
+            <span style={{ color: "red" }}>
+              <b>Tạm thời</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "green" }}>
+            <b>Bình thường</b>
+          </span>
+        );
+      },
+    },
   ];
   const column_ycsxtable_pvn2 = [
     {
@@ -1062,6 +1081,7 @@ const YCSXManager = () => {
     { field: "DELIVERY_DT", headerName: "NGAY GH", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
+    { field: "IS_TAM_THOI", headerName: "YCSX_TAM_THOI", width: 80 },
     {
       field: "CHECKSTATUS",
       headerName: "CHECKSTATUS",
@@ -1483,7 +1503,8 @@ const YCSXManager = () => {
               PDUYET:
                 pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-              MATERIAL_YN: 'N'
+              MATERIAL_YN: 'N',
+              IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI
             });
             if (kq === 'OK') {
               tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
@@ -1536,7 +1557,8 @@ const YCSXManager = () => {
               CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
               PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-              MATERIAL_YN: 'Y'
+              MATERIAL_YN: 'Y',
+              IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI,
             });
             if (kq === 'OK') {
               tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
@@ -1789,7 +1811,8 @@ const YCSXManager = () => {
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
           PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-          MATERIAL_YN: 'N'
+          MATERIAL_YN: 'N',
+          IS_TAM_THOI: is_tam_thoi
         });
         if (kq === 'OK') {
           await f_updateDMSX_LOSS_KT();
@@ -1860,7 +1883,8 @@ const YCSXManager = () => {
           CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
           PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || loaisx === "04" ? 1 : 0,
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
-          MATERIAL_YN: 'Y'
+          MATERIAL_YN: 'Y',
+          IS_TAM_THOI: is_tam_thoi
         });
         if (kq === 'OK') {
           let newNotification: NotificationElement = {
@@ -2310,6 +2334,7 @@ const YCSXManager = () => {
       DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
       PO_NO: selectedPoNo?.PO_NO,
       CHECKSTATUS: "Waiting",
+      IS_TAM_THOI: is_tam_thoi,
       id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
     };
     if (newycsx_row.PROD_REQUEST_QTY === 0 || newycsx_row.REMK === "") {
@@ -2816,6 +2841,20 @@ const YCSXManager = () => {
                         {/* <option value='SL'>Slitting (SL)</option> */}
                       </select>
                     </label>
+                    {getCompany() === 'CMS' && <label>
+                      <b>YC Tạm thời:</b>
+                      <select
+                        name='is_tam_thoi'
+                        value={is_tam_thoi}
+                        onChange={(e) => {
+                          setIs_Tam_Thoi(e.target.value);
+                        }}
+                      >
+                        <option value='Y'>Tạm thời</option>
+                        <option value='N'>Bình thường</option>                       
+                        
+                      </select>
+                    </label>}
                     <label>
                       <b>All Time:</b>
                       <input
@@ -2986,6 +3025,19 @@ const YCSXManager = () => {
                             <option value='06'>Vai bac 4</option>
                             <option value='07'>ETC</option>
                           </select>
+                          {getCompany() === 'CMS' && <>
+                          YC Tạm:
+                          <select
+                            name='tamthoi'
+                            value={is_tam_thoi}
+                            onChange={(e) => {
+                              setIs_Tam_Thoi(e.target.value);
+                            }}
+                          >
+                            <option value='Y'>Tạm thời</option>
+                            <option value='N'>Bình thường</option>                           
+                          </select>
+                          </>}
                         </div>
                         <div className='dangkyinputbox'>
                           PO NO:
@@ -3175,6 +3227,19 @@ const YCSXManager = () => {
                             <option value='07'>ETC</option>
                           </select>
                         </label>
+                        {getCompany() === 'CMS' && <>
+                          YC Tạm:
+                          <select
+                            name='tamthoi'
+                            value={is_tam_thoi}
+                            onChange={(e) => {
+                              setIs_Tam_Thoi(e.target.value);
+                            }}
+                          >
+                            <option value='Y'>Tạm thời</option>
+                            <option value='N'>Bình thường</option>                           
+                          </select>
+                          </>}
                       </div>
                       <div className='dangkyinputbox'>
                         PO NO:

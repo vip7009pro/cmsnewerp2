@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./OQC_REPORT.scss";
-import { OQC_TREND_DATA, OQC_NG_BY_CUSTOMER, OQC_NG_BY_PRODTYPE } from "../../../api/GlobalInterface";
+import { OQC_TREND_DATA, OQC_NG_BY_CUSTOMER, OQC_NG_BY_PRODTYPE, DailyPPMData, WeeklyPPMData, MonthlyPPMData, YearlyPPMData } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -14,11 +14,35 @@ import OQCYearlyNGRate from "../../../components/Chart/OQC/OQCYearlyNGRate";
 import WidgetOQC from "../../../components/Widget/WidgetOQC";
 import OQCNGByCustomer from "../../../components/Chart/OQC/OQCNGByCustomer";
 import OQCNGByProdType from "../../../components/Chart/OQC/OQCNGByProdType";
+import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/InspectionYearlyPPM";
+import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
+import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
+import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
 const OQC_REPORT = () => {
   const [dailyppm, setDailyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [monthlyppm, setMonthlyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [yearlyppm, setYearlyPPM] = useState<OQC_TREND_DATA[]>([]);
+
+  const [insp_dailyppm, set_InspDailyPPM] = useState<DailyPPMData[]>([]);
+  const [insp_weeklyppm, set_InspWeeklyPPM] = useState<WeeklyPPMData[]>([]);
+  const [insp_monthlyppm, set_InspMonthlyPPM] = useState<MonthlyPPMData[]>([]);
+  const [insp_yearlyppm, set_InspYearlyPPM] = useState<YearlyPPMData[]>([]);
+  const [ng_type, setNg_Type] = useState('ALL');
+
+
+
+
+  const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
+  const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
+  const [monthlyppm1, setMonthlyPPM1] = useState<MonthlyPPMData[]>([]);
+  const [yearlyppm1, setYearlyPPM1] = useState<YearlyPPMData[]>([]);
+  const [dailyppm2, setDailyPPM2] = useState<DailyPPMData[]>([]);
+  const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
+  const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
+  const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
+
+
   const [oqcNGByCustomer, setOQCNGByCustomer] = useState<OQC_NG_BY_CUSTOMER[]>([]);
   const [oqcNGByProdType, setOQCNGByProdType] = useState<OQC_NG_BY_PRODTYPE[]>([]);
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
@@ -214,6 +238,169 @@ const OQC_REPORT = () => {
         console.log(error);
       });
   };
+
+
+    const handle_get_Insp_DailyPPM = async (FACTORY: string, listCode: string[]) => {
+      let td = moment().add(0, "day").format("YYYY-MM-DD");
+      let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+      await generalQuery("inspect_daily_ppm_oqc", {
+        FACTORY: FACTORY,
+        FROM_DATE: df ? frd : fromdate,
+        TO_DATE: df ? td : todate,
+        codeArray: df ? [] : listCode,
+        CUST_NAME_KD: cust_name,
+        NG_TYPE: ng_type
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loadeddata: DailyPPMData[] = response.data.data.map(
+              (element: DailyPPMData, index: number) => {
+                return {
+                  ...element,
+                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
+                  INSPECT_DATE: moment
+                    .utc(element.INSPECT_DATE)
+                    .format("YYYY-MM-DD"),
+                };
+              },
+            );
+            console.log(loadeddata);
+            if (FACTORY === "NM1") {
+              setDailyPPM1(loadeddata);
+            } else if (FACTORY === "NM2") {
+              setDailyPPM2(loadeddata);
+            } else {
+              set_InspDailyPPM(loadeddata);
+            }
+          } else {
+            set_InspDailyPPM([]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const handle_get_Insp_WeeklyPPM = async (FACTORY: string, listCode: string[]) => {
+      let td = moment().add(0, "day").format("YYYY-MM-DD");
+      let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+      await generalQuery("inspect_weekly_ppm_oqc", {
+        FACTORY: FACTORY,
+        FROM_DATE: df ? frd : fromdate,
+        TO_DATE: df ? td : todate,
+        codeArray: df ? [] : listCode,
+        CUST_NAME_KD: cust_name,
+        NG_TYPE: ng_type
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loadeddata: WeeklyPPMData[] = response.data.data.map(
+              (element: WeeklyPPMData, index: number) => {
+                return {
+                  ...element,
+                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
+                };
+              },
+            );
+            if (FACTORY === "NM1") {
+              setWeeklyPPM1(loadeddata);
+            } else if (FACTORY === "NM2") {
+              setWeeklyPPM2(loadeddata);
+            } else {
+              set_InspWeeklyPPM(loadeddata);
+            }
+          } else {
+            set_InspWeeklyPPM([]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const handle_get_Insp_MonthlyPPM = async (FACTORY: string, listCode: string[]) => {
+      let td = moment().add(0, "day").format("YYYY-MM-DD");
+      let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+      await generalQuery("inspect_monthly_ppm_oqc", {
+        FACTORY: FACTORY,
+        FROM_DATE: df ? frd : fromdate,
+        TO_DATE: df ? td : todate,
+        codeArray: df ? [] : listCode,
+        CUST_NAME_KD: cust_name,
+        NG_TYPE: ng_type
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loadeddata: MonthlyPPMData[] = response.data.data.map(
+              (element: MonthlyPPMData, index: number) => {
+                return {
+                  ...element,
+                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
+                };
+              },
+            );
+            if (FACTORY === "NM1") {
+              setMonthlyPPM1(loadeddata);
+            } else if (FACTORY === "NM2") {
+              setMonthlyPPM2(loadeddata);
+            } else {
+              set_InspMonthlyPPM(loadeddata)
+            }
+          } else {
+            set_InspMonthlyPPM([])
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const handle_get_Insp_YearlyPPM = async (FACTORY: string, listCode: string[]) => {
+      let td = moment().add(0, "day").format("YYYY-MM-DD");
+      let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+      await generalQuery("inspect_yearly_ppm_oqc", {
+        FACTORY: FACTORY,
+        FROM_DATE: df ? frd : fromdate,
+        TO_DATE: df ? td : todate,
+        codeArray: df ? [] : listCode,
+        CUST_NAME_KD: cust_name,
+        NG_TYPE: ng_type
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loadeddata: YearlyPPMData[] = response.data.data.map(
+              (element: YearlyPPMData, index: number) => {
+                return {
+                  ...element,
+                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
+                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
+                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
+                };
+              },
+            );
+            if (FACTORY === "NM1") {
+              setYearlyPPM1(loadeddata);
+            } else if (FACTORY === "NM2") {
+              setYearlyPPM2(loadeddata);
+            } else {
+              set_InspYearlyPPM(loadeddata)
+            }
+          } else {
+            set_InspYearlyPPM([])
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -231,6 +418,10 @@ const OQC_REPORT = () => {
       handle_getWeeklyPPM("ALL", searchCodeArray),
       handle_getMonthlyPPM("ALL", searchCodeArray),
       handle_getYearlyPPM("ALL", searchCodeArray),
+      handle_get_Insp_YearlyPPM('ALL',searchCodeArray),
+      handle_get_Insp_MonthlyPPM('ALL',searchCodeArray),
+      handle_get_Insp_WeeklyPPM('ALL',searchCodeArray),
+      handle_get_Insp_DailyPPM('ALL',searchCodeArray),     
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -351,6 +542,77 @@ const OQC_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className="graph">
+           <span className="section_title">2. NG Trending</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Daily NG Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(insp_dailyppm, "DailyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectionDailyPPM
+                  dldata={[...insp_dailyppm].reverse()}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly NG Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(insp_weeklyppm, "WeeklyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectionWeeklyPPM
+                  dldata={[...insp_weeklyppm].reverse()}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
+            </div>
+            <div className="monthlyweeklygraph">
+              <div className="dailygraph">
+                <span className="subsection">Monthly NG Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(insp_monthlyppm, "MonthlyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectionMonthlyPPM
+                  dldata={[...insp_monthlyppm].reverse()}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly NG Rate <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(insp_yearlyppm, "YearlyPPMData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectionYearlyPPM
+                  dldata={[...insp_yearlyppm].reverse()}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
+            </div>
+          </div>
           <span className="section_title">2. OQC NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">

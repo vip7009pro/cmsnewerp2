@@ -20,6 +20,7 @@ import { GiConfirmed } from "react-icons/gi";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [cmsvcheck, setCMSVCheck] = useState(true);
+  const [onlyPending, setOnlyPending] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -53,7 +54,7 @@ const FAILING = () => {
   const [ncrId, setNCRID] = useState(0);
   const [isNewFailing, setIsNewFailing] = useState(false);
   const column_failing_table = [
-    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 50, checkboxSelection: true },
+    { field: 'FAIL_ID', headerName: 'FAIL_ID', resizable: true, width: 50, checkboxSelection: true, headerCheckboxSelection: true },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
     { field: 'PLAN_ID_SUDUNG', headerName: 'PLAN_ID_SUDUNG', resizable: true, width: 90 },
     { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 50 },
@@ -142,8 +143,25 @@ const FAILING = () => {
         )
       }
     } },
+    { field: 'PROCESS_STATUS', headerName: 'CLOSE_STATUS', resizable: true, width: 80, cellRenderer: (params: any) => {
+      if(params.data.PROCESS_STATUS === 'C') { 
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>CLOSED</div>
+        )
+      } else if(params.data.PROCESS_STATUS === 'N') {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'red', borderRadius: '5px'}}>PENDING</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', width: '100%', backgroundColor: 'yellow', borderRadius: '5px'}}>PENDING</div>
+        )
+      }
+    } },
     { field: 'QC_PASS_EMPL', headerName: 'QC_PASS_EMPL', resizable: true, width: 80 },    
     { field: 'QC_PASS_DATE', headerName: 'QC_PASS_DATE', resizable: true, width: 80 },
+    { field: 'PROCESS_EMPL', headerName: 'PROCESS_EMPL', resizable: true, width: 80 },    
+    { field: 'PROCESS_DATE', headerName: 'PROCESS_DATE', resizable: true, width: 80 },    
     { field: 'IN1_EMPL', headerName: 'IN1_EMPL', resizable: true, width: 60 },
     { field: 'IN2_EMPL', headerName: 'IN2_EMPL', resizable: true, width: 60 },
     { field: 'OUT1_EMPL', headerName: 'OUT1_EMPL', resizable: true, width: 60 },
@@ -215,6 +233,48 @@ const FAILING = () => {
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         await generalQuery("updateQCPASS_FAILING", {
+          FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
+          M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
+          PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID_SUDUNG,
+          VALUE: value,
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += ` Lỗi: ${response.data.message}`;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "SET thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
+    }
+  };
+  const setClose = async (value: string) => {
+    console.log(selectedRowsDataA.current);
+    if (selectedRowsDataA.current.length > 0) {
+      Swal.fire({
+        title: "Đang update",
+        text: "Đang tải dữ liệu, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsDataA.current.length; i++) {
+        await generalQuery("updateCLOSE_FAILING", {
+          FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
           M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
           PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID_SUDUNG,
           VALUE: value,
@@ -374,6 +434,8 @@ const FAILING = () => {
                 <FcCancel color="red" size={15} />
                 SET FAIL
               </IconButton>
+           
+
               <IconButton
                 className="buttonIcon"
                 onClick={() => {
@@ -406,6 +468,44 @@ const FAILING = () => {
                 <FcCancel color="red" size={15} />
                 UPDATE NCR_ID
               </IconButton>
+
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "MUA" || userData?.EMPL_NO==='NHU1903') {
+                    //console.log(selectedRowsDataA.current);
+                    setClose("C");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận MUA",
+                      "error",
+                    );
+                  }
+                }}
+              >
+                <GrStatusGood color="green" size={15} />
+                SET CLOSED
+              </IconButton>
+
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "MUA" || userData?.EMPL_NO==='NHU1903') {
+                    //console.log(selectedRowsDataA.current);
+                    setClose("P");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận MUA",
+                      "error",
+                    );
+                  }
+                }}
+              >
+                <FcCancel color="red" size={15} />
+                SET PENDING
+              </IconButton>
             </>
             }
         columns={column_failing_table}
@@ -420,9 +520,11 @@ const FAILING = () => {
         }}
       />
     )
-  }, [inspectiondatatable, request_empl2]);
+  }, [inspectiondatatable, request_empl2,onlyPending]);
   const handletraFailingData = () => {
-    generalQuery("loadQCFailData", {})
+    generalQuery("loadQCFailData", {
+      ONLY_PENDING: onlyPending
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -1056,6 +1158,17 @@ const FAILING = () => {
                   </span>
                 )}
                 <label>
+                  <b>ONLY PENDING STATUS:</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={onlyPending}
+                    onChange={(e) => {                      
+                      setOnlyPending(prev => !prev);
+                    }}
+                  ></input>
+                </label>
+                <label>
                   <b>Remark:</b>
                   <input
                     type="text"
@@ -1179,7 +1292,7 @@ const FAILING = () => {
                       setCMSVCheck(!cmsvcheck);
                     }}
                   ></input>
-                </label>
+                </label>                
               </div>
               <div className="forminputcolumn">
                 <label>
