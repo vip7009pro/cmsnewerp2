@@ -350,6 +350,20 @@ const INCOMMING = () => {
     { field: 'INPUT_LENGTH',headerName: 'INPUT_LENGTH', resizable: true,width: 80 },
     { field: 'TOTAL_ROLL',headerName: 'TOTAL_ROLL', resizable: true,width: 80 },
     { field: 'NQ_CHECK_ROLL',headerName: 'NQ_CHECK_ROLL', resizable: true,width: 80 },
+    { field: 'CHECKSHEET',headerName: 'CHECKSHEET', resizable: true,width: 80, cellRenderer: (params: any) => {
+      if(params.data.CHECKSHEET !== "Y"){
+        return (
+          <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+            Not uploaded
+          </span>
+        );
+      } 
+      return (
+        <a href={`/iqcincoming/${params.data.IQC1_ID}.jpg`} target="_blank" rel="noopener noreferrer">
+          LINK
+        </a>
+      );
+    } },
     { field: 'DTC_ID',headerName: 'DTC_ID', resizable: true,width: 80 },
     { field: 'TEST_EMPL',headerName: 'TEST_EMPL', resizable: true,width: 80 },
     { field: 'TOTAL_RESULT',headerName: 'TOTAL_RESULT', resizable: true,width: 80, cellRenderer: (params: any) => {
@@ -385,11 +399,11 @@ const INCOMMING = () => {
             style={{
               color: "white",
               fontWeight: "bold",
-              backgroundColor: "#CCCFCC",
+              backgroundColor: "blue",
               textAlign: "center",
             }}
           >
-            N/A
+            PENDING
           </div>
         );
       }
@@ -573,11 +587,10 @@ const INCOMMING = () => {
           const loadeddata: IQC_INCOMMING_DATA[] = response.data.data.map(
             (element: IQC_INCOMMING_DATA, index: number) => {
               let keyArray = Object.keys(element).filter((key: string) => key.startsWith('KQ'));
-              //check if any value of keyarray is 0 , if so return AUTO_JUDGEMENT = "NG" else return "OK"
-              let auto_judgement = keyArray.some((key: string) => element[key as keyof IQC_INCOMMING_DATA] === 0) ? "NG" : "OK";
+              let auto_judgement = keyArray.some((key: string) => element[key as keyof IQC_INCOMMING_DATA] === 0) ? "NG" : keyArray.some((key: string) => element[key as keyof IQC_INCOMMING_DATA] === 2) ? "PENDING" : "OK";
               return {
                 ...element,
-                AUTO_JUDGEMENT: auto_judgement,
+                AUTO_JUDGEMENT: auto_judgement,               
                 INS_DATE: element.INS_DATE === null ? "" : moment(element.INS_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE: element.UPD_DATE === null ? "" : moment(element.UPD_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
                 EXP_DATE: element.EXP_DATE === null ? "" : moment(element.EXP_DATE).utc().format("YYYY-MM-DD"),
