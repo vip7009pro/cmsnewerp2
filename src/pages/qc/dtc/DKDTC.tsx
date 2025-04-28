@@ -22,6 +22,7 @@ const DKDTC = () => {
   const [request_empl, setrequest_empl] = useState(getUserData()?.EMPL_NO);
   const [remark, setReMark] = useState("");
   const [testList, setTestList] = useState<TestListTable[]>([]);
+  const [testedCODE, setTestedCode] = useState<number[]>([]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     [],
   );
@@ -33,24 +34,25 @@ const DKDTC = () => {
   const [g_code, setGCode] = useState("");
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+  const [cust_cd, setCust_CD] = useState('');
   const [prodrequestno, setProdRequestNo] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const dtcdatacolumn = [
     { field: 'DTC_ID', headerName: 'DTC_ID', resizable: true, width: 50 },
+    { field: 'TEST_NAME', headerName: 'TEST_NAME', resizable: true, width: 100 },
+    { field: 'REQUEST_EMPL_NO', headerName: 'REQUEST_EMPL_NO', resizable: true, width: 100 },
+    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 100 },
+    { field: 'SIZE', headerName: 'SIZE', resizable: true, width: 100 },
     { field: 'FACTORY', headerName: 'FACTORY', resizable: true, width: 50 },
     { field: 'TEST_FINISH_TIME', headerName: 'FINISH_TIME', resizable: true, width: 100 },
     { field: 'TEST_EMPL_NO', headerName: 'TEST_EMPL_NO', resizable: true, width: 100 },
     { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 100 },
     { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', resizable: true, width: 100 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
-    { field: 'TEST_NAME', headerName: 'TEST_NAME', resizable: true, width: 100 },
     { field: 'TEST_TYPE_NAME', headerName: 'TEST_TYPE_NAME', resizable: true, width: 100 },
     { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION_NAME', resizable: true, width: 100 },
     { field: 'REQUEST_DATETIME', headerName: 'REQUEST_DATETIME', resizable: true, width: 100 },
-    { field: 'REQUEST_EMPL_NO', headerName: 'REQUEST_EMPL_NO', resizable: true, width: 100 },
-    { field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 100 },
-    { field: 'SIZE', headerName: 'SIZE', resizable: true, width: 100 },
     { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 100 },
     { field: 'LOTCMS', headerName: 'LOTCMS', resizable: true, width: 100 },
   ]
@@ -158,7 +160,7 @@ const DKDTC = () => {
   };
   const checkLotNVL = (M_LOT_NO: string) => {
     generalQuery("checkMNAMEfromLotI222", { M_LOT_NO: M_LOT_NO })
-      .then((response) => {
+      .then(async (response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
           setM_Name(
@@ -166,11 +168,15 @@ const DKDTC = () => {
             " | " +
             response.data.data[0].WIDTH_CD,
           );
-          setM_Code(response.data.data[0].M_CODE);
+          setM_Code(response.data.data[0].M_CODE);          
+          setCust_CD(response.data.data[0].CUST_CD);
           checkAddedSpec(response.data.data[0].M_CODE, "");
+          getTestedCodeByM_CODE(response.data.data[0].M_CODE);
+         
         } else {
           setM_Name("");
           setM_Code("");
+          setCust_CD("");
         }
       })
       .catch((error) => {
@@ -216,13 +222,21 @@ const DKDTC = () => {
   const registerDTC = async () => {
     let err_code: string = "";
     let nextDTC_ID: number = await getLastDTC_ID();
+    if(checkNVL) {
+      let oldID: number = await getDTC_ID_by_M_LOT_NO(inputno);
+      if(oldID !== -1)
+      {
+        nextDTC_ID = oldID;
+      }      
+    }
+    
     for (let i = 0; i < testList.length; i++) {
       if (testList[i].SELECTED) {
         let data = {
           DTC_ID: showdkbs ? oldDTC_ID : nextDTC_ID,
           TEST_CODE: testList[i].TEST_CODE,
           TEST_TYPE_CODE: testtype,
-          REQUEST_DEPT_CODE: reqDeptCode,
+          REQUEST_DEPT_CODE: userData?.WORK_POSITION_CODE,
           PROD_REQUEST_NO: checkNVL ? "1IG0008" : prodrequestno,
           M_LOT_NO: checkNVL ? inputno : "2101011325",
           PROD_REQUEST_DATE: checkNVL ? "20210916" : prodreqdate,
@@ -232,6 +246,10 @@ const DKDTC = () => {
           M_CODE: checkNVL ? m_code : "B0000035",
         };
         //console.log(data);
+        if(await isM_LOT_NO_AND_TEST_CODE_EXIST(data.M_LOT_NO, data.TEST_CODE))
+        {
+         continue;
+        } 
         await generalQuery("registerDTCTest", data)
           // eslint-disable-next-line no-loop-func
           .then((response) => {
@@ -247,6 +265,20 @@ const DKDTC = () => {
     }
     if (err_code === "") {
       let final_ID: number = showdkbs ? oldDTC_ID : nextDTC_ID;
+      insertIncomingData({
+        M_CODE: m_code,
+        M_LOT_NO: inputno,
+        LOT_CMS: inputno.substring(0,6),
+        LOT_VENDOR: '',
+        CUST_CD: cust_cd,
+        EXP_DATE:'',
+        INPUT_LENGTH: 0,
+        TOTAL_ROLL: 0,
+        NQ_CHECK_ROLL: 0,
+        DTC_ID: final_ID,
+        TEST_EMPL: getUserData()?.EMPL_NO,
+        REMARK:''
+      })
       Swal.fire(
         "Thông báo",
         "Đăng ký ĐTC thành công, ID test là: " + final_ID,
@@ -254,7 +286,7 @@ const DKDTC = () => {
       );
       setGCode("");
       setGName("");
-      setrequest_empl("");
+      //setrequest_empl("");
       handletraDTCData();
     } else {
       Swal.fire("Thông báo", "Đăng ký ĐTC thất bại: " + err_code, "error");
@@ -286,9 +318,130 @@ const DKDTC = () => {
         console.log(error);
       });
   };
+
+  const isM_LOT_NO_AND_TEST_CODE_EXIST = async (M_LOT_NO: string, TEST_CODE: number) => {
+    let result: boolean = false;
+    await generalQuery("checkDTC_M_LOT_NO_TEST_CODE_REG", {
+      M_LOT_NO: M_LOT_NO,
+      TEST_CODE: TEST_CODE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          if(response.data.data.length > 0 ) result = true;
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return result;
+  }     
+  
+
+  const getTestedCodeByM_CODE = (M_CODE: string) => {    
+    generalQuery("lichSuTestM_CODE", {
+      M_CODE: M_CODE,
+    })
+      .then(async (response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let tested_code_list = [];
+          tested_code_list= response.data.data.length > 0 ? response.data.data.map((item: any) => item.TEST_CODE) : [];
+          //console.log("tested_code_list",tested_code_list)
+
+
+          let tempList: TestListTable[] = await f_loadDTC_TestList();
+
+
+          let temp_testList = tempList.map(
+            (element: TestListTable, index: number) => {
+              //console.log('element test code',element.TEST_CODE)
+              if (
+                tested_code_list.includes(element.TEST_CODE)
+              ) {
+                
+                return {
+                  ...element,
+                  CHECKADDED: false,
+                  SELECTED: true,
+                };
+              } else {
+                return {
+                  ...element,
+                  CHECKADDED: false,
+                  SELECTED: false,
+                };
+              }
+            },
+          );
+          console.log('temp_testList',temp_testList);
+          setTestList(temp_testList);
+          setTestedCode(tested_code_list);
+        } else {
+          let tempList: TestListTable[] = await f_loadDTC_TestList();
+
+
+          let temp_testList = tempList.map(
+            (element: TestListTable, index: number) => {
+              //console.log('element test code',element.TEST_CODE)
+            
+                
+                return {
+                  ...element,
+                  CHECKADDED: false,
+                  SELECTED: false,
+                };
+             
+            },
+          );
+          console.log('temp_testList',temp_testList);
+          setTestList(temp_testList);         
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getDTC_ID_by_M_LOT_NO = async (M_LOT_NO: string) => {
+    let dtc_id: number = -1;
+    await generalQuery("checkDTC_ID_FROM_M_LOT_NO", {
+      M_LOT_NO: M_LOT_NO,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          if(response.data.data.length > 0) {
+            dtc_id = response.data.data[0].DTC_ID;
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      return dtc_id;
+  }
+
+  const insertIncomingData = async (data: any) => {   
+    await generalQuery("insertIQC1table", data)
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //Swal.fire("Thông báo",   "Thêm data thành công", "success");
+            } else {
+              Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+  }
+
+
   useEffect(() => {
     handletraDTCData();
-    getTestList();
+    //getTestList();
   }, []);
   return (
     <div className="dkdtc">
@@ -328,6 +481,7 @@ const DKDTC = () => {
                         if (checkNVL) {
                           console.log(e.target.value);
                           checkLotNVL(e.target.value);
+
                         } else {
                           if (e.target.value.length === 7) {
                             checkYCSX(e.target.value);
@@ -372,6 +526,7 @@ const DKDTC = () => {
                 <label>
                   <div className="checkboxarray">
                     {testList.map((element: TestListTable, index: number) => {
+                      //console.log('element',element)
                       return (
                         <FormControlLabel
                           key={index}

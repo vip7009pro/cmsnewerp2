@@ -1467,6 +1467,7 @@ export interface IQC_INCOMMING_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
   REMARK: string;
+  IQC_TEST_RESULT: string;
 }
 export interface HOLDING_DATA {
   HOLD_ID: number;

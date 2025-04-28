@@ -1,9 +1,9 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
+import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
+import { generalQuery, getAuditMode, getUserData, uploadQuery } from "../../../api/Api";
 import "./INCOMMING.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
@@ -15,9 +15,11 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { MdUpdate } from "react-icons/md";
+import { checkBP } from "../../../api/GlobalFunction";
 const INCOMMING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [isNewRegister, setNewRegister] = useState(true);
+  const [isNewRegister, setNewRegister] = useState(false);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
     { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
@@ -228,7 +230,8 @@ const INCOMMING = () => {
       INS_EMPL: "",
       UPD_DATE: "",
       UPD_EMPL: "",
-      REMARK: ""
+      REMARK: "",
+      IQC_TEST_RESULT: ""
     }
   ]);
   const [dtcDataTable, setDtcDataTable] = useState<Array<DTC_DATA>>([]);
@@ -252,6 +255,50 @@ const INCOMMING = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [vendor, setVendor] = useState("");
 
+  const updateIncomingData = async () => {
+    if (selectedRowsData.current.length > 0) {
+      Swal.fire({
+        title: "Update Data",
+        text: "Đang update, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsData.current.length; i++) {
+        await generalQuery("updateIncomingData_web", {
+          IQC1_ID: selectedRowsData.current[i].IQC1_ID,
+          TOTAL_RESULT: (selectedRowsData.current[i].TOTAL_RESULT ?? "PD").toUpperCase(),
+          NQ_CHECK_ROLL: selectedRowsData.current[i].NQ_CHECK_ROLL,
+          IQC_TEST_RESULT: (selectedRowsData.current[i].IQC_TEST_RESULT ?? "PD").toUpperCase(),
+          REMARK: selectedRowsData.current[i].REMARK       
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += ` Lỗi: ${response.data.message}`;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });       
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Update thành công", "success");
+        handletraIQC1Data();
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
+    }
+
+    
+  }
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsData.current);
     if (selectedRowsData.current.length > 0) {
@@ -343,14 +390,14 @@ const INCOMMING = () => {
     { field: 'WIDTH_CD',headerName: 'SIZE', resizable: true,width: 60 },
     { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
     { field: 'LOT_CMS',headerName: 'LOT_CMS', resizable: true,width: 80 },
-    { field: 'LOT_VENDOR',headerName: 'LOT_VENDOR', resizable: true,width: 80 },
+    { field: 'LOTNCC',headerName: 'LOT_VENDOR', resizable: true,width: 80 },
     { field: 'CUST_CD',headerName: 'CUST_CD', resizable: true,width: 80 },
     { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,width: 80 },
     { field: 'EXP_DATE',headerName: 'EXP_DATE', resizable: true,width: 80 },
     { field: 'INPUT_LENGTH',headerName: 'INPUT_LENGTH', resizable: true,width: 80 },
     { field: 'TOTAL_ROLL',headerName: 'TOTAL_ROLL', resizable: true,width: 80 },
     { field: 'NQ_CHECK_ROLL',headerName: 'NQ_CHECK_ROLL', resizable: true,width: 80 },
-    { field: 'CHECKSHEET',headerName: 'CHECKSHEET', resizable: true,width: 80, cellRenderer: (params: any) => {
+    /* { field: 'CHECKSHEET',headerName: 'CHECKSHEET', resizable: true,width: 80, cellRenderer: (params: any) => {
       if(params.data.CHECKSHEET !== "Y"){
         return (
           <span style={{ color: "#ff0000", fontWeight: "bold" }}>
@@ -363,7 +410,90 @@ const INCOMMING = () => {
           LINK
         </a>
       );
-    } },
+    } }, */
+
+    {
+          field: "CHECKSHEET",
+          headerName: "CHECKSHEET",
+          width: 100,
+          cellRenderer: (params: any) => {
+            let file: any = null;
+            const uploadFile2: any = async (e: any) => {
+              //console.log(file);
+              checkBP(userData, ["QC"], ["ALL"], ["ALL"], async () => {
+                uploadQuery(file, params.data.IQC1_ID + ".jpg", "iqcincoming")
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      generalQuery("updateIncomingChecksheet", {
+                        IQC1_ID: params.data.IQC1_ID,
+                        CHECKSHEET: "Y",
+                      })
+                        .then((response) => {
+                          if (response.data.tk_status !== "NG") {                            
+                            Swal.fire(
+                              "Thông báo",
+                              "Upload checksheet thành công",
+                              "success",
+                            );
+                          } else {
+                            Swal.fire(
+                              "Thông báo",
+                              "Upload checksheet thất bại",
+                              "error",
+                            );
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+                    } else {
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload file thất bại:" + response.data.message,
+                        "error",
+                      );
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              });
+            };
+            let hreftlink = "/iqcincoming/"+ params.data.IQC1_ID + ".jpg";
+            if (params.data.CHECKSHEET ==='Y') {
+              return (
+                <span style={{ color: "gray" }}>
+                  <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                    LINK
+                  </a>
+                </span>
+              );
+            } else {
+              return (
+                <div className="uploadfile">
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={(e) => {
+                      uploadFile2(e);
+                    }}
+                  >
+                    <AiOutlineCloudUpload color="yellow" size={15} />
+                    Upload
+                  </IconButton>
+                  <input
+                    accept=".jpg"
+                    type="file"
+                    onChange={(e: any) => {
+                      file = e.target.files[0];
+                      console.log(file);
+                    }}
+                  />
+                  </div>
+                
+              );
+            }
+          },          
+        },
     { field: 'DTC_ID',headerName: 'DTC_ID', resizable: true,width: 80 },
     { field: 'TEST_EMPL',headerName: 'TEST_EMPL', resizable: true,width: 80 },
     { field: 'TOTAL_RESULT',headerName: 'TOTAL_RESULT', resizable: true,width: 80, cellRenderer: (params: any) => {
@@ -451,14 +581,56 @@ const INCOMMING = () => {
       }
     } 
     },      
-    
+    { field: 'IQC_TEST_RESULT',headerName: 'IQC_TEST_RESULT', resizable: true,width: 80, cellRenderer:(params: any) => {
+      if (params.data.IQC_TEST_RESULT === "OK") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "normal",
+              backgroundColor: "#01E33F",
+              textAlign: "center",
+            }}
+          >
+            OK
+          </div>
+        );
+      } else if (params.data.IQC_TEST_RESULT === "NG") {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "normal",
+              backgroundColor: "red",
+              textAlign: "center",
+            }}
+          >
+            NG
+          </div>
+        );
+      } else {
+        return (
+          <div
+            style={{
+              color: "white",
+              fontWeight: "normal",
+              backgroundColor: "blue",
+              textAlign: "center",
+            }}
+          >
+            PENDING
+          </div>
+        );
+      }
+    } 
+    },      
+    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 80  },    
   ];
   const tail_column_iqcdatatable = [
     { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 80  },
     { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 80  },
     { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 80  },
-    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 80  },
-    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 80  },
+    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 80  },    
   ];
   let keyArray =iqc1datatable.length > 0 ? Object?.keys(iqc1datatable[0])?.filter((key: string) => key.startsWith('KQ')) : [];
   let test_item_fields: any[] = keyArray?.map((key: string) => {   
@@ -475,6 +647,7 @@ const INCOMMING = () => {
   const iqcDataTable = useMemo(() => {
     return (
       <AGTable
+      suppressRowClickSelection={false}
         toolbar={
           <div>           
             <IconButton
@@ -535,6 +708,23 @@ const INCOMMING = () => {
               <FcCancel color="red" size={15} />
               SET FAIL
             </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                if (userData?.SUBDEPTNAME === "IQC") {
+                  updateIncomingData();
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Bạn không phải người bộ phận IQC",
+                    "error",
+                  );
+                }
+              }}
+            >
+              <MdUpdate color="#6d08ccb2" size={15} />
+              Update
+            </IconButton>
           </div>}
         columns={column_iqcdatatable}
         data={iqc1datatable}
@@ -590,7 +780,7 @@ const INCOMMING = () => {
               let auto_judgement = keyArray.some((key: string) => element[key as keyof IQC_INCOMMING_DATA] === 0) ? "NG" : keyArray.some((key: string) => element[key as keyof IQC_INCOMMING_DATA] === 2) ? "PENDING" : "OK";
               return {
                 ...element,
-                AUTO_JUDGEMENT: auto_judgement,               
+                AUTO_JUDGEMENT: element.IQC_TEST_RESULT === 'OK'? auto_judgement: element.IQC_TEST_RESULT === 'NG' ? 'NG' : 'PENDING',               
                 INS_DATE: element.INS_DATE === null ? "" : moment(element.INS_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE: element.UPD_DATE === null ? "" : moment(element.UPD_DATE).utc().format("YYYY-MM-DD HH:mm:ss"),
                 EXP_DATE: element.EXP_DATE === null ? "" : moment(element.EXP_DATE).utc().format("YYYY-MM-DD"),
@@ -738,6 +928,7 @@ const INCOMMING = () => {
       UPD_DATE: "",
       UPD_EMPL: "",
       REMARK: "",
+      IQC_TEST_RESULT: "PD"
     };
     setIQC1DataTable((prev) => {
       return [...prev, temp_row];
@@ -770,7 +961,7 @@ const INCOMMING = () => {
     }
   };
   useEffect(() => {
-    //handletraIQC1Data();
+    handletraIQC1Data();
   }, []);
   return (
     <div className="incomming">

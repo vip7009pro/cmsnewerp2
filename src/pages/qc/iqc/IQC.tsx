@@ -32,7 +32,7 @@ const IQC = () => {
           <MyTabs.Tab title={"ĐKÝ TEST ĐTC"}>
             <DKDTC />
           </MyTabs.Tab>
-        )}
+        )}        
         <MyTabs.Tab title={"INCOMING"}>
           <INCOMMING />
         </MyTabs.Tab>
