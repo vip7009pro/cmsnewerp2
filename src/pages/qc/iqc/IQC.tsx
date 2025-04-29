@@ -29,7 +29,7 @@ const IQC = () => {
           </MyTabs.Tab>
         )}
         {getUserData()?.JOB_NAME === "Worker" && (
-          <MyTabs.Tab title={"ĐKÝ TEST ĐTC"}>
+          <MyTabs.Tab title={"LẤY MẪU ICM"}>
             <DKDTC />
           </MyTabs.Tab>
         )}        

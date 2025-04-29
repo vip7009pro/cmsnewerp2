@@ -40,11 +40,11 @@ const companyInfo = {
       },  
       {
         server_name: "NET_SERVER",
-        apiUrl: `${protocol}://cms.ddns.net:${main_port}`
+        apiUrl: `${protocol}://cms1.ddns.net:${main_port}`
       },
       {
         server_name: "SUBNET_SERVER",
-        apiUrl: `${protocol}://cms.ddns.net:${sub_port}`
+        apiUrl: `${protocol}://cms1.ddns.net:${sub_port}`
       },
       {
         server_name: "TEST_SERVER",
