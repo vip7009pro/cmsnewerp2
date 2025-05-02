@@ -48,7 +48,7 @@ const DKDTC = () => {
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const [showScanner, setShowScanner] = useState(false);
   const [lotncc, setLotNCC] = useState("");
-  const [isLotCMSScanning, setIsLOTCMSScanning] = useState(true);
+  const isLotCMSScanning= useRef(true);
   const [isScanning, setIsScanning] = useState(false);
 
   const dtcdatacolumn = [
@@ -514,7 +514,7 @@ const DKDTC = () => {
   };
   function success(result: string) {
     scanner.current.clear();
-    if(isLotCMSScanning){
+    if(isLotCMSScanning.current){
       if (result.length >= 7) {
         if (checkNVL) {
           console.log(result);
@@ -620,7 +620,7 @@ const DKDTC = () => {
                     className="buttonIcon"
                     onClick={() => {
                       if(!isScanning){
-                        setIsLOTCMSScanning(true);
+                        isLotCMSScanning.current=true;
                         setShowScanner(true);
                         startRender();
                         setIsScanning(true);
@@ -660,7 +660,7 @@ const DKDTC = () => {
                     className="buttonIcon"
                     onClick={() => {
                       if(!isScanning){
-                        setIsLOTCMSScanning(false);
+                        isLotCMSScanning.current=false;
                         setShowScanner(true);
                         startRender();
                         setIsScanning(true);
