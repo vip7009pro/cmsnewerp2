@@ -470,6 +470,7 @@ const DKDTC = () => {
     return dtc_id;
   };
   const insertIncomingData = async (data: any) => {
+    console.log(data);
     await generalQuery("insertIQC1table", data)
       // eslint-disable-next-line no-loop-func
       .then((response) => {
@@ -505,7 +506,7 @@ const DKDTC = () => {
           width: 300,
           height: 300,
         },
-        fps: 1,
+        fps: 10,
         rememberLastUsedCamera: true,
         showTorchButtonIfSupported: true,
       },

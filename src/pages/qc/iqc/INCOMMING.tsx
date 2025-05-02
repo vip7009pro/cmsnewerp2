@@ -495,6 +495,7 @@ const INCOMMING = () => {
     { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 80 },
     { field: "LOT_CMS", headerName: "LOT_CMS", resizable: true, width: 80 },
     { field: "LOTNCC", headerName: "LOT_VENDOR", resizable: true, width: 80 },
+    { field: "LOT_VENDOR_IQC", headerName: "LOT_VENDOR_IQC", resizable: true, width: 80 },
     { field: "CUST_CD", headerName: "CUST_CD", resizable: true, width: 80 },
     {
       field: "CUST_NAME_KD",
