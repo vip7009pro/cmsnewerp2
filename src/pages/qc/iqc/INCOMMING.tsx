@@ -14,7 +14,7 @@ import {
   uploadQuery,
 } from "../../../api/Api";
 import "./INCOMMING.scss";
-import { GrStatusGood } from "react-icons/gr";
+import { GrClose, GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -24,12 +24,21 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { MdUpdate } from "react-icons/md";
+import { MdDocumentScanner, MdShowChart, MdShower, MdUpdate } from "react-icons/md";
 import { checkBP } from "../../../api/GlobalFunction";
 import { CustomCellRendererProps } from "ag-grid-react";
+import BNK_COMPONENT from "./BNK_COMPONENT";
+import { useReactToPrint } from "react-to-print";
+import { FaClosedCaptioning } from "react-icons/fa";
 const INCOMMING = () => {
+  const incomingChecksheetPrintRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => incomingChecksheetPrintRef.current,
+  });
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const [showBNK, setShowBNK] = useState(false);
   const [isNewRegister, setNewRegister] = useState(false);
+  const [clickedRow, setClickedRow]= useState<IQC_INCOMMING_DATA | null>(null);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
     { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
@@ -149,6 +158,7 @@ const INCOMMING = () => {
     { field: "TDS_EMPL", headerName: "TDS_EMPL", width: 80 },
     { field: "TDS_UPD_DATE", headerName: "TDS_UPD_DATE", width: 80 },
   ];
+ 
   const handletraDTCData = (dtc_id: number) => {
     generalQuery("dtcdata", {
       ALLTIME: true,
@@ -248,6 +258,8 @@ const INCOMMING = () => {
         REMARK: "",
         IQC_TEST_RESULT: "PD",
         DTC_RESULT: "PD",
+        LOT_VENDOR_IQC: "",
+        M_THICKNESS: 0,
       },
     ]
   );
@@ -1327,6 +1339,23 @@ const INCOMMING = () => {
               <MdUpdate color="#6d08ccb2" size={15} />
               Update
             </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                if (userData?.SUBDEPTNAME?.includes("IQC")) {
+                  setShowBNK(prev => !prev);
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Bạn không phải người bộ phận IQC",
+                    "error"
+                  );
+                }
+              }}
+            >
+              <MdDocumentScanner color="#07b46cce" size={15} />
+              Show BNK
+            </IconButton>
           </div>
         }
         columns={
@@ -1341,6 +1370,7 @@ const INCOMMING = () => {
         onRowClick={(e) => {
           //console.log(e.data)
           handletraDTCData(e.data.DTC_ID);
+          setClickedRow(e.data);
         }}
         onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
@@ -1348,7 +1378,7 @@ const INCOMMING = () => {
         }}
       />
     );
-  }, [iqc1datatable]);
+  }, [iqc1datatable, clickedRow]);
   const dtc_data_table = useMemo(() => {
     return (
       <AGTable
@@ -1366,7 +1396,7 @@ const INCOMMING = () => {
         }}
       />
     );
-  }, [dtcDataTable]);
+  }, [dtcDataTable, clickedRow]);
 
   const handletraIQC1Data = () => {
     generalQuery("loadIQC1table", {
@@ -1562,6 +1592,8 @@ const INCOMMING = () => {
       REMARK: "",
       IQC_TEST_RESULT: "PD",
       DTC_RESULT: "PD",
+      LOT_VENDOR_IQC: "",
+      M_THICKNESS: 0,
     };
     setIQC1DataTable((prev) => {
       return [...prev, temp_row];
@@ -1954,6 +1986,55 @@ const INCOMMING = () => {
           </div>
         </div>
       </div>
+      {
+        showBNK && (
+          
+         
+          <div className="incomingChecksheet">
+            <div className="formbutton" style={{display: "flex", justifyContent: "space-between", alignItems: "center",gap: '10px'}}>
+             <b style={{ color: "blue" }}>CheckSheet Kiểm Tra Incoming</b>
+             <Button
+             fullWidth={false}
+             color={"success"}
+             variant="contained"
+             size="small"
+             sx={{
+               fontSize: "0.7rem",
+               padding: "3px",
+               backgroundColor: "#4959e7",
+               color: "white",
+             }}
+             onClick={() => {
+               handlePrint();
+             }}
+           >
+             Print
+           </Button> 
+           <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                if (userData?.SUBDEPTNAME?.includes("IQC")) {
+                  setShowBNK(prev => !prev);
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Bạn không phải người bộ phận IQC",
+                    "error"
+                  );
+                }
+              }}
+            >
+              <GrClose color="#c20df0ce" size={15} />
+              Close
+            </IconButton>
+           </div> 
+             <div className="checksheetcpn" ref={incomingChecksheetPrintRef}>
+              <BNK_COMPONENT data={clickedRow} dtc_data={dtcDataTable}/>
+             </div>
+          </div>
+          
+        )
+      }
     </div>
   );
 };

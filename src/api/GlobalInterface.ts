@@ -1434,6 +1434,7 @@ export interface IQC_INCOMMING_DATA {
   M_LOT_NO: string;
   LOT_CMS: string;
   LOT_VENDOR: string;
+  LOT_VENDOR_IQC: string;
   CUST_CD: string;
   CUST_NAME_KD: string;
   EXP_DATE: string;
@@ -1469,6 +1470,7 @@ export interface IQC_INCOMMING_DATA {
   REMARK: string;
   IQC_TEST_RESULT: string;
   DTC_RESULT: string;
+  M_THICKNESS: number;
 }
 export interface HOLDING_DATA {
   HOLD_ID: number;

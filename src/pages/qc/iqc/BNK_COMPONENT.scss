@@ -1,0 +1,123 @@
+.material-check {
+  width: 210mm;
+  height: 297mm;
+  padding: 2mm;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+  font-size: 12px;
+  color: #000;
+  background: white;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    border-bottom: 2px solid #000;
+    margin-bottom: 10px;
+
+    .logo {
+      width: 20%;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .title {
+      width: 60%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .approval {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+      .approval-table {
+        width: 100%;
+        border-collapse: collapse;
+        th, td {
+          border: 1px solid #000;
+          padding: 2px 4px;
+          text-align: center;
+          width: 30px;
+        } 
+      } 
+    }
+
+   
+  }
+
+  .rowoftable {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: center;
+    border-bottom: 2px solid #000;
+    gap: 10px;
+    
+    .detail-table1 {
+      width: 95%;
+      border-collapse: collapse;
+      margin: 5px 0;
+    }
+    .detail-table2 {
+      width: 5%;
+      border-collapse: collapse;
+      margin: 5px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 5px 0;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 2px 4px;
+      text-align: center;
+    }
+    thead {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5px 0;
+
+    th, td {
+      border: 1px solid #000;
+      padding: 2px 4px;
+      text-align: center;
+    }
+
+    thead {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+    .result_row {
+      height: 28px;
+    }
+  }
+
+  .info-table {
+    td:nth-child(odd) {
+      font-weight: bold;
+      background-color: #f9f9f9;
+    }
+  }
+
+  .note {
+    margin-top: 5mm;
+    font-style: italic;
+  }
+
+  // Chống tràn nội dung khi in
+  @media print {
+    .material-check {
+      page-break-after: avoid;
+    }
+  }
+}
