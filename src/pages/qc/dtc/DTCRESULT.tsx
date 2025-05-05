@@ -67,9 +67,10 @@ export interface OutputData {
 }
 export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_CODE: number, G_CODE: string,G_NAME: string,  M_CODE: string, M_NAME: string, TEST_NAME: string, defaultResultArray: DTC_RESULT_INPUT[], inputArray: InputData[]): Promise<DTC_RESULT_INPUT[]> => {
   let result: DTC_RESULT_INPUT[] = [];
+  let sampleNo = 1; // SAMPLE_NO bắt đầu từ 1
+  let preDTC_ID = 0; // DTC_ID trước
   
   for (let i = 0; i < inputArray.length; i++) {
-    const sampleNo = 1; // SAMPLE_NO bắt đầu từ 1
     let temp_data: DTC_RESULT_INPUT[] = [];
     let pointCodeCounter = 1; // Bộ đếm POINT_CODE tăng liên tục  
 
@@ -80,6 +81,13 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
         continue;
       }
     } 
+
+    if(uphangloat && preDTC_ID !== 0 && temp_data[0].DTC_ID === preDTC_ID){
+      sampleNo++;
+    } else {
+      sampleNo = 1;
+    }
+    preDTC_ID = temp_data[0].DTC_ID; // Gán DTC_ID trước cho lần sau
 
     Object.entries(inputArray[i]).forEach(([key, value]) => {
       const resultValue = value === "ND" ? 0 : Number(value); // Nếu giá trị là "ND" thì gán 0, ngược lại gán giá trị    
@@ -95,8 +103,8 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
         G_NAME: uphangloat ? temp_data[0].G_NAME : G_NAME,
         M_CODE: uphangloat ? temp_data[0].M_CODE : M_CODE,
         M_NAME: uphangloat ? temp_data[0].M_NAME : M_NAME,
-        POINT_CODE: pointCodeCounter,       
-        POINT_NAME: key + (i+1),       
+        POINT_CODE: pointCodeCounter,
+        POINT_NAME: key + (i+1),
         SAMPLE_NO: sampleNo,
         RESULT: resultValue,
         CENTER_VALUE: uphangloat ? Number(temp_data[0].CENTER_VALUE) : 0,
@@ -186,6 +194,7 @@ const DTCRESULT = () => {
     { field: 'TEST_CODE', headerName: 'TEST_CODE', resizable: true, width: 60 },
     { field: 'POINT_NAME', headerName: 'POINT_NAME', resizable: true, width: 70 },
     { field: 'POINT_CODE', headerName: 'POINT_CODE', resizable: true, width: 70 },
+    { field: 'SAMPLE_NO', headerName: 'SAMPLE_NO', resizable: true, width: 70 },
     { field: 'CENTER_VALUE', headerName: 'CENTER_VALUE', resizable: true, width: 100 },
     { field: 'UPPER_TOR', headerName: 'UPPER_TOR', resizable: true, width: 100 },
     { field: 'LOWER_TOR', headerName: 'LOWER_TOR', resizable: true, width: 100 },
@@ -362,7 +371,7 @@ const DTCRESULT = () => {
           M_CODE: inspectiondatatable[i].M_CODE,
           TEST_CODE: inspectiondatatable[i].TEST_CODE,
           POINT_CODE: inspectiondatatable[i].POINT_CODE,
-          SAMPLE_NO: 1,
+          SAMPLE_NO: inspectiondatatable[i].SAMPLE_NO,
           RESULT: inspectiondatatable[i].RESULT,
           REMARK: remark === "" ?  inspectiondatatable[i].REMARK : remark,
         })
@@ -370,6 +379,10 @@ const DTCRESULT = () => {
           .then((response) => {
             if (response.data.tk_status !== "NG") {
               //console.log(response.data.data);
+              updateDTCTESEMPL(
+                inspectiondatatable[i].DTC_ID,
+                inspectiondatatable[i].TEST_CODE,
+              );
             } else {
               err_code += `Lỗi : ` + response.data.message;
             }
@@ -381,10 +394,10 @@ const DTCRESULT = () => {
       setTestName("1003");
       setInspectionDataTable([]); 
       if (err_code === "") {
-        updateDTCTESEMPL(
+        /* updateDTCTESEMPL(
           inspectiondatatable[0].DTC_ID,
           inspectiondatatable[0].TEST_CODE,
-        );
+        ); */
         Swal.fire("Thông báo", "Up kết quả thành công", "success");
       } else {
         Swal.fire("Thông báo", "Lỗi: " + err_code, "error");

@@ -1342,15 +1342,10 @@ const INCOMMING = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                if (userData?.SUBDEPTNAME?.includes("IQC")) {
+                checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
                   setShowBNK(prev => !prev);
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error"
-                  );
-                }
+                });
+                
               }}
             >
               <MdDocumentScanner color="#07b46cce" size={15} />
@@ -2012,16 +2007,8 @@ const INCOMMING = () => {
            </Button> 
            <IconButton
               className="buttonIcon"
-              onClick={() => {
-                if (userData?.SUBDEPTNAME?.includes("IQC")) {
-                  setShowBNK(prev => !prev);
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error"
-                  );
-                }
+              onClick={() => {               
+                  setShowBNK(prev => !prev);              
               }}
             >
               <GrClose color="#c20df0ce" size={15} />
