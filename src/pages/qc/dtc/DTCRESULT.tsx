@@ -32,6 +32,7 @@ export interface DTC_RESULT_INPUT {
 }
 // Định nghĩa interface cho object đầu vào
 export interface InputData {
+  DTC_ID: number;  
   Br: string | number;
   Pb: string | number;
   Hg: string | number;
@@ -64,52 +65,102 @@ export interface OutputData {
   RESULT: number;
   REMARK: string;
 }
-export const unpivotJsonArray = (DTC_ID: number, TEST_CODE: number, G_CODE: string,G_NAME: string,  M_CODE: string, M_NAME: string, TEST_NAME: string, defaultResultArray: DTC_RESULT_INPUT[], inputArray: InputData[]): OutputData[] => {
-  const result: OutputData[] = [];
-  let pointCodeCounter = 1; // Bộ đếm POINT_CODE tăng liên tục  
-  inputArray.forEach((item, index) => {
+export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_CODE: number, G_CODE: string,G_NAME: string,  M_CODE: string, M_NAME: string, TEST_NAME: string, defaultResultArray: DTC_RESULT_INPUT[], inputArray: InputData[]): Promise<DTC_RESULT_INPUT[]> => {
+  let result: DTC_RESULT_INPUT[] = [];
+  
+  for (let i = 0; i < inputArray.length; i++) {
     const sampleNo = 1; // SAMPLE_NO bắt đầu từ 1
-    Object.entries(item).forEach(([key, value]) => {
+    let temp_data: DTC_RESULT_INPUT[] = [];
+    let pointCodeCounter = 1; // Bộ đếm POINT_CODE tăng liên tục  
+
+    if(uphangloat){
+      temp_data = await handletraDTCData_HangLoat(inputArray[i].DTC_ID.toString(), '3');
+      console.log('temp_data' + i,temp_data);
+      if (temp_data.length <= 0) {
+        continue;
+      }
+    } 
+
+    Object.entries(inputArray[i]).forEach(([key, value]) => {
       const resultValue = value === "ND" ? 0 : Number(value); // Nếu giá trị là "ND" thì gán 0, ngược lại gán giá trị    
       if(key === "REMARK") return; // Nếu key là "REMARK" thì bỏ qua
+      if(key === "DTC_ID") return;     
+    
       result.push({
-        id: index,
-        DTC_ID: DTC_ID,
-        TEST_CODE: TEST_CODE,
-        TEST_NAME: TEST_NAME,
-        G_CODE: G_CODE,
-        G_NAME: G_NAME,
-        M_CODE: M_CODE,
-        M_NAME: M_NAME,
+        id: result.length,
+        DTC_ID: uphangloat ? Number(inputArray[i].DTC_ID) : DTC_ID,
+        TEST_CODE: uphangloat ? Number(temp_data[0].TEST_CODE) : TEST_CODE,
+        TEST_NAME: uphangloat ? temp_data[0].TEST_NAME : TEST_NAME,
+        G_CODE: uphangloat ? temp_data[0].G_CODE : G_CODE,
+        G_NAME: uphangloat ? temp_data[0].G_NAME : G_NAME,
+        M_CODE: uphangloat ? temp_data[0].M_CODE : M_CODE,
+        M_NAME: uphangloat ? temp_data[0].M_NAME : M_NAME,
         POINT_CODE: pointCodeCounter,       
-        POINT_NAME: key + (index+1),       
+        POINT_NAME: key + (i+1),       
         SAMPLE_NO: sampleNo,
         RESULT: resultValue,
-        CENTER_VALUE: 0,
-        UPPER_TOR: 0,
-        LOWER_TOR: 0,
-        REMARK: item.REMARK,
+        CENTER_VALUE: uphangloat ? Number(temp_data[0].CENTER_VALUE) : 0,
+        UPPER_TOR: uphangloat ? Number(temp_data[0].UPPER_TOR) : 0,
+        LOWER_TOR: uphangloat ? Number(temp_data[0].LOWER_TOR) : 0,
+        REMARK: inputArray[i].REMARK,
       });
       pointCodeCounter++; // Tăng POINT_CODE cho phần tử tiếp theo
     });
-  });
+    
+  }
   //lấy các giá trị CENTER_VALUE, UPPER_TOR, LOWER_TOR từ defaultResultArray cho vào result array
-  for (let i = 0; i < result.length; i++) {
-    for (let j = 0; j < defaultResultArray.length; j++) {
-      if (result[i].POINT_NAME === defaultResultArray[j].POINT_NAME) {
-        result[i].CENTER_VALUE = defaultResultArray[j].CENTER_VALUE;
-        result[i].UPPER_TOR = defaultResultArray[j].UPPER_TOR;
-        result[i].LOWER_TOR = defaultResultArray[j].LOWER_TOR;
+  if(!uphangloat)
+  {
+    for (let i = 0; i < result.length; i++) {
+      for (let j = 0; j < defaultResultArray.length; j++) {
+        if (result[i].POINT_NAME === defaultResultArray[j].POINT_NAME) {
+          result[i].CENTER_VALUE = defaultResultArray[j].CENTER_VALUE;
+          result[i].UPPER_TOR = defaultResultArray[j].UPPER_TOR;
+          result[i].LOWER_TOR = defaultResultArray[j].LOWER_TOR;
+        }
       }
     }
   }
+  console.log('result',result)  
+
   return result;
 }
+
+
+export const handletraDTCData_HangLoat = async (dtc_id: string, test_code: string) => {
+  let kq: DTC_RESULT_INPUT[] = [];
+  await generalQuery("getinputdtcspec", {
+    DTC_ID: dtc_id,
+    TEST_CODE: test_code, 
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: DTC_RESULT_INPUT[] = response.data.data.map(
+          (element: DTC_RESULT_INPUT, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          },
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
 const DTCRESULT = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [dtc_id, setDTC_ID] = useState("");
   const [remark, setReMark] = useState("");
+  const [uphangloat,setUpHangLoat] = useState(false);
   const [testList, setTestList] = useState<TestListTable[]>([]);
   const getTestList = async () => {
     let tempList: TestListTable[] = await f_loadDTC_TestList();
@@ -158,7 +209,7 @@ const DTCRESULT = () => {
     e.preventDefault();
     if (e.target.files) {
       const reader = new FileReader();
-      reader.onload = (e: any) => {
+      reader.onload = async (e: any) => {
         const data = e.target.result;
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
@@ -174,6 +225,7 @@ const DTCRESULT = () => {
         });
         let inputArray: InputData[] = finalJson.map((element: any) => {
           return {
+            DTC_ID: element.DTC_ID ?? dtc_id,           
             Br: element.Br ?? 0,
             Pb: element.Pb ?? 0,
             Hg: element.Hg ?? 0,
@@ -188,7 +240,7 @@ const DTCRESULT = () => {
             REMARK: element.REMARK ?? "",
           };
         });
-        if(inputArray.length > 7){
+        if(inputArray.length > 7 && !uphangloat){
           Swal.fire(
             "Thông báo",
             "Số lượng dòng trong file excel không được lớn hơn 7",
@@ -197,7 +249,9 @@ const DTCRESULT = () => {
           return;
         }
         let newInputArray: DTC_RESULT_INPUT[] = [];
-        newInputArray = unpivotJsonArray(inspectiondatatable[0].DTC_ID, inspectiondatatable[0].TEST_CODE, inspectiondatatable[0].G_CODE, inspectiondatatable[0].G_NAME,inspectiondatatable[0].M_CODE,inspectiondatatable[0].M_NAME, inspectiondatatable[0].TEST_NAME, inspectiondatatable, inputArray);
+        newInputArray = await unpivotJsonArray(uphangloat,uphangloat ? 0 : inspectiondatatable[0].DTC_ID,uphangloat ? 0 : inspectiondatatable[0].TEST_CODE,uphangloat ? "" : inspectiondatatable[0].G_CODE,uphangloat ? "" : inspectiondatatable[0].G_NAME,uphangloat ? "" : inspectiondatatable[0].M_CODE,uphangloat ? "" : inspectiondatatable[0].M_NAME,uphangloat ? "" : inspectiondatatable[0].TEST_NAME, inspectiondatatable, inputArray);
+        console.log('newInputArray',newInputArray);
+        console.log(typeof newInputArray)
         setInspectionDataTable(newInputArray);
         //setUploadExcelJSon(finalJson);
       };
@@ -250,6 +304,11 @@ const DTCRESULT = () => {
         console.log(error);
       });
   };
+
+
+
+
+
   const checkInput = (): boolean => {
     let checkresult: boolean = true;
     for (let i = 0; i < inspectiondatatable.length; i++) {
@@ -260,7 +319,7 @@ const DTCRESULT = () => {
         checkresult = false;
       }
     }
-    if (dtc_id !== "" && checkresult === true) {
+    if ((dtc_id !== "" || uphangloat) && checkresult === true) {
       return true;
     } else {
       return false;
@@ -290,12 +349,15 @@ const DTCRESULT = () => {
         console.log(error);
       });
   };
+
+
   const insertDTCResult = async () => {
+    
     if (inspectiondatatable.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < inspectiondatatable.length; i++) {
         await generalQuery("insert_dtc_result", {
-          DTC_ID: dtc_id,
+          DTC_ID: uphangloat ? inspectiondatatable[i].DTC_ID : dtc_id,
           G_CODE: inspectiondatatable[i].G_CODE,
           M_CODE: inspectiondatatable[i].M_CODE,
           TEST_CODE: inspectiondatatable[i].TEST_CODE,
@@ -475,7 +537,23 @@ const DTCRESULT = () => {
                   readUploadFile(e);
                 }}
               />
+            </label>}            
+              </div>
+              <div className="forminputcolumn">
+              {(testname ==='3') && <label htmlFor="upload">
+              <b>Up hàng loạt: </b>
+              <input
+                className="selectfilebutton"
+                type="checkbox"
+                name="uphangloat"
+                id="uphangloat"
+                checked={uphangloat}
+                onChange={(e: any) => {
+                  setUpHangLoat(e.target.checked);
+                }}
+              />
             </label>}
+            
               </div>
             </div>
             <div className="formbutton">
