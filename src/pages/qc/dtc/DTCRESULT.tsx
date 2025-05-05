@@ -89,11 +89,13 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
     }
     preDTC_ID = temp_data[0].DTC_ID; // Gán DTC_ID trước cho lần sau
 
-    Object.entries(inputArray[i]).forEach(([key, value]) => {
+    Object.entries(inputArray[i]).forEach(([key, value], index) => {
       const resultValue = value === "ND" ? 0 : Number(value); // Nếu giá trị là "ND" thì gán 0, ngược lại gán giá trị    
       if(key === "REMARK") return; // Nếu key là "REMARK" thì bỏ qua
       if(key === "DTC_ID") return;     
     
+      const foundIndex = temp_data.findIndex((element: DTC_RESULT_INPUT) => element.POINT_NAME.substring(0, element.POINT_NAME.length - 1) === key);
+      console.log('foundIndex',foundIndex);
       result.push({
         id: result.length,
         DTC_ID: uphangloat ? Number(inputArray[i].DTC_ID) : DTC_ID,
@@ -104,12 +106,12 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
         M_CODE: uphangloat ? temp_data[0].M_CODE : M_CODE,
         M_NAME: uphangloat ? temp_data[0].M_NAME : M_NAME,
         POINT_CODE: pointCodeCounter,
-        POINT_NAME: key + (i+1),
+        POINT_NAME: key,
         SAMPLE_NO: sampleNo,
         RESULT: resultValue,
-        CENTER_VALUE: uphangloat ? Number(temp_data[0].CENTER_VALUE) : 0,
-        UPPER_TOR: uphangloat ? Number(temp_data[0].UPPER_TOR) : 0,
-        LOWER_TOR: uphangloat ? Number(temp_data[0].LOWER_TOR) : 0,
+        CENTER_VALUE: uphangloat ? foundIndex >= 0 ? Number(temp_data[foundIndex].CENTER_VALUE) : 0 : 0,
+        UPPER_TOR: uphangloat ? foundIndex >= 0 ? Number(temp_data[foundIndex].UPPER_TOR) : 0 : 0,
+        LOWER_TOR: uphangloat ? foundIndex >= 0 ? Number(temp_data[foundIndex].LOWER_TOR) : 0 : 0,
         REMARK: inputArray[i].REMARK,
       });
       pointCodeCounter++; // Tăng POINT_CODE cho phần tử tiếp theo
@@ -165,15 +167,51 @@ export const handletraDTCData_HangLoat = async (dtc_id: string, test_code: strin
 
 const DTCRESULT = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
+  const [switchIDLOT, setSwitchIDLOT] = useState(false);
   const [dtc_id, setDTC_ID] = useState("");
   const [remark, setReMark] = useState("");
   const [uphangloat,setUpHangLoat] = useState(false);
   const [testList, setTestList] = useState<TestListTable[]>([]);
+  const [M_Name, setM_Name] = useState("");
+  const [M_Code, setM_Code] = useState("");
+  const [WidthCD, setWidthCD] = useState(0); 
+  const [Cust_Cd, setCust_Cd] = useState("");
+  const [Cust_Name_KD, setCust_Name_KD] = useState("");
+  const [VendorLot, setVendorLot] = useState("");
+
+
   const getTestList = async () => {
     let tempList: TestListTable[] = await f_loadDTC_TestList();
     setTestList(tempList);
   }
+    const checkLotNVL = (M_LOT_NO: string) => {
+      generalQuery("checkM_NAME_IQC", { M_LOT_NO: M_LOT_NO })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data);
+            setM_Name(response.data.data[0].M_NAME);
+            setM_Code(response.data.data[0].M_CODE);
+            setWidthCD(response.data.data[0].WIDTH_CD);           
+            setCust_Cd(response.data.data[0].CUST_CD);   
+            setVendorLot(response.data.data[0].LOT_VENDOR ?? ""); 
+          } else {
+            setM_Name("");
+            setM_Code("");
+            setWidthCD(0);      
+            setCust_Cd(""); 
+            setVendorLot("");
+     
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+
+
+
+
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<DTC_RESULT_INPUT>>(
     [],
   );
@@ -288,6 +326,31 @@ const DTCRESULT = () => {
       />
     )
   }, [inspectiondatatable,])
+
+const getIDFromLot = (dtc_id_t: string) => {
+  generalQuery("getidDTCfromlotNVL", {
+    M_LOT_NO: dtc_id_t,
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        console.log(response.data.data);
+        if(response.data.data.length > 0){
+          setDTC_ID(response.data.data[0].DTC_ID);
+          checkLotNVL(response.data.data[0].M_LOT_NO);
+          checkRegisteredTest(response.data.data[0].DTC_ID);
+        }
+       
+       
+      } else {
+        
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
   const handletraDTCData = (dtc_id: string, test_code: string) => {
     generalQuery("getinputdtcspec", {
       DTC_ID: dtc_id,
@@ -300,6 +363,7 @@ const DTCRESULT = () => {
             (element: DTC_RESULT_INPUT, index: number) => {
               return {
                 ...element,
+                SAMPLE_NO: 1,
                 id: index,
               };
             },
@@ -360,8 +424,7 @@ const DTCRESULT = () => {
   };
 
 
-  const insertDTCResult = async () => {
-    
+  const insertDTCResult = async () => {    
     if (inspectiondatatable.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < inspectiondatatable.length; i++) {
@@ -427,16 +490,37 @@ const DTCRESULT = () => {
         <div className="maintable">
           <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className="forminput">
+              
+            <div className="forminputcolumn">
+              {switchIDLOT ? <label><b>Lot NVL:</b></label> : <label><b>ID TEST:</b></label>}          
+
+            <input
+              className="selectfilebutton"
+              type="checkbox"
+              name="switch"
+              id="switch"
+              checked={switchIDLOT}
+              onChange={(e: any) => {
+                setSwitchIDLOT(e.target.checked);
+              }}
+            />
+            </div>
               <div className="forminputcolumn">
-                <label>
-                  <b>ID:</b>
+                <label>                  
                   <input
                     type="text"
                     placeholder={"123456"}
                     value={dtc_id}
                     onChange={(e) => {
                       setDTC_ID(e.target.value);
-                      checkRegisteredTest(e.target.value);
+                      if(switchIDLOT){
+                        if(e.target.value.length === 10){
+                          getIDFromLot(e.target.value);
+                        }
+                      }
+                      else{
+                        checkRegisteredTest(e.target.value);
+                      }
                     }}
                   ></input>
                   <span
@@ -587,6 +671,13 @@ const DTCRESULT = () => {
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
             ></div>
           </div>
+          {switchIDLOT && <div className="info">
+            M_CODE: <span style={{ fontWeight: "bold", color: "blue" }}>{M_Code}|</span>
+            M_NAME: <span style={{ fontWeight: "bold", color: "red" }}>{M_Name}|</span>
+            SIZE: <span style={{ fontWeight: "bold", color: "green" }}>{WidthCD}|</span>
+            LOT_VENDOR: <span style={{ fontWeight: "bold", color: "purple" }}>{VendorLot}</span>
+           
+          </div>}
           <div className="tracuuYCSXTable">{resultDTCTable}</div>
         </div>
       </div>

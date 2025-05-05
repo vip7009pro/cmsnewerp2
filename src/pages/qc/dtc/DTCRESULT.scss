@@ -50,7 +50,8 @@
             width: 100%;
             .forminputcolumn {
               display: flex;
-              flex-direction: column;
+              flex-direction: row ;
+              align-items: center;
               gap: 10px;
               flex-wrap: wrap;
               .checkboxarray {
