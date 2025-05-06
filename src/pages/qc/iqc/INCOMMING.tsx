@@ -505,7 +505,21 @@ const INCOMMING = () => {
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
     { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80 },
     { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 60 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 80 },
+    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 60, cellRenderer: (params: any) => {
+      if(params.data.TOTAL_RESULT === "OK") {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'blue', backgroundColor: '#96f53d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      } else if(params.data.TOTAL_RESULT === "NG") {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', backgroundColor: '#f73d3d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', backgroundColor: '#e1f061', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      }
+    } },
     { field: "LOT_CMS", headerName: "LOT_CMS", resizable: true, width: 80 },
     { field: "LOTNCC", headerName: "LOT_VENDOR", resizable: true, width: 80 },
     { field: "LOT_VENDOR_IQC", headerName: "LOT_VENDOR_IQC", resizable: true, width: 80 },
@@ -1269,6 +1283,7 @@ const INCOMMING = () => {
   const iqcDataTable = useMemo(() => {
     return (
       <AGTable
+        suppressRowClickSelection={false}
         toolbar={
           <div>
             <IconButton
