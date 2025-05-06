@@ -228,6 +228,7 @@ const INCOMMING = () => {
         EXP_DATE: "",
         INPUT_LENGTH: 0,
         TOTAL_ROLL: 0,
+        NQ_AQL: 0,
         NQ_CHECK_ROLL: 0,
         DTC_ID: 0,
         TEST_EMPL: "",
@@ -526,7 +527,19 @@ const INCOMMING = () => {
       field: "TOTAL_ROLL",
       headerName: "TOTAL_ROLL",
       resizable: true,
-      width: 80,
+      width: 40,
+    },
+    {
+      field: "NQ_AQL",
+      headerName: "NQ_AQL",
+      resizable: true,
+      width: 45,
+    },
+    {
+      field: "NQ_CHECK_ROLL",
+      headerName: "NQ_ROLL",
+      resizable: true,
+      width: 40,
     },
     {
       field: "UDPATE",
@@ -629,13 +642,7 @@ const INCOMMING = () => {
           </div>
         );
       },
-    },
-    {
-      field: "NQ_CHECK_ROLL",
-      headerName: "NQ_CHECK_ROLL",
-      resizable: true,
-      width: 80,
-    },
+    },    
     /* { field: 'CHECKSHEET',headerName: 'CHECKSHEET', resizable: true,width: 80, cellRenderer: (params: any) => {
       if(params.data.CHECKSHEET !== "Y"){
         return (
@@ -1422,6 +1429,7 @@ const INCOMMING = () => {
                 : "OK";
               return {
                 ...element,
+                NQ_AQL: getTestQty(element.TOTAL_ROLL) ?? 0,
                 AUTO_JUDGEMENT:
                   element.IQC_TEST_RESULT === "OK"
                     ? auto_judgement
@@ -1542,6 +1550,25 @@ const INCOMMING = () => {
       return false;
     }
   };
+  
+  const aqlTable = [
+    { MIN_ROLL_QTY: 1, MAX_ROLL_QTY: 1, TEST_QTY: 1 },
+    { MIN_ROLL_QTY: 2, MAX_ROLL_QTY: 15, TEST_QTY: 2 },
+    { MIN_ROLL_QTY: 16, MAX_ROLL_QTY: 25, TEST_QTY: 3 },
+    { MIN_ROLL_QTY: 26, MAX_ROLL_QTY: 90, TEST_QTY: 5 },
+    { MIN_ROLL_QTY: 91, MAX_ROLL_QTY: 150, TEST_QTY: 8 },
+    { MIN_ROLL_QTY: 151, MAX_ROLL_QTY: 280, TEST_QTY: 13 },
+    { MIN_ROLL_QTY: 281, MAX_ROLL_QTY: 500, TEST_QTY: 20 },
+  ];
+
+  const getTestQty = (total_roll: number) => {
+    const testQty = aqlTable.find(
+      (element) =>
+        element.MIN_ROLL_QTY <= total_roll && element.MAX_ROLL_QTY >= total_roll
+    );
+    return testQty?.TEST_QTY;
+  };
+
   const addRow = async () => {
     let temp_row: IQC_INCOMMING_DATA = {
       id: iqc1datatable.length,
@@ -1557,6 +1584,7 @@ const INCOMMING = () => {
       EXP_DATE: exp_date,
       INPUT_LENGTH: total_qty,
       TOTAL_ROLL: total_roll,
+      NQ_AQL: getTestQty(total_roll) ?? 0,
       NQ_CHECK_ROLL: nq_qty,
       DTC_ID: dtc_id,
       TEST_EMPL: request_empl ?? "",

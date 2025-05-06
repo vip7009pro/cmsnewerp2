@@ -1440,6 +1440,7 @@ export interface IQC_INCOMMING_DATA {
   EXP_DATE: string;
   INPUT_LENGTH: number;
   TOTAL_ROLL: number;
+  NQ_AQL: number;
   NQ_CHECK_ROLL: number;
   DTC_ID: number;
   TEST_EMPL: string;
