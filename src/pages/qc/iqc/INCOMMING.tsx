@@ -1448,9 +1448,15 @@ const INCOMMING = () => {
                 AUTO_JUDGEMENT:
                   element.IQC_TEST_RESULT === "OK"
                     ? auto_judgement
-                    : element.IQC_TEST_RESULT === "NG"
+                    : element.IQC_TEST_RESULT === "PD" && auto_judgement === "NG"
                     ? "NG"
-                    : "PD",
+                    : element.IQC_TEST_RESULT === "PD" && auto_judgement === "PD"
+                    ? "PD"
+                    : element.IQC_TEST_RESULT === "PD" && auto_judgement === "OK"
+                    ? "PD"
+                    : element.IQC_TEST_RESULT === "NG" && auto_judgement === "NG"
+                    ? "NG"
+                    : "OK",
                 INS_DATE:
                   element.INS_DATE === null
                     ? ""
