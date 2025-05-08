@@ -31,7 +31,11 @@ const BNK_COMPONENT = ({
     { MIN_ROLL_QTY: 281, MAX_ROLL_QTY: 500, TEST_QTY: 20 },
   ];
   console.log('data?.M_THICKNESS',data?.M_THICKNESS)
-  const [m_thickness, setMThickness] = useState(0);
+  const [m_thickness, setMThickness] = useState({
+    thickness: data?.M_THICKNESS ?? 0,
+    thickness_upper: data?.M_THICKNESS_UPPER ?? 0,
+    thickness_lower: data?.M_THICKNESS_LOWER ?? 0,
+  });
   let temp_thickness = (data?.M_THICKNESS ?? 0)<=0;
   console.log('temp_thickness',temp_thickness)
   const [showSetThickness, setShowSetThickness] = useState(false);
@@ -41,10 +45,12 @@ const BNK_COMPONENT = ({
     generalQuery("checkM_THICKNESS", { M_NAME: data?.M_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          if (response.data.data.length > 0) {
-            let temp   = response.data.data[0].M_THICKNESS;
-            console.log('temp',temp);           
-            setMThickness(temp);
+          if (response.data.data.length > 0) {          
+            setMThickness({
+              thickness: response.data.data[0].M_THICKNESS,
+              thickness_upper: response.data.data[0].M_THICKNESS_UPPER,
+              thickness_lower: response.data.data[0].M_THICKNESS_LOWER,
+            });
           }
         }
       })
@@ -227,13 +233,15 @@ const BNK_COMPONENT = ({
               <td
                 style={{
                   textAlign: "center",
-                  color: m_thickness === 0 ? "red" : "",
+                  color: m_thickness.thickness === 0 ? "red" : "",
                 }}
               >
                 {showSetThickness && <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
-                <input type="number" style={{width: "50px"}} value={m_thickness} onChange={(e) => setMThickness(Number(e.target.value))} /> 
+                <input type="number" style={{width: "50px"}} value={m_thickness.thickness} onChange={(e) => setMThickness({thickness: Number(e.target.value), thickness_upper: m_thickness.thickness_upper, thickness_lower: m_thickness.thickness_lower})} /> 
+                +<input type="number" style={{width: "50px"}} value={m_thickness.thickness_upper} onChange={(e) => setMThickness({thickness: m_thickness.thickness, thickness_upper: Number(e.target.value), thickness_lower: m_thickness.thickness_lower})} /> 
+                -<input type="number" style={{width: "50px"}} value={m_thickness.thickness_lower} onChange={(e) => setMThickness({thickness: m_thickness.thickness, thickness_upper: m_thickness.thickness_upper, thickness_lower: Number(e.target.value)})} />  
                 <button onClick={() =>{
-                  generalQuery("updateMThickness", { M_NAME: data?.M_NAME, M_THICKNESS: m_thickness })
+                  generalQuery("updateMThickness", { M_NAME: data?.M_NAME, M_THICKNESS: m_thickness.thickness, M_THICKNESS_UPPER: m_thickness.thickness_upper, M_THICKNESS_LOWER: m_thickness.thickness_lower })
                   .then((response) => {
                     if (response.data.tk_status !== "NG") {
                       setShowSetThickness(false);
@@ -251,7 +259,7 @@ const BNK_COMPONENT = ({
                   setShowSetThickness(true);
                   getMThickness();
                 }}>Set</button> 
-                </div>} {(!showSetThickness) && <div onClick={()=>setShowSetThickness(true)} style={{textAlign: "center"}}>{m_thickness}</div>}
+                </div>} {(!showSetThickness) && <div onClick={()=>setShowSetThickness(true)} style={{textAlign: "center"}}>{m_thickness.thickness === -1 ? "N/A" : m_thickness.thickness_upper === m_thickness.thickness_lower ? `${m_thickness.thickness} ± ${m_thickness.thickness_upper}` : `${m_thickness.thickness} + ${m_thickness.thickness_upper} - ${m_thickness.thickness_lower}`}</div>}
               </td>
             </tr>
             {/* Các dòng 1 đến 15 có thể thêm tại đây nếu cần */}

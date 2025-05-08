@@ -1472,6 +1472,8 @@ export interface IQC_INCOMMING_DATA {
   IQC_TEST_RESULT: string;
   DTC_RESULT: string;
   M_THICKNESS: number;
+  M_THICKNESS_UPPER: number;
+  M_THICKNESS_LOWER: number;
 }
 export interface HOLDING_DATA {
   HOLD_ID: number;

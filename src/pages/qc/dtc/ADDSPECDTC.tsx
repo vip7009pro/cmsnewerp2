@@ -435,36 +435,72 @@ const ADDSPECTDTC = () => {
         console.log(error);
       });
   };
-  const copyXRFSpec = (
+  const copyXRFSpec = async (
     m_code: string | undefined,
     g_code: string | undefined,
   ) => {
-    generalQuery("copyXRFSpec", {
-      M_CODE: checkNVL ? m_code : "B0000035",
-      G_CODE: checkNVL ? "7A07540A" : g_code,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          //setAddedSpec(response.data.data);
-          Swal.fire("Thông báo: ", "Copy XRF Spec thành công", "success");
-        } else {
-        }
+    let listM_CODE_SAME_M_NAME: string[] = [];
+    listM_CODE_SAME_M_NAME = materialList.filter((element: MaterialListData) => {
+      return element.M_NAME === selectedMaterial?.M_NAME;
+    }).map((ele2: MaterialListData) => {
+      return ele2.M_CODE;
+    });
+    if(!checkNVL){
+      generalQuery("copyXRFSpec", {
+        M_CODE: checkNVL ? m_code : "B0000035",
+        G_CODE: checkNVL ? "7A07540A" : g_code,
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data);
+            //setAddedSpec(response.data.data);
+            Swal.fire("Thông báo: ", "Copy XRF Spec thành công", "success");
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      
+    }else{
+      for(let i = 0; i < listM_CODE_SAME_M_NAME.length; i++){
+        generalQuery("copyXRFSpec", {
+          M_CODE: checkNVL ? listM_CODE_SAME_M_NAME[i] : "B0000035",
+          G_CODE: checkNVL ? "7A07540A" : g_code,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+              //setAddedSpec(response.data.data);
+              Swal.fire("Thông báo: ", "Copy XRF Spec thành công", "success");
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } 
+      
+    }
+   
   };
 
   const copyXRFSpecSDI = (
     m_code: string | undefined,
     g_code: string | undefined,
   ) => {
-    generalQuery("copyXRFSpecSDI", {
-      M_CODE: checkNVL ? m_code : "B0000035",
-      G_CODE: checkNVL ? "7A07540A" : g_code,
-    })
-      .then((response) => {
+    let listM_CODE_SAME_M_NAME: string[] = [];
+    listM_CODE_SAME_M_NAME = materialList.filter((element: MaterialListData) => {
+      return element.M_NAME === selectedMaterial?.M_NAME;
+    }).map((ele2: MaterialListData) => {
+      return ele2.M_CODE;
+    });
+    if(!checkNVL){
+      generalQuery("copyXRFSpecSDI", {
+        M_CODE: checkNVL ? m_code : "B0000035",
+        G_CODE: checkNVL ? "7A07540A" : g_code,
+      })
+        .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
           //setAddedSpec(response.data.data);
@@ -475,6 +511,27 @@ const ADDSPECTDTC = () => {
       .catch((error) => {
         console.log(error);
       });
+    }else{
+      for(let i = 0; i < listM_CODE_SAME_M_NAME.length; i++){
+        generalQuery("copyXRFSpecSDI", {            
+          M_CODE: checkNVL ? listM_CODE_SAME_M_NAME[i] : "B0000035",
+          G_CODE: checkNVL ? "7A07540A" : g_code,
+
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+              //setAddedSpec(response.data.data);
+              Swal.fire("Thông báo: ", "Copy XRF Spec thành công", "success");
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } 
+      
+    }
   };
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",

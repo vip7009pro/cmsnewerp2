@@ -69,6 +69,7 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
   let result: DTC_RESULT_INPUT[] = [];
   let sampleNo = 1; // SAMPLE_NO bắt đầu từ 1
   let preDTC_ID = 0; // DTC_ID trước
+  let err_code: string = "";
   
   for (let i = 0; i < inputArray.length; i++) {
     let temp_data: DTC_RESULT_INPUT[] = [];
@@ -78,6 +79,8 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
       temp_data = await handletraDTCData_HangLoat(inputArray[i].DTC_ID.toString(), '3');
       console.log('temp_data' + i,temp_data);
       if (temp_data.length <= 0) {
+        //Swal.fire('Lỗi', 'ID:' + inputArray[i].DTC_ID + ' không tìm thấy spec', 'error');
+        err_code += "Lỗi : " + "ID:" + inputArray[i].DTC_ID + ': không tìm thấy spec' + " \n <br />";
         continue;
       }
     } 
@@ -94,7 +97,13 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
       if(key === "REMARK") return; // Nếu key là "REMARK" thì bỏ qua
       if(key === "DTC_ID") return;     
     
-      const foundIndex = temp_data.findIndex((element: DTC_RESULT_INPUT) => element.POINT_NAME.substring(0, element.POINT_NAME.length - 1) === key);
+      const foundIndex = temp_data.findIndex((element: DTC_RESULT_INPUT) => element.POINT_NAME?.substring(0, element.POINT_NAME.length - 1) === key);
+      if(foundIndex < 0)
+      {
+        //Swal.fire('Lỗi', 'ID:' + inputArray[i].DTC_ID + ' không tìm thấy spec ' + key, 'error');
+        err_code += "Lỗi : " + "ID:" + inputArray[i].DTC_ID + ': không tìm thấy spec ' + key + " \n <br />";
+        return;
+      }
       console.log('foundIndex',foundIndex);
       result.push({
         id: result.length,
@@ -133,6 +142,11 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
   }
   console.log('result',result)  
 
+  if(err_code !== "")
+  {
+    Swal.fire('Lỗi', err_code, 'error');
+    return [];
+  }
   return result;
 }
 
