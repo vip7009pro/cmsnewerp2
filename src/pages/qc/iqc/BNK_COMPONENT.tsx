@@ -320,10 +320,10 @@ const BNK_COMPONENT = ({
             </tr>
           </thead>
           <tbody>
-            {dtc_data?.map((item: DTC_DATA, index: number) => {
+            {dtc_data?.map((item: DTC_DATA, index: number) => {             
               let judge_result: string =
-                item.RESULT >= item.RESULT - item.LOWER_TOR &&
-                item.RESULT <= item.RESULT + item.UPPER_TOR
+                item.RESULT >= (item.CENTER_VALUE - item.LOWER_TOR) &&
+                item.RESULT <= (item.CENTER_VALUE + item.UPPER_TOR)
                   ? "OK"
                   : "NG";
               return (

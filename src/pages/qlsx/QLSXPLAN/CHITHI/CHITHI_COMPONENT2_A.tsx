@@ -860,7 +860,7 @@ const CHITHI_COMPONENT2_A = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
             )}
           </div>
         </div>}
-      {request_codeinfo[0].PL_HANG !== 'TT' &&
+      {(request_codeinfo[0].PL_HANG !== 'TT' && request_codeinfo[0].PL_HANG !== 'AM') &&
         <div>Không chỉ thị hàng nguyên chiếc, báo lại kinh doanh</div>}
       {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX') && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>

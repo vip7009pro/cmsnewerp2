@@ -1143,7 +1143,7 @@ const YCSXManager = () => {
   const handleGoToAmazon = () => {
     console.log(ycsxdatatablefilter.current.length);
     if (ycsxdatatablefilter.current.length === 1) {
-      if (ycsxdatatablefilter.current[0].PL_HANG === 'AM') {
+      if (/* ycsxdatatablefilter.current[0].PL_HANG === 'AM' */true) {
         setProdRequestNo(
           ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO
         );
@@ -1211,7 +1211,7 @@ const YCSXManager = () => {
   };
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
-    if (amz_PL_HANG === 'AM') {
+    if (amz_PL_HANG === 'AM' || amz_PL_HANG === 'TT') {
       isDuplicated = await f_checkDuplicateAMZ();
       Swal.fire({
         title: "Checking",
@@ -1447,7 +1447,7 @@ const YCSXManager = () => {
         }
         console.log("err_Code1 = " + err_code1);
         if (err_code1 === 0) {
-          if (uploadExcelJson[i].PHANLOAI === "TT") {
+          if (uploadExcelJson[i].PHANLOAI === "TT" || uploadExcelJson[i].PHANLOAI === "AM") {
             await f_insertDMYCSX({
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
@@ -1759,7 +1759,7 @@ const YCSXManager = () => {
     if (!isBOMMatching) err_code = 11;
     if (isTwoVersionExist && loaisx !== '04') err_code = 12;
     if (err_code === 0) {
-      if (newphanloai === "TT") {
+      if (newphanloai === "TT" || newphanloai === "AM") {
         await f_insertDMYCSX({
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,

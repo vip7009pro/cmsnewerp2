@@ -4536,7 +4536,7 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
           );
         } else {
           err_code = await f_deleteYCSX(ycsxList[i].PROD_REQUEST_NO);
-          if (ycsxList[i].PL_HANG != "TT") {
+          if (ycsxList[i].PL_HANG != "TT" && ycsxList[i].PL_HANG != "AM") {
             await f_deleteP500_YCSX(
               ycsxList[i].PROD_REQUEST_NO,
               ycsxList[i].EMPL_NO
