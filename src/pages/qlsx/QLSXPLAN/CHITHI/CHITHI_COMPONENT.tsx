@@ -13,6 +13,7 @@ import "./CHITHI_COMPONENT.scss";
 import Barcode from "react-barcode";
 import {
   DEFECT_PROCESS_DATA,
+  FSC_LIST_DATA,
   FullBOM,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
@@ -111,9 +112,29 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
   const [eq_process_check, setEQ_Process_check] = useState(false);
   const [m_code_ycsx, setM_CODE_YCSX] = useState('XXX');
   const [defectProcessData, setDefectProcessData] = useState<DEFECT_PROCESS_DATA[]>([]);  
+
+
+  const [fsc_name, setFSC_Name] = useState('NO_FSC');
+  const getFSCList = async () => {
+    let fscList: FSC_LIST_DATA[] = [];
+    await generalQuery("getFSCList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data)
+          fscList=response.data.data;
+        } else {
+            fscList=[];
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return fscList;
+  }
+
   const handleGetChiThiTable = async () => {
+    PLAN_ID: DATA.PLAN_ID,
     generalQuery("getchithidatatable", {
-      PLAN_ID: DATA.PLAN_ID,
     })
       .then((response) => {
         //console.log(response.data.tk_status);
@@ -150,7 +171,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
     })
-      .then((response) => {
+      .then(async (response) => {
         //console.log('Data request full ycsx :');
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -172,6 +193,15 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
           );
           //console.log("max", checkpr);
           setEQ_Process_check(DATA.PROCESS_NUMBER > checkpr ? false : true);
+
+          let fscList= await getFSCList();
+          let fscName = fscList.find((item) => item.FSC_CODE === response.data.data[0].FSC_CODE)?.FSC_NAME;
+          //console.log('fsc_name',fsc_name)
+          setFSC_Name(fscName ?? 'NO_FSC');
+
+
+
+
         } else {
           setRequest_CodeInfo([
             {
@@ -251,6 +281,10 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
       .catch((error) => {
         console.log(error);
       });
+
+
+       
+      
   };
   const check_dinh_muc = () => {
     if (
@@ -805,7 +839,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                 lineColor="black"
                 margin={0}
               />
-              _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+              _{request_codeinfo[0]?.FSC === "Y" ? "("+fsc_name+")" : ""}{" "}
               POBALANCE: {po_balance?.toLocaleString("en-US")}{" "}
             </div>}
             {getCompany() === 'CMS' && <div className="thongtinyeucau">

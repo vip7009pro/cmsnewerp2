@@ -11,6 +11,7 @@ import {
   QLSXPLANDATA,
   UserData,
   DEFECT_PROCESS_DATA,
+  FSC_LIST_DATA,
 } from "../../../../api/GlobalInterface";
 import { f_loadDefectProcessData } from "../../../../api/GlobalFunction";
 import { FaStar } from "react-icons/fa";
@@ -107,6 +108,24 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
   const [maxLieu, setMaxLieu] = useState(12);
   const [po_balance, setPoBalance] = useState(0);
   const [defectProcessData, setDefectProcessData] = useState<DEFECT_PROCESS_DATA[]>([]);
+
+    const [fsc_name, setFSC_Name] = useState('NO_FSC');
+    const getFSCList = async () => {
+      let fscList: FSC_LIST_DATA[] = [];
+      await generalQuery("getFSCList", {})
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data)
+            fscList=response.data.data;
+          } else {
+              fscList=[];
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      return fscList;
+    }
   const handle_getMcodeOfYcsx = () => {
     generalQuery("checkP500M_CODE", {
       PROD_REQUEST_NO: PLAN_LIST[0].PROD_REQUEST_NO,
@@ -144,7 +163,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: main_plan.PROD_REQUEST_NO,
     })
-      .then((response) => {
+      .then(async (response) => {
         //console.log('Data request full ycsx :');
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -158,6 +177,13 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
             }
           }
           setRequest_CodeInfo(response.data.data);
+
+          let fscList= await getFSCList();
+          let fscName = fscList.find((item) => item.FSC_CODE === response.data.data[0].FSC_CODE)?.FSC_NAME;
+          //console.log('fsc_name',fsc_name)
+          setFSC_Name(fscName ?? 'NO_FSC');
+
+
         } else {
           setRequest_CodeInfo([
             {
@@ -689,7 +715,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
                       : request_codeinfo[0].CODE_50 === "06"
                         ? "Vai bac 4"
                         : "ETC"}
-            ) _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+            ) _{request_codeinfo[0]?.FSC === "Y" ? "("+fsc_name+")" : ""}{" "}
           </div>}
           {getCompany() === 'CMS' && <div className="thongtinyeucau">
             <table className="ttyc1">
