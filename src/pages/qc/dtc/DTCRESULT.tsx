@@ -81,6 +81,7 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
       if (temp_data.length <= 0) {
         //Swal.fire('Lỗi', 'ID:' + inputArray[i].DTC_ID + ' không tìm thấy spec', 'error');
         err_code += "Lỗi : " + "ID:" + inputArray[i].DTC_ID + ': không tìm thấy spec' + " \n <br />";
+        console.log(err_code);
         continue;
       }
     } 

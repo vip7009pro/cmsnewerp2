@@ -1063,7 +1063,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         <div>PROCESS_NUMBER phải đặt 1,2,3 hoặc 4</div>
       )}
       {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
-      {(request_codeinfo[0].PL_HANG !== 'TT' && request_codeinfo[0].PL_HANG !== 'AM') && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc, báo lại kinh doanh</div>}
+      {(request_codeinfo[0].PL_HANG !== 'TT') && <div>Không chỉ thị sản xuất cho  hàng nguyên chiếc, báo lại kinh doanh</div>}
       {(M_CODEtrongBOM !== m_code_ycsx &&  m_code_ycsx !=='XXX' && DATA.PROCESS_NUMBER === 1) && <div>Liệu chính của cùng 1 ycsx không được thay đổi so với lần sản xuất trước</div>}
     </div>
   );

@@ -2840,7 +2840,9 @@ export const f_getO300_OUT_NO = async (PLAN_ID: string) => {
   await generalQuery("getO300_ROW", { PLAN_ID: PLAN_ID })
     .then((response) => {
       console.log(response.data);
-      O300_OUT_NO = response.data.data[0].OUT_NO;
+      if(response.data.data.length > 0){        
+        O300_OUT_NO = response.data.data[0].OUT_NO;
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -2894,6 +2896,7 @@ export const f_insertO301 = async (DATA: any) => {
     M_CODE: DATA.M_CODE,
     OUT_PRE_QTY: DATA.OUT_PRE_QTY,
     PLAN_ID: DATA.PLAN_ID,
+    G_CODE: DATA.G_CODE
   })
     .then((response) => {
       //console.log(response.data);
@@ -3009,6 +3012,7 @@ export const f_handleDangKyXuatLieu = async (
           M_CODE: chithidatatable[i].M_CODE,
           OUT_PRE_QTY:  met_dang_ky,
           PLAN_ID: selectedPlan.PLAN_ID,
+          G_CODE: selectedPlan.G_CODE
         });
       } else {
         await f_updateO301({
