@@ -891,7 +891,7 @@ const INCOMMING = () => {
       field: "AUTO_JUDGEMENT",
       headerName: "AUTO_JUDGEMENT",
       resizable: true,
-      width: 80,
+      width: 100,
       cellRenderer: (params: CustomCellRendererProps) => {
         return (
           <div className="checkboxcell">
@@ -925,6 +925,50 @@ const INCOMMING = () => {
         if (params.data.AUTO_JUDGEMENT === "OK") {
           return { backgroundColor: "#77da41", color: "white" };
         } else if (params.data.AUTO_JUDGEMENT === "PD") {
+          return { backgroundColor: "yellow", color: "black" };
+        } else {
+          return { backgroundColor: "red", color: "white" };
+        }
+      },
+    },
+    {
+      field: "DTC_AUTO",
+      headerName: "DTC_AUTO",
+      resizable: true,
+      width: 80,
+      cellRenderer: (params: CustomCellRendererProps) => {
+        return (
+          <div className="checkboxcell">
+            <input
+              type="checkbox"
+              checked={params.data.DTC_AUTO === "OK"}
+              onChange={(e) => {
+                setIQC1DataTable((prev) => {
+                  const newData = prev.map((p) =>
+                    p.IQC1_ID === params.data.IQC1_ID
+                      ? {
+                          ...p,
+                          DTC_AUTO: e.target.checked ? "OK" : "NG",
+                        }
+                      : p
+                  );
+                  return newData;
+                });
+
+                checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
+                  //handleUpdateData(e, params.data, "IQC_TEST_RESULT");
+                  //console.log(e.target.checked);
+                });
+              }}
+            ></input>
+            <span>{params.data.DTC_AUTO}</span>
+          </div>
+        );
+      },
+      cellStyle: (params: any) => {
+        if (params.data.DTC_AUTO === "OK") {
+          return { backgroundColor: "#77da41", color: "white" };
+        } else if (params.data.DTC_AUTO === "PD") {
           return { backgroundColor: "yellow", color: "black" };
         } else {
           return { backgroundColor: "red", color: "white" };
@@ -1459,6 +1503,7 @@ const INCOMMING = () => {
                     : element.IQC_TEST_RESULT === "NG" && auto_judgement === "NG"
                     ? "NG"
                     : "OK",
+                DTC_AUTO: auto_judgement,
                 INS_DATE:
                   element.INS_DATE === null
                     ? ""

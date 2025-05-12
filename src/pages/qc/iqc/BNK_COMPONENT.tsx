@@ -159,7 +159,7 @@ const BNK_COMPONENT = ({
         </thead>
         <tbody>
           <tr>
-            <td>Mức độ kiểm tra</td>
+            <td>Test Level</td>
             <td>GI AQL(0.1)</td>
             <td>GI AQL(0.1)</td>
             <td>GI AQL(0.1)</td>
@@ -175,7 +175,7 @@ const BNK_COMPONENT = ({
             <td>1 mẫu/Lot</td>
           </tr>
           <tr>
-            <td>Số mẫu kiểm tra</td>
+            <td>Sample QTY</td>
             <td>{getTestQty(data?.TOTAL_ROLL ?? 0)}</td>
             <td>{getTestQty(data?.TOTAL_ROLL ?? 0)}</td>
             <td>{getTestQty(data?.TOTAL_ROLL ?? 0)}</td>
