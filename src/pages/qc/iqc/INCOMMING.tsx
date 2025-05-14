@@ -40,12 +40,49 @@ const INCOMMING = () => {
   const [isNewRegister, setNewRegister] = useState(false);
   const [clickedRow, setClickedRow]= useState<IQC_INCOMMING_DATA | null>(null);
   const column_dtc_data = [
-    { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
-    { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
+    { field: "TEST_NAME", headerName: "TEST_NAME", width: 60 },
+    { field: "POINT_CODE", headerName: "NO", width: 40 },
+    {
+      field: "CENTER_VALUE",
+      headerName: "CENTER",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span>
+            <b>{params.data.CENTER_VALUE}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "UPPER_TOR",
+      headerName: "UPPER",
+      width: 40,
+      cellRenderer: (params: any) => {
+        return (
+          <span>
+            <b>{params.data.UPPER_TOR}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOWER_TOR",
+      headerName: "LOWER",
+      width: 40,
+      cellRenderer: (params: any) => {
+        return (
+          <span>
+            <b>{params.data.LOWER_TOR}</b>
+          </span>
+        );
+      },
+    },
+    { field: "RESULT", headerName: "RESULT", width: 40 },
     {
       field: "DANHGIA",
-      headerName: "DANH_GIA",
-      width: 80,
+      headerName: "KQ",
+      width: 40,
       cellRenderer: (params: any) => {
         if (
           params.data.RESULT >=
@@ -64,43 +101,7 @@ const INCOMMING = () => {
         );
       },
     },
-    {
-      field: "CENTER_VALUE",
-      headerName: "CENTER_VALUE",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span>
-            <b>{params.data.CENTER_VALUE}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "UPPER_TOR",
-      headerName: "UPPER_TOR",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span>
-            <b>{params.data.UPPER_TOR}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOWER_TOR",
-      headerName: "LOWER_TOR",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span>
-            <b>{params.data.LOWER_TOR}</b>
-          </span>
-        );
-      },
-    },
-    { field: "RESULT", headerName: "RESULT", width: 80 },
+   
     { field: "DTC_ID", headerName: "DTC_ID", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },

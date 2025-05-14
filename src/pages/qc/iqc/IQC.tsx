@@ -12,6 +12,7 @@ import { getUserData } from "../../../api/Api";
 import INCOMMING from "./INCOMMING";
 import HOLDING from "./HOLDING";
 import FAILING from "./FAILING";
+import BLOCK from "./BLOCK";
 const IQC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {}, []);
@@ -35,6 +36,9 @@ const IQC = () => {
         )}        
         <MyTabs.Tab title={"INCOMING"}>
           <INCOMMING />
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"BLOCKING"}>
+          <BLOCK />
         </MyTabs.Tab>
         <MyTabs.Tab title={"HOLDING"}>
           <HOLDING />
