@@ -41,10 +41,17 @@
     justify-content: space-between;
     padding-left: 15px;
     padding-right: 10px;
-    padding-top: 15px;
+    padding-top: 10px;
 
     background-color: rgb(121, 226, 177);
     color: rgb(0, 0, 0);
+    .logodiv {      
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
     .title {
       display: flex;
       flex-direction: column;

@@ -356,24 +356,29 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
       )}
       {request_codeinfo[0].PDUYET===1 && (
         <div className="tieudeycsx">
-          {company === "CMS" && (
+          <div className="logodiv" >
+         
             <img alt="logo" src="/companylogo.png" width={160} height={40} />
-          )}
-          {company !== "CMS" && (
-            <img alt="logo" src="/companylogo.png" width={160} height={80} />
-          )}
+         
+         
+           {DATA.FL_YN === "Y" && (
+            <img alt="logo" src="/FL.png" width={150} height={55} />             
+            )}
+          </div>
           <div className="title">
             {" "}
             생산요청서 - Yêu cầu sản xuất<br></br>
             <span style={{ fontSize: 12 }}>
               Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
             </span>
+           
             <br></br>{" "}
             {request_codeinfo[0].NO_INSPECTION === "Y" && (
               <span style={{ fontSize: 12 }}>
                 (Sản phẩm không kiểm tra ngoại quan)
               </span>
             )}
+            
           </div>
           <div className="soycsx">
             <div className="ycsxno">
