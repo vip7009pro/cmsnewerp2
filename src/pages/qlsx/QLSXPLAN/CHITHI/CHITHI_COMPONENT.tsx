@@ -132,13 +132,14 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
     return fscList;
   }
 
-  const handleGetChiThiTable = async () => {
-    PLAN_ID: DATA.PLAN_ID,
+  const handleGetChiThiTable = async () => {    
     generalQuery("getchithidatatable", {
+      PLAN_ID: DATA.PLAN_ID,
     })
       .then((response) => {
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data)
           setChiThiDataTable(response.data.data);
         } else {
         }
@@ -518,6 +519,9 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
         &&
         (
           <div className="thongtinycsx">
+            <div className="logodiv">
+             {DATA.FL_YN==='Y' && <img alt="logo" src="/FL.png" width={310} height={130} />    }         
+            </div>
             <div className="text1">
               1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
               PO_TYPE: {request_codeinfo[0].PO_TYPE}

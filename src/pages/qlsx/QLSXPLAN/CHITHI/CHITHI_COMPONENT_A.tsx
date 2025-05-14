@@ -481,6 +481,11 @@ const CHITHI_COMPONENT_A = forwardRef(({ DATA }: { DATA: QLSXPLANDATA }, ref) =>
         &&
         (
           <div className="thongtinycsx">
+             <div className="logodiv" >
+       
+        
+        
+       </div>
             <div className="text1">
               1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
               PO_TYPE: {request_codeinfo[0].PO_TYPE}

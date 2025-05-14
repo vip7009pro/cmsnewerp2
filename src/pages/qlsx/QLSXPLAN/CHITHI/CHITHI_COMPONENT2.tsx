@@ -417,7 +417,11 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
           </div>
         </div>
       </div>
+      <div className="logodiv">
+      {PLAN_LIST[0].FL_YN==='Y' && <img alt="logo" src="/FL.png" width={310} height={130} />    }         
+     </div>
       {request_codeinfo[0].PL_HANG === 'TT' &&
+     
         (M_CODEtrongBOM === m_code_ycsx || m_code_ycsx === 'XXX') &&
         <div className="thongtinycsx">
           <div className="text1">

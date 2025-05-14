@@ -60,6 +60,17 @@
       }
     }
   }
+  .logodiv {
+    position: absolute;
+    top: 230px;
+    left: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    opacity: 0.22;
+  }
   .thongtinycsx {
     display: flex;
     flex-direction: column;
