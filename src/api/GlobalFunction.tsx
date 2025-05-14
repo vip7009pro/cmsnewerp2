@@ -4157,6 +4157,7 @@ export const f_insertYCSX = async (ycsxData: any) => {
     BLOCK_TDYCSX: ycsxData.BLOCK_TDYCSX,
     MATERIAL_YN: ycsxData.MATERIAL_YN,
     IS_TAM_THOI: ycsxData.IS_TAM_THOI,
+    FL_YN: ycsxData.FL_YN,
   })
     .then((response) => {
       console.log(response.data.tk_status);

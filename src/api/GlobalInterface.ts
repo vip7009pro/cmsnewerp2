@@ -424,6 +424,7 @@ export interface YCSXTableData {
   UPD_DATE?: string;
   MATERIAL_YN?: string;
   IS_TAM_THOI?: string;
+  FL_YN?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
@@ -1964,6 +1965,7 @@ export interface QLSXPLANDATA {
   SLC_CD4?: number;
   CURRENT_SLC?: number;
   IS_TAM_THOI?: string;
+  FL_YN?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -4871,3 +4873,35 @@ export interface LUONGP3_DATA {
   OUT_FILM_AMOUNT: number;
   TOTAL_P3_AMOUNT: number;
 }
+
+
+export interface BLOCK_DATA {
+  CTR_CD: string;
+  NCR_ID: number;
+  PL_BLOCK: string;
+  BLOCK_ID: number;
+  PLAN_ID: string;
+  M_CODE: string;
+  M_LOT_NO: string;
+  PROCESS_LOT_NO: string;
+  BLOCK_ROLL_QTY: number;
+  BLOCK_TOTAL_QTY: number;
+  USE_YN: string;
+  DEFECT: string;
+  QC_PASS: string;
+  QC_PASS_DATE: string;
+  QC_PASS_EMPL: string;
+  STATUS: string;
+  PROCESS_EMPL: string;
+  PROCESS_DATE: string;
+  FACTORY: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  LOT_VENDOR: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  VENDOR_NAME: string;
+}
+
