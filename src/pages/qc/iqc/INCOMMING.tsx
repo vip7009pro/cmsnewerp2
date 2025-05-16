@@ -41,7 +41,7 @@ const INCOMMING = () => {
   const [clickedRow, setClickedRow]= useState<IQC_INCOMMING_DATA | null>(null);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 60 },
-    { field: "POINT_CODE", headerName: "NO", width: 40 },
+    { field: "POINT_NAME", headerName: "NO", width: 40 },
     {
       field: "CENTER_VALUE",
       headerName: "CENTER",
@@ -288,6 +288,42 @@ const INCOMMING = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [vendor, setVendor] = useState("");
 
+  const insertHoldingData = async (REASON: string, M_CODE: string, M_LOT_NO: string) => {
+    let nextID: number = 0;
+    await generalQuery("getMaxHoldingID", {      
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          if  (response.data.data.length > 0) {
+            nextID = response.data.data[0].MAX_ID + 1;
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    await generalQuery("insertHoldingFromI222", {
+      ID: nextID,
+      REASON: REASON,
+      M_CODE: M_CODE,
+      M_LOT_NO: M_LOT_NO,
+    })
+      // eslint-disable-next-line no-loop-func
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const updateIncomingData = async () => {
     if (selectedRowsData.current.length > 0) {
       Swal.fire({
@@ -319,6 +355,26 @@ const INCOMMING = () => {
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
+     
+                generalQuery("updateQCPASSI222", {
+                  M_CODE: selectedRowsData.current[i].M_CODE,
+                  LOT_CMS: selectedRowsData.current[i].LOT_CMS,
+                  VALUE: selectedRowsData.current[i].TOTAL_RESULT === "OK" ? "Y" : "N",
+                })
+                  // eslint-disable-next-line no-loop-func
+                  .then((response) => {
+                    //console.log(response.data.data);
+                    if (response.data.tk_status !== "NG") {
+                      if(selectedRowsData.current[i].TOTAL_RESULT === "NG") {
+                        insertHoldingData(selectedRowsData.current[i].REMARK, selectedRowsData.current[i].M_CODE, selectedRowsData.current[i].LOT_CMS)
+                      }
+                    } else {
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+               
             } else {
               err_code += ` Lỗi: ${response.data.message}`;
             }
@@ -360,6 +416,9 @@ const INCOMMING = () => {
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
+              if(value === 'N') {
+                insertHoldingData(selectedRowsData.current[i].REMARK, selectedRowsData.current[i].M_CODE, selectedRowsData.current[i].LOT_CMS)
+              }
             } else {
               err_code += ` Lỗi: ${response.data.message}`;
             }
@@ -386,6 +445,7 @@ const INCOMMING = () => {
             console.log(error);
           });
       }
+     
       if (err_code === "") {
         Swal.fire("Thông báo", "SET thành công", "success");
         handletraIQC1Data();
@@ -505,6 +565,7 @@ const INCOMMING = () => {
       resizable: true,
       width: 80,
     },
+    { field: "INS_DATE", headerName: "REG_DATE", resizable: true, width: 60 },
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
     { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80 },
     { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 60 },
@@ -605,26 +666,28 @@ const INCOMMING = () => {
                       })
                         // eslint-disable-next-line no-loop-func
                         .then((response) => {
-                          //console.log(response.data.data);
+                          console.log('ketqua',response.data);
                           if (response.data.tk_status !== "NG") {
-                            if (params.data.TOTAL_RESULT === "OK") {
+                       
                               generalQuery("updateQCPASSI222", {
                                 M_CODE: params.data.M_CODE,
                                 LOT_CMS: params.data.LOT_CMS,
-                                VALUE:
-                                  params.data.TOTAL_RESULT === "OK" ? "Y" : "N",
+                                VALUE: params.data.TOTAL_RESULT === "OK" ? "Y" : "N",
                               })
                                 // eslint-disable-next-line no-loop-func
                                 .then((response) => {
                                   //console.log(response.data.data);
                                   if (response.data.tk_status !== "NG") {
+                                    if(params.data.TOTAL_RESULT === "NG") {
+                                      insertHoldingData(params.data.REMARK, params.data.M_CODE, params.data.LOT_CMS)
+                                    }
                                   } else {
                                   }
                                 })
                                 .catch((error) => {
                                   console.log(error);
                                 });
-                            }
+                            
 
                             Swal.fire(
                               "Thông báo",

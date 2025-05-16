@@ -311,7 +311,7 @@ const BNK_COMPONENT = ({
             </tr>
             <tr>
               <th>Hạng mục</th>
-              <th>Mẫu số</th>
+              <th>Mẫu</th>
               <th>CENTER</th>
               <th>LOWER</th>
               <th>UPPER</th>
@@ -329,7 +329,7 @@ const BNK_COMPONENT = ({
               return (
                 <tr key={index}>
                   <td>{item.TEST_NAME}</td>
-                  <td>{item.POINT_CODE}</td>
+                  <td>{item.POINT_NAME}</td>
                   <td>
                     {item.CENTER_VALUE?.toLocaleString("en-US", {
                       minimumFractionDigits: 0,

@@ -220,7 +220,7 @@ const SearchForm = ({
         variant="contained"
         color="success"
         onClick={() => {
-          checkBP(getUserData(), ["MUA"], ["ALL"], ["ALL"], async () => {
+          checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], async () => {
             handleUploadDoc();
           });
         }}

@@ -52,6 +52,9 @@ const HOLDING = () => {
     { field: 'QC_PASS',headerName: 'QC_PASS', resizable: true,width: 80 },
     { field: 'QC_PASS_DATE',headerName: 'QC_PASS_DATE', resizable: true,width: 80 },
     { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 80 },
+    { field: 'PROCESS_STATUS',headerName: 'PROCESS_STATUS', resizable: true,width: 80 },
+    { field: 'PROCESS_DATE',headerName: 'PROCESS_DATE', resizable: true,width: 80 },
+    { field: 'PROCESS_EMPL',headerName: 'PROCESS_EMPL', resizable: true,width: 80 },
    
   ];
 
@@ -102,17 +105,34 @@ const HOLDING = () => {
           ID: selectedRowsData.current[i].ID,
           VALUE: value,
         })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message}`;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        // eslint-disable-next-line no-loop-func
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            generalQuery("updateQCPASSI222_M_LOT_NO", {
+              M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
+              VALUE: value,
+            })
+              // eslint-disable-next-line no-loop-func
+              .then((response) => {
+                //console.log(response.data.data);
+                if (response.data.tk_status !== "NG") {
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+
+          } else {
+            err_code += ` Lỗi: ${response.data.message}`;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+
       }
       if (err_code === "") {
         Swal.fire("Thông báo", "SET thành công", "success");
@@ -375,7 +395,7 @@ const HOLDING = () => {
                     "error",
                   );
                 }
-              }}>RESET PASS</Button>
+              }}>SET FAIL</Button>
               <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#cc004e' }} onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   updateNCRIDHolding();

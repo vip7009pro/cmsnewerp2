@@ -37,7 +37,7 @@ const BLOCK = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-  const [testtype, setTestType] = useState("NVL");
+  const [testtype, setTestType] = useState("ALL");
   const [m_lot_no, setM_LOT_NO] = useState("");
   const [process_lot_no, setProcessLotNo] = useState("");
   const [request_empl, setrequest_empl] = useState("");
@@ -76,15 +76,39 @@ const BLOCK = () => {
       resizable: true,
       width: 70,      
     },
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", resizable: true, width: 50 },
+    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", resizable: true, width: 60 },
     { field: "MAKER", headerName: "MAKER", resizable: true, width: 70 },
-    { field: "SUPPLIER", headerName: "SUPPLIER", resizable: true, width: 70 },
+    { field: "SUPPLIER", headerName: "SUPPLIER", resizable: true, width: 70, 
+      cellRenderer: (params: any) => {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'green',borderRadius: '5px'}}>{params.data.SUPPLIER}</div>
+        )
+      }
+     },
     { field: "PL_BLOCK", headerName: "PL_BLOCK", resizable: true, width: 60 },
     { field: "PLAN_ID", headerName: "PLAN_ID", resizable: true, width: 60 },   
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 100 },
-    { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 50 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 100, cellRenderer: (params: any) => {
+      return (
+        <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.M_NAME}</div>
+      )
+    } },
+    { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 50, cellRenderer: (params: any) => {
+      return (
+        <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.WIDTH_CD}</div>
+      )
+    } },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 80, cellRenderer: (params: any) => {
+      if(params.data.QC_PASS === "Y") {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue', backgroundColor: '#96f53d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'black', backgroundColor: '#e9dddd', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+        )
+      }
+    } },
     {
       field: "LOT_VENDOR",
       headerName: "LOT_VENDOR",
@@ -95,18 +119,37 @@ const BLOCK = () => {
       field: "BLOCK_ROLL_QTY",
       headerName: "ROLL_QTY",
       resizable: true,
-      width: 80,
+      width: 60,
     },
     {
       field: "BLOCK_TOTAL_QTY",
       headerName: "TOTAL_QTY",
       resizable: true,
       width: 80,
+      cellRenderer: (params: any) => {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'green', borderRadius: '5px'}}>{params.data.BLOCK_TOTAL_QTY?.toLocaleString('en-US',{minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+        )
+      } 
     },
    
     { field: "DEFECT", headerName: "DEFECT", resizable: true, width: 150 },
     { field: "PLSP", headerName: "PLSP", resizable: true, width: 50 },
-    { field: "QC_PASS", headerName: "QC_PASS", resizable: true, width: 80 },
+    { field: 'QC_PASS', headerName: 'QC_PASS/FAIL', resizable: true, width: 70, cellRenderer: (params: any) => {
+      if(params.data.QC_PASS === 'Y') { 
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>PASSED</div>
+        )
+      } else if(params.data.QC_PASS === 'N') {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'red', borderRadius: '5px'}}>FAILED</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', width: '100%', backgroundColor: 'yellow', borderRadius: '5px'}}>PENDING</div>
+        )
+      }
+    } },
     {
       field: "QC_PASS_DATE",
       headerName: "QC_PASS_DATE",
@@ -125,6 +168,17 @@ const BLOCK = () => {
       headerName: "STATUS",
       resizable: true,
       width: 100,
+      cellRenderer: (params: any) => {
+        if(params.data.STATUS === 'CLOSED') { 
+          return (
+            <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', width: '100%', backgroundColor: 'green', borderRadius: '5px'}}>CLOSED</div>
+          )
+        } else if(params.data.STATUS === 'PENDING') {
+          return (
+            <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', width: '100%', backgroundColor: 'yellow', borderRadius: '5px'}}>PENDING</div>
+          )
+        }
+      } 
     },
     { field: "USE_YN", headerName: "USE_YN", resizable: true, width: 80 },
     { field: "NCR_ID", headerName: "NCR_ID", resizable: true, width: 50 },   
@@ -505,6 +559,11 @@ const BLOCK = () => {
   const handletraBlockingData = () => {
     generalQuery("loadBlockingData", {
       ONLY_PENDING: onlyPending,
+      LOT_VENDOR: vendorLot,
+      M_LOT_NO: m_lot_no,
+      DEFECT: defect_phenomenon,
+      NCR_ID: ncrId,
+      PLSP: testtype
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -543,6 +602,11 @@ const BLOCK = () => {
             "success"
           );
         } else {
+          Swal.fire(
+            "Thông báo",
+            "Không có dữ liệu",
+            "error"
+          );
         }
       })
       .catch((error) => {
@@ -744,24 +808,7 @@ const BLOCK = () => {
             style={{ backgroundImage: theme.CMS.backgroundImage }}
           >
             <div className="forminput">
-              <div className="forminputcolumn">
-                <label>
-                  <b>Tên Nhà cung cấp:</b>
-                  <select
-                    disabled={cmsvcheck}
-                    name="khachhang"
-                    value={cust_cd}
-                    onChange={(e) => {
-                      setCust_Cd(e.target.value);
-                    }}
-                  >
-                    {customerList.map((element, index) => (
-                      <option key={index} value={element.CUST_CD}>
-                        {element.CUST_NAME_KD}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+              <div className="forminputcolumn">            
                 <label>
                   <b>Phân loại hàng:</b>
                   <select
@@ -771,81 +818,15 @@ const BLOCK = () => {
                       setTestType(e.target.value);
                     }}
                   >
+                    <option value="ALL">ALL</option>
                     <option value="NVL">Vật Liệu</option>
                     <option value="BTP">Bán Thành Phẩm</option>
+                    <option value="SP">Sản Phẩm</option>
                   </select>
                 </label>
               </div>
-              <div className="forminputcolumn">
-                <label>
-                  <b>Số chỉ thị SX:</b>
-                  <input
-                    type="text"
-                    placeholder="1F80008A"
-                    value={planId}
-                    onChange={(e) => {
-                      if (e.target.value.length >= 7) {
-                        checkPlanID(e.target.value);
-                        checkPQC3_ID(e.target.value);
-                      } else {
-                        setGName("");
-                      }
-                      setPlanId(e.target.value);
-                    }}
-                  ></input>
-                </label>
-                {g_name && (
-                  <span
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      color: "blue",
-                    }}
-                  >
-                    {g_name}
-                  </span>
-                )}
-                <label>
-                  <b>{testtype === "NVL" ? "LOT NVL" : "LOT SX"}:</b>
-                  <input
-                    type="text"
-                    placeholder={
-                      testtype === "NVL" ? "202304190123" : "1E75DC03"
-                    }
-                    value={testtype === "NVL" ? m_lot_no : process_lot_no}
-                    onKeyDown={(e) => {
-                      handleKeyDown(e);
-                    }}
-                    onChange={(e) => {
-                      //console.log(e.target.value.length);
-                      if (e.target.value.length >= 7) {
-                        //console.log(e.target.value);
-                        if (testtype === "NVL") {
-                          checkLotNVL(e.target.value);
-                        } else {
-                          checkLotProcess(e.target.value);
-                        }
-                      }
-                      if (testtype === "NVL") {
-                        setM_LOT_NO(e.target.value);
-                      } else {
-                        setProcessLotNo(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </label>
-                {m_name && (
-                  <span
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      color: "blue",
-                    }}
-                  >
-                    {m_name}
-                  </span>
-                )}
-              </div>
+                  
+           
               <div className="forminputcolumn">
                 <label>
                   <b>VENDOR LOT:</b>
@@ -869,69 +850,10 @@ const BLOCK = () => {
                     }}
                   ></input>
                 </label>
-                <label>
-                  <b>Mã nhân viên giao:</b>
-                  <input
-                    type="text"
-                    placeholder={"NHU1903"}
-                    value={request_empl}
-                    onChange={(e) => {
-                      if (e.target.value.length >= 7) {
-                        checkEMPL_NAME(1, e.target.value);
-                      }
-                      setrequest_empl(e.target.value);
-                    }}
-                  ></input>
-                </label>
-                {request_empl && (
-                  <span
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      color: "blue",
-                    }}
-                  >
-                    {empl_name}
-                  </span>
-                )}
+                
               </div>
               <div className="forminputcolumn">
-                <label>
-                  <b>Mã nhân viên nhận:</b>
-                  <input
-                    type="text"
-                    placeholder={"NHU1903"}
-                    value={request_empl2}
-                    onChange={(e) => {
-                      if (e.target.value.length >= 7) {
-                        checkEMPL_NAME(2, e.target.value);
-                      }
-                      setrequest_empl2(e.target.value);
-                    }}
-                  ></input>
-                </label>
-                {request_empl2 && (
-                  <span
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      color: "blue",
-                    }}
-                  >
-                    {empl_name2}
-                  </span>
-                )}
-                <label>
-                  <b>ONLY PENDING STATUS:</b>
-                  <input
-                    type="checkbox"
-                    name="alltimecheckbox"
-                    defaultChecked={onlyPending}
-                    onChange={(e) => {
-                      setOnlyPending((prev) => !prev);
-                    }}
-                  ></input>
-                </label>
+               
                 <label>
                   <b>Remark:</b>
                   <input
@@ -956,18 +878,17 @@ const BLOCK = () => {
                 </label>
               </div>
               <div className="forminputcolumn">
-                <label>
-                  <b>CMSV</b>
+              <label>
+                  <b>ONLY PENDING STATUS:</b>
                   <input
                     type="checkbox"
                     name="alltimecheckbox"
-                    defaultChecked={cmsvcheck}
+                    defaultChecked={onlyPending}
                     onChange={(e) => {
-                      if (cmsvcheck === false) setCust_Cd("6969");
-                      setCMSVCheck(!cmsvcheck);
+                      setOnlyPending((prev) => !prev);
                     }}
                   ></input>
-                </label>
+                </label>               
                 <div
                   className="btdiv"
                   style={{ display: "flex", gap: "10px" }}

@@ -1198,6 +1198,7 @@ export interface DTC_DATA {
   G_NAME: string;
   TEST_NAME: string;
   POINT_CODE: number;
+  POINT_NAME: string;
   CENTER_VALUE: number;
   UPPER_TOR: number;
   LOWER_TOR: number;
@@ -1501,6 +1502,9 @@ export interface HOLDING_DATA {
   QC_PASS: string;
   QC_PASS_DATE: string;
   QC_PASS_EMPL: string;
+  PROCESS_STATUS:string;
+  PROCESS_DATE: string;
+  PROCESS_EMPL: string;
   REASON: string;
   NCR_ID: number;
 }

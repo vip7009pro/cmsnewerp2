@@ -3,7 +3,15 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./OQC_REPORT.scss";
-import { OQC_TREND_DATA, OQC_NG_BY_CUSTOMER, OQC_NG_BY_PRODTYPE, DailyPPMData, WeeklyPPMData, MonthlyPPMData, YearlyPPMData } from "../../../api/GlobalInterface";
+import {
+  OQC_TREND_DATA,
+  OQC_NG_BY_CUSTOMER,
+  OQC_NG_BY_PRODTYPE,
+  DailyPPMData,
+  WeeklyPPMData,
+  MonthlyPPMData,
+  YearlyPPMData,
+} from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -23,16 +31,11 @@ const OQC_REPORT = () => {
   const [weeklyppm, setWeeklyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [monthlyppm, setMonthlyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [yearlyppm, setYearlyPPM] = useState<OQC_TREND_DATA[]>([]);
-
   const [insp_dailyppm, set_InspDailyPPM] = useState<DailyPPMData[]>([]);
   const [insp_weeklyppm, set_InspWeeklyPPM] = useState<WeeklyPPMData[]>([]);
   const [insp_monthlyppm, set_InspMonthlyPPM] = useState<MonthlyPPMData[]>([]);
   const [insp_yearlyppm, set_InspYearlyPPM] = useState<YearlyPPMData[]>([]);
-  const [ng_type, setNg_Type] = useState('ALL');
-
-
-
-
+  const [ng_type, setNg_Type] = useState("ALL");
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm1, setMonthlyPPM1] = useState<MonthlyPPMData[]>([]);
@@ -41,16 +44,23 @@ const OQC_REPORT = () => {
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
-
-
-  const [oqcNGByCustomer, setOQCNGByCustomer] = useState<OQC_NG_BY_CUSTOMER[]>([]);
-  const [oqcNGByProdType, setOQCNGByProdType] = useState<OQC_NG_BY_PRODTYPE[]>([]);
-  const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
+  const [oqcNGByCustomer, setOQCNGByCustomer] = useState<OQC_NG_BY_CUSTOMER[]>(
+    []
+  );
+  const [oqcNGByProdType, setOQCNGByProdType] = useState<OQC_NG_BY_PRODTYPE[]>(
+    []
+  );
+  const [fromdate, setFromDate] = useState(
+    moment().add(-14, "day").format("YYYY-MM-DD")
+  );
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [cust_name, setCust_Name] = useState('');
+  const [cust_name, setCust_Name] = useState("");
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
   const [df, setDF] = useState(true);
-  const handle_getOQCNGByCustomer = async (FACTORY: string, listCode: string[]) => {
+  const handle_getOQCNGByCustomer = async (
+    FACTORY: string,
+    listCode: string[]
+  ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
     await generalQuery("ngbyCustomerOQC", {
@@ -58,7 +68,7 @@ const OQC_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -66,11 +76,11 @@ const OQC_REPORT = () => {
           const loadeddata: OQC_NG_BY_CUSTOMER[] = response.data.data.map(
             (element: OQC_NG_BY_CUSTOMER, index: number) => {
               return {
-                ...element,                            
+                ...element,
               };
-            },
+            }
           );
-          //console.log(loadeddata);         
+          //console.log(loadeddata);
           setOQCNGByCustomer(loadeddata);
         } else {
           setOQCNGByCustomer([]);
@@ -80,7 +90,10 @@ const OQC_REPORT = () => {
         console.log(error);
       });
   };
-  const handle_getOQCNGByProdType = async (FACTORY: string, listCode: string[]) => {
+  const handle_getOQCNGByProdType = async (
+    FACTORY: string,
+    listCode: string[]
+  ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
     await generalQuery("ngbyProTypeOQC", {
@@ -88,7 +101,7 @@ const OQC_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -96,11 +109,11 @@ const OQC_REPORT = () => {
           const loadeddata: OQC_NG_BY_PRODTYPE[] = response.data.data.map(
             (element: OQC_NG_BY_PRODTYPE, index: number) => {
               return {
-                ...element,                            
+                ...element,
               };
-            },
+            }
           );
-          //console.log(loadeddata);         
+          //console.log(loadeddata);
           setOQCNGByProdType(loadeddata);
         } else {
           setOQCNGByProdType([]);
@@ -118,7 +131,7 @@ const OQC_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -128,14 +141,14 @@ const OQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
-                NG_RATE: element.NG_LOT * 100 / element.TOTAL_LOT,
+                NG_RATE: (element.NG_LOT * 100) / element.TOTAL_LOT,
                 DELIVERY_DATE: moment
                   .utc(element.DELIVERY_DATE)
                   .format("YYYY-MM-DD"),
               };
-            },
+            }
           );
-          //console.log(loadeddata);         
+          //console.log(loadeddata);
           setDailyPPM(loadeddata);
         } else {
           setDailyPPM([]);
@@ -153,7 +166,7 @@ const OQC_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -163,9 +176,9 @@ const OQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
-                NG_RATE: element.NG_LOT * 100 / element.TOTAL_LOT,
+                NG_RATE: (element.NG_LOT * 100) / element.TOTAL_LOT,
               };
-            },
+            }
           );
           setWeeklyPPM(loadeddata);
         } else {
@@ -184,7 +197,7 @@ const OQC_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -194,13 +207,13 @@ const OQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
-                NG_RATE: element.NG_LOT * 100 / element.TOTAL_LOT,
+                NG_RATE: (element.NG_LOT * 100) / element.TOTAL_LOT,
               };
-            },
+            }
           );
-          setMonthlyPPM(loadeddata)
+          setMonthlyPPM(loadeddata);
         } else {
-          setMonthlyPPM([])
+          setMonthlyPPM([]);
         }
       })
       .catch((error) => {
@@ -215,7 +228,7 @@ const OQC_REPORT = () => {
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       codeArray: df ? [] : listCode,
-      CUST_NAME_KD: cust_name
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -225,182 +238,251 @@ const OQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
-                NG_RATE: element.NG_LOT * 100 / element.TOTAL_LOT,
+                NG_RATE: (element.NG_LOT * 100) / element.TOTAL_LOT,
               };
-            },
+            }
           );
-          setYearlyPPM(loadeddata)
+          setYearlyPPM(loadeddata);
         } else {
-          setYearlyPPM([])
+          setYearlyPPM([]);
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-
-    const handle_get_Insp_DailyPPM = async (FACTORY: string, listCode: string[]) => {
-      let td = moment().add(0, "day").format("YYYY-MM-DD");
-      let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-      await generalQuery("inspect_daily_ppm_oqc", {
-        FACTORY: FACTORY,
-        FROM_DATE: df ? frd : fromdate,
-        TO_DATE: df ? td : todate,
-        codeArray: df ? [] : listCode,
-        CUST_NAME_KD: cust_name,
-        NG_TYPE: ng_type
-      })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loadeddata: DailyPPMData[] = response.data.data.map(
-              (element: DailyPPMData, index: number) => {
-                return {
-                  ...element,
-                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
-                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
-                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
-                  INSPECT_DATE: moment
-                    .utc(element.INSPECT_DATE)
-                    .format("YYYY-MM-DD"),
-                };
-              },
-            );
-            console.log(loadeddata);
-            if (FACTORY === "NM1") {
-              setDailyPPM1(loadeddata);
-            } else if (FACTORY === "NM2") {
-              setDailyPPM2(loadeddata);
-            } else {
-              set_InspDailyPPM(loadeddata);
+  const handle_get_Insp_DailyPPM = async (
+    FACTORY: string,
+    listCode: string[]
+  ) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("inspect_daily_ppm_oqc", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: DailyPPMData[] = response.data.data.map(
+            (element: DailyPPMData, index: number) => {
+              return {
+                ...element,
+                TOTAL_PPM:
+                  ng_type === "ALL"
+                    ? element.TOTAL_PPM
+                    : ng_type === "P"
+                    ? element.PROCESS_PPM
+                    : element.MATERIAL_PPM,
+                MATERIAL_PPM:
+                  ng_type === "ALL"
+                    ? element.MATERIAL_PPM
+                    : ng_type === "P"
+                    ? 0
+                    : element.MATERIAL_PPM,
+                PROCESS_PPM:
+                  ng_type === "ALL"
+                    ? element.PROCESS_PPM
+                    : ng_type === "M"
+                    ? 0
+                    : element.PROCESS_PPM,
+                INSPECT_DATE: moment
+                  .utc(element.INSPECT_DATE)
+                  .format("YYYY-MM-DD"),
+              };
             }
+          );
+          console.log(loadeddata);
+          if (FACTORY === "NM1") {
+            setDailyPPM1(loadeddata);
+          } else if (FACTORY === "NM2") {
+            setDailyPPM2(loadeddata);
           } else {
-            set_InspDailyPPM([]);
+            set_InspDailyPPM(loadeddata);
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    const handle_get_Insp_WeeklyPPM = async (FACTORY: string, listCode: string[]) => {
-      let td = moment().add(0, "day").format("YYYY-MM-DD");
-      let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-      await generalQuery("inspect_weekly_ppm_oqc", {
-        FACTORY: FACTORY,
-        FROM_DATE: df ? frd : fromdate,
-        TO_DATE: df ? td : todate,
-        codeArray: df ? [] : listCode,
-        CUST_NAME_KD: cust_name,
-        NG_TYPE: ng_type
+        } else {
+          set_InspDailyPPM([]);
+        }
       })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loadeddata: WeeklyPPMData[] = response.data.data.map(
-              (element: WeeklyPPMData, index: number) => {
-                return {
-                  ...element,
-                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
-                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
-                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
-                };
-              },
-            );
-            if (FACTORY === "NM1") {
-              setWeeklyPPM1(loadeddata);
-            } else if (FACTORY === "NM2") {
-              setWeeklyPPM2(loadeddata);
-            } else {
-              set_InspWeeklyPPM(loadeddata);
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_get_Insp_WeeklyPPM = async (
+    FACTORY: string,
+    listCode: string[]
+  ) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    await generalQuery("inspect_weekly_ppm_oqc", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: WeeklyPPMData[] = response.data.data.map(
+            (element: WeeklyPPMData, index: number) => {
+              return {
+                ...element,
+                TOTAL_PPM:
+                  ng_type === "ALL"
+                    ? element.TOTAL_PPM
+                    : ng_type === "P"
+                    ? element.PROCESS_PPM
+                    : element.MATERIAL_PPM,
+                MATERIAL_PPM:
+                  ng_type === "ALL"
+                    ? element.MATERIAL_PPM
+                    : ng_type === "P"
+                    ? 0
+                    : element.MATERIAL_PPM,
+                PROCESS_PPM:
+                  ng_type === "ALL"
+                    ? element.PROCESS_PPM
+                    : ng_type === "M"
+                    ? 0
+                    : element.PROCESS_PPM,
+              };
             }
+          );
+          if (FACTORY === "NM1") {
+            setWeeklyPPM1(loadeddata);
+          } else if (FACTORY === "NM2") {
+            setWeeklyPPM2(loadeddata);
           } else {
-            set_InspWeeklyPPM([]);
+            set_InspWeeklyPPM(loadeddata);
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    const handle_get_Insp_MonthlyPPM = async (FACTORY: string, listCode: string[]) => {
-      let td = moment().add(0, "day").format("YYYY-MM-DD");
-      let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-      await generalQuery("inspect_monthly_ppm_oqc", {
-        FACTORY: FACTORY,
-        FROM_DATE: df ? frd : fromdate,
-        TO_DATE: df ? td : todate,
-        codeArray: df ? [] : listCode,
-        CUST_NAME_KD: cust_name,
-        NG_TYPE: ng_type
+        } else {
+          set_InspWeeklyPPM([]);
+        }
       })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loadeddata: MonthlyPPMData[] = response.data.data.map(
-              (element: MonthlyPPMData, index: number) => {
-                return {
-                  ...element,
-                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
-                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
-                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
-                };
-              },
-            );
-            if (FACTORY === "NM1") {
-              setMonthlyPPM1(loadeddata);
-            } else if (FACTORY === "NM2") {
-              setMonthlyPPM2(loadeddata);
-            } else {
-              set_InspMonthlyPPM(loadeddata)
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_get_Insp_MonthlyPPM = async (
+    FACTORY: string,
+    listCode: string[]
+  ) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("inspect_monthly_ppm_oqc", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MonthlyPPMData[] = response.data.data.map(
+            (element: MonthlyPPMData, index: number) => {
+              return {
+                ...element,
+                TOTAL_PPM:
+                  ng_type === "ALL"
+                    ? element.TOTAL_PPM
+                    : ng_type === "P"
+                    ? element.PROCESS_PPM
+                    : element.MATERIAL_PPM,
+                MATERIAL_PPM:
+                  ng_type === "ALL"
+                    ? element.MATERIAL_PPM
+                    : ng_type === "P"
+                    ? 0
+                    : element.MATERIAL_PPM,
+                PROCESS_PPM:
+                  ng_type === "ALL"
+                    ? element.PROCESS_PPM
+                    : ng_type === "M"
+                    ? 0
+                    : element.PROCESS_PPM,
+              };
             }
+          );
+          if (FACTORY === "NM1") {
+            setMonthlyPPM1(loadeddata);
+          } else if (FACTORY === "NM2") {
+            setMonthlyPPM2(loadeddata);
           } else {
-            set_InspMonthlyPPM([])
+            set_InspMonthlyPPM(loadeddata);
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    const handle_get_Insp_YearlyPPM = async (FACTORY: string, listCode: string[]) => {
-      let td = moment().add(0, "day").format("YYYY-MM-DD");
-      let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-      await generalQuery("inspect_yearly_ppm_oqc", {
-        FACTORY: FACTORY,
-        FROM_DATE: df ? frd : fromdate,
-        TO_DATE: df ? td : todate,
-        codeArray: df ? [] : listCode,
-        CUST_NAME_KD: cust_name,
-        NG_TYPE: ng_type
+        } else {
+          set_InspMonthlyPPM([]);
+        }
       })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loadeddata: YearlyPPMData[] = response.data.data.map(
-              (element: YearlyPPMData, index: number) => {
-                return {
-                  ...element,
-                  TOTAL_PPM: ng_type === "ALL" ? element.TOTAL_PPM : ng_type === "P" ? element.PROCESS_PPM : element.MATERIAL_PPM,
-                  MATERIAL_PPM: ng_type === "ALL" ? element.MATERIAL_PPM : ng_type === "P" ? 0 : element.MATERIAL_PPM,
-                  PROCESS_PPM: ng_type === "ALL" ? element.PROCESS_PPM : ng_type === "M" ? 0 : element.PROCESS_PPM,
-                };
-              },
-            );
-            if (FACTORY === "NM1") {
-              setYearlyPPM1(loadeddata);
-            } else if (FACTORY === "NM2") {
-              setYearlyPPM2(loadeddata);
-            } else {
-              set_InspYearlyPPM(loadeddata)
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_get_Insp_YearlyPPM = async (
+    FACTORY: string,
+    listCode: string[]
+  ) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("inspect_yearly_ppm_oqc", {
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: YearlyPPMData[] = response.data.data.map(
+            (element: YearlyPPMData, index: number) => {
+              return {
+                ...element,
+                TOTAL_PPM:
+                  ng_type === "ALL"
+                    ? element.TOTAL_PPM
+                    : ng_type === "P"
+                    ? element.PROCESS_PPM
+                    : element.MATERIAL_PPM,
+                MATERIAL_PPM:
+                  ng_type === "ALL"
+                    ? element.MATERIAL_PPM
+                    : ng_type === "P"
+                    ? 0
+                    : element.MATERIAL_PPM,
+                PROCESS_PPM:
+                  ng_type === "ALL"
+                    ? element.PROCESS_PPM
+                    : ng_type === "M"
+                    ? 0
+                    : element.PROCESS_PPM,
+              };
             }
+          );
+          if (FACTORY === "NM1") {
+            setYearlyPPM1(loadeddata);
+          } else if (FACTORY === "NM2") {
+            setYearlyPPM2(loadeddata);
           } else {
-            set_InspYearlyPPM([])
+            set_InspYearlyPPM(loadeddata);
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-
+        } else {
+          set_InspYearlyPPM([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -418,14 +500,14 @@ const OQC_REPORT = () => {
       handle_getWeeklyPPM("ALL", searchCodeArray),
       handle_getMonthlyPPM("ALL", searchCodeArray),
       handle_getYearlyPPM("ALL", searchCodeArray),
-      handle_get_Insp_YearlyPPM('ALL',searchCodeArray),
-      handle_get_Insp_MonthlyPPM('ALL',searchCodeArray),
-      handle_get_Insp_WeeklyPPM('ALL',searchCodeArray),
-      handle_get_Insp_DailyPPM('ALL',searchCodeArray),     
+      handle_get_Insp_YearlyPPM("ALL", searchCodeArray),
+      handle_get_Insp_MonthlyPPM("ALL", searchCodeArray),
+      handle_get_Insp_WeeklyPPM("ALL", searchCodeArray),
+      handle_get_Insp_DailyPPM("ALL", searchCodeArray),
     ]).then((values) => {
-      Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
+      Swal.fire("Thông báo", "Đã load xong báo cáo", "success");
     });
-  }
+  };
   useEffect(() => {
     initFunction();
   }, []);
@@ -454,7 +536,7 @@ const OQC_REPORT = () => {
               type="date"
               value={todate.slice(0, 10)}
               onChange={(e) => {
-                setToDate(e.target.value)
+                setToDate(e.target.value);
                 //handleGetInspectionWorst(fromdate, e.target.value, worstby, ng_type);
                 //handle_getInspectSummary(fromdate,e.target.value);
               }}
@@ -477,8 +559,7 @@ const OQC_REPORT = () => {
               onChange={(e) => {
                 //console.log(e.target.checked);
                 setDF(e.target.checked);
-                if (!df)
-                  setSearchCodeArray([]);
+                if (!df) setSearchCodeArray([]);
               }}
               inputProps={{ "aria-label": "controlled" }}
             />
@@ -542,19 +623,22 @@ const OQC_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className="graph">
-           <span className="section_title">2. NG Trending</span>
+          <span className="section_title">2. NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
-                <span className="subsection">Daily NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(insp_dailyppm, "DailyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Daily NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(insp_dailyppm, "DailyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <InspectionDailyPPM
                   dldata={[...insp_dailyppm].reverse()}
                   processColor="#eeeb30"
@@ -562,15 +646,18 @@ const OQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(insp_weeklyppm, "WeeklyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Weekly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(insp_weeklyppm, "WeeklyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <InspectionWeeklyPPM
                   dldata={[...insp_weeklyppm].reverse()}
                   processColor="#eeeb30"
@@ -580,15 +667,18 @@ const OQC_REPORT = () => {
             </div>
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(insp_monthlyppm, "MonthlyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Monthly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(insp_monthlyppm, "MonthlyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <InspectionMonthlyPPM
                   dldata={[...insp_monthlyppm].reverse()}
                   processColor="#eeeb30"
@@ -596,15 +686,18 @@ const OQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(insp_yearlyppm, "YearlyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Yearly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(insp_yearlyppm, "YearlyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <InspectionYearlyPPM
                   dldata={[...insp_yearlyppm].reverse()}
                   processColor="#eeeb30"
@@ -617,15 +710,17 @@ const OQC_REPORT = () => {
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
-                <span className="subsection">Daily NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(dailyppm, "DailyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton>
+                <span className="subsection">
+                  Daily NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(dailyppm, "DailyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
                 </span>
                 <OQCDailyNGRate
                   dldata={[...dailyppm].reverse()}
@@ -634,15 +729,18 @@ const OQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(weeklyppm, "WeeklyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Weekly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(weeklyppm, "WeeklyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <OQCWeeklyNGRate
                   dldata={[...weeklyppm].reverse()}
                   processColor="#85d9f3"
@@ -652,15 +750,18 @@ const OQC_REPORT = () => {
             </div>
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(monthlyppm, "MonthlyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Monthly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(monthlyppm, "MonthlyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <OQCMonthlyNGRate
                   dldata={[...monthlyppm].reverse()}
                   processColor="#85d9f3"
@@ -668,15 +769,18 @@ const OQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly NG Rate <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(yearlyppm, "YearlyPPMData");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
-                </IconButton></span>
+                <span className="subsection">
+                  Yearly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(yearlyppm, "YearlyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
                 <OQCYearlyNGRate
                   dldata={[...yearlyppm].reverse()}
                   processColor="#85d9f3"
@@ -685,36 +789,31 @@ const OQC_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">2.5 NG by Customer and Prod Type <IconButton
-            className='buttonIcon'
-            onClick={() => {
-            }}
-          >
-            <AiFillFileExcel color='green' size={15} />
-            Excel
-          </IconButton></span>
+          <span className="subsection_title">
+            2.5 NG by Customer and Prod Type{" "}
+            <IconButton className="buttonIcon" onClick={() => {}}>
+              <AiFillFileExcel color="green" size={15} />
+              Excel
+            </IconButton>
+          </span>
           <div className="defect_trending">
-            <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">NG By Customer <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton>
+            <div className="dailygraph" style={{ height: "600px" }}>
+              <span className="subsection">
+                NG By Customer{" "}
+                <IconButton className="buttonIcon" onClick={() => {}}>
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
               </span>
               <OQCNGByCustomer data={[...oqcNGByCustomer].reverse()} />
             </div>
-            <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">NG By Product Type <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton>
+            <div className="dailygraph" style={{ height: "600px" }}>
+              <span className="subsection">
+                NG By Product Type{" "}
+                <IconButton className="buttonIcon" onClick={() => {}}>
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
               </span>
               <OQCNGByProdType data={[...oqcNGByProdType].reverse()} />
             </div>
