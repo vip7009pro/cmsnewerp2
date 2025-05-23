@@ -230,10 +230,12 @@ const DKDTC = () => {
           setCust_CD(response.data.data[0].CUST_CD);
           checkAddedSpec(response.data.data[0].M_CODE, "");
           getTestedCodeByM_CODE(response.data.data[0].M_CODE);
+          setLotNCC(response.data.data[0].LOTNCC);
         } else {
           setM_Name("");
           setM_Code("");
           setCust_CD("");
+          setLotNCC("");
         }
       })
       .catch((error) => {

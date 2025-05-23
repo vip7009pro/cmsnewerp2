@@ -29,6 +29,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
 import TINHLUONGP3 from "./pages/sx/TINHLUONGP3/TINHLUONGP3";
+import NOLOWHOME from "./pages/nocodelowcode/components/NOLOWHOME/NOLOWHOME";
 const PostManager = React.lazy(() => import("./pages/information_board/PostManager"));
 const Info = React.lazy(() => import("./pages/information_board/Info"));
 const Information = React.lazy(() => import("./pages/information_board/Information"));
@@ -991,6 +992,10 @@ function App() {
                         <Route
                           path='filetransfer'
                           element={<FileTransfer />}
+                        />  
+                        <Route
+                          path='nocodelowcode'
+                          element={<NOLOWHOME />}
                         />  
                       </Route>
                       <Route

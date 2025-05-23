@@ -78,6 +78,7 @@ import BARCODE from "../pages/rnd/design_amazon/design_components/BARCODE";
 import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
 import { NotificationElement } from "../components/NotificationPanel/Notification";
+import { Field, Form } from "../pages/nocodelowcode/types/types";
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
@@ -4550,7 +4551,7 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
               ycsxList[i].PROD_REQUEST_NO + "A",
               ycsxList[i].EMPL_NO
             );
-            if (ycsxList[i].PL_HANG === "AM") {
+            if (ycsxList[i].PL_HANG === "AM" || ycsxList[i].PL_HANG === "TT") {
               if (!(await f_isHasInLaiCountAMZ(ycsxList[i].PROD_REQUEST_NO))) {
                 await f_deleteDataAMZ(ycsxList[i].PROD_REQUEST_NO);
               }
@@ -7894,4 +7895,166 @@ export const f_loadMRPPlan = async (PLAN_DATE: string) => {
     .catch((error) => {
     })
   return kq;  
+}
+
+export const f_loadFormList = async () => {
+  let kq: Form[] = [];
+  await generalQuery("loadFormList", {})
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo', 'Load data thành công', 'success');
+        //console.log(response.data.data);
+        let loaded_data: Form[] = response.data.data.map((element: Form, index: number) => {
+          return {
+            ...element, 
+            id: index
+          }
+        })
+        kq = loaded_data;
+      }
+      else {
+        //kq = response.data.message;
+        Swal.fire('Thông báo', 'Không có data', 'error');
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;  
+}
+
+export const f_updateForm = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updateForm", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_deleteForm = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deleteForm", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_loadFormDetail = async (DATA: any) => {
+  let kq: Form[] = [];
+  await generalQuery("loadFormDetail", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_insertForm = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertForm", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_loadFieldList = async (DATA: any) => {
+  let kq: Field[] = [];
+  await generalQuery("loadFieldList", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+      else {
+        
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+} 
+
+export const f_insertField = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertField", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_updateField = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updateField", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+ 
+export const f_deleteField = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deleteField", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+} 
+
+export const f_addField = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("addField", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
 }

@@ -72,7 +72,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getlang } from "../../components/String/String";
 import { GiPriceTag } from "react-icons/gi";
 import { UserData } from "../../api/GlobalInterface";
-import { getCompany } from "../../api/Api";
+import { getCompany, getUserData } from "../../api/Api";
 import { addTab, settabIndex } from "../../redux/slices/globalSlice";
 import Swal from "sweetalert2";
 import { ELE_ARRAY, } from "../../api/GlobalInterface";
@@ -670,7 +670,14 @@ const NavMenu = () => {
           MENU_CODE: "TL1",
           cName: "sub-nav",
         },
-            ],
+        {
+          title: getlang("nocodelowcode", lang),
+          path: "tool/nocodelowcode",
+          icon: <FaReact color="#0c1eb8" size={15} />,
+          MENU_CODE: "TL2",
+          cName: "sub-nav",
+        },
+      ],
     },
   ] : [
     {

@@ -25,6 +25,7 @@ interface AGInterface {
   showFilter?: boolean,
   suppressRowClickSelection?: boolean,
   rowHeight?: number,
+  columnWidth?: number,
   onRowClick?: (e: any) => void,
   onCellClick?: (e: any) => void,
   onRowDoubleClick?: (e: any) => void,
@@ -71,7 +72,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
   }, []);
   const defaultColDef = useMemo(() => {
     return {
-      initialWidth: 100,
+      initialWidth: ag_data.columnWidth ?? 100,
       wrapHeaderText: true,
       autoHeaderHeight: true,
       editable: true,
@@ -86,14 +87,14 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
       return keys.map((key) => {        
         return {field: key,
           headerName: key,
-          width: 100}        
+          width: ag_data.columnWidth ?? 100}        
       })
     }  
     else return []  
   },[ag_data.data])
 
 
-
+ 
 
   const pivotDatasourcefiels = useMemo(() => {
     if(ag_data.data.length > 0){

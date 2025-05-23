@@ -1,0 +1,48 @@
+.record-manager {
+    margin-bottom: 30px;
+  }
+  
+  .record-manager-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .record-manager-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  .record-manager-button-add {
+    background-color: #007bff;
+  }
+  
+  .record-manager-button-add:hover {
+    background-color: #0056b3;
+  }
+  
+  .record-manager-button-delete {
+    background-color: #dc3545;
+  }
+  
+  .record-manager-button-delete:hover {
+    background-color: #c82333;
+  }
+  
+  .record-manager-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .record-manager-item-text {
+    margin-right: 10px;
+    font-size: 14px;
+    color: #333;
+  }

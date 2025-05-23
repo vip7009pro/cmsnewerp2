@@ -1,0 +1,87 @@
+.field-manager {
+    margin-bottom: 30px;
+  }
+  
+  .field-manager-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .field-manager-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .field-manager-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+  }
+  
+  .field-manager-checkbox {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .field-manager-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .field-manager-button-add {
+    background-color: #007bff;
+  }
+  
+  .field-manager-button-add:hover {
+    background-color: #0056b3;
+  }
+  
+  .field-manager-button-update {
+    background-color: #28a745;
+  }
+  
+  .field-manager-button-update:hover {
+    background-color: #218838;
+  }
+  
+  .field-manager-button-edit {
+    background-color: #ffc107;
+    margin-right: 10px;
+  }
+  
+  .field-manager-button-edit:hover {
+    background-color: #e0a800;
+  }
+  
+  .field-manager-button-delete {
+    background-color: #dc3545;
+  }
+  
+  .field-manager-button-delete:hover {
+    background-color: #c82333;
+  }
+  
+  .field-manager-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .field-manager-item-text {
+    margin-right: 10px;
+    font-size: 14px;
+    color: #333;
+  }

@@ -1,0 +1,79 @@
+.form-data-manager {
+    margin-bottom: 30px;
+  }
+  
+  .form-data-manager-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .form-data-manager-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .form-data-manager-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+  }
+  
+  .form-data-manager-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .form-data-manager-button-add {
+    background-color: #007bff;
+  }
+  
+  .form-data-manager-button-add:hover {
+    background-color: #0056b3;
+  }
+  
+  .form-data-manager-button-update {
+    background-color: #28a745;
+  }
+  
+  .form-data-manager-button-update:hover {
+    background-color: #218838;
+  }
+  
+  .form-data-manager-button-edit {
+    background-color: #ffc107;
+    margin-right: 10px;
+  }
+  
+  .form-data-manager-button-edit:hover {
+    background-color: #e0a800;
+  }
+  
+  .form-data-manager-button-delete {
+    background-color: #dc3545;
+  }
+  
+  .form-data-manager-button-delete:hover {
+    background-color: #c82333;
+  }
+  
+  .form-data-manager-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .form-data-manager-item-text {
+    margin-right: 10px;
+    font-size: 14px;
+    color: #333;
+  }

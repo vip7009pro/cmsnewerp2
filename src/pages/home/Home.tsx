@@ -15,8 +15,10 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import LichSu_New from "../nhansu/LichSu/LichSu_New";
+import NOLOWHOME from "../nocodelowcode/components/NOLOWHOME/NOLOWHOME";
+import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
 
-export const current_ver: number = getCompany() === "CMS" ? 2613 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2614 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
@@ -524,6 +526,11 @@ function Home() {
       MENU_CODE: "TL1",
       MENU_NAME: getlang("filetransfer", lang),
       MENU_ITEM: <FileTransfer />,
+    },
+    {
+      MENU_CODE: "TL2",
+      MENU_NAME: getlang("nocodelowcode", lang),
+      MENU_ITEM: getUserData()?.EMPL_NO==='NHU1903' ? <SqlEditor />: <></>,
     },
     {
       MENU_CODE: "ST01",
