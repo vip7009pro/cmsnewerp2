@@ -1,8 +1,8 @@
 import "devextreme/dist/css/dx.light.css";
 import React, { Component, useEffect, useState, Suspense, useRef } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/Api";
+import { LangConText, UserContext } from "./api/Context";
+import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/ApiVendors";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +16,8 @@ import {
   changeGLBSetting,
   changeServer,
   updateNotiCount,
+  vendorLogout,
+  vendorLogin,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.scss";
@@ -30,6 +32,9 @@ import { NotificationElement } from "./components/NotificationPanel/Notification
 import { enqueueSnackbar } from "notistack";
 import TINHLUONGP3 from "./pages/sx/TINHLUONGP3/TINHLUONGP3";
 import NOLOWHOME from "./pages/nocodelowcode/components/NOLOWHOME/NOLOWHOME";
+import LoginVendors from "./pages/login/LoginVendors";
+import HomeVendors from "./pages/home/HomeVendors";
+
 const PostManager = React.lazy(() => import("./pages/information_board/PostManager"));
 const Info = React.lazy(() => import("./pages/information_board/Info"));
 const Information = React.lazy(() => import("./pages/information_board/Information"));
@@ -232,7 +237,7 @@ const ProtectedRoute: any = ({
     }
   }
 };
-function App() {
+function AppVendors() {
   const full_screen: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'FULL_SCREEN')[0]?.CURRENT_VALUE ?? '0');
   const elementRef = useRef(null);
   const requestFullScreen = () => {
@@ -254,7 +259,6 @@ function App() {
   if (swalContainer instanceof HTMLElement) {
     swalContainer.style.zIndex = '9999';
   }
-
   const loadWebSetting = () => {
     generalQuery("loadWebSetting", {
     })
@@ -347,6 +351,9 @@ function App() {
   const globalLoginState: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.loginState
   );
+  const globalVendorLoginState: boolean | undefined = useSelector(
+    (state: RootState) => state.totalSlice.vendorLoginState
+  );
   const globalUserData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -360,7 +367,7 @@ function App() {
           /* console.log("khong co token");
           setLoginState(false); */
           loadWebSetting();
-          dispatch(logout(false));
+          dispatch(vendorLogout(false));
           dispatch(
             changeUserData({
               ADD_COMMUNE: "Đông Xuân",
@@ -465,6 +472,7 @@ function App() {
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));   
           //console.log('data.data.data.JOB_NAME',data.data.data.JOB_NAME)
+          
           if(data.data.data.JOB_NAME ==='Worker') 
           {
             console.log('set tab mode')
@@ -482,29 +490,14 @@ function App() {
             })
           );
           /* setLoginState(true); */
-          dispatch(login(true));
+          dispatch(vendorLogin(true));
         }
       })
       .catch((err) => {
         console.log(err + " ");
       });
-    console.log("check diem danh");
-    generalQuery("checkdiemdanh", {})
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          //console.log('diem danh ok');
-          dispatch(changeDiemDanhState(true));
-          //setDiemDanhState(true);
-        } else {
-          //console.log('diem danh NG');
-          dispatch(changeDiemDanhState(false));
-          //setDiemDanhState(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+   
+   
     if (!getSocket().hasListeners('setWebVer')) {
       //console.log('vao set sever')
       getSocket().on("setWebVer", (data: any) => {
@@ -534,15 +527,7 @@ function App() {
           });
         }
       });
-    }
-    if (!getSocket().hasListeners('request_check_online2')) {
-      //console.log('kich hoat nhan thogn tin check online');
-      getSocket().on("request_check_online2", (data: any) => {
-        //console.log('co request check online', data);
-        //Swal.fire('Thông báo','Có yêu cầu check online từ server','info');
-        getSocket().emit("respond_check_online", getUserData());
-      });
-    }
+    } 
     if (!getSocket().hasListeners('changeServer')) {
       getSocket().on("changeServer", (data: any) => {
         console.log("Change server commnand received !");
@@ -623,7 +608,7 @@ function App() {
   }, []);
   return (
     <>
-      {globalLoginState && (
+      {globalVendorLoginState && (
         <div className='App' ref={elementRef} onClick={requestFullScreen}>          
           <Suspense fallback={<FallBackComponent />}>
             <LangConText.Provider value={[lang, setLang]}>
@@ -631,7 +616,7 @@ function App() {
                 <BrowserRouter>
                   <Routes>
                     <Route
-                      path='/'
+                      path='/partners'
                       element={
                         <ProtectedRoute
                           user={globalUserData}
@@ -646,7 +631,7 @@ function App() {
                               /*...springs,*/
                             }}
                           >
-                            <Home />
+                            <HomeVendors />
                           </animated.div>
                         </ProtectedRoute>
                       }
@@ -1370,11 +1355,11 @@ function App() {
           </Suspense>
         </div>
       )}
-      {!globalLoginState && (
+      {!globalVendorLoginState && (
         <div>
           <LangConText.Provider value={[lang, setLang]}>
             <UserContext.Provider value={[userData, setUserData]}>
-              <Login />
+              <LoginVendors />
             </UserContext.Provider>
           </LangConText.Provider>
         </div>
@@ -1383,4 +1368,4 @@ function App() {
     </>
   );
 }
-export default App;
+export default AppVendors;

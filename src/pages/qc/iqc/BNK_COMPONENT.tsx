@@ -95,9 +95,9 @@ const BNK_COMPONENT = ({
             </thead>
             <tbody>
               <tr style={{ height: "30px" }}>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td><img src="/sign (2).jpg" alt="lap" width={60} height={30}/></td>
+                <td><img src="/sign (3).jpg" alt="kiem tra" width={60} height={30}/></td>
+                <td><img src="/sign (1).jpg" alt="phe duyet" width={60} height={30}/></td>
               </tr>
             </tbody>
           </table>
@@ -167,8 +167,8 @@ const BNK_COMPONENT = ({
             <td>GI AQL(0.1)</td>
             <td>1 mẫu/Lot</td>
             <td>1 mẫu/Lot</td>
+            <td>1 mẫu/Lot</td>
             <td>5 mẫu/Lot</td>
-            <td>3 mẫu/Lot</td>
             <td>3 mẫu/Lot</td>
             <td>1 mẫu/Lot</td>
             <td>1 mẫu/Lot</td>

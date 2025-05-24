@@ -18,7 +18,7 @@ import LichSu_New from "../nhansu/LichSu/LichSu_New";
 import NOLOWHOME from "../nocodelowcode/components/NOLOWHOME/NOLOWHOME";
 import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
 
-export const current_ver: number = getCompany() === "CMS" ? 2614 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2616 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));

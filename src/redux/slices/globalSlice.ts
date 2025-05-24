@@ -200,6 +200,7 @@ const initialState: GlobalInterface = {
   tabIndex: 0,
   tabModeSwap: true,
   loginState: false,
+  vendorLoginState: false,
   ctr_cd: "002",
   theme: {
     CMS: {
@@ -416,6 +417,12 @@ export const glbSlice = createSlice({
     login: (state, action: PayloadAction<boolean>) => {
       state.loginState = true;
     },
+    vendorLogin: (state, action: PayloadAction<boolean>) => {
+      state.vendorLoginState = true;
+    },
+    vendorLogout: (state, action: PayloadAction<boolean>) => {
+      state.vendorLoginState = false;
+    },
     changeGLBLanguage: (state, action: PayloadAction<string>) => {
       //console.log(action.payload);
       state.lang = action.payload;
@@ -457,6 +464,8 @@ export const {
   resetTab,
   logout,
   login,
+  vendorLogin,
+  vendorLogout,
   changeGLBLanguage,
   changeGLBSetting,
   switchTheme,

@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
-import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
+import { generalQuery, getCompany, getUserData, logout } from "../../api/ApiVendors";
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -14,9 +14,17 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
+import LichSu_New from "../nhansu/LichSu/LichSu_New";
+import NOLOWHOME from "../nocodelowcode/components/NOLOWHOME/NOLOWHOME";
+import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
+import NavbarVendors from "../../components/Navbar/NavbarVendors";
+import AccountInfoVendors from "../../components/Navbar/AccountInfo/AccountInfoVendors";
+import HomePageVendors from "../../components/Vendors/Home/HomeVendors";
 
-export const current_ver: number = getCompany() === "CMS" ? 2579 : 422;
+export const current_ver: number = getCompany() === "CMS" ? 2615 : 423;
 
+const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
+const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
 const PostManager = React.lazy(() => import("../information_board/PostManager"));
 const Information = React.lazy(() => import("../information_board/Information"));
 const AddInfo = React.lazy(() => import("../information_board/AddInfo"));
@@ -27,7 +35,7 @@ const BAOCAOTHEOROLL = React.lazy(() => import("../sx/BAOCAOTHEOROLL/BAOCAOTHEOR
 const LICHSUTEMLOTSX = React.lazy(() => import("../sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
-const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
+
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
 const DiemDanhNhom = React.lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhom"));
 const DieuChuyenTeam = React.lazy(() => import("../nhansu/DieuChuyenTeam/DieuChuyenTeam"));
@@ -98,7 +106,7 @@ export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
   fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
   // Thêm các kiểu tùy chỉnh khác tại đây...
 });
-function Home() {
+function HomeVendors() {
   const [lang, setLang] = useContext(LangConText);
   const cookies = new Cookies();
   const company: string = useSelector(
@@ -117,8 +125,8 @@ function Home() {
   const tabModeSwap: boolean = useSelector(
     (state: RootState) => state.totalSlice.tabModeSwap
   );
-  const sidebarStatus: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.sidebarmenu
+  const sidebarStatus : boolean | undefined = useSelector(
+    (state: RootState) => state.totalSlice.sidebarmenu,
   );
   console.log('company', company);
   const menulist: MENU_LIST_DATA[] = company === 'CMS' ? [
@@ -130,7 +138,7 @@ function Home() {
     {
       MENU_CODE: "NS0",
       MENU_NAME: "Account Info",
-      MENU_ITEM: <AccountInfo />,
+      MENU_ITEM: <HomePageVendors />,
     },
     {
       MENU_CODE: "NS1",
@@ -160,7 +168,7 @@ function Home() {
     {
       MENU_CODE: "NS6",
       MENU_NAME: getlang("lichsudilam", lang),
-      MENU_ITEM: <LichSu />,
+      MENU_ITEM: <LichSu_New />,
     },
     {
       MENU_CODE: "NS7",
@@ -473,6 +481,11 @@ function Home() {
       MENU_ITEM: <KHOSX />,
     },
     {
+      MENU_CODE: "SX18",
+      MENU_NAME: getlang("tinhluongP3", lang),
+      MENU_ITEM: <TINHLUONGP3 />,
+    },
+    {
       MENU_CODE: "SX11",
       MENU_NAME: getlang("quanlycapa", lang),
       MENU_ITEM: <CAPA_MANAGER />,
@@ -518,6 +531,11 @@ function Home() {
       MENU_ITEM: <FileTransfer />,
     },
     {
+      MENU_CODE: "TL2",
+      MENU_NAME: getlang("nocodelowcode", lang),
+      MENU_ITEM: getUserData()?.EMPL_NO==='NHU1903' ? <SqlEditor />: <></>,
+    },
+    {
       MENU_CODE: "ST01",
       MENU_NAME: "Setting",
       MENU_ITEM: <SettingPage />,
@@ -525,12 +543,12 @@ function Home() {
     {
       MENU_CODE: "",
       MENU_NAME: "",
-      MENU_ITEM: <AccountInfo />,
+      MENU_ITEM: <HomePageVendors />,
     },
     {
       MENU_CODE: "-1",
       MENU_NAME: "",
-      MENU_ITEM: <AccountInfo />,
+      MENU_ITEM: <HomePageVendors />,
     },
   ] : [
     {
@@ -541,12 +559,12 @@ function Home() {
     {
       MENU_CODE: "NS0",
       MENU_NAME: "Account Info",
-      MENU_ITEM: <AccountInfo />,
+      MENU_ITEM: <HomePageVendors />,
     },
     {
       MENU_CODE: "NS1",
       MENU_NAME: getlang("quanlyphongban", lang),
-      MENU_ITEM: <QuanLyPhongBanNhanSu />,
+      MENU_ITEM: <QuanLyPhongBanNhanSu_Old />,
     },
     {
       MENU_CODE: "NS2",
@@ -894,6 +912,11 @@ function Home() {
       MENU_ITEM: <PLANRESULT />,
     },
     {
+      MENU_CODE: "SX18",
+      MENU_NAME: getlang("tinhluongP3", lang),
+      MENU_ITEM: <TINHLUONGP3 />,
+    },
+    {
       MENU_CODE: "KO1",
       MENU_NAME: getlang("nhapxuattontp", lang),
       MENU_ITEM: company === "CMS" ? <KHOTP /> : <KHOTPNEW />,
@@ -911,45 +934,30 @@ function Home() {
     {
       MENU_CODE: "",
       MENU_NAME: "",
-      MENU_ITEM: <AccountInfo />,
+      MENU_ITEM: <HomePageVendors />,
     },
     {
       MENU_CODE: "-1",
       MENU_NAME: "",
-      MENU_ITEM: <AccountInfo />,
+      MENU_ITEM: <HomePageVendors />,
     },
   ];
   const dispatch = useDispatch();
-  const springs = useSpring({
-    from: { x: 1000, y: 100 },
-    to: { x: 0, y: 0 },
-  });
-  const failCount = useRef(0);
   const [checkVerWeb, setCheckVerWeb] = useState(1);
-  const updatechamcongdiemdanh = () => {
-    generalQuery("updatechamcongdiemdanhauto", {})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  
   const CustomTabLabel = styled(Typography)({
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
   });
   const getchamcong = () => {
-    generalQuery("checkMYCHAMCONG", {})
+    generalQuery("checkMYCHAMCONGVendors", {})
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           //console.log('data',response.data.data)
           //console.log('data',response.data.REFRESH_TOKEN);
           let rfr_token: string = response.data.REFRESH_TOKEN;
-          cookies.set("token", rfr_token, { path: "/" });
+          cookies.set("token_vendors", rfr_token, { path: "/" });
         } else {
         }
       })
@@ -1044,8 +1052,7 @@ function Home() {
   return (
     <div className='home'>
       <div className='navdiv'>
-        <Navbar />
-        {/* <PrimarySearchAppBar /> */}
+        <NavbarVendors />      
       </div>
       <div className='homeContainer'>
         {/* <div className='sidebardiv'>
@@ -1165,7 +1172,7 @@ function Home() {
                 ERP has updates, Press Ctrl +F5 to update web
               </p>
             )}
-            {tabModeSwap && tabs.length === 0 && <AccountInfo />}
+            {tabModeSwap && tabs.length === 0 && <HomePageVendors />}
           </animated.div>
         </div>
         {/* {userData?.EMPL_NO === 'NHU1903' && <div className="chatroom">
@@ -1175,4 +1182,4 @@ function Home() {
     </div>
   );
 }
-export default Home;
+export default HomeVendors;

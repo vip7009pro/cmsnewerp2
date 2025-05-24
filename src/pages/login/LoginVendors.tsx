@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Login.scss";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import { getCompany, login } from "../../api/Api";
+import { getCompany, login } from "../../api/ApiVendors";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
@@ -12,7 +12,7 @@ import {
 } from "../../redux/slices/globalSlice";
 import { isValidInput } from "../../api/GlobalFunction";
 import Swal from "sweetalert2";
-const Login = () => {
+const LoginVendors = () => {
   const protocol = window.location.protocol.startsWith("https")
     ? "https"
     : "http";
@@ -224,21 +224,7 @@ const Login = () => {
               ))}
             </select>
           </label>
-          {getCompany() === "CMS" && (
-            <label>
-              Branch:
-              <select
-                name="select_ctr_cd"
-                value={ctr_cd}
-                onChange={(e) => {
-                  dispatch(changeCtrCd(e.target.value));
-                }}
-              >
-                <option value="001">BR1</option>
-                <option value="002">BR2</option>
-              </select>
-            </label>
-          )}
+          
         </div>
         <div
           className="submit"
@@ -266,4 +252,4 @@ const Login = () => {
     </div>
   );
 };
-export default Login;
+export default LoginVendors;

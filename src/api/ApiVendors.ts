@@ -2,8 +2,8 @@ import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
 import {
-  changeUserData, 
-  login as loginSlice,  
+  changeUserData,
+  login as loginSlice,
   logout as logoutSlice,
   update_socket,
   vendorLogin,
@@ -59,20 +59,20 @@ export function getCtrCd() {
   return state.totalSlice.ctr_cd;
 }
 console.log("company", getCompany());
-let API_URL = getSever() + "/api";
+let API_URL = getSever() + "/apivendors";
 let UPLOAD_URL = getSever() + "/uploadfile";
 let UPLOAD_CHECKSHEET_URL = getSever() + "/uploadfilechecksheet";
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
-  API_URL = server_ip_local + "/api";
+  API_URL = server_ip_local + "/apivendors";
   UPLOAD_URL = server_ip_local + "/uploadfile";
 } else {
 }
 export function login(user: string, pass: string) {
-  let API_URL = getSever() + "/api";
+  let API_URL = getSever() + "/apivendors";
   axios
     .post(API_URL, {
-      command: "login",
+      command: "loginVendors",
       user: user,
       pass: pass,
       ctr_cd: getCtrCd(),
@@ -85,12 +85,12 @@ export function login(user: string, pass: string) {
           "Chúc mừng bạn, đăng nhập thành công !",
           "success"
         );       
-        cookies.set("token", Jresult.token_content, { path: "/" });
+        cookies.set("token_vendors", Jresult.token_content, { path: "/" });
         checkLogin()
           .then((data) => {
             
             if (data.data.tk_status.toUpperCase() === "NG") {              
-              store.dispatch(loginSlice(false));
+              store.dispatch(vendorLogout(false));
               store.dispatch(
                 changeUserData({
                   ADD_COMMUNE: "Đông Xuân",
@@ -151,9 +151,9 @@ export function login(user: string, pass: string) {
                     data: data.data.data.EMPL_NO,
                   })
                 );              
-                store.dispatch(loginSlice(true));
+                store.dispatch(vendorLogin(true));
                 setTimeout(() => {                  
-                  store.dispatch(loginSlice(true));
+                  store.dispatch(vendorLogin(true));
                 }, 1000);
               } else {
                 Swal.fire(
@@ -177,36 +177,36 @@ export function login(user: string, pass: string) {
     });
 }
 export function logout() {
-  cookies.set("token", "reset", { path: "/" });
+  cookies.set("token_vendors", "reset", { path: "/" });
   store.dispatch(
     update_socket({
-      event: "logout",
+      event: "logoutVendors",
       data: getUserData()?.EMPL_NO,
     })
   );
   /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
   setTimeout(() => {
     /* window.location.href = "/"; */
-    store.dispatch(logoutSlice(false));
+    store.dispatch(vendorLogout(false));
   }, 1000);
 }
 export async function checkLogin() {
-  let API_URL = getSever() + "/api";
+  let API_URL = getSever() + "/apivendors";
   let UPLOAD_URL = getSever() + "/uploadfile";
   let data = await axios.post(API_URL, {
-    command: "checklogin",
-    DATA: { CTR_CD: getCtrCd(), token_string: cookies.get("token") },
+    command: "checkloginVendors",
+    DATA: { CTR_CD: getCtrCd(), token_string: cookies.get("token_vendors") },
   });
   return data;
 }
 export async function generalQuery(command: string, queryData: any) {
-  const CURRENT_API_URL = getSever() + "/api";
+  const CURRENT_API_URL = getSever() + "/apivendors";
   // console.log('API URL', CURRENT_API_URL);
   let data = await axios.post(CURRENT_API_URL, {
     command: command,
     DATA: {
       ...queryData,
-      token_string: cookies.get("token"),
+      token_string: cookies.get("token_vendors"),
       CTR_CD: getCtrCd(),
     },
   });
@@ -222,13 +222,13 @@ export async function uploadQuery(
   formData.append("uploadedfile", file);
   formData.append("filename", filename);
   formData.append("uploadfoldername", uploadfoldername);
-  formData.append("token_string", cookies.get("token"));
+  formData.append("token_string", cookies.get("token_vendors"));
   formData.append("CTR_CD", getCtrCd());
   if (filenamelist)
     formData.append("newfilenamelist", JSON.stringify(filenamelist));
   //console.log("filenamelist", filenamelist);
   //console.log("formData", formData);
-  //console.log("token", cookies.get("token"));
+  //console.log("token_vendors", cookies.get("token_vendors"));
   let data = await axios.post(UPLOAD_URL, formData);
   return data;
 }

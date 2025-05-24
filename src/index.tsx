@@ -4,18 +4,21 @@ import App from "./App";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import "./index.css";
-import Vendors from "./App2";
+
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { getCompany } from "./api/Api";
+import Suppliers from "./Suppliers";
+import AppVendors from "./AppVendors";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 //check if full url contains vendors return Vendors component else return App component
 const fullUrl = window.location.href;
-if (fullUrl.includes("cmsvendors")) {
+if (fullUrl.includes("partners")) {
   root.render(
     <StrictMode>
-      <Provider store={store}>
-        <Vendors />
+      <Provider store={store}>        
+        {getCompany() === "CMS" ? <AppVendors /> : <></>}
       </Provider>
     </StrictMode>
   );

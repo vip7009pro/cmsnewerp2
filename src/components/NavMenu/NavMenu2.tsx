@@ -106,64 +106,64 @@ const NavMenu2 = () => {
       subNav: [
         {
           title: getlang("quanlyYCSX", lang),
-          path: "/qc/ycsxmanager",
+          path: "/partners/qc/ycsxmanager",
           icon: <FcSettings color="#cc99ff" size={20} />,
           MENU_CODE: "QC1",
           cName: "sub-nav",
         },
         {
           title: getlang("thongtinsanpham", lang),
-          path: "/qc/codeinfo",
+          path: "/partners/qc/codeinfo",
           icon: <FcAbout color="#cc00ff" size={20} />,
           MENU_CODE: "QC2",
         },
         {
           title: "IQC",
-          path: "/qc/iqc",
+          path: "/partners/qc/iqc",
           icon: <MdInput color="blue" size={20} />,
           MENU_CODE: "QC3",
           cName: "sub-nav",
         },
         {
           title: "PQC",
-          path: "/qc/pqc",
+          path: "/partners/qc/pqc",
           icon: <FcProcess color="green" size={20} />,
           MENU_CODE: "QC4",
           cName: "sub-nav",
         },
         {
           title: "OQC",
-          path: "/qc/oqc",
+          path: "/partners/qc/oqc",
           icon: <MdInput color="green" size={20} />,
           MENU_CODE: "QC5",
         },
         {
           title: getlang("inspection", lang),
-          path: "/qc/inspection",
+          path: "/partners/qc/inspection",
           icon: <FcInspection color="blue" size={20} />,
           MENU_CODE: "QC6",
         },
         {
           title: "CS",
-          path: "/qc/cs",
+          path: "/partners/qc/cs",
           icon: <FcServices color="blue" size={20} />,
           MENU_CODE: "QC7",
         },
         {
           title: getlang("dtc", lang),
-          path: "/qc/dtc",
+          path: "/partners/qc/dtc",
           icon: <MdOutlineAspectRatio color="red" size={20} />,
           MENU_CODE: "QC8",
         },
         {
           title: "ISO",
-          path: "/qc/iso",
+          path: "/partners/qc/iso",
           icon: <BiSortAZ color="#fa1e9e" size={20} />,
           MENU_CODE: "QC9",
         },
         {
           title: getlang("baocaoqc", lang),
-          path: "/qc/qcreport",
+          path: "/partners/qc/qcreport",
           icon: <MdBugReport color="blue" size={20} />,
           MENU_CODE: getCompany() === 'CMS' ? "QC10" : "BL1",
         },
@@ -178,21 +178,21 @@ const NavMenu2 = () => {
       subNav: [
         {
           title: getlang("quanlycodebom", lang),
-          path: "/rnd/quanlycodebom",
+          path: "/partners/rnd/quanlycodebom",
           icon: <FaBomb color="black" size={20} />,
           MENU_CODE: "RD1",
           cName: "sub-nav",
         },
         {
           title: getlang("thembomamazon", lang),
-          path: "/rnd/thembomamazon",
+          path: "/partners/rnd/thembomamazon",
           icon: <AiFillAmazonSquare color="green" size={20} />,
           MENU_CODE: "RD2",
           cName: "sub-nav",
         },
         {
           title: getlang("dtc", lang),
-          path: "/rnd/dtc",
+          path: "/partners/rnd/dtc",
           icon: <MdOutlineAspectRatio color="red" size={20} />,
           MENU_CODE: "RD3",
         },
@@ -205,25 +205,25 @@ const NavMenu2 = () => {
         },
         {
           title: getlang("thietkedesignamazon", lang),
-          path: "/rnd/designamazon",
+          path: "/partners/rnd/designamazon",
           icon: <AiFillAmazonCircle color="blue" size={20} />,
           MENU_CODE: "RD5",
         },
         {
           title: getlang("productbarcodemanager", lang),
-          path: "/rnd/productbarcodemanager",
+          path: "/partners/rnd/productbarcodemanager",
           icon: <FaBarcode color="#098705" size={20} />,
           MENU_CODE: "RD6",
         },
         {
           title: getlang("samplemonitor", lang),
-          path: "/rnd/samplemonitor",
+          path: "/partners/rnd/samplemonitor",
           icon: <FaProductHunt color="#eef109" size={20} />,
           MENU_CODE: "RD8",
         },
         {
           title: getlang("baocaornd", lang),
-          path: "/rnd/baocaornd",
+          path: "/partners/rnd/baocaornd",
           icon: <FaReact color="#b50acc" size={20} />,
           MENU_CODE: getCompany() === 'CMS' ? "RD7" : "BL1",
         },
@@ -286,49 +286,49 @@ const NavMenu2 = () => {
       subNav: [
         {
           title: getlang("incominginspection", lang),
-          path: "/incoming-inspection",
+          path: "/partners/incoming-inspection",
           icon: <FcInspection color="red" size={20} />,
           MENU_CODE: "NS2",
         },
         {
           title: getlang("dieuchuyenteam", lang),
-          path: "/quality-issue",
+          path: "/partners/quality-issue",
           icon: <FcRefresh color="red" size={20} />,
           MENU_CODE: "NS3",
         },
         {
           title: getlang("dangky1", lang),
-          path: "/nhansu/dangky",
+          path: "/partners/nhansu/dangky",
           icon: <MdOutlineAppRegistration size={20} />,
           MENU_CODE: "NS4",
         },
         {
           title: getlang("pheduyet", lang),
-          path: "/nhansu/pheduyetnghi",
+          path: "/partners/nhansu/pheduyetnghi",
           icon: <FcApprove size={20} />,
           MENU_CODE: "NS5",
         },
         {
           title: getlang("lichsudilam", lang),
-          path: "/nhansu/lichsu",
+          path: "/partners/nhansu/lichsu",
           icon: <FaHistory color="green" size={20} />,
           MENU_CODE: "NS6",
         },
         {
           title: getlang("quanlycapcao", lang),
-          path: "/nhansu/quanlycapcao",
+          path: "/partners/nhansu/quanlycapcao",
           icon: <FcManager color="#cc99ff" size={20} />,
           MENU_CODE: "NS7",
         },
         {
           title: getlang("baocaonhansu", lang),
-          path: "/nhansu/baocaonhansu",
+          path: "/partners/nhansu/baocaonhansu",
           icon: <FcPieChart color="#cc99ff" size={20} />,
           MENU_CODE: "NS8",
         },
         getCompany() === "CMS" && {
           title: getlang("quanlyphongban", lang),
-          path: "/nhansu/quanlyphongbannhanvien",
+          path: "/partners/nhansu/quanlyphongbannhanvien",
           icon: <FcPortraitMode color="blue" size={20} />,
           MENU_CODE: "NS1",
         },
@@ -343,19 +343,19 @@ const NavMenu2 = () => {
       subNav: [
         {
           title: getlang("quanlyphongban", lang),
-          path: "/nhansu/quanlyphongbannhanvien",
+          path: "/partners/nhansu/quanlyphongbannhanvien",
           icon: <FcPortraitMode color="blue" size={20} />,
           MENU_CODE: "NS1",
         },
         {
           title: getlang("listchamcong", lang),
-          path: "/nhansu/listchamcong",
+          path: "/partners/nhansu/listchamcong",
           icon: <MdOutlineChecklistRtl color="blue" size={20} />,
           MENU_CODE: "NS9",
         },
         {
           title: getlang("baocaonhansu", lang),
-          path: "/nhansu/baocaonhansu",
+          path: "/partners/nhansu/baocaonhansu",
           icon: <FcPieChart color="#cc99ff" size={20} />,
           MENU_CODE: "NS8",
         },
@@ -370,68 +370,68 @@ const NavMenu2 = () => {
       subNav: [
         {
           title: getlang("quanlygiasanpham", lang) /*Quản lý PO*/,
-          path: "/kinhdoanh/quotationmanager",
+          path: "/partners/kinhdoanh/quotationmanager",
           icon: <GiPriceTag color="#01C716" size={20} />,
           MENU_CODE: "KD14",
         },
         {
           title: getlang("quanlypo", lang) /*Quản lý PO*/,
-          path: "/kinhdoanh/pomanager",
+          path: "/partners/kinhdoanh/pomanager",
           icon: <BiCart color="blue" size={20} />,
           MENU_CODE: "KD1",
         },
         {
           title: getlang("quanlyinvoices", lang) /*Quản lý Invoice*/,
-          path: "/kinhdoanh/invoicemanager",
+          path: "/partners/kinhdoanh/invoicemanager",
           icon: <FaFileInvoiceDollar color="red" size={20} />,
           MENU_CODE: "KD2",
         },
         {
           title: getlang("quanlyplan", lang) /*Quản Lý Plan*/,
-          path: "/kinhdoanh/planmanager",
+          path: "/partners/kinhdoanh/planmanager",
           icon: <FcPlanner size={20} />,
           MENU_CODE: "KD3",
         },
         {
           title: getlang("shortage", lang) /*Quản Lý Plan*/,
-          path: "/kinhdoanh/shortage",
+          path: "/partners/kinhdoanh/shortage",
           icon: <AiFillMinusCircle size={20} color="red" />,
           MENU_CODE: "KD4",
         },
         {
           title: getlang("quanlyFCST", lang) /*Quản lý FCST*/,
-          path: "/kinhdoanh/fcstmanager",
+          path: "/partners/kinhdoanh/fcstmanager",
           icon: <WiDayLightning color="#cc99ff" size={20} />,
           MENU_CODE: "KD5",
         },
         {
           title: getlang("quanlyYCSX", lang) /*Quản lý YCSX*/,
-          path: "/kinhdoanh/ycsxmanager",
+          path: "/partners/kinhdoanh/ycsxmanager",
           icon: <FcSettings color="#cc99ff" size={20} />,
           MENU_CODE: "KD6",
         },
         {
           title: getlang("quanlyPOFull", lang) /*PO tích hợp tồn kho*/,
-          path: "/kinhdoanh/poandstockfull",
+          path: "/partners/kinhdoanh/poandstockfull",
           icon: <FaCheckCircle color="#ff9900" size={20} />,
           MENU_CODE: "KD7",
         },
         {
           title: getlang("thongtinsanpham", lang),
-          path: "/kinhdoanh/codeinfo",
+          path: "/partners/kinhdoanh/codeinfo",
           icon: <FcAbout color="#cc00ff" size={20} />,
           MENU_CODE: "KD8",
         },
         {
           title: getlang("quanlycodebom", lang),
-          path: "/kinhdoanh/quanlycodebom",
+          path: "/partners/kinhdoanh/quanlycodebom",
           icon: <FaBomb color="black" size={20} />,
           MENU_CODE: "KD9",
           cName: "sub-nav",
         },
         {
           title: getlang("quanlykhachhang", lang),
-          path: "/kinhdoanh/customermanager",
+          path: "/partners/kinhdoanh/customermanager",
           icon: <FcCustomerSupport color="#cc00ff" size={20} />,
           MENU_CODE: "KD10",
         },
@@ -458,7 +458,7 @@ const NavMenu2 = () => {
         },
         {
           title: getlang("baocao", lang),
-          path: "/kinhdoanh/kinhdoanhreport",
+          path: "/partners/kinhdoanh/kinhdoanhreport",
           icon: <FcBullish size={20} />,
           MENU_CODE: "KD13",
         },
@@ -473,19 +473,19 @@ const NavMenu2 = () => {
       subNav: [
         {
           title: getlang("quanlykhachhang", lang),
-          path: "/kinhdoanh/customermanager",
+          path: "/partners/kinhdoanh/customermanager",
           icon: <FcCustomerSupport color="#cc00ff" size={20} />,
           MENU_CODE: "KD10",
         },
         {
           title: getlang("quanlyvatlieu", lang) /*Quản lý VL*/,
-          path: "/phongmuahang/quanlyvatlieu",
+          path: "/partners/phongmuahang/quanlyvatlieu",
           icon: <FaScroll color="#01C716" size={20} />,
           MENU_CODE: "PU1",
         },
         {
           title: getlang("quanlymrp", lang) /*Quản lý VL*/,
-          path: "/phongmuahang/mrp",
+          path: "/partners/phongmuahang/mrp",
           icon: <AiOutlineCalendar color="blue" size={20} />,
           MENU_CODE: "PU2",
         },
@@ -642,7 +642,7 @@ const NavMenu2 = () => {
                         return (
                           <li key={index}><Link to={subnav_element.path} key={index}
                             onClick={() => {
-                              /* if (tabModeSwap) {
+                              if (tabModeSwap) {
                                 if (
                                   userData?.JOB_NAME === "ADMIN" ||
                                   userData?.JOB_NAME === "Leader" ||
@@ -678,7 +678,7 @@ const NavMenu2 = () => {
                                 } else {
                                   Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
                                 }
-                              } */
+                              }
                             }}
                           >{subnav_element.icon}{subnav_element.title}
                           </Link></li>

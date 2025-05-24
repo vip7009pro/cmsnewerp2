@@ -2824,6 +2824,7 @@ export interface GlobalInterface {
   tabIndex: number;
   tabModeSwap: boolean;
   loginState: boolean;
+  vendorLoginState: boolean;
   ctr_cd: string;
   company: string;
   theme: {
