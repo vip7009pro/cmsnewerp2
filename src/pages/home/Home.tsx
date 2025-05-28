@@ -17,8 +17,13 @@ import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import LichSu_New from "../nhansu/LichSu/LichSu_New";
 import NOLOWHOME from "../nocodelowcode/components/NOLOWHOME/NOLOWHOME";
 import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
+import TableManager from "../nocodelowcode/DBManager/DBManager";
+import DBManager from "../nocodelowcode/DBManager/DBManager";
+import NOCODELOWCODE from "../nocodelowcode/NOCODELOWCODE";
+import PermissionNotify from "../../components/PermissionNotify/PermissionNotify";
+import NavBarNew from "../../components/Navbar/NavBarNew";
 
-export const current_ver: number = getCompany() === "CMS" ? 2616 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2618 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
@@ -530,7 +535,8 @@ function Home() {
     {
       MENU_CODE: "TL2",
       MENU_NAME: getlang("nocodelowcode", lang),
-      MENU_ITEM: getUserData()?.EMPL_NO==='NHU1903' ? <SqlEditor />: <></>,
+      MENU_ITEM: getUserData()?.EMPL_NO==='NHU1903' ? <NOCODELOWCODE />: 
+      <PermissionNotify/>,
     },
     {
       MENU_CODE: "ST01",
@@ -1117,7 +1123,7 @@ function Home() {
                     {tabs.map((ele: ELE_ARRAY, index: number) => {
                       if (ele.ELE_CODE !== "-1") {
                         return (
-                          <div>
+                          <div key={index}>
                             <CustomTab
                               key={index}
                               label={

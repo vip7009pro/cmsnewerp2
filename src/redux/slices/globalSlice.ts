@@ -13,7 +13,9 @@ import {
 } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
-const protocol = window.location.protocol.startsWith("https")? "https": "http";
+const protocol = window.location.protocol.startsWith("https")
+  ? "https"
+  : "http";
 const main_port = protocol === "https" ? "5014" : "5013";
 const sub_port = protocol === "https" ? "3006" : "3007";
 const companyInfo = {
@@ -22,11 +24,19 @@ const companyInfo = {
     logoWidth: 114.4,
     logoHeight: 27.13333,
     loginLogoWidth: 190,
-    loginLogoHeight: 50,  
-    backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,  
-    apiUrl: `${protocol}://14.160.33.94:${main_port}`,  
+    loginLogoHeight: 50,
+    backgroundImage: `linear-gradient(90deg, hsla(152, 100%, 50%, 1) 0%, hsla(186, 100%, 69%, 1) 100%)`,
+    apiUrl: `${protocol}://cmsvina4285.com:${main_port}`,
     apiUrlArray: [
       {
+        server_name: "NET_SERVER",
+        apiUrl: `${protocol}://cmsvina4285.com:${main_port}`,
+      },
+      {
+        server_name: "SUBNET_SERVER",
+        apiUrl: `${protocol}://cmsvina4285.com:${sub_port}`,
+      },
+      /* {
         server_name: "MAIN_SERVER",
         apiUrl: `${protocol}://14.160.33.94:${main_port}`
       },
@@ -37,19 +47,11 @@ const companyInfo = {
       {
         server_name: "LAN_SERVER",
         apiUrl: `${protocol}://192.168.1.192:${main_port}`
-      },  
-      {
-        server_name: "NET_SERVER",
-        apiUrl: `${protocol}://cms1.ddns.net:${main_port}`
-      },
-      {
-        server_name: "SUBNET_SERVER",
-        apiUrl: `${protocol}://cms1.ddns.net:${sub_port}`
-      },
+      },        
       {
         server_name: "TEST_SERVER",
         apiUrl: `${protocol}://localhost:${sub_port}` 
-      }
+      } */
     ],
   },
   PVN: {
@@ -59,17 +61,17 @@ const companyInfo = {
     loginLogoWidth: 190,
     loginLogoHeight: 80,
     backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
-    apiUrl: `${protocol}://222.252.1.63:${sub_port}`, 
+    apiUrl: `${protocol}://222.252.1.63:${sub_port}`,
     apiUrlArray: [
       {
         server_name: "MAIN_SERVER",
-        apiUrl: `${protocol}://222.252.1.63:${sub_port}`
+        apiUrl: `${protocol}://222.252.1.63:${sub_port}`,
       },
       {
         server_name: "TEST_SERVER",
-        apiUrl: `${protocol}://localhost:${sub_port}` 
-      }
-    ],  
+        apiUrl: `${protocol}://localhost:${sub_port}`,
+      },
+    ],
   },
   NHATHAN: {
     logo: "/companylogo.png",
@@ -78,21 +80,23 @@ const companyInfo = {
     loginLogoWidth: 170,
     loginLogoHeight: 160,
     backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
-    apiUrl: `${protocol}://222.252.1.214:${sub_port}`, 
+    apiUrl: `${protocol}://222.252.1.214:${sub_port}`,
     apiUrlArray: [
       {
         server_name: "MAIN_SERVER",
-        apiUrl: `${protocol}://222.252.1.214:${sub_port}`
+        apiUrl: `${protocol}://222.252.1.214:${sub_port}`,
       },
       {
         server_name: "TEST_SERVER",
-        apiUrl: `${protocol}://localhost:${sub_port}` 
-      }
-    ], 
-  },  
+        apiUrl: `${protocol}://localhost:${sub_port}`,
+      },
+    ],
+  },
 };
 const socket = io(companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
-socket.on("connect", () => {  console.log(socket.id); });
+socket.on("connect", () => {
+  console.log(socket.id);
+});
 socket.on("notification", (data) => {
   if (data.command === "logout") {
     console.log(getUserData());
@@ -104,16 +108,16 @@ socket.on("notification", (data) => {
       LGOT();
     }
   }
-  console.log(data); 
+  console.log(data);
 });
 /* socket.on("online_list", (data) => {
   console.log(data);
 }); */
 socket.on("login", (data) => {
-  console.log(data);  
+  console.log(data);
 });
 socket.on("logout", (data) => {
-  console.log(data);  
+  console.log(data);
 });
 socket.on("disconnect", () => {
   console.log(socket.id); //undefined
@@ -124,19 +128,22 @@ socket.on("connect_error", (e) => {
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
 } else {
-  localStorage.setItem("server_ip",companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
+  localStorage.setItem(
+    "server_ip",
+    companyInfo[startCPN as keyof typeof companyInfo].apiUrl
+  );
 }
 let notiCount: any = localStorage.getItem("notification_count")?.toString();
 if (notiCount !== undefined) {
 } else {
-  localStorage.setItem("notification_count",'0');
+  localStorage.setItem("notification_count", "0");
 }
 let crST_string: any = localStorage.getItem("setting") ?? "";
 let crST: WEB_SETTING_DATA[] = [];
 if (crST_string !== "") {
   crST = JSON.parse(crST_string);
 }
-console.log('notiCount',notiCount);
+console.log("notiCount", notiCount);
 const initialState: GlobalInterface = {
   notificationCount: Number.parseInt(notiCount),
   globalSetting: crST,
@@ -194,7 +201,7 @@ const initialState: GlobalInterface = {
   sidebarmenu: false,
   multiple_chithi_array: [],
   company: startCPN,
-  server_ip: companyInfo[startCPN as keyof typeof companyInfo].apiUrl,  
+  server_ip: companyInfo[startCPN as keyof typeof companyInfo].apiUrl,
   tabs: [],
   componentArray: [],
   tabIndex: 0,
@@ -204,14 +211,18 @@ const initialState: GlobalInterface = {
   ctr_cd: "002",
   theme: {
     CMS: {
-      backgroundImage: companyInfo[startCPN as keyof typeof companyInfo].backgroundImage,   
+      backgroundImage:
+        companyInfo[startCPN as keyof typeof companyInfo].backgroundImage,
     },
     PVN: {
-      backgroundImage: companyInfo[startCPN as keyof typeof companyInfo].backgroundImage,   
+      backgroundImage:
+        companyInfo[startCPN as keyof typeof companyInfo].backgroundImage,
     },
   },
-  cpnInfo: companyInfo, 
-  selectedServer: companyInfo[startCPN as keyof typeof companyInfo].apiUrlArray[0].server_name,  
+  cpnInfo: companyInfo,
+  selectedServer:
+    companyInfo[startCPN as keyof typeof companyInfo].apiUrlArray[0]
+      .server_name,
 };
 export const glbSlice = createSlice({
   name: "totalSlice",
@@ -400,7 +411,7 @@ export const glbSlice = createSlice({
             state.tabIndex++;
           }
         }
-        console.log('state.tabIndex',state.tabIndex);
+        console.log("state.tabIndex", state.tabIndex);
       } else {
         state.tabs = [];
       }
@@ -431,19 +442,18 @@ export const glbSlice = createSlice({
       state.globalSetting = action.payload;
     },
     switchTheme: (state, action: PayloadAction<string>) => {
-      state.theme['CMS'].backgroundImage = action.payload;
-      state.theme['PVN'].backgroundImage = action.payload;
-    } ,
+      state.theme["CMS"].backgroundImage = action.payload;
+      state.theme["PVN"].backgroundImage = action.payload;
+    },
     changeCtrCd: (state, action: PayloadAction<string>) => {
       state.ctr_cd = action.payload;
     },
     changeSelectedServer: (state, action: PayloadAction<string>) => {
       state.selectedServer = action.payload;
     },
-    updateNotiCount: (state, action: PayloadAction<number>) => {      
+    updateNotiCount: (state, action: PayloadAction<number>) => {
       state.notificationCount = action.payload;
     },
-
   },
 });
 export const {
@@ -471,6 +481,6 @@ export const {
   switchTheme,
   changeCtrCd,
   changeSelectedServer,
-  updateNotiCount
+  updateNotiCount,
 } = glbSlice.actions;
 export default glbSlice.reducer;

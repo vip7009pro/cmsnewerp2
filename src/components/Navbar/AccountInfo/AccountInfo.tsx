@@ -526,8 +526,8 @@ export default function AccountInfo() {
                       <option value={"http://14.160.33.94:" + 5013}>MAIN_SERVER</option>
                       <option value={"http://14.160.33.94:" + 3007}>SUB_SERVER</option>
                       <option value={"http://192.168.1.192:" + 5013}>LAN_SERVER</option>
-                      <option value={"http://cms.ddns.net:" + 5013}>NET_SERVER</option>
-                      <option value={"http://cms.ddns.net:" + 3007}>SUBNET_SERVER</option>
+                      <option value={"https://cmsvina4285.com:" + 5013}>NET_SERVER</option>
+                      <option value={"https://cmsvina4285.com:" + 3007}>SUBNET_SERVER</option>
                     </select>
                   </label>
                 )

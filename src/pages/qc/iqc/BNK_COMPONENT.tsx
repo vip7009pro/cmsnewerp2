@@ -6,7 +6,6 @@ import { generalQuery, getCompany } from "../../../api/Api";
 import { DTC_DATA, IQC_INCOMMING_DATA } from "../../../api/GlobalInterface";
 import moment from "moment";
 import Swal from "sweetalert2";
-
 const BNK_COMPONENT = ({
   data,
   dtc_data,
@@ -20,7 +19,6 @@ const BNK_COMPONENT = ({
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
-
   const aqlTable = [
     { MIN_ROLL_QTY: 1, MAX_ROLL_QTY: 1, TEST_QTY: 1 },
     { MIN_ROLL_QTY: 2, MAX_ROLL_QTY: 15, TEST_QTY: 2 },
@@ -30,22 +28,22 @@ const BNK_COMPONENT = ({
     { MIN_ROLL_QTY: 151, MAX_ROLL_QTY: 280, TEST_QTY: 13 },
     { MIN_ROLL_QTY: 281, MAX_ROLL_QTY: 500, TEST_QTY: 20 },
   ];
-  console.log('data?.M_THICKNESS',data?.M_THICKNESS)
+  console.log("data?.M_THICKNESS", data?.M_THICKNESS);
   const [m_thickness, setMThickness] = useState({
     thickness: data?.M_THICKNESS ?? 0,
     thickness_upper: data?.M_THICKNESS_UPPER ?? 0,
     thickness_lower: data?.M_THICKNESS_LOWER ?? 0,
   });
-  let temp_thickness = (data?.M_THICKNESS ?? 0)<=0;
-  console.log('temp_thickness',temp_thickness)
+  let temp_thickness = (data?.M_THICKNESS ?? 0) <= 0;
+  console.log("temp_thickness", temp_thickness);
   const [showSetThickness, setShowSetThickness] = useState(false);
-  console.log('showSetThickness',showSetThickness)
+  console.log("showSetThickness", showSetThickness);
   const getMThickness = () => {
-    console.log('vao day')
+    console.log("vao day");
     generalQuery("checkM_THICKNESS", { M_NAME: data?.M_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          if (response.data.data.length > 0) {          
+          if (response.data.data.length > 0) {
             setMThickness({
               thickness: response.data.data[0].M_THICKNESS,
               thickness_upper: response.data.data[0].M_THICKNESS_UPPER,
@@ -58,7 +56,6 @@ const BNK_COMPONENT = ({
         console.log(error);
       });
   };
-
   const getTestQty = (total_roll: number) => {
     const testQty = aqlTable.find(
       (element) =>
@@ -70,7 +67,6 @@ const BNK_COMPONENT = ({
     getMThickness();
   }, []);
   return (
-
     <div className="material-check">
       <div className="header">
         <div className="logo">
@@ -81,7 +77,6 @@ const BNK_COMPONENT = ({
             height={cpnInfo[getCompany()].logoHeight}
           />
           <br />
-          CÔNG TY TNHH CMS VINA
         </div>
         <div className="title">BẢNG KIỂM TRA NGUYÊN VẬT LIỆU NHẬP KHO</div>
         <div className="approval">
@@ -95,15 +90,30 @@ const BNK_COMPONENT = ({
             </thead>
             <tbody>
               <tr style={{ height: "30px" }}>
-                <td><img src="/sign (2).jpg" alt="lap" width={60} height={30}/></td>
-                <td><img src="/sign (3).jpg" alt="kiem tra" width={60} height={30}/></td>
-                <td><img src="/sign (1).jpg" alt="phe duyet" width={60} height={30}/></td>
+                <td>
+                  <img src="/sign (2).jpg" alt="lap" width={60} height={30} />
+                </td>
+                <td>
+                  <img
+                    src="/sign (3).jpg"
+                    alt="kiem tra"
+                    width={60}
+                    height={30}
+                  />
+                </td>
+                <td>
+                  <img
+                    src="/sign (1).jpg"
+                    alt="phe duyet"
+                    width={60}
+                    height={30}
+                  />
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
       <table className="info-table">
         <tr>
           <td>Tên liệu</td>
@@ -117,7 +127,7 @@ const BNK_COMPONENT = ({
           )}-${data?.M_LOT_NO.substring(4, 6)}`}</td>
         </tr>
         <tr>
-          <td>Lot ERP</td>
+          <td>Lot {getCompany()}</td>
           <td>{data?.M_LOT_NO}</td>
           <td>Chiều rộng</td>
           <td>{data?.WIDTH_CD} mm</td>
@@ -125,7 +135,7 @@ const BNK_COMPONENT = ({
           <td>{moment(data?.INS_DATE).utc().format("YYYY-MM-DD")}</td>
         </tr>
         <tr>
-          <td>Lot No</td>
+          <td>Lot Vendor</td>
           <td>{data?.LOT_VENDOR_IQC}</td>
           <td>Số lượng</td>
           <td>{data?.TOTAL_ROLL} roll</td>
@@ -133,7 +143,6 @@ const BNK_COMPONENT = ({
           <td colSpan={3}>{data?.TEST_EMPL}</td>
         </tr>
       </table>
-
       <table className="main-table">
         <thead>
           <tr>
@@ -197,7 +206,6 @@ const BNK_COMPONENT = ({
           </tr>
         </tbody>
       </table>
-
       <div className="rowoftable">
         <table className="detail-table1">
           <thead>
@@ -236,30 +244,95 @@ const BNK_COMPONENT = ({
                   color: m_thickness.thickness === 0 ? "red" : "",
                 }}
               >
-                {showSetThickness && <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
-                <input type="number" style={{width: "50px"}} value={m_thickness.thickness} onChange={(e) => setMThickness({thickness: Number(e.target.value), thickness_upper: m_thickness.thickness_upper, thickness_lower: m_thickness.thickness_lower})} /> 
-                +<input type="number" style={{width: "50px"}} value={m_thickness.thickness_upper} onChange={(e) => setMThickness({thickness: m_thickness.thickness, thickness_upper: Number(e.target.value), thickness_lower: m_thickness.thickness_lower})} /> 
-                -<input type="number" style={{width: "50px"}} value={m_thickness.thickness_lower} onChange={(e) => setMThickness({thickness: m_thickness.thickness, thickness_upper: m_thickness.thickness_upper, thickness_lower: Number(e.target.value)})} />  
-                <button onClick={() =>{
-                  generalQuery("updateMThickness", { M_NAME: data?.M_NAME, M_THICKNESS: m_thickness.thickness, M_THICKNESS_UPPER: m_thickness.thickness_upper, M_THICKNESS_LOWER: m_thickness.thickness_lower })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      setShowSetThickness(false);
-                      /* Swal.fire({
+                {showSetThickness && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="number"
+                      style={{ width: "50px" }}
+                      value={m_thickness.thickness}
+                      onChange={(e) =>
+                        setMThickness({
+                          thickness: Number(e.target.value),
+                          thickness_upper: m_thickness.thickness_upper,
+                          thickness_lower: m_thickness.thickness_lower,
+                        })
+                      }
+                    />
+                    +
+                    <input
+                      type="number"
+                      style={{ width: "50px" }}
+                      value={m_thickness.thickness_upper}
+                      onChange={(e) =>
+                        setMThickness({
+                          thickness: m_thickness.thickness,
+                          thickness_upper: Number(e.target.value),
+                          thickness_lower: m_thickness.thickness_lower,
+                        })
+                      }
+                    />
+                    -
+                    <input
+                      type="number"
+                      style={{ width: "50px" }}
+                      value={m_thickness.thickness_lower}
+                      onChange={(e) =>
+                        setMThickness({
+                          thickness: m_thickness.thickness,
+                          thickness_upper: m_thickness.thickness_upper,
+                          thickness_lower: Number(e.target.value),
+                        })
+                      }
+                    />
+                    <button
+                      onClick={() => {
+                        generalQuery("updateMThickness", {
+                          M_NAME: data?.M_NAME,
+                          M_THICKNESS: m_thickness.thickness,
+                          M_THICKNESS_UPPER: m_thickness.thickness_upper,
+                          M_THICKNESS_LOWER: m_thickness.thickness_lower,
+                        })
+                          .then((response) => {
+                            if (response.data.tk_status !== "NG") {
+                              setShowSetThickness(false);
+                              /* Swal.fire({
                         icon: "success",
                         title: "Cập nhật thành công",
                         showConfirmButton: false,
                         timer: 1500,
                       }); */
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  }); 
-                  setShowSetThickness(true);
-                  getMThickness();
-                }}>Set</button> 
-                </div>} {(!showSetThickness) && <div onClick={()=>setShowSetThickness(true)} style={{textAlign: "center"}}>{m_thickness.thickness === -1 ? "N/A" : m_thickness.thickness_upper === m_thickness.thickness_lower ? `${m_thickness.thickness} ± ${m_thickness.thickness_upper}` : `${m_thickness.thickness} + ${m_thickness.thickness_upper} - ${m_thickness.thickness_lower}`}</div>}
+                            }
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                          });
+                        setShowSetThickness(true);
+                        getMThickness();
+                      }}
+                    >
+                      Set
+                    </button>
+                  </div>
+                )}{" "}
+                {!showSetThickness && (
+                  <div
+                    onClick={() => setShowSetThickness(true)}
+                    style={{ textAlign: "center" }}
+                  >
+                    {m_thickness.thickness === -1
+                      ? "N/A"
+                      : m_thickness.thickness_upper ===
+                        m_thickness.thickness_lower
+                      ? `${m_thickness.thickness} ± ${m_thickness.thickness_upper}`
+                      : `${m_thickness.thickness} + ${m_thickness.thickness_upper} - ${m_thickness.thickness_lower}`}
+                  </div>
+                )}
               </td>
             </tr>
             {/* Các dòng 1 đến 15 có thể thêm tại đây nếu cần */}
@@ -291,7 +364,6 @@ const BNK_COMPONENT = ({
                 <td></td>
               </tr>
             ))}
-
             <tr className="result_row">
               <td>KQ</td>
               <td>{data?.IQC_TEST_RESULT === "OK" ? "OK" : ""}</td>
@@ -307,11 +379,12 @@ const BNK_COMPONENT = ({
         <table className="detail-table2">
           <thead>
             <tr>
-              <th colSpan={7}>Độ tin cậy</th>
+              <th colSpan={8}>Độ tin cậy</th>
             </tr>
             <tr>
               <th>Hạng mục</th>
-              <th>Mẫu</th>
+              <th>NO</th>
+              <th>NAME</th>
               <th>CENTER</th>
               <th>LOWER</th>
               <th>UPPER</th>
@@ -320,16 +393,21 @@ const BNK_COMPONENT = ({
             </tr>
           </thead>
           <tbody>
-            {dtc_data?.map((item: DTC_DATA, index: number) => {             
+            {dtc_data?.map((item: DTC_DATA, index: number) => {
               let judge_result: string =
-                item.RESULT >= (item.CENTER_VALUE - item.LOWER_TOR) &&
-                item.RESULT <= (item.CENTER_VALUE + item.UPPER_TOR)
+                item.RESULT >= item.CENTER_VALUE - item.LOWER_TOR &&
+                item.RESULT <= item.CENTER_VALUE + item.UPPER_TOR
                   ? "OK"
                   : "NG";
               return (
                 <tr key={index}>
                   <td>{item.TEST_NAME}</td>
-                  <td>{item.POINT_NAME}</td>
+                  <td>{item.SAMPLE_NO}</td>
+                  <td>
+                    {item.TEST_NAME === "XRF"
+                      ? item.POINT_NAME.slice(0, -1)
+                      : item.POINT_NAME}
+                  </td>
                   <td>
                     {item.CENTER_VALUE?.toLocaleString("en-US", {
                       minimumFractionDigits: 0,
@@ -368,12 +446,10 @@ const BNK_COMPONENT = ({
             })}
           </tbody>
         </table>
-
         <div />
       </div>
       <div className="note">Ghi chú:</div>
     </div>
   );
 };
-
 export default BNK_COMPONENT;

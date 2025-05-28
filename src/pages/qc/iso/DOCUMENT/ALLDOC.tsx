@@ -336,7 +336,7 @@ const ALLDOC = () => {
   const [docCategory1Data, setDocCategory1Data] = useState<DOC_CATEGORY1_DATA[]>([]);
   const [docCategory2Data, setDocCategory2Data] = useState<DOC_CATEGORY2_DATA[]>([]);
   const [docListData, setDocListData] = useState<DOC_LIST_DATA[]>([]);
-
+  const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
 
   const handleLoadDocCategory1 = async () => {
     let kq = await f_getDocCategory1(); 
@@ -417,7 +417,7 @@ const ALLDOC = () => {
     }
   }, 
     { field: 'DOC_NAME', headerName: 'DOWNLOAD', width: 100, cellRenderer: (params: any) => {
-      let fullUrl = `http://${window.location.host}/alldocs/${params.data.FILE_ID}_${params.data.DOC_ID}_${params.data.DOC_CAT_ID}_${params.data.CAT_ID}${params.data.FORMAT_X}`;
+      let fullUrl = `${protocol}://${window.location.host}/alldocs/${params.data.FILE_ID}_${params.data.DOC_ID}_${params.data.DOC_CAT_ID}_${params.data.CAT_ID}${params.data.FORMAT_X}`;
       //console.log(fullUrl);
         return (
           <DownloadButtonAll fullUrl={fullUrl} filename={`${getCtrCd()}_${params.data.FILE_ID}_${params.data.DOC_ID}_${params.data.DOC_CAT_ID}_${params.data.CAT_ID}${params.data.FORMAT_X}`} />

@@ -361,19 +361,19 @@ const INCOMMING = () => {
                   LOT_CMS: selectedRowsData.current[i].LOT_CMS,
                   VALUE: selectedRowsData.current[i].TOTAL_RESULT === "OK" ? "Y" : "N",
                 })
-                  // eslint-disable-next-line no-loop-func
-                  .then((response) => {
-                    //console.log(response.data.data);
-                    if (response.data.tk_status !== "NG") {
-                      if(selectedRowsData.current[i].TOTAL_RESULT === "NG") {
-                        insertHoldingData(selectedRowsData.current[i].REMARK, selectedRowsData.current[i].M_CODE, selectedRowsData.current[i].LOT_CMS)
-                      }
-                    } else {
+                // eslint-disable-next-line no-loop-func
+                .then((response) => {
+                  //console.log(response.data.data);
+                  if (response.data.tk_status !== "NG") {
+                    if(selectedRowsData.current[i].TOTAL_RESULT === "NG") {
+                      insertHoldingData(selectedRowsData.current[i].REMARK, selectedRowsData.current[i].M_CODE, selectedRowsData.current[i].LOT_CMS)
                     }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
+                  } else {
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
                
             } else {
               err_code += ` Lỗi: ${response.data.message}`;

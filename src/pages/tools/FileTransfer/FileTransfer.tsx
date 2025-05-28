@@ -13,6 +13,7 @@ interface FileProgress {
 }
 
 const FileTransfer = () => {
+  const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
   const [uploadedFiles, setUploadedFiles] = useState<FileProgress[]>([]);
   const [fileList, setFileList] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -180,7 +181,7 @@ const FileTransfer = () => {
               <DownloadButton filename={file.FILE_NAME} />
               <button
                 onClick={() => {
-                  const fullUrl = `http://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;
+                  const fullUrl = `${protocol}://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;
                   //console.log('fullUrl', fullUrl);      
                   const fileUrl = encodeURI(fullUrl);
                   if (navigator.clipboard) {

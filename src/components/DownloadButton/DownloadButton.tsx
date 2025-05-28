@@ -3,10 +3,11 @@ import { getCtrCd } from "../../api/Api";
 import { f_downloadFile2 } from "../../api/GlobalFunction";
 
 export const DownloadButton = ({ filename}:{filename:string}) => {
+  const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
   const [downloadProgress, setDownloadProgress] = useState(0);
 
   const handleDownload = () => {
-    const fullUrl = `http://${window.location.host}/globalfiles/${getCtrCd()}_${filename}`;
+    const fullUrl = `${protocol}://${window.location.host}/globalfiles/${getCtrCd()}_${filename}`;
     const hreftlink = encodeURI(fullUrl);
     
     f_downloadFile2(hreftlink, `${getCtrCd()}_${filename}`, setDownloadProgress);

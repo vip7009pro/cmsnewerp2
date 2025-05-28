@@ -21,7 +21,7 @@ import NavbarVendors from "../../components/Navbar/NavbarVendors";
 import AccountInfoVendors from "../../components/Navbar/AccountInfo/AccountInfoVendors";
 import HomePageVendors from "../../components/Vendors/Home/HomeVendors";
 
-export const current_ver: number = getCompany() === "CMS" ? 2615 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2618 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));

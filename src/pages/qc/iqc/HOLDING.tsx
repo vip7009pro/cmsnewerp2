@@ -111,7 +111,7 @@ const HOLDING = () => {
           if (response.data.tk_status !== "NG") {
             generalQuery("updateQCPASSI222_M_LOT_NO", {
               M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
-              VALUE: value,
+              VALUE: value === 'Y' ? 'T': 'N',
             })
               // eslint-disable-next-line no-loop-func
               .then((response) => {

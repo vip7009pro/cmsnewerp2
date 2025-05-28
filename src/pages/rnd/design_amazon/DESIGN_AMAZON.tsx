@@ -40,6 +40,7 @@ import {
 } from "../../../api/GlobalInterface";
 
 const DESIGN_AMAZON = () => {
+  const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -137,7 +138,7 @@ const DESIGN_AMAZON = () => {
       PHANLOAI_DT: "IMAGE",
       DOITUONG_STT: "A3",
       CAVITY_PRINT: 2,
-      GIATRI: "http://14.160.33.94/images/logoAMAZON.png",
+      GIATRI: `${protocol}://cmsvina4285.com/images/logoAMAZON.png`,
       FONT_NAME: "Arial",
       FONT_SIZE: 6,
       FONT_STYLE: "B",
