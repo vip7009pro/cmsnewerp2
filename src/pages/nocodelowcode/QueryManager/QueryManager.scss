@@ -1,0 +1,153 @@
+.query-manager-root {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background: #f7f9fb;
+  gap: 16px;
+  padding: 24px 16px 16px 16px;
+  box-sizing: border-box;
+
+  .query-list-panel,
+  .filter-list-panel,
+  .sql-editor-panel {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    min-width: 280px;
+    max-width: 430px;
+    flex: 1 1 0;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .query-list-panel {
+    max-width: 320px;
+    flex: 0 0 320px;
+    margin-right: 8px;
+    .MuiTypography-root {
+      margin-bottom: 8px;
+    }
+  }
+
+  .filter-list-panel {
+    max-width: 400px;
+    flex: 0 0 400px;
+    margin-right: 8px;
+    .MuiTypography-root {
+      margin-bottom: 8px;
+    }
+    .filter-toolbar {
+      background: #e3eafc;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      .MuiIconButton-root {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .sql-editor-panel {
+    flex: 3 1 0; // chiếm nhiều diện tích hơn các panel khác
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .sql-toolbar {
+      background: #e3f6e3;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+    }
+    .MuiTextField-root {
+      width: 100%;
+      textarea {
+        font-family: 'Fira Mono', 'Consolas', 'monospace';
+        font-size: 15px;
+        width: 100% !important;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+// AGTable custom
+.agtable {
+  background: none;
+  box-shadow: none;
+  .ag-theme-quartz {
+    border-radius: 8px;
+    border: 1px solid #e0e3e8;
+    min-height: 320px;    
+    overflow: auto;
+    font-size: 14px;
+    .ag-header {
+      background: #f5f7fa;
+      font-weight: 600;
+    }
+    .ag-row-selected {
+      background: #e3eafc !important;
+    }
+  }
+  .bottombar {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+// Modal filter
+.MuiModal-root {
+  .MuiBox-root {
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.18);
+    border-radius: 12px;
+    min-width: 400px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    .MuiTypography-root {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .MuiTextField-root {
+      margin-bottom: 8px;
+    }
+    .popup-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .MuiButton-root {
+      min-width: 100px;
+    }
+  }
+}
+
+// Responsive tối thiểu
+@media (max-width: 1200px) {
+  .query-manager-root {
+    flex-direction: column;
+    .query-list-panel, .filter-list-panel, .sql-editor-panel {
+      max-width: 100%;
+      margin-right: 0;
+      margin-bottom: 12px;
+    }
+  }
+}
