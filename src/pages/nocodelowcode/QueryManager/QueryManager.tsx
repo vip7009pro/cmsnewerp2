@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, Save, Refresh } from "@mui/icons-material";
 import MonacoEditor from "@monaco-editor/react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCtrCd } from "../../../api/Api";
 import Swal from "sweetalert2";
 import "./QueryManager.scss";
 // Interface cho Query và QueryFilter
@@ -216,6 +216,32 @@ const QueryManager: React.FC = () => {
       Swal.fire("Lỗi", "Không thể lưu", "error");
     }
   };
+  const handleRunQuery = async () => {
+    if (!selectedQuery) return;
+    try {
+      const res = await generalQuery("runQuery", {
+        QueryName: selectedQuery.QueryName,
+        PARAMS: {
+          ONLY_PENDING: true,
+          LOT_VENDOR: "",
+          CTR_CD: getCtrCd(),
+          M_LOT_NO: "",
+          DEFECT: "",
+          NCR_ID: "",
+          PLSP: "ALL",
+        },
+      });
+      if (res?.data?.tk_status === "OK") {
+        Swal.fire("Đã chạy Query", "", "success");
+        console.log(res.data.data);
+        fetchQueryList();
+      } else {
+        Swal.fire("Lỗi", res?.data?.message || "Không thể chạy", "error");
+      }
+    } catch (e) {
+      Swal.fire("Lỗi", "Không thể chạy", "error");
+    }
+  };
   // Thêm Query
   const handleSaveQueryModal = async () => {
     if (!editQuery?.QueryName || !editQuery.BaseQuery) {
@@ -304,6 +330,9 @@ const QueryManager: React.FC = () => {
   return (
     <Box className="query-manager-root">
       {/* Cột trái: Query List */}
+ 
+
+     
       <Box className="query-list-panel">
         <AGTable
           toolbar={
@@ -345,7 +374,7 @@ const QueryManager: React.FC = () => {
           toolbar={
             <>
               <Typography variant="h6" sx={{ flex: 1, fontSize: 16 }}>
-                Query Filters
+                Query Filters ({selectedQuery?.QueryName})
               </Typography>
               {filterToolbar}
             </>
@@ -359,12 +388,21 @@ const QueryManager: React.FC = () => {
           onSelectionChange={() => {}}
         />
       </Box>
+     
       {/* Cột phải: SQL Editor */}
       <Box className="sql-editor-panel">
         <Toolbar className="sql-toolbar">
-          <Typography variant="h6" sx={{ flex: 1 }}>
+          <Typography variant="h6" sx={{ flex: 1, fontSize: 16 }}>
             Base Query
           </Typography>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<Save />}
+            onClick={handleRunQuery}
+          >
+            Run Query
+          </Button>
           <Button
             variant="contained"
             size="small"
@@ -434,9 +472,13 @@ const QueryManager: React.FC = () => {
           <TextField
             label="Param Name"
             value={editFilter?.ParamName || ""}
-            onChange={(e) =>
-              setEditFilter((f) => ({ ...f!, ParamName: e.target.value }))
-            }
+            onChange={(e) => {
+              setEditFilter((f) => ({
+                ...f!,
+                ParamName: e.target.value,
+                Placeholder: "{{" + e.target.value + "}}",
+              }));
+            }}
             fullWidth
             margin="normal"
           />
