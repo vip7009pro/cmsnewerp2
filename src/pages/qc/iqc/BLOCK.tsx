@@ -795,8 +795,27 @@ const BLOCK = () => {
         console.log(error);
       });
   };
+    const handleAutoUpdateReasonFromIQC1 = () => {
+    
+      generalQuery("updateReasonHoldingFromIQC1", {
+        
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+           
+          } else {
+            
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  
   useEffect(() => {
     getcustomerlist();
+    handleAutoUpdateReasonFromIQC1();
     ///handletraFailingData();
   }, []);
   return (
