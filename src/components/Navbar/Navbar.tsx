@@ -30,6 +30,7 @@ import { MdOutlineSettings } from "react-icons/md";
 import NavMenu from "../NavMenu/NavMenu";
 import { IoIosNotifications } from "react-icons/io";
 import NotificationPanel from "../NotificationPanel/NotificationPanel";
+import NavMenuNew from "../NavMenu/NavMenuNew";
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -661,7 +662,7 @@ export default function Navbar() {
             }}
             size={15}
           />
-          {sidebarStatus && <NavMenu />}
+          {sidebarStatus && <NavMenuNew />}
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>

@@ -330,9 +330,6 @@ const QueryManager: React.FC = () => {
   return (
     <Box className="query-manager-root">
       {/* Cột trái: Query List */}
- 
-
-     
       <Box className="query-list-panel">
         <AGTable
           toolbar={
@@ -388,7 +385,6 @@ const QueryManager: React.FC = () => {
           onSelectionChange={() => {}}
         />
       </Box>
-     
       {/* Cột phải: SQL Editor */}
       <Box className="sql-editor-panel">
         <Toolbar className="sql-toolbar">

@@ -8,7 +8,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { Add, Edit, Delete, Refresh } from "@mui/icons-material";
+import { Add, Edit, Delete, Refresh, Input } from "@mui/icons-material";
 import axios from "axios";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery } from "../../../api/Api";
@@ -27,6 +27,7 @@ interface Field {
   COLUMN_DEFAULT: string | null;
   IS_PRIMARY_KEY: string;
   IS_IDENTITY: string;
+  VALUE: string;
 }
 interface NewField {
   name: string;
@@ -36,6 +37,7 @@ interface NewField {
   isPrimaryKey: boolean;
   isIdentity: boolean;
   defaultValue?: string;
+  value?: string;
 }
 /**
  * Sinh chuỗi định nghĩa các field cho câu lệnh CREATE TABLE trong SQL Server.
@@ -48,7 +50,6 @@ function generateTableFields(fields: NewField[]) {
     return "";
   }
 
-  console.log("fields", fields);
   // Thu thập các cột là primary key
   const primaryKeyFields = fields
     .filter((field) => field.isPrimaryKey)
@@ -62,6 +63,7 @@ function generateTableFields(fields: NewField[]) {
       isNullable = true,
       isIdentity = false,
       defaultValue = null,
+      value = "",
     } = field;
     // Kiểm tra các giá trị bắt buộc
     if (!name || !dataType) {
@@ -182,6 +184,7 @@ const dataTypes = [
 ];
 const DBManager: React.FC = () => {
   const [tables, setTables] = useState<Table[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
   const [fields, setFields] = useState<Field[]>([]);
   const [openTableModal, setOpenTableModal] = useState(false);
@@ -201,6 +204,7 @@ const DBManager: React.FC = () => {
   ]);
   const [editTableName, setEditTableName] = useState("");
   const [editField, setEditField] = useState<NewField | null>(null);
+  const [selectedData, setSelectedData] = useState<any | null>(null);
   const tableGridRef = useRef<any>(null);
   const fieldGridRef = useRef<any>(null);
   // Lấy danh sách bảng
@@ -558,6 +562,168 @@ const DBManager: React.FC = () => {
       }
     });
   };
+
+const handleInsertData = async (fields: Field[]) => {
+  try {
+    await generalQuery("insertData", {
+      TABLE_NAME: selectedTable,
+      FIELDS: fields,
+    })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        Swal.fire({
+          icon: "success",
+          title: "Success...",
+          text: "Thêm dữ liệu thành công",
+          customClass: {
+            container: "swal2-zindex-top",
+          },
+        });
+
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error...",
+          text: response.data.message,
+          customClass: {
+            container: "swal2-zindex-top",
+          },
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
+    
+  } catch (error) {
+    console.error("Error inserting data:", error);
+  }
+};
+const handleInsertData2= async (data: any[], fields: Field[]) => {
+  let kq: any = "";
+  try {
+    await generalQuery("insertData2", {
+      TABLE_NAME: selectedTable,
+      FIELDS: fields,
+      DATA: data,
+    })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {       
+        
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error;
+    });
+    
+    
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    kq = error;
+  }
+  return kq;
+};
+const handleInsertMultipleData = async  (data: any[]) => {
+  let totalkq: string = "";
+  for(let i=0; i<data.length; i++){
+    let kq = await handleInsertData2(data[i], fields);
+    if(kq !== ''){
+      totalkq += kq;
+    }
+  }
+  if(totalkq === ''){
+    Swal.fire({
+      icon: "success",
+      title: "Success...",
+      text: "Thêm dữ liệu thành công",
+      customClass: {
+        container: "swal2-zindex-top",
+      },
+    });
+  }else{
+    Swal.fire({
+      icon: "error",
+      title: "Error...",
+      text: totalkq,
+      customClass: {
+        container: "swal2-zindex-top",
+      },
+    });
+  }
+  
+}
+
+const handleLoadData = async (table_name: string) => {
+  try {
+    await generalQuery("loadData", {
+      TABLE_NAME: table_name,
+    })
+    .then(async (response) => {
+      if (response.data.tk_status !== "NG") {
+        if(response.data.data.length > 0){
+          let loaded_data: any[] = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          setData(loaded_data);
+        }
+       
+      } else {
+        let temp_fields = await generalQuery("loadColumnList", {
+          TABLE_NAME: table_name,
+        })        
+        let loaded_data: any = {};
+        temp_fields.data.data.forEach((field: any) => {
+          loaded_data[field.COLUMN_NAME] = "";
+        });
+        loaded_data.id = 0;        
+        setData([loaded_data]);
+      
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
+  } catch (error) {
+    console.error("Error loading data:", error);
+  }
+};
+const handleAddBlankDataToDataTable = async () => {
+  let temp_fields = await generalQuery("loadColumnList", {
+    TABLE_NAME: selectedTable,
+  })
+  let loaded_data: any = {};
+  temp_fields.data.data.forEach((field: any) => {
+    loaded_data[field.COLUMN_NAME] = "";
+  });
+  loaded_data.id = data.length;
+  setData([...data, loaded_data]);  
+} 
+const deleteData = async (id: number) => {
+  setData(data.filter((item) => item.id !== id));
+}
+const clearAllData = async () => {
+  let temp_fields = await generalQuery("loadColumnList", {
+    TABLE_NAME: selectedTable,
+  })
+  let loaded_data: any = {};
+  temp_fields.data.data.forEach((field: any) => {
+    loaded_data[field.COLUMN_NAME] = "";
+  });
+  loaded_data.id = 0;
+  setData([loaded_data]);  
+}
   useEffect(() => {
     fetchTables();
   }, []);
@@ -631,6 +797,11 @@ const DBManager: React.FC = () => {
           </div>
         );
       },
+    },
+    {
+      field: "value",
+      headerName: "Value",
+      width: 100,
     },
   ];
   // Toolbar cho danh sách bảng
@@ -732,6 +903,103 @@ const DBManager: React.FC = () => {
         {editField?.name}
       </span>
       )
+      <Button
+        size="small"
+        startIcon={<Input style={{ fontSize: 15 }} />}
+        onClick={() => {
+          Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, insert it!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleInsertData(fields);
+            }
+          });         
+          
+        }}
+        disabled={!selectedTable}
+        style={{ fontSize: 13 }}
+      >
+        INSERT DATA
+      </Button>
+    </Box>
+  );
+  //Toolbar cho  data table
+  const dataToolbar = (
+    <Box>
+      <Button
+        size="small"
+        startIcon={<Refresh style={{ fontSize: 15 }} />}
+        onClick={() => fetchTables()}
+        style={{ fontSize: 13 }}
+      >
+        Load
+      </Button>
+      <Button
+        size="small"
+        startIcon={<Add style={{ fontSize: 15 }} />}
+        onClick={() => {
+          handleAddBlankDataToDataTable();
+        }}
+        disabled={!selectedTable}
+        style={{ fontSize: 13 }}
+      >
+        Add Blank Data
+      </Button>
+      <Button
+        size="small"
+        startIcon={<Delete style={{ fontSize: 15 }} />}
+        onClick={() => {
+          if(data.length ===1 ) return;
+          deleteData(selectedData.id);
+        }}
+        disabled={!selectedData || data.length ===1}
+        style={{ fontSize: 13 }}
+      >
+        Delete Data
+      </Button>
+
+      <Button
+        size="small"
+        startIcon={<Delete style={{ fontSize: 15 }} />}
+        onClick={() => {
+          if(data.length ===1 ) return;
+          clearAllData();
+        }}
+        disabled={!selectedData || data.length ===1}
+        style={{ fontSize: 13 }}
+      >
+        Clear All Data
+      </Button>
+      <Button
+        size="small"
+        startIcon={<Input style={{ fontSize: 15 }} />}
+        onClick={() => {
+          Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, insert it!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleInsertMultipleData(data);
+            }
+          });         
+          
+        }}
+        disabled={!selectedTable}
+        style={{ fontSize: 13 }}
+      >
+        INSERT DATA
+      </Button>
     </Box>
   );
   const tableListAG = useMemo(() => {
@@ -744,9 +1012,9 @@ const DBManager: React.FC = () => {
         onRowClick={(e) => {
           setSelectedTable(e.data.TABLE_NAME);
           fetchFields(e.data.TABLE_NAME);
+          handleLoadData(e.data.TABLE_NAME);
         }}
-        onSelectionChange={() => {}}
-        rowHeight={30}
+        onSelectionChange={() => {}}      
       />
     );
   }, [tables, selectedTable]);
@@ -784,10 +1052,25 @@ const DBManager: React.FC = () => {
           setOpenFieldModal(true);
           setIsFieldEditting(true);
         }}
-        rowHeight={30}
+        
       />
     );
   }, [fields, enableDeleteField, editField]);
+  const dataTable = useMemo(() => {
+    return (
+      <AGTable
+        suppressRowClickSelection={false}
+        data={data}        
+        toolbar={dataToolbar}
+        onSelectionChange={() => {}}
+        onRowClick={(e) => {
+          setSelectedData(e.data);
+        }}
+        columnWidth={70}
+       
+      />
+    );
+  }, [data, selectedData, fields]);
   return (
     <Box display="flex" height="91vh" width="100%" className="DBManager">
       {/* Danh sách bảng (bên trái) */}
@@ -797,6 +1080,10 @@ const DBManager: React.FC = () => {
       {/* Danh sách field (bên phải) */}
       <Box width="75%" p={0}>
         {columnListAG}
+      </Box>
+      {/* Danh sách dữ liệu (bên phải) */}
+      <Box width="75%" p={0}>
+        {dataTable}
       </Box>
       {/* Modal để tạo/sửa bảng */}
       <Modal open={openTableModal} onClose={() => setOpenTableModal(false)}>

@@ -1,0 +1,95 @@
+.menu-manager-root {
+  display: flex;
+  height: 80vh;
+  gap: 20px;
+}
+.menu-manager-left, .menu-manager-right {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  min-width: 0;
+}
+.menu-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: transparent;
+  padding: 0;
+}
+.menu-table {
+  flex: 1;
+  overflow: auto;
+}
+.menu-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.menu-table th, .menu-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.menu-table th {
+  background: #f6f8fa;
+  font-weight: 600;
+}
+.menu-table tr.selected {
+  background: #e3f2fd;
+}
+.menu-table tr:hover {
+  background: #f1f7ff;
+  cursor: pointer;
+}
+.menu-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 10px;
+  min-width: 350px;
+  max-width: 95vw;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+}
+.icon-dropdown {
+  margin-top: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  background: #fafbfc;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  padding: 8px;
+}
+.icon-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.icon-list .MuiIconButton-root {
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: #f6f8fa;
+  transition: border 0.2s, background 0.2s;
+}
+.icon-list .MuiIconButton-root.Mui-selected,
+.icon-list .MuiIconButton-root[aria-pressed="true"] {
+  border: 1.5px solid #1976d2;
+  background: #e3f2fd;
+}
+@media (max-width: 900px) {
+  .menu-manager-root {
+    flex-direction: column;
+    height: auto;
+  }
+  .menu-manager-left, .menu-manager-right {
+    margin-bottom: 16px;
+    min-width: 0;
+  }
+}

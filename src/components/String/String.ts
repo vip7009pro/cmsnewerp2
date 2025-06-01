@@ -1,15 +1,3 @@
-type vietnamese_sentences = {
-  ID: string;
-  CONTENT: string;
-};
-type korean_sentences = {
-  ID: string;
-  CONTENT: string;
-};
-type english_sentences = {
-  ID: string;
-  CONTENT: string;
-};
 export const vn_lang = {
   nocodelowcode: 'Nocode-Lowcode',
   tinhluongP3: "Tính lương P3",

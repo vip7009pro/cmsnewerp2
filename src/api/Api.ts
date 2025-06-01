@@ -208,6 +208,7 @@ export async function generalQuery(command: string, queryData: any) {
       ...queryData,
       token_string: cookies.get("token"),
       CTR_CD: getCtrCd(),
+      COMPANY: getCompany(),
     },
   });
   return data;
