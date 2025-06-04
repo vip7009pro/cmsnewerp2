@@ -71,22 +71,25 @@ const InspectionDailyFcost = ({
         >
           <p>Ngày {label}:</p>
           <p className='label'style={{color:'green'}}>
-            PROCESS_NG: {`${payload[0].payload?.P_NG_AMOUNT?.toLocaleString("en-US")}`} $
+            PROCESS_NG: {`${payload[0]?.payload?.P_NG_AMOUNT?.toLocaleString("en-US")}`} $
           </p>
           <p className='label'style={{color:'green'}}>
-            MATERIAL_NG: {`${payload[0].payload?.M_NG_AMOUNT?.toLocaleString("en-US")}`} $
+            MATERIAL_NG: {`${payload[0]?.payload?.M_NG_AMOUNT?.toLocaleString("en-US")}`} $
           </p>
           <p className='label'style={{color:'green'}}>
-            TOTAL_NG: {`${payload[0].payload?.T_NG_AMOUNT?.toLocaleString("en-US")}`} $
+            TOTAL_NG: {`${payload[0]?.payload?.T_NG_AMOUNT?.toLocaleString("en-US")}`} $
           </p>         
           <p className='label' style={{color:'blue'}}>
-            PROCESS_NG_RATE: {`${payload[0].payload?.PROCESS_PPM?.toLocaleString("en-US")}`} %
+            PROCESS_NG_RATE: {`${payload[0]?.payload?.PROCESS_PPM?.toLocaleString("en-US")}`} %
           </p>
           <p className='label' style={{color:'blue'}}>
-            MATERIAL_NG_RATE: {`${payload[0].payload?.MATERIAL_PPM?.toLocaleString("en-US")}`} %
+            MATERIAL_NG_RATE: {`${payload[0]?.payload?.MATERIAL_PPM?.toLocaleString("en-US")}`} %
           </p>
           <p className='label' style={{color:'blue'}}>
-            TOTAL_NG_RATE: {`${payload[0].payload?.TOTAL_PPM?.toLocaleString("en-US")}`} %
+            TOTAL_NG_RATE: {`${payload[0]?.payload?.TOTAL_PPM?.toLocaleString("en-US")}`} %
+          </p>
+          <p className='label' style={{color:'blue'}}>
+            KPI_VALUE: {`${payload[0]?.payload?.KPI_VALUE?.toLocaleString("en-US")}`} %
           </p>
         </div>
       );
@@ -221,6 +224,13 @@ const InspectionDailyFcost = ({
           type='monotone'
           dataKey='TOTAL_PPM'
           stroke='red'
+          label={{ position: "top", formatter: labelFormatter2, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+        />
+        <Line
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='KPI_VALUE'
+          stroke='blue'
           label={{ position: "top", formatter: labelFormatter2, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
         />
       </ComposedChart>

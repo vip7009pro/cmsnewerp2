@@ -167,7 +167,7 @@ const InvoiceManager = () => {
     }
     else {
       setInvoiceDataTable([]);
-      Swal.fire("Thông báo", "Không có dữ liệu", "success");
+      //Swal.fire("Thông báo", "Không có dữ liệu", "success");
     }
   };
   const handle_checkInvoiceHangLoat = async () => {

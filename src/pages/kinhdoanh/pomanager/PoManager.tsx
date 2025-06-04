@@ -232,7 +232,7 @@ const PoManager = () => {
     }
     else {
       setPoDataTable([]);
-      Swal.fire("Thông báo", "Không có dữ liệu", "success");
+      //Swal.fire("Thông báo", "Không có dữ liệu", "success");
     }
   };
   const handle_checkPOHangLoat = async () => {

@@ -182,7 +182,7 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetWeeklyClosing = async () => {
-    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday = moment().add(1, "day").endOf("week").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-56, "day").format("YYYY-MM-DD");
     await generalQuery("kd_weeklyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
@@ -207,7 +207,7 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetMonthlyClosing = async () => {
-    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday = moment().endOf("month").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");
     await generalQuery("kd_monthlyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
@@ -235,7 +235,7 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetYearlyClosing = async () => {
-    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday = moment().endOf("year").format("YYYY-MM-DD");
     let yesterday2 = "2020-01-01";
     await generalQuery("kd_annuallyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
@@ -1111,9 +1111,9 @@ const KinhDoanhReport = () => {
               label="Yesterday"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              qty={widgetdata_yesterday[widgetdata_yesterday.length - 1]?.DELIVERY_QTY}
-              amount={widgetdata_yesterday[widgetdata_yesterday.length - 1]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_yesterday[widgetdata_yesterday.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERED_AMOUNT - 1) * 100}
+              qty={widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERY_QTY}
+              amount={widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERED_AMOUNT}
+              percentage={(widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length - 3]?.DELIVERED_AMOUNT - 1) * 100}
             />
           </div>
           <div className="revenuwdg">

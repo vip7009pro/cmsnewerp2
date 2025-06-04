@@ -51,7 +51,7 @@ export default function AccountInfo() {
   const [currentPW, setCurrentPW] = useState("");
   const [newPW, setNewPW] = useState("");
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [server_string, setServer_String] = useState('http://14.160.33.94:5013');
+  const [server_string, setServer_String] = useState('https://cmsvina4285.com:5013');
   const [webver, setwebver] = useState(0);
   const dispatch = useDispatch();
   const [logoutID, setLogOutID] = useState("");

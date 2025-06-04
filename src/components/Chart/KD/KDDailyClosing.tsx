@@ -18,17 +18,13 @@ import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
+  f_loadKPI,
+  getWorkingDaysInMonth,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyClosingData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { DailyClosingData, KPI_DATA, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
-  const [dailyClosingData, setDailyClosingData] = useState<
-    Array<DailyClosingData>
-  >([]);
-  /* const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
-  const endOfMonth = moment().endOf("month").format("YYYY-MM-DD"); */
-  const startOfMonth = moment().add(-12, "day").format("YYYY-MM-DD");
-  const endOfMonth = moment().format("YYYY-MM-DD");
+  const [dailyClosingData, setDailyClosingData] = useState<Array<DailyClosingData>>([]);
   const digit: number = getCompany()==='CMS' ? 0: 2;
   const formatCash = (n: number) => {
     /*  if (n < 1e3) return n;
@@ -70,11 +66,18 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
         >
           <p>Ngày {label}:</p>
           <p className='label'>
-            QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
+            QTY: {`${payload[0]?.value?.toLocaleString("en-US")}`} EA
           </p>
           <p className='label'>
             AMOUNT:{" "}
-            {`${payload[1].value.toLocaleString("en-US", {
+            {`${payload[1]?.value?.toLocaleString("en-US", {
+              style: "currency",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+            })}`}
+          </p>
+          <p className='label'>
+            KPI:{" "}
+            {`${payload[2]?.value?.toLocaleString("en-US", {
               style: "currency",
               currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
             })}`}
@@ -84,30 +87,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
     }
     return null;
   };
-  const handleGetDailyClosing = () => {
-    generalQuery("kd_dailyclosing", {
-      START_DATE: startOfMonth,
-      END_DATE: endOfMonth,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: DailyClosingData[] = response.data.data.map(
-            (element: DailyClosingData, index: number) => {
-              return {
-                ...element,
-                DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
-              };
-            }
-          );
-          setDailyClosingData(loadeddata);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   const CustomLabel = (props: any) => {
     //console.log(props);
     return (
@@ -124,7 +104,34 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
       </g>
     );
   };
+
+  const handleLoadKPI = async () => {
+   let dailyClosingKPI: KPI_DATA[] =  await f_loadKPI("DoanhThu");
+   console.log(dailyClosingKPI);
+   if(dailyClosingKPI.length > 0){
+    let temp_daily_closing: DailyClosingData[] = [];
+    data.forEach((item: DailyClosingData, index: number) => {
+      let numberOfWorkingDaysOfDeliveryMonth = getWorkingDaysInMonth(item.DELIVERY_DATE);
+      let yearnum = moment(item.DELIVERY_DATE).year();
+      let monthnum = moment(item.DELIVERY_DATE).month() + 1;
+      console.log(numberOfWorkingDaysOfDeliveryMonth,yearnum,monthnum);
+
+      let temp_kpi = dailyClosingKPI.filter((kpi: KPI_DATA, index: number) => kpi.KPI_YEAR === yearnum && kpi.KPI_MONTH === monthnum);
+      console.log(temp_kpi);
+      temp_daily_closing.push({
+        DELIVERY_DATE: item.DELIVERY_DATE,
+        DELIVERY_QTY: item.DELIVERY_QTY,
+        DELIVERED_AMOUNT: item.DELIVERED_AMOUNT,
+        KPI_VALUE: temp_kpi[0]?.VALUE_TYPE.toLowerCase() ==='number' ?  temp_kpi[0]?.KPI_VALUE/numberOfWorkingDaysOfDeliveryMonth : temp_kpi[0]?.KPI_VALUE,
+      });
+    });
+    console.log('temp_daily_closing',temp_daily_closing);
+    setDailyClosingData(temp_daily_closing);
+   }
+    
+  }
   useEffect(() => {
+    //handleLoadKPI();
     //handleGetDailyClosing();
   }, []);
   return (
@@ -192,6 +199,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
           dataKey='DELIVERY_QTY'
           stroke='green'
         />
+       
         <Bar
           yAxisId='right-axis'
           type='monotone'
@@ -202,6 +210,12 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
           label={CustomLabel}
         >
         </Bar>
+        <Line
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='KPI_VALUE'
+          stroke='red'
+        />
       </ComposedChart>
     </CustomResponsiveContainer>
   );

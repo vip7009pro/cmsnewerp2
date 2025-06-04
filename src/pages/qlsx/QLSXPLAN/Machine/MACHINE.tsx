@@ -1,11 +1,24 @@
 /* eslint-disable no-loop-func */
-import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../../api/Api";
+import {
+  generalQuery,
+  getCompany,
+  getSocket,
+  getUserData,
+  uploadQuery,
+} from "../../../../api/Api";
 import moment from "moment";
-import { Button, IconButton } from "@mui/material";
+import { Button, CircularProgress, IconButton } from "@mui/material";
 import {
   AiFillFolderAdd,
   AiFillSave,
@@ -84,12 +97,12 @@ import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 const MACHINE = () => {
-  console.log('vao machine');
+  console.log("vao machine");
   const myComponentRef = useRef();
-  const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
+  const [recentDMData, setRecentDMData] = useState<RecentDM[]>([]);
   const getRecentDM = async (G_CODE: string) => {
     setRecentDMData(await f_getRecentDMData(G_CODE));
-  }
+  };
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.multiple_chithi_array
   );
@@ -145,7 +158,9 @@ const MACHINE = () => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -165,14 +180,19 @@ const MACHINE = () => {
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
-  const [chithilistrender, setChiThiListRender] = useState<Array<ReactElement>>();
+  const [chithilistrender, setChiThiListRender] =
+    useState<Array<ReactElement>>();
   const [chithilistrender2, setChiThiListRender2] = useState<ReactElement>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedMachine, setSelectedMachine] = useState("FR1");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
-  const [selectedPlanDate, setSelectedPlanDate] = useState(moment().format("YYYY-MM-DD"));
+  const [selectedPlanDate, setSelectedPlanDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
   const [tempSelectedMachine, setTempSelectedMachine] = useState<string>("NA");
-  const [currentProcessList, setCurrentProcessList] = useState<PROD_PROCESS_DATA[]>([]);
+  const [currentProcessList, setCurrentProcessList] = useState<
+    PROD_PROCESS_DATA[]
+  >([]);
   const tempSelectedProcess = useRef<PROD_PROCESS_DATA>({
     G_CODE: "xxx",
     PROCESS_NUMBER: 0,
@@ -186,28 +206,28 @@ const MACHINE = () => {
     INS_EMPL: "",
     UPD_DATE: "",
     UPD_EMPL: "",
-    FACTORY: "NM1"
+    FACTORY: "NM1",
   });
   const defaultPlan: QLSXPLANDATA = {
     id: 0,
-    PLAN_ID: 'XXX',
-    PLAN_DATE: 'XXX',
-    PROD_REQUEST_NO: 'XXX',
+    PLAN_ID: "XXX",
+    PLAN_DATE: "XXX",
+    PROD_REQUEST_NO: "XXX",
     PLAN_QTY: 0,
-    PLAN_EQ: 'XXX',
-    PLAN_FACTORY: 'XXX',
+    PLAN_EQ: "XXX",
+    PLAN_FACTORY: "XXX",
     PLAN_LEADTIME: 0,
-    INS_EMPL: 'XXX',
-    INS_DATE: 'XXX',
-    UPD_EMPL: 'XXX',
-    UPD_DATE: 'XXX',
-    G_CODE: 'XXX',
-    G_NAME: 'XXX',
-    G_NAME_KD: 'XXX',
-    PROD_REQUEST_DATE: 'XXX',
+    INS_EMPL: "XXX",
+    INS_DATE: "XXX",
+    UPD_EMPL: "XXX",
+    UPD_DATE: "XXX",
+    G_CODE: "XXX",
+    G_NAME: "XXX",
+    G_NAME_KD: "XXX",
+    PROD_REQUEST_DATE: "XXX",
     PROD_REQUEST_QTY: 0,
     STEP: 0,
-    PLAN_ORDER: 'XXX',
+    PLAN_ORDER: "XXX",
     PROCESS_NUMBER: 0,
     KQ_SX_TAM: 0,
     KETQUASX: 0,
@@ -219,11 +239,11 @@ const MACHINE = () => {
     TON_CD2: 0,
     TON_CD3: 0,
     TON_CD4: 0,
-    FACTORY: 'XXX',
-    EQ1: 'XXX',
-    EQ2: 'XXX',
-    EQ3: 'XXX',
-    EQ4: 'XXX',
+    FACTORY: "XXX",
+    EQ1: "XXX",
+    EQ2: "XXX",
+    EQ3: "XXX",
+    EQ4: "XXX",
     Setting1: 0,
     Setting2: 0,
     Setting3: 0,
@@ -244,31 +264,31 @@ const MACHINE = () => {
     LOSS_SETTING2: 0,
     LOSS_SETTING3: 0,
     LOSS_SETTING4: 0,
-    NOTE: 'XXX',
-    NEXT_PLAN_ID: 'XXX',
-    XUATDAOFILM: 'XXX',
-    EQ_STATUS: 'XXX',
-    MAIN_MATERIAL: 'XXX',
-    INT_TEM: 'XXX',
-    CHOTBC: 'XXX',
-    DKXL: 'XXX',
+    NOTE: "XXX",
+    NEXT_PLAN_ID: "XXX",
+    XUATDAOFILM: "XXX",
+    EQ_STATUS: "XXX",
+    MAIN_MATERIAL: "XXX",
+    INT_TEM: "XXX",
+    CHOTBC: "XXX",
+    DKXL: "XXX",
     OLD_PLAN_QTY: 0,
     ACHIVEMENT_RATE: 0,
-    PDBV: 'XXX',
+    PDBV: "XXX",
     PD: 0,
     CAVITY: 0,
-    SETTING_START_TIME: 'XXX',
-    MASS_START_TIME: 'XXX',
-    MASS_END_TIME: 'XXX',
-    REQ_DF: 'XXX',
+    SETTING_START_TIME: "XXX",
+    MASS_START_TIME: "XXX",
+    MASS_END_TIME: "XXX",
+    REQ_DF: "XXX",
     AT_LEADTIME: 0,
     ACC_TIME: 0,
-    IS_SETTING: 'XXX',
-    PDBV_EMPL: 'XXX',
-    PDBV_DATE: 'XXX',
+    IS_SETTING: "XXX",
+    PDBV_EMPL: "XXX",
+    PDBV_DATE: "XXX",
     LOSS_KT: 0,
     ORG_LOSS_KT: 0,
-    USE_YN: 'XXX',
+    USE_YN: "XXX",
   };
   const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>(defaultPlan);
   const [showChiThi, setShowChiThi] = useState(false);
@@ -278,8 +298,8 @@ const MACHINE = () => {
   const ycsxprintref = useRef(null);
   const loadProcessList = async (G_CODE: string) => {
     let loadeddata = await f_loadProdProcessData(G_CODE);
-    setCurrentProcessList(loadeddata);    
-  } 
+    setCurrentProcessList(loadeddata);
+  };
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
@@ -298,615 +318,654 @@ const MACHINE = () => {
     setMachine_List(await f_getMachineListData());
     setTempSelectedMachine((await f_getMachineListData())[0].EQ_NAME);
   };
-  const column_ycsxtable = getCompany() === 'CMS' ? [
-    {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 50, cellRenderer: (params: any) => {
-        if (params.data.DACHITHI === null) {
-          return (
-            <span style={{ color: "black" }}>
-              {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}</b>
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "G_CODE", headerName: "G_CODE", width: 50,
-    },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
-      },
-    },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 100,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
-      },
-    },
-    {
-      field: "PROD_REQUEST_QTY",
-      cellDataType: "number",
-      headerName: "SL_YCSX",
-      width: 60,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#009933" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TCD1",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "black" }}>
-            {params.data.TON_CD1?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TCD2",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "black" }}>
-            {params.data.TON_CD2?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD3",
-      headerName: "TCD3",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "black" }}>
-            {params.data.TON_CD3?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD4",
-      headerName: "TCD4",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "black" }}>
-            {params.data.TON_CD4?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD1",
-      headerName: "SLC_CD1",
-      width: 65,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.SLC_CD1?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD2",
-      headerName: "SLC_CD2",
-      width: 65,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.SLC_CD2?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD3",
-      headerName: "SLC_CD3",
-      width: 65,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.SLC_CD3?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "SLC_CD4",
-      headerName: "SLC_CD4",
-      width: 65,
-      editable: false,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.data?.SLC_CD4?.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "CD1",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD1?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "CD2",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD2?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD3",
-      headerName: "CD3",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD3?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD4",
-      headerName: "CD4",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD4?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 100 },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
-    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
-    {
-      field: "PO_BALANCE",
-      headerName: "PO_BALANCE",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "EQ1",
-      headerName: "EQ1",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
-      },
-    },
-    {
-      field: "EQ2",
-      headerName: "EQ2",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
-      },
-    },
-    {
-      field: "EQ3",
-      headerName: "EQ3",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
-      },
-    },
-    {
-      field: "EQ4",
-      headerName: "EQ4",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
-      },
-    },
-    {
-      field: "PHAN_LOAI",
-      headerName: "PHAN_LOAI",
-      width: 70,
-      cellRenderer: (params: any) => {
-        if (params.data.PHAN_LOAI === "01")
-          return (
-            <span style={{ color: "black" }}>
-              <b>Thông thường</b>
-            </span>
-          );
-        else if (params.data.PHAN_LOAI === "02")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SDI</b>
-            </span>
-          );
-        else if (params.data.PHAN_LOAI === "03")
-          return (
-            <span style={{ color: "black" }}>
-              <b>GC</b>
-            </span>
-          );
-        else if (params.data.PHAN_LOAI === "04")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SAMPLE</b>
-            </span>
-          );
-      },
-    },
-    { field: "PL_HANG", headerName: "PL_HANG", width: 50 },
-    { field: "REMARK", headerName: "REMARK", width: 60 },
-    {
-      field: "PDUYET",
-      headerName: "PDUYET",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDUYET === 1)
-          return (
-            <span style={{ color: "green" }}>
-              <b>Đã Duyệt</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "red" }}>
-              <b>Không Duyệt</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "PDBV",
-      headerName: "PD BANVE",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "green" }}>
-            <b>APPROVED</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "MATERIAL_YN",
-      headerName: "VL_STT",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.MATERIAL_YN === "N") {
-          return (
-            <span style={{ color: "red" }}>
-              <b>NO</b>
-            </span>
-          );
-        }
-        else if (params.data.MATERIAL_YN === "Y") {
-          return (
-            <span style={{ color: "green" }}>
-              <b>YES</b>
-            </span>
-          );
-        }
-        else {
-          return (
-            <span style={{ color: "orange" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        }
-      },
-    },
-  ] : [
-    {
-      field: "G_CODE", headerName: "G_CODE", width: 50,
-    },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 70,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>;
-      },
-    },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      width: 120,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
-      },
-    },
-    { field: "G_WIDTH", headerName: "WIDTH", width: 50 },
-    { field: "G_LENGTH", headerName: "LENGTH", width: 50 },
-    { field: "G_C", headerName: "CVT_C", width: 50 },
-    { field: "G_C_R", headerName: "CVT_R", width: 50 },
-    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 50 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 70 },
-    {
-      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, cellRenderer: (params: any) => {
-        if (params.data.DACHITHI === null) {
-          return (
-            <span style={{ color: "black" }}>
-              {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}</b>
-            </span>
-          );
-        }
-      },
-    },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 60 },
-    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
-    {
-      field: "PO_BALANCE",
-      headerName: "PO_BALANCE",
-      width: 70,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PROD_REQUEST_QTY",
-      cellDataType: "number",
-      headerName: "SL YCSX",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#009933" }}>
-            <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "CD1",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD1?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "CD2",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD2?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD3",
-      headerName: "CD3",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD3?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD4",
-      headerName: "CD4",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.CD4?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_INPUT_QTY_EA",
-      cellDataType: "number",
-      headerName: "NK",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      cellDataType: "number",
-      headerName: "XK",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TCD1",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD1?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TCD2",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD2?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD3",
-      headerName: "TCD3",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD3?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD4",
-      headerName: "TCD4",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.TON_CD4?.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      cellDataType: "number",
-      headerName: "TỒN KIỂM",
-      width: 50,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "EQ1",
-      headerName: "EQ1",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
-      },
-    },
-    {
-      field: "EQ2",
-      headerName: "EQ2",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
-      },
-    },
-    {
-      field: "EQ3",
-      headerName: "EQ3",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
-      },
-    },
-    {
-      field: "EQ4",
-      headerName: "EQ4",
-      width: 40,
-      cellRenderer: (params: any) => {
-        return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
-      },
-    },
-    /* {
+  const column_ycsxtable =
+    getCompany() === "CMS"
+      ? [
+          {
+            field: "PROD_REQUEST_NO",
+            headerName: "SỐ YCSX",
+            width: 50,
+            cellRenderer: (params: any) => {
+              if (params.data.DACHITHI === null) {
+                return (
+                  <span style={{ color: "black" }}>
+                    {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>
+                      {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
+                    </b>
+                  </span>
+                );
+              }
+            },
+          },
+          {
+            field: "G_CODE",
+            headerName: "G_CODE",
+            width: 50,
+          },
+          {
+            field: "G_NAME_KD",
+            headerName: "G_NAME_KD",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>
+                );
+              return (
+                <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>
+              );
+            },
+          },
+          {
+            field: "G_NAME",
+            headerName: "G_NAME",
+            width: 100,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>{params.data.G_NAME}</span>
+                );
+              return (
+                <span style={{ color: "green" }}>{params.data.G_NAME}</span>
+              );
+            },
+          },
+          {
+            field: "PROD_REQUEST_QTY",
+            cellDataType: "number",
+            headerName: "SL_YCSX",
+            width: 60,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "#009933" }}>
+                  <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD1",
+            headerName: "TCD1",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "black" }}>
+                  {params.data.TON_CD1?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD2",
+            headerName: "TCD2",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "black" }}>
+                  {params.data.TON_CD2?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD3",
+            headerName: "TCD3",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "black" }}>
+                  {params.data.TON_CD3?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD4",
+            headerName: "TCD4",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "black" }}>
+                  {params.data.TON_CD4?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "SLC_CD1",
+            headerName: "SLC_CD1",
+            width: 65,
+            editable: false,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  {params.data?.SLC_CD1?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "SLC_CD2",
+            headerName: "SLC_CD2",
+            width: 65,
+            editable: false,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  {params.data?.SLC_CD2?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "SLC_CD3",
+            headerName: "SLC_CD3",
+            width: 65,
+            editable: false,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  {params.data?.SLC_CD3?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "SLC_CD4",
+            headerName: "SLC_CD4",
+            width: 65,
+            editable: false,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  {params.data?.SLC_CD4?.toLocaleString("en", "US")}
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD1",
+            headerName: "CD1",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD1?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD2",
+            headerName: "CD2",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD2?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD3",
+            headerName: "CD3",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD3?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD4",
+            headerName: "CD4",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD4?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
+          { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 100 },
+          { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+          { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
+          {
+            field: "PO_BALANCE",
+            headerName: "PO_BALANCE",
+            width: 80,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "EQ1",
+            headerName: "EQ1",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
+            },
+          },
+          {
+            field: "EQ2",
+            headerName: "EQ2",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
+            },
+          },
+          {
+            field: "EQ3",
+            headerName: "EQ3",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
+            },
+          },
+          {
+            field: "EQ4",
+            headerName: "EQ4",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
+            },
+          },
+          {
+            field: "PHAN_LOAI",
+            headerName: "PHAN_LOAI",
+            width: 70,
+            cellRenderer: (params: any) => {
+              if (params.data.PHAN_LOAI === "01")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>Thông thường</b>
+                  </span>
+                );
+              else if (params.data.PHAN_LOAI === "02")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>SDI</b>
+                  </span>
+                );
+              else if (params.data.PHAN_LOAI === "03")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>GC</b>
+                  </span>
+                );
+              else if (params.data.PHAN_LOAI === "04")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>SAMPLE</b>
+                  </span>
+                );
+            },
+          },
+          { field: "PL_HANG", headerName: "PL_HANG", width: 50 },
+          { field: "REMARK", headerName: "REMARK", width: 60 },
+          {
+            field: "PDUYET",
+            headerName: "PDUYET",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.PDUYET === 1)
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>Đã Duyệt</b>
+                  </span>
+                );
+              else
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>Không Duyệt</b>
+                  </span>
+                );
+            },
+          },
+          {
+            field: "PDBV",
+            headerName: "PD BANVE",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>PENDING</b>
+                  </span>
+                );
+              return (
+                <span style={{ color: "green" }}>
+                  <b>APPROVED</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "YCSX_PENDING",
+            headerName: "YCSX_PENDING",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.YCSX_PENDING === 1)
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>PENDING</b>
+                  </span>
+                );
+              else
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>CLOSED</b>
+                  </span>
+                );
+            },
+          },
+          {
+            field: "MATERIAL_YN",
+            headerName: "VL_STT",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.MATERIAL_YN === "N") {
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>NO</b>
+                  </span>
+                );
+              } else if (params.data.MATERIAL_YN === "Y") {
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>YES</b>
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "orange" }}>
+                    <b>PENDING</b>
+                  </span>
+                );
+              }
+            },
+          },
+        ]
+      : [
+          {
+            field: "G_CODE",
+            headerName: "G_CODE",
+            width: 50,
+          },
+          {
+            field: "G_NAME_KD",
+            headerName: "G_NAME_KD",
+            width: 70,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>{params.data.G_NAME_KD}</span>
+                );
+              return (
+                <span style={{ color: "green" }}>{params.data.G_NAME_KD}</span>
+              );
+            },
+          },
+          {
+            field: "G_NAME",
+            headerName: "G_NAME",
+            width: 120,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>{params.data.G_NAME}</span>
+                );
+              return (
+                <span style={{ color: "green" }}>{params.data.G_NAME}</span>
+              );
+            },
+          },
+          { field: "G_WIDTH", headerName: "WIDTH", width: 50 },
+          { field: "G_LENGTH", headerName: "LENGTH", width: 50 },
+          { field: "G_C", headerName: "CVT_C", width: 50 },
+          { field: "G_C_R", headerName: "CVT_R", width: 50 },
+          { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 50 },
+          { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 70 },
+          {
+            field: "PROD_REQUEST_NO",
+            headerName: "SỐ YCSX",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.DACHITHI === null) {
+                return (
+                  <span style={{ color: "black" }}>
+                    {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>
+                      {params.data.PROD_REQUEST_NO?.toLocaleString("en-US")}
+                    </b>
+                  </span>
+                );
+              }
+            },
+          },
+          { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 60 },
+          { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
+          {
+            field: "PO_BALANCE",
+            headerName: "PO_BALANCE",
+            width: 70,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.PO_BALANCE?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "PROD_REQUEST_QTY",
+            cellDataType: "number",
+            headerName: "SL YCSX",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "#009933" }}>
+                  <b>{params.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD1",
+            headerName: "CD1",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD1?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD2",
+            headerName: "CD2",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD2?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD3",
+            headerName: "CD3",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD3?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "CD4",
+            headerName: "CD4",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "blue" }}>
+                  <b>{params.data.CD4?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "LOT_TOTAL_INPUT_QTY_EA",
+            cellDataType: "number",
+            headerName: "NK",
+            width: 80,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "#cc0099" }}>
+                  <b>
+                    {params.data.LOT_TOTAL_INPUT_QTY_EA?.toLocaleString(
+                      "en-US"
+                    )}
+                  </b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "LOT_TOTAL_OUTPUT_QTY_EA",
+            cellDataType: "number",
+            headerName: "XK",
+            width: 80,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "#cc0099" }}>
+                  <b>
+                    {params.data.LOT_TOTAL_OUTPUT_QTY_EA?.toLocaleString(
+                      "en-US"
+                    )}
+                  </b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD1",
+            headerName: "TCD1",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "red" }}>
+                  <b>{params.data.TON_CD1?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD2",
+            headerName: "TCD2",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "red" }}>
+                  <b>{params.data.TON_CD2?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD3",
+            headerName: "TCD3",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "red" }}>
+                  <b>{params.data.TON_CD3?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "TON_CD4",
+            headerName: "TCD4",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "red" }}>
+                  <b>{params.data.TON_CD4?.toLocaleString("en", "US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "INSPECT_BALANCE",
+            cellDataType: "number",
+            headerName: "TỒN KIỂM",
+            width: 50,
+            cellRenderer: (params: any) => {
+              return (
+                <span style={{ color: "#cc0099" }}>
+                  <b>{params.data.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "EQ1",
+            headerName: "EQ1",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ1}</span>;
+            },
+          },
+          {
+            field: "EQ2",
+            headerName: "EQ2",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ2}</span>;
+            },
+          },
+          {
+            field: "EQ3",
+            headerName: "EQ3",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ3}</span>;
+            },
+          },
+          {
+            field: "EQ4",
+            headerName: "EQ4",
+            width: 40,
+            cellRenderer: (params: any) => {
+              return <span style={{ color: "black" }}>{params.data.EQ4}</span>;
+            },
+          },
+          /* {
       field: "SHORTAGE_YCSX",
       cellDataType: "number",
       headerName: "TỒN YCSX",
@@ -919,93 +978,104 @@ const MACHINE = () => {
         );
       },
     }, */
-    {
-      field: "PHAN_LOAI",
-      headerName: "PHAN_LOAI",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PHAN_LOAI === "01")
-          return (
-            <span style={{ color: "black" }}>
-              <b>Thông thường</b>
-            </span>
-          );
-        else if (params.data.PHAN_LOAI === "02")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SDI</b>
-            </span>
-          );
-        else if (params.data.PHAN_LOAI === "03")
-          return (
-            <span style={{ color: "black" }}>
-              <b>GC</b>
-            </span>
-          );
-        else if (params.data.PHAN_LOAI === "04")
-          return (
-            <span style={{ color: "black" }}>
-              <b>SAMPLE</b>
-            </span>
-          );
-      },
-    },
-    { field: "PL_HANG", headerName: "PL_HANG", width: 60 },
-    { field: "REMARK", headerName: "REMARK", width: 100 },
-    {
-      field: "PDUYET",
-      headerName: "PDUYET",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDUYET === 1)
-          return (
-            <span style={{ color: "green" }}>
-              <b>Đã Duyệt</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "red" }}>
-              <b>Không Duyệt</b>
-            </span>
-          );
-      },
-    },
-    {
-      field: "BANVE",
-      headerName: "BANVE",
-      width: 260,
-      cellRenderer: (params: any) => {
-        let file: any = null;
-        const uploadFile2 = async (e: any) => {
-          //console.log(file);
-          checkBP(userData, ['KD', 'RND'], ['ALL'], ['ALL'], async () => {
-            uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("update_banve_value", {
-                    G_CODE: params.data.G_CODE,
-                    banvevalue: "Y",
-                  })
+          {
+            field: "PHAN_LOAI",
+            headerName: "PHAN_LOAI",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.PHAN_LOAI === "01")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>Thông thường</b>
+                  </span>
+                );
+              else if (params.data.PHAN_LOAI === "02")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>SDI</b>
+                  </span>
+                );
+              else if (params.data.PHAN_LOAI === "03")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>GC</b>
+                  </span>
+                );
+              else if (params.data.PHAN_LOAI === "04")
+                return (
+                  <span style={{ color: "black" }}>
+                    <b>SAMPLE</b>
+                  </span>
+                );
+            },
+          },
+          { field: "PL_HANG", headerName: "PL_HANG", width: 60 },
+          { field: "REMARK", headerName: "REMARK", width: 100 },
+          {
+            field: "PDUYET",
+            headerName: "PDUYET",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.PDUYET === 1)
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>Đã Duyệt</b>
+                  </span>
+                );
+              else
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>Không Duyệt</b>
+                  </span>
+                );
+            },
+          },
+          {
+            field: "BANVE",
+            headerName: "BANVE",
+            width: 260,
+            cellRenderer: (params: any) => {
+              let file: any = null;
+              const uploadFile2 = async (e: any) => {
+                //console.log(file);
+                checkBP(userData, ["KD", "RND"], ["ALL"], ["ALL"], async () => {
+                  uploadQuery(file, params.data.G_CODE + ".pdf", "banve")
                     .then((response) => {
                       if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thành công",
-                          "success"
-                        );
-                        let tempcodeinfodatatable = ycsxdatatable.map(
-                          (element: YCSXTableData, index) => {
-                            return element.G_CODE === params.data.G_CODE
-                              ? { ...element, BANVE: "Y" }
-                              : element;
-                          }
-                        );
-                        setYcsxDataTable(tempcodeinfodatatable);
+                        generalQuery("update_banve_value", {
+                          G_CODE: params.data.G_CODE,
+                          banvevalue: "Y",
+                        })
+                          .then((response) => {
+                            if (response.data.tk_status !== "NG") {
+                              Swal.fire(
+                                "Thông báo",
+                                "Upload bản vẽ thành công",
+                                "success"
+                              );
+                              let tempcodeinfodatatable = ycsxdatatable.map(
+                                (element: YCSXTableData, index) => {
+                                  return element.G_CODE === params.data.G_CODE
+                                    ? { ...element, BANVE: "Y" }
+                                    : element;
+                                }
+                              );
+                              setYcsxDataTable(tempcodeinfodatatable);
+                            } else {
+                              Swal.fire(
+                                "Thông báo",
+                                "Upload bản vẽ thất bại",
+                                "error"
+                              );
+                            }
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                          });
                       } else {
                         Swal.fire(
                           "Thông báo",
-                          "Upload bản vẽ thất bại",
+                          "Upload file thất bại:" + response.data.message,
                           "error"
                         );
                       }
@@ -1013,125 +1083,120 @@ const MACHINE = () => {
                     .catch((error) => {
                       console.log(error);
                     });
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload file thất bại:" + response.data.message,
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          })
-        };
-        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
-        if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
-          return (
-            <span style={{ color: "gray" }}>
-              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                LINK
-              </a>
-            </span>
-          );
-        } else {
-          return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile2}>
-                <AiOutlineCloudUpload color='yellow' size={15} />
-                Upload
-              </IconButton>
-              <input
-                accept='.pdf'
-                type='file'
-                onChange={(e: any) => {
-                  file = e.target.files[0];
-                  console.log(file);
-                }}
-              />
-            </div>
-          );
-        }
-      },
-    },
-    {
-      field: "PDBV",
-      headerName: "PD BANVE",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "green" }}>
-            <b>APPROVED</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "",
-      headerName: "G_NAME",
-      width: 100,
-      cellRenderer: (params: any) => {
-        if (params.data.PDBV === "P" || params.data.PDBV === null)
-          return <span style={{ color: "red" }}>{params.data.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.data.G_NAME}</span>;
-      },
-    },
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
-    {
-      field: "MATERIAL_YN",
-      headerName: "VL_STT",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.MATERIAL_YN === "N") {
-          return (
-            <span style={{ color: "red" }}>
-              <b>NO</b>
-            </span>
-          );
-        }
-        else if (params.data.MATERIAL_YN === "Y") {
-          return (
-            <span style={{ color: "green" }}>
-              <b>YES</b>
-            </span>
-          );
-        }
-        else {
-          return (
-            <span style={{ color: "orange" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        }
-      },
-    },
-  ];
+                });
+              };
+              let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+              if (params.data.BANVE !== "N" && params.data.BANVE !== null) {
+                return (
+                  <span style={{ color: "gray" }}>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={hreftlink}
+                    >
+                      LINK
+                    </a>
+                  </span>
+                );
+              } else {
+                return (
+                  <div className="uploadfile">
+                    <IconButton className="buttonIcon" onClick={uploadFile2}>
+                      <AiOutlineCloudUpload color="yellow" size={15} />
+                      Upload
+                    </IconButton>
+                    <input
+                      accept=".pdf"
+                      type="file"
+                      onChange={(e: any) => {
+                        file = e.target.files[0];
+                        console.log(file);
+                      }}
+                    />
+                  </div>
+                );
+              }
+            },
+          },
+          {
+            field: "PDBV",
+            headerName: "PD BANVE",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>PENDING</b>
+                  </span>
+                );
+              return (
+                <span style={{ color: "green" }}>
+                  <b>APPROVED</b>
+                </span>
+              );
+            },
+          },
+          {
+            field: "",
+            headerName: "G_NAME",
+            width: 100,
+            cellRenderer: (params: any) => {
+              if (params.data.PDBV === "P" || params.data.PDBV === null)
+                return (
+                  <span style={{ color: "red" }}>{params.data.G_NAME}</span>
+                );
+              return (
+                <span style={{ color: "green" }}>{params.data.G_NAME}</span>
+              );
+            },
+          },
+          {
+            field: "YCSX_PENDING",
+            headerName: "YCSX_PENDING",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.YCSX_PENDING === 1)
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>PENDING</b>
+                  </span>
+                );
+              else
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>CLOSED</b>
+                  </span>
+                );
+            },
+          },
+          { field: "EMPL_NAME", headerName: "PIC KD", width: 100 },
+          {
+            field: "MATERIAL_YN",
+            headerName: "VL_STT",
+            width: 80,
+            cellRenderer: (params: any) => {
+              if (params.data.MATERIAL_YN === "N") {
+                return (
+                  <span style={{ color: "red" }}>
+                    <b>NO</b>
+                  </span>
+                );
+              } else if (params.data.MATERIAL_YN === "Y") {
+                return (
+                  <span style={{ color: "green" }}>
+                    <b>YES</b>
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "orange" }}>
+                    <b>PENDING</b>
+                  </span>
+                );
+              }
+            },
+          },
+        ];
   const column_plandatatable = [
     {
       field: "PLAN_ID",
@@ -1323,22 +1388,22 @@ const MACHINE = () => {
       cellRenderer: (params: any) => {
         return (
           <input
-            type='checkbox'
-            name='alltimecheckbox'
+            type="checkbox"
+            name="alltimecheckbox"
             //defaultChecked={params.data.IS_SETTING === 'Y'}
-            checked={params.data.IS_SETTING === 'Y'}
+            checked={params.data.IS_SETTING === "Y"}
             onChange={(e) => {
               //console.log(e.target.checked);
               const newdata = plandatatable.map((p) =>
                 p.PLAN_ID === params.data.PLAN_ID
-                  ? { ...p, IS_SETTING: e.target.checked ? 'Y' : 'N' }
+                  ? { ...p, IS_SETTING: e.target.checked ? "Y" : "N" }
                   : p
               );
-              setPlanDataTable(prev => newdata);
+              setPlanDataTable((prev) => newdata);
               qlsxplandatafilter.current = [];
             }}
           ></input>
-        )
+        );
       },
       editable: false,
     },
@@ -1476,8 +1541,13 @@ const MACHINE = () => {
       width: 60,
       cellRenderer: (params: any) => {
         return (
-          <span>{params.data?.AT_LEADTIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
-        )
+          <span>
+            {params.data?.AT_LEADTIME?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
       },
       editable: false,
     },
@@ -1487,8 +1557,13 @@ const MACHINE = () => {
       width: 60,
       cellRenderer: (params: any) => {
         return (
-          <span>{params.data?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
-        )
+          <span>
+            {params.data?.ACC_TIME?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}
+          </span>
+        );
       },
       editable: false,
     },
@@ -1523,13 +1598,35 @@ const MACHINE = () => {
   ];
   const column_planmaterialtable = [
     {
-      field: 'CHITHI_ID', headerName: 'CT_ID', resizable: true, width: 100, editable: false, headerCheckboxSelection: true,
+      field: "CHITHI_ID",
+      headerName: "CT_ID",
+      resizable: true,
+      width: 100,
+      editable: false,
+      headerCheckboxSelection: true,
       checkboxSelection: true,
     },
-    { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 80, editable: false },
-    { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 80, editable: false },
     {
-      field: 'M_NAME', headerName: 'M_NAME', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: "PLAN_ID",
+      headerName: "PLAN_ID",
+      resizable: true,
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "M_CODE",
+      headerName: "M_CODE",
+      resizable: true,
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "M_NAME",
+      headerName: "M_NAME",
+      resizable: true,
+      width: 80,
+      editable: false,
+      cellRenderer: (params: any) => {
         if (params.data.LIEUQL_SX === 1) {
           return (
             <span style={{ color: "red", fontWeight: "bold" }}>
@@ -1537,90 +1634,167 @@ const MACHINE = () => {
             </span>
           );
         } else {
-          return (
-            <span style={{ color: "black" }}>{params.data.M_NAME}</span>
-          );
+          return <span style={{ color: "black" }}>{params.data.M_NAME}</span>;
         }
-      }
+      },
     },
-    { field: 'WIDTH_CD', headerName: 'WIDTH_CD', resizable: true, width: 80, editable: false },
     {
-      field: 'M_MET_QTY', headerName: 'M_MET_QTY', resizable: true, width: 80, editable: true, cellRenderer: (params: any) => {
+      field: "WIDTH_CD",
+      headerName: "WIDTH_CD",
+      resizable: true,
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "M_MET_QTY",
+      headerName: "M_MET_QTY",
+      resizable: true,
+      width: 80,
+      editable: true,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "green", fontWeight: "bold" }}>
             {params.data.M_MET_QTY}
           </span>
         );
-      }
+      },
     },
     {
-      field: 'M_QTY', headerName: 'M_QTY', resizable: true, width: 80, editable: true, cellRenderer: (params: any) => {
+      field: "M_QTY",
+      headerName: "M_QTY",
+      resizable: true,
+      width: 80,
+      editable: true,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.M_QTY}
           </span>
         );
-      }
+      },
     },
     {
-      field: 'LIEUQL_SX', headerName: 'LIEUQL_SX', resizable: true, width: 80, editable: true, cellRenderer: (params: any) => {
+      field: "LIEUQL_SX",
+      headerName: "LIEUQL_SX",
+      resizable: true,
+      width: 80,
+      editable: true,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.LIEUQL_SX}
           </span>
         );
-      }
+      },
     },
     {
-      field: 'M_STOCK', headerName: 'M_STOCK', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: "M_STOCK",
+      headerName: "M_STOCK",
+      resizable: true,
+      width: 80,
+      editable: false,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "gray", fontWeight: "bold" }}>
             {params.data.M_STOCK?.toLocaleString("en-US")}
           </span>
         );
-      }
+      },
     },
     {
-      field: 'OUT_KHO_SX', headerName: 'NEXT_IN', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: "OUT_KHO_SX",
+      headerName: "NEXT_IN",
+      resizable: true,
+      width: 80,
+      editable: false,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.OUT_KHO_SX}
           </span>
         );
-      }
+      },
     },
     {
-      field: 'OUT_CFM_QTY', headerName: 'WH_IN', resizable: true, width: 80, editable: false, cellRenderer: (params: any) => {
+      field: "OUT_CFM_QTY",
+      headerName: "WH_IN",
+      resizable: true,
+      width: 80,
+      editable: false,
+      cellRenderer: (params: any) => {
         return (
           <span style={{ color: "#F117FF", fontWeight: "bold" }}>
             {params.data.OUT_CFM_QTY}
           </span>
         );
-      }
+      },
     },
   ];
   let column_eqlist = [
     { field: "PROCESS_NUMBER", headerName: "CD", flex: 1, editable: true },
-    { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },   
-    { field: "SETTING_TIME", headerName: "SETTING_TIME (min)", flex: 1.1, editable: true },
-    { field: "UPH", headerName: "UPH (EA/h)", flex: 1, editable: true, cellRenderer: (params: any) => {
-      return (
-        <span>{params.data?.UPH?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-      )
-    } },
+    { field: "EQ_SERIES", headerName: "EQ", flex: 1, editable: true },
+    {
+      field: "SETTING_TIME",
+      headerName: "SETTING_TIME (min)",
+      flex: 1.1,
+      editable: true,
+    },
+    {
+      field: "UPH",
+      headerName: "UPH (EA/h)",
+      flex: 1,
+      editable: true,
+      cellRenderer: (params: any) => {
+        return (
+          <span>
+            {params.data?.UPH?.toLocaleString("en-US", {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}
+          </span>
+        );
+      },
+    },
     { field: "STEP", headerName: "STEP", flex: 1, editable: true },
     { field: "LOSS_SX", headerName: "LOSS_SX (%)", flex: 1, editable: true },
-    { field: "RECENT_LOSS_SX", headerName: "RECENT_LOSS_SX (%)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SX?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
-      )
-    } },
-    { field: "LOSS_SETTING", headerName: "LOSS_ST (met)", flex: 1, editable: true },
-    { field: "RECENT_LOSS_SETTING", headerName: "RECENT_LOSS_ST(met)", flex: 1.3, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data?.RECENT_LOSS_SETTING?.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-      )
-    } },
+    {
+      field: "RECENT_LOSS_SX",
+      headerName: "RECENT_LOSS_SX (%)",
+      flex: 1.3,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.data?.RECENT_LOSS_SX?.toLocaleString("en-US", {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOSS_SETTING",
+      headerName: "LOSS_ST (met)",
+      flex: 1,
+      editable: true,
+    },
+    {
+      field: "RECENT_LOSS_SETTING",
+      headerName: "RECENT_LOSS_ST(met)",
+      flex: 1.3,
+      editable: false,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.data?.RECENT_LOSS_SETTING?.toLocaleString("en-US", {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}
+          </span>
+        );
+      },
+    },
     { field: "FACTORY", headerName: "FACTORY", flex: 1, editable: true },
   ];
   const handle_loadEQ_STATUS = async () => {
@@ -1643,8 +1817,7 @@ const MACHINE = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     }); */
-
-    setPlanDataTable(await f_loadQLSXPLANDATA2(plan_date, 'ALL', 'ALL'));
+    setPlanDataTable(await f_loadQLSXPLANDATA2(plan_date, "ALL", "ALL"));
   };
   const handletraYCSX = async () => {
     Swal.fire({
@@ -1657,7 +1830,6 @@ const MACHINE = () => {
       showConfirmButton: false,
     });
     let ycsxData: YCSXTableData[] = [];
-
     if (getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903") {
       ycsxData = await f_handletraYCSXQLSX_New({
         alltime: alltime,
@@ -1674,28 +1846,26 @@ const MACHINE = () => {
         prod_request_no: prodrequestno,
         material: material,
       });
+    } else {
+      ycsxData = await f_handletraYCSXQLSX({
+        alltime: alltime,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        phanloai: phanloai,
+        ycsx_pending: ycsxpendingcheck,
+        inspect_inputcheck: inspectInputcheck,
+        prod_request_no: prodrequestno,
+        material: material,
+      });
     }
-    else {
-    ycsxData = await f_handletraYCSXQLSX({
-      alltime: alltime,
-      start_date: fromdate,
-      end_date: todate,
-      cust_name: cust_name,
-      codeCMS: codeCMS,
-      codeKD: codeKD,
-      prod_type: prod_type,
-      empl_name: empl_name,
-      phanloai: phanloai,
-      ycsx_pending: ycsxpendingcheck,
-      inspect_inputcheck: inspectInputcheck,
-      prod_request_no: prodrequestno,
-      material: material,      
-    });
-  }
     if (ycsxData.length > 0) {
       Swal.fire("Thông báo", "Đã load " + ycsxData.length + " dòng", "success");
-    }
-    else {
+    } else {
       Swal.fire("Thông báo", "Không có dữ liệu", "warning");
     }
     setYcsxDataTable(ycsxData);
@@ -1708,15 +1878,13 @@ const MACHINE = () => {
     }
   };
   const setPendingYCSX = async (pending_value: number) => {
-    let err_code: string = await f_setPendingYCSX(ycsxdatatablefilter.current, pending_value);
-    if (err_code === '0') {
-      Swal.fire(
-        "Thông báo",
-        "SET Pending/Closed thành công!",
-        "success"
-      );
-    }
-    else {
+    let err_code: string = await f_setPendingYCSX(
+      ycsxdatatablefilter.current,
+      pending_value
+    );
+    if (err_code === "0") {
+      Swal.fire("Thông báo", "SET Pending/Closed thành công!", "success");
+    } else {
       Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
     }
   };
@@ -1785,15 +1953,25 @@ const MACHINE = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn RESET liệu!",
-      }).then(async (result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành RESET liệu", "Đang RESET liệu", "success");
-        let thisProcessList: PROD_PROCESS_DATA | undefined = currentProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);  
+        let thisProcessList: PROD_PROCESS_DATA | undefined =
+          currentProcessList.find(
+            (element: PROD_PROCESS_DATA, index: number) =>
+              element.G_CODE === selectedPlan.G_CODE &&
+              element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER
+          );
         if (thisProcessList) {
-          setChiThiDataTable(await f_handleResetChiThiTable_New(selectedPlan, thisProcessList));
-        }
-        else {
-          Swal.fire("Thông báo", "Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
+          setChiThiDataTable(
+            await f_handleResetChiThiTable_New(selectedPlan, thisProcessList)
+          );
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Chưa có Data định mức cho Code này, hãy nhập data định mức",
+            "error"
+          );
         }
       }
     });
@@ -1809,7 +1987,7 @@ const MACHINE = () => {
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (selectedPlan.PLAN_ID !== 'XXX') {
+        if (selectedPlan.PLAN_ID !== "XXX") {
           Swal.fire({
             title: "Đang lưu chỉ thị",
             text: "Đang lưu chỉ thị, hay chờ cho tới khi hoàn thành",
@@ -1819,7 +1997,12 @@ const MACHINE = () => {
             confirmButtonText: "OK",
             showConfirmButton: false,
           });
-          await f_saveChiThiMaterialTable(selectedPlan, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
+          await f_saveChiThiMaterialTable(
+            selectedPlan,
+            getCompany() === "CMS"
+              ? qlsxchithidatafilter.current
+              : chithidatatable
+          );
           //await hanlde_SaveChiThi();
           Swal.fire({
             title: "Đang đăng ký xuất liệu",
@@ -1831,36 +2014,54 @@ const MACHINE = () => {
             showConfirmButton: false,
           });
           await handleDangKyXuatLieu();
-
           let newNotification: NotificationElement = {
-            CTR_CD: '002',
+            CTR_CD: "002",
             NOTI_ID: -1,
             NOTI_TYPE: "info",
-            TITLE: 'Đăng ký xuất liệu cho chỉ thị',
-            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+            TITLE: "Đăng ký xuất liệu cho chỉ thị",
+            CONTENT: `${getUserData()?.EMPL_NO} (${
+              getUserData()?.MIDLAST_NAME
+            } ${getUserData()?.FIRST_NAME}), nhân viên ${
+              getUserData()?.WORK_POSITION_NAME
+            } đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${
+              selectedPlan.PROD_REQUEST_NO
+            }: ${selectedPlan.G_NAME}`,
             SUBDEPTNAME: "KD,RND,SX_VP,QLSX,KHO_VP,MUA_VP",
             MAINDEPTNAME: "KD,RND,SX,QLSX,KHO,MUA",
-            INS_EMPL: 'NHU1903',
-            INS_DATE: '2024-12-30',
-            UPD_EMPL: 'NHU1903',
-            UPD_DATE: '2024-12-30',
-          }  
-          if(await f_insert_Notification_Data(newNotification))
-          {
+            INS_EMPL: "NHU1903",
+            INS_DATE: "2024-12-30",
+            UPD_EMPL: "NHU1903",
+            UPD_DATE: "2024-12-30",
+          };
+          if (await f_insert_Notification_Data(newNotification)) {
             getSocket().emit("notification_panel", newNotification);
           }
-
           clearSelectedMaterialRows();
           let thisProcessList: PROD_PROCESS_DATA[] = [];
           thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
-          let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
+          let selectedProcessData: PROD_PROCESS_DATA | undefined =
+            thisProcessList.find(
+              (element: PROD_PROCESS_DATA, index: number) =>
+                element.G_CODE === selectedPlan.G_CODE &&
+                element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER
+            );
           if (selectedProcessData) {
-            setChiThiDataTable(await f_handleGetChiThiTable_New(selectedPlan, selectedProcessData));
+            setChiThiDataTable(
+              await f_handleGetChiThiTable_New(
+                selectedPlan,
+                selectedProcessData
+              )
+            );
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức",
+              "error"
+            );
           }
-          else {
-            Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
-          }
-          setPlanDataTable(await f_loadQLSXPLANDATA2(selectedPlanDate, 'ALL', 'ALL'));
+          setPlanDataTable(
+            await f_loadQLSXPLANDATA2(selectedPlanDate, "ALL", "ALL")
+          );
         } else {
           Swal.fire(
             "Thông báo",
@@ -1898,51 +2099,68 @@ const MACHINE = () => {
       showConfirmButton: false,
     });
     let err_code: string = await f_deleteQLSXPlan(qlsxplandatafilter.current);
-    if (err_code === '0') {
-      Swal.fire('Thông báo', 'Xóa hoàn thành', 'success')
-    }
-    else {
+    if (err_code === "0") {
+      Swal.fire("Thông báo", "Xóa hoàn thành", "success");
+    } else {
       Swal.fire("Thông báo", err_code, "error");
     }
     clearSelectedRows();
     loadQLSXPlan(selectedPlanDate);
-  }
+  };
   const handle_DeleteLineCHITHI = async () => {
-    let kq = await f_deleteChiThiMaterialLine(qlsxchithidatafilter.current, chithidatatable);
+    let kq = await f_deleteChiThiMaterialLine(
+      qlsxchithidatafilter.current,
+      chithidatatable
+    );
     setChiThiDataTable(kq);
   };
   const handle_AddPlan = async () => {
-    let err_code: string = await f_addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory);
-    if (err_code !== '0') {
+    let err_code: string = await f_addQLSXPLAN(
+      ycsxdatatablefilter.current,
+      selectedPlanDate,
+      selectedMachine,
+      selectedFactory
+    );
+    if (err_code !== "0") {
       Swal.fire("Thông báo", err_code, "error");
-    }
-    else {
+    } else {
       let newNotification: NotificationElement = {
-        CTR_CD: '002',
+        CTR_CD: "002",
         NOTI_ID: -1,
         NOTI_TYPE: "info",
-        TITLE: 'YCSX được tạo chỉ thị sx mới',
-        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã tạo chỉ thị mới cho ycsx ${ycsxdatatablefilter.current[0].PROD_REQUEST_NO}, CODE:  ${ycsxdatatablefilter.current[0].G_NAME_KD} tại máy ${selectedMachine}`,
+        TITLE: "YCSX được tạo chỉ thị sx mới",
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${
+          getUserData()?.FIRST_NAME
+        }), nhân viên ${
+          getUserData()?.WORK_POSITION_NAME
+        } đã tạo chỉ thị mới cho ycsx ${
+          ycsxdatatablefilter.current[0].PROD_REQUEST_NO
+        }, CODE:  ${
+          ycsxdatatablefilter.current[0].G_NAME_KD
+        } tại máy ${selectedMachine}`,
         SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
         MAINDEPTNAME: "KD,RND,SX,QLSX",
-        INS_EMPL: 'NHU1903',
-        INS_DATE: '2024-12-30',
-        UPD_EMPL: 'NHU1903',
-        UPD_DATE: '2024-12-30',
-      }  
-      if(await f_insert_Notification_Data(newNotification))
-      {
+        INS_EMPL: "NHU1903",
+        INS_DATE: "2024-12-30",
+        UPD_EMPL: "NHU1903",
+        UPD_DATE: "2024-12-30",
+      };
+      if (await f_insert_Notification_Data(newNotification)) {
         getSocket().emit("notification_panel", newNotification);
       }
       loadQLSXPlan(selectedPlanDate);
     }
   };
   const handle_AddPlan2 = async (data: YCSXTableData[]) => {
-    let err_code: string = await f_addQLSXPLAN(data, selectedPlanDate, selectedMachine, selectedFactory);
-    if (err_code !== '0') {
+    let err_code: string = await f_addQLSXPLAN(
+      data,
+      selectedPlanDate,
+      selectedMachine,
+      selectedFactory
+    );
+    if (err_code !== "0") {
       Swal.fire("Thông báo", err_code, "error");
-    }
-    else {
+    } else {
       loadQLSXPlan(selectedPlanDate);
     }
   };
@@ -1978,20 +2196,20 @@ const MACHINE = () => {
     return (
       <div className="toolbar">
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             //showHideRef.current = !showHideRef.current;
             //setShowYCSX(!showHideRef.current);
-            setShowYCSX(prev => {
-              return !prev
+            setShowYCSX((prev) => {
+              return !prev;
             });
           }}
         >
-          <TbLogout color='red' size={20} />
+          <TbLogout color="red" size={20} />
           Show/Hide YCSX
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (qlsxplandatafilter.current.length > 0) {
               if (userData?.EMPL_NO !== "NHU1903") {
@@ -2004,7 +2222,9 @@ const MACHINE = () => {
                 );
               }
               setShowChiThi(true);
-              setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
+              setChiThiListRender(
+                renderChiThi(qlsxplandatafilter.current, myComponentRef)
+              );
               //console.log(ycsxdatatablefilter.current);
             } else {
               setShowChiThi(false);
@@ -2012,11 +2232,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={15} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print Chỉ Thị
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (qlsxplandatafilter.current.length > 0) {
               setShowYCKT(true);
@@ -2028,11 +2248,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#9066ff' size={15} />
+          <AiOutlinePrinter color="#9066ff" size={15} />
           Print YCKT
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -2044,11 +2264,11 @@ const MACHINE = () => {
             //handle_UpdatePlan();
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           Lưu PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /*  checkBP(
               userData?.EMPL_NO,
@@ -2066,60 +2286,68 @@ const MACHINE = () => {
             //handleConfirmDeletePlan();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           Xóa PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             loadQLSXPlan(selectedPlanDate);
           }}
         >
-          <BiRefresh color='yellow' size={20} />
+          <BiRefresh color="yellow" size={20} />
           Refresh PLAN
-        </IconButton>        
-        <span style={{ fontSize: '0.7rem' }}>Total time: {plandatatable.filter(
-          (element: QLSXPLANDATA, index: number) => {
-            return (
-              element.PLAN_EQ === selectedMachine &&
-              element.PLAN_FACTORY === selectedFactory
-            );
-          }
-        )[plandatatable.filter(
-          (element: QLSXPLANDATA, index: number) => {
-            return (
-              element.PLAN_EQ === selectedMachine &&
-              element.PLAN_FACTORY === selectedFactory
-            );
-          }
-        ).length - 1]?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} min</span>
+        </IconButton>
+        <span style={{ fontSize: "0.7rem" }}>
+          Total time:{" "}
+          {plandatatable
+            .filter((element: QLSXPLANDATA, index: number) => {
+              return (
+                element.PLAN_EQ === selectedMachine &&
+                element.PLAN_FACTORY === selectedFactory
+              );
+            })
+            [
+              plandatatable.filter((element: QLSXPLANDATA, index: number) => {
+                return (
+                  element.PLAN_EQ === selectedMachine &&
+                  element.PLAN_FACTORY === selectedFactory
+                );
+              }).length - 1
+            ]?.ACC_TIME?.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })}{" "}
+          min
+        </span>
       </div>
-    )
+    );
   }
   const handle_xuatlieu_sample = async () => {
     let err_code: string = await f_handle_xuatlieu_sample(selectedPlan);
-    if (err_code === '0') {
-      Swal.fire('Thông báo', 'Xuất liệu ảo thành công', 'success');
-    }
-    else {
-      Swal.fire('Thông báo', err_code, 'error');
+    if (err_code === "0") {
+      Swal.fire("Thông báo", "Xuất liệu ảo thành công", "success");
+    } else {
+      Swal.fire("Thông báo", err_code, "error");
     }
   };
   const handle_xuatdao_sample = async () => {
     let err_code: string = await f_handle_xuatdao_sample(selectedPlan);
-    if (err_code === '0') {
-      Swal.fire('Thông báo', 'Xuất dao ảo thành công', 'success');
-    }
-    else {
-      Swal.fire('Thông báo', err_code, 'error');
+    if (err_code === "0") {
+      Swal.fire("Thông báo", "Xuất dao ảo thành công", "success");
+    } else {
+      Swal.fire("Thông báo", err_code, "error");
     }
   };
   const handleDangKyXuatLieu = async () => {
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
-    if (err_code === '0') {
+    let err_code: string = await f_handleDangKyXuatLieu(
+      selectedPlan,
+      selectedFactory,
+      getCompany() === "CMS" ? qlsxchithidatafilter.current : chithidatatable
+    );
+    if (err_code === "0") {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
-    }
-    else {
+    } else {
       Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
     }
     await loadQLSXPlan(selectedPlanDate);
@@ -2320,9 +2548,9 @@ const MACHINE = () => {
     };
   }, []);
   const getRowStyle = (params: any) => {
-    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
+    return { backgroundColor: "#eaf5e1", fontSize: "0.6rem" };
   };
-  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
+  const rowStyle = { backgroundColor: "transparent", height: "20px" };
   const clearSelectedRows = useCallback(() => {
     gridRef.current!.api.deselectAll();
     qlsxplandatafilter.current = [];
@@ -2332,15 +2560,19 @@ const MACHINE = () => {
     qlsxchithidatafilter.current = [];
   }, []);
   const selectMaterialRow = async () => {
-    const api = gridMaterialRef.current?.api; // Access the grid API   
-    api?.forEachNode((node: { data: { M_STOCK: number; }; setSelected: (arg0: boolean) => void; }) => {
-      if (node.data.M_STOCK > 0) {
-        node.setSelected(true);
+    const api = gridMaterialRef.current?.api; // Access the grid API
+    api?.forEachNode(
+      (node: {
+        data: { M_STOCK: number };
+        setSelected: (arg0: boolean) => void;
+      }) => {
+        if (node.data.M_STOCK > 0) {
+          node.setSelected(true);
+        } else {
+          node.setSelected(false);
+        }
       }
-      else {
-        node.setSelected(false);
-      }
-    });
+    );
   };
   const ycsxDataTableAG = useMemo(() => {
     return (
@@ -2349,25 +2581,25 @@ const MACHINE = () => {
         toolbar={
           <div>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 handleConfirmSetClosedYCSX();
               }}
             >
-              <FaArrowRight color='green' size={15} />
+              <FaArrowRight color="green" size={15} />
               SET CLOSED
             </IconButton>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 handleConfirmSetPendingYCSX();
               }}
             >
-              <MdOutlinePendingActions color='red' size={15} />
+              <MdOutlinePendingActions color="red" size={15} />
               SET PENDING
             </IconButton>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 if (ycsxdatatablefilter.current.length > 0) {
                   setSelection({
@@ -2381,11 +2613,11 @@ const MACHINE = () => {
                 }
               }}
             >
-              <AiOutlinePrinter color='#0066ff' size={15} />
+              <AiOutlinePrinter color="#0066ff" size={15} />
               Print YCSX
             </IconButton>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 if (ycsxdatatablefilter.current.length > 0) {
                   setSelection({
@@ -2398,11 +2630,11 @@ const MACHINE = () => {
                 }
               }}
             >
-              <AiOutlinePrinter color='#ff751a' size={15} />
+              <AiOutlinePrinter color="#ff751a" size={15} />
               Print Bản Vẽ
             </IconButton>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 if (ycsxdatatablefilter.current.length > 0) {
                   handle_AddPlan();
@@ -2415,7 +2647,7 @@ const MACHINE = () => {
                 }
               }}
             >
-              <AiFillFolderAdd color='#69f542' size={15} />
+              <AiFillFolderAdd color="#69f542" size={15} />
               Add to PLAN
             </IconButton>
           </div>
@@ -2425,29 +2657,29 @@ const MACHINE = () => {
         data={ycsxdatatable}
         onCellEditingStopped={(params: any) => {
           //console.log(e.data)
-        }} onCellClick={(params: any) => {
+        }}
+        onCellClick={(params: any) => {
           //console.log([params.data])
-          ycsxdatatablefilter.current = [params.data]
+          ycsxdatatablefilter.current = [params.data];
           //setClickedRows(params.data)
           //console.log(params)
-        }} onSelectionChange={(params: any) => {
+        }}
+        onSelectionChange={(params: any) => {
           //console.log(params!.api.getSelectedRows())
           //ycsxdatatablefilter.current = params!.api.getSelectedRows();
         }}
         onRowDoubleClick={(params: any) => {
-          console.log([params.data])
-          handle_AddPlan2([params.data])
+          console.log([params.data]);
+          handle_AddPlan2([params.data]);
         }}
       />
-    )
-  }, [ycsxdatatable, selectedMachine, selectedPlanDate])
+    );
+  }, [ycsxdatatable, selectedMachine, selectedPlanDate]);
   const planDataTableAG = useMemo(() => {
     return (
       <div className="agtable">
         {PlanTableAGToolbar()}
-        <div className="ag-theme-quartz"
-          style={{ height: '100%', }}
-        >
+        <div className="ag-theme-quartz" style={{ height: "100%" }}>
           <AgGridReact
             rowData={plandatatable.filter(
               (element: QLSXPLANDATA, index: number) => {
@@ -2479,11 +2711,11 @@ const MACHINE = () => {
             enableCellTextSelection={true}
             floatingFiltersHeight={23}
             onSelectionChanged={(params: any) => {
-              qlsxplandatafilter.current = params!.api.getSelectedRows()
+              qlsxplandatafilter.current = params!.api.getSelectedRows();
             }}
             onCellClicked={async (params: any) => {
               let rowData: QLSXPLANDATA = params.data;
-              setSelectedPlan(prev => rowData);
+              setSelectedPlan((prev) => rowData);
               setDataDinhMuc({
                 ...datadinhmuc,
                 FACTORY: rowData.FACTORY ?? "NA",
@@ -2518,36 +2750,53 @@ const MACHINE = () => {
               thisProcessList = await f_loadProdProcessData(rowData.G_CODE);
               let recentDMData: RecentDM[] = [];
               recentDMData = await f_getRecentDMData(rowData.G_CODE);
-
               let updatedThisProcessList: PROD_PROCESS_DATA[] = [];
-              updatedThisProcessList = thisProcessList.map((element: PROD_PROCESS_DATA, index: number) => {
-                return {
-                  ...element,
-                  RECENT_LOSS_SX: recentDMData.filter((e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER)[0]?.LOSS_SX ?? 0,
-                  RECENT_LOSS_SETTING: recentDMData.filter((e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER)[0]?.TT_SETTING_MET ?? 0,
-                };
-              });
+              updatedThisProcessList = thisProcessList.map(
+                (element: PROD_PROCESS_DATA, index: number) => {
+                  return {
+                    ...element,
+                    RECENT_LOSS_SX:
+                      recentDMData.filter(
+                        (e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER
+                      )[0]?.LOSS_SX ?? 0,
+                    RECENT_LOSS_SETTING:
+                      recentDMData.filter(
+                        (e) => e.PROCESS_NUMBER === element.PROCESS_NUMBER
+                      )[0]?.TT_SETTING_MET ?? 0,
+                  };
+                }
+              );
               setRecentDMData(recentDMData);
               setCurrentProcessList(updatedThisProcessList);
-              if (params.column.colId !== 'IS_SETTING') {
+              if (params.column.colId !== "IS_SETTING") {
                 clearSelectedMaterialRows();
-                let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === rowData.G_CODE && element.PROCESS_NUMBER === rowData.PROCESS_NUMBER);
+                let selectedProcessData: PROD_PROCESS_DATA | undefined =
+                  thisProcessList.find(
+                    (element: PROD_PROCESS_DATA, index: number) =>
+                      element.G_CODE === rowData.G_CODE &&
+                      element.PROCESS_NUMBER === rowData.PROCESS_NUMBER
+                  );
                 if (selectedProcessData) {
-                  setChiThiDataTable(await f_handleGetChiThiTable_New(rowData, selectedProcessData));
+                  setChiThiDataTable(
+                    await f_handleGetChiThiTable_New(
+                      rowData,
+                      selectedProcessData
+                    )
+                  );
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức",
+                    "error"
+                  );
                 }
-                else {
-                  Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
-                }
-                //await selectMaterialRow();  
+                //await selectMaterialRow();
                 //setChiThiDataTable(await f_handleGetChiThiTable_New(rowData, selectedProcessData));
                 //await selectMaterialRow();
               }
               //setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
             }}
-            onRowDoubleClicked={
-              (params: any) => {
-              }
-            }
+            onRowDoubleClicked={(params: any) => {}}
             onCellEditingStopped={(params: any) => {
               //console.log(params)
             }}
@@ -2555,118 +2804,127 @@ const MACHINE = () => {
         </div>
         <div className="bottombar">
           <div className="selected">
-            {ycsxdatatablefilter.current.length !== 0 && <span>
-              Selected: {ycsxdatatablefilter.current.length}/{plandatatable.filter(
-                (element: QLSXPLANDATA, index: number) => {
-                  return (
-                    element.PLAN_EQ === selectedMachine &&
-                    element.PLAN_FACTORY === selectedFactory
-                  );
-                }
-              ).length} rows
-            </span>}
+            {ycsxdatatablefilter.current.length !== 0 && (
+              <span>
+                Selected: {ycsxdatatablefilter.current.length}/
+                {
+                  plandatatable.filter(
+                    (element: QLSXPLANDATA, index: number) => {
+                      return (
+                        element.PLAN_EQ === selectedMachine &&
+                        element.PLAN_FACTORY === selectedFactory
+                      );
+                    }
+                  ).length
+                }{" "}
+                rows
+              </span>
+            )}
           </div>
           <div className="totalrow">
             <span>
-              Total: {plandatatable.filter(
-                (element: QLSXPLANDATA, index: number) => {
+              Total:{" "}
+              {
+                plandatatable.filter((element: QLSXPLANDATA, index: number) => {
                   return (
                     element.PLAN_EQ === selectedMachine &&
                     element.PLAN_FACTORY === selectedFactory
                   );
-                }
-              ).length} rows
+                }).length
+              }{" "}
+              rows
             </span>
           </div>
         </div>
       </div>
-    )
-  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc])
-  const planMaterialTableAG = useMemo(() =>
-    <AGTable
-      ref={gridMaterialRef}
-      showFilter={false}
-      toolbar={
-        <div>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              selectMaterialRow();
-            }}
-          >
-            <AiOutlineCheck color='green' size={20} />
-            Select
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              /*   checkBP(
+    );
+  }, [plandatatable, selectedMachine, selectedFactory, datadinhmuc]);
+  const planMaterialTableAG = useMemo(
+    () => (
+      <AGTable
+        ref={gridMaterialRef}
+        showFilter={false}
+        toolbar={
+          <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                selectMaterialRow();
+              }}
+            >
+              <AiOutlineCheck color="green" size={20} />
+              Select
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                /*   checkBP(
         userData?.EMPL_NO,
         userData?.MAINDEPTNAME,
         ["QLSX"],
         handleConfirmDKXL
       ); */
-              checkBP(
-                userData,
-                ["QLSX"],
-                ["ALL"],
-                ["ALL"],
-                handleConfirmDKXL
-              );
-            }}
-          >
-            <AiOutlineBarcode color='green' size={20} />
-            Lưu CT + ĐKXK
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              /* checkBP(
+                checkBP(
+                  userData,
+                  ["QLSX"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmDKXL
+                );
+              }}
+            >
+              <AiOutlineBarcode color="green" size={20} />
+              Lưu CT + ĐKXK
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                /* checkBP(
         userData?.EMPL_NO,
         userData?.MAINDEPTNAME,
         ["QLSX"],
         handleConfirmDeleteLieu
       ); */
-              checkBP(
-                userData,
-                ["QLSX"],
-                ["ALL"],
-                ["ALL"],
-                handleConfirmDeleteLieu
-              );
-              //handleConfirmDeleteLieu();
-            }}
-          >
-            <FcDeleteRow color='yellow' size={20} />
-            Xóa Liệu
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              /* checkBP(
+                checkBP(
+                  userData,
+                  ["QLSX"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmDeleteLieu
+                );
+                //handleConfirmDeleteLieu();
+              }}
+            >
+              <FcDeleteRow color="yellow" size={20} />
+              Xóa Liệu
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                /* checkBP(
         userData?.EMPL_NO,
         userData?.MAINDEPTNAME,
         ["QLSX"],
         handleConfirmRESETLIEU
       ); */
-              checkBP(
-                userData,
-                ["QLSX"],
-                ["ALL"],
-                ["ALL"],
-                handleConfirmRESETLIEU
-              );
-              //handleConfirmRESETLIEU();
-            }}
-          >
-            <BiReset color='red' size={20} />
-            RESET Liệu
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              if (selectedPlan.PLAN_ID !== 'XXX') {
-                /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
+                checkBP(
+                  userData,
+                  ["QLSX"],
+                  ["ALL"],
+                  ["ALL"],
+                  handleConfirmRESETLIEU
+                );
+                //handleConfirmRESETLIEU();
+              }}
+            >
+              <BiReset color="red" size={20} />
+              RESET Liệu
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                if (selectedPlan.PLAN_ID !== "XXX") {
+                  /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
           setShowKhoAo(!showkhoao);
           handle_loadKhoAo();
           handle_loadlichsuxuatkhoao();
@@ -2677,93 +2935,99 @@ const MACHINE = () => {
               : selectedPlan?.PLAN_ID
           );
         }); */
-                checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
-                  setShowKhoAo(!showkhoao);
-                });
-              } else {
-                Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
-              }
-            }}
-          >
-            <FaWarehouse color='blue' size={20} />
-            Kho SX Main
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={async () => {
-              setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-            }}
-          >
-            <BiRefresh color='yellow' size={20} />
-            Refresh chỉ thị
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              checkBP(
-                userData,
-                ["QLSX"],
-                ["ALL"],
-                ["ALL"],
-                handle_xuatdao_sample
-              );
-            }}
-          >
-            <GiCurvyKnife color='red' size={20} />
-            Xuất dao sample
-          </IconButton>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              checkBP(
-                userData,
-                ["QLSX"],
-                ["ALL"],
-                ["ALL"],
-                handle_xuatlieu_sample
-              );
-              //handle_xuatlieu_sample();
-            }}
-          >
-            <AiOutlineArrowRight color='blue' size={20} />
-            Xuất liệu sample
-          </IconButton>
-        </div>}
-      columns={column_planmaterialtable}
-      data={chithidatatable}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(params: any) => {
-        //clickedRow.current = params.data;
-        //console.log(e.data) 
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())
-        qlsxchithidatafilter.current = params!.api.getSelectedRows();
-      }}
-    />
-    , [chithidatatable]);
-    const eqListAGTable = useMemo(() => {
-      return (
-        <AGTable      
+                  checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
+                    setShowKhoAo(!showkhoao);
+                  });
+                } else {
+                  Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
+                }
+              }}
+            >
+              <FaWarehouse color="blue" size={20} />
+              Kho SX Main
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={async () => {
+                setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+              }}
+            >
+              <BiRefresh color="yellow" size={20} />
+              Refresh chỉ thị
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["QLSX"],
+                  ["ALL"],
+                  ["ALL"],
+                  handle_xuatdao_sample
+                );
+              }}
+            >
+              <GiCurvyKnife color="red" size={20} />
+              Xuất dao sample
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                checkBP(
+                  userData,
+                  ["QLSX"],
+                  ["ALL"],
+                  ["ALL"],
+                  handle_xuatlieu_sample
+                );
+                //handle_xuatlieu_sample();
+              }}
+            >
+              <AiOutlineArrowRight color="blue" size={20} />
+              Xuất liệu sample
+            </IconButton>
+          </div>
+        }
+        columns={column_planmaterialtable}
+        data={chithidatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }}
+        onRowClick={(params: any) => {
+          //clickedRow.current = params.data;
+          //console.log(e.data)
+        }}
+        onSelectionChange={(params: any) => {
+          //console.log(params)
+          //setSelectedRows(params!.api.getSelectedRows()[0]);
+          //console.log(e!.api.getSelectedRows())
+          qlsxchithidatafilter.current = params!.api.getSelectedRows();
+        }}
+      />
+    ),
+    [chithidatatable]
+  );
+  const eqListAGTable = useMemo(() => {
+    return (
+      <AGTable
         showFilter={false}
         columns={column_eqlist}
         data={currentProcessList}
         suppressRowClickSelection={true}
-        onCellEditingStopped={(params: any) => {
-        }} onRowClick={(params: any) => {       
-          ////console.log(datafilter[0]);        
+        onCellEditingStopped={(params: any) => {}}
+        onRowClick={(params: any) => {
+          ////console.log(datafilter[0]);
           //console.log([params.data]);
           tempSelectedProcess.current = params.data;
-         
-        }} onSelectionChange={(params: any) => {
+        }}
+        onSelectionChange={(params: any) => {
           //setCodeDataTableFilter(params!.api.getSelectedRows());
           //console.log(e!.api.getSelectedRows())
           //setCodeDataTableFilter(params!.api.getSelectedRows());
-        }} />
-      );
-    }, [currentProcessList]);
+        }}
+      />
+    );
+  }, [currentProcessList]);
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
@@ -2777,20 +3041,20 @@ const MACHINE = () => {
     };
   }, []);
   return (
-    <div className='machineplan' tabIndex={0} onKeyDown={handleKeyDown}>
-      <div className='mininavbar'>
-        <div className='mininavitem' onClick={() => setNav(1)}>
-          <span className='mininavtext'>NM1</span>
+    <div className="machineplan" tabIndex={0} onKeyDown={handleKeyDown}>
+      <div className="mininavbar">
+        <div className="mininavitem" onClick={() => setNav(1)}>
+          <span className="mininavtext">NM1</span>
         </div>
-        <div className='mininavitem' onClick={() => setNav(2)}>
-          <span className='mininavtext'>NM2</span>
+        <div className="mininavitem" onClick={() => setNav(2)}>
+          <span className="mininavtext">NM2</span>
         </div>
       </div>
-      <div className='plandateselect'>
+      <div className="plandateselect">
         <label>Plan Date</label>
         <input
-          className='inputdata'
-          type='date'
+          className="inputdata"
+          type="date"
           value={selectedPlanDate}
           onChange={(e) => {
             setSelectedPlanDate(e.target.value.toString());
@@ -2799,23 +3063,23 @@ const MACHINE = () => {
           }}
         ></input>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             loadQLSXPlan(selectedPlanDate);
             dispatch(resetChithiArray(""));
           }}
         >
-          <BiRefresh color='blue' size={20} />
+          <BiRefresh color="blue" size={20} />
           Refresh PLAN
         </IconButton>
       </div>
       {selection.tab1 && (
-        <div className='NM1'>
+        <div className="NM1">
           {eq_series.map((ele_series: string, index: number) => {
             return (
               <div key={index}>
-                <span className='machine_title'>{ele_series}-NM1</span>
-                <div className='FRlist'>
+                <span className="machine_title">{ele_series}-NM1</span>
+                <div className="FRlist">
                   {eq_status
                     .filter(
                       (element: EQ_STT, index: number) =>
@@ -2968,12 +3232,12 @@ const MACHINE = () => {
         </div>
       )}
       {selection.tab2 && (
-        <div className='NM2'>
+        <div className="NM2">
           {eq_series.map((ele_series: string, index: number) => {
             return (
               <>
-                <span className='machine_title'>{ele_series}-NM2</span>
-                <div className='FRlist'>
+                <span className="machine_title">{ele_series}-NM2</span>
+                <div className="FRlist">
                   {eq_status
                     .filter(
                       (element: EQ_STT, index: number) =>
@@ -3066,10 +3330,10 @@ const MACHINE = () => {
           </div> */}
         </div>
       )}
-      {selection.tab3 && <div className='allinone'>ALL IN ONE</div>}
+      {selection.tab3 && <div className="allinone">ALL IN ONE</div>}
       {showplanwindow && (
-        <div className='planwindow'>
-          <div className='title'>
+        <div className="planwindow">
+          <div className="title">
             {selectedMachine}: {selectedFactory}
             <Button
               onClick={() => {
@@ -3111,20 +3375,20 @@ const MACHINE = () => {
             </Button>
             Plan hiện tại trên máy {selectedMachine}
           </div>
-          <div className='content'>
+          <div className="content">
             {showYCSX && (
-              <div className='ycsxlist'>
-                <div className='tracuuYCSX'>
-                  <div className='tracuuYCSXform'>
-                    <div className='forminput'>
-                      <div className='forminputcolumn'>
+              <div className="ycsxlist">
+                <div className="tracuuYCSX">
+                  <div className="tracuuYCSXform">
+                    <div className="forminput">
+                      <div className="forminputcolumn">
                         <label>
                           <b>Từ ngày:</b>
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='date'
+                            type="date"
                             value={fromdate.slice(0, 10)}
                             onChange={(e) => setFromDate(e.target.value)}
                           ></input>
@@ -3135,21 +3399,21 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='date'
+                            type="date"
                             value={todate.slice(0, 10)}
                             onChange={(e) => setToDate(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className='forminputcolumn'>
+                      <div className="forminputcolumn">
                         <label>
                           <b>Code KD:</b>{" "}
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='GH63-xxxxxx'
+                            type="text"
+                            placeholder="GH63-xxxxxx"
                             value={codeKD}
                             onChange={(e) => setCodeKD(e.target.value)}
                           ></input>
@@ -3160,22 +3424,22 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='7C123xxx'
+                            type="text"
+                            placeholder="7C123xxx"
                             value={codeCMS}
                             onChange={(e) => setCodeCMS(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className='forminputcolumn'>
+                      <div className="forminputcolumn">
                         <label>
                           <b>Tên nhân viên:</b>{" "}
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='Trang'
+                            type="text"
+                            placeholder="Trang"
                             value={empl_name}
                             onChange={(e) => setEmpl_Name(e.target.value)}
                           ></input>
@@ -3186,22 +3450,22 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='SEVT'
+                            type="text"
+                            placeholder="SEVT"
                             value={cust_name}
                             onChange={(e) => setCust_Name(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className='forminputcolumn'>
+                      <div className="forminputcolumn">
                         <label>
                           <b>Loại sản phẩm:</b>{" "}
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='TSP'
+                            type="text"
+                            placeholder="TSP"
                             value={prod_type}
                             onChange={(e) => setProdType(e.target.value)}
                           ></input>
@@ -3212,29 +3476,29 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='12345'
+                            type="text"
+                            placeholder="12345"
                             value={prodrequestno}
                             onChange={(e) => setProdRequestNo(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className='forminputcolumn'>
+                      <div className="forminputcolumn">
                         <label>
                           <b>Phân loại:</b>
                           <select
-                            name='phanloai'
+                            name="phanloai"
                             value={phanloai}
                             onChange={(e) => {
                               setPhanLoai(e.target.value);
                             }}
                           >
-                            <option value='00'>ALL</option>
-                            <option value='01'>Thông thường</option>
-                            <option value='02'>SDI</option>
-                            <option value='03'>GC</option>
-                            <option value='04'>SAMPLE</option>
-                            <option value='22'>NOT SAMPLE</option>
+                            <option value="00">ALL</option>
+                            <option value="01">Thông thường</option>
+                            <option value="02">SDI</option>
+                            <option value="03">GC</option>
+                            <option value="04">SAMPLE</option>
+                            <option value="22">NOT SAMPLE</option>
                           </select>
                         </label>
                         <label>
@@ -3243,22 +3507,22 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='text'
-                            placeholder='SJ-203020HC'
+                            type="text"
+                            placeholder="SJ-203020HC"
                             value={material}
                             onChange={(e) => setMaterial(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className='forminputcolumn'>
+                      <div className="forminputcolumn">
                         <label>
                           <b>YCSX Pending:</b>
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='checkbox'
-                            name='alltimecheckbox'
+                            type="checkbox"
+                            name="alltimecheckbox"
                             defaultChecked={ycsxpendingcheck}
                             onChange={() =>
                               setYCSXPendingCheck(!ycsxpendingcheck)
@@ -3271,8 +3535,8 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type='checkbox'
-                            name='alltimecheckbox'
+                            type="checkbox"
+                            name="alltimecheckbox"
                             defaultChecked={inspectInputcheck}
                             onChange={() =>
                               setInspectInputCheck(!inspectInputcheck)
@@ -3284,264 +3548,369 @@ const MACHINE = () => {
                         <label>
                           <b>All Time:</b>
                           <input
-                            type='checkbox'
-                            name='alltimecheckbox'
+                            type="checkbox"
+                            name="alltimecheckbox"
                             defaultChecked={alltime}
                             onChange={() => setAllTime(!alltime)}
                           ></input>
                         </label>
                         <IconButton
-                          className='buttonIcon'
+                          className="buttonIcon"
                           onClick={() => {
                             handletraYCSX();
                           }}
                         >
-                          <FcSearch color='green' size={15} />
+                          <FcSearch color="green" size={15} />
                           Search
                         </IconButton>
                       </div>
                     </div>
-                    <div className='formbutton'>
-                    </div>
+                    <div className="formbutton"></div>
                   </div>
-                  <div className='tracuuYCSXTable'>
-                    {ycsxDataTableAG}
-                  </div>
+                  <div className="tracuuYCSXTable">{ycsxDataTableAG}</div>
                 </div>
               </div>
             )}
-            <div className='chithidiv'>
-              <div className='listchithi'>
-                <div className='planlist'>
-                  {planDataTableAG}
-                </div>
+            <div className="chithidiv">
+              <div className="listchithi">
+                <div className="planlist">{planDataTableAG}</div>
               </div>
               <div className="soluongcandiv">
-                {(selectedPlan.EQ1 !== 'NO' && selectedPlan.EQ1 !== 'NA') && <div className="slcsub">
-                  SLC1: {selectedPlan.SLC_CD1?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
-                </div>}
-                {(selectedPlan.EQ2 !== 'NO' && selectedPlan.EQ2 !== 'NA') && <div className="slcsub">
-                  SLC2: {selectedPlan.SLC_CD2?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
-                </div>}
-                {(selectedPlan.EQ3 !== 'NO' && selectedPlan.EQ3 !== 'NA') && <div className="slcsub">
-                  SLC3: {selectedPlan.SLC_CD3?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
-                </div>}
-                {(selectedPlan.EQ4 !== 'NO' && selectedPlan.EQ4 !== 'NA') && <div className="slcsub">
-                  SLC4: {selectedPlan.SLC_CD4?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} EA
-                </div>}
+                {selectedPlan.EQ1 !== "NO" && selectedPlan.EQ1 !== "NA" && (
+                  <div className="slcsub">
+                    SLC1:{" "}
+                    {selectedPlan.SLC_CD1?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })}{" "}
+                    EA
+                  </div>
+                )}
+                {selectedPlan.EQ2 !== "NO" && selectedPlan.EQ2 !== "NA" && (
+                  <div className="slcsub">
+                    SLC2:{" "}
+                    {selectedPlan.SLC_CD2?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })}{" "}
+                    EA
+                  </div>
+                )}
+                {selectedPlan.EQ3 !== "NO" && selectedPlan.EQ3 !== "NA" && (
+                  <div className="slcsub">
+                    SLC3:{" "}
+                    {selectedPlan.SLC_CD3?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })}{" "}
+                    EA
+                  </div>
+                )}
+                {selectedPlan.EQ4 !== "NO" && selectedPlan.EQ4 !== "NA" && (
+                  <div className="slcsub">
+                    SLC4:{" "}
+                    {selectedPlan.SLC_CD4?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })}{" "}
+                    EA
+                  </div>
+                )}
               </div>
-                          {getCompany() === 'CMS' && getUserData()?.EMPL_NO === 'NHU1903' && <div className="processlist">
-                <div className="selectmachine">
-                  Máy:
-                  <label>
-                    <select
-                      disabled={false}
-                      name="may1"
-                      value={tempSelectedMachine}
-                      onChange={(e) => {
-                        setTempSelectedMachine(e.target.value);
-                      }}
-                    >
-                      {machine_list.filter(item => item.EQ_NAME !== 'NA' && item.EQ_NAME !== 'NO' && item.EQ_NAME !== 'ALL').
-                        map(
-                          (ele: MACHINE_LIST, index: number) => {
-                            return (
-                              <option key={index} value={ele.EQ_NAME}>
-                                {ele.EQ_NAME}
-                              </option>
+              {getCompany() === "CMS" &&
+                getUserData()?.EMPL_NO === "NHU1903" && (
+                  <div className="processlist">
+                    <div className="selectmachine">
+                      Máy:
+                      <label>
+                        <select
+                          disabled={false}
+                          name="may1"
+                          value={tempSelectedMachine}
+                          onChange={(e) => {
+                            setTempSelectedMachine(e.target.value);
+                          }}
+                        >
+                          {machine_list
+                            .filter(
+                              (item) =>
+                                item.EQ_NAME !== "NA" &&
+                                item.EQ_NAME !== "NO" &&
+                                item.EQ_NAME !== "ALL"
+                            )
+                            .map((ele: MACHINE_LIST, index: number) => {
+                              return (
+                                <option key={index} value={ele.EQ_NAME}>
+                                  {ele.EQ_NAME}
+                                </option>
+                              );
+                            })}
+                        </select>
+                      </label>
+                      <Button
+                        onClick={async () => {
+                          if (selectedPlan.G_CODE !== "-------") {
+                            if (currentProcessList.length > 0) {
+                              let nextProcessNo =
+                                Math.max(
+                                  ...currentProcessList.map(
+                                    (item) => item.PROCESS_NUMBER
+                                  )
+                                ) + 1;
+                              let tempProcess: PROD_PROCESS_DATA = {
+                                G_CODE: selectedPlan.G_CODE,
+                                PROCESS_NUMBER: nextProcessNo,
+                                EQ_SERIES: tempSelectedMachine,
+                                SETTING_TIME: 0,
+                                UPH: 0,
+                                STEP: 0,
+                                LOSS_SX: 0,
+                                LOSS_SETTING: 0,
+                                INS_DATE: "",
+                                INS_EMPL: "",
+                                UPD_DATE: "",
+                                UPD_EMPL: "",
+                                FACTORY: "NM1",
+                              };
+                              setCurrentProcessList([
+                                ...currentProcessList,
+                                tempProcess,
+                              ]);
+                              /* let kq = await f_addProdProcessData({
+                            G_CODE: codefullinfo.G_CODE,
+                            PROCESS_NUMBER: nextProcessNo,
+                            EQ_SERIES: tempSelectedMachine
+                          });
+                          if (kq) {
+                            loadProcessList(codefullinfo.G_CODE);
+                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
+                          } else {
+                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
+                          } */
+                            } else {
+                              let tempProcess: PROD_PROCESS_DATA = {
+                                G_CODE: selectedPlan.G_CODE,
+                                PROCESS_NUMBER: 1,
+                                EQ_SERIES: tempSelectedMachine,
+                                SETTING_TIME: 0,
+                                UPH: 0,
+                                STEP: 0,
+                                LOSS_SX: 0,
+                                LOSS_SETTING: 0,
+                                INS_DATE: "",
+                                INS_EMPL: "",
+                                UPD_DATE: "",
+                                UPD_EMPL: "",
+                                FACTORY: "NM1",
+                              };
+                              setCurrentProcessList([tempProcess]);
+                              /* let kq = await f_addProdProcessData({
+                            G_CODE: codefullinfo.G_CODE,
+                            PROCESS_NUMBER: 1,
+                            EQ_SERIES: tempSelectedMachine
+                          });
+                          if (kq) {
+                            loadProcessList(codefullinfo.G_CODE);
+                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
+                          } else {
+                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
+                          } */
+                            }
+                          } else {
+                            Swal.fire(
+                              "Thông báo",
+                              "Vui lòng chọn sản phẩm",
+                              "error"
                             );
-                          },
-                        )}
-                    </select>
-                  </label>
-                  <Button
-                    onClick={async () => {
-                      if (selectedPlan.G_CODE !== '-------') {
-                        if (currentProcessList.length > 0) {
-                          let nextProcessNo = Math.max(...currentProcessList.map(item => item.PROCESS_NUMBER)) + 1;
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
                           }
-                          setCurrentProcessList([...currentProcessList, tempProcess]);
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: nextProcessNo,
-                            EQ_SERIES: tempSelectedMachine
+                        }}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        color="error"
+                        onClick={async () => {
+                          setCurrentProcessList(
+                            currentProcessList.filter(
+                              (item) =>
+                                item.PROCESS_NUMBER !==
+                                tempSelectedProcess.current.PROCESS_NUMBER
+                            )
+                          );
+                        }}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          Swal.fire({
+                            title: "Cập nhật công đoạn",
+                            text: "Đang cập nhật, hãy chờ chút",
+                            icon: "info",
+                            showCancelButton: false,
+                            allowOutsideClick: false,
+                            confirmButtonText: "OK",
+                            showConfirmButton: false,
                           });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
-                          } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        } else {
-                          let tempProcess: PROD_PROCESS_DATA = {
-                            G_CODE: selectedPlan.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine,
-                            SETTING_TIME: 0,
-                            UPH: 0,
-                            STEP: 0,
-                            LOSS_SX: 0,
-                            LOSS_SETTING: 0,
-                            INS_DATE: '',
-                            INS_EMPL: '',
-                            UPD_DATE: '',
-                            UPD_EMPL: '',
-                            FACTORY: 'NM1'
+                          if (selectedPlan.PLAN_ID === "XXX") {
+                            Swal.fire(
+                              "Thông báo",
+                              "Vui lòng chọn plan",
+                              "error"
+                            );
+                            return;
                           }
-                          setCurrentProcessList([tempProcess]);
-
-                          /* let kq = await f_addProdProcessData({
-                            G_CODE: codefullinfo.G_CODE,
-                            PROCESS_NUMBER: 1,
-                            EQ_SERIES: tempSelectedMachine
-                          });
-                          if (kq) {
-                            loadProcessList(codefullinfo.G_CODE);
-                            //Swal.fire("Thông báo", "Thêm process thành công", "success");
+                          if (
+                            !(await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(
+                              currentProcessList,
+                              machine_list
+                            ))
+                          ) {
+                            Swal.fire(
+                              "Thông báo",
+                              "Máy không tồn tại, vui lòng sửa lại",
+                              "error"
+                            );
+                            return;
+                          }
+                          if (
+                            await f_checkProcessNumberContinuos(
+                              currentProcessList
+                            )
+                          ) {
+                            //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
                           } else {
-                            Swal.fire("Thông báo", "Thêm process thất bại", "error");
-                          } */
-                        }
-                      } else {
-                        Swal.fire("Thông báo", "Vui lòng chọn sản phẩm", "error");
-                      }
+                            Swal.fire(
+                              "Thông báo",
+                              "Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại",
+                              "error"
+                            );
+                            return;
+                          }
+                          if (currentProcessList.length > 0) {
+                            await f_deleteProcessNotInCurrentListFromDataBase(
+                              currentProcessList
+                            );
+                            loadProcessList(selectedPlan.G_CODE);
+                          } else {
+                            await f_deleteProdProcessData({
+                              G_CODE: selectedPlan.G_CODE,
+                            });
+                            loadProcessList(selectedPlan.G_CODE);
+                          }
+                          await f_addProcessDataTotalQLSX(currentProcessList);
+                          await f_insertDMYCSX_New({
+                            PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+                            G_CODE: selectedPlan.G_CODE,
+                          });
+                          loadProcessList(selectedPlan.G_CODE);
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                    {eqListAGTable}
+                  </div>
+                )}
+              <div className="listlieuchithi">
+                <div
+                  className="title"
+                  style={{
+                    backgroundImage:
+                      (selectedPlan?.LOSS_KT ?? 0) > 0
+                        ? "linear-gradient(0deg, #afd3d1, #25d468)"
+                        : "linear-gradient(0deg, #afd3d1, #ec4f4f)",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "2rem",
+                      fontWeight: "bold",
+                      color: "#8c03c2FF",
                     }}
                   >
-                    Add
-                  </Button>
-                  <Button
-                    color="error"
-                    onClick={async () => {
-                      setCurrentProcessList(currentProcessList.filter(item => item.PROCESS_NUMBER !== tempSelectedProcess.current.PROCESS_NUMBER));
-                    }
-                    }
-
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      Swal.fire({
-                        title: "Cập nhật công đoạn",
-                        text: "Đang cập nhật, hãy chờ chút",
-                        icon: "info",
-                        showCancelButton: false,
-                        allowOutsideClick: false,
-                        confirmButtonText: "OK",
-                        showConfirmButton: false,
-                      });
-                      if(selectedPlan.PLAN_ID === 'XXX'){
-                        Swal.fire('Thông báo', 'Vui lòng chọn plan', 'error');
-                        return;
-                      }
-
-                      if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
-                        Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (await f_checkProcessNumberContinuos(currentProcessList)) {
-                        //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
-                      } else {
-                        Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
-                        return;
-                      }
-                      if (currentProcessList.length > 0) {
-                        await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
-                        loadProcessList(selectedPlan.G_CODE);
-                      } else {
-                        await f_deleteProdProcessData({
-                          G_CODE: selectedPlan.G_CODE
-                        });
-                        loadProcessList(selectedPlan.G_CODE);
-                      }
-                      await f_addProcessDataTotalQLSX(currentProcessList);
-                      await f_insertDMYCSX_New({
-                        PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
-                        G_CODE: selectedPlan.G_CODE,
-                      });
-                      loadProcessList(selectedPlan.G_CODE);
-                    }}
-                  >
-                    Save
-                  </Button>
-
-                </div>
-                {
-                  eqListAGTable
-                }
-              </div>}
-
-              <div className='listlieuchithi'>
-                <div className="title" style={{ backgroundImage: (selectedPlan?.LOSS_KT ?? 0) > 0 ? "linear-gradient(0deg, #afd3d1, #25d468)" : "linear-gradient(0deg, #afd3d1, #ec4f4f)" }}>
-                  <span style={{ fontSize: '2rem', fontWeight: "bold", color: "#8c03c2FF" }}>
                     {selectedPlan?.PLAN_ID}
                   </span>
-                  <span style={{ fontSize: '1.2rem', fontWeight: "bold", color: "blue" }}>
+                  <span
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
                     {selectedPlan?.G_NAME_KD}
                   </span>
                   <div className="pdcavit">
-                    <span style={{ fontSize: '1rem', fontWeight: "bold", color: "green" }}>
+                    <span
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        color: "green",
+                      }}
+                    >
                       PD:{selectedPlan?.PD ?? 0}
-                    </span> ---
-                    <span style={{ fontSize: '1rem', fontWeight: "bold", color: "green" }}>
+                    </span>{" "}
+                    ---
+                    <span
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        color: "green",
+                      }}
+                    >
                       CAVITY:{selectedPlan?.CAVITY ?? 0}
                     </span>
                   </div>
                   <div className="losskt">
-                    <span style={{ fontSize: '1rem', fontWeight: "bold", }}>
-                      LOSS KT 10 LOT:{selectedPlan?.ORG_LOSS_KT?.toLocaleString('en-US',)}%
+                    <span style={{ fontSize: "1rem", fontWeight: "bold" }}>
+                      LOSS KT 10 LOT:
+                      {selectedPlan?.ORG_LOSS_KT?.toLocaleString("en-US")}%
                     </span>
                   </div>
-                  <span style={{ fontSize: 20, fontWeight: "bold", color: "#491f49" }}>
+                  <span
+                    style={{
+                      fontSize: 20,
+                      fontWeight: "bold",
+                      color: "#491f49",
+                    }}
+                  >
                     PLAN_QTY:{selectedPlan?.PLAN_QTY?.toLocaleString("en-US")}
                   </span>
                   <div className="planinfo">
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>PLAN QTY:</b>{" "}
                         <input
-                          type='text'
-                          placeholder='PLAN QTY'
+                          type="text"
+                          placeholder="PLAN QTY"
                           value={selectedPlan?.PLAN_QTY}
                           onChange={(e) =>
                             setSelectedPlan((prevPlan: any) => {
                               return {
                                 ...prevPlan,
-                                PLAN_QTY: Number(e.target.value)
-                              }
+                                PLAN_QTY: Number(e.target.value),
+                              };
                             })
                           }
                           onBlur={async (e) => {
-                            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+                            setChiThiDataTable(
+                              await f_handleGetChiThiTable(selectedPlan)
+                            );
                           }}
                         ></input>
                       </label>
                       <label>
                         <b>PROC_NUMBER:</b>{" "}
                         <input
-                          type='text'
-                          placeholder='PROCESS NUMBER'
+                          type="text"
+                          placeholder="PROCESS NUMBER"
                           value={selectedPlan?.PROCESS_NUMBER}
                           onChange={(e) =>
                             setSelectedPlan((prevPlan: any) => {
                               return {
                                 ...prevPlan,
-                                PROCESS_NUMBER: Number(e.target.value)
-                              }
+                                PROCESS_NUMBER: Number(e.target.value),
+                              };
                             })
                           }
                         ></input>
@@ -3549,15 +3918,15 @@ const MACHINE = () => {
                       <label>
                         <b>STEP:</b>{" "}
                         <input
-                          type='text'
-                          placeholder='STEP'
+                          type="text"
+                          placeholder="STEP"
                           value={selectedPlan?.STEP}
                           onChange={(e) =>
                             setSelectedPlan((prevPlan: any) => {
                               return {
                                 ...prevPlan,
-                                STEP: Number(e.target.value)
-                              }
+                                STEP: Number(e.target.value),
+                              };
                             })
                           }
                         ></input>
@@ -3565,15 +3934,15 @@ const MACHINE = () => {
                       <label>
                         <b>PLAN_EQ:</b>{" "}
                         <input
-                          type='text'
-                          placeholder='PLAN_EQ'
+                          type="text"
+                          placeholder="PLAN_EQ"
                           value={selectedPlan?.PLAN_EQ}
                           onChange={(e) =>
                             setSelectedPlan((prevPlan: any) => {
                               return {
                                 ...prevPlan,
-                                PLAN_EQ: e.target.value
-                              }
+                                PLAN_EQ: e.target.value,
+                              };
                             })
                           }
                         ></input>
@@ -3581,15 +3950,15 @@ const MACHINE = () => {
                       <label>
                         <b>NEXT_PLAN:</b>{" "}
                         <input
-                          type='text'
-                          placeholder='NEXT_PLAN'
+                          type="text"
+                          placeholder="NEXT_PLAN"
                           value={selectedPlan?.NEXT_PLAN_ID}
                           onChange={(e) =>
                             setSelectedPlan((prevPlan: any) => {
                               return {
                                 ...prevPlan,
-                                NEXT_PLAN_ID: e.target.value
-                              }
+                                NEXT_PLAN_ID: e.target.value,
+                              };
                             })
                           }
                         ></input>
@@ -3597,73 +3966,105 @@ const MACHINE = () => {
                       <label>
                         <b>IS_SETTING:</b>{" "}
                         <input
-                          type='checkbox'
-                          name='alltimecheckbox'
-                          checked={selectedPlan?.IS_SETTING === 'Y'}
+                          type="checkbox"
+                          name="alltimecheckbox"
+                          checked={selectedPlan?.IS_SETTING === "Y"}
                           onChange={async (e) => {
                             setSelectedPlan((prevPlan: any) => {
                               return {
                                 ...prevPlan,
-                                IS_SETTING: e.target.checked ? 'Y' : 'N'
-                              }
+                                IS_SETTING: e.target.checked ? "Y" : "N",
+                              };
                             });
-                            setChiThiDataTable(await f_handleGetChiThiTable({
-                              ...selectedPlan,
-                              IS_SETTING: e.target.checked ? 'Y' : 'N'
-                            }));
-                          }
-                          }
-                          onBlur={(e) => {
+                            setChiThiDataTable(
+                              await f_handleGetChiThiTable({
+                                ...selectedPlan,
+                                IS_SETTING: e.target.checked ? "Y" : "N",
+                              })
+                            );
                           }}
+                          onBlur={(e) => {}}
                         ></input>
                       </label>
                     </div>
                     <div className="formbutton">
-                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.8rem', padding: '3px', backgroundColor: '#0f20db' }} onClick={() => {
-                        if (selectedPlan.PLAN_ID !== 'XXX') {
-                          checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
-                            await f_saveSinglePlan(selectedPlan);
-                            let newNotification: NotificationElement = {
-                              CTR_CD: '002',
-                              NOTI_ID: -1,
-                              NOTI_TYPE: "info",
-                              TITLE: 'Update thông tin chỉ thị',
-                              CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update thông tin chỉ thị ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
-                              SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
-                              MAINDEPTNAME: "KD,RND,SX,QLSX",
-                              INS_EMPL: 'NHU1903',
-                              INS_DATE: '2024-12-30',
-                              UPD_EMPL: 'NHU1903',
-                              UPD_DATE: '2024-12-30',
-                            }  
-                            if(await f_insert_Notification_Data(newNotification))
-                            {
-                              getSocket().emit("notification_panel", newNotification);
-                            }
-                            await loadQLSXPlan(selectedPlanDate);
-                            setChiThiDataTable(await f_handleGetChiThiTable({
-                              ...selectedPlan,
-                            }));
-                            
-                          });
-                        }
-                        else {
-                          Swal.fire('Thông báo', 'Hãy chọn plan')
-                        }
-                      }}>SAVE PLAN</Button>
+                      <Button
+                        color={"success"}
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          fontSize: "0.8rem",
+                          padding: "3px",
+                          backgroundColor: "#0f20db",
+                        }}
+                        onClick={() => {
+                          if (selectedPlan.PLAN_ID !== "XXX") {
+                            checkBP(
+                              userData,
+                              ["QLSX"],
+                              ["ALL"],
+                              ["ALL"],
+                              async () => {
+                                await f_saveSinglePlan(selectedPlan);
+                                let newNotification: NotificationElement = {
+                                  CTR_CD: "002",
+                                  NOTI_ID: -1,
+                                  NOTI_TYPE: "info",
+                                  TITLE: "Update thông tin chỉ thị",
+                                  CONTENT: `${getUserData()?.EMPL_NO} (${
+                                    getUserData()?.MIDLAST_NAME
+                                  } ${getUserData()?.FIRST_NAME}), nhân viên ${
+                                    getUserData()?.WORK_POSITION_NAME
+                                  } đã update thông tin chỉ thị ${
+                                    selectedPlan.PLAN_ID
+                                  }: ${selectedPlan.PROD_REQUEST_NO}: ${
+                                    selectedPlan.G_NAME
+                                  }`,
+                                  SUBDEPTNAME: "KD,RND,SX_VP,QLSX",
+                                  MAINDEPTNAME: "KD,RND,SX,QLSX",
+                                  INS_EMPL: "NHU1903",
+                                  INS_DATE: "2024-12-30",
+                                  UPD_EMPL: "NHU1903",
+                                  UPD_DATE: "2024-12-30",
+                                };
+                                if (
+                                  await f_insert_Notification_Data(
+                                    newNotification
+                                  )
+                                ) {
+                                  getSocket().emit(
+                                    "notification_panel",
+                                    newNotification
+                                  );
+                                }
+                                await loadQLSXPlan(selectedPlanDate);
+                                setChiThiDataTable(
+                                  await f_handleGetChiThiTable({
+                                    ...selectedPlan,
+                                  })
+                                );
+                              }
+                            );
+                          } else {
+                            Swal.fire("Thông báo", "Hãy chọn plan");
+                          }
+                        }}
+                      >
+                        SAVE PLAN
+                      </Button>
                     </div>
                   </div>
                 </div>
-                <div className='chithitable'>
-                  {planMaterialTableAG}
-                </div>
+                <div className="chithitable">{planMaterialTableAG}</div>
               </div>
               {selection.tabycsx && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <Button
                       onClick={() => {
-                        setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
+                        setYCSXListRender(
+                          renderYCSX(ycsxdatatablefilter.current)
+                        );
                       }}
                     >
                       Render YCSX
@@ -3677,17 +4078,19 @@ const MACHINE = () => {
                       Close
                     </Button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {ycsxlistrender}
                   </div>
                 </div>
               )}
               {selection.tabbanve && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <Button
                       onClick={() => {
-                        setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
+                        setYCSXListRender(
+                          renderBanVe(ycsxdatatablefilter.current)
+                        );
                       }}
                     >
                       Render Bản Vẽ
@@ -3701,13 +4104,13 @@ const MACHINE = () => {
                       Close
                     </Button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {ycsxlistrender}
                   </div>
                 </div>
               )}
               {showkhoao && (
-                <div className='khoaodiv'>
+                <div className="khoaodiv">
                   <Button
                     onClick={() => {
                       setShowKhoAo(!showkhoao);
@@ -3719,10 +4122,10 @@ const MACHINE = () => {
                 </div>
               )}
               {showChiThi && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <input
-                      type='text'
+                      type="text"
                       value={maxLieu}
                       onChange={(e) => {
                         setMaxLieu(Number(e.target.value));
@@ -3742,15 +4145,24 @@ const MACHINE = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
+                        setChiThiListRender(
+                          renderChiThi(
+                            qlsxplandatafilter.current,
+                            myComponentRef
+                          )
+                        );
                       }}
                     >
                       Render Chỉ Thị
                     </button>
-                    <button onClick={() => {
-                      handleClick();
-                      handlePrint();
-                    }}>Print Chỉ Thị</button>
+                    <button
+                      onClick={() => {
+                        handleClick();
+                        handlePrint();
+                      }}
+                    >
+                      Print Chỉ Thị
+                    </button>
                     <button
                       onClick={() => {
                         setShowChiThi(!showChiThi);
@@ -3759,16 +4171,16 @@ const MACHINE = () => {
                       Close
                     </button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {chithilistrender}
                   </div>
                 </div>
               )}
               {showChiThi2 && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <input
-                      type='text'
+                      type="text"
                       value={maxLieu}
                       onChange={(e) => {
                         setMaxLieu(Number(e.target.value));
@@ -3790,7 +4202,8 @@ const MACHINE = () => {
                       onClick={() => {
                         setChiThiListRender2(
                           renderChiThi2(
-                            chithiarray !== undefined ? chithiarray : [], myComponentRef
+                            chithiarray !== undefined ? chithiarray : [],
+                            myComponentRef
                           )
                         );
                       }}
@@ -3806,17 +4219,19 @@ const MACHINE = () => {
                       Close
                     </button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {chithilistrender2}
                   </div>
                 </div>
               )}
               {showYCKT && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <button
                       onClick={() => {
-                        setYCKTListRender(renderYCKT(qlsxplandatafilter.current));
+                        setYCKTListRender(
+                          renderYCKT(qlsxplandatafilter.current)
+                        );
                       }}
                     >
                       Render YCKT
@@ -3830,7 +4245,7 @@ const MACHINE = () => {
                       Close
                     </button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {ycktlistrender}
                   </div>
                 </div>

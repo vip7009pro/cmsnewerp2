@@ -50,13 +50,20 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
         >
           <p>Tháng {label}:</p>
           <p className='label'>
-            QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
+            QTY: {`${payload[0]?.value?.toLocaleString("en-US")}`} EA
           </p>
           <p className='label'>
             AMOUNT:{" "}
-            {`${payload[1].value.toLocaleString("en-US", {
+            {`${payload[1]?.value?.toLocaleString("en-US", {
               style: "currency",
               currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+            })}`}
+          </p>
+          <p className='label'>
+            KPI:{" "}
+            {`${payload[2]?.value?.toLocaleString("en-US", {
+              style: "currency",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
             })}`}
           </p>
         </div>
@@ -195,6 +202,12 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
           fill='#f1eda7'
           label={CustomLabel}
         ></Bar>
+        <Line
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='KPI_VALUE'
+          stroke='red'
+        />
       </ComposedChart>
     </CustomResponsiveContainer>
   );

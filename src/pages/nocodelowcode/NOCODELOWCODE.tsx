@@ -4,7 +4,9 @@ import MyTabs from "../../components/MyTab/MyTab";
 import DBManager from "./DBManager/DBManager";
 import SqlEditor from "./components/TestBackEnd/SqlEditor";
 import QueryManager from "./QueryManager/QueryManager";
-import MenuManager from "./MenuManager/MenuManager";
+/* import MenuManager from "./MenuManager/MenuManager"; */
+import { KPIManager } from "../KPI/KPIManager";
+
 const  NOCODELOWCODE = () => {
   useEffect(() => { }, []);
   return (
@@ -19,8 +21,11 @@ const  NOCODELOWCODE = () => {
         <MyTabs.Tab title={"Query Manager"}>
           <QueryManager/>         
         </MyTabs.Tab>
-        <MyTabs.Tab title={"Menu Manager"}>
+        {/* <MyTabs.Tab title={"Menu Manager"}>
           <MenuManager/>         
+        </MyTabs.Tab> */}
+        <MyTabs.Tab title={"KPI Manager"}>
+          <KPIManager/>         
         </MyTabs.Tab>
       </MyTabs>
     </div>

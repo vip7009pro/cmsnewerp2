@@ -21,7 +21,6 @@ import {
   nFormatter,
 } from "../../../api/GlobalFunction";
 import { YearlyData } from "../../../api/GlobalInterface";
-
 const InspectionYearlyPPM = ({
   dldata,
   processColor,
@@ -30,11 +29,9 @@ const InspectionYearlyPPM = ({
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
-
   const labelFormatter = (value: number) => {
     return formatCash(value);
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -48,29 +45,36 @@ const InspectionYearlyPPM = ({
       //console.log(payload);
       return (
         <div
-          className='custom-tooltip'
+          className="custom-tooltip"
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
             borderRadius: 5,
           }}
         >
-          <p>Ngày {label}:</p>
-          <p className='label'>
-            PROCESS_NG: {`${payload[1].value.toLocaleString("en-US")}`} ppm
+          <p>Năm {label}:</p>
+          <p className="label">
+            PROCESS_NG:{" "}
+            {`${payload[0]?.payload?.PROCESS_PPM?.toLocaleString("en-US")}`} ppm
           </p>
-          <p className='label'>
-            MATERIAL_NG: {`${payload[2].value.toLocaleString("en-US")}`} ppm
+          <p className="label">
+            MATERIAL_NG:{" "}
+            {`${payload[0]?.payload?.MATERIAL_PPM?.toLocaleString("en-US")}`}{" "}
+            ppm
           </p>
-          <p className='label'>
-            TOTAL_NG: {`${payload[0].value.toLocaleString("en-US")}`} ppm
+          <p className="label">
+            TOTAL_NG:{" "}
+            {`${payload[0]?.payload?.TOTAL_PPM?.toLocaleString("en-US")}`} ppm
+          </p>
+          <p className="label">
+            KPI_VALUE:{" "}
+            {`${payload[0]?.payload?.KPI_VALUE?.toLocaleString("en-US")}`} ppm
           </p>
         </div>
       );
     }
     return null;
   };
-
   useEffect(() => {}, []);
   return (
     <CustomResponsiveContainer>
@@ -85,19 +89,24 @@ const InspectionYearlyPPM = ({
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='YEAR_NUM' height={40} tick={{fontSize:'0.7rem'}}>         
-          <Label value='Năm' offset={0} position='insideBottom'  style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
+        <XAxis dataKey="YEAR_NUM" height={40} tick={{ fontSize: "0.7rem" }}>
+          <Label
+            value="Năm"
+            offset={0}
+            position="insideBottom"
+            style={{ fontWeight: "normal", fontSize: "0.7rem" }}
+          />
         </XAxis>
         <YAxis
-          yAxisId='left-axis'
+          yAxisId="left-axis"
           label={{
             value: "NG Rate",
             angle: -90,
             position: "insideLeft",
-            fontSize:'0.7rem' 
+            fontSize: "0.7rem",
           }}
-          tick={{fontSize:'0.7rem'}}
+          tick={{ fontSize: "0.7rem" }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -107,43 +116,75 @@ const InspectionYearlyPPM = ({
           tickCount={6}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend 
-         verticalAlign="top"
-         align="center"
-         iconSize={15}
-         iconType="diamond"
-         formatter={(value, entry) => (
-           <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-         )}/>
-         <Line
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='TOTAL_PPM'
-          stroke='green'
-          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: "0.7rem", fontWeight: "bold" }}>
+              {value}
+            </span>
+          )}
+        />
+        <Line
+          yAxisId="left-axis"
+          type="monotone"
+          dataKey="TOTAL_PPM"
+          stroke="green"
+          label={{
+            position: "top",
+            formatter: labelFormatter,
+            fontSize: "0.7rem",
+            fontWeight: "bold",
+            color: "black",
+          }}
         />
         <Bar
-          stackId='a'
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='PROCESS_PPM'
-          stroke='white'
+          stackId="a"
+          yAxisId="left-axis"
+          type="monotone"
+          dataKey="PROCESS_PPM"
+          stroke="white"
           fill={processColor}
-          /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */     
+          /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */
         >
-          <LabelList dataKey="PROCESS_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList
+            dataKey="PROCESS_PPM"
+            position="inside"
+            formatter={labelFormatter}
+            fontSize={"0.7rem"}
+          />
         </Bar>
         <Bar
-          stackId='a'
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='MATERIAL_PPM'
-          stroke='white'
+          stackId="a"
+          yAxisId="left-axis"
+          type="monotone"
+          dataKey="MATERIAL_PPM"
+          stroke="white"
           fill={materialColor}
-          /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */      
+          /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */
         >
-          <LabelList dataKey="MATERIAL_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList
+            dataKey="MATERIAL_PPM"
+            position="inside"
+            formatter={labelFormatter}
+            fontSize={"0.7rem"}
+          />
         </Bar>
+        <Line
+          yAxisId="left-axis"
+          type="monotone"
+          dataKey="KPI_VALUE"
+          stroke="blue"
+          label={{
+            position: "top",
+            formatter: labelFormatter,
+            fontSize: "0.7rem",
+            fontWeight: "bold",
+            color: "black",
+          }}
+        />
       </ComposedChart>
     </CustomResponsiveContainer>
   );

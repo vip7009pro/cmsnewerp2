@@ -29,6 +29,7 @@ import {
   INSPECT_STATUS_DATA,
   InvoiceTableData,
   KHKT_DATA,
+  KPI_DATA,
   LEADTIME_DATA,
   LICHSUINPUTLIEU_DATA,
   LICHSUNHAPKHOAO,
@@ -538,6 +539,7 @@ export const f_loadPoDataFull = async (filterData: any) => {
         );
         podata = loadeddata;
       } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         podata = [];
       }
     })
@@ -965,6 +967,7 @@ export const f_loadInvoiceDataFull = async (filterData: any) => {
         invoicedata = loadeddata;
       } else {
         invoicedata = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
       }
     })
     .catch((error) => {
@@ -8047,6 +8050,112 @@ export const f_deleteField = async (DATA: any) => {
 export const f_addField = async (DATA: any) => {
   let kq: string = '';
   await generalQuery("addField", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_loadKPI = async (KPI_NAME: string) => {
+  let kq: KPI_DATA[] = [];
+  await generalQuery("loadKPI", { KPI_NAME: KPI_NAME })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        if(response.data.data.length > 0){
+          kq = response.data.data;
+        }
+      }
+      else {
+        Swal.fire('Thông báo', 'Không có KPI', 'error');
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const getNumberofDatesFromMonth = (month_num: number) => {
+  if([1,3,5,7,8,10,12].includes(month_num)){
+    return 31;
+  }else if([4,6,9,11].includes(month_num)){
+    return 30;
+  }else{
+    return 28;
+  }
+}
+
+export const getWorkingDaysInMonth = (date: string) => {
+  // Lấy ngày đầu tiên và cuối cùng của tháng
+  const startOfMonth = moment(date).startOf('month');
+  const endOfMonth = moment(date).endOf('month');
+  
+  let workingDays = 0;
+  
+  // Duyệt qua từng ngày trong tháng
+  for (let day = startOfMonth; day <= endOfMonth; day.add(1, 'days')) {
+    // Kiểm tra nếu là thứ 2 đến thứ 6 (weekday từ 1 đến 5)
+    if (day.isoWeekday() <= 5) {
+      workingDays++;
+    }
+  }
+  
+  return workingDays;
+}
+
+export const f_createKPI = async (DATA: KPI_DATA[]) => {
+  let kq: string = '';
+  await generalQuery("insertKPI", {
+    KPI_DATA: DATA
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        console.log(response.data.data)
+       
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      kq = error.message;
+    })
+  return kq;
+}
+
+export const f_updateKPI = async (DATA: KPI_DATA[]) => {
+  let kq: string = '';
+  await generalQuery("updateKPI", {
+    KPI_DATA: DATA
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+       
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      kq = error.message;
+    })
+  return kq;
+}
+
+export const f_deleteKPI = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deleteKPI", {
+    KPI_NAME: DATA[0].KPI_NAME,
+    KPI_YEAR: DATA[0].KPI_YEAR,
+    KPI_PERIOD: DATA[0].KPI_PERIOD,
+    KPI_MONTH: DATA[0].KPI_MONTH,
+    VALUE_TYPE: DATA[0].VALUE_TYPE
+  })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
       }

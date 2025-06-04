@@ -55,15 +55,18 @@ const InspectionWeeklyPPM = ({
             borderRadius: 5,
           }}
         >
-          <p>Ngày {label}:</p>
+          <p>Tuần {label}:</p>
           <p className='label'>
-            PROCESS_NG: {`${payload[1].value.toLocaleString("en-US")}`} ppm
+            PROCESS_NG: {`${payload[0]?.payload?.PROCESS_PPM?.toLocaleString("en-US")}`} ppm
           </p>
           <p className='label'>
-            MATERIAL_NG: {`${payload[2].value.toLocaleString("en-US")}`} ppm
+            MATERIAL_NG: {`${payload[0]?.payload?.MATERIAL_PPM?.toLocaleString("en-US")}`} ppm
           </p>
           <p className='label'>
-            TOTAL_NG: {`${payload[0].value.toLocaleString("en-US")}`} ppm
+            TOTAL_NG: {`${payload[0]?.payload?.TOTAL_PPM?.toLocaleString("en-US")}`} ppm
+          </p>
+          <p className='label'>
+            KPI_VALUE: {`${payload[0]?.payload?.KPI_VALUE?.toLocaleString("en-US")}`} ppm
           </p>
         </div>
       );
@@ -144,6 +147,13 @@ const InspectionWeeklyPPM = ({
         >
           <LabelList dataKey="MATERIAL_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
+        <Line
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='KPI_VALUE'
+          stroke='blue'
+          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+        />
       </ComposedChart>
     </CustomResponsiveContainer>
   );

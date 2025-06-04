@@ -3054,11 +3054,13 @@ export interface WeeklyClosingData {
   DEL_YW: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
+  KPI_VALUE?: number;
 }
 export interface DailyClosingData {
   DELIVERY_DATE: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
+  KPI_VALUE?: number;
 }
 export interface CUSTOMER_REVENUE_DATA {
   CUST_NAME_KD: string;
@@ -3085,11 +3087,13 @@ export interface MonthlyClosingData {
   MONTH_NUM: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
+  KPI_VALUE?: number;
 }
 export interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
+  KPI_VALUE?: number;
 }
 export interface MaterialPOData {
   CUST_CD: string;
@@ -3167,6 +3171,7 @@ export interface DailyPPMData {
   TOTAL_PPM?: number;
   MATERIAL_PPM?: number;
   PROCESS_PPM?: number;
+  KPI_VALUE?: number;
 }
 export interface PPMData {
   INSPECT_DATE?: string;
@@ -3205,6 +3210,7 @@ export interface MonthlyPPMData {
   TOTAL_PPM?: number;
   MATERIAL_PPM?: number;
   PROCESS_PPM?: number;
+  KPI_VALUE?: number;
 }
 export interface MonthlyData {
   dldata?: MonthlyPPMData[];
@@ -3222,6 +3228,7 @@ export interface WeeklyPPMData {
   TOTAL_PPM?: number;
   MATERIAL_PPM?: number;
   PROCESS_PPM?: number;
+  KPI_VALUE?: number;
 }
 export interface WeeklyData {
   dldata?: WeeklyPPMData[];
@@ -3237,6 +3244,7 @@ export interface YearlyPPMData {
   TOTAL_PPM?: number;
   MATERIAL_PPM?: number;
   PROCESS_PPM?: number;
+  KPI_VALUE?: number;
 }
 export interface YearlyData {
   dldata?: YearlyPPMData[];
@@ -3294,6 +3302,7 @@ export interface InspectSummary {
   M_A_RATE: number;
   P_A_RATE: number;
   T_A_RATE: number;
+  KPI_VALUE?: number;
 }
 export interface RecentDM {
   G_CODE: string;
@@ -4910,3 +4919,17 @@ export interface BLOCK_DATA {
   VENDOR_NAME: string;
 }
 
+export interface KPI_DATA {
+  CTR_CD: string;
+  KPI_ID: number;
+  KPI_NAME: string;
+  KPI_YEAR: number;
+  KPI_PERIOD: string;
+  KPI_MONTH: number;
+  KPI_VALUE: number;
+  VALUE_TYPE: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
