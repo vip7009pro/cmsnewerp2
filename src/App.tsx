@@ -1,5 +1,5 @@
 import "devextreme/dist/css/dx.light.css";
-import React, { Component, useEffect, useState, Suspense, useRef } from "react";
+import React, { Component, useEffect, useState, Suspense, useRef, lazy } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/Api";
@@ -28,8 +28,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
-import TINHLUONGP3 from "./pages/sx/TINHLUONGP3/TINHLUONGP3";
-import NOLOWHOME from "./pages/nocodelowcode/components/NOLOWHOME/NOLOWHOME";
+const TINHLUONGP3 = lazy(() => import("./pages/sx/TINHLUONGP3/TINHLUONGP3"));
+const NOLOWHOME = lazy(() => import("./pages/nocodelowcode/components/NOLOWHOME/NOLOWHOME"));
 const PostManager = React.lazy(() => import("./pages/information_board/PostManager"));
 const Info = React.lazy(() => import("./pages/information_board/Info"));
 const Information = React.lazy(() => import("./pages/information_board/Information"));

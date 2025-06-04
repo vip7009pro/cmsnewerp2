@@ -662,7 +662,7 @@ export default function Navbar() {
             }}
             size={15}
           />
-          {sidebarStatus && <NavMenuNew />}
+          {sidebarStatus && <NavMenu />}
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>
