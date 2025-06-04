@@ -8115,7 +8115,7 @@ export const f_createKPI = async (DATA: KPI_DATA[]) => {
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        console.log(response.data.data)
+       
        
       }
       else {
