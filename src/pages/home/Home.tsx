@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
-import React, { useEffect, useRef, useState, useContext, Suspense } from "react";
+import React, { useEffect, useRef, useState, useContext, Suspense, lazy } from "react";
 import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
@@ -14,14 +14,14 @@ import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-import LichSu_New from "../nhansu/LichSu/LichSu_New";
-import NOLOWHOME from "../nocodelowcode/components/NOLOWHOME/NOLOWHOME";
+const LichSu_New = lazy(() => import("../nhansu/LichSu/LichSu_New"));
+/* import NOLOWHOME from "../nocodelowcode/components/NOLOWHOME/NOLOWHOME";
 import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
 import TableManager from "../nocodelowcode/DBManager/DBManager";
-import DBManager from "../nocodelowcode/DBManager/DBManager";
-import NOCODELOWCODE from "../nocodelowcode/NOCODELOWCODE";
+import DBManager from "../nocodelowcode/DBManager/DBManager"; */
+const NOCODELOWCODE = lazy(() => import("../nocodelowcode/NOCODELOWCODE"));
 import PermissionNotify from "../../components/PermissionNotify/PermissionNotify";
-import NavBarNew from "../../components/Navbar/NavBarNew";
+/* import NavBarNew from "../../components/Navbar/NavBarNew"; */
 
 export const current_ver: number = getCompany() === "CMS" ? 2618 : 423;
 

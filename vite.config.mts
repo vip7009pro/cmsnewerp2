@@ -15,6 +15,7 @@ export default defineConfig({
     }),  
   ],
   build: {
+    chunkSizeWarningLimit: 500,
     rollupOptions: {
       output: {
         // Tùy chỉnh tên file, chỉ lấy id mà không có tên file gốc
