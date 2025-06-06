@@ -23,7 +23,7 @@ const NOCODELOWCODE = lazy(() => import("../nocodelowcode/NOCODELOWCODE"));
 import PermissionNotify from "../../components/PermissionNotify/PermissionNotify";
 /* import NavBarNew from "../../components/Navbar/NavBarNew"; */
 
-export const current_ver: number = getCompany() === "CMS" ? 2618 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2620 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));

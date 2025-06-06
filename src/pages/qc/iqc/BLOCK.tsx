@@ -27,6 +27,7 @@ import {
   f_resetIN_KHO_SX_IQC2,
   f_updateNCRIDForFailing,
   f_updateNCRIDForHolding,
+  f_updateStockM090,
 } from "../../../api/GlobalFunction";
 import { GiConfirmed } from "react-icons/gi";
 const BLOCK = () => {
@@ -284,6 +285,7 @@ const BLOCK = () => {
       } else {
         Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
       }
+      f_updateStockM090();
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
@@ -347,6 +349,7 @@ const BLOCK = () => {
       } else {
         Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
       }
+      
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
@@ -501,7 +504,7 @@ const BLOCK = () => {
               className="buttonIcon"
               onClick={() => {
                 if (
-                  userData?.SUBDEPTNAME === "MUA" ||
+                  userData?.SUBDEPTNAME === "MUA" ||  userData?.SUBDEPTNAME === "IQC" || 
                   userData?.EMPL_NO === "NHU1903"
                 ) {
                   //console.log(selectedRowsDataA.current);
@@ -522,7 +525,7 @@ const BLOCK = () => {
               className="buttonIcon"
               onClick={() => {
                 if (
-                  userData?.SUBDEPTNAME === "MUA" ||
+                  userData?.SUBDEPTNAME === "MUA" || userData?.SUBDEPTNAME === "IQC" ||
                   userData?.EMPL_NO === "NHU1903"
                 ) {
                   //console.log(selectedRowsDataA.current);
@@ -530,7 +533,7 @@ const BLOCK = () => {
                 } else {
                   Swal.fire(
                     "Thông báo",
-                    "Bạn không phải người bộ phận MUA",
+                    "Bạn không phải người bộ phận MUA, IQC",
                     "error"
                   );
                 }

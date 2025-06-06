@@ -25,7 +25,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { MdDocumentScanner, MdShowChart, MdShower, MdUpdate } from "react-icons/md";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP, f_updateStockM090 } from "../../../api/GlobalFunction";
 import { CustomCellRendererProps } from "ag-grid-react";
 import BNK_COMPONENT from "./BNK_COMPONENT";
 import { useReactToPrint } from "react-to-print";
@@ -323,6 +323,7 @@ const INCOMMING = () => {
       .catch((error) => {
         console.log(error);
       });
+      f_updateStockM090();
   };
   const updateIncomingData = async () => {
     if (selectedRowsData.current.length > 0) {
