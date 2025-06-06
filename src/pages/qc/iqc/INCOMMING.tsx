@@ -568,8 +568,16 @@ const INCOMMING = () => {
     },
     { field: "INS_DATE", headerName: "REG_DATE", resizable: true, width: 60 },
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80 },
-    { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 60 },
+    { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80, cellRenderer: (params: any) => {
+      return (
+        <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue', borderRadius: '5px'}}>{params.data.M_NAME}</div>
+      )
+    } },
+    { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 60, cellRenderer: (params: any) => {
+      return (
+        <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue', borderRadius: '5px'}}>{params.data.WIDTH_CD}</div>
+      )
+    } },
     { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 60, cellRenderer: (params: any) => {
       if(params.data.TOTAL_RESULT === "OK") {
         return (

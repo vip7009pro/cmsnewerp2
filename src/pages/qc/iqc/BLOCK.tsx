@@ -1,4 +1,4 @@
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
@@ -8,28 +8,10 @@ import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  CustomerListData,
-  QC_FAIL_DATA,
-  BLOCK_DATA,
-  UserData,
-} from "../../../api/GlobalInterface";
+import { CustomerListData, BLOCK_DATA, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import {
-  checkBP,
-  f_isM_CODE_in_M140_Main,
-  f_isM_LOT_NO_in_IN_KHO_SX,
-  f_isM_LOT_NO_in_O302,
-  f_isM_LOT_NO_in_P500,
-  f_nhapkhoao,
-  f_resetIN_KHO_SX_IQC1,
-  f_resetIN_KHO_SX_IQC2,
-  f_updateNCRIDForFailing,
-  f_updateNCRIDForHolding,
-  f_updateStockM090,
-} from "../../../api/GlobalFunction";
-import { GiConfirmed } from "react-icons/gi";
+import { AiOutlineSearch } from "react-icons/ai";
+import { f_updateNCRIDForFailing, f_updateNCRIDForHolding, f_updateStockM090 } from "../../../api/GlobalFunction";
 const BLOCK = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [cmsvcheck, setCMSVCheck] = useState(true);
@@ -77,7 +59,17 @@ const BLOCK = () => {
       resizable: true,
       width: 70,      
     },
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", resizable: true, width: 60 },
+    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", resizable: true, width: 60, cellRenderer: (params: any) => {
+      if(params.data.PHAN_LOAI === "PROCESS") {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.PHAN_LOAI}</div>
+        )
+      } else {
+        return (
+          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'red',borderRadius: '5px'}}>{params.data.PHAN_LOAI}</div>
+        )
+      }
+    } },
     { field: "MAKER", headerName: "MAKER", resizable: true, width: 70 },
     { field: "SUPPLIER", headerName: "SUPPLIER", resizable: true, width: 70, 
       cellRenderer: (params: any) => {
@@ -91,22 +83,22 @@ const BLOCK = () => {
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
     { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 100, cellRenderer: (params: any) => {
       return (
-        <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.M_NAME}</div>
+        <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.M_NAME}</div>
       )
     } },
     { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 50, cellRenderer: (params: any) => {
       return (
-        <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.WIDTH_CD}</div>
+        <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue',borderRadius: '5px'}}>{params.data.WIDTH_CD}</div>
       )
     } },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 80, cellRenderer: (params: any) => {
       if(params.data.QC_PASS === "Y") {
         return (
-          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'blue', backgroundColor: '#96f53d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+          <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue', backgroundColor: '#96f53d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
         )
       } else {
         return (
-          <div style={{textAlign: 'center', fontWeight: 'normal', color: 'black', backgroundColor: '#e9dddd', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
+          <div style={{textAlign: 'left', fontWeight: 'normal', color: 'black', backgroundColor: '#e9dddd', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
         )
       }
     } },
@@ -269,8 +261,24 @@ const BLOCK = () => {
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
+                
               } else {
-                err_code += ` Lỗi: ${response.data.message}`;
+                generalQuery("updateQCPASSI222_M_LOT_NO", {
+                  M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
+                  VALUE: value,
+                })
+                  // eslint-disable-next-line no-loop-func
+                  .then((response) => {
+                    //console.log(response.data.data);
+                    if (response.data.tk_status !== "NG") {
+                    } else {
+                      err_code += ` Lỗi: ${response.data.message}`;
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+                //err_code += ` Lỗi: ${response.data.message}`;
               }
             })
             .catch((error) => {

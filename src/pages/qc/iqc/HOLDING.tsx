@@ -109,6 +109,9 @@ const HOLDING = () => {
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
+            
+
+          } else {
             generalQuery("updateQCPASSI222_M_LOT_NO", {
               M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
               VALUE: value === 'Y' ? 'T': 'N',
@@ -123,8 +126,6 @@ const HOLDING = () => {
               .catch((error) => {
                 console.log(error);
               });
-
-          } else {
             err_code += ` Lỗi: ${response.data.message}`;
           }
         })
