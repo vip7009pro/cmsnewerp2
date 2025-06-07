@@ -251,20 +251,20 @@ const BLOCK = () => {
             });
           
         }
-        else if(selectedRowsDataA.current[i].PL_BLOCK === "HOLDING"){
+        else if(selectedRowsDataA.current[i].PL_BLOCK === "HOLDING"){          
           await generalQuery("updateQCPASS_HOLDING", {
             M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
             ID: selectedRowsDataA.current[i].BLOCK_ID,
+            USE_YN: selectedRowsDataA.current[i].USE_YN,
             VALUE: value,
           })
             // eslint-disable-next-line no-loop-func
             .then((response) => {
-              //console.log(response.data.data);
+              console.log(response.data);
               if (response.data.tk_status !== "NG") {
-                
-              } else {
                 generalQuery("updateQCPASSI222_M_LOT_NO", {
                   M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
+                  USE_YN: selectedRowsDataA.current[i].USE_YN,
                   VALUE: value,
                 })
                   // eslint-disable-next-line no-loop-func
@@ -278,6 +278,9 @@ const BLOCK = () => {
                   .catch((error) => {
                     console.log(error);
                   });
+                
+              } else {
+                
                 //err_code += ` Lỗi: ${response.data.message}`;
               }
             })

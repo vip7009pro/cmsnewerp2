@@ -102,19 +102,18 @@ const HOLDING = () => {
       for (let i = 0; i < selectedRowsData.current.length; i++) {
         await generalQuery("updateQCPASS_HOLDING", {
           M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
-          ID: selectedRowsData.current[i].ID,
+          ID: selectedRowsData.current[i].HOLD_ID,
           VALUE: value,
+          USE_YN: selectedRowsData.current[i].USE_YN,
         })
         // eslint-disable-next-line no-loop-func
         .then((response) => {
-          //console.log(response.data.data);
+          console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            
-
-          } else {
             generalQuery("updateQCPASSI222_M_LOT_NO", {
               M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
-              VALUE: value === 'Y' ? 'T': 'N',
+              VALUE: value,
+              USE_YN: selectedRowsData.current[i].USE_YN,
             })
               // eslint-disable-next-line no-loop-func
               .then((response) => {
@@ -126,7 +125,11 @@ const HOLDING = () => {
               .catch((error) => {
                 console.log(error);
               });
-            err_code += ` Lỗi: ${response.data.message}`;
+            
+
+          } else {
+            
+            //err_code += ` Lỗi: ${response.data.message}`;
           }
         })
         .catch((error) => {
