@@ -24,7 +24,12 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { MdDocumentScanner, MdShowChart, MdShower, MdUpdate } from "react-icons/md";
+import {
+  MdDocumentScanner,
+  MdShowChart,
+  MdShower,
+  MdUpdate,
+} from "react-icons/md";
 import { checkBP, f_updateStockM090 } from "../../../api/GlobalFunction";
 import { CustomCellRendererProps } from "ag-grid-react";
 import BNK_COMPONENT from "./BNK_COMPONENT";
@@ -38,7 +43,7 @@ const INCOMMING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showBNK, setShowBNK] = useState(false);
   const [isNewRegister, setNewRegister] = useState(false);
-  const [clickedRow, setClickedRow]= useState<IQC_INCOMMING_DATA | null>(null);
+  const [clickedRow, setClickedRow] = useState<IQC_INCOMMING_DATA | null>(null);
   const column_dtc_data = [
     { field: "TEST_NAME", headerName: "TEST_NAME", width: 60 },
     { field: "POINT_NAME", headerName: "NO", width: 40 },
@@ -101,7 +106,7 @@ const INCOMMING = () => {
         );
       },
     },
-   
+
     { field: "DTC_ID", headerName: "DTC_ID", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -159,7 +164,7 @@ const INCOMMING = () => {
     { field: "TDS_EMPL", headerName: "TDS_EMPL", width: 80 },
     { field: "TDS_UPD_DATE", headerName: "TDS_UPD_DATE", width: 80 },
   ];
- 
+
   const handletraDTCData = (dtc_id: number) => {
     generalQuery("dtcdata", {
       ALLTIME: true,
@@ -288,14 +293,17 @@ const INCOMMING = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [vendor, setVendor] = useState("");
 
-  const insertHoldingData = async (REASON: string, M_CODE: string, M_LOT_NO: string) => {
+  const insertHoldingData = async (
+    REASON: string,
+    M_CODE: string,
+    M_LOT_NO: string
+  ) => {
     let nextID: number = 0;
-    await generalQuery("getMaxHoldingID", {      
-    })
+    await generalQuery("getMaxHoldingID", {})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          if  (response.data.data.length > 0) {
+          if (response.data.data.length > 0) {
             nextID = response.data.data[0].MAX_ID + 1;
           }
         } else {
@@ -315,15 +323,13 @@ const INCOMMING = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-
         } else {
-          
         }
       })
       .catch((error) => {
         console.log(error);
       });
-      f_updateStockM090();
+    f_updateStockM090();
   };
   const updateIncomingData = async () => {
     if (selectedRowsData.current.length > 0) {
@@ -356,18 +362,22 @@ const INCOMMING = () => {
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-     
-                generalQuery("updateQCPASSI222", {
-                  M_CODE: selectedRowsData.current[i].M_CODE,
-                  LOT_CMS: selectedRowsData.current[i].LOT_CMS,
-                  VALUE: selectedRowsData.current[i].TOTAL_RESULT === "OK" ? "Y" : "N",
-                })
+              generalQuery("updateQCPASSI222", {
+                M_CODE: selectedRowsData.current[i].M_CODE,
+                LOT_CMS: selectedRowsData.current[i].LOT_CMS,
+                VALUE:
+                  selectedRowsData.current[i].TOTAL_RESULT === "OK" ? "Y" : "N",
+              })
                 // eslint-disable-next-line no-loop-func
                 .then((response) => {
                   //console.log(response.data.data);
                   if (response.data.tk_status !== "NG") {
-                    if(selectedRowsData.current[i].TOTAL_RESULT === "NG") {
-                      insertHoldingData(selectedRowsData.current[i].REMARK, selectedRowsData.current[i].M_CODE, selectedRowsData.current[i].LOT_CMS)
+                    if (selectedRowsData.current[i].TOTAL_RESULT === "NG") {
+                      insertHoldingData(
+                        selectedRowsData.current[i].REMARK,
+                        selectedRowsData.current[i].M_CODE,
+                        selectedRowsData.current[i].LOT_CMS
+                      );
                     }
                   } else {
                   }
@@ -375,7 +385,6 @@ const INCOMMING = () => {
                 .catch((error) => {
                   console.log(error);
                 });
-               
             } else {
               err_code += ` Lỗi: ${response.data.message}`;
             }
@@ -417,8 +426,12 @@ const INCOMMING = () => {
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-              if(value === 'N') {
-                insertHoldingData(selectedRowsData.current[i].REMARK, selectedRowsData.current[i].M_CODE, selectedRowsData.current[i].LOT_CMS)
+              if (value === "N") {
+                insertHoldingData(
+                  selectedRowsData.current[i].REMARK,
+                  selectedRowsData.current[i].M_CODE,
+                  selectedRowsData.current[i].LOT_CMS
+                );
               }
             } else {
               err_code += ` Lỗi: ${response.data.message}`;
@@ -446,7 +459,7 @@ const INCOMMING = () => {
             console.log(error);
           });
       }
-     
+
       if (err_code === "") {
         Swal.fire("Thông báo", "SET thành công", "success");
         handletraIQC1Data();
@@ -568,34 +581,105 @@ const INCOMMING = () => {
     },
     { field: "INS_DATE", headerName: "REG_DATE", resizable: true, width: 60 },
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80, cellRenderer: (params: any) => {
-      return (
-        <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue', borderRadius: '5px'}}>{params.data.M_NAME}</div>
-      )
-    } },
-    { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 60, cellRenderer: (params: any) => {
-      return (
-        <div style={{textAlign: 'left', fontWeight: 'normal', color: 'blue', borderRadius: '5px'}}>{params.data.WIDTH_CD}</div>
-      )
-    } },
-    { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 60, cellRenderer: (params: any) => {
-      if(params.data.TOTAL_RESULT === "OK") {
+    {
+      field: "M_NAME",
+      headerName: "M_NAME",
+      resizable: true,
+      width: 80,
+      cellRenderer: (params: any) => {
         return (
-          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'blue', backgroundColor: '#96f53d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
-        )
-      } else if(params.data.TOTAL_RESULT === "NG") {
+          <div
+            style={{
+              textAlign: "left",
+              fontWeight: "normal",
+              color: "blue",
+              borderRadius: "5px",
+            }}
+          >
+            {params.data.M_NAME}
+          </div>
+        );
+      },
+    },
+    {
+      field: "WIDTH_CD",
+      headerName: "SIZE",
+      resizable: true,
+      width: 60,
+      cellRenderer: (params: any) => {
         return (
-          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'white', backgroundColor: '#f73d3d', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
-        )
-      } else {
-        return (
-          <div style={{textAlign: 'center', fontWeight: 'bold', color: 'black', backgroundColor: '#e1f061', borderRadius: '5px'}}>{params.data.M_LOT_NO}</div>
-        )
-      }
-    } },
+          <div
+            style={{
+              textAlign: "left",
+              fontWeight: "normal",
+              color: "blue",
+              borderRadius: "5px",
+            }}
+          >
+            {params.data.WIDTH_CD}
+          </div>
+        );
+      },
+    },
+    {
+      field: "M_LOT_NO",
+      headerName: "M_LOT_NO",
+      resizable: true,
+      width: 60,
+      cellRenderer: (params: any) => {
+        if (params.data.TOTAL_RESULT === "OK") {
+          return (
+            <div
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "blue",
+                backgroundColor: "#96f53d",
+                borderRadius: "5px",
+              }}
+            >
+              {params.data.M_LOT_NO}
+            </div>
+          );
+        } else if (params.data.TOTAL_RESULT === "NG") {
+          return (
+            <div
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "white",
+                backgroundColor: "#f73d3d",
+                borderRadius: "5px",
+              }}
+            >
+              {params.data.M_LOT_NO}
+            </div>
+          );
+        } else {
+          return (
+            <div
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "black",
+                backgroundColor: "#e1f061",
+                borderRadius: "5px",
+              }}
+            >
+              {params.data.M_LOT_NO}
+            </div>
+          );
+        }
+      },
+    },
     { field: "LOT_CMS", headerName: "LOT_CMS", resizable: true, width: 80 },
     { field: "LOTNCC", headerName: "LOT_VENDOR", resizable: true, width: 80 },
-    { field: "LOT_VENDOR_IQC", headerName: "LOT_VENDOR_IQC", resizable: true, width: 80 },
+    {
+      field: "LOT_VENDOR_IQC",
+      headerName: "LOT_VENDOR_IQC",
+      resizable: true,
+      width: 80,
+    },
     { field: "CUST_CD", headerName: "CUST_CD", resizable: true, width: 80 },
     {
       field: "CUST_NAME_KD",
@@ -675,28 +759,31 @@ const INCOMMING = () => {
                       })
                         // eslint-disable-next-line no-loop-func
                         .then((response) => {
-                          console.log('ketqua',response.data);
+                          console.log("ketqua", response.data);
                           if (response.data.tk_status !== "NG") {
-                       
-                              generalQuery("updateQCPASSI222", {
-                                M_CODE: params.data.M_CODE,
-                                LOT_CMS: params.data.LOT_CMS,
-                                VALUE: params.data.TOTAL_RESULT === "OK" ? "Y" : "N",
-                              })
-                                // eslint-disable-next-line no-loop-func
-                                .then((response) => {
-                                  //console.log(response.data.data);
-                                  if (response.data.tk_status !== "NG") {
-                                    if(params.data.TOTAL_RESULT === "NG") {
-                                      insertHoldingData(params.data.REMARK, params.data.M_CODE, params.data.LOT_CMS)
-                                    }
-                                  } else {
+                            generalQuery("updateQCPASSI222", {
+                              M_CODE: params.data.M_CODE,
+                              LOT_CMS: params.data.LOT_CMS,
+                              VALUE:
+                                params.data.TOTAL_RESULT === "OK" ? "Y" : "N",
+                            })
+                              // eslint-disable-next-line no-loop-func
+                              .then((response) => {
+                                //console.log(response.data.data);
+                                if (response.data.tk_status !== "NG") {
+                                  if (params.data.TOTAL_RESULT === "NG") {
+                                    insertHoldingData(
+                                      params.data.REMARK,
+                                      params.data.M_CODE,
+                                      params.data.LOT_CMS
+                                    );
                                   }
-                                })
-                                .catch((error) => {
-                                  console.log(error);
-                                });
-                            
+                                } else {
+                                }
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                              });
 
                             Swal.fire(
                               "Thông báo",
@@ -731,7 +818,7 @@ const INCOMMING = () => {
           </div>
         );
       },
-    },    
+    },
     /* { field: 'CHECKSHEET',headerName: 'CHECKSHEET', resizable: true,width: 80, cellRenderer: (params: any) => {
       if(params.data.CHECKSHEET !== "Y"){
         return (
@@ -1484,9 +1571,8 @@ const INCOMMING = () => {
               className="buttonIcon"
               onClick={() => {
                 checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
-                  setShowBNK(prev => !prev);
+                  setShowBNK((prev) => !prev);
                 });
-                
               }}
             >
               <MdDocumentScanner color="#07b46cce" size={15} />
@@ -1567,13 +1653,17 @@ const INCOMMING = () => {
                 AUTO_JUDGEMENT:
                   element.IQC_TEST_RESULT === "OK"
                     ? auto_judgement
-                    : element.IQC_TEST_RESULT === "PD" && auto_judgement === "NG"
+                    : element.IQC_TEST_RESULT === "PD" &&
+                      auto_judgement === "NG"
                     ? "NG"
-                    : element.IQC_TEST_RESULT === "PD" && auto_judgement === "PD"
+                    : element.IQC_TEST_RESULT === "PD" &&
+                      auto_judgement === "PD"
                     ? "PD"
-                    : element.IQC_TEST_RESULT === "PD" && auto_judgement === "OK"
+                    : element.IQC_TEST_RESULT === "PD" &&
+                      auto_judgement === "OK"
                     ? "PD"
-                    : element.IQC_TEST_RESULT === "NG" && auto_judgement === "NG"
+                    : element.IQC_TEST_RESULT === "NG" &&
+                      auto_judgement === "NG"
                     ? "NG"
                     : "OK",
                 DTC_AUTO: auto_judgement,
@@ -1691,7 +1781,7 @@ const INCOMMING = () => {
       return false;
     }
   };
-  
+
   const aqlTable = [
     { MIN_ROLL_QTY: 1, MAX_ROLL_QTY: 1, TEST_QTY: 1 },
     { MIN_ROLL_QTY: 2, MAX_ROLL_QTY: 15, TEST_QTY: 2 },
@@ -2152,47 +2242,50 @@ const INCOMMING = () => {
           </div>
         </div>
       </div>
-      {
-        showBNK && (
-          
-         
-          <div className="incomingChecksheet">
-            <div className="formbutton" style={{display: "flex", justifyContent: "space-between", alignItems: "center",gap: '10px'}}>
-             <b style={{ color: "blue" }}>CheckSheet Kiểm Tra Incoming</b>
-             <Button
-             fullWidth={false}
-             color={"success"}
-             variant="contained"
-             size="small"
-             sx={{
-               fontSize: "0.7rem",
-               padding: "3px",
-               backgroundColor: "#4959e7",
-               color: "white",
-             }}
-             onClick={() => {
-               handlePrint();
-             }}
-           >
-             Print
-           </Button> 
-           <IconButton
+      {showBNK && (
+        <div className="incomingChecksheet">
+          <div
+            className="formbutton"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <b style={{ color: "blue" }}>CheckSheet Kiểm Tra Incoming</b>
+            <Button
+              fullWidth={false}
+              color={"success"}
+              variant="contained"
+              size="small"
+              sx={{
+                fontSize: "0.7rem",
+                padding: "3px",
+                backgroundColor: "#4959e7",
+                color: "white",
+              }}
+              onClick={() => {
+                handlePrint();
+              }}
+            >
+              Print
+            </Button>
+            <IconButton
               className="buttonIcon"
-              onClick={() => {               
-                  setShowBNK(prev => !prev);              
+              onClick={() => {
+                setShowBNK((prev) => !prev);
               }}
             >
               <GrClose color="#c20df0ce" size={15} />
               Close
             </IconButton>
-           </div> 
-             <div className="checksheetcpn" ref={incomingChecksheetPrintRef}>
-              <BNK_COMPONENT data={clickedRow} dtc_data={dtcDataTable}/>
-             </div>
           </div>
-          
-        )
-      }
+          <div className="checksheetcpn" ref={incomingChecksheetPrintRef}>
+            <BNK_COMPONENT data={clickedRow} dtc_data={dtcDataTable} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
