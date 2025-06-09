@@ -20,6 +20,7 @@ import {
 import Cookies from "universal-cookie";
 import { UserData } from "../../../api/GlobalInterface";
 import Box from "@mui/material/Box";
+import axios from "axios";
 interface MYCHAMCONG {
   MIN_TIME: string;
   MAX_TIME: string;
@@ -561,6 +562,35 @@ export default function AccountInfo() {
               >
                 Change Pass
               </Button>
+              <input type="file" onChange={(e) => {
+                setFile(e.target.files?.[0]);
+              }} />
+              <Button
+                onClick={() => {
+                  if (file) {                 
+                    uploadQuery(file, 'updatebe.exe', 'backend')
+                      .then(async (response) => {
+                        window.open("http://192.168.1.192:3005/update-be", "_blank");
+                        if(response.data.tk_status !== "NG"){       
+                          Swal.fire("Thông báo", "Upload thành công", "success");
+                          window.open("http://192.168.1.192:3005/update-be", "_blank");
+                        }
+                        else{
+                          Swal.fire("Thông báo", "Upload thất bại: " + response.data.message, "error");
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        Swal.fire("Thông báo", "Upload thất bại", "error");
+                      });
+                  } else {
+                    Swal.fire("Thông báo", "Chưa chọn file", "warning");
+                  }
+                }}
+              >
+                Update backend
+              </Button>
+
             </h3>{" "}
           </form>
           <br></br>

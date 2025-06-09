@@ -2417,20 +2417,20 @@ const BANGCHAMCONG = () => {
               CURRENT_TEAM: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.WORK_SHIF_NAME === "TEAM 1" ? 1 : 2,
               CURRENT_CA: row.WORK_SHIF_NAME === "Hành Chính" ? 0 : row.CALV ?? 0,
             })
-              .then((response) => {
-                //console.log(response.data);
-                if (response.data.tk_status === "OK") {
-                } else {
-                  Swal.fire(
-                    "Có lỗi",
-                    "Nội dung: " + response.data.message,
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                //console.log(error);
-              });
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status === "OK") {
+              } else {
+                Swal.fire(
+                  "Có lỗi",
+                  "Nội dung: " + response.data.message,
+                  "error"
+                );
+              }
+            })
+            .catch((error) => {
+              //console.log(error);
+            });
           }
           await generalQuery("fixTime", {
             APPLY_DATE: row.DATE_COLUMN,
@@ -2450,6 +2450,36 @@ const BANGCHAMCONG = () => {
             });
         }
         Swal.fire("Thông báo", "Fix time thành công", "success");
+      }
+    })
+  }
+  const handleFixTimeAutoHangLoat = () => {
+    //swal confirm to fix time
+    Swal.fire({
+      title: 'Bạn có chắc chắn muốn fix time không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, fix it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log(selectedRows.current);
+        await generalQuery("fixTimehangloat", {
+          TIME_DATA: selectedRows.current
+        })
+          .then((response) => {
+            console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              Swal.fire("Thông báo", "Fix time thành công", "success");
+            } else {
+              Swal.fire("Thông báo", "Fix time thất bại", "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+          });
       }
     })
   }
@@ -2550,7 +2580,7 @@ const BANGCHAMCONG = () => {
                 ["NHANSU"],
                 ["ALL"],
                 ["ALL"],
-                handleFixTimeAuto
+                handleFixTimeAutoHangLoat
               );
             }}>FIX AUTO TIME</Button>
             <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#1899d4' }} onClick={() => {
