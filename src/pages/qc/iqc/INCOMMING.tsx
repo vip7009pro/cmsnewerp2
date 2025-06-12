@@ -269,6 +269,7 @@ const INCOMMING = () => {
         M_THICKNESS: 0,
         M_THICKNESS_UPPER: 0,
         M_THICKNESS_LOWER: 0,
+        M_WIDTH: 0,
       },
     ]
   );
@@ -1850,6 +1851,8 @@ const INCOMMING = () => {
       M_THICKNESS: 0,
       M_THICKNESS_UPPER: 0,
       M_THICKNESS_LOWER: 0,
+      M_WIDTH: 0,
+      
     };
     setIQC1DataTable((prev) => {
       return [...prev, temp_row];

@@ -1475,7 +1475,8 @@ export interface IQC_INCOMMING_DATA {
   DTC_RESULT: string;
   M_THICKNESS: number;
   M_THICKNESS_UPPER: number;
-  M_THICKNESS_LOWER: number;
+  M_THICKNESS_LOWER: number; 
+  M_WIDTH: number;
 }
 export interface HOLDING_DATA {
   HOLD_ID: number;
@@ -3559,6 +3560,37 @@ export interface INSP_PATROL_DATA {
   FACTORY: string;
   OCCURR_TIME: string;
 }
+export interface DTC_PATROL_DATA {
+  CTR_CD: string;
+  PATROL_ID: number;
+  DTC_ID: number;
+  TEST_CODE: number;
+  TEST_TYPE_CODE: string;
+  DEFECT_PHENOMENON: string;
+  DEFECT_IMAGE_LINK: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  FILE_: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  TEST_TYPE_NAME: string;
+  TEST_NAME: string;
+  G_CODE: string;
+  M_LOT_NO: string;
+  M_CODE: string;
+  WORK_POSITION_CODE: string;
+  WORK_POSITION_NAME: string;
+  CUST_NAME_KD: string;
+  VENDOR: string;
+  M_FACTORY: string;
+  FACTORY: string;
+  
+}
+
 export interface MENU_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;

@@ -80,6 +80,7 @@ import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
 import { NotificationElement } from "../components/NotificationPanel/Notification";
 import { Field, Form } from "../pages/nocodelowcode/types/types";
+
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
@@ -8167,3 +8168,52 @@ export const f_deleteKPI = async (DATA: any) => {
     })
   return kq;
 }
+
+
+const importPublicKey = async (pem: string): Promise<CryptoKey> => {
+  try {
+    // Loại bỏ header/footer PEM và khoảng trắng
+    const pemContents = pem
+      .replace('-----BEGIN PUBLIC KEY-----', '')
+      .replace('-----END PUBLIC KEY-----', '')
+      .replace(/\n/g, '');
+    const binaryDer = atob(pemContents);
+    const binaryDerBuffer = new Uint8Array(
+      binaryDer.split('').map((char) => char.charCodeAt(0))
+    );
+    return await crypto.subtle.importKey(
+      'spki',
+      binaryDerBuffer,
+      {
+        name: 'RSA-OAEP',
+        hash: 'SHA-256'
+      },
+      true,
+      ['encrypt']
+    );
+  } catch (error) {
+    console.error('Lỗi khi chuyển đổi khóa public:', error);
+    throw new Error('Chuyển đổi khóa public thất bại');
+  }
+};
+
+export  const encryptPayload = async (payload: object, pemKey: string): Promise<string> => {
+  try {
+    const publicKey = await importPublicKey(pemKey);
+    const payloadString = JSON.stringify(payload);
+    const encodedPayload = new TextEncoder().encode(payloadString);
+    const encrypted = await crypto.subtle.encrypt(
+      {
+        name: 'RSA-OAEP'
+      },
+      publicKey,
+      encodedPayload
+    );
+    // Chuyển thành base64 để gửi qua API
+    const encryptedArray = new Uint8Array(encrypted);
+    return btoa(String.fromCharCode(...encryptedArray));
+  } catch (error) {
+    console.error('Lỗi mã hóa:', error);
+    throw new Error('Mã hóa thất bại');
+  }
+};

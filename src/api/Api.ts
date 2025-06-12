@@ -12,6 +12,8 @@ import {
 /* import axios from 'axios'; */
 import axios from "axios";
 import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
+import { encryptPayload } from "./GlobalFunction";
+
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 export function getSever(): string {
@@ -78,14 +80,16 @@ export function login(user: string, pass: string) {
       ctr_cd: getCtrCd(),
     })
     .then((response: any) => {
-      var Jresult = response.data;      
+      var Jresult = response.data;    
+      console.log("Jresult", Jresult);  
       if (Jresult?.tk_status?.toUpperCase() === "OK") {       
         Swal.fire(
           "Thông báo",
           "Chúc mừng bạn, đăng nhập thành công !",
           "success"
         );       
-        cookies.set("token", Jresult.token_content, { path: "/" });
+        cookies.set("token", Jresult.token_content, { path: "/" });        
+        localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {
             
@@ -178,6 +182,7 @@ export function login(user: string, pass: string) {
 }
 export function logout() {
   cookies.set("token", "reset", { path: "/" });
+  localStorage.removeItem("publicKey");
   store.dispatch(
     update_socket({
       event: "logout",
@@ -202,14 +207,18 @@ export async function checkLogin() {
 export async function generalQuery(command: string, queryData: any) {
   const CURRENT_API_URL = getSever() + "/api";
   // console.log('API URL', CURRENT_API_URL);
+  let publicKey = localStorage.getItem("publicKey");
+  
+  let DATA = {
+    ...queryData,
+    token_string: cookies.get("token"),
+    CTR_CD: getCtrCd(),
+    COMPANY: getCompany(),
+  };
+  //let encryptedData = await encryptPayload(DATA, publicKey??"");
   let data = await axios.post(CURRENT_API_URL, {
     command: command,
-    DATA: {
-      ...queryData,
-      token_string: cookies.get("token"),
-      CTR_CD: getCtrCd(),
-      COMPANY: getCompany(),
-    },
+    DATA: DATA,
   });
   return data;
 }

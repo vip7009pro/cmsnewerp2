@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import './PATROL.scss'
 import PATROL_COMPONENT from './PATROL_COMPONENT'
 import PATROL_HEADER from './PATROL_HEADER'
-import { INSP_PATROL_DATA, PATROL_HEADER_DATA, PQC3_DATA } from '../../../api/GlobalInterface'
+import { DTC_PATROL_DATA, INSP_PATROL_DATA, PATROL_HEADER_DATA, PQC3_DATA } from '../../../api/GlobalInterface'
 import { generalQuery } from '../../../api/Api'
 import { Button, Checkbox } from '@mui/material'
 import moment from 'moment'
@@ -16,6 +16,7 @@ const PATROL = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
   const [inspectionPatrolTable, setInspectionPatrolTable] = useState<Array<INSP_PATROL_DATA>>([]);
+  const [dtcPatrolTable, setDtcPatrolTable] = useState<Array<DTC_PATROL_DATA>>([]);
   const fromdateRef = useRef((moment().format("YYYY-MM-DD")));
   const todateRef = useRef((moment().format("YYYY-MM-DD")));
   const liveStream = useRef(true);
@@ -65,6 +66,7 @@ const PATROL = () => {
             (element: INSP_PATROL_DATA, index: number) => {
               return {
                 ...element,
+                id: index
               };
             }
           );
@@ -126,6 +128,38 @@ const PATROL = () => {
         console.log(error);
       });
   };
+  const loadDTCPatrolData = () => {
+    generalQuery("loadDTCPatrol", {
+      FROM_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : todateRef.current,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: DTC_PATROL_DATA[] = response.data.data.map(
+            (element: DTC_PATROL_DATA, index: number) => {
+              return {
+                ...element,
+                INS_DATE: moment
+                  .utc(element.INS_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index
+              };
+            }
+          );
+          //console.log(loadeddata);
+          setDtcPatrolTable(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setDtcPatrolTable([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    
+  }
   const initFunction = () => {
     if (liveStream.current) {
       fromdateRef.current = moment().format('YYYY-MM-DD')
@@ -139,6 +173,7 @@ const PATROL = () => {
     }
     traPQC3();
     getInspectionPatrol();
+    loadDTCPatrolData();
   }
   useEffect(() => {
     initFunction();
@@ -225,12 +260,30 @@ const PATROL = () => {
                 EMPL_NO: ele.LINEQC_PIC
               }} />
             )
+          })         
+        }
+        {
+           dtcPatrolTable.map((ele: DTC_PATROL_DATA, index: number) => {
+            return (
+              <PATROL_COMPONENT key={index} data={{
+                CUST_NAME_KD: ele.M_CODE !=='B0000035' ? ele.VENDOR: ele.CUST_NAME_KD,
+                DEFECT: ele.DEFECT_PHENOMENON,
+                EQ: ele.TEST_NAME,
+                FACTORY: ele.M_CODE !=='B0000035'? ele.M_FACTORY: ele.FACTORY,
+                G_NAME_KD: ele.M_CODE !=='B0000035' ?  ele.M_NAME + '|' + ele.WIDTH_CD :  ele.G_NAME_KD,
+                INSPECT_QTY: 5,
+                INSPECT_NG: 5,
+                LINK: `/DTC_PATROL/${ele.DTC_ID}_${ele.TEST_CODE}${ele.FILE_}`,
+                TIME: ele.INS_DATE,
+                EMPL_NO: ele.INS_EMPL
+              }} />
+            )
           })
         }
       </div>
       <div className="row">
         {
-          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) => element.PHANLOAI === 'NL').map((ele: INSP_PATROL_DATA, index: number) => {
+          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) => element.PHANLOAI === 'NL' || element.PHANLOAI === 'PK').map((ele: INSP_PATROL_DATA, index: number) => {
             return (
               <PATROL_COMPONENT key={index} data={{
                 CUST_NAME_KD: ele.CUST_NAME_KD,
@@ -247,27 +300,7 @@ const PATROL = () => {
             )
           })
         }
-      </div>
-      <div className="row">
-        {
-          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) => element.PHANLOAI === 'PK').map((ele: INSP_PATROL_DATA, index: number) => {
-            return (
-              <PATROL_COMPONENT key={index} data={{
-                CUST_NAME_KD: ele.CUST_NAME_KD,
-                DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
-                EQ: ele.EQUIPMENT_CD,
-                FACTORY: ele.FACTORY,
-                G_NAME_KD: ele.G_NAME_KD,
-                INSPECT_QTY: ele.INSPECT_QTY,
-                INSPECT_NG: ele.DEFECT_QTY,
-                LINK: `/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
-                TIME: ele.OCCURR_TIME,
-                EMPL_NO: ele.INSP_PIC
-              }} />
-            )
-          })
-        }
-      </div>
+      </div>      
     </div>
   )
 }

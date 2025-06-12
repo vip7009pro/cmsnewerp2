@@ -34,10 +34,15 @@ const BNK_COMPONENT = ({
     thickness_upper: data?.M_THICKNESS_UPPER ?? 0,
     thickness_lower: data?.M_THICKNESS_LOWER ?? 0,
   });
+  const [m_width, setMWidth] = useState(data?.M_WIDTH ?? 0);
+  const [thickness_result, setThicknessResult] = useState(data?.THICKNESS ?? 0);
+
   let temp_thickness = (data?.M_THICKNESS ?? 0) <= 0;
   console.log("temp_thickness", temp_thickness);
   const [showSetThickness, setShowSetThickness] = useState(false);
-  console.log("showSetThickness", showSetThickness);
+  const [showSetWidth, setShowSetWidth] = useState(false);
+  const [showSetThicknessResult, setShowSetThicknessResult] = useState(false);
+
   const getMThickness = () => {
     console.log("vao day");
     generalQuery("checkM_THICKNESS", { M_NAME: data?.M_NAME })
@@ -56,6 +61,80 @@ const BNK_COMPONENT = ({
         console.log(error);
       });
   };
+  const getMWidth = async () => {
+    if(data?.IQC_TEST_RESULT ==='OK') {
+      await  generalQuery("update_M_WIDTH_AUTO_IQC1", { IQC1_ID: data?.IQC1_ID })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+   
+
+    console.log("vao day");
+   await  generalQuery("checkM_WIDTH", { M_NAME: data?.M_NAME })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          if (response.data.data.length > 0) {
+            setMWidth(response.data.data[0].M_WIDTH);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getMWidthAnDMThicknessResult = () => {
+    console.log("vao day");
+    generalQuery("getMWidthAndThicknessResult", { IQC1_ID: data?.IQC1_ID })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          if (response.data.data.length > 0) {
+            setMWidth(response.data.data[0]?.M_WIDTH ?? 0);
+            setThicknessResult(response.data.data[0]?.THICKNESS ?? 0);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const updateM_WIDTH = async () => {
+    await generalQuery("updateMWidthResult", {
+      IQC1_ID: data?.IQC1_ID,
+      M_WIDTH: m_width,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          setShowSetWidth(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setShowSetWidth(false);
+    getMWidthAnDMThicknessResult();
+  };
+  const updateThicknessResult = async () => {
+    await generalQuery("updateThickness", {
+      IQC1_ID: data?.IQC1_ID,
+      THICKNESS: thickness_result,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          setShowSetThicknessResult(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setShowSetThicknessResult(false);
+    getMWidthAnDMThicknessResult();
+  };  
   const getTestQty = (total_roll: number) => {
     const testQty = aqlTable.find(
       (element) =>
@@ -65,6 +144,8 @@ const BNK_COMPONENT = ({
   };
   useEffect(() => {
     getMThickness();
+    getMWidth();
+    getMWidthAnDMThicknessResult();
   }, []);
   return (
     <div className="material-check">
@@ -244,7 +325,7 @@ const BNK_COMPONENT = ({
                   color: m_thickness.thickness === 0 ? "red" : "",
                 }}
               >
-                {showSetThickness && (
+                {(showSetThickness || m_thickness.thickness === 0 || m_thickness.thickness === null) && (
                   <div
                     style={{
                       display: "flex",
@@ -345,8 +426,76 @@ const BNK_COMPONENT = ({
                   <td>{data?.IQC_TEST_RESULT === "OK" ? "OK" : ""}</td>
                   <td>{data?.IQC_TEST_RESULT === "OK" ? "OK" : ""}</td>
                   <td>{data?.IQC_TEST_RESULT === "OK" ? "OK" : ""}</td>
-                  <td>{data?.IQC_TEST_RESULT === "OK" ? "OK" : ""}</td>
-                  <td>{data?.IQC_TEST_RESULT === "OK" ? "OK" : ""}</td>
+                  <td>
+                  {(showSetWidth || m_width === 0) && index ===0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="number"
+                      style={{ width: "50px" }}
+                      value={m_width}
+                      onChange={(e) =>
+                        setMWidth(Number(e.target.value))
+                        }                      
+                    />
+                    <button
+                      onClick={() => {
+                        updateM_WIDTH();
+                      }}
+                    >
+                      Set
+                    </button>
+                  </div>
+                )}
+                {(!showSetWidth) && index ===0&& (
+                  <div
+                    onClick={() => setShowSetWidth(true)}
+                    style={{ textAlign: "center" }}
+                  >
+                    {m_width}
+                  </div>
+                )}
+                  </td>
+                  <td>
+                  {(showSetThicknessResult || thickness_result === 0) && index ===0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="number"
+                      style={{ width: "50px" }}
+                      value={thickness_result}
+                      onChange={(e) =>
+                        setThicknessResult(Number(e.target.value))
+                        }                      
+                    />
+                    <button
+                      onClick={() => {
+                        updateThicknessResult();
+                      }}
+                    >
+                      Set
+                    </button>
+                  </div>
+                )}{" "}
+                {!showSetThicknessResult && index ===0&& (
+                  <div
+                    onClick={() => setShowSetThicknessResult(true)}
+                    style={{ textAlign: "center" }}
+                  >
+                    {thickness_result}
+                  </div>
+                )}
+                  </td>
                 </tr>
               )
             )}
