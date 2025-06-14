@@ -12,7 +12,7 @@ import {
 /* import axios from 'axios'; */
 import axios from "axios";
 import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
-import { encryptPayload } from "./GlobalFunction";
+import { encryptData } from "./GlobalFunction";
 
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
@@ -78,6 +78,12 @@ export function login(user: string, pass: string) {
       user: user,
       pass: pass,
       ctr_cd: getCtrCd(),
+      DATA: {
+        CTR_CD: getCtrCd(),
+        COMPANY: getCompany(),
+        USER: user,
+        PASS: pass,
+      }
     })
     .then((response: any) => {
       var Jresult = response.data;    
@@ -198,9 +204,16 @@ export function logout() {
 export async function checkLogin() {
   let API_URL = getSever() + "/api";
   let UPLOAD_URL = getSever() + "/uploadfile";
+  let publicKey = localStorage.getItem("publicKey");
+  console.log("publicKey",publicKey)
+  let datacheck = {
+    CTR_CD: getCtrCd(),
+    token_string: cookies.get("token")
+  }
+  let encryptedData = await encryptData(publicKey??"",datacheck);
   let data = await axios.post(API_URL, {
     command: "checklogin",
-    DATA: { CTR_CD: getCtrCd(), token_string: cookies.get("token") },
+    DATA: encryptedData,
   });
   return data;
 }
@@ -215,10 +228,11 @@ export async function generalQuery(command: string, queryData: any) {
     CTR_CD: getCtrCd(),
     COMPANY: getCompany(),
   };
-  //let encryptedData = await encryptPayload(DATA, publicKey??"");
+  //console.log("publicKey",publicKey)
+  let encryptedData = await encryptData(publicKey??"",DATA);
   let data = await axios.post(CURRENT_API_URL, {
     command: command,
-    DATA: DATA,
+    DATA: encryptedData,
   });
   return data;
 }
