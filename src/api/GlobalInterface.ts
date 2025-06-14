@@ -894,6 +894,7 @@ export interface DiemDanhNhomData {
   JOB_NAME: string;
   MAINDEPTNAME: string;
   MIDLAST_NAME: string;
+  FULL_NAME: string;
   OFF_ID: any;
   ON_OFF: any;
   OVERTIME: any;
