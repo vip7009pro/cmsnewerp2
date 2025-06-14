@@ -581,7 +581,7 @@ const INCOMMING = () => {
       width: 80,
     },
     { field: "INS_DATE", headerName: "REG_DATE", resizable: true, width: 60 },
-    { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80 },
+    { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 60 },
     {
       field: "M_NAME",
       headerName: "M_NAME",
@@ -606,7 +606,7 @@ const INCOMMING = () => {
       field: "WIDTH_CD",
       headerName: "SIZE",
       resizable: true,
-      width: 60,
+      width: 30,
       cellRenderer: (params: any) => {
         return (
           <div
@@ -837,14 +837,15 @@ const INCOMMING = () => {
 
     {
       field: "CHECKSHEET",
-      headerName: "CHECKSHEET",
+      headerName: "OUTGOING_VENDOR",
       width: 100,
       cellRenderer: (params: any) => {
-        let file: any = null;
-        const uploadFile2: any = async (e: any) => {
-          //console.log(file);
+        let inputRef: HTMLInputElement | null = null;
+      
+        // Hàm upload file
+        const uploadFile2 = async (file: File) => {
           checkBP(userData, ["QC"], ["ALL"], ["ALL"], async () => {
-            uploadQuery(file, params.data.IQC1_ID + ".jpg", "iqcincoming")
+            uploadQuery(file, params.data.IQC1_ID + ".pdf", "iqcincoming")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   generalQuery("updateIncomingChecksheet", {
@@ -853,6 +854,7 @@ const INCOMMING = () => {
                   })
                     .then((response) => {
                       if (response.data.tk_status !== "NG") {
+                        params.data.CHECKSHEET = "Y";
                         Swal.fire(
                           "Thông báo",
                           "Upload checksheet thành công",
@@ -882,7 +884,8 @@ const INCOMMING = () => {
               });
           });
         };
-        let hreftlink = "/iqcincoming/" + params.data.IQC1_ID + ".jpg";
+      
+        let hreftlink = "/iqcincoming/" + params.data.IQC1_ID + ".pdf";
         if (params.data.CHECKSHEET === "Y") {
           return (
             <span style={{ color: "gray" }}>
@@ -896,19 +899,24 @@ const INCOMMING = () => {
             <div className="uploadfile">
               <IconButton
                 className="buttonIcon"
-                onClick={(e) => {
-                  uploadFile2(e);
+                onClick={() => {
+                  if (inputRef) inputRef.click();
                 }}
               >
                 <AiOutlineCloudUpload color="yellow" size={15} />
                 Upload
               </IconButton>
               <input
-                accept=".jpg"
+                ref={ref => (inputRef = ref)}
+                style={{ display: "none" }}
+                accept=".pdf"
                 type="file"
-                onChange={(e: any) => {
-                  file = e.target.files[0];
-                  console.log(file);
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    uploadFile2(file);
+                    e.target.value = ""; // reset để chọn lại file cũ vẫn được
+                  }
                 }}
               />
             </div>
