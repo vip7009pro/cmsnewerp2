@@ -9,11 +9,12 @@ import { RootState } from "../../../redux/store";
 import { HOLDING_DATA, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_updateNCRIDForHolding } from "../../../api/GlobalFunction";
-
 const HOLDING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const selectedRowsData = useRef<Array<HOLDING_DATA>>([],);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData,);
+  const selectedRowsData = useRef<Array<HOLDING_DATA>>([]);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -25,42 +26,106 @@ const HOLDING = () => {
   const [mLotNo, setMLotNo] = useState("");
   const [mStatus, setMStatus] = useState("ALL");
   const [ncrId, setNCRID] = useState(0);
-
   const column_holding_table = [
-    { field: 'HOLD_ID',headerName: 'HOLD_ID', headerCheckboxSelection: true, checkboxSelection: true, resizable: true,width: 80 },
-    { field: 'NCR_ID',headerName: 'NCR_ID', resizable: true,width: 40 },
-    { field: 'HOLDING_MONTH',headerName: 'HOLDING_MONTH', resizable: true,width: 80 },
-    { field: 'FACTORY',headerName: 'FACTORY', resizable: true,width: 50 },
-    { field: 'WAHS_CD',headerName: 'WAHS_CD', resizable: true,width: 50 },
-    { field: 'LOC_CD',headerName: 'LOC_CD', resizable: true,width: 50 },
-    { field: 'M_LOT_NO',headerName: 'M_LOT_NO', resizable: true,width: 80 },
-    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 60 },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 80 },
-    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 80 },
-    { field: 'HOLDING_ROLL_QTY',headerName: 'HOLDING_ROLL_QTY', resizable: true,width: 80 },
-    { field: 'HOLDING_QTY',headerName: 'HOLDING_QTY', resizable: true,width: 80 },
-    { field: 'HOLDING_TOTAL_QTY',headerName: 'HOLDING_TOTAL_QTY', resizable: true,width: 80 },
-    { field: 'REASON',headerName: 'REASON', resizable: true,width: 80 },
-    { field: 'HOLDING_IN_DATE',headerName: 'HOLDING_IN_DATE', resizable: true,width: 80 },
-    { field: 'HOLDING_OUT_DATE',headerName: 'HOLDING_OUT_DATE', resizable: true,width: 80 },
-    { field: 'VENDOR_LOT',headerName: 'VENDOR_LOT', resizable: true,width: 80 },
-    { field: 'USE_YN',headerName: 'USE_YN', resizable: true,width: 80 },
-    { field: 'INS_DATE',headerName: 'INS_DATE', resizable: true,width: 80 },
-    { field: 'INS_EMPL',headerName: 'INS_EMPL', resizable: true,width: 80 },
-    { field: 'UPD_DATE',headerName: 'UPD_DATE', resizable: true,width: 80 },
-    { field: 'UPD_EMPL',headerName: 'UPD_EMPL', resizable: true,width: 80 },
-    { field: 'QC_PASS',headerName: 'QC_PASS', resizable: true,width: 80 },
-    { field: 'QC_PASS_DATE',headerName: 'QC_PASS_DATE', resizable: true,width: 80 },
-    { field: 'QC_PASS_EMPL',headerName: 'QC_PASS_EMPL', resizable: true,width: 80 },
-    { field: 'PROCESS_STATUS',headerName: 'PROCESS_STATUS', resizable: true,width: 80 },
-    { field: 'PROCESS_DATE',headerName: 'PROCESS_DATE', resizable: true,width: 80 },
-    { field: 'PROCESS_EMPL',headerName: 'PROCESS_EMPL', resizable: true,width: 80 },
-   
+    {
+      field: "HOLD_ID",
+      headerName: "HOLD_ID",
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
+      resizable: true,
+      width: 80,
+    },
+    { field: "NCR_ID", headerName: "NCR_ID", resizable: true, width: 40 },
+    {
+      field: "HOLDING_MONTH",
+      headerName: "HOLDING_MONTH",
+      resizable: true,
+      width: 80,
+    },
+    { field: "FACTORY", headerName: "FACTORY", resizable: true, width: 50 },
+    { field: "WAHS_CD", headerName: "WAHS_CD", resizable: true, width: 50 },
+    { field: "LOC_CD", headerName: "LOC_CD", resizable: true, width: 50 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 80 },
+    { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 60 },
+    { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", resizable: true, width: 80 },
+    {
+      field: "HOLDING_ROLL_QTY",
+      headerName: "HOLDING_ROLL_QTY",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "HOLDING_QTY",
+      headerName: "HOLDING_QTY",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "HOLDING_TOTAL_QTY",
+      headerName: "HOLDING_TOTAL_QTY",
+      resizable: true,
+      width: 80,
+    },
+    { field: "REASON", headerName: "REASON", resizable: true, width: 80 },
+    {
+      field: "HOLDING_IN_DATE",
+      headerName: "HOLDING_IN_DATE",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "HOLDING_OUT_DATE",
+      headerName: "HOLDING_OUT_DATE",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "VENDOR_LOT",
+      headerName: "VENDOR_LOT",
+      resizable: true,
+      width: 80,
+    },
+    { field: "USE_YN", headerName: "USE_YN", resizable: true, width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", resizable: true, width: 80 },
+    { field: "INS_EMPL", headerName: "INS_EMPL", resizable: true, width: 80 },
+    { field: "UPD_DATE", headerName: "UPD_DATE", resizable: true, width: 80 },
+    { field: "UPD_EMPL", headerName: "UPD_EMPL", resizable: true, width: 80 },
+    { field: "QC_PASS", headerName: "QC_PASS", resizable: true, width: 80 },
+    {
+      field: "QC_PASS_DATE",
+      headerName: "QC_PASS_DATE",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "QC_PASS_EMPL",
+      headerName: "QC_PASS_EMPL",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "PROCESS_STATUS",
+      headerName: "PROCESS_STATUS",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "PROCESS_DATE",
+      headerName: "PROCESS_DATE",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "PROCESS_EMPL",
+      headerName: "PROCESS_EMPL",
+      resizable: true,
+      width: 80,
+    },
   ];
-
-  const updateNCRIDHolding = async () => {  
+  const updateNCRIDHolding = async () => {
     if (selectedRowsData.current.length > 0) {
-      if (ncrId ===0) {
+      if (ncrId === 0) {
         Swal.fire("Thông báo", "NCR ID phải khác 0", "error");
         return;
       }
@@ -68,24 +133,27 @@ const HOLDING = () => {
         title: "UPDATE NCR ID",
         text: "Đang UPDATE NCR ID",
         icon: "info",
-        showCancelButton: false,  
+        showCancelButton: false,
         allowOutsideClick: false,
         confirmButtonText: "OK",
         showConfirmButton: false,
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsData.current.length; i++) {
-       await f_updateNCRIDForHolding(selectedRowsData.current[i].HOLD_ID, ncrId);
+        await f_updateNCRIDForHolding(
+          selectedRowsData.current[i].HOLD_ID,
+          ncrId
+        );
       }
       if (err_code === "") {
-        Swal.fire("Thông báo", "UPDATE thành công", "success"); 
+        Swal.fire("Thông báo", "UPDATE thành công", "success");
       } else {
         Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
       }
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
-  };  
+  };
   const setQCPASS = async (value: string) => {
     //console.log(selectedRowsData.current);
     if (selectedRowsData.current.length > 0) {
@@ -106,37 +174,53 @@ const HOLDING = () => {
           VALUE: value,
           USE_YN: selectedRowsData.current[i].USE_YN,
         })
-        // eslint-disable-next-line no-loop-func
-        .then((response) => {
-          console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            generalQuery("updateQCPASSI222_M_LOT_NO", {
-              M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
-              VALUE: value,
-              USE_YN: selectedRowsData.current[i].USE_YN,
-            })
-              // eslint-disable-next-line no-loop-func
-              .then((response) => {
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                } else {
-                }
+          // eslint-disable-next-line no-loop-func
+          .then(async (response) => {
+            console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let USE_YN_I222 = "X";
+              await generalQuery("checkM_LOT_NO", {
+                M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
               })
-              .catch((error) => {
-                console.log(error);
-              });
-            
-
-          } else {
-            
-            //err_code += ` Lỗi: ${response.data.message}`;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-
+                // eslint-disable-next-line no-loop-func
+                .then((response) => {
+                  //console.log(response.data.data);
+                  if (response.data.tk_status !== "NG") {
+                    if (response.data.data.length > 0) {
+                      USE_YN_I222 = response.data.data[0].USE_YN;
+                    }
+                  } else {
+                    err_code += ` Lỗi: ${response.data.message}`;
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              console.log("USE_YN_I222", USE_YN_I222);
+              if (USE_YN_I222 !== "X") {
+                generalQuery("updateQCPASSI222_M_LOT_NO", {
+                  M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
+                  VALUE: value,
+                  USE_YN: selectedRowsData.current[i].USE_YN,
+                })
+                  // eslint-disable-next-line no-loop-func
+                  .then((response) => {
+                    //console.log(response.data.data);
+                    if (response.data.tk_status !== "NG") {
+                    } else {
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+            } else {
+              //err_code += ` Lỗi: ${response.data.message}`;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
       if (err_code === "") {
         Swal.fire("Thông báo", "SET thành công", "success");
@@ -189,26 +273,24 @@ const HOLDING = () => {
   const holdingDataAGTable = useMemo(() => {
     return (
       <AGTable
-        toolbar={
-          <div>
-            
-          </div>}
+        toolbar={<div></div>}
         columns={column_holding_table}
         data={holdingdatatable}
         onCellEditingStopped={(e) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }}
+        onRowClick={(e) => {
           //console.log(e.data)
-          
-        }} onSelectionChange={(e) => {
+        }}
+        onSelectionChange={(e) => {
           //console.log(e!.api.getSelectedRows())
-          selectedRowsData.current = e!.api.getSelectedRows();             
+          selectedRowsData.current = e!.api.getSelectedRows();
         }}
       />
-    )
+    );
   }, [holdingdatatable]);
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
       handletraHoldingData();
@@ -252,18 +334,18 @@ const HOLDING = () => {
                 QC_PASS_DATE:
                   element.QC_PASS_DATE !== null
                     ? moment
-                      .utc(element.QC_PASS_DATE)
-                      .format("YYYY-MM-DD HH:mm:ss")
+                        .utc(element.QC_PASS_DATE)
+                        .format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 id: index,
               };
-            },
+            }
           );
           setHoldingDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -273,33 +355,29 @@ const HOLDING = () => {
         console.log(error);
       });
   };
-
   const handleAutoUpdateReasonFromIQC1 = () => {
-  
-    generalQuery("updateReasonHoldingFromIQC1", {
-      
-    })
+    generalQuery("updateReasonHoldingFromIQC1", {})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-         
         } else {
-          
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }
-
+  };
   useEffect(() => {
     handleAutoUpdateReasonFromIQC1();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
     <div className="holding">
-      <div className="tracuuDataInspection" >
-        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+      <div className="tracuuDataInspection">
+        <div
+          className="tracuuDataInspectionform"
+          style={{ backgroundImage: theme.CMS.backgroundImage }}
+        >
           <div className="forminput">
             <div className="forminputcolumn">
               <label>
@@ -385,53 +463,116 @@ const HOLDING = () => {
                   value={ncrId}
                   onChange={(e) => setNCRID(parseInt(e.target.value))}
                 ></input>
-              </label>  
+              </label>
             </div>
             <div className="forminputcolumn">
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#fa1717' }} onClick={() => {
-                handletraHoldingData();
-              }}>Tra Holding</Button>
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#fffc5b', color: 'black' }} onClick={() => {
-                updateReason();
-              }}>Update Reason</Button>
-
+              <Button
+                color={"success"}
+                variant="contained"
+                size="small"
+                fullWidth={false}
+                sx={{
+                  fontSize: "0.6rem",
+                  padding: "3px",
+                  backgroundColor: "#fa1717",
+                }}
+                onClick={() => {
+                  handletraHoldingData();
+                }}
+              >
+                Tra Holding
+              </Button>
+              <Button
+                color={"success"}
+                variant="contained"
+                size="small"
+                fullWidth={false}
+                sx={{
+                  fontSize: "0.6rem",
+                  padding: "3px",
+                  backgroundColor: "#fffc5b",
+                  color: "black",
+                }}
+                onClick={() => {
+                  updateReason();
+                }}
+              >
+                Update Reason
+              </Button>
             </div>
             <div className="forminputcolumn">
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#07cc00' }} onClick={() => {
-                if (userData?.SUBDEPTNAME === "IQC") {
-                  setQCPASS("Y");
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error",
-                  );
-                }
-              }}>SET PASS</Button>
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                if (userData?.SUBDEPTNAME === "IQC") {
-                  setQCPASS("N");
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error",
-                  );
-                }
-              }}>SET FAIL</Button>
-              <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#cc004e' }} onClick={() => {
-                if (userData?.SUBDEPTNAME === "IQC") {
-                  updateNCRIDHolding();
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Bạn không phải người bộ phận IQC",
-                    "error",
-                  );
-                }
-              }}>UPDATE NCR ID</Button>
-
-
+              <Button
+                color={"success"}
+                variant="contained"
+                size="small"
+                fullWidth={false}
+                sx={{
+                  fontSize: "0.6rem",
+                  padding: "3px",
+                  backgroundColor: "#07cc00",
+                }}
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    setQCPASS("Y");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error"
+                    );
+                  }
+                }}
+              >
+                SET PASS
+              </Button>
+              <Button
+                color={"success"}
+                variant="contained"
+                size="small"
+                fullWidth={false}
+                sx={{
+                  fontSize: "0.6rem",
+                  padding: "3px",
+                  backgroundColor: "gray",
+                }}
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    setQCPASS("N");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error"
+                    );
+                  }
+                }}
+              >
+                SET FAIL
+              </Button>
+              <Button
+                color={"success"}
+                variant="contained"
+                size="small"
+                fullWidth={false}
+                sx={{
+                  fontSize: "0.6rem",
+                  padding: "3px",
+                  backgroundColor: "#cc004e",
+                }}
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    updateNCRIDHolding();
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error"
+                    );
+                  }
+                }}
+              >
+                UPDATE NCR ID
+              </Button>
             </div>
             <div className="forminputcolumn">
               <label>
@@ -446,7 +587,6 @@ const HOLDING = () => {
                   onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
-
             </div>
           </div>
         </div>
