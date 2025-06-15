@@ -10,11 +10,19 @@ import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { IconButton } from "@mui/material";
 import { BiLoaderCircle } from "react-icons/bi";
+import { calculateOvertime, OvertimeInput } from "../BangChamCong/OverTimeUtils";
 
 const LichSu_New = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+
+  const [totalTime, setTotalTime] = useState( {
+    overtime: 0,
+    workingtime:0,
+    approvaltime:0
+    });
+  const [basicSalary, setBasicSalary] = useState(0);
 
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhLichSuData>
@@ -534,6 +542,14 @@ const LichSu_New = () => {
             }
           );
           //console.log(loaded_data )
+          const totalOvertime = loaded_data.reduce((total, item) => total + (item.FINAL_OVERTIMES || 0), 0);
+          const totalWorkingTime = loaded_data.reduce((total, item) => total + (item.WORKING_MINUTES || 0), 0);
+          const totalApprovalTime = loaded_data.reduce((total, item) => total + (item.ON_OFF===0 ? item.APPROVAL_STATUS === 1 ? 1 : 0 : 0), 0);
+          setTotalTime({
+            overtime: totalOvertime,
+            workingtime: totalWorkingTime,
+            approvaltime: totalApprovalTime,
+          }); 
           setDiemDanhNhomTable(loaded_data);         
           Swal.fire(
             "Thông báo",
@@ -614,6 +630,62 @@ const LichSu_New = () => {
         >
           Search
         </button>
+      </div>
+      <div className='filterform'>
+        <label>
+          <b>Số ngày được phê duyệt nghỉ:</b>
+          <input
+          style={{width: '30px'}}
+            type='number'
+            value={totalTime.approvaltime}
+            onChange={(e) => setTotalTime({...totalTime, approvaltime: parseInt(e.target.value)})}
+          ></input> (ngày)
+        </label>
+        <label>
+          <b>Số phút hành chính:</b>{" "}
+          <input
+          style={{width: '50px'}}
+            type='number'
+            value={totalTime.workingtime}
+            onChange={(e) => setTotalTime({...totalTime, workingtime: parseInt(e.target.value)})}
+          ></input>(phút)
+        </label>
+        <label>
+          <b>Số phút tăng ca:</b>{" "}
+          <input
+          style={{width: '50px'}}
+            type='number'
+            value={totalTime.overtime}
+            onChange={(e) => setTotalTime({...totalTime, overtime: parseInt(e.target.value)})}
+          ></input>(phút)
+        </label>
+        <label>
+          <b>Lương cơ bản:</b>{" "}
+          <input
+          style={{width: '50px'}}
+            type='number'
+            value={basicSalary}
+            onChange={(e) => setBasicSalary(parseInt(e.target.value))}
+          ></input>(VNĐ)
+        </label>
+        <button
+          className='searchbutton'
+          onClick={() => {
+            
+            // Ví dụ sử dụng
+            const input: OvertimeInput = {
+              date: '2025-06-16', // Thứ Hai (ngày thường)
+              inTime: '20:00',
+              outTime: '08:00',
+            };
+            
+            console.log(calculateOvertime(input));
+          }}
+        >
+          Tính lương
+        </button>
+       
+       
       </div>
       <div className='maindept_table'>
         {
