@@ -67,12 +67,12 @@ const RNR = () => {
         }
       },
     },
-    { field: 'MIX1', headerName: 'MIX1', width: 80 },
+    /* { field: 'MIX1', headerName: 'MIX1', width: 80 },
     { field: 'MIX2', headerName: 'MIX2', width: 80 },
     { field: 'BAT_NHAM1', headerName: 'BAT_NHAM1', width: 80 },
     { field: 'BO_SOT1', headerName: 'BO_SOT1', width: 80 },
     { field: 'BAT_NHAM2', headerName: 'BAT_NHAM2', width: 80 },
-    { field: 'BO_SOT2', headerName: 'BO_SOT2', width: 80 },
+    { field: 'BO_SOT2', headerName: 'BO_SOT2', width: 80 }, */
     { field: 'RESULT_OK_NG', headerName: 'RESULT_OK_NG', width: 150 },
     { field: 'RESULT_DETAIL', headerName: 'RESULT_DETAIL', width: 150 },
     { field: 'UPD_DATE', headerName: 'UPD_DATE', width: 150 },
@@ -99,7 +99,7 @@ const RNR = () => {
         );
       },
     },
-    {
+    /* {
       field: 'BN_RATE1', headerName: 'BN_RATE1', width: 80, cellRenderer: (params: any) => {
         return (
           <span style={{ color: "blue", fontWeight: 'normal' }}>{params.data?.BN_RATE1?.toLocaleString('en-US', {
@@ -120,7 +120,7 @@ const RNR = () => {
           })}</span>
         );
       },
-    },
+    }, */
     {
       field: 'SCORE2', headerName: 'SCORE2', width: 80, cellRenderer: (params: any) => {
         if(params.data?.SCORE2 == -1)
@@ -141,7 +141,7 @@ const RNR = () => {
         
       },
     },  
-    {
+    /* {
       field: 'BN_RATE2', headerName: 'BN_RATE2', width: 80, cellRenderer: (params: any) => {
         if(params.data?.BN_RATE2 == -1)
         {
@@ -197,11 +197,11 @@ const RNR = () => {
         );
       }
       
-    },}, 
-    { field: 'BAT_NHAM1', headerName: 'BAT_NHAM1', width: 80 },
+    },},  */
+   /*  { field: 'BAT_NHAM1', headerName: 'BAT_NHAM1', width: 80 },
     { field: 'BO_SOT1', headerName: 'BO_SOT1', width: 80 },
     { field: 'BAT_NHAM2', headerName: 'BAT_NHAM2', width: 80 },
-    { field: 'BO_SOT2', headerName: 'BO_SOT2', width: 80 },
+    { field: 'BO_SOT2', headerName: 'BO_SOT2', width: 80 }, */
     {
       field: 'JUDGE1', headerName: 'JUDGE1', width: 80, cellRenderer: (params: any) => {
         if (params.data?.JUDGE1 === "PASS") {
@@ -236,6 +236,9 @@ const RNR = () => {
       },
     }
   ];
+  const column_DEPT_RNR_DATA =[
+
+  ]
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_TRA_RNR_DATA);
   const handletraRNRData = (selection: string) => {
@@ -299,23 +302,21 @@ const RNR = () => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
               const loadeddata: RNR_DATA_EMPL[] = response.data.data.map(
-                (element: RNR_DATA_EMPL, index: number) => {
-                  //summaryInput += element.INPUT_QTY_EA;
+                (element: RNR_DATA_EMPL, index: number) => {                  
                   return {
                     ...element,
                     SCORE2: element.TEST_TYPE !=='G_RNR'? -1 : element.SCORE2,
                     MIX2: element.TEST_TYPE !=='G_RNR'? -1 : element.MIX2,
                     JUDGE1: element.TEST_TYPE ==='G_RNR'? element.SCORE1 >= 80 && element.BAT_NHAM1 ===0 ? 'PASS' : 'FAIL' :  element.SCORE1 >= 80 ? 'PASS' : 'FAIL',
                     JUDGE2: element.TEST_TYPE ==='G_RNR'? (element.SCORE2 >= 80 && element.BAT_NHAM2 ===0? 'PASS' : 'FAIL') :'N/A',    
-                    BN_RATE1: element.TEST_TYPE ==='G_RNR'? element.BAT_NHAM1/element.SO_CAU : -1,
-                    BN_RATE2: element.TEST_TYPE ==='G_RNR'? element.BAT_NHAM2/element.SO_CAU : -1,
-                    BS_RATE1: element.TEST_TYPE ==='G_RNR'? element.BO_SOT1/element.SO_CAU : -1,
-                    BS_RATE2: element.TEST_TYPE ==='G_RNR'? element.BO_SOT2/element.SO_CAU : -1,
+                    BN_RATE1: element.TEST_TYPE ==='G_RNR'? element.BAT_NHAM1/element.SO_CAU : 0,
+                    BN_RATE2: element.TEST_TYPE ==='G_RNR'? element.BAT_NHAM2/element.SO_CAU : 0,
+                    BS_RATE1: element.TEST_TYPE ==='G_RNR'? element.BO_SOT1/element.SO_CAU : 0,
+                    BS_RATE2: element.TEST_TYPE ==='G_RNR'? element.BO_SOT2/element.SO_CAU : 0,
                     id: index,
                   };
                 },
-              );
-              //setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');
+              );              
               setRNRDataTable(loadeddata);
               setReadyRender(true);
               setisLoading(false);
@@ -425,7 +426,7 @@ const RNR = () => {
                 >
                   <option value="ALL">ALL</option>
                   <option value="Test_LT">Test_LT</option>
-                  <option value="G_RNR">G_RNR</option>
+                 {/*  <option value="G_RNR">G_RNR</option> */}
                   <option value="Test_CC">Test_CC</option>
                 </select>
               </label>
