@@ -10,7 +10,7 @@ const ISO = () => {
   return (
     <div className="iso">
       <MyTabs defaultActiveTab={0}>
-        <MyTabs.Tab title="EMPL G_RNR">
+        <MyTabs.Tab title="TEST">
           <div className="rnr">
             <RNR />
           </div>
