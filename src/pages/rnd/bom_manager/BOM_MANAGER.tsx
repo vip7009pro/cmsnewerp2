@@ -3897,7 +3897,7 @@ const BOM_MANAGER = () => {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={`/banve/${codefullinfo.G_CODE}.pdf`}
+                            href={`/banve/${codefullinfo.G_CODE}.pdf?v=${Date.now()}`}
                           >
                             LINK BẢN VẼ
                           </a>
@@ -3907,7 +3907,7 @@ const BOM_MANAGER = () => {
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={`/appsheet/Appsheet_${codefullinfo.G_CODE}.docx`}
+                            href={`/appsheet/Appsheet_${codefullinfo.G_CODE}.docx?v=${Date.now()}`}
                           >
                             LINK APPSHEET
                           </a>
