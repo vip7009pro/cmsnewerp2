@@ -556,7 +556,7 @@ const YCSXManager = () => {
             );
           }
         };
-        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf";
+        let hreftlink = "/banve/" + params.data.G_CODE + ".pdf?v=" + Date.now();
         if (params.data.BANVE === "Y")
           return (
             <div>
