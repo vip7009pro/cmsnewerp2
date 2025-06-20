@@ -7368,6 +7368,7 @@ export const f_downloadFile2 = async (
       method: "GET",
       headers: {
         "Content-Type": "application/octet-stream",
+        'Cache-Control': 'no-cache'
       },
     });
 
