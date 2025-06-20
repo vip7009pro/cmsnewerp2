@@ -552,10 +552,11 @@ const DKDTC = () => {
     getCameraDevices();
     startScanner();
     handletraDTCData();
+    getTestList();
     return ()=> {
       scanner.current.clear();       
     }  
-    //getTestList();
+  
   }, []);  
   return (
     <div className="dkdtc">
