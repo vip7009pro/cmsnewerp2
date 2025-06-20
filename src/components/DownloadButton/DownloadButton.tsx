@@ -7,7 +7,9 @@ export const DownloadButton = ({ filename}:{filename:string}) => {
   const [downloadProgress, setDownloadProgress] = useState(0);
 
   const handleDownload = () => {
-    const fullUrl = `${protocol}://${window.location.host}/globalfiles/${getCtrCd()}_${filename}`;
+    const version = Date.now();
+    console.log(version);
+    const fullUrl = `${protocol}://${window.location.host}/globalfiles/${getCtrCd()}_${filename}?v=${version}`;
     const hreftlink = encodeURI(fullUrl);
     
     f_downloadFile2(hreftlink, `${getCtrCd()}_${filename}`, setDownloadProgress);

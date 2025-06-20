@@ -6,8 +6,10 @@ export const DownloadButtonAll = ({ fullUrl,filename}:{fullUrl: string, filename
   const [downloadProgress, setDownloadProgress] = useState(0);
 
   const handleDownload = () => {    
-    const hreftlink = encodeURI(fullUrl);    
-    f_downloadFile2(hreftlink, `${getCtrCd()}_${filename}`, setDownloadProgress);
+    const hreftlink = encodeURI(fullUrl);     
+    const version = Date.now();
+    console.log(version);
+    f_downloadFile2(hreftlink, `${getCtrCd()}_${filename}?v=${version}`, setDownloadProgress);
   };
 
   return (
