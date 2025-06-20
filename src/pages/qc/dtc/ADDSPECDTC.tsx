@@ -543,7 +543,7 @@ const ADDSPECTDTC = () => {
     setTestList(tempList);
   }
   const dtcSpecColumn = [
-    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100, checkboxSelection: true , headerCheckboxSelection: true },
     { field: 'G_CODE', headerName: 'G_CODE', resizable: true, width: 100 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
     { field: 'M_CODE', headerName: 'M_CODE', resizable: true, width: 100 },
@@ -565,6 +565,7 @@ const ADDSPECTDTC = () => {
   const spectDTCTable = useMemo(() => {
     return (
       <AGTable
+      suppressRowClickSelection = {false}
         toolbar={
           <div>
           </div>}
