@@ -4,10 +4,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./SPECDTC.scss";
-import { DTC_SPEC_DATA } from "../../../api/GlobalInterface";
+import { DTC_SPEC_DATA, TestListTable } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 const SPECDTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -22,8 +23,14 @@ const SPECDTC = () => {
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     [],
   );
+  const [testlist, setTestList] = useState<Array<TestListTable>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+  const getTestList = async () => {
+    let tempList: TestListTable[] = await f_loadDTC_TestList();
+    tempList.unshift({ TEST_CODE: 0, TEST_NAME: 'ALL', SELECTED: false, })
+    setTestList(tempList);
+  }
   const dtcSpecColumn = [    
     { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,width: 100 },
     { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 100 },
@@ -123,6 +130,7 @@ const SPECDTC = () => {
   };
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
+    getTestList();
   }, []);
   return (
     <div className="specdtc">
@@ -191,23 +199,11 @@ const SPECDTC = () => {
                     setTestName(e.target.value);
                   }}
                 >
-                  <option value="0">ALL</option>
-                  <option value="1">Kích thước</option>
-                  <option value="2">Kéo keo</option>
-                  <option value="3">XRF</option>
-                  <option value="4">Điện trở</option>
-                  <option value="5">Tĩnh điện</option>
-                  <option value="6">Độ bóng</option>
-                  <option value="7">Phtalate</option>
-                  <option value="8">FTIR</option>
-                  <option value="9">Mài mòn</option>
-                  <option value="10">Màu sắc</option>
-                  <option value="11">TVOC</option>
-                  <option value="12">Cân nặng</option>
-                  <option value="13">Scanbarcode</option>
-                  <option value="14">Nhiệt cao Ẩm cao</option>
-                  <option value="15">Shock nhiệt</option>
-                  <option value="1002">Kéo keo 2 mặt</option>
+                 {testlist.map((item: TestListTable, index: number) => (
+                  <option key={index} value={item.TEST_CODE}>
+                    {item.TEST_NAME}
+                  </option>
+                ))}
                 </select>
               </label>
               <label>
