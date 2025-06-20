@@ -680,6 +680,11 @@ const LichSu_New = () => {
             };
             
             console.log(calculateOvertime(input));
+            Swal.fire(
+              "Thông báo",
+              "Lương lậu làm cái gì, được bao nhiêu đâu mà tính, khổ lắm !",
+              "error"
+            );
           }}
         >
           Tính lương
