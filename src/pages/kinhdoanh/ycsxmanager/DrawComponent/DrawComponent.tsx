@@ -26,9 +26,9 @@ const DrawComponent = ({
   const [page, setPage] = useState(1);
   const canvasRef = useRef(null);
   let draw_path = "/banve/";
-  console.log(draw_path + G_CODE + ".pdf");
+  const [version, setVersion] = useState(Date.now());
   const { pdfDocument, pdfPage } = usePdf({
-    file: draw_path + G_CODE + ".pdf",
+    file: draw_path + G_CODE + ".pdf?v=" + version,
     page,
     scale: 3,
     canvasRef,
