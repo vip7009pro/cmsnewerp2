@@ -20,13 +20,18 @@ import {
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { f_createKPI, f_deleteKPI, f_loadKPI, f_updateKPI } from "../../api/GlobalFunction";
+import { f_createKPI, f_deleteKPI, f_loadKPI, f_loadKPIList, f_updateKPI } from "../../api/GlobalFunction";
 import { KPI_DATA } from "../../api/GlobalInterface";
 import "./KPIManager.scss";
 type KPI_ROW = KPI_DATA & { id: number };
 export const KPIManager = () => {
   // State
-  const [kpiData, setKpiData] = useState<KPI_ROW[]>([]);
+  const [kpiData, setKpiData] = useState<KPI_ROW[]>([]); // Chi tiết KPI
+  const [kpiList, setKpiList] = useState<{KPI_NAME: string, id: number}[]>([]); // Danh sách KPI tổng quát (tên, id)
+  const [selectedKPI, setSelectedKPI] = useState<{KPI_NAME: string, id: number}>({
+    KPI_NAME: "",
+    id: 0
+  }); // KPI đang chọn
   const [selectedRows, setSelectedRows] = useState<KPI_ROW[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [isCreateMode, setIsCreateMode] = useState(false);
@@ -38,6 +43,29 @@ export const KPIManager = () => {
   });
   const gridRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const loadKPIList = () => {
+    f_loadKPIList().then((data: {KPI_NAME: string}[]) => {
+      setKpiList(data.map((row: {KPI_NAME: string}, idx: number) => ({ ...row, id: idx + 1 })));
+    });
+  }
+  
+  // Load danh sách KPI tổng quát khi mount
+  React.useEffect(() => {
+    // f_loadKPI trả về danh sách KPI tổng quát
+    loadKPIList();
+  }, []);
+
+  // Khi chọn KPI ở bảng trái
+  const handleSelectKPI = (kpi: {KPI_NAME: string, id: number}) => {
+    setSelectedKPI(kpi);
+    // Lấy chi tiết KPI này (giả sử f_loadKPI có thể filter theo tên)
+    f_loadKPI(kpi.KPI_NAME).then((data: KPI_DATA[]) => {
+      setKpiData(data.map((row, idx) => ({ ...row, id: idx + 1 })));
+    });
+  };
+
+
   // Columns for AGTable
   const columns = [
     { field: "id", headerName: "ID", width: 60 },
@@ -325,83 +353,105 @@ export const KPIManager = () => {
       </Button>
     </Toolbar>
   );
+  // Columns cho bảng bên trái (danh sách KPI)
+  const kpiListColumns = [
+    { field: "id", headerName: "ID", width: 50 },
+    { field: "KPI_NAME", headerName: "KPI Name", width: 170 },
+  ];
+
   return (
-    <Box className="kpi-manager">
-      <AGTable
-        ref={gridRef}
-        data={kpiData}
-        columns={columns}
-        toolbar={renderToolbar}
-        onSelectionChange={onSelectionChange}
-        showFilter={true}
-        suppressRowClickSelection={false}
-      />
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleImportExcel}
-        accept=".xlsx, .xls"
-        style={{ display: "none" }}
-      />
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box className="kpi-modal">
-          <Typography variant="h6" mb={2}>
-            Tạo mới KPI
-          </Typography>
-          <TextField
-            label="KPI Name"
-            value={form.KPI_NAME}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, KPI_NAME: e.target.value }))
-            }
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Year"
-            type="number"
-            value={form.KPI_YEAR}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, KPI_YEAR: Number(e.target.value) }))
-            }
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Period"
-            value={form.KPI_PERIOD}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, KPI_PERIOD: e.target.value }))
-            }
-            select
-            fullWidth
-            margin="normal"
-          >
-            <MenuItem value="Month">Month</MenuItem>
-          </TextField>
-          <TextField
-            label="Value Type"
-            value={form.VALUE_TYPE}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, VALUE_TYPE: e.target.value }))
-            }
-            select
-            fullWidth
-            margin="normal"
-          >
-            <MenuItem value="Number">Number</MenuItem>
-            <MenuItem value="Percentage">Percentage</MenuItem>
-          </TextField>
-          <Box mt={2} display="flex" justifyContent="flex-end">
-            <Button onClick={handleModalOk} variant="contained">
-              OK
-            </Button>
-            <Button onClick={() => setOpenModal(false)} sx={{ ml: 2 }}>
-              Cancel
-            </Button>
+    <Box className="kpi-manager" sx={{ display: 'flex', height: '100%' }}>
+      {/* Bảng bên trái: Danh sách KPI */}
+      <Box sx={{ width: 220, mr: 0, flexShrink: 0 }}>       
+        <AGTable
+        toolbar={<>KPI List</>}
+          data={kpiList}
+          columns={kpiListColumns}
+          onRowClick={(params: any) => handleSelectKPI(params.data)}
+          suppressRowClickSelection={false}       
+          onSelectionChange={(params: any) => {
+
+          }}  
+        />
+      </Box>
+      {/* Bảng bên phải: Chi tiết KPI */}
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <AGTable
+          ref={gridRef}
+          data={kpiData}
+          columns={columns}
+          toolbar={renderToolbar}
+          onSelectionChange={onSelectionChange}
+          showFilter={true}
+          suppressRowClickSelection={false}
+        />
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImportExcel}
+          accept=".xlsx, .xls"
+          style={{ display: "none" }}
+        />
+        <Modal open={openModal} onClose={() => setOpenModal(false)}>
+          <Box className="kpi-modal">
+            <Typography variant="h6" mb={2}>
+              Tạo mới KPI
+            </Typography>
+            <TextField
+              label="KPI Name"
+              value={form.KPI_NAME}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, KPI_NAME: e.target.value }))
+              }
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Year"
+              type="number"
+              value={form.KPI_YEAR}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, KPI_YEAR: Number(e.target.value) }))
+              }
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Period"
+              value={form.KPI_PERIOD}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, KPI_PERIOD: e.target.value }))
+              }
+              select
+              fullWidth
+              margin="normal"
+            >
+              <MenuItem value="Month">Month</MenuItem>
+            </TextField>
+            <TextField
+              label="Value Type"
+              value={form.VALUE_TYPE}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, VALUE_TYPE: e.target.value }))
+              }
+              select
+              fullWidth
+              margin="normal"
+            >
+              <MenuItem value="Number">Number</MenuItem>
+              <MenuItem value="Percentage">Percentage</MenuItem>
+            </TextField>
+            <Box mt={2} display="flex" justifyContent="flex-end">
+              <Button onClick={handleModalOk} variant="contained">
+                OK
+              </Button>
+              <Button onClick={() => setOpenModal(false)} sx={{ ml: 2 }}>
+                Cancel
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Modal>
+        </Modal>
+      </Box>
     </Box>
   );
 };
