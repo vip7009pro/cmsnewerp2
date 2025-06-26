@@ -187,9 +187,15 @@ const LICHSUTEMLOTSX = () => {
     { field: 'INS_DATE', headerName: 'INS_DATE', width: 100 },
     { field: 'G_CODE', headerName: 'G_CODE', width: 60 },
     { field: 'G_NAME', headerName: 'G_NAME', width: 120 },
+    { field: 'DESCR', headerName: 'DESCR', width: 120 },
     { field: 'M_LOT_NO', headerName: 'M_LOT_NO', width: 60 },
     { field: 'LOTNCC', headerName: 'LOTNCC', width: 100 },
     { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 60 },
+    { field: 'PROD_REQUEST_QTY', headerName: 'YCSX_QTY', width: 60, cellRenderer:(ele: any) => {
+      return (
+        <span style={{ color: '#067cca', fontWeight: 'normal' }}>{ele.data.PROD_REQUEST_QTY?.toLocaleString('en-US')}</span>
+      )
+    } },
     { field: 'PROCESS_LOT_NO', headerName: 'PROCESS_LOT_NO', width: 100, cellRenderer:(ele: any) => {
       return (
         <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.PROCESS_LOT_NO}</span>

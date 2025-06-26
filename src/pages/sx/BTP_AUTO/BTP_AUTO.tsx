@@ -73,6 +73,8 @@ const BTP_AUTO = () => {
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 50 },
     { field: "PROCESS_NUMBER", headerName: "CD", width: 30, type: "number" },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 60 },
+    { field: "M_NAME", headerName: "M_NAME", width: 60 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 60 },
     { field: "PROCESS_LOT_NO", headerName: "LOTSX", width: 60 },
     { field: "REMAIN_QTY_M", headerName: "TON_MET", width: 50, type: "number" },
     {
