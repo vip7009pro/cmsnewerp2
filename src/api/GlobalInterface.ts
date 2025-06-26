@@ -3773,6 +3773,7 @@ export interface PQC_PPM_DATA {
   NG_LOT: number;
   INSPECT_AMOUNT: number;
   NG_RATE: number;
+  KPI_VALUE?: number;
 }
 export interface OQC_TREND_DATA {
   DELIVERY_DATE?: string;
@@ -3954,6 +3955,7 @@ export interface SX_TREND_LOSS_DATA {
   PURE_INPUT: number;
   PURE_OUTPUT: number;
   LOSS_RATE: number;
+  KPI_VALUE?: number;
 }
 export interface MASTER_MATERIAL_HSD {
   M_NAME: string;
@@ -4505,6 +4507,8 @@ export interface BTP_AUTO_DATA2 {
   EQ_NAME: string;
   G_CODE: string;
   G_NAME: string;
+  M_NAME: string;
+  WIDTH_CD: number;
   PROD_TYPE: string;
   UNIT: string;
   PROD_REQUEST_NO: string;
