@@ -472,6 +472,44 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       }
     });
   };
+/*   async function listUSBPrinters() {
+    try {
+        // Lấy danh sách thiết bị USB đã được cấp quyền
+        const devices = await navigator.usb.getDevices();
+        console.log('Danh sách thiết bị USB:');
+        devices.forEach((device) => {
+            console.log(`- Tên: ${device.productName || 'Không xác định'}, VendorID: ${device.vendorId}, ProductID: ${device.productId}`);
+        });
+        return devices;
+    } catch (error) {
+        console.error('Lỗi khi liệt kê thiết bị:', error);
+        return [];
+    }
+} */
+
+// Yêu cầu người dùng chọn thiết bị USB mới
+/* async function requestUSBPrinters() {
+    try {
+        const device = await navigator.usb.requestDevice({
+            filters: [], // VendorID của Xerox, thay nếu cần
+        });
+        console.log('device', device)
+        console.log('Thiết bị đã chọn:', device.productName, device.vendorId, device.productId);
+        return [device];
+    } catch (error) {
+        console.error('Lỗi khi yêu cầu thiết bị:', error);
+        return [];
+    }
+} */
+
+const handleListPrinters = async () => {
+ // const existingDevices = await listUSBPrinters();
+ // console.log('existing device', existingDevices)
+ // if (existingDevices.length === 0) {
+      //await requestUSBPrinters(); // Yêu cầu người dùng chọn thiết bị
+ // }
+};
+
   useEffect(() => { }, [trigger]);
   return (
     (<div className="design_window">
@@ -1053,6 +1091,15 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           >
             <BiPrinter color="black" size={15} />
             Print
+          </IconButton>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              handleListPrinters();
+            }}
+          >
+            <BiPrinter color="black" size={15} />
+            Print USB
           </IconButton>
           X:
           <input
