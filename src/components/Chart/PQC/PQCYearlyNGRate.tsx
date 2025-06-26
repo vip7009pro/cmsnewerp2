@@ -164,6 +164,13 @@ const PQCYearlyNGRate = ({
           stroke='green'
           label={{ position: "top", fill:'black', formatter: labelFormatterPercent, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
         />
+        <Line
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='KPI_VALUE'
+          stroke='blue'
+          label={{ position: "top", fill:'black', formatter: labelFormatterPercent, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+        />
       </ComposedChart>
     </CustomResponsiveContainer>
   );
