@@ -3319,7 +3319,7 @@ export const f_addQLSXPLAN = async (
             PLAN_ID: NextPlanID,
             PLAN_DATE: selectedPlanDate,
             PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
-            PLAN_QTY:
+            PLAN_QTY: getCompany() === 'PVN' ? (TON<0 ? 0 : TON) :
               TON <= 0 ? 0 : TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
             PLAN_EQ: selectedMachine,
             PLAN_FACTORY: selectedFactory,
@@ -8067,6 +8067,23 @@ export const f_addField = async (DATA: any) => {
 export const f_loadKPI = async (KPI_NAME: string) => {
   let kq: KPI_DATA[] = [];
   await generalQuery("loadKPI", { KPI_NAME: KPI_NAME })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        if(response.data.data.length > 0){
+          kq = response.data.data;
+        }
+      }
+      else {
+        Swal.fire('Thông báo', 'Không có KPI', 'error');
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_loadKPIList = async () => {
+  let kq: {KPI_NAME: string}[] = [];
+  await generalQuery("loadKPIList", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         if(response.data.data.length > 0){
