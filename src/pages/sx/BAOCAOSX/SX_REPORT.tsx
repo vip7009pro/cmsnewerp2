@@ -163,7 +163,7 @@ const SX_REPORT = () => {
                 LOSS_RATE: 1 - element.PURE_OUTPUT * 1.0 / element.PURE_INPUT,
               };
             },
-          );
+          );         
           setWeeklySXLoss(loadeddata);
         } else {
           setWeeklySXLoss([]);
@@ -233,6 +233,7 @@ const SX_REPORT = () => {
         console.log(error);
       });
   };
+
   const handle_newCodeByCustomer = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
