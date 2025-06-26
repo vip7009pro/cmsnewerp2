@@ -26,7 +26,7 @@ const DiemDanhNhomCMS = lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhomCM
 const DiemDanhNhomBPCMS = lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhBPCMS"));
 /* import NavBarNew from "../../components/Navbar/NavBarNew"; */
 
-export const current_ver: number = getCompany() === "CMS" ? 2629 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2630 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
