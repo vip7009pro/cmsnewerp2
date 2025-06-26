@@ -623,6 +623,89 @@ const OQC_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className="graph">
+        <span className="section_title">2. OQC NG Trending</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">
+                  Daily NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(dailyppm, "DailyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
+                <OQCDailyNGRate
+                  dldata={[...dailyppm].reverse()}
+                  processColor="#85d9f3"
+                  materialColor="#ff0000"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">
+                  Weekly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(weeklyppm, "WeeklyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
+                <OQCWeeklyNGRate
+                  dldata={[...weeklyppm].reverse()}
+                  processColor="#85d9f3"
+                  materialColor="#ff0000"
+                />
+              </div>
+            </div>
+            <div className="monthlyweeklygraph">
+              <div className="dailygraph">
+                <span className="subsection">
+                  Monthly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(monthlyppm, "MonthlyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
+                <OQCMonthlyNGRate
+                  dldata={[...monthlyppm].reverse()}
+                  processColor="#85d9f3"
+                  materialColor="#ff0000"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">
+                  Yearly NG Rate{" "}
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      SaveExcel(yearlyppm, "YearlyPPMData");
+                    }}
+                  >
+                    <AiFillFileExcel color="green" size={15} />
+                    Excel
+                  </IconButton>
+                </span>
+                <OQCYearlyNGRate
+                  dldata={[...yearlyppm].reverse()}
+                  processColor="#85d9f3"
+                  materialColor="#ff0000"
+                />
+              </div>
+            </div>
+          </div>
           <span className="section_title">2. NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
@@ -706,89 +789,7 @@ const OQC_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="section_title">2. OQC NG Trending</span>
-          <div className="dailygraphtotal">
-            <div className="dailygraphtotal">
-              <div className="dailygraph">
-                <span className="subsection">
-                  Daily NG Rate{" "}
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      SaveExcel(dailyppm, "DailyPPMData");
-                    }}
-                  >
-                    <AiFillFileExcel color="green" size={15} />
-                    Excel
-                  </IconButton>
-                </span>
-                <OQCDailyNGRate
-                  dldata={[...dailyppm].reverse()}
-                  processColor="#85d9f3"
-                  materialColor="#ff0000"
-                />
-              </div>
-              <div className="dailygraph">
-                <span className="subsection">
-                  Weekly NG Rate{" "}
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      SaveExcel(weeklyppm, "WeeklyPPMData");
-                    }}
-                  >
-                    <AiFillFileExcel color="green" size={15} />
-                    Excel
-                  </IconButton>
-                </span>
-                <OQCWeeklyNGRate
-                  dldata={[...weeklyppm].reverse()}
-                  processColor="#85d9f3"
-                  materialColor="#ff0000"
-                />
-              </div>
-            </div>
-            <div className="monthlyweeklygraph">
-              <div className="dailygraph">
-                <span className="subsection">
-                  Monthly NG Rate{" "}
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      SaveExcel(monthlyppm, "MonthlyPPMData");
-                    }}
-                  >
-                    <AiFillFileExcel color="green" size={15} />
-                    Excel
-                  </IconButton>
-                </span>
-                <OQCMonthlyNGRate
-                  dldata={[...monthlyppm].reverse()}
-                  processColor="#85d9f3"
-                  materialColor="#ff0000"
-                />
-              </div>
-              <div className="dailygraph">
-                <span className="subsection">
-                  Yearly NG Rate{" "}
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      SaveExcel(yearlyppm, "YearlyPPMData");
-                    }}
-                  >
-                    <AiFillFileExcel color="green" size={15} />
-                    Excel
-                  </IconButton>
-                </span>
-                <OQCYearlyNGRate
-                  dldata={[...yearlyppm].reverse()}
-                  processColor="#85d9f3"
-                  materialColor="#ff0000"
-                />
-              </div>
-            </div>
-          </div>
+          
           <span className="subsection_title">
             2.5 NG by Customer and Prod Type{" "}
             <IconButton className="buttonIcon" onClick={() => {}}>

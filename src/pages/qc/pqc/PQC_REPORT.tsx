@@ -73,6 +73,7 @@ const PQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
+                KPI_VALUE: (element.KPI_VALUE ?? 0)/100,
                 SETTING_DATE: moment
                   .utc(element.SETTING_DATE)
                   .format("YYYY-MM-DD"),
@@ -113,6 +114,7 @@ const PQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
+                KPI_VALUE: (element.KPI_VALUE ?? 0)/100,
               };
             },
           );
@@ -149,6 +151,7 @@ const PQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
+                KPI_VALUE: (element.KPI_VALUE ?? 0)/100,
               };
             },
           );
@@ -185,6 +188,7 @@ const PQC_REPORT = () => {
               return {
                 ...element,
                 OK_LOT: element.TOTAL_LOT - element.NG_LOT,
+                KPI_VALUE: (element.KPI_VALUE ?? 0)/100,
               };
             },
           );
