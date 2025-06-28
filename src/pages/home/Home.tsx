@@ -21,12 +21,12 @@ import TableManager from "../nocodelowcode/DBManager/DBManager";
 import DBManager from "../nocodelowcode/DBManager/DBManager"; */
 const NOCODELOWCODE = lazy(() => import("../nocodelowcode/NOCODELOWCODE"));
 import PermissionNotify from "../../components/PermissionNotify/PermissionNotify";
+const PheDuyetNghiCMS = lazy(() => import("../nhansu/PheDuyetNghi/PheDuyetNghiCMS"));
 const DieuChuyenTeamCMS = lazy(() => import("../nhansu/DieuChuyenTeam/DieuChuyenTeamCMS"));
 const DiemDanhNhomCMS = lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhomCMS"));
-const DiemDanhNhomBPCMS = lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhBPCMS"));
 /* import NavBarNew from "../../components/Navbar/NavBarNew"; */
 
-export const current_ver: number = getCompany() === "CMS" ? 2630 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2632 : 423;
 
 const QuanLyPhongBanNhanSu_Old = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu copy"));
 const TINHLUONGP3 = React.lazy(() => import("../sx/TINHLUONGP3/TINHLUONGP3"));
@@ -42,8 +42,8 @@ const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 const AccountInfo = React.lazy(() => import("../../components/Navbar/AccountInfo/AccountInfo"));
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
-const DiemDanhNhom = React.lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhom"));
-const DieuChuyenTeam = React.lazy(() => import("../nhansu/DieuChuyenTeam/DieuChuyenTeam"));
+const DiemDanhNhom = React.lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhomCMS"));
+const DieuChuyenTeam = React.lazy(() => import("../nhansu/DieuChuyenTeam/DieuChuyenTeamCMS"));
 const TabDangKy = React.lazy(() => import("../nhansu/DangKy/TabDangKy"));
 const PheDuyetNghi = React.lazy(() => import("../nhansu/PheDuyetNghi/PheDuyetNghi"));
 const LichSu = React.lazy(() => import("../nhansu/LichSu/LichSu"));
@@ -168,7 +168,7 @@ function Home() {
     {
       MENU_CODE: "NS5",
       MENU_NAME: getlang("pheduyet", lang),
-      MENU_ITEM: <PheDuyetNghi />,
+      MENU_ITEM: <PheDuyetNghiCMS option="pheduyetnhom"/>,
     },
     {
       MENU_CODE: "NS6",
@@ -575,12 +575,12 @@ function Home() {
     {
       MENU_CODE: "NS2",
       MENU_NAME: getlang("diemdanhnhom", lang),
-      MENU_ITEM: <DiemDanhNhom />,
+      MENU_ITEM: <DiemDanhNhomCMS option="diemdanhnhom" />,
     },
     {
       MENU_CODE: "NS3",
       MENU_NAME: getlang("dieuchuyenteam", lang),
-      MENU_ITEM: <DieuChuyenTeam />,
+      MENU_ITEM: <DieuChuyenTeamCMS option1="diemdanhnhom" option2="workpositionlist_BP" />,
     },
     {
       MENU_CODE: "NS4",
@@ -590,7 +590,7 @@ function Home() {
     {
       MENU_CODE: "NS5",
       MENU_NAME: getlang("pheduyet", lang),
-      MENU_ITEM: <PheDuyetNghi />,
+      MENU_ITEM: <PheDuyetNghiCMS option="pheduyetnhom" />,
     },
     {
       MENU_CODE: "NS6",

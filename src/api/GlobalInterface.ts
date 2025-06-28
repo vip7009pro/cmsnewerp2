@@ -1795,6 +1795,7 @@ export interface TONLIEUXUONG {
   FACTORY: string;
   PHANLOAI: string;
   PLAN_ID_INPUT: string;
+  PLAN_ID_SUDUNG: string;
   M_CODE: string;
   M_NAME: string;
   WIDTH_CD: number;
@@ -1806,6 +1807,7 @@ export interface TONLIEUXUONG {
   IN_KHO_ID: number;
   PLAN_EQ: string;
   INS_DATE: string;
+  USE_YN: string;
 }
 export interface LICHSUNHAPKHOAO {
   id: string;

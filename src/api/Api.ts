@@ -6,8 +6,6 @@ import {
   login as loginSlice,  
   logout as logoutSlice,
   update_socket,
-  vendorLogin,
-  vendorLogout,
 } from "../redux/slices/globalSlice";
 /* import axios from 'axios'; */
 import axios from "axios";

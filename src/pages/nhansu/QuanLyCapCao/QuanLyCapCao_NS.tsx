@@ -1,12 +1,12 @@
-import React, { Suspense, useEffect } from "react";
-const DieuChuyenTeamNS = React.lazy(() => import("../DieuChuyenTeam/DieuChuyenTeamNS"));
-const PheDuyetNghiNS = React.lazy(() => import("../PheDuyetNghi/PheDuyetNghiNS"));
+import React, { Suspense, useEffect, lazy } from "react";
+const DieuChuyenTeamNS = React.lazy(() => import("../DieuChuyenTeam/DieuChuyenTeamCMS"));
 import "./QuanLyCapCao.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getlang } from "../../../components/String/String";
 import MyTabs from "../../../components/MyTab/MyTab";
-import DiemDanhNhomCMS from "../DiemDanhNhom/DiemDanhNhomCMS";
+const DiemDanhNhomCMS = lazy(() => import("../DiemDanhNhom/DiemDanhNhomCMS"));
+const PheDuyetNghiCMS = lazy(() => import("../PheDuyetNghi/PheDuyetNghiCMS"));
 const QuanLyCapCao_NS = () => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang
@@ -20,10 +20,10 @@ const QuanLyCapCao_NS = () => {
             <DiemDanhNhomCMS option="diemdanhnhomNS" />
           </MyTabs.Tab>
           <MyTabs.Tab title={getlang("pheduyetnghitoanbophan", glbLang!)}>
-            <PheDuyetNghiNS />
+            <PheDuyetNghiCMS option="pheduyetnhomNS" />
           </MyTabs.Tab>
           <MyTabs.Tab title={getlang("dieuchuyentoanbophan", glbLang!)}>
-            <DieuChuyenTeamNS />
+            <DieuChuyenTeamNS option1="diemdanhnhomNS" option2="workpositionlist_NS" />
           </MyTabs.Tab>
         </MyTabs>
       </Suspense>

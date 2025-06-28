@@ -4636,7 +4636,9 @@ export const f_checktontaiMlotPlanIdSuDung = async (
     .then((response) => {
       console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-        checkTonTai = false;
+        if(response.data.data.length>0){
+          checkTonTai = false;
+        }
       } else {
         checkTonTai = true;
       }
@@ -4658,7 +4660,9 @@ export const f_checktontaiMlotPlanIdSuDungKhoSub = async (
     .then((response) => {
       console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-        checkTonTai = false;
+        if(response.data.data.length>0){
+          checkTonTai = false;
+        }
       } else {
         checkTonTai = true;
       }
@@ -4686,6 +4690,26 @@ export const f_checkNextPlanFSC = async (NEXT_PLAN: string) => {
       console.log(error);
     });
   return { FSC: checkFSC, FSC_CODE: checkFSC_CODE };
+};
+export const f_isExistM_LOT_NO_QTY_P500 = async (M_LOT_NO: string, INPUT_QTY: number) => {
+  let checkP500: boolean = false;
+  await generalQuery("checkM_LOT_NO_QTY_P500", {
+    M_LOT_NO: M_LOT_NO,
+    INPUT_QTY: INPUT_QTY,
+  })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        if (response.data.data.length>0) {
+          checkP500 = true;
+        }
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return checkP500;
 };
 export const f_checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
   let checkNhapKho: string = "N";
@@ -8272,4 +8296,20 @@ function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary);
+}
+
+export const checkPLAN_ID = async (PLAN_ID: string) => {
+  let kq: any = [];
+  await generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
 }

@@ -20,6 +20,8 @@ import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
 import NavbarVendors from "../../components/Navbar/NavbarVendors";
 import AccountInfoVendors from "../../components/Navbar/AccountInfo/AccountInfoVendors";
 import HomePageVendors from "../../components/Vendors/Home/HomeVendors";
+import DiemDanhNhomCMS from "../nhansu/DiemDanhNhom/DiemDanhNhomCMS";
+import DieuChuyenTeamCMS from "../nhansu/DieuChuyenTeam/DieuChuyenTeamCMS";
 
 export const current_ver: number = getCompany() === "CMS" ? 2618 : 423;
 
@@ -37,8 +39,8 @@ const KHOSX = React.lazy(() => import("../sx/KHOSX/KHOSX"));
 const Navbar = React.lazy(() => import("../../components/Navbar/Navbar"));
 
 const QuanLyPhongBanNhanSu = React.lazy(() => import("../nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
-const DiemDanhNhom = React.lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhom"));
-const DieuChuyenTeam = React.lazy(() => import("../nhansu/DieuChuyenTeam/DieuChuyenTeam"));
+const DiemDanhNhom = React.lazy(() => import("../nhansu/DiemDanhNhom/DiemDanhNhomCMS"));
+const DieuChuyenTeam = React.lazy(() => import("../nhansu/DieuChuyenTeam/DieuChuyenTeamCMS"));
 const TabDangKy = React.lazy(() => import("../nhansu/DangKy/TabDangKy"));
 const PheDuyetNghi = React.lazy(() => import("../nhansu/PheDuyetNghi/PheDuyetNghi"));
 const LichSu = React.lazy(() => import("../nhansu/LichSu/LichSu"));
@@ -148,12 +150,12 @@ function HomeVendors() {
     {
       MENU_CODE: "NS2",
       MENU_NAME: getlang("diemdanhnhom", lang),
-      MENU_ITEM: <DiemDanhNhom />,
+      MENU_ITEM: <DiemDanhNhomCMS option="diemdanhnhomNS" />,
     },
     {
       MENU_CODE: "NS3",
       MENU_NAME: getlang("dieuchuyenteam", lang),
-      MENU_ITEM: <DieuChuyenTeam />,
+      MENU_ITEM: <DieuChuyenTeamCMS option1="diemdanhnhomNS" option2="workpositionlist_NS" />,
     },
     {
       MENU_CODE: "NS4",
@@ -569,12 +571,12 @@ function HomeVendors() {
     {
       MENU_CODE: "NS2",
       MENU_NAME: getlang("diemdanhnhom", lang),
-      MENU_ITEM: <DiemDanhNhom />,
+      MENU_ITEM: <DiemDanhNhomCMS option="diemdanhnhomNS" />,
     },
     {
       MENU_CODE: "NS3",
       MENU_NAME: getlang("dieuchuyenteam", lang),
-      MENU_ITEM: <DieuChuyenTeam />,
+      MENU_ITEM: <DieuChuyenTeamCMS option1="diemdanhnhomNS" option2="workpositionlist_NS" />,
     },
     {
       MENU_CODE: "NS4",

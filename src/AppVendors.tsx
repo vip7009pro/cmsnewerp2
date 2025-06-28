@@ -34,6 +34,8 @@ import TINHLUONGP3 from "./pages/sx/TINHLUONGP3/TINHLUONGP3";
 import NOLOWHOME from "./pages/nocodelowcode/components/NOLOWHOME/NOLOWHOME";
 import LoginVendors from "./pages/login/LoginVendors";
 import HomeVendors from "./pages/home/HomeVendors";
+import DiemDanhNhomCMS from "./pages/nhansu/DiemDanhNhom/DiemDanhNhomCMS";
+import DieuChuyenTeamCMS from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeamCMS";
 
 const PostManager = React.lazy(() => import("./pages/information_board/PostManager"));
 const Info = React.lazy(() => import("./pages/information_board/Info"));
@@ -46,7 +48,7 @@ const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
 const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
 const KHOTP = React.lazy(() => import("./pages/kho/khotp/KHOTP"));
 const BulletinBoard = React.lazy(() => import("./components/BulletinBoard/BulletinBoard"));
-const DiemDanhNhom = React.lazy(() => import("./pages/nhansu/DiemDanhNhom/DiemDanhNhom"));
+const DiemDanhNhom = React.lazy(() => import("./pages/nhansu/DiemDanhNhom/DiemDanhNhomCMS"));
 const AccountInfo = React.lazy(() => import("./components/Navbar/AccountInfo/AccountInfo"));
 const KinhDoanh = React.lazy(() => import("./pages/kinhdoanh/KinhDoanh"));
 const KinhDoanhReport = React.lazy(() => import("./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport"));
@@ -97,7 +99,7 @@ const CAPA_MANAGER = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MA
 const PLANRESULT = React.lazy(() => import("./pages/sx/PLANRESULT/PLANRESULT"));
 const NhanSu = React.lazy(() => import("./pages/nhansu/NhanSu"));
 const QuanLyPhongBanNhanSu = React.lazy(() => import("./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
-const DieuChuyenTeam = React.lazy(() => import("./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam"));
+const DieuChuyenTeam = React.lazy(() => import("./pages/nhansu/DieuChuyenTeam/DieuChuyenTeamCMS"));
 const TabDangKy = React.lazy(() => import("./pages/nhansu/DangKy/TabDangKy"));
 const PheDuyetNghi = React.lazy(() => import("./pages/nhansu/PheDuyetNghi/PheDuyetNghi"));
 const LichSu = React.lazy(() => import("./pages/nhansu/LichSu/LichSu"));
@@ -643,7 +645,7 @@ function AppVendors() {
                             trangthaidiemdanh === true ||
                             globalUserData?.JOB_NAME === "Worker"
                           ) ? (
-                            <DiemDanhNhom />
+                            <DiemDanhNhomCMS option="diemdanhnhomNS" />
                           ) : (
                             <BulletinBoard />
                           )
@@ -1268,7 +1270,7 @@ function AppVendors() {
                               maindeptname='all'
                               jobname='leader'
                             >
-                              <DiemDanhNhom />
+                              <DiemDanhNhomCMS option="diemdanhnhomNS" />
                             </ProtectedRoute>
                           }
                         />
@@ -1280,7 +1282,7 @@ function AppVendors() {
                               maindeptname='all'
                               jobname='leader'
                             >
-                              <DieuChuyenTeam />
+                              <DieuChuyenTeamCMS option1="diemdanhnhomNS" option2="workpositionlist_NS" />
                             </ProtectedRoute>
                           }
                         />

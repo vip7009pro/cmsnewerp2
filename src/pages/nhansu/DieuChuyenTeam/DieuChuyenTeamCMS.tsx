@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
@@ -17,7 +17,6 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang
   );
-  const [isLoading, setisLoading] = useState(false);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(5);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhNhomData>
@@ -25,7 +24,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
   const [workpositionload, setWorkPositionLoad] = useState<
     Array<WorkPositionTableData>
   >([]);
-  const setTeam = async (EMPL_NO: string, value: number) => {
+  const setTeam = useCallback(async (EMPL_NO: string, value: number) => {
     generalQuery("setteamnhom", {
       teamvalue: value,
       EMPL_NO: EMPL_NO,
@@ -49,17 +48,17 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
         Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
       }
     });
-  };
-  const setCa = async (params: any, value: number) => {
+  }, [diemdanhnhomtable]);
+  const setCa = useCallback(async (params: any, value: number) => {
     generalQuery("setca", {
-      EMPL_NO: params.data.EMPL_NO,
+      EMPL_NO: params.data?.EMPL_NO,
       CALV: value,
     })
       .then(async (response) => {
         //console.log(response.data);
         if (response.data.tk_status === "OK") {
           const newProjects = diemdanhnhomtable.map((p) =>
-            p.EMPL_NO === params.data.EMPL_NO
+            p.EMPL_NO === params.data?.EMPL_NO
               ? {
                   ...p,
                   CALV: value,
@@ -75,9 +74,9 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
               getUserData()?.MIDLAST_NAME
             } ${getUserData()?.FIRST_NAME}), nhân viên ${
               getUserData()?.WORK_POSITION_NAME
-            } đã thay ca làm việc cho ${params.data.EMPL_NO}_ ${
-              params.data.MIDLAST_NAME
-            } ${params.data.FIRST_NAME} thành ${
+            } đã thay ca làm việc cho ${params.data?.EMPL_NO}_ ${
+              params.data?.MIDLAST_NAME
+            } ${params.data?.FIRST_NAME} thành ${
               value === 2 ? "Ca đêm" : value === 1 ? "Ca ngày" : "Ca HC"
             } `,
             SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
@@ -98,15 +97,15 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       .catch((error) => {
         //console.log(error);
       });
-  };
-  const resetCa = async (params: any) => {
+  }, [diemdanhnhomtable]);
+  const resetCa = useCallback(async (params: any) => {
     const newProjects = diemdanhnhomtable.map((p) =>
-      p.EMPL_NO === params.data.EMPL_NO ? { ...p, CALV: null } : p
+      p.EMPL_NO === params.data?.EMPL_NO ? { ...p, CALV: null } : p
     );
     ////console.log(newProjects);
     setDiemDanhNhomTable(newProjects);
-  };
-  const setFactory = async (EMPL_NO: string, value: number) => {
+  }, [diemdanhnhomtable]);
+  const setFactory = useCallback(async (EMPL_NO: string, value: number) => {
     generalQuery("setnhamay", {
       EMPL_NO: EMPL_NO,
       FACTORY: value,
@@ -130,8 +129,8 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       .catch((error) => {
         //console.log(error);
       });
-  };
-  const setViTri = async (EMPL_NO: string, WORK_POSITION_CODE: number) => {
+  }, [diemdanhnhomtable]);
+  const setViTri = useCallback(async (EMPL_NO: string, WORK_POSITION_CODE: number) => {
     Swal.fire({
       title: "Chắc chắn muốn chuyển vị trí ?",
       text: "Sẽ bắt đầu chuyển vị trí",
@@ -177,8 +176,8 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       } else {
       }
     });
-  };
-  const columns_diemdanhnhom = [
+  }, [diemdanhnhomtable]);
+  const columns_diemdanhnhom = useMemo(() => [
     {
       field: "id",
       headerName: "ID",
@@ -203,35 +202,35 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       width: 120,
       headerClassName: "super-app-theme--header",
       cellRenderer: (params: any) => {
-        if (params.data.WORK_SHIF_NAME === "Hành Chính") {
+        if (params.data?.WORK_SHIF_NAME === "Hành Chính") {
           return (
             <div className="onoffdiv">
               <button
                 className="team1bt"
-                onClick={() => setTeam(params.data.EMPL_NO, 1)}
+                onClick={() => setTeam(params.data?.EMPL_NO, 1)}
               >
                 TEAM1
               </button>
               <button
                 className="team2bt"
-                onClick={() => setTeam(params.data.EMPL_NO, 2)}
+                onClick={() => setTeam(params.data?.EMPL_NO, 2)}
               >
                 TEAM2
               </button>
             </div>
           );
-        } else if (params.data.WORK_SHIF_NAME === "TEAM 1") {
+        } else if (params.data?.WORK_SHIF_NAME === "TEAM 1") {
           return (
             <div className="onoffdiv">
               <button
                 className="hcbt"
-                onClick={() => setTeam(params.data.EMPL_NO, 0)}
+                onClick={() => setTeam(params.data?.EMPL_NO, 0)}
               >
                 HanhChinh
               </button>
               <button
                 className="team2bt"
-                onClick={() => setTeam(params.data.EMPL_NO, 2)}
+                onClick={() => setTeam(params.data?.EMPL_NO, 2)}
               >
                 TEAM2
               </button>
@@ -242,13 +241,13 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
             <div className="onoffdiv">
               <button
                 className="team1bt"
-                onClick={() => setTeam(params.data.EMPL_NO, 1)}
+                onClick={() => setTeam(params.data?.EMPL_NO, 1)}
               >
                 TEAM1
               </button>
               <button
                 className="hcbt"
-                onClick={() => setTeam(params.data.EMPL_NO, 0)}
+                onClick={() => setTeam(params.data?.EMPL_NO, 0)}
               >
                 HanhChinh
               </button>
@@ -262,7 +261,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       headerName: "SET CA",
       minWidth: 150,
       cellRenderer: (params: any) => {
-        if (params.data.CALV === null) {
+        if (params.data?.CALV === null) {
           return (
             <div className={`calvdiv`}>
               <button className="tcbutton" onClick={() => setCa(params, 0)}>
@@ -279,12 +278,12 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
         }
         return (
           <div className="onoffdiv">
-            <span className={`onoffshowtext A${params.data.CALV}`}>
-              {params.data.CALV === 0
+            <span className={`onoffshowtext A${params.data?.CALV}`}>
+              {params.data?.CALV === 0
                 ? "Ca HC"
-                : params.data.CALV === 1
+                : params.data?.CALV === 1
                 ? "Ca ngày"
-                : params.data.CALV === 2
+                : params.data?.CALV === 2
                 ? "Ca đêm"
                 : "Chưa có ca"}
             </span>
@@ -308,23 +307,23 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       width: 100,
       headerClassName: "super-app-theme--header",
       cellRenderer: (params: any) => {
-        if (params.data.FACTORY_NAME === "Nhà máy 1") {
+        if (params.data?.FACTORY_NAME === "Nhà máy 1") {
           return (
             <div className="onoffdiv">
               <button
                 className="team2bt"
-                onClick={() => setFactory(params.data.EMPL_NO, 2)}
+                onClick={() => setFactory(params.data?.EMPL_NO, 2)}
               >
                 SET NM2
               </button>
             </div>
           );
-        } else if (params.data.FACTORY_NAME === "Nhà máy 2") {
+        } else if (params.data?.FACTORY_NAME === "Nhà máy 2") {
           return (
             <div className="onoffdiv">
               <button
                 className="hcbt"
-                onClick={() => setFactory(params.data.EMPL_NO, 1)}
+                onClick={() => setFactory(params.data?.EMPL_NO, 1)}
               >
                 SET NM1
               </button>
@@ -335,13 +334,13 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
             <div className="onoffdiv">
               <button
                 className="team1bt"
-                onClick={() => setFactory(params.data.EMPL_NO, 1)}
+                onClick={() => setFactory(params.data?.EMPL_NO, 1)}
               >
                 SET NM1
               </button>
               <button
                 className="hcbt"
-                onClick={() => setFactory(params.data.EMPL_NO, 2)}
+                onClick={() => setFactory(params.data?.EMPL_NO, 2)}
               >
                 SET NM2
               </button>
@@ -363,7 +362,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       headerClassName: "super-app-theme--header",
       cellRenderer: (params: any) => {
         const onClick = (work_position_code: number) => {
-          //Swal.fire("Thông báo", "Gia tri = " + params.data.EMPL_NO, "success");
+          //Swal.fire("Thông báo", "Gia tri = " + params.data?.EMPL_NO, "success");
           Swal.fire({
             title: "Chắc chắn muốn chuyển team ?",
             text: "Sẽ bắt đầu chuyển team",
@@ -377,7 +376,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
               Swal.fire("Tiến hành chuyển team", "Đang chuyển team", "success");
               generalQuery("setEMPL_WORK_POSITION", {
                 WORK_POSITION_CODE: work_position_code,
-                EMPL_NO: params.data.EMPL_NO,
+                EMPL_NO: params.data?.EMPL_NO,
               })
                 .then((response) => {
                   //console.log(response.data.data);
@@ -389,7 +388,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
                         //console.log(response.data.data);
                         if (response.data.tk_status !== "NG") {
                           setDiemDanhNhomTable(response.data.data);
-                          setisLoading(false);
+                          
                           //Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
                         } else {
                           Swal.fire(
@@ -421,9 +420,9 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
             <label>
               <select
                 name="vitrilamviec"
-                value={params.data.WORK_POSITION_CODE}
+                value={params.data?.WORK_POSITION_CODE}
                 onChange={(e) => {
-                  setViTri(params.data.EMPL_NO, Number(e.target.value));
+                  setViTri(params.data?.EMPL_NO, Number(e.target.value));
                 }}
               >
                 {workpositionload.map((element, index) => (
@@ -497,8 +496,8 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       width: 80,
       headerClassName: "super-app-theme--header",
     },
-  ];
-  const loadDiemDanhNhomTable = (teamnamelist: number) => {
+  ], [diemdanhnhomtable]);
+  const loadDiemDanhNhomTable = useCallback(async (teamnamelist: number) => {
     generalQuery(option1, { team_name_list: teamnamelist })
       .then((response) => {
         //console.log(response.data.data);
@@ -518,13 +517,13 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
           };
         });
         setDiemDanhNhomTable(loaded_data);
-        setisLoading(false);
+        
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-  const loadWorkPositionTable = () => {
+  }, []);
+  const loadWorkPositionTable = useCallback(() => {
     generalQuery(option2, {})
       .then((response) => {
         //console.log(response.data.data);
@@ -535,12 +534,12 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
           };
         });
         setWorkPositionLoad(loaded_data);
-        setisLoading(false);
+        
       })
       .catch((error) => {
         console.log(error);
       });
-  };
+  }, []);
   const diemdanhnhomAGTable = useMemo(() => {
     return (
       <AGTable
@@ -560,9 +559,8 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
         }}
       />
     );
-  }, [diemdanhnhomtable]);
-  useEffect(() => {
-    setisLoading(true);
+  }, [diemdanhnhomtable,columns_diemdanhnhom]);
+  useEffect(() => {   
     loadWorkPositionTable();
     loadDiemDanhNhomTable(5);
   }, []);

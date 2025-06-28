@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { checkBP, datediff, f_anrackhoao, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_delete_IN_KHO_AO, f_delete_OUT_KHO_AO, f_is2MCODE_IN_KHO_AO, f_isM_CODE_CHITHI, f_isM_LOT_NO_in_P500, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../../../../api/GlobalFunction";
+import { checkBP, checkPLAN_ID, datediff, f_anrackhoao, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_delete_IN_KHO_AO, f_delete_OUT_KHO_AO, f_is2MCODE_IN_KHO_AO, f_isExistM_LOT_NO_QTY_P500, f_isM_CODE_CHITHI, f_isM_LOT_NO_in_P500, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -258,17 +258,26 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       Swal.fire("Thông báo", "Không có dòng nào", "error");
     }
   };
+  
+
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
+      let checkPlanID = await checkPLAN_ID(nextPlan);
+      console.log(checkPlanID);
+      if (checkPlanID.length === 0) {
+        Swal.fire('Thông báo', 'Không tìm thấy plan ID', 'error');
+        return;
+      }      
       if (tonkhoaodatafilter.current.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
           let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
-          let checktontaikhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
+          let checktontaixuatkhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
           let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
           let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
           let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
+          let isMLOTNO_INPUT_QTY_P500 = false; // await f_isExistM_LOT_NO_QTY_P500(tonkhoaodatafilter.current[i].M_LOT_NO, tonkhoaodatafilter.current[i].TOTAL_IN_QTY);
           let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
@@ -281,17 +290,18 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
             checkFSC === tonkhoaodatafilter.current[i].FSC &&
-            checktontaikhoao &&
+            checktontaixuatkhoao &&
             checkYCSX_USE_YN === 'Y' &&
             !checkNextPlanClosed &&
             isTonKhoAoMLOTNO &&
-            !isExpired
+            !isExpired &&
+            !isMLOTNO_INPUT_QTY_P500
           ) {
             if (await f_xuatkhoao({
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
               PHANLOAI: "N",
               PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-              PLAN_ID_OUTPUT: nextPlan,
+              PLAN_ID_OUTPUT: nextPlan.toUpperCase(),
               M_CODE: tonkhoaodatafilter.current[i].M_CODE,
               M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
               ROLL_QTY: tonkhoaodatafilter.current[i].ROLL_QTY,
@@ -303,12 +313,14 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               if (!(await f_set_YN_KHO_AO_INPUT({
                 FACTORY: tonkhoaodatafilter.current[i].FACTORY,
                 PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
-                PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-                PLAN_ID_SUDUNG: nextPlan,
-                M_CODE: tonkhoaodatafilter.current[i].M_CODE,
+                PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT.toUpperCase(),
+                PLAN_ID_SUDUNG: nextPlan.toUpperCase(),       
+                PLAN_ID_SUDUNG_TEST: tonkhoaodatafilter.current[i].PLAN_ID_SUDUNG.toUpperCase(),         
+                M_CODE: tonkhoaodatafilter.current[i].M_CODE.toUpperCase(),
                 M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
                 TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
                 USE_YN: "O",
+                USE_YN_TEST: tonkhoaodatafilter.current[i].USE_YN,
                 IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
               }))) {
                 err_code += "| Có lỗi trong quá trình set YN IN KHO SX";
@@ -324,7 +336,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             else if (checkFSC !== tonkhoaodatafilter.current[i].FSC) {
               err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} không cùng trạng thái liệu FSC với code được chỉ thị vào`;
             }
-            else if (!checktontaikhoao) {
+            else if (!checktontaixuatkhoao) {
               err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} liệu này đã được xuát vào chỉ thị  ${nextPlan} rồi, không xuất lại được nữa`;
             }
             else if (checkYCSX_USE_YN !== 'Y') {
@@ -338,6 +350,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             }
             else if (isExpired) {
               err_code += `| Cuộn liệu tồn quá lâu, hãy trả Kho NVL rồi sử dụng!`;
+            }
+            else if (!isMLOTNO_INPUT_QTY_P500) {
+              err_code += `| Cuộn liệu đã được sử dụng rồi, không thể next, báo admin!`;
             }
           }
         }

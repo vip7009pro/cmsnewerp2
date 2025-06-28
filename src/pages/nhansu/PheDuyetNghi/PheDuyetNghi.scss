@@ -7,7 +7,7 @@
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 14px;
+  font-size: 0.7rem;
   border-radius: 5px;
   outline: none;
   box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -21,35 +21,60 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 3px;
+ 
   h3 {
     align-self: center;
     padding: 10px;
   }
   .filterform {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     justify-self: center;
-    align-self: center;
-    padding: 20px;
-    width: 97%;
-    border-radius: 5px;
-    height: 4vh;
+    align-self: center;      
+    width: 100%;
     background-image: linear-gradient(0deg, #afd3d1, #a4ec51);
-    select {
-      margin-left: 20px;
+    font-size: 0.8rem;
+    gap: 10px;
+    .searchbutton {
+      background-color: #21a73e;
+      /* Green */
+      border: none;
+      color: white;
+      padding: 5px 5px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 0.8rem;
+      border-radius: 5px;
       outline: none;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      &:hover {
+        background-color: #22fd7e;
+      }
+    }
+
+    input {
+      height: 20px;
+      font-size: 0.7rem;
+    }
+    select {
+      height: 20px;
+      font-size: 0.7rem;
     }
   }
   .maindept_table {
     align-items: center;
     justify-content: center;
     justify-self: center;
-    align-self: center;
-    padding: 20px;
-    width: 97%;
+    align-self: center;    
+    width: 100%;
     border-radius: 5px;
-    height: 88vh;
+    height: 90vh;
     background-image: linear-gradient(0deg, #afd3d1, #fab688);
 
     .onoffdiv {
@@ -86,7 +111,7 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -105,7 +130,7 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -124,7 +149,7 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -143,7 +168,7 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -163,7 +188,7 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -182,7 +207,7 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -197,11 +222,11 @@
         /* Green */
         border: none;
         color: white;
-        padding: 8px 8px;
+        padding: 5px 5px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -216,11 +241,11 @@
         /* Green */
         border: none;
         color: white;
-        padding: 8px 8px;
+        padding: 5px 5px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 14px;
+        font-size: 0.7rem;
         border-radius: 5px;
         outline: none;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
