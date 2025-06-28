@@ -315,7 +315,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
                 PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT.toUpperCase(),
                 PLAN_ID_SUDUNG: nextPlan.toUpperCase(),       
-                PLAN_ID_SUDUNG_TEST: tonkhoaodatafilter.current[i].PLAN_ID_SUDUNG.toUpperCase(),         
+                PLAN_ID_SUDUNG_TEST: tonkhoaodatafilter.current[i].PLAN_ID_SUDUNG === null ? null : tonkhoaodatafilter.current[i].PLAN_ID_SUDUNG.toUpperCase(),         
                 M_CODE: tonkhoaodatafilter.current[i].M_CODE.toUpperCase(),
                 M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
                 TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,

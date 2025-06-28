@@ -11,6 +11,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { IconButton } from "@mui/material";
 import { BiLoaderCircle } from "react-icons/bi";
 import { calculateOvertime, OvertimeInput } from "../BangChamCong/OverTimeUtils";
+import {  calculateWorkMinutesByPercentage, CalculationOptions } from "../BangChamCong/OverTimeUtils2";
 
 const LichSu_New = () => {
   const userData: UserData | undefined = useSelector(
@@ -674,17 +675,20 @@ const LichSu_New = () => {
             
             // Ví dụ sử dụng
             const input: OvertimeInput = {
-              date: '2025-06-16', // Thứ Hai (ngày thường)
-              inTime: '20:00',
-              outTime: '08:00',
+              date: '2025-06-28', // Thứ Hai (ngày thường)
+              inTime: '19:59',
+              outTime: '08:25',
             };
-            
-            console.log(calculateOvertime(input));
-            Swal.fire(
+            const companyOptions: CalculationOptions = {
+              weeklyDaysOff: [0] // 0 là Chủ nhật
+            };
+            console.log(input);            
+            console.log(calculateWorkMinutesByPercentage(input, companyOptions));
+           /*  Swal.fire(
               "Thông báo",
               "Lương lậu làm cái gì, được bao nhiêu đâu mà tính, khổ lắm !",
               "error"
-            );
+            ); */
           }}
         >
           Tính lương

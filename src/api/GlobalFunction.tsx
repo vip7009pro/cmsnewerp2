@@ -4813,6 +4813,8 @@ export const f_set_YN_KHO_AO_INPUT = async (DATA: any) => {
     TOTAL_IN_QTY: DATA.TOTAL_IN_QTY,
     USE_YN: DATA.USE_YN,
     IN_KHO_ID: DATA.IN_KHO_ID,
+    PLAN_ID_SUDUNG_TEST: DATA.PLAN_ID_SUDUNG_TEST,
+    USE_YN_TEST: DATA.USE_YN_TEST,
   })
     .then((response) => {
       console.log(response.data);
