@@ -1,14 +1,8 @@
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-} from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
 import "./YCKT.scss";
 import Barcode from "react-barcode";
 import {

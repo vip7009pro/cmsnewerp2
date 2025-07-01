@@ -1,15 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Login.scss";
 import { getlang } from "../../components/String/String";
-import { LangConText } from "../../api/Context";
 import { getCompany, login } from "../../api/ApiVendors";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
-import {
-  changeCtrCd,
-  changeSelectedServer,
-  changeServer,
-} from "../../redux/slices/globalSlice";
+import { changeGLBLanguage, changeSelectedServer, changeServer } from "../../redux/slices/globalSlice";
 import { isValidInput } from "../../api/GlobalFunction";
 import Swal from "sweetalert2";
 const LoginVendors = () => {
@@ -20,10 +15,12 @@ const LoginVendors = () => {
   const sub_port = protocol === "https" ? "3006" : "3007";
   //console.log('sub_port', sub_port)
   const ref = useRef<any>(null);
-  const [lang, setLang] = useContext(LangConText);
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [server_string, setServer_String] = useState("");
+  const lang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang
+  );
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
@@ -117,9 +114,9 @@ const LoginVendors = () => {
     }
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
-      setLang(saveLang.toString());
+      dispatch(changeGLBLanguage(saveLang.toString()));
     } else {
-      setLang("en");
+      dispatch(changeGLBLanguage("en"));
     }
   }, []);
   return (
@@ -163,7 +160,7 @@ const LoginVendors = () => {
           />
         </div>
         <span className="formname">
-          {getlang("dangnhap", lang)}
+          {getlang("dangnhap", lang ?? "en")}
           {/*Sign In*/}
         </span>
         <div
@@ -235,17 +232,17 @@ const LoginVendors = () => {
           }}
         >
           <button className="login_button" onClick={login_bt}>
-            {getlang("dangnhap", lang)}
+            {getlang("dangnhap", lang ?? "en")}
             {/*Login*/}
           </button>
         </div>
         <div className="bottom-text">
           <label htmlFor="checkbox" className="btmtext">
             <input type="checkbox" name="checkboxname" id="checkbox" />          
-            {getlang("nhothongtindangnhap", lang)}           
+            {getlang("nhothongtindangnhap", lang ?? "en")}           
           </label>
           <a href="/" className="forgot-link">
-            {getlang("quenmatkhau", lang)}           
+            {getlang("quenmatkhau", lang ?? "en")}           
           </a>
         </div>
       </div>

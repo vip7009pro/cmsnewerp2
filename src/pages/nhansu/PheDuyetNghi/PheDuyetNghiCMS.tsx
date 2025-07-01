@@ -8,7 +8,13 @@ import moment from "moment";
 import AGTable from "../../../components/DataTable/AGTable";
 const PheDuyetNghiCMS = ({ option }: { option: string }) => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-01"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));  
+  const [todate, setToDate] = useState(
+    moment()
+      .endOf("month")
+      .add(1, "months")
+      .subtract(0, "days")
+      .format("YYYY-MM-DD")
+  );
   const [onlyPending, setOnlyPending] = useState(true);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     PheDuyetNghiData[]

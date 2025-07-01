@@ -1,8 +1,7 @@
-import React, { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "./DrawComponent.scss";
-import Pdf, { usePdf } from "@mikecousins/react-pdf";
+import { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
-import { UserContext } from "../../../../api/Context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { UserData } from "../../../../api/GlobalInterface";

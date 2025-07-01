@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   FcAbout,
@@ -14,7 +13,6 @@ import "./NavMenu.scss";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
-  FaDonate,
   FaFileInvoiceDollar,
   FaCheckCircle,
   FaHistory,
@@ -22,51 +20,41 @@ import {
   FaPaperPlane,
   FaWarehouse,
   FaScroll,
-  FaPeopleArrows,
   FaBarcode,
   FaLongArrowAltRight,
   FaReact,
   FaProductHunt,
   FaStackOverflow,
 } from "react-icons/fa";
-import { BiCart, BiSortAZ, BiTrendingDown, BiTrendingUp } from "react-icons/bi";
+import { BiCart, BiSortAZ } from "react-icons/bi";
 import {
   FcPlanner,
   FcSettings,
   FcBullish,
   FcPortraitMode,
   FcManager,
-  FcCheckmark,
   FcPieChart,
   FcRefresh,
 } from "react-icons/fc";
 import {
   MdBugReport,
-  MdDesignServices,
-  MdError,
   MdErrorOutline,
   MdInput,
   MdOutlineAppRegistration,
   MdOutlineAspectRatio,
   MdOutlineChecklistRtl,
   MdOutlineGppGood,
-  MdOutlineHighQuality,
   MdOutlineLocalShipping,
-  MdOutlineProductionQuantityLimits,
   MdOutlineSignalWifiStatusbarNull,
-  MdPrecisionManufacturing,
 } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import { SiStatuspal } from "react-icons/si";
-import { LangConText } from "../../api/Context";
 import {
   AiFillAmazonCircle,
   AiFillAmazonSquare,
-  AiFillCheckSquare,
   AiFillMinusCircle,
   AiOutlineAudit,
   AiOutlineCalendar,
-  AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";

@@ -13,32 +13,36 @@ const FAILING = React.lazy(() => import("../qc/iqc/FAILING"));
 const MAINDEFECTS = React.lazy(() => import("./MAINDEFECTS/MAINDEFECTS"));
 const BAOCAOFULLROLL = React.lazy(() => import("./BAOCAOTHEOROLL/BAOCAOFULLROLL"));
 import { getlang } from "../../components/String/String";
-import { LangConText } from "../../api/Context";
 import { getCompany } from "../../api/Api";
 import MyTabs from "../../components/MyTab/MyTab";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 const BAOCAOSXALL = () => {
-  const [lang, setLang] = useContext(LangConText);
+    const lang: string | undefined = useSelector(
+      (state: RootState) => state.totalSlice.lang
+    );
+
   useEffect(() => { }, []);
   return (
     <div className="qlsxplan">
       <Suspense fallback={<div>Loading...</div>}>
         <MyTabs defaultActiveTab={0}>
-          <MyTabs.Tab title={getlang("nhatkysanxuat", lang)}>
+          <MyTabs.Tab title={getlang("nhatkysanxuat", lang ?? "en")}>
             <DATASX />
           </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("lichsuxuatlieuthat", lang)}>
+          <MyTabs.Tab title={getlang("lichsuxuatlieuthat", lang ?? "en")}>
             <LICHSUINPUTLIEU />
           </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("lichsutemlotsx", lang)}>
+          <MyTabs.Tab title={getlang("lichsutemlotsx", lang ?? "en")}>
             <LICHSUTEMLOTSX />
           </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("materiallotstatus", lang)}>
+          <MyTabs.Tab title={getlang("materiallotstatus", lang ?? "en")}>
             <TINHHINHCUONLIEU />
           </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("sxrolldata", lang)}>
+          <MyTabs.Tab title={getlang("sxrolldata", lang ?? "en")}>
             <BAOCAOTHEOROLL />
           </MyTabs.Tab>
-          {getCompany()==='CMS' && <MyTabs.Tab title={getlang("baocaofullroll", lang)}>
+          {getCompany()==='CMS' && <MyTabs.Tab title={getlang("baocaofullroll", lang ?? "en")}>
             <BAOCAOFULLROLL />
           </MyTabs.Tab>}
           <MyTabs.Tab title="Plan-Result">

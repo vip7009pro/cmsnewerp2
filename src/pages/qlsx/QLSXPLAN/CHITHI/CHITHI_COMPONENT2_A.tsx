@@ -1,14 +1,8 @@
 import moment from "moment";
-import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import Swal from "sweetalert2";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-} from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT2.scss";
 import Barcode from "react-barcode";
 import {

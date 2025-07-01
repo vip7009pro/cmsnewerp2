@@ -1,17 +1,13 @@
 import "devextreme/dist/css/dx.light.css";
-import React, { Component, useEffect, useState, Suspense, useRef } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { LangConText, UserContext } from "./api/Context";
+import { Component, useEffect, Suspense, useRef } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/ApiVendors";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  changeDiemDanhState,
   changeUserData,
   update_socket,
-  logout,
-  login,
   setTabModeSwap,
   changeGLBSetting,
   changeServer,
@@ -19,226 +15,23 @@ import {
   vendorLogout,
   vendorLogin,
 } from "./redux/slices/globalSlice";
-import { useSpring, animated } from "@react-spring/web";
+import { animated } from "@react-spring/web";
 import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
-import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
-import Home, { current_ver } from "./pages/home/Home";
+import { UserData, userDataInterface, WEB_SETTING_DATA } from "./api/GlobalInterface";
+import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
-import TINHLUONGP3 from "./pages/sx/TINHLUONGP3/TINHLUONGP3";
-import NOLOWHOME from "./pages/nocodelowcode/components/NOLOWHOME/NOLOWHOME";
 import LoginVendors from "./pages/login/LoginVendors";
 import HomeVendors from "./pages/home/HomeVendors";
-import DiemDanhNhomCMS from "./pages/nhansu/DiemDanhNhom/DiemDanhNhomCMS";
-import DieuChuyenTeamCMS from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeamCMS";
 
-const PostManager = React.lazy(() => import("./pages/information_board/PostManager"));
-const Info = React.lazy(() => import("./pages/information_board/Info"));
-const Information = React.lazy(() => import("./pages/information_board/Information"));
-const AddInfo = React.lazy(() => import("./pages/information_board/AddInfo"));
-const QuanLyCapCao_NS = React.lazy(() => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao_NS"));
-const FileTransfer = React.lazy(() => import("./pages/tools/FileTransfer/FileTransfer"));
-const CAPASX2 = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX2"));
-const KHOSX = React.lazy(() => import("./pages/sx/KHOSX/KHOSX"));
-const KHOTABS = React.lazy(() => import("./pages/kho/KHOTABS"));
-const KHOTP = React.lazy(() => import("./pages/kho/khotp/KHOTP"));
-const BulletinBoard = React.lazy(() => import("./components/BulletinBoard/BulletinBoard"));
-const DiemDanhNhom = React.lazy(() => import("./pages/nhansu/DiemDanhNhom/DiemDanhNhomCMS"));
-const AccountInfo = React.lazy(() => import("./components/Navbar/AccountInfo/AccountInfo"));
-const KinhDoanh = React.lazy(() => import("./pages/kinhdoanh/KinhDoanh"));
-const KinhDoanhReport = React.lazy(() => import("./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport"));
-const PoManager = React.lazy(() => import("./pages/kinhdoanh/pomanager/PoManager"));
-const InvoiceManager = React.lazy(() => import("./pages/kinhdoanh/invoicemanager/InvoiceManager"));
-const PlanManager = React.lazy(() => import("./pages/kinhdoanh/planmanager/PlanManager"));
-const FCSTManager = React.lazy(() => import("./pages/kinhdoanh/fcstmanager/FCSTManager"));
-const YCSXManager = React.lazy(() => import("./pages/kinhdoanh/ycsxmanager/YCSXManager"));
-const Login = React.lazy(() => import("./pages/login/Login"));
-const BOM_MANAGER = React.lazy(() => import("./pages/rnd/bom_manager/BOM_MANAGER"));
-const POandStockFull = React.lazy(() => import("./pages/kinhdoanh/poandstockfull/POandStockFull"));
-const CODE_MANAGER = React.lazy(() => import("./pages/rnd/code_manager/CODE_MANAGER"));
-const CUST_MANAGER = React.lazy(() => import("./pages/kinhdoanh/custManager/CUST_MANAGER"));
-const QuotationTotal = React.lazy(() => import("./pages/kinhdoanh/quotationmanager/QuotationTotal"));
-const EQ_STATUS = React.lazy(() => import("./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS"));
-const INSPECT_STATUS = React.lazy(() => import("./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS"));
-const ShortageKD = React.lazy(() => import("./pages/kinhdoanh/shortageKD/ShortageKD"));
-const BOM_AMAZON = React.lazy(() => import("./pages/rnd/bom_amazon/BOM_AMAZON"));
-const DESIGN_AMAZON = React.lazy(() => import("./pages/rnd/design_amazon/DESIGN_AMAZON"));
-const PRODUCT_BARCODE_MANAGER = React.lazy(() => import("./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER"));
-const QLGN = React.lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
-const QLSX = React.lazy(() => import("./pages/qlsx/QLSX"));
-const QLSXPLAN = React.lazy(() => import("./pages/qlsx/QLSXPLAN/QLSXPLAN"));
-const TINHLIEU = React.lazy(() => import("./pages/muahang/tinhlieu/TINHLIEU"));
-const MUAHANG = React.lazy(() => import("./pages/muahang/MUAHANG"));
-const QLVL = React.lazy(() => import("./pages/muahang/quanlyvatlieu/QLVL"));
-const KHOTOTAL = React.lazy(() => import("./pages/kho/KHOTOTAL"));
-const KHOTPNEW = React.lazy(() => import("./pages/kho/khotp_new/KHOTPNEW"));
-const KHOLIEU = React.lazy(() => import("./pages/kho/kholieu/KHOLIEU"));
-const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
-const DTC = React.lazy(() => import("./pages/qc/dtc/DTC"));
-const QC = React.lazy(() => import("./pages/qc/QC"));
-const IQC = React.lazy(() => import("./pages/qc/iqc/IQC"));
-const PQC = React.lazy(() => import("./pages/qc/pqc/PQC"));
-const OQC = React.lazy(() => import("./pages/qc/oqc/OQC"));
-const KIEMTRA = React.lazy(() => import("./pages/qc/inspection/KIEMTRA"));
-const CSTOTAL = React.lazy(() => import("./pages/qc/cs/CSTOTAL"));
-const ISO = React.lazy(() => import("./pages/qc/iso/ISO"));
-const QCReport = React.lazy(() => import("./pages/qc/qcreport/QCReport"));
-const BAOCAOSXALL = React.lazy(() => import("./pages/sx/BAOCAOSXALL"));
-const TRANGTHAICHITHI = React.lazy(() => import("./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI"));
-const LICHSUINPUTLIEU = React.lazy(() => import("./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
-const LICHSUTEMLOTSX = React.lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
-const TINHHINHCUONLIEU = React.lazy(() => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
-const BAOCAOTHEOROLL = React.lazy(() => import("./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
-const KHOAO = React.lazy(() => import("./pages/qlsx/QLSXPLAN/KHOAO/KHOAO"));
-const CAPA_MANAGER = React.lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER"));
-const PLANRESULT = React.lazy(() => import("./pages/sx/PLANRESULT/PLANRESULT"));
-const NhanSu = React.lazy(() => import("./pages/nhansu/NhanSu"));
-const QuanLyPhongBanNhanSu = React.lazy(() => import("./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"));
-const DieuChuyenTeam = React.lazy(() => import("./pages/nhansu/DieuChuyenTeam/DieuChuyenTeamCMS"));
-const TabDangKy = React.lazy(() => import("./pages/nhansu/DangKy/TabDangKy"));
-const PheDuyetNghi = React.lazy(() => import("./pages/nhansu/PheDuyetNghi/PheDuyetNghi"));
-const LichSu = React.lazy(() => import("./pages/nhansu/LichSu/LichSu"));
-const BaoCaoNhanSu = React.lazy(() => import("./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu"));
-const QuanLyCapCao = React.lazy(() => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao"));
-const BANGCHAMCONG = React.lazy(() => import("./pages/nhansu/BangChamCong/BangChamCong"));
-const RND_REPORT = React.lazy(() => import("./pages/rnd/rnd_report/RND_REPORT"));
-const Blank = React.lazy(() => import("./components/Blank/Blank"));
-const SAMPLE_MONITOR = React.lazy(() => import("./pages/rnd/sample monitor/SAMPLE_MONITOR"));
-const BCSX = React.lazy(() => import("./pages/sx/BAOCAOSX/BCSX"));
-const OVER_MONITOR = React.lazy(() => import("./pages/kinhdoanh/over_prod_monitor/OVER_MONITOR"));
-const KHOSUB = React.lazy(() => import("./pages/qlsx/QLSXPLAN/KHOAO/KHOSUB"));
-interface userDataInterface {
-  EMPL_IMAGE?: string;
-  ADD_COMMUNE: string;
-  ADD_DISTRICT: string;
-  ADD_PROVINCE: string;
-  ADD_VILLAGE: string;
-  ATT_GROUP_CODE: number;
-  CMS_ID: string;
-  CTR_CD: string;
-  DOB: string;
-  EMAIL: string;
-  EMPL_NO: string;
-  FACTORY_CODE: number;
-  FACTORY_NAME: string;
-  FACTORY_NAME_KR: string;
-  FIRST_NAME: string;
-  HOMETOWN: string;
-  JOB_CODE: number;
-  JOB_NAME: string;
-  JOB_NAME_KR: string;
-  MAINDEPTCODE: number;
-  MAINDEPTNAME: string;
-  MAINDEPTNAME_KR: string;
-  MIDLAST_NAME: string;
-  ONLINE_DATETIME: string;
-  PASSWORD: string;
-  PHONE_NUMBER: string;
-  POSITION_CODE: number;
-  POSITION_NAME: string;
-  POSITION_NAME_KR: string;
-  REMARK: string;
-  SEX_CODE: number;
-  SEX_NAME: string;
-  SEX_NAME_KR: string;
-  SUBDEPTCODE: number;
-  SUBDEPTNAME: string;
-  SUBDEPTNAME_KR: string;
-  WORK_POSITION_CODE: number;
-  WORK_POSITION_NAME: string;
-  WORK_POSITION_NAME_KR: string;
-  WORK_SHIFT_CODE: number;
-  WORK_SHIF_NAME: string;
-  WORK_SHIF_NAME_KR: string;
-  WORK_START_DATE: string;
-  WORK_STATUS_CODE: number;
-  WORK_STATUS_NAME: string;
-  WORK_STATUS_NAME_KR: string;
-}
-const ProtectedRoute: any = ({
-  user,
-  maindeptname,
-  jobname,
-  children,
-}: {
-  user: userDataInterface;
-  maindeptname: string;
-  jobname: string;
-  children: Component;
-}) => {
-  if (user.EMPL_NO === "none") {
-    /*  return <Navigate to='/login' replace />; */
-    return <Login />;
-  } else {
-    if (
-      maindeptname === "all" ||
-      user.EMPL_NO === "NHU1903" ||
-      user.EMPL_NO === "NVH1011" ||
-      user.JOB_NAME === "ADMIN"
-    ) {
-      if (
-        jobname === "all" ||
-        user.EMPL_NO === "NHU1903" ||
-        user.EMPL_NO === "NVH1011" ||
-        user.JOB_NAME === "ADMIN"
-      ) {
-        return children;
-      } else {
-        if (
-          user.JOB_NAME !== "Leader" &&
-          user.JOB_NAME !== "Sub Leader" &&
-          user.JOB_NAME !== "Dept Staff" &&
-          user.JOB_NAME !== "ADMIN"
-        ) {
-          Swal.fire(
-            "Thông báo",
-            "Nội dung: Bạn không có quyền truy cập: ",
-            "error"
-          );
-        } else {
-          return children;
-        }
-      }
-    } else {
-      if (user.MAINDEPTNAME !== maindeptname) {
-        Swal.fire(
-          "Thông báo",
-          "Nội dung: Bạn không phải người của bộ phận: " + maindeptname,
-          "error"
-        );
-      } else {
-        if (
-          jobname === "all" ||
-          user.EMPL_NO === "NHU1903" ||
-          user.EMPL_NO === "NVH1011" ||
-          user.JOB_NAME === "ADMIN"
-        ) {
-          return children;
-        } else {
-          if (
-            user.JOB_NAME !== "Leader" &&
-            user.JOB_NAME !== "Sub Leader" &&
-            user.JOB_NAME !== "Dept Staff" &&
-            user.JOB_NAME !== "ADMIN"
-          ) {
-            Swal.fire(
-              "Thông báo",
-              "Nội dung: Bạn không có quyền truy cập: ",
-              "error"
-            );
-          } else {
-            return children;
-          }
-        }
-      }
-    }
-  }
-};
+import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, BulletinBoard, CAPA_MANAGER, CAPASX2, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeam, DTC, EQ_STATUS, FCSTManager, FileTransfer, Info, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTABS, KHOTOTAL, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanh, KinhDoanhReport, LichSu, LICHSUINPUTLIEU, LICHSUTEMLOTSX, Login, MUAHANG, NhanSu, NOLOWHOME, OQC, OVER_MONITOR, PheDuyetNghiCMS, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QC, QCReport, QLGN, QLSX, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, YCSXManager } from "./api/lazyPages";
+import { ProtectedRoute } from "./api/GlobalFunction";
+
 function AppVendors() {
   const full_screen: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'FULL_SCREEN')[0]?.CURRENT_VALUE ?? '0');
   const elementRef = useRef(null);
@@ -298,55 +91,6 @@ function AppVendors() {
         console.log(error);
       });
   }
-  const [lang, setLang] = useState("vi");
-  const [userData, setUserData] = useState<userDataInterface | any>({
-    ADD_COMMUNE: "Đông Xuân",
-    ADD_DISTRICT: "Sóc Sơn",
-    ADD_PROVINCE: "Hà Nội",
-    ADD_VILLAGE: "Thôn Phú Thọ",
-    ATT_GROUP_CODE: 1,
-    CMS_ID: "CMS1179",
-    CTR_CD: "002",
-    DOB: "1993-10-18T00:00:00.000Z",
-    EMAIL: "nvh1903@cmsbando.com",
-    EMPL_NO: "none",
-    FACTORY_CODE: 1,
-    FACTORY_NAME: "Nhà máy 1",
-    FACTORY_NAME_KR: "1공장",
-    FIRST_NAME: "HÙNG3",
-    HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
-    JOB_CODE: 1,
-    JOB_NAME: "Dept Staff",
-    JOB_NAME_KR: "부서담당자",
-    MAINDEPTCODE: 1,
-    MAINDEPTNAME: "QC",
-    MAINDEPTNAME_KR: "품질",
-    MIDLAST_NAME: "NGUYỄN VĂN",
-    ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-    PASSWORD: "xxx",
-    PHONE_NUMBER: "0971092454",
-    POSITION_CODE: 3,
-    POSITION_NAME: "Staff",
-    POSITION_NAME_KR: "사원",
-    REMARK: null,
-    SEX_CODE: 1,
-    SEX_NAME: "Nam",
-    SEX_NAME_KR: "남자",
-    SUBDEPTCODE: 2,
-    SUBDEPTNAME: "PD",
-    SUBDEPTNAME_KR: "통역",
-    WORK_POSITION_CODE: 2,
-    WORK_POSITION_NAME: "PD",
-    WORK_POSITION_NAME_KR: "PD",
-    WORK_SHIFT_CODE: 0,
-    WORK_SHIF_NAME: "Hành Chính",
-    WORK_SHIF_NAME_KR: "정규",
-    WORK_START_DATE: "2019-03-11T00:00:00.000Z",
-    WORK_STATUS_CODE: 1,
-    WORK_STATUS_NAME: "Đang làm",
-    WORK_STATUS_NAME_KR: "근무중",
-  });
-  /*   const [loginState, setLoginState] = useState(false); */
   const trangthaidiemdanh: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.diemdanhstate
   );
@@ -419,59 +163,10 @@ function AppVendors() {
               WORK_STATUS_NAME_KR: "근무중",
               EMPL_IMAGE: "N",
             })
-          );
-          setUserData({
-            ADD_COMMUNE: "Đông Xuân",
-            ADD_DISTRICT: "Sóc Sơn",
-            ADD_PROVINCE: "Hà Nội",
-            ADD_VILLAGE: "Thôn Phú Thọ",
-            ATT_GROUP_CODE: 1,
-            CMS_ID: "CMS1179",
-            CTR_CD: "002",
-            DOB: "1993-10-18T00:00:00.000Z",
-            EMAIL: "nvh1903@cmsbando.com",
-            EMPL_NO: "none",
-            FACTORY_CODE: 1,
-            FACTORY_NAME: "Nhà máy 1",
-            FACTORY_NAME_KR: "1공장",
-            FIRST_NAME: "HÙNG3",
-            HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
-            JOB_CODE: 1,
-            JOB_NAME: "Dept Staff",
-            JOB_NAME_KR: "부서담당자",
-            MAINDEPTCODE: 1,
-            MAINDEPTNAME: "QC",
-            MAINDEPTNAME_KR: "품질",
-            MIDLAST_NAME: "NGUYỄN VĂN",
-            ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-            PASSWORD: "",
-            PHONE_NUMBER: "0971092454",
-            POSITION_CODE: 3,
-            POSITION_NAME: "Staff",
-            POSITION_NAME_KR: "사원",
-            REMARK: null,
-            SEX_CODE: 1,
-            SEX_NAME: "Nam",
-            SEX_NAME_KR: "남자",
-            SUBDEPTCODE: 2,
-            SUBDEPTNAME: "PD",
-            SUBDEPTNAME_KR: "통역",
-            WORK_POSITION_CODE: 2,
-            WORK_POSITION_NAME: "PD",
-            WORK_POSITION_NAME_KR: "PD",
-            WORK_SHIFT_CODE: 0,
-            WORK_SHIF_NAME: "Hành Chính",
-            WORK_SHIF_NAME_KR: "정규",
-            WORK_START_DATE: "2019-03-11T00:00:00.000Z",
-            WORK_STATUS_CODE: 1,
-            WORK_STATUS_NAME: "Đang làm",
-            WORK_STATUS_NAME_KR: "근무중",
-            EMPL_IMAGE: "N",
-          });
+          );         
         } else {
           //console.log(data.data.data);
-          /* checkERPLicense(); */
-          setUserData(data.data.data);
+          /* checkERPLicense(); */         
           dispatch(changeUserData(data.data.data));   
           //console.log('data.data.data.JOB_NAME',data.data.data.JOB_NAME)
           
@@ -613,9 +308,7 @@ function AppVendors() {
       {globalVendorLoginState && (
         <div className='App' ref={elementRef} onClick={requestFullScreen}>          
           <Suspense fallback={<FallBackComponent />}>
-            <LangConText.Provider value={[lang, setLang]}>
-              <UserContext.Provider value={[userData, setUserData]}>
-                <BrowserRouter>
+          <BrowserRouter>
                   <Routes>
                     <Route
                       path='/partners'
@@ -1282,7 +975,7 @@ function AppVendors() {
                               maindeptname='all'
                               jobname='leader'
                             >
-                              <DieuChuyenTeamCMS option1="diemdanhnhomNS" option2="workpositionlist_NS" />
+                              <DieuChuyenTeam option1="diemdanhnhomNS" option2="workpositionlist_NS" />
                             </ProtectedRoute>
                           }
                         />
@@ -1295,7 +988,7 @@ function AppVendors() {
                               maindeptname='all'
                               jobname='leader'
                             >
-                              <PheDuyetNghi />
+                              <PheDuyetNghiCMS option="pheduyetnghi" />
                             </ProtectedRoute>
                           }
                         />
@@ -1352,20 +1045,10 @@ function AppVendors() {
                     </Route>
                   </Routes>
                 </BrowserRouter>
-              </UserContext.Provider>
-            </LangConText.Provider>
           </Suspense>
         </div>
       )}
-      {!globalVendorLoginState && (
-        <div>
-          <LangConText.Provider value={[lang, setLang]}>
-            <UserContext.Provider value={[userData, setUserData]}>
-              <LoginVendors />
-            </UserContext.Provider>
-          </LangConText.Provider>
-        </div>
-      )}
+      {!globalVendorLoginState && <LoginVendors />}
       <Notifications />
     </>
   );

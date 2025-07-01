@@ -1,22 +1,8 @@
-import moment from "moment";
-import { useContext, useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
+import { useEffect, useState } from "react";
 import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-} from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
 import "./CHECKSHEETSX.scss";
-import Barcode from "react-barcode";
-import {
-  FullBOM,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
-  UserData,
-} from "../../../../api/GlobalInterface";
+import { QLSXPLANDATA, UserData } from "../../../../api/GlobalInterface";
 const CHECKSHEETSX = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,

@@ -1,7 +1,6 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
 import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/ApiVendors";
-import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
 import LinearProgress, {
   LinearProgressProps,
@@ -48,6 +47,9 @@ export default function AccountInfoVendors() {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
+  const lang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang
+  );
   const [currentPW, setCurrentPW] = useState("");
   const [newPW, setNewPW] = useState("");
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -56,7 +58,6 @@ export default function AccountInfoVendors() {
   const dispatch = useDispatch();
   const [logoutID, setLogOutID] = useState("");
   const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>();
-  const [lang, setLang] = useContext(LangConText);
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
@@ -275,7 +276,7 @@ export default function AccountInfoVendors() {
     >
       <h1 className='text-3xl'>
         {/* Thông tin của bạn */}
-        {getsentence(17, lang)}
+        {getsentence(17, lang ?? "en")}
       </h1>
       <div className='panelhome'>
         <div className={`cot0 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
@@ -291,7 +292,7 @@ export default function AccountInfoVendors() {
         <div className={`cot1 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
           <h5 className='text-3xl'>
             {/* Thông tin nhân viên */}
-            {getsentence(18, lang)}:
+            {getsentence(18, lang ?? "en")}:
           </h5>
           <ul>
             <div className='diemdanhinfo'>
@@ -330,60 +331,60 @@ export default function AccountInfoVendors() {
             <li className='emplInfoList'>
               {" "}
               {/*  Họ và tên */}
-              {getsentence(19, lang)}: {userdata?.MIDLAST_NAME}{" "}
+              {getsentence(19, lang ?? "en")}: {userdata?.MIDLAST_NAME}{" "}
               {userdata?.FIRST_NAME}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Mã nhân sự */}
-              {getsentence(20, lang)}: {userdata?.CMS_ID}
+              {getsentence(20, lang ?? "en")}: {userdata?.CMS_ID}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Mã ERP */}
-              {getsentence(21, lang)}: {userdata?.EMPL_NO}
+              {getsentence(21, lang ?? "en")}: {userdata?.EMPL_NO}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Ngày tháng năm sinh */}
-              {getsentence(22, lang)}: {DOB().slice(0, 10)}
+              {getsentence(22, lang ?? "en")}: {DOB().slice(0, 10)}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Quê quán */}
-              {getsentence(23, lang)}: {userdata?.HOMETOWN}
+              {getsentence(23, lang ?? "en")}: {userdata?.HOMETOWN}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Địa chỉ */}
-              {getsentence(24, lang)}: {userdata?.ADD_VILLAGE}-
+              {getsentence(24, lang ?? "en")}: {userdata?.ADD_VILLAGE}-
               {userdata?.ADD_COMMUNE}-{userdata?.ADD_DISTRICT}-
               {userdata?.ADD_PROVINCE}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Bộ phận chính */}
-              {getsentence(25, lang)}: {userdata?.MAINDEPTNAME}
+              {getsentence(25, lang ?? "en")}: {userdata?.MAINDEPTNAME}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Bộ phận phụ */}
-              {getsentence(26, lang)}: {userdata?.SUBDEPTNAME}
+              {getsentence(26, lang ?? "en")}: {userdata?.SUBDEPTNAME}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/*  Vị trí làm việc */}
-              {getsentence(27, lang)}: {userdata?.WORK_POSITION_NAME}
+              {getsentence(27, lang ?? "en")}: {userdata?.WORK_POSITION_NAME}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Nhóm điểm danh */}
-              {getsentence(28, lang)}: {userdata?.ATT_GROUP_CODE}
+              {getsentence(28, lang ?? "en")}: {userdata?.ATT_GROUP_CODE}
             </li>
             <li className='emplInfoList'>
               {" "}
               {/* Chức vụ */}
-              {getsentence(29, lang)}: {userdata?.JOB_NAME}
+              {getsentence(29, lang ?? "en")}: {userdata?.JOB_NAME}
             </li>
             {userdata?.EMPL_IMAGE !== "Y" && (
               <li className='emplInfoList'>
@@ -411,8 +412,8 @@ export default function AccountInfoVendors() {
         <div className={`cot2 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
           <h3 className='h3h3' style={{ color: "#cc33ff" }}>
             1. {/* Từ đầu năm đến giờ có */}
-            {getsentence(30, lang)} : {Math.floor(days)} {/* ngày */}{" "}
-            {getsentence(31, lang)}
+            {getsentence(30, lang ?? "en")} : {Math.floor(days)} {/* ngày */}{" "}
+            {getsentence(31, lang ?? "en")}
           </h3>{" "}
           <br></br>
           {workday} / {Math.floor(days)}
@@ -422,9 +423,9 @@ export default function AccountInfoVendors() {
             />
           </Box>
           <h3 className='h3h3' style={{ color: "purple" }}>
-            2. {/* Số ngày bạn đi làm */} {getsentence(32, lang)}: {workday}{" "}
+            2. {/* Số ngày bạn đi làm */} {getsentence(32, lang ?? "en")}: {workday}{" "}
             {/* ngày */}
-            {getsentence(31, lang)}
+            {getsentence(31, lang ?? "en")}
           </h3>{" "}
           <br></br>
           {overtimeday} / {Math.floor(workday)}
@@ -435,8 +436,8 @@ export default function AccountInfoVendors() {
           </Box>
           <h3 className='h3h3' style={{ color: "blue" }}>
             3. {/*Số ngày bạn tăng ca*/}
-            {getsentence(33, lang)} : {overtimeday} {/* ngày */}
-            {getsentence(31, lang)}
+            {getsentence(33, lang ?? "en")} : {overtimeday} {/* ngày */}
+            {getsentence(31, lang ?? "en")}
           </h3>{" "}
           <br></br>
           <Box sx={{ width: "100%" }}>
@@ -446,21 +447,21 @@ export default function AccountInfoVendors() {
           </Box>
           <h3 className='h3h3' style={{ color: "rgb(121 38 222)" }}>
             4. {/*Số ngày quên chấm công */}
-            {getsentence(34, lang)} : {countxacnhan} {/* ngày */}
-            {getsentence(31, lang)}
+            {getsentence(34, lang ?? "en")} : {countxacnhan} {/* ngày */}
+            {getsentence(31, lang ?? "en")}
           </h3>{" "}
           <br></br>
           <h3 className='h3h3' style={{ color: "red" }}>
             5. {/* Số ngày bạn đăng ký nghỉ (ko tính chủ nhật và nửa phép) */}
-            {getsentence(35, lang)}: {nghiday} {/* ngày */}{" "}
-            {getsentence(31, lang)}
+            {getsentence(35, lang ?? "en")}: {nghiday} {/* ngày */}{" "}
+            {getsentence(31, lang ?? "en")}
           </h3>{" "}
           <br></br>
           <h3 className='h3h3' style={{ color: "black" }}>
-            6. {/* Thưởng phạt: Khen thưởng */} {getsentence(36, lang)}:{" "}
+            6. {/* Thưởng phạt: Khen thưởng */} {getsentence(36, lang ?? "en")}:{" "}
             {/*Khen thuong*/}
-            {getsentence(37, lang)} {thuongphat.count_thuong} , {/* Kỷ luật */}
-            {getsentence(38, lang)}: {thuongphat.count_phat}
+            {getsentence(37, lang ?? "en")} {thuongphat.count_thuong} , {/* Kỷ luật */}
+            {getsentence(38, lang ?? "en")}: {thuongphat.count_phat}
           </h3>{" "}
           <form>
             <h3 className='h3h3' style={{ color: "black" }}>

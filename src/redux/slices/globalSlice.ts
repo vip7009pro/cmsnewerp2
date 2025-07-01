@@ -411,7 +411,6 @@ export const glbSlice = createSlice({
             state.tabIndex++;
           }
         }
-        console.log("state.tabIndex", state.tabIndex);
       } else {
         state.tabs = [];
       }
@@ -456,31 +455,5 @@ export const glbSlice = createSlice({
     },
   },
 });
-export const {
-  changeDiemDanhState,
-  changeUserData,
-  update_socket,
-  toggleSidebar,
-  hideSidebar,
-  addChithiArray,
-  resetChithiArray,
-  changeServer,
-  listen_socket,
-  addTab,
-  addComponent,
-  closeTab,
-  settabIndex,
-  setTabModeSwap,
-  resetTab,
-  logout,
-  login,
-  vendorLogin,
-  vendorLogout,
-  changeGLBLanguage,
-  changeGLBSetting,
-  switchTheme,
-  changeCtrCd,
-  changeSelectedServer,
-  updateNotiCount,
-} = glbSlice.actions;
+export const { changeDiemDanhState, changeUserData, update_socket, toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket, addTab, addComponent, closeTab, settabIndex, setTabModeSwap, resetTab, logout, login, vendorLogin, vendorLogout, changeGLBLanguage, changeGLBSetting, switchTheme, changeCtrCd, changeSelectedServer, updateNotiCount, } = glbSlice.actions;
 export default glbSlice.reducer;

@@ -1,4 +1,4 @@
-import { Autocomplete, LinearProgress, TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import {
   DataGrid,
   GridRowSelectionModel,
@@ -9,16 +9,14 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INPUTPQC.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from "axios";
 import {
   CodeListData,
   CustomerListData,

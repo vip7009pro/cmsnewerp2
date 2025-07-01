@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 //PO kinh doanh
 export interface POTableData {
   PO_ID: number;
@@ -1808,6 +1808,7 @@ export interface TONLIEUXUONG {
   PLAN_EQ: string;
   INS_DATE: string;
   USE_YN: string;
+  P500_X?: number;
 }
 export interface LICHSUNHAPKHOAO {
   id: string;
@@ -1823,7 +1824,7 @@ export interface LICHSUNHAPKHOAO {
   TOTAL_IN_QTY: number;
   INS_DATE: string;
   KHO_CFM_DATE: string;
-  RETURN_STATUS: string;
+  RETURN_STATUS: string; 
 }
 export interface LICHSUXUATKHOAO {
   id: string;
@@ -3597,7 +3598,7 @@ export interface DTC_PATROL_DATA {
 export interface MENU_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
-  MENU_ITEM: any;
+  MENU_ITEM: ReactNode;
 }
 export interface WEB_SETTING_DATA {
   ID: number;
@@ -4971,4 +4972,53 @@ export interface KPI_DATA {
   INS_EMPL: string;
   UPD_DATE: string;
   UPD_EMPL: string;
+}
+
+export interface userDataInterface {
+  EMPL_IMAGE?: string;
+  ADD_COMMUNE: string;
+  ADD_DISTRICT: string;
+  ADD_PROVINCE: string;
+  ADD_VILLAGE: string;
+  ATT_GROUP_CODE: number;
+  CMS_ID: string;
+  CTR_CD: string;
+  DOB: string;
+  EMAIL: string;
+  EMPL_NO: string;
+  FACTORY_CODE: number;
+  FACTORY_NAME: string;
+  FACTORY_NAME_KR: string;
+  FIRST_NAME: string;
+  HOMETOWN: string;
+  JOB_CODE: number;
+  JOB_NAME: string;
+  JOB_NAME_KR: string;
+  MAINDEPTCODE: number;
+  MAINDEPTNAME: string;
+  MAINDEPTNAME_KR: string;
+  MIDLAST_NAME: string;
+  ONLINE_DATETIME: string;
+  PASSWORD: string;
+  PHONE_NUMBER: string;
+  POSITION_CODE: number;
+  POSITION_NAME: string;
+  POSITION_NAME_KR: string;
+  REMARK: string;
+  SEX_CODE: number;
+  SEX_NAME: string;
+  SEX_NAME_KR: string;
+  SUBDEPTCODE: number;
+  SUBDEPTNAME: string;
+  SUBDEPTNAME_KR: string;
+  WORK_POSITION_CODE: number;
+  WORK_POSITION_NAME: string;
+  WORK_POSITION_NAME_KR: string;
+  WORK_SHIFT_CODE: number;
+  WORK_SHIF_NAME: string;
+  WORK_SHIF_NAME_KR: string;
+  WORK_START_DATE: string;
+  WORK_STATUS_CODE: number;
+  WORK_STATUS_NAME: string;
+  WORK_STATUS_NAME_KR: string;
 }

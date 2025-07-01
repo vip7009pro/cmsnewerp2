@@ -61,6 +61,7 @@ import {
   TONLIEUXUONG,
   UploadAmazonData,
   UserData,
+  userDataInterface,
   WEB_SETTING_DATA,
   WORK_POSITION_DATA,
   YCSX_SLC_DATA,
@@ -80,6 +81,8 @@ import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
 import { NotificationElement } from "../components/NotificationPanel/Notification";
 import { Field, Form } from "../pages/nocodelowcode/types/types";
+import { Component } from "react";
+import { Login } from "./lazyPages";
 
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
@@ -4697,18 +4700,18 @@ export const f_isExistM_LOT_NO_QTY_P500 = async (M_LOT_NO: string, INPUT_QTY: nu
     M_LOT_NO: M_LOT_NO,
     INPUT_QTY: INPUT_QTY,
   })
-    .then((response) => {
-      console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        if (response.data.data.length>0) {
-          checkP500 = true;
-        }
-      } else {
+  .then((response) => {
+    console.log(response.data.data);
+    if (response.data.tk_status !== "NG") {
+      if (response.data.data.length>0) {
+        checkP500 = true;
       }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    } else {
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
   return checkP500;
 };
 export const f_checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
@@ -8315,3 +8318,101 @@ export const checkPLAN_ID = async (PLAN_ID: string) => {
     })
   return kq;
 }
+
+export const ProtectedRoute: any = ({
+  user,
+  maindeptname,
+  jobname,
+  children,
+}: {
+  user: userDataInterface;
+  maindeptname: string;
+  jobname: string;
+  children: Component;
+}) => {
+  if (user.EMPL_NO === "none") {
+    /*  return <Navigate to='/login' replace />; */
+    return <Login />;
+  } else {
+    if (
+      maindeptname === "all" ||
+      user.EMPL_NO === "NHU1903" ||
+      user.EMPL_NO === "NVH1011" ||
+      user.JOB_NAME === "ADMIN"
+    ) {
+      if (
+        jobname === "all" ||
+        user.EMPL_NO === "NHU1903" ||
+        user.EMPL_NO === "NVH1011" ||
+        user.JOB_NAME === "ADMIN"
+      ) {
+        return children;
+      } else {
+        if (
+          user.JOB_NAME !== "Leader" &&
+          user.JOB_NAME !== "Sub Leader" &&
+          user.JOB_NAME !== "Dept Staff" &&
+          user.JOB_NAME !== "ADMIN"
+        ) {
+          Swal.fire(
+            "Thông báo",
+            "Nội dung: Bạn không có quyền truy cập: ",
+            "error"
+          );
+        } else {
+          return children;
+        }
+      }
+    } else {
+      if (user.MAINDEPTNAME !== maindeptname) {
+        Swal.fire(
+          "Thông báo",
+          "Nội dung: Bạn không phải người của bộ phận: " + maindeptname,
+          "error"
+        );
+      } else {
+        if (
+          jobname === "all" ||
+          user.EMPL_NO === "NHU1903" ||
+          user.EMPL_NO === "NVH1011" ||
+          user.JOB_NAME === "ADMIN"
+        ) {
+          return children;
+        } else {
+          if (
+            user.JOB_NAME !== "Leader" &&
+            user.JOB_NAME !== "Sub Leader" &&
+            user.JOB_NAME !== "Dept Staff" &&
+            user.JOB_NAME !== "ADMIN"
+          ) {
+            Swal.fire(
+              "Thông báo",
+              "Nội dung: Bạn không có quyền truy cập: ",
+              "error"
+            );
+          } else {
+            return children;
+          }
+        }
+      }
+    }
+  }
+};
+
+export const requestFullScreen = (elementRef: React.MutableRefObject<null>, full_screen: number) => {
+  if (elementRef.current && full_screen === 1) {
+    const element = elementRef.current as HTMLElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if ("mozRequestFullScreen" in element) {
+      // Firefox
+      (element as any).mozRequestFullScreen();
+    } else if ("webkitRequestFullscreen" in element) {
+      // Chrome, Safari and Opera
+      (element as any).webkitRequestFullscreen();
+    } else if ("msRequestFullscreen" in element) {
+      // IE/Edge
+      (element as any).msRequestFullscreen();
+    }
+  }
+};

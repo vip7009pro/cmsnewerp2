@@ -1,13 +1,12 @@
-import React, { StrictMode } from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import "./index.css";
 
-import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { SnackbarProvider } from 'notistack';
 import { getCompany } from "./api/Api";
-import Suppliers from "./Suppliers";
 import AppVendors from "./AppVendors";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,

@@ -203,7 +203,6 @@ export async function checkLogin() {
   let API_URL = getSever() + "/api";
   let UPLOAD_URL = getSever() + "/uploadfile";
   let publicKey = localStorage.getItem("publicKey");
-  console.log("publicKey",publicKey)
   let datacheck = {
     CTR_CD: getCtrCd(),
     token_string: cookies.get("token")

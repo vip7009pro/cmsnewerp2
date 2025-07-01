@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./NavMenu.scss";
-import { LangConText } from "../../api/Context";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../api/GlobalInterface";
@@ -36,7 +35,6 @@ interface MENUDATA {
   SubIconColor: string;
 }
 const NavMenuNew = () => {
-  const [lang, setLang] = useContext(LangConText);
   const [icons, setIcons] = useState<
     { name: string; library: string; IconComponent: any }[]
   >([]);

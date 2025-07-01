@@ -1,20 +1,8 @@
 /* eslint-disable no-loop-func */
-import React, {
-  ReactElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import "./EQ_STATUS.scss";
-import Swal from "sweetalert2";
-import { generalQuery, getCompany } from "../../../../api/Api";
-import moment from "moment";
-import { UserContext } from "../../../../api/Context";
 import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
-import EQ_SUMMARY from "./EQ_SUMMARY";
-import { Checkbox, TextField } from "@mui/material";
+import { Checkbox } from "@mui/material";
 import { EQ_STT } from "../../../../api/GlobalInterface";
 import { useSpring, animated } from "@react-spring/web";
 import { f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";

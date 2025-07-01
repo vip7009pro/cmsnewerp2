@@ -1,8 +1,6 @@
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 
 import "./YCSXComponent.scss";
 import { useSelector } from "react-redux";

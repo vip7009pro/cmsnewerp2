@@ -5,7 +5,6 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SwitchRightIcon from "@mui/icons-material/SwitchRight";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getCompany, logout } from "../../api/ApiVendors";
-import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
 import { FcList } from "react-icons/fc";
 import {
@@ -45,12 +44,14 @@ export const simpleProductLabel = { 'aria-label': 'Simple Product' };
 export default function NavbarVendors() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
-  const [lang, setLang] = useContext(LangConText);
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
   const refNotificationPanel = useRef<HTMLDivElement>(null);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
+  );
+  const lang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
   );
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
@@ -162,137 +163,137 @@ export default function NavbarVendors() {
     },
     {
       MENU_CODE: "NS1",
-      MENU_NAME: getlang("quanlyphongban", lang),
+      MENU_NAME: getlang("quanlyphongban", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS2",
-      MENU_NAME: getlang("diemdanhnhom", lang),
+      MENU_NAME: getlang("diemdanhnhom", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS3",
-      MENU_NAME: getlang("dieuchuyenteam", lang),
+      MENU_NAME: getlang("dieuchuyenteam", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS4",
-      MENU_NAME: getlang("dangky", lang),
+      MENU_NAME: getlang("dangky", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS5",
-      MENU_NAME: getlang("pheduyet", lang),
+      MENU_NAME: getlang("pheduyet", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS6",
-      MENU_NAME: getlang("lichsudilam", lang),
+      MENU_NAME: getlang("lichsudilam", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS7",
-      MENU_NAME: getlang("quanlycapcao", lang),
+      MENU_NAME: getlang("quanlycapcao", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS8",
-      MENU_NAME: getlang("baocaonhansu", lang),
+      MENU_NAME: getlang("baocaonhansu", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "NS9",
-      MENU_NAME: getlang("listchamcong", lang),
+      MENU_NAME: getlang("listchamcong", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD1",
-      MENU_NAME: getlang("quanlypo", lang),
+      MENU_NAME: getlang("quanlypo", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD2",
-      MENU_NAME: getlang("quanlyinvoices", lang),
+      MENU_NAME: getlang("quanlyinvoices", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD3",
-      MENU_NAME: getlang("quanlyplan", lang),
+      MENU_NAME: getlang("quanlyplan", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD4",
-      MENU_NAME: getlang("shortage", lang),
+      MENU_NAME: getlang("shortage", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD5",
-      MENU_NAME: getlang("quanlyFCST", lang),
+      MENU_NAME: getlang("quanlyFCST", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD6",
-      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_NAME: getlang("quanlyYCSX", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD7",
-      MENU_NAME: getlang("quanlyPOFull", lang),
+      MENU_NAME: getlang("quanlyPOFull", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD8",
-      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_NAME: getlang("thongtinsanpham", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD9",
-      MENU_NAME: getlang("quanlycodebom", lang),
+      MENU_NAME: getlang("quanlycodebom", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD10",
-      MENU_NAME: getlang("quanlykhachhang", lang),
+      MENU_NAME: getlang("quanlykhachhang", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD11",
-      MENU_NAME: getlang("eqstatus", lang),
+      MENU_NAME: getlang("eqstatus", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD12",
-      MENU_NAME: getlang("ins_status", lang),
+      MENU_NAME: getlang("ins_status", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD13",
-      MENU_NAME: getlang("baocao", lang),
+      MENU_NAME: getlang("baocao", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KD14",
-      MENU_NAME: getlang("quanlygia", lang),
+      MENU_NAME: getlang("quanlygia", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "PU1",
-      MENU_NAME: getlang("quanlyvatlieu", lang),
+      MENU_NAME: getlang("quanlyvatlieu", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "PU2",
-      MENU_NAME: getlang("quanlymrp", lang),
+      MENU_NAME: getlang("quanlymrp", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QC1",
-      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_NAME: getlang("quanlyYCSX", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QC2",
-      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_NAME: getlang("thongtinsanpham", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
@@ -312,7 +313,7 @@ export default function NavbarVendors() {
     },
     {
       MENU_CODE: "QC6",
-      MENU_NAME: getlang("inspection", lang),
+      MENU_NAME: getlang("inspection", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
@@ -322,7 +323,7 @@ export default function NavbarVendors() {
     },
     {
       MENU_CODE: "QC8",
-      MENU_NAME: getlang("dtc", lang),
+      MENU_NAME: getlang("dtc", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
@@ -332,67 +333,67 @@ export default function NavbarVendors() {
     },
     {
       MENU_CODE: "QC10",
-      MENU_NAME: getlang("baocaoqc", lang),
+      MENU_NAME: getlang("baocaoqc", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "RD1",
-      MENU_NAME: getlang("quanlycodebom", lang),
+      MENU_NAME: getlang("quanlycodebom", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "RD2",
-      MENU_NAME: getlang("thembomamazon", lang),
+      MENU_NAME: getlang("thembomamazon", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "RD3",
-      MENU_NAME: getlang("dtc", lang),
+      MENU_NAME: getlang("dtc", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "RD4",
-      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_NAME: getlang("quanlyYCSX", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "RD5",
-      MENU_NAME: getlang("thietkedesignamazon", lang),
+      MENU_NAME: getlang("thietkedesignamazon", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "RD6",
-      MENU_NAME: getlang("productbarcodemanager", lang),
+      MENU_NAME: getlang("productbarcodemanager", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QL1",
-      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_NAME: getlang("quanlyYCSX", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QL2",
-      MENU_NAME: getlang("quanlycodebom", lang),
+      MENU_NAME: getlang("quanlycodebom", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QL3",
-      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_NAME: getlang("thongtinsanpham", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QL4",
-      MENU_NAME: getlang("quanlyplansx", lang),
+      MENU_NAME: getlang("quanlyplansx", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QL5",
-      MENU_NAME: getlang("quanlycapa", lang),
+      MENU_NAME: getlang("quanlycapa", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "QL6",
-      MENU_NAME: getlang("quanlymrp", lang),
+      MENU_NAME: getlang("quanlymrp", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
@@ -427,87 +428,87 @@ export default function NavbarVendors() {
     },
     {
       MENU_CODE: "SX1",
-      MENU_NAME: getlang("quanlyYCSX", lang),
+      MENU_NAME: getlang("quanlyYCSX", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX2",
-      MENU_NAME: getlang("thongtinsanpham", lang),
+      MENU_NAME: getlang("thongtinsanpham", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX3",
-      MENU_NAME: getlang("datasanxuat", lang),
+      MENU_NAME: getlang("datasanxuat", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX4",
-      MENU_NAME: getlang("inspection", lang),
+      MENU_NAME: getlang("inspection", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX5",
-      MENU_NAME: getlang("planstatus", lang),
+      MENU_NAME: getlang("planstatus", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX6",
-      MENU_NAME: getlang("eqstatus", lang),
+      MENU_NAME: getlang("eqstatus", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX7",
-      MENU_NAME: getlang("khothat", lang),
+      MENU_NAME: getlang("khothat", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX8",
-      MENU_NAME: getlang("khoao", lang),
+      MENU_NAME: getlang("khoao", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX9",
-      MENU_NAME: getlang("lichsuxuatlieuthat", lang),
+      MENU_NAME: getlang("lichsuxuatlieuthat", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX10",
-      MENU_NAME: getlang("materiallotstatus", lang),
+      MENU_NAME: getlang("materiallotstatus", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX13",
-      MENU_NAME: getlang("sxrolldata", lang),
+      MENU_NAME: getlang("sxrolldata", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX14",
-      MENU_NAME: getlang("lichsutemlotsx", lang),
+      MENU_NAME: getlang("lichsutemlotsx", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX11",
-      MENU_NAME: getlang("quanlycapa", lang),
+      MENU_NAME: getlang("quanlycapa", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX12",
-      MENU_NAME: getlang("hieusuatsx", lang),
+      MENU_NAME: getlang("hieusuatsx", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "SX15",
-      MENU_NAME: getlang("khosub", lang),
+      MENU_NAME: getlang("khosub", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KO1",
-      MENU_NAME: getlang("nhapxuattontp", lang),
+      MENU_NAME: getlang("nhapxuattontp", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
       MENU_CODE: "KO2",
-      MENU_NAME: getlang("nhapxuattonlieu", lang),
+      MENU_NAME: getlang("nhapxuattonlieu", lang ?? "en"),
       MENU_ITEM: "",
     },
     {
@@ -523,7 +524,7 @@ export default function NavbarVendors() {
   ];
   const [selectedTab, setSelectedTab] = useState<SEARCH_LIST_DATA>({
     MENU_CODE: "NS2",
-    MENU_NAME: getlang("diemdanhnhom", lang),
+    MENU_NAME: getlang("diemdanhnhom", lang ?? "en"),
   });
   const tabModeSwap: boolean = useSelector(
     (state: RootState) => state.totalSlice.tabModeSwap,
@@ -540,9 +541,9 @@ export default function NavbarVendors() {
   useEffect(() => {
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
-      setLang(saveLang.toString());
+      dispatch(changeGLBLanguage(saveLang.toString()));
     } else {
-      setLang("en");
+      dispatch(changeGLBLanguage("en"));
     }
     let saveTab: any = localStorage.getItem("tabs")?.toString();
     if (saveTab !== undefined) {
@@ -595,7 +596,6 @@ export default function NavbarVendors() {
   const changeLanguage = (selectLang: string) => {
     //console.log(selectLang);
     setLangMenu(false);
-    setLang(selectLang);
     dispatch(changeGLBLanguage(selectLang));
     localStorage.setItem("lang", selectLang);
   };

@@ -1,14 +1,7 @@
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import {
-  AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
-} from "react-icons/ai";
-import Swal from "sweetalert2";
+import { useEffect, useState, useTransition } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
-import { f_getMachineListData, SaveExcel } from "../../../../api/GlobalFunction";
+import { f_getMachineListData } from "../../../../api/GlobalFunction";
 import "./PLAN_STATUS.scss";
 import PLAN_STATUS_COMPONENTS from "./PLAN_STATUS_COMPONENTS";
 import { MACHINE_LIST, SX_DATA } from "../../../../api/GlobalInterface";

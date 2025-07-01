@@ -193,6 +193,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     },
     { field: "PLAN_EQ", headerName: "MACHINE", width: 70, editable: false },
     { field: "INS_DATE", headerName: "INS_DATE", width: 100, editable: false },
+    { field: "P500_X", headerName: "P500_X", width: 100, editable: false },
   ];
   const load_nhapkhoao = async () => {
     let lsnhapkhoao: LICHSUNHAPKHOAO[] = await f_load_nhapkhoao({
@@ -257,8 +258,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     else {
       Swal.fire("Thông báo", "Không có dòng nào", "error");
     }
-  };
-  
+  }; 
 
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
@@ -277,7 +277,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
           let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
           let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
-          let isMLOTNO_INPUT_QTY_P500 = false; // await f_isExistM_LOT_NO_QTY_P500(tonkhoaodatafilter.current[i].M_LOT_NO, tonkhoaodatafilter.current[i].TOTAL_IN_QTY);
+          let isMLOTNO_INPUT_QTY_P500 = await f_isExistM_LOT_NO_QTY_P500(tonkhoaodatafilter.current[i].M_LOT_NO, tonkhoaodatafilter.current[i].TOTAL_IN_QTY);
           let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
@@ -351,7 +351,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             else if (isExpired) {
               err_code += `| Cuộn liệu tồn quá lâu, hãy trả Kho NVL rồi sử dụng!`;
             }
-            else if (!isMLOTNO_INPUT_QTY_P500) {
+            else if (isMLOTNO_INPUT_QTY_P500) {
               err_code += `| Cuộn liệu đã được sử dụng rồi, không thể next, báo admin!`;
             }
           }

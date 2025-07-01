@@ -1,14 +1,8 @@
 import moment from "moment";
-import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import Swal from "sweetalert2";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generalQuery, getCompany } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeDiemDanhState,
-  changeUserData,
-} from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT.scss";
 import Barcode from "react-barcode";
 import {
@@ -20,7 +14,6 @@ import {
   UserData,
 } from "../../../../api/GlobalInterface";
 import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../../../../api/GlobalFunction";
-import { CiStar } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
   const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
