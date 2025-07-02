@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './SettingPage.scss'
 import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
-import { generalQuery } from '../../api/Api';
+import { generalQuery, getUserData } from '../../api/Api';
 import Swal from "sweetalert2";
 import {
   Button,
@@ -17,7 +17,10 @@ import OpenCV from '../../components/OpenCV/OpenCV';
 import addNotification from 'react-push-notification';
 import WebCam from '../../components/Camera/WebCam';
 import FlowChart from '../../components/FlowChart/FlowChart';
+import { title } from 'process';
 const SettingPage = () => {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
   const dispatch = useDispatch();
   const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.globalSetting
@@ -95,15 +98,31 @@ const SettingPage = () => {
         console.log(error);
       });
   }
-  /*   const buttonClick = () => {
+    const buttonClick = () => {
       addNotification({
+          icon: 'favicon.ico',
           title: 'Thông báo',
           subtitle: 'Hàng được nhập kho',
           message: 'Code GH68-48946A đã được nhập kho 10K vào lúc 10h30p',
-          theme: 'darkblue',
+          theme: 'light',
           native: true // when using native, your OS will handle theming.
       });
-  }; */
+  };
+    const sendNotification = async (title: string, body: string) => {
+      try {
+        const response = await generalQuery('sendNotificationAPI', {
+          title: title,
+          body: body,       
+        });
+        if (response.data.tk_status === "OK") {
+          console.log('Đã gửi thông báo thành công!');
+        } else {
+          console.log('Lỗi khi gửi thông báo!');
+        }
+      } catch (error) {
+        console.error('Lỗi khi gửi thông báo:', error);
+      }
+    };    
   useEffect(() => {
     loadWebSetting();
     //getWifiInfo();
@@ -111,7 +130,7 @@ const SettingPage = () => {
   return (
     <div className='settingpage'>
       {/* <OpenCV/> */}
-      {/* <button onClick={buttonClick}>Show Notification</button> */}
+        
       <h2>Setting Page</h2>
       <div className="headerbutton">
         <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
@@ -182,6 +201,12 @@ const SettingPage = () => {
           ))}
         </tbody>
       </table>
+      {getUserData()?.EMPL_NO === "NHU1903" && <div>
+        <input type="text" placeholder="Title" onChange={(e) => setTitle(e.target.value)}/>
+        <input type="text" placeholder="Body" onChange={(e) => setBody(e.target.value)}/>
+        <Button onClick={()=> {sendNotification(title, body)}}>Send Notifications</Button>
+      </div>}
+     
       {/* <WebCam/> */}
       {/* <FlowChart/> */}
       {/* <Scanner/> */}

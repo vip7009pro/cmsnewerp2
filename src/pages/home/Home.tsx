@@ -1,7 +1,13 @@
 import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { animated } from "@react-spring/web";
-import React, { useEffect, useState, Suspense, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  Suspense,
+  useMemo,
+  useCallback,
+} from "react";
 import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
@@ -14,7 +20,7 @@ import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo, Navbar } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
-export const current_ver: number = getCompany() === "CMS" ? 2634 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2635 : 423;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -27,8 +33,8 @@ export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
   // Thêm các kiểu tùy chỉnh khác tại đây...
 });
 function Home() {
-  const cookies = new Cookies(); 
-  const { theme,tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus } =
+  const cookies = new Cookies();
+  const { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus } =
     useSelector((state: RootState) => ({
       theme: state.totalSlice.theme,
       lang: state.totalSlice.lang,
@@ -39,7 +45,10 @@ function Home() {
       tabs: state.totalSlice.tabs,
     }));
   console.log("company", company);
-  const menulist: MENU_LIST_DATA[] = useMemo( () => getMenuList(company, lang), [company, lang] );
+  const menulist: MENU_LIST_DATA[] = useMemo(
+    () => getMenuList(company, lang),
+    [company, lang]
+  );
   const dispatch = useDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = useCallback(() => {
@@ -95,42 +104,42 @@ function Home() {
   }, []);
   const checkWebVer = useCallback((intervalID?: number) => {
     generalQuery("checkWebVer", {})
-    .then((response) => {
-      if (response?.data?.tk_status !== "NG") {
-        //console.log('webver',response.data.data[0].VERWEB);
-        if (current_ver >= response.data.data[0].VERWEB) {
-        } else {
-          if (intervalID) {
-            window.clearInterval(intervalID);
-          }
-          Swal.fire({
-            title: "ERP has updates?",
-            text: "Update Web",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Update",
-            cancelButtonText: "Update later",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire("Notification", "Update Web", "success");
-              window.location.reload();
-            } else {
-              Swal.fire(
-                "Notification",
-                "Press Ctrl + F5 to update the Web",
-                "info"
-              );
+      .then((response) => {
+        if (response?.data?.tk_status !== "NG") {
+          //console.log('webver',response.data.data[0].VERWEB);
+          if (current_ver >= response.data.data[0].VERWEB) {
+          } else {
+            if (intervalID) {
+              window.clearInterval(intervalID);
             }
-          });
+            Swal.fire({
+              title: "ERP has updates?",
+              text: "Update Web",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Update",
+              cancelButtonText: "Update later",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire("Notification", "Update Web", "success");
+                window.location.reload();
+              } else {
+                Swal.fire(
+                  "Notification",
+                  "Press Ctrl + F5 to update the Web",
+                  "info"
+                );
+              }
+            });
+          }
+        } else {
         }
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
@@ -140,7 +149,7 @@ function Home() {
       checkWebVer(intervalID);
       getchamcong();
     }, 30000);
-    checkERPLicense();    
+    checkERPLicense();
     return () => {
       window.clearInterval(intervalID);
     };
@@ -276,7 +285,11 @@ function Home() {
                       }}
                     >
                       <Suspense fallback={<div>Loading...</div>}>
-                        {menulist.find(menu => menu.MENU_CODE === ele.ELE_CODE)?.MENU_ITEM}
+                        {
+                          menulist.find(
+                            (menu) => menu.MENU_CODE === ele.ELE_CODE
+                          )?.MENU_ITEM
+                        }
                       </Suspense>
                     </div>
                   );

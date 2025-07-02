@@ -1,5 +1,5 @@
 import "devextreme/dist/css/dx.light.css";
-import { useEffect, Suspense, useRef, useMemo, useCallback } from "react";
+import { useEffect, Suspense, useRef, useMemo, useCallback, useState } from "react";
 import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData, } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
@@ -17,6 +17,7 @@ import { enqueueSnackbar } from "notistack";
 import { Login } from "./api/lazyPages";
 import { requestFullScreen } from "./api/GlobalFunction";
 import AppRoutes from "./AppRoutes";
+import { Button } from "devextreme-react";
 function App() {
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(
@@ -214,7 +215,74 @@ function App() {
       }
     }
   }, []);
-  useEffect(() => {
+  const [message, setMessage] = useState<string>('');
+
+  // Hàm chuyển đổi VAPID key
+  const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+  };
+
+  // Hàm yêu cầu quyền và đăng ký push
+  const handleEnableNotifications = async (): Promise<void> => {
+    console.log('handleEnableNotifications');
+    try {
+      console.log('vao day');
+      // Kiểm tra hỗ trợ
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        console.log('Trình duyệt không hỗ trợ thông báo đẩy!');
+        return;
+      }
+
+      // Yêu cầu quyền thông báo
+      const permission: NotificationPermission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        console.log('Người dùng không cho phép thông báo!');
+        return;
+      }
+
+      // Lấy Service Worker registration
+      const registration: ServiceWorkerRegistration = await navigator.serviceWorker.ready;
+
+      // Đăng ký push subscription
+      const subscription: PushSubscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(
+          'BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE' // Thay bằng public VAPID key của đại ca
+        )
+      });
+    
+      // Gửi subscription đến server
+      const response = await generalQuery('addSubscription',  {
+        subscription: JSON.stringify(subscription)
+      });
+      if (response.data.tk_status === "OK") {
+        console.log('Đã bật thông báo thành công!');
+      } else {
+        console.log('Lỗi khi gửi subscription đến server!');
+      }
+    } catch (error: unknown) {
+      console.error('Lỗi:', error);
+      console.log(`Có lỗi xảy ra: ${(error as Error).message}`);
+    }
+  };
+  
+  const getIPAddress = async () => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      console.log(data.ip);
+      return data.ip;
+    } catch (error) {
+      console.error('Lỗi khi lấy IP:', error);
+      return null;
+    }
+  };
+
+
+  useEffect(() => {   
     checkLoginCallback();
     checkDiemDanh();
     const socket = getSocket();
@@ -235,6 +303,9 @@ function App() {
     if (!socket.hasListeners("notification_panel")) {
       socket.on("notification_panel", handleNotification);
     }
+    handleEnableNotifications();
+    getIPAddress();
+    
     return () => {
       socket.off("setWebVer", (data: any) => {});
       socket.off("request_check_online", (data: any) => {});
@@ -242,7 +313,7 @@ function App() {
     };
   }, [globalLoginState]);
   return (
-    <>
+    <> 
       {globalLoginState && (
         <div className="App" ref={elementRef} onClick={()=>requestFullScreen(elementRef, full_screen)}>
           <Suspense fallback={<FallBackComponent />}>

@@ -1,21 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { lazy, ReactElement } from "react";
+import { ReactElement } from "react";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
-import {
-  ELE_ARRAY,
-  GlobalInterface,
-  QLSXPLANDATA,
-  UserData,
-  WEB_SETTING_DATA,
-} from "../../api/GlobalInterface";
+import { ELE_ARRAY, GlobalInterface, QLSXPLANDATA, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
-const protocol = window.location.protocol.startsWith("https")
-  ? "https"
-  : "http";
+const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
 const main_port = protocol === "https" ? "5014" : "5013";
 const sub_port = protocol === "https" ? "3006" : "3007";
 const companyInfo = {

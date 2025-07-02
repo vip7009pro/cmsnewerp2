@@ -8,6 +8,19 @@ import "./index.css";
 import { SnackbarProvider } from 'notistack';
 import { getCompany } from "./api/Api";
 import AppVendors from "./AppVendors";
+
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration: ServiceWorkerRegistration = await navigator.serviceWorker.register('service-worker.js');
+      console.log('Service Worker đăng ký thành công:', registration);
+    } catch (error) {
+      console.error('Lỗi đăng ký Service Worker:', error);
+    }
+  });
+}
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
