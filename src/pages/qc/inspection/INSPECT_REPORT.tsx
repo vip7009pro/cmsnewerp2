@@ -12,11 +12,12 @@ import {
   InspectSummary,
   MonthlyPPMData,
   PATROL_HEADER_DATA,
+  TREND_NGUOI_HANG_DATA,
   WeeklyPPMData,
   WorstData,
   YearlyPPMData,
 } from "../../../api/GlobalInterface";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { f_load_TREND_NGUOI_HANG_DATA_DAILY, f_load_TREND_NGUOI_HANG_DATA_MONTHLY, f_load_TREND_NGUOI_HANG_DATA_WEEKLY, f_load_TREND_NGUOI_HANG_DATA_YEARLY, SaveExcel } from "../../../api/GlobalFunction";
 import {
   Autocomplete,
   Checkbox,
@@ -37,6 +38,10 @@ import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/Inspection
 import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
 import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
 import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
+import InspectDailyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectDailyNguoiHangTrending";
+import InspectWeeklyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectWeeklyNguoiHangTrending";
+import InspectMonthlyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectMonthlyNguoiHangTrending";
+import InspectYearlyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectYearlyNguoiHangTrending";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -72,6 +77,11 @@ const INSPECT_REPORT = () => {
     PROD_LAST_PRICE: 0,
     USE_YN: "N",
   });
+  const [dailyNguoiHangData, setDailyNguoiHangData] = useState<TREND_NGUOI_HANG_DATA[]>([]);
+  const [weeklyNguoiHangData, setWeeklyNguoiHangData] = useState<TREND_NGUOI_HANG_DATA[]>([]);
+  const [monthlyNguoiHangData, setMonthlyNguoiHangData] = useState<TREND_NGUOI_HANG_DATA[]>([]);
+  const [annualyNguoiHangData, setAnnualyNguoiHangData] = useState<TREND_NGUOI_HANG_DATA[]>([]);
+
   const [df, setDF] = useState(true);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -572,6 +582,59 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   }
+
+  const handle_getdailytrendNguoiHang = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    let data = {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
+    };
+    setDailyNguoiHangData(await f_load_TREND_NGUOI_HANG_DATA_DAILY(data));
+  }
+
+  const handle_getweeklytrendNguoiHang = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    let data = {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
+    };
+    setWeeklyNguoiHangData(await f_load_TREND_NGUOI_HANG_DATA_WEEKLY(data));
+  }
+
+  const handle_getmonthlytrendNguoiHang = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    let data = {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
+    };
+    setMonthlyNguoiHangData(await f_load_TREND_NGUOI_HANG_DATA_MONTHLY(data));
+  }
+
+  const handle_getannualytrendNguoiHang = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    let data = {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name,
+      NG_TYPE: ng_type
+    };
+    setAnnualyNguoiHangData(await f_load_TREND_NGUOI_HANG_DATA_YEARLY(data));
+  }
+
   const getcodelist = (G_NAME: string) => {
     generalQuery("selectcodeList", { G_NAME: G_NAME })
       .then((response) => {
@@ -607,6 +670,10 @@ const INSPECT_REPORT = () => {
       handle_getAnnuallyFcost(fromdate, todate, searchCodeArray),
       handle_getDailyDefectTrending(fromdate, todate, searchCodeArray),
       getPatrolHeaderData(fromdate, todate),
+      handle_getdailytrendNguoiHang(fromdate, todate, searchCodeArray),
+      handle_getweeklytrendNguoiHang(fromdate, todate, searchCodeArray),
+      handle_getmonthlytrendNguoiHang(fromdate, todate, searchCodeArray),
+      handle_getannualytrendNguoiHang(fromdate, todate, searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -878,6 +945,75 @@ const INSPECT_REPORT = () => {
                 <InspectionYearlyFcost
                   dldata={[...annualyFcostData].reverse()}
                   dlppmdata={[...yearlyppm].reverse()}
+                  processColor="#89fc98"
+                  materialColor="#41d5fa"
+                />
+              </div>
+            </div>
+          </div>
+          <span className="section_title">Tỉ lệ người hàng</span>
+          <div className="fcosttrending">
+            <div className="fcostgraph">
+              <div className="dailygraph">
+                <span className="subsection">Daily INSPECT EMPL DATA <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(dailyNguoiHangData, "DailyNguoiHangData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectDailyNguoiHangTrending
+                  dldata={[...dailyNguoiHangData].reverse()}
+                  processColor="#9affb0"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly INSPECT EMPL DATA <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(weeklyFcostData, "WeeklyFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectWeeklyNguoiHangTrending
+                  dldata={[...weeklyNguoiHangData].reverse()}
+                  processColor="#89fc98"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Monthly INSPECT EMPL DATA <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(monthlyFcostData, "MonthFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectMonthlyNguoiHangTrending
+                  dldata={[...monthlyNguoiHangData].reverse()}
+                  processColor="#89fc98"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly INSPECT EMPL DATA <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(annualyFcostData, "YearlyFcostData");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <InspectYearlyNguoiHangTrending
+                  dldata={[...annualyNguoiHangData].reverse()}
                   processColor="#89fc98"
                   materialColor="#41d5fa"
                 />
