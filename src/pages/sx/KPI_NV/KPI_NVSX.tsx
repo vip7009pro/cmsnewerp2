@@ -13,15 +13,11 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
+import { useForm } from "react-hook-form";
 const KPI_NVSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [fromdate, setFromDate] = useState(
-    moment().add(-8, "day").format("YYYY-MM-DD")
-  );
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const {register,handleSubmit,watch, formState:{errors}} = useForm()
   const [kpinvsxdata, setKPI_NVSXData] = useState<SX_KPI_NV_DATA[]>([]);
-  const [option, setOption] = useState("Daily");
-  const [alltime, setAllTime] = useState(false);
   const columns_kpinvsx_daily = useMemo(() => {
     return [
       { field: "id", headerName: "ID", width: 30 },
@@ -580,12 +576,6 @@ const KPI_NVSX = () => {
     ];
   }, []);
   const [columns, setColumns] = useState(columns_kpinvsx_daily);
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter") {
-    }
-  };
   const loss_data_ag_table = useMemo(() => {
     return (
       <AGTable
@@ -605,29 +595,29 @@ const KPI_NVSX = () => {
   }, [kpinvsxdata, columns]);
   const handle_loaddatasx = async () => {
     let kq: SX_KPI_NV_DATA[] = [];
-    if (option === "Daily") {
+    if (watch("option") === "Daily") {
       setColumns(columns_kpinvsx_daily);
       kq = await f_load_SX_NV_KPI_DATA_Daily({
-        FROM_DATE: fromdate,
-        TO_DATE: todate,
+        FROM_DATE: watch("fromdate"),
+        TO_DATE: watch("todate"),
       });
-    } else if (option === "Weekly") {
+    } else if (watch("option") === "Weekly") {
       setColumns(columns_kpinvsx_weekly);
       kq = await f_load_SX_NV_KPI_DATA_Weekly({
-        FROM_DATE: fromdate,
-        TO_DATE: todate,
+        FROM_DATE: watch("fromdate"),
+        TO_DATE: watch("todate"),
       });
-    } else if (option === "Monthly") {
+    } else if (watch("option") === "Monthly") {
       setColumns(columns_kpinvsx_monthly);
       kq = await f_load_SX_NV_KPI_DATA_Monthly({
-        FROM_DATE: fromdate,
-        TO_DATE: todate,
+        FROM_DATE: watch("fromdate"),
+        TO_DATE: watch("todate"),
       });
-    } else if (option === "Yearly") {
+    } else if (watch("option") === "Yearly") {
       setColumns(columns_kpinvsx_yearly);
       kq = await f_load_SX_NV_KPI_DATA_Yearly({
-        FROM_DATE: fromdate,
-        TO_DATE: todate,
+        FROM_DATE: watch("fromdate"),
+        TO_DATE: watch("todate"),
       });
     }
     //console.log(kq);
@@ -641,9 +631,7 @@ const KPI_NVSX = () => {
   };
   useEffect(() => {
     return () => {
-      /* window.clearInterval(intervalID);*/
     };
-    //setColumnDefinition(column_inspect_output);
   }, []);
   return (
     <div className="kpinvsx">
@@ -657,31 +645,22 @@ const KPI_NVSX = () => {
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
+                  defaultValue={moment().add(-8, "day").format("YYYY-MM-DD")}
+                  {...register("fromdate")}
                   type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
+                />
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
+                  defaultValue={moment().format("YYYY-MM-DD")}
+                  {...register("todate")}
                   type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
+                />
               </label>
               <label>
                 <b>Option:</b>
-                <select
-                  value={option}
-                  onChange={(e) => setOption(e.target.value)}
-                >
+                <select {...register("option")}>
                   <option value="Daily">Daily</option>
                   <option value="Weekly">Weekly</option>
                   <option value="Monthly">Monthly</option>
@@ -701,21 +680,9 @@ const KPI_NVSX = () => {
               >
                 All Time:
               </b>
-              <input
-                onKeyDown={(e) => {
-                  handleSearchCodeKeyDown(e);
-                }}
-                type="checkbox"
-                name="alltimecheckbox"
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
+              <input {...register("alltime")} type="checkbox" />
             </label>
-            <Button
-              onClick={() => {
-                handle_loaddatasx();
-              }}
-            >
+            <Button onClick={handleSubmit(handle_loaddatasx)}>
               Load Data
             </Button>
           </div>
