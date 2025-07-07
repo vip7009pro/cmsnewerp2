@@ -17,6 +17,7 @@ import { getCompany } from "../../api/Api";
 import MyTabs from "../../components/MyTab/MyTab";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import KPI_NVSX from "./KPI_NV/KPI_NVSX";
 const BAOCAOSXALL = () => {
     const lang: string | undefined = useSelector(
       (state: RootState) => state.totalSlice.lang
@@ -69,6 +70,9 @@ const BAOCAOSXALL = () => {
               <BTP_AUTO />
             </MyTabs.Tab>
           )}
+          <MyTabs.Tab title="KPI NV">
+            <KPI_NVSX />
+          </MyTabs.Tab>
         </MyTabs>
       </Suspense>
     </div>
