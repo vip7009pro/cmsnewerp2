@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./SAMPLE_MONITOR.scss";
 import { generalQuery, getUserData, uploadQuery } from "../../../api/Api";
-import { MdAdd, MdFaceUnlock, MdLock, MdOutlinePivotTableChart, MdRefresh, MdSave } from "react-icons/md";
+import { MdAdd, MdFaceUnlock, MdLock, MdOutlinePivotTableChart, MdRefresh } from "react-icons/md";
 import { CustomerListData, FullBOM, SAMPLE_MONITOR_DATA } from "../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
@@ -158,8 +158,8 @@ const SAMPLE_MONITOR = () => {
     //console.log(tempcodefullinfo);
     setClickedRows(tempMaterialInfo);
   };
-  const updateRND_STATUS =async (datarow: SAMPLE_MONITOR_DATA) => {
-    await generalQuery("updateRND_SAMPLE_STATUS", {
+  const updateRND_STATUS =(datarow: SAMPLE_MONITOR_DATA) => {
+    generalQuery("updateRND_SAMPLE_STATUS", {
       SAMPLE_ID: datarow.SAMPLE_ID,
       FILE_MAKET: datarow.FILE_MAKET,
       FILM_FILE: datarow.FILM_FILE,
@@ -170,7 +170,7 @@ const SAMPLE_MONITOR = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo','Update data RND thành công','success');
+          Swal.fire('Thông báo','Update data thành công','success');
         } else {
           Swal.fire('Thông báo','Update data thất bại','error');
         }
@@ -179,8 +179,8 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   }
-  const updateSX_STATUS =async (datarow: SAMPLE_MONITOR_DATA) => {
-    await generalQuery("updateSX_SAMPLE_STATUS", {      
+  const updateSX_STATUS =(datarow: SAMPLE_MONITOR_DATA) => {
+    generalQuery("updateSX_SAMPLE_STATUS", {      
       SAMPLE_ID: datarow.SAMPLE_ID,
       PRINT_STATUS: datarow.PRINT_STATUS,
       DIECUT_STATUS: datarow.DIECUT_STATUS,      
@@ -188,7 +188,7 @@ const SAMPLE_MONITOR = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo','Update data SX thành công','success');
+          Swal.fire('Thông báo','Update data thành công','success');
         } else {
           Swal.fire('Thông báo','Update data thất bại','error');
         }
@@ -197,15 +197,15 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   }
-  const updateQC_STATUS =async (datarow: SAMPLE_MONITOR_DATA) => {
-    await generalQuery("updateQC_SAMPLE_STATUS", {      
+  const updateQC_STATUS =(datarow: SAMPLE_MONITOR_DATA) => {
+  generalQuery("updateQC_SAMPLE_STATUS", {      
       SAMPLE_ID: datarow.SAMPLE_ID,
       QC_STATUS: datarow.QC_STATUS,
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo','Update data QC thành công','success');
+          Swal.fire('Thông báo','Update data thành công','success');
         } else {
           Swal.fire('Thông báo','Update data thất bại','error');
         }
@@ -214,15 +214,15 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   }
-  const updateMATERIAL_STATUS =async (datarow: SAMPLE_MONITOR_DATA) => {
-    await generalQuery("updateMATERIAL_STATUS", {      
+  const updateMATERIAL_STATUS =(datarow: SAMPLE_MONITOR_DATA) => {
+  generalQuery("updateMATERIAL_STATUS", {      
       SAMPLE_ID: datarow.SAMPLE_ID,
       MATERIAL_STATUS: datarow.MATERIAL_STATUS,
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo','Update data Material thành công','success');
+          Swal.fire('Thông báo','Update data thành công','success');
         } else {
           Swal.fire('Thông báo','Update data thất bại','error');
         }
@@ -232,7 +232,7 @@ const SAMPLE_MONITOR = () => {
       });
   }
   const updateAPPROVE_STATUS = async (datarow: SAMPLE_MONITOR_DATA) => {
-    await generalQuery("updateAPPROVE_SAMPLE_STATUS", {      
+  generalQuery("updateAPPROVE_SAMPLE_STATUS", {      
       SAMPLE_ID: datarow.SAMPLE_ID,
       APPROVE_STATUS: datarow.APPROVE_STATUS,
       USE_YN: datarow.USE_YN,
@@ -241,7 +241,7 @@ const SAMPLE_MONITOR = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire('Thông báo','Update data Approve thành công','success');
+          Swal.fire('Thông báo','Update data thành công','success');
         } else {
           Swal.fire('Thông báo','Update data thất bại','error');
         }
@@ -250,9 +250,19 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   }
-  const updateDataTable = (data_row: SAMPLE_MONITOR_DATA, key: string, value: any) => {   
+  const updateDataTable = (data_row: SAMPLE_MONITOR_DATA, key: string, value: any) => {
+    Swal.fire({
+      title: "Chắc chắn muốn update Data ?",
+      text: "Suy nghĩ kỹ trước khi hành động",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
         let dataToUpdate: SAMPLE_MONITOR_DATA = data.filter((ele:SAMPLE_MONITOR_DATA, index: number)=> ele.SAMPLE_ID === data_row.SAMPLE_ID)[0];
-       /*  switch (getUserData()?.MAINDEPTNAME) {
+        switch (getUserData()?.MAINDEPTNAME) {
           case 'RND':        
               updateRND_STATUS({ ...dataToUpdate, [key]: value });       
             break;
@@ -272,7 +282,7 @@ const SAMPLE_MONITOR = () => {
               updateMATERIAL_STATUS({ ...dataToUpdate, [key]: value });        
             break;
           
-        } */
+        }
         setData(prev => {
           const newData = prev.map((p) =>
             p.SAMPLE_ID === data_row.SAMPLE_ID
@@ -281,6 +291,8 @@ const SAMPLE_MONITOR = () => {
           );
           return newData;
         });        
+      }
+    });   
   }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -334,37 +346,6 @@ const SAMPLE_MONITOR = () => {
     
 
 
-  }
-  const handle_Update_Data_Row = async (selectedDataRows: SAMPLE_MONITOR_DATA[], MAINDEPARTMENT: string) => {
-    for(let i=0; i<selectedDataRows.length; i++)
-    {
-      let dataToUpdate: SAMPLE_MONITOR_DATA = selectedDataRows[i];
-      switch (MAINDEPARTMENT) {
-        case 'RND':        
-            await updateRND_STATUS(dataToUpdate);       
-          break;
-      case 'SX':        
-          await updateSX_STATUS(dataToUpdate);       
-        break;
-      case 'QC':        
-          await updateQC_STATUS(dataToUpdate);       
-        break;
-      case 'KD':        
-          await updateAPPROVE_STATUS(dataToUpdate);        
-        break;
-      case 'MUA':        
-          await updateMATERIAL_STATUS(dataToUpdate);        
-        break;
-      case 'KHO':        
-          await updateMATERIAL_STATUS(dataToUpdate);        
-        break;
-      default:
-        Swal.fire("Thông báo","Bạn khônng thuộc bộ phận hợp lệ","error");
-        break;
-      }
-    }
-    Swal.fire("Thông báo","Update data thành công","success");
-    loadSampleListTable();
   }
   function CustomHeader({displayName}:{displayName: string}) {
     return (
@@ -422,9 +403,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.FILE_MAKET === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'FILE_MAKET')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.FILE_MAKET === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -443,9 +424,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.FILM_FILE === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'FILM_FILE')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.FILM_FILE === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -464,9 +445,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.KNIFE_STATUS === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'KNIFE_STATUS')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.KNIFE_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -492,9 +473,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.FILM === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["RND"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'FILM')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.FILM === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -520,9 +501,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.MATERIAL_STATUS === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["MUA","KHO"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'MATERIAL_STATUS')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.MATERIAL_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -551,9 +532,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.PRINT_STATUS === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'PRINT_STATUS')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.PRINT_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -572,9 +553,9 @@ const SAMPLE_MONITOR = () => {
             return (
               <div className="checkboxcell">
                 <input type="checkbox" checked={params.data.DIECUT_STATUS === 'Y'} onChange={(e) => {
-          
+                  checkBP(getUserData(), ["SX"], ["ALL"], ["ALL"], () => {
                     handleUpdateData(e, params.data, 'DIECUT_STATUS')
-                               
+                  })              
                   }}></input>
                 <span style={{ color: 'black' }}>{params.data.DIECUT_STATUS === 'Y' ? 'COMPLETED' : 'PENDING'}</span>
               </div>
@@ -610,8 +591,9 @@ const SAMPLE_MONITOR = () => {
                       value="Y"
                       checked={params.data.QC_STATUS === 'Y'}
                       onChange={(e) => {
-          
+                        checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
                           updateDataTable(params.data, 'QC_STATUS', e.target.value)
+                        })
                         
                       }}
                     />
@@ -624,9 +606,9 @@ const SAMPLE_MONITOR = () => {
                       value="N"
                       checked={params.data.QC_STATUS === 'N'}
                       onChange={(e) => {
-          
+                        checkBP(getUserData(), ["QC"], ["ALL"], ["ALL"], () => {
                           updateDataTable(params.data, 'QC_STATUS', e.target.value)
-                        
+                        })
                       }}
                     />
                     <span>NG</span>
@@ -690,9 +672,9 @@ const SAMPLE_MONITOR = () => {
                       value="Y"
                       checked={params.data.APPROVE_STATUS === 'Y'}
                       onChange={(e) => {
-          
+                        checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
                           updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
-                        
+                        })                    
                       }}
                     />
                     <span>APPROVED</span>
@@ -704,7 +686,9 @@ const SAMPLE_MONITOR = () => {
                       value="N"
                       checked={params.data.APPROVE_STATUS === 'N'}
                       onChange={(e) => {
-                        updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
+                        checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], () => {
+                          updateDataTable(params.data, 'APPROVE_STATUS', e.target.value)
+                        })   
                       }}
                     />
                     <span>REJECTED</span>
@@ -802,15 +786,6 @@ const SAMPLE_MONITOR = () => {
             >
               <MdRefresh color="#fb6812" size={20} />
               Reload
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                handle_Update_Data_Row(selectedSample.current, getUserData()?.MAINDEPTNAME?? "");
-              }}
-            >
-              <MdSave color="#05ac1b" size={20} />
-              Save
             </IconButton>
             <IconButton
               className="buttonIcon"
