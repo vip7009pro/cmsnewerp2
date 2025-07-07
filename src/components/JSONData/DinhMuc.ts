@@ -1,7 +1,7 @@
 export const defaultDinhMuc = [
   {
     machine: "FR",
-    setting: "90",
+    setting: 90,
     unit: "MET",
     UPH: 1200,
     number_of_color: [
@@ -15,7 +15,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "SR",
-    setting: "60",
+    setting: 60,
     unit: "DAP",
     UPH: 5000,
     number_of_color: [
@@ -29,7 +29,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "FX",
-    setting: "90",
+    setting: 90,
     unit: "MET",
     UPH: 1400,
     number_of_color: [
@@ -43,7 +43,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "FL",
-    setting: "60",
+    setting: 60,
     unit: "DAP",
     UPH: 5500,
     number_of_color: [
@@ -57,7 +57,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "DG",
-    setting: "60",
+    setting: 60,
     unit: "DAP",
     UPH: 5500,
     number_of_color: [
@@ -71,7 +71,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "SC",
-    setting: "90",
+    setting: 90,
     unit: "DAP",
     UPH: 5000,
     number_of_color: [
@@ -85,7 +85,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "ED",
-    setting: "45",
+    setting: 45,
     unit: "DAP",
     UPH: 5000,
     number_of_color: [
@@ -99,7 +99,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "DC",
-    setting: "45",
+    setting: 45,
     unit: "DAP",
     UPH: 5000,
     number_of_color: [
@@ -113,7 +113,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "DC01",
-    setting: "45",
+    setting: 45,
     unit: "DAP",
     UPH: 18000,
     number_of_color: [
@@ -127,7 +127,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "DC02",
-    setting: "45",
+    setting: 45,
     unit: "DAP",
     UPH: 18000,
     number_of_color: [
@@ -141,7 +141,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "DC03",
-    setting: "45",
+    setting: 45,
     unit: "DAP",
     UPH: 5000,
     number_of_color: [
@@ -155,7 +155,7 @@ export const defaultDinhMuc = [
   },
   {
     machine: "DC04",
-    setting: "45",
+    setting: 45,
     unit: "DAP",
     UPH: 5000,
     number_of_color: [
@@ -184,6 +184,9 @@ export const getSettingUPHUnitLoss = (
     numberOfColor: number,
     met_qty: number
   ) => {
+    console.log('machine',machine)
+    console.log('numberOfColor',numberOfColor)
+    console.log('met_qty',met_qty)
     const item = getDefaulDinhMucJson(machine);
     if (!item) return null;
     const lossSetting =
