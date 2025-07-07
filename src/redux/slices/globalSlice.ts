@@ -193,7 +193,7 @@ const initialState: GlobalInterface = {
   sidebarmenu: false,
   multiple_chithi_array: [],
   company: startCPN,
-  server_ip: companyInfo[startCPN as keyof typeof companyInfo].apiUrl,
+  server_ip: server_ip_local ?? companyInfo[startCPN as keyof typeof companyInfo].apiUrl,
   tabs: [],
   componentArray: [],
   tabIndex: 0,
