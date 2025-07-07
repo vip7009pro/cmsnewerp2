@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./SX_REPORT.scss";
 import {
+  CNT_GAP_DATA,
   MACHINE_LIST,
   PLAN_LOSS_DATA,
   PQC3_DATA,
@@ -16,7 +17,7 @@ import {
   SX_TREND_LOSS_DATA,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
-import { f_getMachineListData, nFormatter, SaveExcel } from "../../../api/GlobalFunction";
+import { f_getMachineListData, f_load_ALL_GAP_RATE_DATA, f_load_KT_GAP_RATE_DATA, f_load_SX_GAP_RATE_DATA, f_load_YCSX_GAP_RATE_DATA, nFormatter, SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
 import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";
@@ -36,6 +37,7 @@ import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_C
 import SXLossTimeByReason from "../../../components/Chart/SX/SXLossTimeByReason";
 import SXLossTimeByEmpl from "../../../components/Chart/SX/SXLossTimeByEmpl";
 import SXPlanLossTrend from "../../../components/Chart/SX/SXPlanLossTrend";
+import YCSX_GAP_RATE from "../../../components/Chart/SX/YCSX_GAP_RATE";
 
 const SX_REPORT = () => {
   const [planLossData, setPlanLossData] = useState<PLAN_LOSS_DATA[]>([]);
@@ -81,6 +83,11 @@ const SX_REPORT = () => {
   const [newcodebycustomer, setNewCodeByCustomer] = useState<RND_NEWCODE_BY_CUSTOMER[]>([]);
   const [newcodebyprodtype, setNewCodeByProdType] = useState<RND_NEWCODE_BY_PRODTYPE[]>([]);
   
+  const [ycsx_gap_rate_data, setYCSX_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
+  const [sx_gap_rate_data, setSX_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
+  const [kt_gap_rate_data, setKT_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
+  const [all_gap_rate_data, setALL_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
+
   const handle_getMachineList = async (FACTORY: string) => {
     setMachineList(await f_getMachineListData());    
   } 
@@ -617,6 +624,50 @@ const SX_REPORT = () => {
         console.log(error);
       });
   };
+  const handle_loadYCSX_GAP_RATE_DATA = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    setYCSX_GAP_RATE_DATA(await f_load_YCSX_GAP_RATE_DATA({
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    }));   
+  };
+  const handle_loadSX_GAP_RATE_DATA = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    setSX_GAP_RATE_DATA(await f_load_SX_GAP_RATE_DATA({
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    }));   
+  };
+  const handle_loadKT_GAP_RATE_DATA = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    setKT_GAP_RATE_DATA(await f_load_KT_GAP_RATE_DATA({
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    }));   
+  };
+  const handle_loadALL_GAP_RATE_DATA = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    setALL_GAP_RATE_DATA(await f_load_ALL_GAP_RATE_DATA({
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    }));   
+  };
 
   const initFunction = async () => {
     Swal.fire({
@@ -646,6 +697,10 @@ const SX_REPORT = () => {
       handle_newCodeByCustomer(fromdate, todate, searchCodeArray),
       handle_newCodeByProdType(fromdate, todate, searchCodeArray),
       handle_getPlanLossData(selectedMachine, searchCodeArray),
+      handle_loadYCSX_GAP_RATE_DATA("ALL", searchCodeArray),
+      handle_loadSX_GAP_RATE_DATA("ALL", searchCodeArray),
+      handle_loadKT_GAP_RATE_DATA("ALL", searchCodeArray),
+      handle_loadALL_GAP_RATE_DATA("ALL", searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -1171,6 +1226,64 @@ const SX_REPORT = () => {
               </IconButton>
               </span>
               <SXLossTimeByEmpl data={[...sxLossTimeByEmpl].slice(0,10).reverse()} />
+            </div>
+          </div>
+          <span className="subsection_title">2.5 Production Lead Time Details ({fromdate}- {todate})
+          </span>
+          <div className="defect_trending">
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <span className="subsection">Tỉ trọng YCSX gấp theo số ngày (Ngày YC- Ngày Giao)<IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(ycsx_gap_rate_data, "YCSX GAP RATE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span>
+              <YCSX_GAP_RATE data={[...ycsx_gap_rate_data].reverse()} />
+            </div>
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(sx_gap_rate_data, "SX GAP RATE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span>
+              <YCSX_GAP_RATE data={[...sx_gap_rate_data].reverse()} />
+            </div>
+          </div>
+          <div className="defect_trending">
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <span className="subsection">Tỉ trọng số ngày kiểm tra hoàn thành YCSX <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(kt_gap_rate_data, "KT GAP RATE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span>
+              <YCSX_GAP_RATE data={[...kt_gap_rate_data].reverse()} />
+            </div>
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX ALL CĐ (Từ lúc lên yc tới lúc kiểm tra xong) <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(all_gap_rate_data, "ALL GAP RATE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span>
+              <YCSX_GAP_RATE data={[...all_gap_rate_data].reverse()} />
             </div>
           </div>
         </div>
