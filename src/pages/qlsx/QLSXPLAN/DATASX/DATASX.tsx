@@ -196,7 +196,9 @@ const DATASX = () => {
     LOSS_SETTING2: 0,
     LOSS_SETTING3: 0,
     LOSS_SETTING4: 0,
-    LOSS_KT: 0
+    LOSS_KT: 0,
+    LOSS_OVER: 'OK',
+    LOSS_LT: 0
   });
   const fields_datasx_chithi: any = [
     {
@@ -2321,6 +2323,15 @@ const DATASX = () => {
     },
      */
     {
+      field: 'LOSS_LT', headerName: 'LOSS_LT', resizable: true, width: 80, cellRenderer: (e: any) => {
+        return (
+          <span style={{ color: "red", fontWeight: "bold" }}>
+            {e.data.LOSS_LT?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
       field: 'TOTAL_LOSS', headerName: 'TOTAL_LOSS', resizable: true, width: 80, cellRenderer: (e: any) => {
         return (
           <span style={{ color: "red", fontWeight: "bold" }}>
@@ -2334,6 +2345,22 @@ const DATASX = () => {
         return (
           <span style={{ color: "red", fontWeight: "bold" }}>
             {e.data.TOTAL_LOSS2?.toLocaleString("en-US", { style: 'percent', maximumFractionDigits: 1, minimumFractionDigits: 1 })}
+          </span>
+        );
+      }
+    },
+    {
+      field: 'LOSS_OVER', headerName: 'LOSS_OVER', resizable: true, width: 80, cellRenderer: (e: any) => {
+        if (e.data.LOSS_OVER === 'OVER') {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+              OVER
+            </span>
+          );
+        }
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            OK
           </span>
         );
       }
