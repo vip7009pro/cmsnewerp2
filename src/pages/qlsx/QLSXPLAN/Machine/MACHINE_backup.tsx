@@ -15,7 +15,7 @@ import {
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
-import { MdOutlinePendingActions } from "react-icons/md";
+import { MdOutlinePendingActions, MdResetTv } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
@@ -70,6 +70,7 @@ import {
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
+import { getSettingUPHUnitLoss } from "../../../../components/JSONData/DinhMuc";
 const MACHINE_OLD = () => {
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
@@ -128,6 +129,7 @@ const MACHINE_OLD = () => {
     NOTE: "",
   });
   const [tempDM, setTempDM] = useState(false);
+  const [dmMacDinh, setDmMacDinh] = useState(false);
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
@@ -251,27 +253,6 @@ const MACHINE_OLD = () => {
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-  const defaultSLCData: YCSX_SLC_DATA = {
-    PROD_REQUEST_NO: "XXX",
-    G_CODE: "XXX",
-    PD: 0,
-    CAVITY: 0,
-    LOSS_SX1: 0,
-    LOSS_SX2: 0,
-    LOSS_SX3: 0,
-    LOSS_SX4: 0,
-    LOSS_SETTING1: 0,
-    LOSS_SETTING2: 0,
-    LOSS_SETTING3: 0,
-    LOSS_SETTING4: 0,
-    LOSS_KT: 0,
-    PROD_REQUEST_QTY: 0,
-    SLC_CD1: 0,
-    SLC_CD2: 0,
-    SLC_CD3: 0,
-    SLC_CD4: 0
-  }
-  const [ycsxSLCData, setYCSXSLCDATA] = useState<YCSX_SLC_DATA>(defaultSLCData);
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const checkMaxLieu = () => {
@@ -2012,6 +1993,42 @@ const MACHINE_OLD = () => {
     setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
     setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
   };
+  const setDMMD = () => {
+    if(selectedPlan.PLAN_ID ==='XXX') 
+    {
+      Swal.fire("Thông báo", "Chọn Plan trước", "error");
+      return;
+    }
+    let dmmacdinh = getSettingUPHUnitLoss(selectedPlan.PLAN_EQ, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? selectedPlan.PLAN_QTY * (selectedPlan.PD??0) / selectedPlan.CAVITY/1000 : 0);
+              dmmacdinh = {
+                ...dmmacdinh,
+                UPH: Math.round(dmmacdinh?.unit ==='MET' ? dmmacdinh.UPH / (selectedPlan.PD??0) * (selectedPlan.CAVITY??0)*1000 :( dmmacdinh?.UPH ?? 0)),
+                setting: dmmacdinh?.setting ?? 0,
+                unit: dmmacdinh?.unit ?? "",
+                loss: dmmacdinh?.loss ?? 0,
+                loss_setting: dmmacdinh?.loss_setting ?? 0,
+              }                   
+              setDataDinhMuc({
+                ...datadinhmuc,
+                Setting1: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ1 ? dmmacdinh.setting : datadinhmuc.Setting1,
+                UPH1: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ1 ? dmmacdinh.UPH : datadinhmuc.UPH1,                    
+                LOSS_SX1: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ1 ? dmmacdinh.loss : datadinhmuc.LOSS_SX1,
+                LOSS_SETTING1: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ1 ? dmmacdinh.loss_setting : datadinhmuc.LOSS_SETTING1,
+                Setting2: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ2 ? dmmacdinh.setting : datadinhmuc.Setting2,
+                UPH2: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ2 ? dmmacdinh.UPH : datadinhmuc.UPH2,                    
+                LOSS_SX2: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ2 ? dmmacdinh.loss : datadinhmuc.LOSS_SX2,
+                LOSS_SETTING2: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ2 ? dmmacdinh.loss_setting : datadinhmuc.LOSS_SETTING2,
+                Setting3: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ3 ? dmmacdinh.setting : datadinhmuc.Setting3,
+                UPH3: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ3 ? dmmacdinh.UPH : datadinhmuc.UPH3,                    
+                LOSS_SX3: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ3 ? dmmacdinh.loss : datadinhmuc.LOSS_SX3,
+                LOSS_SETTING3: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ3 ? dmmacdinh.loss_setting : datadinhmuc.LOSS_SETTING3,
+                Setting4: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ4 ? dmmacdinh.setting : datadinhmuc.Setting4,
+                UPH4: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ4 ? dmmacdinh.UPH : datadinhmuc.UPH4,                    
+                LOSS_SX4: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ4 ? dmmacdinh.loss : datadinhmuc.LOSS_SX4,
+                LOSS_SETTING4: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ4 ? dmmacdinh.loss_setting : datadinhmuc.LOSS_SETTING4,
+              })
+  }
+  console.log('EMPL_NO', getUserData()?.EMPL_NO);
   function PlanTableAGToolbar() {
     return (
       <div className="toolbar">
@@ -2132,6 +2149,15 @@ const MACHINE_OLD = () => {
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
         </IconButton>
+        {(getCompany() !== 'CMS' || getUserData()?.EMPL_NO === 'NHU1903') && <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setDMMD();
+          }}
+        >
+          <MdResetTv color='#ffaaff' size={20} />
+          ĐM MĐ
+        </IconButton>}
         <span style={{ fontSize: '0.7rem' }}>Total time: {plandatatable.filter(
           (element: QLSXPLANDATA, index: number) => {
             return (
@@ -2575,6 +2601,7 @@ const MACHINE_OLD = () => {
                 
                 //await selectMaterialRow();
               }
+             
               //setYCSXSLCDATA((await f_neededSXQtyByYCSX(rowData.PROD_REQUEST_NO, rowData.G_CODE))[0])
             }}
             onRowDoubleClicked={
@@ -2776,7 +2803,7 @@ const MACHINE_OLD = () => {
         qlsxchithidatafilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [chithidatatable, datadinhmuc]);
+    , [chithidatatable, datadinhmuc]);  
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
@@ -3314,6 +3341,7 @@ const MACHINE_OLD = () => {
                        
                       </div>
                       <div className="forminputcolumn">
+                       
                       {(getCompany()!=='CMS' || getUserData()?.EMPL_NO ==='NHU1903') && <label>
                           <b>ĐM Tạm thời:</b>
                           <input
@@ -3367,6 +3395,7 @@ const MACHINE_OLD = () => {
                 
               </div>
               <div className='datadinhmucto'>
+                
                 <div className='datadinhmuc'>
                   <div className='forminputcolumn'>
                     <label>
@@ -3591,7 +3620,7 @@ const MACHINE_OLD = () => {
                         <option value='NM2'>NM2</option>
                       </select>
                     </label>
-                  </div>
+                  </div>                 
                 </div>
                 <div className='datadinhmuc'>
                   <div className='forminputcolumn'>
