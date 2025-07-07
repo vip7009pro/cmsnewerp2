@@ -17,7 +17,6 @@ import { enqueueSnackbar } from "notistack";
 import { Login } from "./api/lazyPages";
 import { requestFullScreen } from "./api/GlobalFunction";
 import AppRoutes from "./AppRoutes";
-import { Button } from "devextreme-react";
 function App() {
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(

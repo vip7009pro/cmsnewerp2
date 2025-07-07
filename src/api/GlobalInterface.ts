@@ -1975,6 +1975,7 @@ export interface QLSXPLANDATA {
   CURRENT_SLC?: number;
   IS_TAM_THOI?: string;
   FL_YN?: string;
+  PROD_PRINT_TIMES?: number;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -2183,6 +2184,8 @@ export interface YCSX_SX_DATA {
   LOSS_SETTING3: number;
   LOSS_SETTING4: number;
   LOSS_KT: number;
+  LOSS_OVER: string;
+  LOSS_LT: number;
 }
 export interface LOSS_TABLE_DATA {
   XUATKHO_MET: number;
@@ -3201,6 +3204,11 @@ export interface DailyData {
 export interface FcostData {
   dldata?: InspectSummary[];
   dlppmdata?: PPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface NguoiHangData {
+  dldata?: TREND_NGUOI_HANG_DATA[];
   processColor?: string;
   materialColor?: string;
 }
@@ -5021,4 +5029,41 @@ export interface userDataInterface {
   WORK_STATUS_CODE: number;
   WORK_STATUS_NAME: string;
   WORK_STATUS_NAME_KR: string;
+}
+
+
+export interface SX_KPI_NV_DATA {
+  INS_EMPL?: string;
+  SX_DATE?: string;
+  SX_YEAR?: number;
+  SX_WEEK?: number;
+  SX_MONTH?: number;
+  SX_YW?: string;
+  SX_YM?: string;
+  PLAN_MET: number;
+  OUTPUT_M_LT: number;
+  OUTPUT_M_TT: number;
+  PLAN_QTY: number;
+  OUTPUT_EA_LT: number;
+  OUTPUT_EA_TT: number;
+  RATE_M: number;
+  RATE_EA: number;
+}
+
+export interface TREND_NGUOI_HANG_DATA {
+  INSPECT_DATE?: string;
+  INSPECT_YEAR?: number;
+  INSPECT_MONTH?: number;
+  INSPECT_WEEK?: number;
+  INSPECT_YM?: string;
+  INSPECT_YW?: string;
+  EMPL_NUMBER: string;
+  INSPECT_HOUR: number;
+  INSPECT_TOTAL_QTY: number;
+}
+
+export interface CNT_GAP_DATA { 
+  GAP: number;
+  CNT: number;
+  RATE: number;  
 }
