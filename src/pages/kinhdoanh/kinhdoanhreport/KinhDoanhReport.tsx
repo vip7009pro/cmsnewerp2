@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import ChartWeekLy from "../../../components/Chart/KD/KDWeeklyClosing";
 import ChartMonthLy from "../../../components/Chart/KD/KDMonthlyClosing";
 import ChartYearly from "../../../components/Chart/KD/KDYearlyClosing";
@@ -1026,6 +1026,85 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   }
+  const loadMonthlyRevenueByCustomerAndEmpl = async () => {
+    await generalQuery("baocaodanhthutheokhachtheonguoimonthly", {
+      FROM_DATE: df ? moment.utc().format('YYYY-01-01') : fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          setMonthlyvRevenuebyCustomer(loadeddata);
+          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              field: e,
+              headerName: e,
+              width: 100,
+              cellRenderer: (ele: any) => {
+                //console.log(ele);
+                if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                  return <span>{ele.data[e]}</span>;
+                }
+                else if (e === 'TOTAL_AMOUNT') {
+                  return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                    })}
+                  </span>
+                }
+                else if (e === 'TOTAL_QTY') {
+                  return <span style={{ color: "#052ee7", fontWeight: "bold" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "decimal",
+                    })}
+                  </span>
+                }
+                else if (e.indexOf("QTY") > -1) {
+                  return <span style={{ color: "#052ee7", fontWeight: "normal" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "decimal",
+                    })}
+                  </span>
+                }
+                else {
+                  if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                    return (<span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>)
+                  }
+                  else {
+                    return (<span style={{ color: "green", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>)
+                  }
+                }
+              },
+            };
+          });
+          setColumnsMonth(column_map);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const initFunction = async () => {
    /*  Swal.fire({
       title: "Đang tải báo cáo",
@@ -1054,7 +1133,7 @@ const KinhDoanhReport = () => {
       handleGetPICRevenue(),
       handleGetPOBalanceSummary(),
       handleGetFCSTAmount(),
-      loadMonthlyRevenueByCustomer()
+      getCompany() === 'CMS' ? loadMonthlyRevenueByCustomer() :  loadMonthlyRevenueByCustomerAndEmpl()
     ]
     ).then(() => {
       //Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
