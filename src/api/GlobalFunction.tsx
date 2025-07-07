@@ -14,6 +14,7 @@ import {
   BTP_AUTO_DATA,
   BTP_AUTO_DATA2,
   BTP_AUTO_DATA_SUMMARY,
+  CNT_GAP_DATA,
   CODE_FULL_INFO,
   CodeListData,
   COMPONENT_DATA,
@@ -53,12 +54,14 @@ import {
   RecentDM,
   SubDeptTableData,
   SX_DATA,
+  SX_KPI_NV_DATA,
   SX_LOSS_ROLL_DATA,
   TEMLOTKT_DATA,
   TEMLOTSX_DATA,
   TestListTable,
   TONKHOTDYCSX,
   TONLIEUXUONG,
+  TREND_NGUOI_HANG_DATA,
   UploadAmazonData,
   UserData,
   userDataInterface,
@@ -5475,6 +5478,7 @@ export const f_loadDataSX_YCSX = async (DATA: any) => {
               PROD_REQUEST_DATE: moment
                 .utc(element.PROD_REQUEST_DATE)
                 .format("YYYY-MM-DD"),
+              LOSS_OVER:1 - (element.INS_OUTPUT * 1.0) / element.ESTIMATED_QTY > element.LOSS_LT ? 'OVER' : 'OK',
               id: index,
             };
           }
@@ -8416,3 +8420,266 @@ export const requestFullScreen = (elementRef: React.MutableRefObject<null>, full
     }
   }
 };
+
+export const f_load_SX_NV_KPI_DATA_Daily = async (DATA: any) => {
+  let kq: SX_KPI_NV_DATA[] = [];
+  await generalQuery("loadSX_KPI_NV_DATA_Daily", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
+          return {
+            ...element,
+            SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_load_SX_NV_KPI_DATA_Weekly = async (DATA: any) => {
+  let kq: SX_KPI_NV_DATA[] = [];
+  await generalQuery("loadSX_KPI_NV_DATA_Weekly", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_load_SX_NV_KPI_DATA_Monthly = async (DATA: any) => {
+  let kq: SX_KPI_NV_DATA[] = [];
+  await generalQuery("loadSX_KPI_NV_DATA_Monthly", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_load_SX_NV_KPI_DATA_Yearly = async (DATA: any) => {
+  let kq: SX_KPI_NV_DATA[] = [];
+  await generalQuery("loadSX_KPI_NV_DATA_Yearly", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_load_TREND_NGUOI_HANG_DATA_DAILY = async (DATA: any) => {
+  let kq: TREND_NGUOI_HANG_DATA[] = [];
+  await generalQuery("trendNguoi_Hang_Ktra_daily", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
+          return {
+            ...element,     
+            INSPECT_DATE: moment.utc(element.INSPECT_DATE).format("YYYY-MM-DD"),      
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_load_TREND_NGUOI_HANG_DATA_WEEKLY = async (DATA: any) => {
+  let kq: TREND_NGUOI_HANG_DATA[] = [];
+  await generalQuery("trendNguoi_Hang_Ktra_weekly", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+export const f_load_TREND_NGUOI_HANG_DATA_MONTHLY = async (DATA: any) => {
+  let kq: TREND_NGUOI_HANG_DATA[] = [];
+  await generalQuery("trendNguoi_Hang_Ktra_monthly", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_load_TREND_NGUOI_HANG_DATA_YEARLY = async (DATA: any) => {
+  let kq: TREND_NGUOI_HANG_DATA[] = [];
+  await generalQuery("trendNguoi_Hang_Ktra_yearly", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+
+export const f_load_YCSX_GAP_RATE_DATA = async (DATA: any) => {
+  let kq: CNT_GAP_DATA[] = [];
+  await generalQuery("loadYCSX_GAP_RATE_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+    console.log('kq',kq)
+  return kq;
+}
+
+export const f_load_SX_GAP_RATE_DATA = async (DATA: any) => {
+  let kq: CNT_GAP_DATA[] = [];
+  await generalQuery("loadSX_GAP_RATE_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_load_KT_GAP_RATE_DATA = async (DATA: any) => {
+  let kq: CNT_GAP_DATA[] = [];
+  await generalQuery("loadKT_GAP_RATE_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
+
+export const f_load_ALL_GAP_RATE_DATA = async (DATA: any) => {
+  let kq: CNT_GAP_DATA[] = [];
+  await generalQuery("loadALL_GAP_RATE_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        kq = loaded_data;
+        }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+    })
+  return kq;
+}
