@@ -1,7 +1,7 @@
 import { IconButton } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
-import { AiFillCloseCircle, AiFillDashboard } from "react-icons/ai";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -30,16 +30,36 @@ import {
 } from "../../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import { useForm } from "react-hook-form";
 const DATASX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const {register,handleSubmit,watch, formState:{errors}, reset, setValue} = useForm({
+    defaultValues:{
+      fromdate:moment().format("YYYY-MM-DD"),
+      todate:moment().format("YYYY-MM-DD"),
+      prodrequestno:"",
+      plan_id:"",
+      m_name:"",
+      m_code:"",
+      codeKD:"",
+      codeCMS:"",
+      factory:"ALL",
+      machine:"ALL",
+      truSample:true,
+      onlyClose:false,
+      fullSummary:false,
+      alltime:false,      
+    }
+  });
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData())
-  };
+  const getMachineList = useCallback(async () => {
+    let machine_list = await f_getMachineListData()   
+    setMachine_List(machine_list)
+    setValue("machine","ALL")
+  }, []);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [showhideDailyYCSX, setShowHideDailyYCSX] = useState(false);
   const [inputlieudatatable, setInputLieuDataTable] = useState<LICHSUINPUTLIEU_DATA[]>([]);
-  const [showloss, setShowLoss] = useState(false);
   const [khoaodata, setKhoAoData] = useState<LICHSUNHAPKHOAO[]>([]);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
     XUATKHO_MET: 0,
@@ -79,21 +99,7 @@ const DATASX = () => {
     SCANNED_MET4: 0,
   });
   const [selectbutton, setSelectButton] = useState(true);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
-  const [factory, setFactory] = useState("ALL");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(false);
-  const [truSample, setTruSample] = useState(true);
-  const [onlyClose, setOnlyClose] = useState(false);
-  const [fullSummary, setFullSummary] = useState(false);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
   const [dailyycsx, setDailyYCSX] = useState<DAILY_YCSX_RESULT[]>([]);
   const [totalDailyYCSX, setTotalDailyYCSX] = useState<DAILY_YCSX_RESULT>({
     PLAN_DATE: "",
@@ -200,7 +206,7 @@ const DATASX = () => {
     LOSS_OVER: 'OK',
     LOSS_LT: 0
   });
-  const fields_datasx_chithi: any = [
+  const fields_datasx_chithi: any = useMemo(() => [
     {
       caption: "PHAN_LOAI",
       width: 80,
@@ -1048,8 +1054,8 @@ const DATASX = () => {
         width: 300,
       },
     },
-  ];
-  const fields_datasx_ycsx: any = [
+  ], []);
+  const fields_datasx_ycsx: any = useMemo(() => [
     {
       caption: "YCSX_PENDING",
       width: 80,
@@ -1595,8 +1601,8 @@ const DATASX = () => {
         width: 300,
       },
     },
-  ];
-  const column_datasx_chithi = [
+  ], []);
+  const column_datasx_chithi = useMemo(() => [
     { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 60, pinned: 'left' },
     { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80, pinned: 'left' },
     {
@@ -1980,8 +1986,8 @@ const DATASX = () => {
       ],
       headerClass: 'header'
     },
-  ];
-  const column_datasx_ycsx = [
+  ], []);
+  const column_datasx_ycsx = useMemo(() => [
     { field: 'PROD_REQUEST_NO', headerName: 'YCSX_NO', resizable: true, width: 70, pinned: 'left' },
     { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 80, pinned: 'left' },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 80 },
@@ -2369,8 +2375,8 @@ const DATASX = () => {
     { field: 'EQ2', headerName: 'EQ2', resizable: true, width: 40 },
     { field: 'EQ3', headerName: 'EQ3', resizable: true, width: 40 },
     { field: 'EQ4', headerName: 'EQ4', resizable: true, width: 40 },
-  ];
-  const column_daily_datasx_ycsx = [
+  ], []);
+  const column_daily_datasx_ycsx = useMemo(() => [
     { field: 'PLAN_DATE', headerName: 'PLAN_DATE', resizable: true, width: 80, pinned: 'left', cellDataType: 'text' },
     {
       headerName: 'CD1',
@@ -2764,8 +2770,8 @@ const DATASX = () => {
       ],
       headerClass: 'header'
     },
-  ];
-  const column_inputlieudatatable = [
+  ], []);
+  const column_inputlieudatatable = useMemo(() => [
     { field: 'M_LOT_NO', headerName: 'M_LOT_NO', resizable: true, width: 80 },
     { field: 'INPUT_QTY', headerName: 'INPUT_QTY', resizable: true, width: 80 },
     { field: 'USED_QTY', headerName: 'USED_QTY', resizable: true, width: 80 },
@@ -2780,8 +2786,8 @@ const DATASX = () => {
     { field: 'EMPL_NO', headerName: 'EMPL_NO', resizable: true, width: 80 },
     { field: 'EQUIPMENT_CD', headerName: 'EQUIPMENT_CD', resizable: true, width: 80 },
     { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 80 },
-  ];
-  const column_nhapkhoaotable = [
+  ], []);
+  const column_nhapkhoaotable = useMemo(() => [
     { field: "USE_YN", headerName: "USE_YN", width: 40 },
     { field: "PHANLOAI", headerName: "PL", width: 30 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 70 },
@@ -2799,7 +2805,7 @@ const DATASX = () => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
     { field: "KHO_CFM_DATE", headerName: "KHO_CFM_DATE", width: 100 },
     { field: "RETURN_STATUS", headerName: "RETURN_STATUS", width: 100 },
-  ];
+  ], []);
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
       new PivotGridDataSource({
@@ -2807,12 +2813,12 @@ const DATASX = () => {
         store: datasxtable,
       }),
     );
-  const getRowStyle = (params: any) => {
+  const getRowStyle = useCallback((params: any) => {
     if (params.data.PLAN_DATE === 'TOTAL') {
       return { backgroundColor: '#faf878', fontWeight: 'bold' };
     }
     return null;
-  }
+  }, []);
   const datasx_dailyycsx = React.useMemo(
     () => (
       <AGTable
@@ -2896,14 +2902,14 @@ const DATASX = () => {
     ),
     [datasxtable],
   );
-  const load_nhapkhoao = async (M_LOT_NO: string) => {
+  const load_nhapkhoao = useCallback(async (M_LOT_NO: string) => {
     setKhoAoData(await f_load_nhapkhoao({
       FROM_DATE: '2022-01-01',
       TO_DATE: moment().format("YYYY-MM-DD"),
       FACTORY: 'ALL',
       M_LOT_NO: M_LOT_NO
     }));
-  };
+  },[]);
   const datasx_lichsuxuatlieu2 = React.useMemo(
     () => (
       <AGTable
@@ -2944,11 +2950,11 @@ const DATASX = () => {
     ),
     [khoaodata],
   );
-  const handle_loadlichsuinputlieu = async (PLAN_ID: string) => {
+  const handle_loadlichsuinputlieu = useCallback(async (PLAN_ID: string) => {
     setInputLieuDataTable(await f_lichsuinputlieu({
       ALLTIME: true,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
       PROD_REQUEST_NO: "",
       PLAN_ID: PLAN_ID,
       M_NAME: "",
@@ -2956,8 +2962,8 @@ const DATASX = () => {
       G_NAME: "",
       G_CODE: "",
     }));
-  };
-  const handle_loaddatasx = async () => {
+  }, []);
+  const handle_loaddatasx = useCallback(async () => {
     Swal.fire({
       title: "Tra data chỉ thị",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -3011,18 +3017,18 @@ const DATASX = () => {
       }
     }
     kq = await f_loadDataSXChiThi({
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      PROD_REQUEST_NO: prodrequestno,
-      PLAN_ID: plan_id,
-      M_NAME: m_name,
-      M_CODE: m_code,
-      G_NAME: codeKD,
-      G_CODE: codeCMS,
-      FACTORY: factory,
-      PLAN_EQ: machine,
-      TRUSAMPLE: truSample
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      PROD_REQUEST_NO: watch("prodrequestno"),
+      PLAN_ID: watch("plan_id"),
+      M_NAME: watch("m_name"),
+      M_CODE: watch("m_code"),
+      G_NAME: watch("codeKD"),
+      G_CODE: watch("codeCMS"),
+      FACTORY: watch("factory"),
+      PLAN_EQ: watch("machine"),
+      TRUSAMPLE: watch("truSample")
     });
     setLossTableInfo(kq.summary);
     setDataSXTable(kq.datasx);
@@ -3036,8 +3042,8 @@ const DATASX = () => {
     if (kq.datasx.length > 0) {
       Swal.fire("Thông báo", " Đã tải: " + kq.datasx.length + " dòng", "success",);
     }
-  };
-  const handle_loaddatasxYCSX = async () => {
+  }, []);
+  const handle_loaddatasxYCSX = useCallback(async () => {
     Swal.fire({
       title: "Tra data theo YCSX",
       text: "Đang tải dữ liệu, hãy chờ chút",
@@ -3093,22 +3099,21 @@ const DATASX = () => {
       }
     }
     kq = await f_loadDataSX_YCSX({
-      ALLTIME: alltime,
-      FROM_DATE: moment(fromdate).format('YYYYMMDD'),
-      TO_DATE: moment(todate).format('YYYYMMDD'),
-      PROD_REQUEST_NO: prodrequestno,
-      PLAN_ID: plan_id,
-      M_NAME: m_name,
-      M_CODE: m_code,
-      G_NAME: codeKD,
-      G_CODE: codeCMS,
-      FACTORY: factory,
-      PLAN_EQ: machine,
-      TRUSAMPLE: truSample,
-      ONLYCLOSE: onlyClose
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      PROD_REQUEST_NO: watch("prodrequestno"),
+      PLAN_ID: watch("plan_id"),
+      M_NAME: watch("m_name"),
+      M_CODE: watch("m_code"),
+      G_NAME: watch("codeKD"),
+      G_CODE: watch("codeCMS"),
+      FACTORY: watch("factory"),
+      PLAN_EQ: watch("machine"),
+      TRUSAMPLE: watch("truSample"),
+      ONLYCLOSE: watch("onlyClose")
     });
     setLossTableInfo(kq.summary);
-    setShowLoss(true);
     setDataSXTable(kq.datasx);
     setSelectedDataSource(
       new PivotGridDataSource({
@@ -3120,8 +3125,8 @@ const DATASX = () => {
     if (kq.datasx.length > 0) {
       Swal.fire("Thông báo", " Đã tải: " + kq.datasx.length + " dòng", "success",);
     }
-  };
-  const handle_loaddailyYCSX = async (PROD_REQUEST_NO: string) => {
+  }, []);
+  const handle_loaddailyYCSX = useCallback(async (PROD_REQUEST_NO: string) => {
     let kq: {
       datasx: DAILY_YCSX_RESULT[],
       summary: DAILY_YCSX_RESULT
@@ -3155,7 +3160,7 @@ const DATASX = () => {
     kq = await f_YCSXDailyChiThiData(PROD_REQUEST_NO);
     setTotalDailyYCSX(kq.summary);
     setDailyYCSX(kq.datasx);
-  }
+  }, []);
   useEffect(() => {
     getMachineList();
   }, []);
@@ -3167,90 +3172,48 @@ const DATASX = () => {
             <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
-                <input
-                  type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
+                <input type="date" {...register("fromdate")} ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
-                <input
-                  type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
+                <input type="date" {...register("todate")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="GH63-xxxxxx"
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
-                ></input>
+                <input   type="text" placeholder="GH63-xxxxxx" {...register("codeKD")} ></input>
               </label>
               <label>
                 <b>Code ERP:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="7C123xxx"
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
-                ></input>
+                <input type="text" placeholder="7C123xxx" {...register("codeCMS")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>Tên Liệu:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="SJ-203020HC"
-                  value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
-                ></input>
+                <input type="text" placeholder="SJ-203020HC" {...register("m_name")} ></input>
               </label>
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="A123456"
-                  value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
-                ></input>
+                <input type="text" placeholder="A123456" {...register("m_code")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>Số YCSX:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="1F80008"
-                  value={prodrequestno}
-                  onChange={(e) => setProdRequestNo(e.target.value)}
-                ></input>
+                <input type="text" placeholder="1F80008" {...register("prodrequestno")} ></input>
               </label>
               <label>
                 <b>Số chỉ thị:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="A123456"
-                  value={plan_id}
-                  onChange={(e) => setPlanID(e.target.value)}
-                ></input>
+                <input type="text" placeholder="A123456" {...register("plan_id")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>FACTORY:</b>
-                <select
-                  name="phanloai"
-                  value={factory}
-                  onChange={(e) => {
-                    setFactory(e.target.value);
-                  }}
+                <select              
+                  {...register("factory")}
                 >
                   <option value="ALL">ALL</option>
                   <option value="NM1">NM1</option>
@@ -3260,14 +3223,10 @@ const DATASX = () => {
               <label>
                 <b>MACHINE:</b>
                 <select
-                  name="machine2"
-                  value={machine}
-                  onChange={(e) => {
-                    setMachine(e.target.value);
-                  }}
+                  {...register("machine")}
                   style={{ width: 150, height: 30 }}
                 >
-                  {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                  {machine_list.sort((a, b) => a.EQ_NAME.localeCompare(b.EQ_NAME)) .map((ele: MACHINE_LIST, index: number) => {
                     return (
                       <option key={index} value={ele.EQ_NAME}>
                         {ele.EQ_NAME}
@@ -3281,39 +3240,19 @@ const DATASX = () => {
           <div className="formbutton">
             <label>
               <b>All Time:</b>
-              <input
-                type="checkbox"
-                name="alltimecheckbox"
-                checked={alltime}
-                onChange={() => setAllTime(prev => !prev)}
-              ></input>
+              <input type="checkbox" {...register("alltime")} ></input>
             </label>
             <label>
               <b>Trừ Sample:</b>
-              <input
-                type="checkbox"
-                name="alltimecheckbox"
-                checked={truSample}
-                onChange={() => setTruSample(prev => !prev)}
-              ></input>
+              <input type="checkbox" {...register("truSample")} ></input>
             </label>
             <label>
               <b>Only Closed:</b>
-              <input
-                type="checkbox"
-                name="alltimecheckbox"
-                checked={onlyClose}
-                onChange={() => setOnlyClose(prev => !prev)}
-              ></input>
+              <input type="checkbox" {...register("onlyClose")} ></input>
             </label>
             <label>
               <b>Full Summary:</b>
-              <input
-                type="checkbox"
-                name="alltimecheckbox"
-                checked={fullSummary}
-                onChange={() => setFullSummary(prev => !prev)}
-              ></input>
+              <input type="checkbox" {...register("fullSummary")} ></input>
             </label>
             <button
               className="tranhatky"
@@ -3350,49 +3289,49 @@ const DATASX = () => {
                   <th style={{ color: "black", fontWeight: "bold" }}>
                     4.IP1_EA
                   </th>
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     5_1.ST1
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     5_2.NG1
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>5.CD1</th>
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     6_1.IP2_MET
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     6_2.IP2_EA
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     6_3.ST2
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     6_4.NG2
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>6.CD2</th>
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     7_1.IP3_MET
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     7_2.IP3_EA
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     7_3.ST3
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     7_4.NG3
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>7.CD3</th>
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     8_1.IP4_MET
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     8_2.IP4_EA
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     8_3.ST4
                   </th>}
-                  {fullSummary && <th style={{ color: "black", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "black", fontWeight: "normal" }}>
                     8_4.NG4
                   </th>}
                   <th style={{ color: "black", fontWeight: "bold" }}>8.CD4</th>
@@ -3402,28 +3341,28 @@ const DATASX = () => {
                   <th style={{ color: "blue", fontWeight: "bold" }}>
                     10.INS_INPUT
                   </th>
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_1.INS_TT_QTY
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_2.INS_QTY
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_3.MARKING
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_4.INS_OK
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_5.INS_M_NG
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_6.INS_P_NG
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_7.INSP_LOSS
                   </th>}
-                  {fullSummary && <th style={{ color: "blue", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <th style={{ color: "blue", fontWeight: "normal" }}>
                     10_8.THEM_TUI
                   </th>}
                   <th style={{ color: "blue", fontWeight: "bold" }}>
@@ -3451,55 +3390,55 @@ const DATASX = () => {
                   <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_EA.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING1.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG1.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}
                   </td>
-                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                  {watch("fullSummary") && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_MET2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                  {watch("fullSummary") && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_EA2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG2.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}
                   </td>
-                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                  {watch("fullSummary") && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_MET3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                  {watch("fullSummary") && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_EA3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG3.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.PROCESS3_RESULT.toLocaleString("en-US")}
                   </td>
-                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                  {watch("fullSummary") && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_MET4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
+                  {watch("fullSummary") && <td style={{ color: "#fc2df6", fontWeight: "bold" }}>
                     {losstableinfo.SCANNED_EA4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SETTING4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
-                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.NG4.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>
@@ -3511,28 +3450,28 @@ const DATASX = () => {
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {losstableinfo.INSPECTION_INPUT.toLocaleString("en-US")}
                   </td>
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_TOTAL_QTY.toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {(losstableinfo.INSPECT_TOTAL_QTY - losstableinfo.SX_MARKING_QTY).toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.SX_MARKING_QTY.toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_OK_QTY.toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_MATERIAL_NG.toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "red", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "red", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_PROCESS_NG.toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.INSPECT_LOSS_QTY.toLocaleString("en-US")}
                   </td>}
-                  {fullSummary && <td style={{ color: "gray", fontWeight: "normal" }}>
+                  {watch("fullSummary") && <td style={{ color: "gray", fontWeight: "normal" }}>
                     {losstableinfo.LOSS_THEM_TUI.toLocaleString("en-US")}
                   </td>}
                   <td style={{ color: "green", fontWeight: "bold" }}>

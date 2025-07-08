@@ -10,19 +10,12 @@ import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { useForm } from "react-hook-form";
 const DAOFILMDATA = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const {register,handleSubmit,watch, formState:{errors}} = useForm()
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const [btnGN_QL, setBtnGN_QL] = useState(true);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [planId, setPlanId] = useState("");
-  const [alltime, setAllTime] = useState(false);
-  const [id, setID] = useState("");
-  const [type, setType] = useState("All");
-  const [factory, setFactory] = useState("All");
   const [daofilmdatatable, setDaoFilmDataTable] = useState<Array<any>>([]);
   const column_daofilm_data = [
     { field: "KNIFE_FILM_ID", headerName: "ID", width: 50 },
@@ -236,12 +229,12 @@ const DAOFILMDATA = () => {
   const handletraGiaoNhanDaoFilm = () => {
     setBtnGN_QL(true);
     generalQuery("tradaofilm", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      FACTORY: factory,
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      G_CODE: watch("codeCMS"),
+      G_NAME: watch("codeKD"),
+      FACTORY: watch("factory"),
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -264,6 +257,7 @@ const DAOFILMDATA = () => {
             "success",
           );
         } else {
+          setDaoFilmDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -274,13 +268,13 @@ const DAOFILMDATA = () => {
   const handletraQuanLyDaoFilm = () => {
     setBtnGN_QL(true);
     generalQuery("loadquanlydaofilm", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      FACTORY: factory,
-      KNIFE_TYPE: type,
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      G_CODE: watch("codeCMS"),
+      G_NAME: watch("codeKD"),
+      FACTORY: watch("factory"),
+      KNIFE_TYPE: watch("type"),
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -303,6 +297,7 @@ const DAOFILMDATA = () => {
             "success",
           );
         } else {
+          setDaoFilmDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -313,13 +308,13 @@ const DAOFILMDATA = () => {
   const handletraLichSuXuatDaoFilm = () => {
     setBtnGN_QL(false);
     generalQuery("lichsuxuatdaofilm", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      FACTORY: factory,
-      PLAN_ID: planId
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      G_CODE: watch("codeCMS"),
+      G_NAME: watch("codeKD"),
+      FACTORY: watch("factory"),
+      PLAN_ID: watch("planId")
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -344,6 +339,7 @@ const DAOFILMDATA = () => {
             "success",
           );
         } else {
+          setDaoFilmDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -404,50 +400,29 @@ const DAOFILMDATA = () => {
             <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
-                <input
-                  type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
+                <input type="date" defaultValue={moment().format("YYYY-MM-DD")} {...register("fromdate")} ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
-                <input
-                  type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
+                <input type="date" defaultValue={moment().format("YYYY-MM-DD")} {...register("todate")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="GH63-xxxxxx"
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
-                ></input>
+                <input type="text" placeholder="GH63-xxxxxx" {...register("codeKD")} ></input>
               </label>
               <label>
                 <b>Code ERP:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="7C123xxx"
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
-                ></input>
+                <input type="text" placeholder="7C123xxx" {...register("codeCMS")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>Phân Loại:</b>
-                <select
-                  name="phanloai"
-                  value={type}
-                  onChange={(e) => {
-                    setType(e.target.value);
-                  }}
+                <select 
+                defaultValue={"All"}    
+                  {...register("type")}
                 >
                   <option value="All">All</option>
                   <option value="CTF">CTF</option>
@@ -458,12 +433,9 @@ const DAOFILMDATA = () => {
               </label>
               <label>
                 <b>Nhà máy:</b>
-                <select
-                  name="phanloai"
-                  value={factory}
-                  onChange={(e) => {
-                    setFactory(e.target.value);
-                  }}
+                <select      
+                defaultValue={"All"}            
+                  {...register("factory")}
                 >
                   <option value="All">All</option>
                   <option value="NM1">NM1</option>
@@ -474,32 +446,17 @@ const DAOFILMDATA = () => {
             <div className="forminputcolumn">
               <label>
                 <b>PLAN_ID:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="1F80008A"
-                  value={planId}
-                  onChange={(e) => setPlanId(e.target.value)}
-                ></input>
+                <input type="text" placeholder="1F80008A" {...register("planId")} ></input>
               </label>
               <label>
                 <b>ID:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="12345"
-                  value={id}
-                  onChange={(e) => setID(e.target.value)}
-                ></input>
+                <input type="text" placeholder="12345" {...register("id")} ></input>
               </label>
             </div>
             <div className="forminputcolumn">
               <label>
                 <b>All Time:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
+                <input type="checkbox" {...register("alltime")} defaultChecked={false} ></input>
               </label>
             </div>
           </div>
