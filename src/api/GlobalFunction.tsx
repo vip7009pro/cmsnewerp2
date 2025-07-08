@@ -1277,7 +1277,7 @@ export const f_getMachineListData = async () => {
           { EQ_NAME: "NA" },
           { EQ_NAME: "ALL" }
         );
-        machineListData = loadeddata;
+        machineListData = loadeddata.sort((a, b) => a.EQ_NAME.localeCompare(b.EQ_NAME));
       } else {
         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
         machineListData = [];
