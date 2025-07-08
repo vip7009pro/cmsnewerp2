@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import ChartWeekLy from "../../../components/Chart/KD/KDWeeklyClosing";
@@ -16,7 +16,17 @@ import ChartPOBalance from "../../../components/Chart/KD/KDPOBalanceChart";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
-import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, OVERDUE_DATA, PIC_REVENUE_DATA, RunningPOData, WEB_SETTING_DATA, WeekLyPOData, WeeklyClosingData } from "../../../api/GlobalInterface";
+import {
+  CUSTOMER_REVENUE_DATA,
+  CustomerListData,
+  MonthlyClosingData,
+  OVERDUE_DATA,
+  PIC_REVENUE_DATA,
+  RunningPOData,
+  WEB_SETTING_DATA,
+  WeekLyPOData,
+  WeeklyClosingData,
+} from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -59,12 +69,24 @@ const KinhDoanhReport = () => {
   const [df, setDF] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [widgetdata_yesterday, setWidgetData_Yesterday] = useState<DailyClosingData[]>([]);
-  const [widgetdata_thisweek, setWidgetData_ThisWeek] = useState<WeeklyClosingData[]>([]);
-  const [widgetdata_thismonth, setWidgetData_ThisMonth] = useState<MonthlyClosingData[]>([]);
-  const [widgetdata_thisyear, setWidgetData_ThisYear] = useState<YearlyClosingData[]>([]);
-  const [customerRevenue, setCustomerRevenue] = useState<CUSTOMER_REVENUE_DATA[]>([]);
-  const [monthlyvRevenuebyCustomer, setMonthlyvRevenuebyCustomer] = useState<Array<any>>([]);
+  const [widgetdata_yesterday, setWidgetData_Yesterday] = useState<
+    DailyClosingData[]
+  >([]);
+  const [widgetdata_thisweek, setWidgetData_ThisWeek] = useState<
+    WeeklyClosingData[]
+  >([]);
+  const [widgetdata_thismonth, setWidgetData_ThisMonth] = useState<
+    MonthlyClosingData[]
+  >([]);
+  const [widgetdata_thisyear, setWidgetData_ThisYear] = useState<
+    YearlyClosingData[]
+  >([]);
+  const [customerRevenue, setCustomerRevenue] = useState<
+    CUSTOMER_REVENUE_DATA[]
+  >([]);
+  const [monthlyvRevenuebyCustomer, setMonthlyvRevenuebyCustomer] = useState<
+    Array<any>
+  >([]);
   const [picRevenue, setPICRevenue] = useState<PIC_REVENUE_DATA[]>([]);
   const [dailyClosingData, setDailyClosingData] = useState<any>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
@@ -72,11 +94,14 @@ const KinhDoanhReport = () => {
   const [columnsweek, setColumnsWeek] = useState<Array<any>>([]);
   const [columnsmonth, setColumnsMonth] = useState<Array<any>>([]);
   const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
-  const [runningPOBalanceData, setRunningPOBalanceData] = useState<Array<RunningPOData>>([]);
-  const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] = useState<WidgetData_POBalanceSummary>({
-    po_balance_qty: 0,
-    po_balance_amount: 0,
-  });
+  const [runningPOBalanceData, setRunningPOBalanceData] = useState<
+    Array<RunningPOData>
+  >([]);
+  const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
+    useState<WidgetData_POBalanceSummary>({
+      po_balance_qty: 0,
+      po_balance_amount: 0,
+    });
   const [widgetdata_fcstAmount, setWidgetData_FcstAmount] =
     useState<FCSTAmountData>({
       FCSTYEAR: 0,
@@ -86,14 +111,22 @@ const KinhDoanhReport = () => {
       FCST8W_QTY: 0,
       FCST8W_AMOUNT: 0,
     });
-    const [dailyOverdueData,setDailyOverdueData] = useState<OVERDUE_DATA[]>([]);
-    const [weeklyOverdueData,setweeklyOverdueData] = useState<OVERDUE_DATA[]>([]);
-    const [monthlyOverdueData,setmonthyOverdueData] = useState<OVERDUE_DATA[]>([]);
-    const [yearlyOverdueData,setyearlyOverdueData] = useState<OVERDUE_DATA[]>([]);
-
+  const [dailyOverdueData, setDailyOverdueData] = useState<OVERDUE_DATA[]>([]);
+  const [weeklyOverdueData, setweeklyOverdueData] = useState<OVERDUE_DATA[]>(
+    []
+  );
+  const [monthlyOverdueData, setmonthyOverdueData] = useState<OVERDUE_DATA[]>(
+    []
+  );
+  const [yearlyOverdueData, setyearlyOverdueData] = useState<OVERDUE_DATA[]>(
+    []
+  );
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const [selectedCustomerList, setSelectedCustomerList] = useState<CustomerListData[]>([]);
-  const handleGetFCSTAmount = async () => {
+  const [selectedCustomerList, setSelectedCustomerList] = useState<
+    CustomerListData[]
+  >([]);
+  const handleGetFCSTAmount = useCallback(async () => {
+    let kq: FCSTAmountData[] = [];
     let fcstweek2: number = moment().add(1, "days").isoWeek();
     let fcstyear2: number = moment().year();
     await generalQuery("checklastfcstweekno", {
@@ -112,7 +145,10 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     //console.log("fcst week2->: ", fcstweek2);
-    generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
+    await generalQuery("fcstamount", {
+      FCSTYEAR: fcstyear2,
+      FCSTWEEKNO: fcstweek2,
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -121,9 +157,10 @@ const KinhDoanhReport = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
-          setWidgetData_FcstAmount(loadeddata[0]);
+          kq = loadeddata;
+          //setWidgetData_FcstAmount(loadeddata[0]);
         } else {
           generalQuery("fcstamount", {
             FCSTYEAR: fcstweek2 - 1 === 0 ? fcstyear2 - 1 : fcstyear2,
@@ -137,9 +174,10 @@ const KinhDoanhReport = () => {
                     return {
                       ...element,
                     };
-                  },
+                  }
                 );
-                setWidgetData_FcstAmount(loadeddata[0]);
+                kq = loadeddata;
+                //setWidgetData_FcstAmount(loadeddata[0]);
               } else {
                 //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
@@ -153,10 +191,13 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetDailyClosing = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetDailyClosing = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
+    let kq: DailyClosingData[] = [];
+    console.log("default->: ", df);
     await generalQuery("kd_dailyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
@@ -169,10 +210,10 @@ const KinhDoanhReport = () => {
                 ...element,
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
-            },
+            }
           );
-          //console.log(loadeddata)
-          setWidgetData_Yesterday(loadeddata);
+          kq = loadeddata;
+          //setWidgetData_Yesterday(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -180,10 +221,12 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetWeeklyClosing = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetWeeklyClosing = useCallback(async () => {
     let yesterday = moment().add(1, "day").endOf("week").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-56, "day").format("YYYY-MM-DD");
+    let kq: WeeklyClosingData[] = [];
     await generalQuery("kd_weeklyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
@@ -195,9 +238,10 @@ const KinhDoanhReport = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
-          setWidgetData_ThisWeek(loadeddata.reverse());
+          kq = loadeddata.reverse();
+          //setWidgetData_ThisWeek(loadeddata.reverse());
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -205,10 +249,12 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetMonthlyClosing = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetMonthlyClosing = useCallback(async () => {
     let yesterday = moment().endOf("month").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");
+    let kq: MonthlyClosingData[] = [];
     await generalQuery("kd_monthlyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
@@ -220,10 +266,10 @@ const KinhDoanhReport = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
-          //console.log(loadeddata.reverse())
-          setWidgetData_ThisMonth(loadeddata.reverse());
+          kq = loadeddata.reverse();
+          //setWidgetData_ThisMonth(loadeddata.reverse());
           //console.log('length - 1', loadeddata.reverse()[loadeddata.length - 1]?.DELIVERED_AMOUNT);
           //console.log('length - 2', loadeddata.reverse()[loadeddata.length - 2]?.DELIVERED_AMOUNT);
         } else {
@@ -233,10 +279,12 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetYearlyClosing = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetYearlyClosing = useCallback(async () => {
     let yesterday = moment().endOf("year").format("YYYY-MM-DD");
     let yesterday2 = "2020-01-01";
+    let kq: YearlyClosingData[] = [];
     await generalQuery("kd_annuallyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
@@ -248,9 +296,10 @@ const KinhDoanhReport = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
-          setWidgetData_ThisYear(loadeddata);
+          kq = loadeddata;
+          //setWidgetData_ThisYear(loadeddata);
           //console.log(loadeddata)
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -259,8 +308,10 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetPOBalanceSummary = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetPOBalanceSummary = useCallback(async () => {
+    let kq: POBalanceSummaryData[] = [];
     await generalQuery("traPOSummaryTotal", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -269,12 +320,13 @@ const KinhDoanhReport = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
-          setWidgetData_PoBalanceSummary({
-            po_balance_qty: loadeddata[0].PO_BALANCE,
-            po_balance_amount: loadeddata[0].BALANCE_AMOUNT,
-          });
+          kq = loadeddata;
+          //setWidgetData_PoBalanceSummary({
+          //  po_balance_qty: loadeddata[0].PO_BALANCE,
+          //  po_balance_amount: loadeddata[0].BALANCE_AMOUNT,
+          //});
           //console.log(loadeddata);
           /*  Swal.fire(
           "Thông báo",
@@ -288,10 +340,12 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetCustomerRevenue = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetCustomerRevenue = useCallback(async () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
+    let kq: CUSTOMER_REVENUE_DATA[] = [];
     await generalQuery("customerRevenue", {
       START_DATE: df ? sunday : fromdate,
       END_DATE: df ? monday : todate,
@@ -307,8 +361,8 @@ const KinhDoanhReport = () => {
             }
           );
           loadeddata = loadeddata.splice(0, 5);
-          //console.log(loadeddata);
-          setCustomerRevenue(loadeddata);
+          kq = loadeddata;
+          //setCustomerRevenue(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           sunday = moment()
@@ -328,16 +382,18 @@ const KinhDoanhReport = () => {
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 //console.log(response.data.data);
-                let loadeddata: CUSTOMER_REVENUE_DATA[] = response.data.data.map(
-                  (element: CUSTOMER_REVENUE_DATA, index: number) => {
-                    return {
-                      ...element,
-                    };
-                  }
-                );
+                let loadeddata: CUSTOMER_REVENUE_DATA[] =
+                  response.data.data.map(
+                    (element: CUSTOMER_REVENUE_DATA, index: number) => {
+                      return {
+                        ...element,
+                      };
+                    }
+                  );
                 loadeddata = loadeddata.splice(0, 5);
+                kq = loadeddata;
                 //console.log(loadeddata);
-                setCustomerRevenue(loadeddata);
+                //setCustomerRevenue(loadeddata);
               } else {
                 //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
@@ -350,10 +406,12 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetPICRevenue = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetPICRevenue = useCallback(async () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
+    let kq: PIC_REVENUE_DATA[] = [];
     await generalQuery("PICRevenue", {
       START_DATE: df ? sunday : fromdate,
       END_DATE: df ? monday : todate,
@@ -368,7 +426,8 @@ const KinhDoanhReport = () => {
               };
             }
           );
-          setPICRevenue(loadeddata);
+          kq = loadeddata;
+          //setPICRevenue(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           sunday = moment()
@@ -395,7 +454,8 @@ const KinhDoanhReport = () => {
                     };
                   }
                 );
-                setPICRevenue(loadeddata);
+                kq = loadeddata;
+                //setPICRevenue(loadeddata);
               } else {
                 //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
@@ -408,14 +468,19 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetDailyOverdue = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetDailyOverdue = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
+    let kq: OVERDUE_DATA[] = [];
     await generalQuery("dailyoverduedata", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
-      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+      D_PLUS:
+        getGlobalSetting()?.filter(
+          (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "KD_DPLUS"
+        )[0]?.CURRENT_VALUE ?? 6,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -423,13 +488,13 @@ const KinhDoanhReport = () => {
             (element: OVERDUE_DATA, index: number) => {
               return {
                 ...element,
-                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,
+                OK_RATE: (element.OK_IV * 1.0) / element.TOTAL_IV,
                 DELIVERY_DATE: element.DELIVERY_DATE?.slice(0, 10),
               };
-            },
+            }
           );
-          //console.log(loadeddata)
-          setDailyOverdueData(loadeddata);
+          kq = loadeddata;
+          //setDailyOverdueData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -437,27 +502,32 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetWeeklyOverdue = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetWeeklyOverdue = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-70, "day").format("YYYY-MM-DD");
+    let kq: OVERDUE_DATA[] = [];
     await generalQuery("weeklyoverduedata", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
-      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+      D_PLUS:
+        getGlobalSetting()?.filter(
+          (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "KD_DPLUS"
+        )[0]?.CURRENT_VALUE ?? 6,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: OVERDUE_DATA[] = response.data.data.map(
             (element: OVERDUE_DATA, index: number) => {
               return {
-                ...element,      
-                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,         
+                ...element,
+                OK_RATE: (element.OK_IV * 1.0) / element.TOTAL_IV,
               };
-            },
+            }
           );
-          //console.log(loadeddata)
-          setweeklyOverdueData(loadeddata);
+          kq = loadeddata;
+          //setweeklyOverdueData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -465,27 +535,32 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetMonthlyOverdue = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetMonthlyOverdue = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");
+    let kq: OVERDUE_DATA[] = [];
     await generalQuery("monthlyoverduedata", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
-      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+      D_PLUS:
+        getGlobalSetting()?.filter(
+          (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "KD_DPLUS"
+        )[0]?.CURRENT_VALUE ?? 6,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: OVERDUE_DATA[] = response.data.data.map(
             (element: OVERDUE_DATA, index: number) => {
               return {
-                ...element,      
-                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,         
+                ...element,
+                OK_RATE: (element.OK_IV * 1.0) / element.TOTAL_IV,
               };
-            },
+            }
           );
-          //console.log(loadeddata)
-          setmonthyOverdueData(loadeddata);
+          kq = loadeddata;
+          //setmonthyOverdueData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -493,27 +568,32 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const handleGetYearlyOverdue = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const handleGetYearlyOverdue = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-3650, "day").format("YYYY-MM-DD");
+    let kq: OVERDUE_DATA[] = [];
     await generalQuery("yearlyoverduedata", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
-      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+      D_PLUS:
+        getGlobalSetting()?.filter(
+          (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "KD_DPLUS"
+        )[0]?.CURRENT_VALUE ?? 6,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: OVERDUE_DATA[] = response.data.data.map(
             (element: OVERDUE_DATA, index: number) => {
               return {
-                ...element,      
-                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,         
+                ...element,
+                OK_RATE: (element.OK_IV * 1.0) / element.TOTAL_IV,
               };
-            },
+            }
           );
-          //console.log(loadeddata)
-          setyearlyOverdueData(loadeddata);
+          kq = loadeddata;
+          //setyearlyOverdueData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -521,39 +601,44 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const getcustomerlist = async () => {
-    generalQuery("selectcustomerList", {})
+    return kq;
+  }, [df, fromdate, todate]);
+  const getcustomerlist = useCallback(async () => {
+    let kq: any[] = [];
+    await generalQuery("selectcustomerList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
-          setCustomerList(response.data.data);
+          kq = response.data.data;
+          //setCustomerList(response.data.data);
         } else {
-          setCustomerList([]);
+          //setCustomerList([]);
         }
       })
       .catch((error) => {
         //console.log(error);
       });
-  };
-  const loadDailyClosing = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const loadDailyClosing = useCallback(async () => {
+    let kq: any[] = [];
     await generalQuery("getDailyClosingKD", {
-      FROM_DATE: df ? moment.utc().format('YYYY-MM-01') : fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+      FROM_DATE: df ? moment.utc().format("YYYY-MM-01") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          let loadeddata =
-            response.data.data.map(
-              (element: any, index: number) => {
-                return {
-                  ...element,
-                  id: index
-                };
-              },
-            );
-          setDailyClosingData(loadeddata);
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          let loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          //setDailyClosingData(loadeddata);
+          kq = loadeddata;
+          /*  let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
           let column_map = keysArray.map((e, index) => {
             return {
               field: e,
@@ -593,27 +678,31 @@ const KinhDoanhReport = () => {
               },
             };
           });
-          setColumns(column_map);
+          setColumns(column_map); */
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          const lastmonth = moment().subtract(1, 'months');
+          const lastmonth = moment().subtract(1, "months");
           generalQuery("getDailyClosingKD", {
-            FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD') : fromdate,
-            TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD') : todate
+            FROM_DATE: df
+              ? lastmonth.startOf("month").format("YYYY-MM-DD")
+              : fromdate,
+            TO_DATE: df
+              ? lastmonth.endOf("month").format("YYYY-MM-DD")
+              : todate,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                let loadeddata =
-                  response.data.data.map(
-                    (element: any, index: number) => {
-                      return {
-                        ...element,
-                        id: index
-                      };
-                    },
-                  );
-                setDailyClosingData(loadeddata);
-                let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+                let loadeddata = response.data.data.map(
+                  (element: any, index: number) => {
+                    return {
+                      ...element,
+                      id: index,
+                    };
+                  }
+                );
+                //setDailyClosingData(loadeddata);
+                kq = loadeddata;
+                /* let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
                 let column_map = keysArray.map((e, index) => {
                   return {
                     field: e,
@@ -653,7 +742,7 @@ const KinhDoanhReport = () => {
                     },
                   };
                 });
-                setColumns(column_map);
+                setColumns(column_map); */
               } else {
                 //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
@@ -666,27 +755,29 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const loadWeeklyClosing = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const loadWeeklyClosing = useCallback(async () => {
+    let kq: any[] = [];
     await generalQuery("getWeeklyClosingKD", {
-      FROM_DATE: df ? moment.utc().format('YYYY-MM-01') : fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+      FROM_DATE: df ? moment.utc().format("YYYY-MM-01") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
     })
       .then((response) => {
         //console.log(response);
         if (response.data.tk_status !== "NG") {
           if (response.data.data.length > 0) {
-            let loadeddata =
-              response.data.data.map(
-                (element: any, index: number) => {
-                  return {
-                    ...element,
-                    id: index
-                  };
-                },
-              );
-            setWeeklyClosingData(loadeddata);
-            let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+            let loadeddata = response.data.data.map(
+              (element: any, index: number) => {
+                return {
+                  ...element,
+                  id: index,
+                };
+              }
+            );
+            //setWeeklyClosingData(loadeddata);
+            kq = loadeddata;
+            /*  let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
             let column_map = keysArray.map((e, index) => {
               return {
                 field: e,
@@ -740,27 +831,30 @@ const KinhDoanhReport = () => {
                 },
               };
             });
-            setColumnsWeek(column_map);
-          }
-          else {
-            const lastmonth = moment().subtract(1, 'months');
+            setColumnsWeek(column_map); */
+          } else {
+            const lastmonth = moment().subtract(1, "months");
             generalQuery("getWeeklyClosingKD", {
-              FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD') : fromdate,
-              TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD') : todate
+              FROM_DATE: df
+                ? lastmonth.startOf("month").format("YYYY-MM-DD")
+                : fromdate,
+              TO_DATE: df
+                ? lastmonth.endOf("month").format("YYYY-MM-DD")
+                : todate,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
-                  let loadeddata =
-                    response.data.data.map(
-                      (element: any, index: number) => {
-                        return {
-                          ...element,
-                          id: index
-                        };
-                      },
-                    );
-                  setWeeklyClosingData(loadeddata);
-                  let keysArray = Object.getOwnPropertyNames(loadeddata[0] ?? []);
+                  let loadeddata = response.data.data.map(
+                    (element: any, index: number) => {
+                      return {
+                        ...element,
+                        id: index,
+                      };
+                    }
+                  );
+                  kq = loadeddata;
+                  //setWeeklyClosingData(loadeddata);
+                  /* let keysArray = Object.getOwnPropertyNames(loadeddata[0] ?? []);
                   let column_map = keysArray.map((e, index) => {
                     return {
                       field: e,
@@ -814,7 +908,7 @@ const KinhDoanhReport = () => {
                       },
                     };
                   });
-                  setColumnsWeek(column_map);
+                  setColumnsWeek(column_map); */
                 } else {
                   //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
                 }
@@ -825,23 +919,23 @@ const KinhDoanhReport = () => {
           }
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          const lastmonth = moment().subtract(1, 'months');
+          const lastmonth = moment().subtract(1, "months");
           generalQuery("getWeeklyClosingKD", {
-            FROM_DATE: lastmonth.startOf('month').format('YYYY-MM-DD'),
-            TO_DATE: lastmonth.endOf('month').format('YYYY-MM-DD')
+            FROM_DATE: lastmonth.startOf("month").format("YYYY-MM-DD"),
+            TO_DATE: lastmonth.endOf("month").format("YYYY-MM-DD"),
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                let loadeddata =
-                  response.data.data.map(
-                    (element: any, index: number) => {
-                      return {
-                        ...element,
-                        id: index
-                      };
-                    },
-                  );
-                setWeeklyClosingData(loadeddata);
+                let loadeddata = response.data.data.map(
+                  (element: any, index: number) => {
+                    return {
+                      ...element,
+                      id: index,
+                    };
+                  }
+                );
+                kq = loadeddata;
+                /* setWeeklyClosingData(loadeddata);
                 let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
                 let column_map = keysArray.map((e, index) => {
                   return {
@@ -882,7 +976,7 @@ const KinhDoanhReport = () => {
                     },
                   };
                 });
-                setColumns(column_map);
+                setColumns(column_map); */
               } else {
                 //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
@@ -895,11 +989,13 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const loadPoOverWeek = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const loadPoOverWeek = useCallback(async () => {
+    let kq: WeekLyPOData[] = [];
     await generalQuery("kd_pooverweek", {
       FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -910,7 +1006,8 @@ const KinhDoanhReport = () => {
               };
             }
           );
-          setWeekLyPOData(loadeddata.reverse());
+          kq = loadeddata.reverse();
+          //setWeekLyPOData(loadeddata.reverse());
           //console.log(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -919,10 +1016,12 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const loadRunningPOBalanceData = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const loadRunningPOBalanceData = useCallback(async () => {
+    let kq: RunningPOData[] = [];
     await generalQuery("kd_runningpobalance", {
-      TO_DATE: df ? moment().format("YYYY-MM-DD") : todate
+      TO_DATE: df ? moment().format("YYYY-MM-DD") : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -934,10 +1033,11 @@ const KinhDoanhReport = () => {
             }
           );
           if (df) {
-            setRunningPOBalanceData(loadeddata.splice(0, 10).reverse());
-          }
-          else {
-            setRunningPOBalanceData(loadeddata.reverse());
+            kq = loadeddata.splice(0, 10).reverse();
+            //setRunningPOBalanceData(loadeddata.splice(0, 10).reverse());
+          } else {
+            kq = loadeddata.reverse();
+            //setRunningPOBalanceData(loadeddata.reverse());
           }
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -946,11 +1046,13 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  const loadMonthlyRevenueByCustomer = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const loadMonthlyRevenueByCustomer = useCallback(async () => {
+    let kq: any[] = [];
     await generalQuery("loadMonthlyRevenueByCustomer", {
-      FROM_DATE: df ? moment.utc().format('YYYY-01-01') : fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+      FROM_DATE: df ? moment.utc().format("YYYY-01-01") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -962,8 +1064,9 @@ const KinhDoanhReport = () => {
               };
             }
           );
-          setMonthlyvRevenuebyCustomer(loadeddata);
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          kq = loadeddata;
+          //setMonthlyvRevenuebyCustomer(loadeddata);
+          /* let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
           let column_map = keysArray.map((e, index) => {
             return {
               field: e,
@@ -1017,7 +1120,7 @@ const KinhDoanhReport = () => {
               },
             };
           });
-          setColumnsMonth(column_map);
+          setColumnsMonth(column_map); */
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -1025,11 +1128,13 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const loadMonthlyRevenueByCustomerAndEmpl = async () => {
+    return kq;
+  }, [df, fromdate, todate]);
+  const loadMonthlyRevenueByCustomerAndEmpl = useCallback(async () => {
+    let kq: any[] = [];
     await generalQuery("baocaodanhthutheokhachtheonguoimonthly", {
-      FROM_DATE: df ? moment.utc().format('YYYY-01-01') : fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+      FROM_DATE: df ? moment.utc().format("YYYY-01-01") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -1041,8 +1146,9 @@ const KinhDoanhReport = () => {
               };
             }
           );
-          setMonthlyvRevenuebyCustomer(loadeddata);
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          kq = loadeddata;
+          //setMonthlyvRevenuebyCustomer(loadeddata);
+          /* let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
           let column_map = keysArray.map((e, index) => {
             return {
               field: e,
@@ -1096,7 +1202,7 @@ const KinhDoanhReport = () => {
               },
             };
           });
-          setColumnsMonth(column_map);
+          setColumnsMonth(column_map); */
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -1104,9 +1210,10 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const initFunction = async () => {
-   /*  Swal.fire({
+    return kq;
+  }, [df, fromdate, todate]);
+  const initFunction = useCallback(async () => {
+    Swal.fire({
       title: "Đang tải báo cáo",
       text: "Đang tải dữ liệu, hãy chờ chút",
       icon: "info",
@@ -1114,7 +1221,7 @@ const KinhDoanhReport = () => {
       allowOutsideClick: false,
       confirmButtonText: "OK",
       showConfirmButton: false,
-    }); */
+    });
     Promise.all([
       getcustomerlist(),
       handleGetDailyClosing(),
@@ -1133,22 +1240,420 @@ const KinhDoanhReport = () => {
       handleGetPICRevenue(),
       handleGetPOBalanceSummary(),
       handleGetFCSTAmount(),
-      getCompany() === 'CMS' ? loadMonthlyRevenueByCustomer() :  loadMonthlyRevenueByCustomerAndEmpl()
-    ]
-    ).then(() => {
-      //Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
-    })
-  }
+      getCompany() === "CMS"
+        ? loadMonthlyRevenueByCustomer()
+        : loadMonthlyRevenueByCustomerAndEmpl(),
+    ]).then((values) => {
+      if (values.length > 0) {
+        //danh sach khach hang
+        if (values[0].length > 0) {
+          setCustomerList(values[0]);
+        } else {
+          setCustomerList([]);
+        }
+        //daily closing
+        if (values[1].length > 0) {
+          setWidgetData_Yesterday(values[1]);
+        } else {
+          setWidgetData_Yesterday([]);
+        }
+        //weekly closing
+        if (values[2].length > 0) {
+          setWidgetData_ThisWeek(values[2]);
+        } else {
+          setWidgetData_ThisWeek([]);
+        }
+        //monthly closing
+        if (values[3].length > 0) {
+          setWidgetData_ThisMonth(values[3]);
+        } else {
+          setWidgetData_ThisMonth([]);
+        }
+        //yearly closing
+        if (values[4].length > 0) {
+          setWidgetData_ThisYear(values[4]);
+        } else {
+          setWidgetData_ThisYear([]);
+        }
+        //daily pivot closing
+        if (values[5].length > 0) {
+          setDailyClosingData(values[5]);
+          let keysArray = Object.getOwnPropertyNames(values[5][0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              field: e,
+              headerName: e,
+              width: 100,
+              cellRenderer: (ele: any) => {
+                //console.log(ele);
+                if (["CUST_NAME_KD", "id"].indexOf(e) > -1) {
+                  return <span>{ele.data[e]}</span>;
+                } else if (e === "DELIVERED_AMOUNT") {
+                  return (
+                    <span style={{ color: "#050505", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency:
+                          getGlobalSetting()?.filter(
+                            (ele: WEB_SETTING_DATA, index: number) =>
+                              ele.ITEM_NAME === "CURRENCY"
+                          )[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>
+                  );
+                } else {
+                  if (ele.data["CUST_NAME_KD"] === "TOTAL") {
+                    return (
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency:
+                            getGlobalSetting()?.filter(
+                              (ele: WEB_SETTING_DATA, index: number) =>
+                                ele.ITEM_NAME === "CURRENCY"
+                            )[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>
+                    );
+                  } else {
+                    return (
+                      <span style={{ color: "green", fontWeight: "normal" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency:
+                            getGlobalSetting()?.filter(
+                              (ele: WEB_SETTING_DATA, index: number) =>
+                                ele.ITEM_NAME === "CURRENCY"
+                            )[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>
+                    );
+                  }
+                }
+              },
+            };
+          });
+          setColumns(column_map);
+        } else {
+          setDailyClosingData([]);
+        }
+        //weekly pivot closing
+        if (values[6].length > 0) {
+          setWeeklyClosingData(values[6]);
+          let keysArray = Object.getOwnPropertyNames(values[6][0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              field: e,
+              header: e,
+              width: 100,
+              cellRenderer: (ele: any) => {
+                //console.log(ele);
+                if (["CUST_NAME_KD", "id"].indexOf(e) > -1) {
+                  return <span>{ele.data[e]}</span>;
+                } else if (e === "TOTAL_AMOUNT") {
+                  return (
+                    <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency:
+                          getGlobalSetting()?.filter(
+                            (ele: WEB_SETTING_DATA, index: number) =>
+                              ele.ITEM_NAME === "CURRENCY"
+                          )[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>
+                  );
+                } else if (e === "TOTAL_QTY") {
+                  return (
+                    <span style={{ color: "#052ee7", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "decimal",
+                      })}
+                    </span>
+                  );
+                } else if (e.indexOf("QTY") > -1) {
+                  return (
+                    <span style={{ color: "#052ee7", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "decimal",
+                      })}
+                    </span>
+                  );
+                } else {
+                  if (ele.data["CUST_NAME_KD"] === "TOTAL") {
+                    return (
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency:
+                            getGlobalSetting()?.filter(
+                              (ele: WEB_SETTING_DATA, index: number) =>
+                                ele.ITEM_NAME === "CURRENCY"
+                            )[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>
+                    );
+                  } else {
+                    return (
+                      <span style={{ color: "green", fontWeight: "normal" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency:
+                            getGlobalSetting()?.filter(
+                              (ele: WEB_SETTING_DATA, index: number) =>
+                                ele.ITEM_NAME === "CURRENCY"
+                            )[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>
+                    );
+                  }
+                }
+              },
+            };
+          });
+          setColumnsWeek(column_map);
+        } else {
+          setWeeklyClosingData([]);
+        }
+        //monthly pivot closing
+        if (values[17].length > 0) {
+          if (getCompany() === "PVN") {
+            if (values[17].length > 0) {
+              setMonthlyvRevenuebyCustomer(values[17]);
+              let keysArray = Object.getOwnPropertyNames(values[17][0]);
+              let column_map = keysArray.map((e, index) => {
+                return {
+                  field: e,
+                  headerName: e,
+                  width: 100,
+                  cellRenderer: (ele: any) => {
+                    //console.log(ele);
+                    if (["CUST_NAME_KD", "id"].indexOf(e) > -1) {
+                      return <span>{ele.data[e]}</span>;
+                    } else if (e === "TOTAL_AMOUNT") {
+                      return (
+                        <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency:
+                              getGlobalSetting()?.filter(
+                                (ele: WEB_SETTING_DATA, index: number) =>
+                                  ele.ITEM_NAME === "CURRENCY"
+                              )[0]?.CURRENT_VALUE ?? "USD",
+                          })}
+                        </span>
+                      );
+                    } else if (e === "TOTAL_QTY") {
+                      return (
+                        <span style={{ color: "#052ee7", fontWeight: "bold" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "decimal",
+                          })}
+                        </span>
+                      );
+                    } else if (e.indexOf("QTY") > -1) {
+                      return (
+                        <span
+                          style={{ color: "#052ee7", fontWeight: "normal" }}
+                        >
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "decimal",
+                          })}
+                        </span>
+                      );
+                    } else {
+                      if (ele.data["CUST_NAME_KD"] === "TOTAL") {
+                        return (
+                          <span style={{ color: "green", fontWeight: "bold" }}>
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency:
+                                getGlobalSetting()?.filter(
+                                  (ele: WEB_SETTING_DATA, index: number) =>
+                                    ele.ITEM_NAME === "CURRENCY"
+                                )[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>
+                        );
+                      } else {
+                        return (
+                          <span
+                            style={{ color: "green", fontWeight: "normal" }}
+                          >
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency:
+                                getGlobalSetting()?.filter(
+                                  (ele: WEB_SETTING_DATA, index: number) =>
+                                    ele.ITEM_NAME === "CURRENCY"
+                                )[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>
+                        );
+                      }
+                    }
+                  },
+                };
+              });
+              setColumnsMonth(column_map);
+            } else {
+              setMonthlyvRevenuebyCustomer([]);
+            }
+          } else {
+            setMonthlyvRevenuebyCustomer(values[17]);
+            let keysArray = Object.getOwnPropertyNames(values[17][0]);
+            let column_map = keysArray.map((e, index) => {
+              return {
+                field: e,
+                headerName: e,
+                width: 100,
+                cellRenderer: (ele: any) => {
+                  //console.log(ele);
+                  if (["CUST_NAME_KD", "id"].indexOf(e) > -1) {
+                    return <span>{ele.data[e]}</span>;
+                  } else if (e === "TOTAL_AMOUNT") {
+                    return (
+                      <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency:
+                            getGlobalSetting()?.filter(
+                              (ele: WEB_SETTING_DATA, index: number) =>
+                                ele.ITEM_NAME === "CURRENCY"
+                            )[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>
+                    );
+                  } else if (e === "TOTAL_QTY") {
+                    return (
+                      <span style={{ color: "#052ee7", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "decimal",
+                        })}
+                      </span>
+                    );
+                  } else if (e.indexOf("QTY") > -1) {
+                    return (
+                      <span style={{ color: "#052ee7", fontWeight: "normal" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "decimal",
+                        })}
+                      </span>
+                    );
+                  } else {
+                    if (ele.data["CUST_NAME_KD"] === "TOTAL") {
+                      return (
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency:
+                              getGlobalSetting()?.filter(
+                                (ele: WEB_SETTING_DATA, index: number) =>
+                                  ele.ITEM_NAME === "CURRENCY"
+                              )[0]?.CURRENT_VALUE ?? "USD",
+                          })}
+                        </span>
+                      );
+                    } else {
+                      return (
+                        <span style={{ color: "green", fontWeight: "normal" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency:
+                              getGlobalSetting()?.filter(
+                                (ele: WEB_SETTING_DATA, index: number) =>
+                                  ele.ITEM_NAME === "CURRENCY"
+                              )[0]?.CURRENT_VALUE ?? "USD",
+                          })}
+                        </span>
+                      );
+                    }
+                  }
+                },
+              };
+            });
+            setColumnsMonth(column_map);
+          }
+        }
+        //daily overdue
+        if (values[7].length > 0) {
+          setDailyOverdueData(values[7]);
+        } else {
+          setDailyOverdueData([]);
+        }
+        //weekly overdue
+        if (values[8].length > 0) {
+          setweeklyOverdueData(values[8]);
+        } else {
+          setweeklyOverdueData([]);
+        }
+        //monthly overdue
+        if (values[9].length > 0) {
+          setmonthyOverdueData(values[9]);
+        } else {
+          setmonthyOverdueData([]);
+        }
+        //yearly overdue
+        if (values[10].length > 0) {
+          setyearlyOverdueData(values[10]);
+        } else {
+          setyearlyOverdueData([]);
+        }
+        //po over week trending
+        if (values[11].length > 0) {
+          setWeekLyPOData(values[11]);
+        } else {
+          setWeekLyPOData([]);
+        }
+        //running po balance data
+        if (values[12].length > 0) {
+          setRunningPOBalanceData(values[12]);
+        } else {
+          setRunningPOBalanceData([]);
+        }
+        //revenue by customer top 5
+        if (values[13].length > 0) {
+          setCustomerRevenue(values[13]);
+        } else {
+          setCustomerRevenue([]);
+        }
+        //pic revenue
+        if (values[14].length > 0) {
+          setPICRevenue(values[14]);
+        } else {
+          setPICRevenue([]);
+        }
+        //po balance summary
+        if (values[15].length > 0) {
+          setWidgetData_PoBalanceSummary({
+            po_balance_qty: values[15][0].PO_BALANCE,
+            po_balance_amount: values[15][0].BALANCE_AMOUNT,
+          });
+        } else {
+          setWidgetData_PoBalanceSummary({
+            po_balance_qty: 0,
+            po_balance_amount: 0,
+          });
+        }
+        //fcst widget data
+        if (values[16].length > 0) {
+          setWidgetData_FcstAmount(values[16][0]);
+        } else {
+        }
+      }
+      Swal.close();
+    });
+  }, [df, fromdate, todate]);
   useEffect(() => {
     initFunction();
   }, []);
   return (
     <div className="kinhdoanhreport">
-      <div className='filterform'>
+      <div className="filterform">
         <label>
           <b>From Date:</b>
           <input
-            type='date'
+            type="date"
             value={fromdate.slice(0, 10)}
             onChange={(e) => setFromDate(e.target.value)}
           ></input>
@@ -1156,7 +1661,7 @@ const KinhDoanhReport = () => {
         <label>
           <b>To Date:</b>{" "}
           <input
-            type='date'
+            type="date"
             value={todate.slice(0, 10)}
             onChange={(e) => setToDate(e.target.value)}
           ></input>
@@ -1173,7 +1678,7 @@ const KinhDoanhReport = () => {
           />
         </label>
         <button
-          className='searchbutton'
+          className="searchbutton"
           onClick={() => {
             initFunction();
           }}
@@ -1190,9 +1695,23 @@ const KinhDoanhReport = () => {
               label="Yesterday"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              qty={widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERY_QTY}
-              amount={widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length - 3]?.DELIVERED_AMOUNT - 1) * 100}
+              qty={
+                widgetdata_yesterday[widgetdata_yesterday.length - 2]
+                  ?.DELIVERY_QTY
+              }
+              amount={
+                widgetdata_yesterday[widgetdata_yesterday.length - 2]
+                  ?.DELIVERED_AMOUNT
+              }
+              percentage={
+                ((widgetdata_yesterday[widgetdata_yesterday.length - 2]
+                  ?.DELIVERED_AMOUNT *
+                  1.0) /
+                  widgetdata_yesterday[widgetdata_yesterday.length - 3]
+                    ?.DELIVERED_AMOUNT -
+                  1) *
+                100
+              }
             />
           </div>
           <div className="revenuwdg">
@@ -1201,9 +1720,23 @@ const KinhDoanhReport = () => {
               label="This week"
               topColor="#ccffcc"
               botColor="#80ff80"
-              qty={widgetdata_thisweek[widgetdata_thisweek.length - 1]?.DELIVERY_QTY}
-              amount={widgetdata_thisweek[widgetdata_thisweek.length - 1]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_thisweek[widgetdata_thisweek.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length - 2]?.DELIVERED_AMOUNT - 1) * 100}
+              qty={
+                widgetdata_thisweek[widgetdata_thisweek.length - 1]
+                  ?.DELIVERY_QTY
+              }
+              amount={
+                widgetdata_thisweek[widgetdata_thisweek.length - 1]
+                  ?.DELIVERED_AMOUNT
+              }
+              percentage={
+                ((widgetdata_thisweek[widgetdata_thisweek.length - 1]
+                  ?.DELIVERED_AMOUNT *
+                  1.0) /
+                  widgetdata_thisweek[widgetdata_thisweek.length - 2]
+                    ?.DELIVERED_AMOUNT -
+                  1) *
+                100
+              }
             />
           </div>
           <div className="revenuwdg">
@@ -1212,9 +1745,23 @@ const KinhDoanhReport = () => {
               label="This month"
               topColor="#fff2e6"
               botColor="#ffbf80"
-              qty={widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERY_QTY}
-              amount={widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT}
-              percentage={((widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[widgetdata_thismonth.length - 2]?.DELIVERED_AMOUNT) - 1) * 100}
+              qty={
+                widgetdata_thismonth[widgetdata_thismonth.length - 1]
+                  ?.DELIVERY_QTY
+              }
+              amount={
+                widgetdata_thismonth[widgetdata_thismonth.length - 1]
+                  ?.DELIVERED_AMOUNT
+              }
+              percentage={
+                ((widgetdata_thismonth[widgetdata_thismonth.length - 1]
+                  ?.DELIVERED_AMOUNT *
+                  1.0) /
+                  widgetdata_thismonth[widgetdata_thismonth.length - 2]
+                    ?.DELIVERED_AMOUNT -
+                  1) *
+                100
+              }
             />
           </div>
           <div className="revenuwdg">
@@ -1223,9 +1770,23 @@ const KinhDoanhReport = () => {
               label="This year"
               topColor="#ffe6e6"
               botColor="#ffb3b3"
-              qty={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERY_QTY}
-              amount={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisyear[widgetdata_thisyear.length - 2]?.DELIVERED_AMOUNT - 1) * 100}
+              qty={
+                widgetdata_thisyear[widgetdata_thisyear.length - 1]
+                  ?.DELIVERY_QTY
+              }
+              amount={
+                widgetdata_thisyear[widgetdata_thisyear.length - 1]
+                  ?.DELIVERED_AMOUNT
+              }
+              percentage={
+                ((widgetdata_thisyear[widgetdata_thisyear.length - 1]
+                  ?.DELIVERED_AMOUNT *
+                  1.0) /
+                  widgetdata_thisyear[widgetdata_thisyear.length - 2]
+                    ?.DELIVERED_AMOUNT -
+                  1) *
+                100
+              }
             />
           </div>
         </div>
@@ -1235,170 +1796,234 @@ const KinhDoanhReport = () => {
           <span className="section_title">2. Closing</span>
           <div className="dailygraphtotal">
             <div className="dailygraph">
-              <span className="subsection">Daily Closing <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(widgetdata_yesterday, "DailyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                Daily Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(widgetdata_yesterday, "DailyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartDaily data={widgetdata_yesterday} />
             </div>
             <div className="dailygraph">
-              <span className="subsection">Weekly Closing <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(widgetdata_thisweek, "WeeklyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                Weekly Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(widgetdata_thisweek, "WeeklyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartWeekLy data={widgetdata_thisweek} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">Monthly Closing <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(widgetdata_thismonth, "MonthlyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                Monthly Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(widgetdata_thismonth, "MonthlyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartMonthLy data={widgetdata_thismonth} />
             </div>
             <div className="dailygraph">
-              <span className="subsection">Yearly Closing <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(widgetdata_thisyear, "YearlyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                Yearly Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(widgetdata_thisyear, "YearlyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartYearly data={widgetdata_thisyear} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">TOP 5 Customer Weekly Revenue <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(customerRevenue, "Customer Revenue");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                TOP 5 Customer Weekly Revenue{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(customerRevenue, "Customer Revenue");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartCustomerRevenue data={customerRevenue} />
             </div>
             <div className="dailygraph">
-              <span className="subsection">PIC Weekly Revenue <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(picRevenue, "PIC Revenue");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                PIC Weekly Revenue{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(picRevenue, "PIC Revenue");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartPICRevenue data={picRevenue} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">Customer Daily Closing  <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(dailyClosingData, "CustomerDailyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                Customer Daily Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(dailyClosingData, "CustomerDailyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <CustomerDailyClosing data={dailyClosingData} columns={columns} />
             </div>
             <div className="dailygraph">
-              <span className="subsection">Customer Weekly Closing <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(weeklyClosingData, "CustomerWeeklyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
-              <CustomerWeeklyClosing data={weeklyClosingData} columns={columnsweek} />
+              <span className="subsection">
+                Customer Weekly Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(weeklyClosingData, "CustomerWeeklyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <CustomerWeeklyClosing
+                data={weeklyClosingData}
+                columns={columnsweek}
+              />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">Customer Monthly Closing  <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(monthlyvRevenuebyCustomer, "CustomerMonthlyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
-              <CustomerMonthlyClosing data={monthlyvRevenuebyCustomer} columns={columnsmonth} />
+              <span className="subsection">
+                Customer Monthly Closing{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(
+                      monthlyvRevenuebyCustomer,
+                      "CustomerMonthlyClosing"
+                    );
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <CustomerMonthlyClosing
+                data={monthlyvRevenuebyCustomer}
+                columns={columnsmonth}
+              />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-            <span className="subsection">Daily Overdue<IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(dailyOverdueData, "dailyOverdueData");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
-              <KDDailyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...dailyOverdueData].reverse()}></KDDailyOverdue>
+              <span className="subsection">
+                Daily Overdue
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(dailyOverdueData, "dailyOverdueData");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDDailyOverdue
+                processColor="#53eb34"
+                materialColor="#ff0000"
+                dldata={[...dailyOverdueData].reverse()}
+              ></KDDailyOverdue>
             </div>
             <div className="dailygraph">
-            <span className="subsection">Weekly Overdue<IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(weeklyOverdueData, "weeklyOverdueData");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
-              <KDWeeklyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...weeklyOverdueData].reverse()}></KDWeeklyOverdue>
+              <span className="subsection">
+                Weekly Overdue
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(weeklyOverdueData, "weeklyOverdueData");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDWeeklyOverdue
+                processColor="#53eb34"
+                materialColor="#ff0000"
+                dldata={[...weeklyOverdueData].reverse()}
+              ></KDWeeklyOverdue>
             </div>
             <div className="dailygraph">
-            <span className="subsection">Monthly Overdue<IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(monthlyOverdueData, "monthlyOverdueData");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
-              <KDMonthlyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...monthlyOverdueData].reverse()}></KDMonthlyOverdue>
+              <span className="subsection">
+                Monthly Overdue
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(monthlyOverdueData, "monthlyOverdueData");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDMonthlyOverdue
+                processColor="#53eb34"
+                materialColor="#ff0000"
+                dldata={[...monthlyOverdueData].reverse()}
+              ></KDMonthlyOverdue>
             </div>
             <div className="dailygraph">
-            <span className="subsection">Yearly Overdue<IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(yearlyOverdueData, "yearlyOverdueData");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
-              <KDYearlyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...yearlyOverdueData].reverse()}></KDYearlyOverdue>
+              <span className="subsection">
+                Yearly Overdue
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(yearlyOverdueData, "yearlyOverdueData");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDYearlyOverdue
+                processColor="#53eb34"
+                materialColor="#ff0000"
+                dldata={[...yearlyOverdueData].reverse()}
+              ></KDYearlyOverdue>
             </div>
           </div>
           <br></br>
@@ -1419,41 +2044,50 @@ const KinhDoanhReport = () => {
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">PO By Week <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(runningPOData, "WeeklyPO");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                PO By Week{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(runningPOData, "WeeklyPO");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartWeeklyPO data={runningPOData} />
             </div>
             <div className="dailygraph">
-              <span className="subsection">Delivery By Week <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(widgetdata_thisweek, "WeeklyClosing");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                Delivery By Week{" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(widgetdata_thisweek, "WeeklyClosing");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartWeekLy data={widgetdata_thisweek} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">PO Balance Trending (By Week) <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(runningPOBalanceData, "RunningPOBalance");
-                }}
-              >
-                <AiFillFileExcel color='green' size={15} />
-                Excel
-              </IconButton></span>
+              <span className="subsection">
+                PO Balance Trending (By Week){" "}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(runningPOBalanceData, "RunningPOBalance");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
               <ChartPOBalance data={runningPOBalanceData} />
             </div>
           </div>
