@@ -10,8 +10,8 @@ import {
   getUserData,
 } from "./Api";
 import {
+  AUDIT_HISTORY_DATA,
   BOMSX_DATA,
-  BTP_AUTO_DATA,
   BTP_AUTO_DATA2,
   BTP_AUTO_DATA_SUMMARY,
   CNT_GAP_DATA,
@@ -86,7 +86,6 @@ import { NotificationElement } from "../components/NotificationPanel/Notificatio
 import { Field, Form } from "../pages/nocodelowcode/types/types";
 import { Component } from "react";
 import { Login } from "./lazyPages";
-
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
@@ -533,14 +532,14 @@ export const f_loadPoDataFull = async (filterData: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
             };
           }
         );
@@ -808,32 +807,32 @@ export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
           loaded_data =
             getCompany() !== "CMS"
               ? response.data.data
-                .map((element: PRICEWITHMOQ, index: number) => {
-                  return {
-                    ...element,
-                    PRICE_DATE:
-                      element.PRICE_DATE !== null
-                        ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
-                        : "",
-                    id: index,
-                  };
-                })
-                .filter(
-                  (element: PRICEWITHMOQ, index: number) =>
-                    element.FINAL === "Y"
-                )
+                  .map((element: PRICEWITHMOQ, index: number) => {
+                    return {
+                      ...element,
+                      PRICE_DATE:
+                        element.PRICE_DATE !== null
+                          ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                          : "",
+                      id: index,
+                    };
+                  })
+                  .filter(
+                    (element: PRICEWITHMOQ, index: number) =>
+                      element.FINAL === "Y"
+                  )
               : response.data.data.map(
-                (element: PRICEWITHMOQ, index: number) => {
-                  return {
-                    ...element,
-                    PRICE_DATE:
-                      element.PRICE_DATE !== null
-                        ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
-                        : "",
-                    id: index,
-                  };
-                }
-              );
+                  (element: PRICEWITHMOQ, index: number) => {
+                    return {
+                      ...element,
+                      PRICE_DATE:
+                        element.PRICE_DATE !== null
+                          ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                          : "",
+                      id: index,
+                    };
+                  }
+                );
           newCodePriceData = loaded_data;
         } else {
           /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
@@ -960,14 +959,14 @@ export const f_loadInvoiceDataFull = async (filterData: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
             };
           }
         );
@@ -1277,7 +1276,9 @@ export const f_getMachineListData = async () => {
           { EQ_NAME: "NA" },
           { EQ_NAME: "ALL" }
         );
-        machineListData = loadeddata.sort((a, b) => a.EQ_NAME.localeCompare(b.EQ_NAME));
+        machineListData = loadeddata.sort((a, b) =>
+          a.EQ_NAME.localeCompare(b.EQ_NAME)
+        );
       } else {
         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
         machineListData = [];
@@ -1653,26 +1654,26 @@ export const f_loadQLSXPLANDATA = async (
               element.EQ1 === "NO" || element.EQ1 === "NA"
                 ? 0
                 : (element.SLC_CD1 ?? 0) -
-                element.CD1 -
-                Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100));
+                  element.CD1 -
+                  Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100));
             let temp_TCD2: number =
               element.EQ2 === "NO" || element.EQ2 === "NA"
                 ? 0
                 : (element.SLC_CD2 ?? 0) -
-                element.CD2 -
-                Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100));
+                  element.CD2 -
+                  Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100));
             let temp_TCD3: number =
               element.EQ3 === "NO" || element.EQ3 === "NA"
                 ? 0
                 : (element.SLC_CD3 ?? 0) -
-                element.CD3 -
-                Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100));
+                  element.CD3 -
+                  Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100));
             let temp_TCD4: number =
               element.EQ4 === "NO" || element.EQ4 === "NA"
                 ? 0
                 : (element.SLC_CD4 ?? 0) -
-                element.CD4 -
-                Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100));
+                  element.CD4 -
+                  Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100));
             /* if (temp_TCD1 < 0) {
               temp_TCD2 = temp_TCD2 - temp_TCD1;
             }
@@ -1695,46 +1696,46 @@ export const f_loadQLSXPLANDATA = async (
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               EQ_STATUS:
                 element.EQ_STATUS === "B"
                   ? "Đang setting"
                   : element.EQ_STATUS === "M"
-                    ? "Đang Run"
-                    : element.EQ_STATUS === "K"
-                      ? "Chạy xong"
-                      : element.EQ_STATUS === "K"
-                        ? "KTST-KSX"
-                        : "Chưa chạy",
+                  ? "Đang Run"
+                  : element.EQ_STATUS === "K"
+                  ? "Chạy xong"
+                  : element.EQ_STATUS === "K"
+                  ? "KTST-KSX"
+                  : "Chưa chạy",
               ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
               SLC_CD1:
                 element.EQ1 === "NO" || element.EQ1 === "NA"
                   ? 0
                   : (element.SLC_CD1 ?? 0) -
-                  Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100)),
+                    Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100)),
               SLC_CD2:
                 element.EQ2 === "NO" || element.EQ2 === "NA"
                   ? 0
                   : (element.SLC_CD2 ?? 0) -
-                  Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100)),
+                    Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100)),
               SLC_CD3:
                 element.EQ3 === "NO" || element.EQ3 === "NA"
                   ? 0
                   : (element.SLC_CD3 ?? 0) -
-                  Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100)),
+                    Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100)),
               SLC_CD4:
                 element.EQ4 === "NO" || element.EQ4 === "NA"
                   ? 0
                   : (element.SLC_CD4 ?? 0) -
-                  Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100)),
+                    Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100)),
               CD1: element.CD1 ?? 0,
               CD2: element.CD2 ?? 0,
               CD3: element.CD3 ?? 0,
@@ -1763,10 +1764,10 @@ export const f_loadQLSXPLANDATA = async (
                 element.PROCESS_NUMBER === 1
                   ? element.SLC_CD1
                   : element.PROCESS_NUMBER === 2
-                    ? element.SLC_CD2
-                    : element.PROCESS_NUMBER === 3
-                      ? element.SLC_CD3
-                      : element.SLC_CD4,
+                  ? element.SLC_CD2
+                  : element.PROCESS_NUMBER === 3
+                  ? element.SLC_CD3
+                  : element.SLC_CD4,
               id: index,
             };
           }
@@ -1813,25 +1814,25 @@ export const f_loadQLSXPLANDATA2 = async (
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               EQ_STATUS:
                 element.EQ_STATUS === "B"
                   ? "Đang setting"
                   : element.EQ_STATUS === "M"
-                    ? "Đang Run"
-                    : element.EQ_STATUS === "K"
-                      ? "Chạy xong"
-                      : element.EQ_STATUS === "K"
-                        ? "KTST-KSX"
-                        : "Chưa chạy",
+                  ? "Đang Run"
+                  : element.EQ_STATUS === "K"
+                  ? "Chạy xong"
+                  : element.EQ_STATUS === "K"
+                  ? "KTST-KSX"
+                  : "Chưa chạy",
               ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
               SETTING_START_TIME:
                 element.SETTING_START_TIME === null
@@ -1849,10 +1850,10 @@ export const f_loadQLSXPLANDATA2 = async (
                 element.PROCESS_NUMBER === 1
                   ? element.SLC_CD1
                   : element.PROCESS_NUMBER === 2
-                    ? element.SLC_CD2
-                    : element.PROCESS_NUMBER === 3
-                      ? element.SLC_CD3
-                      : element.SLC_CD4,
+                  ? element.SLC_CD2
+                  : element.PROCESS_NUMBER === 3
+                  ? element.SLC_CD3
+                  : element.SLC_CD4,
               id: index,
             };
           }
@@ -2439,7 +2440,10 @@ export const f_saveChiThiMaterialTable = async (
           });
         //console.log('checktontai',checktontaiM_CODE);
         let m_dang_ky: number = chithidatatable[i].M_MET_QTY;
-        if(selectedPlan.PROCESS_NUMBER !== 1 && chithidatatable[i].LIEUQL_SX ===1){
+        if (
+          selectedPlan.PROCESS_NUMBER !== 1 &&
+          chithidatatable[i].LIEUQL_SX === 1
+        ) {
           m_dang_ky = 0;
         }
         if (checktontaiM_CODE) {
@@ -2524,26 +2528,26 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
               element.EQ1 === "NO" || element.EQ1 === "NA"
                 ? 0
                 : (element.SLC_CD1 ?? 0) -
-                element.CD1 -
-                Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100));
+                  element.CD1 -
+                  Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100));
             let temp_TCD2: number =
               element.EQ2 === "NO" || element.EQ2 === "NA"
                 ? 0
                 : (element.SLC_CD2 ?? 0) -
-                element.CD2 -
-                Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100));
+                  element.CD2 -
+                  Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100));
             let temp_TCD3: number =
               element.EQ3 === "NO" || element.EQ3 === "NA"
                 ? 0
                 : (element.SLC_CD3 ?? 0) -
-                element.CD3 -
-                Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100));
+                  element.CD3 -
+                  Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100));
             let temp_TCD4: number =
               element.EQ4 === "NO" || element.EQ4 === "NA"
                 ? 0
                 : (element.SLC_CD4 ?? 0) -
-                element.CD4 -
-                Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100));
+                  element.CD4 -
+                  Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100));
             /*  if (temp_TCD1 < 0) {
                temp_TCD2 = temp_TCD2 - temp_TCD1;
              }
@@ -2559,14 +2563,14 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               PO_TDYCSX: element.PO_TDYCSX ?? 0,
               TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
               TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
@@ -2587,22 +2591,22 @@ export const f_handletraYCSXQLSX = async (filterdata: any) => {
                 element.EQ1 === "NO" || element.EQ1 === "NA"
                   ? 0
                   : (element.SLC_CD1 ?? 0) -
-                  Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100)),
+                    Math.floor(DU1 * (1 - (element.LOSS_SX1 * 1.0) / 100)),
               SLC_CD2:
                 element.EQ2 === "NO" || element.EQ2 === "NA"
                   ? 0
                   : (element.SLC_CD2 ?? 0) -
-                  Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100)),
+                    Math.floor(DU2 * (1 - (element.LOSS_SX2 * 1.0) / 100)),
               SLC_CD3:
                 element.EQ3 === "NO" || element.EQ3 === "NA"
                   ? 0
                   : (element.SLC_CD3 ?? 0) -
-                  Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100)),
+                    Math.floor(DU3 * (1 - (element.LOSS_SX3 * 1.0) / 100)),
               SLC_CD4:
                 element.EQ4 === "NO" || element.EQ4 === "NA"
                   ? 0
                   : (element.SLC_CD4 ?? 0) -
-                  Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100)),
+                    Math.floor(DU4 * (1 - (element.LOSS_SX4 * 1.0) / 100)),
               TON_CD1:
                 element.EQ1 === "NO" || element.EQ1 === "NA" ? 0 : temp_TCD1,
               TON_CD2:
@@ -2656,14 +2660,14 @@ export const f_handletraYCSXQLSX_New = async (filterdata: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               PO_TDYCSX: element.PO_TDYCSX ?? 0,
               TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
               TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
@@ -2851,7 +2855,7 @@ export const f_getO300_OUT_NO = async (PLAN_ID: string) => {
   await generalQuery("getO300_ROW", { PLAN_ID: PLAN_ID })
     .then((response) => {
       console.log(response.data);
-      if(response.data.data.length > 0){        
+      if (response.data.data.length > 0) {
         O300_OUT_NO = response.data.data[0].OUT_NO;
       }
     })
@@ -2907,7 +2911,7 @@ export const f_insertO301 = async (DATA: any) => {
     M_CODE: DATA.M_CODE,
     OUT_PRE_QTY: DATA.OUT_PRE_QTY,
     PLAN_ID: DATA.PLAN_ID,
-    G_CODE: DATA.G_CODE
+    G_CODE: DATA.G_CODE,
   })
     .then((response) => {
       //console.log(response.data);
@@ -2992,8 +2996,7 @@ export const f_handleDangKyXuatLieu = async (
     .map((x) => "'" + x.M_CODE + "'")
     .join(",");
   await f_deleteM_CODE_O301(selectedPlan.PLAN_ID, M_CODE_LIST);
-  for (let i = 0; i < chithidatatable.length; i++) {  
-
+  for (let i = 0; i < chithidatatable.length; i++) {
     if (chithidatatable[i].M_MET_QTY > 0) {
       //console.log("M_MET", chithidatatable[i].M_MET_QTY);
       let TonTaiM_CODE_O301: boolean =
@@ -3004,8 +3007,12 @@ export const f_handleDangKyXuatLieu = async (
       if (chithidatatable[i].LIEUQL_SX === 1) {
         await f_updateDKXLPLAN(chithidatatable[i].PLAN_ID);
       }
-      let met_dang_ky: number = chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY;
-      if(selectedPlan.PROCESS_NUMBER !== 1 && chithidatatable[i].LIEUQL_SX === 1){
+      let met_dang_ky: number =
+        chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY;
+      if (
+        selectedPlan.PROCESS_NUMBER !== 1 &&
+        chithidatatable[i].LIEUQL_SX === 1
+      ) {
         met_dang_ky = 0;
       }
       if (!TonTaiM_CODE_O301) {
@@ -3021,9 +3028,9 @@ export const f_handleDangKyXuatLieu = async (
           OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
           USE_YN: "Y",
           M_CODE: chithidatatable[i].M_CODE,
-          OUT_PRE_QTY:  met_dang_ky,
+          OUT_PRE_QTY: met_dang_ky,
           PLAN_ID: selectedPlan.PLAN_ID,
-          G_CODE: selectedPlan.G_CODE
+          G_CODE: selectedPlan.G_CODE,
         });
       } else {
         await f_updateO301({
@@ -3174,7 +3181,7 @@ export const f_getNextPLAN_ID = async (
             next_plan_id =
               old_plan_id.substring(0, 3) +
               PLAN_ID_ARRAY[
-              PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
+                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
               ] +
               old_plan_id.substring(4, 7) +
               "A";
@@ -3183,7 +3190,7 @@ export const f_getNextPLAN_ID = async (
           next_plan_id =
             old_plan_id.substring(0, 7) +
             PLAN_ID_ARRAY[
-            PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
+              PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
             ];
         }
       } else {
@@ -3288,12 +3295,12 @@ export const f_addQLSXPLAN = async (
           selected_eq === ycsxdatatablefilter[i].EQ1
             ? 1
             : selected_eq === ycsxdatatablefilter[i].EQ2
-              ? 2
-              : selected_eq === ycsxdatatablefilter[i].EQ3
-                ? 3
-                : selected_eq === ycsxdatatablefilter[i].EQ4
-                  ? 4
-                  : 0;
+            ? 2
+            : selected_eq === ycsxdatatablefilter[i].EQ3
+            ? 3
+            : selected_eq === ycsxdatatablefilter[i].EQ4
+            ? 4
+            : 0;
         let UPH1: number = ycsxdatatablefilter[i].UPH1 ?? 999999999;
         let UPH2: number = ycsxdatatablefilter[i].UPH2 ?? 999999999;
         let UPH3: number = ycsxdatatablefilter[i].UPH3 ?? 999999999;
@@ -3302,22 +3309,22 @@ export const f_addQLSXPLAN = async (
           proc_number === 1
             ? UPH1
             : proc_number === 2
-              ? UPH2
-              : proc_number === 3
-                ? UPH3
-                : proc_number === 4
-                  ? UPH4
-                  : 999999999;
+            ? UPH2
+            : proc_number === 3
+            ? UPH3
+            : proc_number === 4
+            ? UPH4
+            : 999999999;
         let TON: number =
           proc_number === 1
             ? ycsxdatatablefilter[i].TON_CD1 ?? 0
             : proc_number === 2
-              ? ycsxdatatablefilter[i].TON_CD2 ?? 0
-              : proc_number === 3
-                ? ycsxdatatablefilter[i].TON_CD3 ?? 0
-                : proc_number === 4
-                  ? ycsxdatatablefilter[i].TON_CD4 ?? 0
-                  : 0;
+            ? ycsxdatatablefilter[i].TON_CD2 ?? 0
+            : proc_number === 3
+            ? ycsxdatatablefilter[i].TON_CD3 ?? 0
+            : proc_number === 4
+            ? ycsxdatatablefilter[i].TON_CD4 ?? 0
+            : 0;
         if (proc_number === 0 && tempDM === false) {
           err_code += "Không đúng máy trong BOM | ";
         } else {
@@ -3325,8 +3332,16 @@ export const f_addQLSXPLAN = async (
             PLAN_ID: NextPlanID,
             PLAN_DATE: selectedPlanDate,
             PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
-            PLAN_QTY: getCompany() === 'PVN' ? (TON<0 ? 0 : TON) :
-              TON <= 0 ? 0 : TON < UPH * qtyFactor ? TON : UPH * qtyFactor,
+            PLAN_QTY:
+              getCompany() === "PVN"
+                ? TON < 0
+                  ? 0
+                  : TON
+                : TON <= 0
+                ? 0
+                : TON < UPH * qtyFactor
+                ? TON
+                : UPH * qtyFactor,
             PLAN_EQ: selectedMachine,
             PLAN_FACTORY: selectedFactory,
             PLAN_LEADTIME: 0,
@@ -3520,7 +3535,7 @@ export const f_handle_xuatdao_sample = async (selectedPlan: QLSXPLANDATA) => {
           EMPL_NO: getUserData()?.EMPL_NO,
           KNIFE_FILM_NO: "1K22LH20",
           PD: selectedPlan?.PD,
-          CAVITY: selectedPlan?.CAVITY
+          CAVITY: selectedPlan?.CAVITY,
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -3617,8 +3632,8 @@ export const f_loadProdOverData = async (only_pending: boolean) => {
               KD_CF_DATETIME:
                 element.KD_CF_DATETIME !== null
                   ? moment
-                    .utc(element.KD_CF_DATETIME)
-                    .format("YYYY-MM-DD HH:mm:ss")
+                      .utc(element.KD_CF_DATETIME)
+                      .format("YYYY-MM-DD HH:mm:ss")
                   : "",
               UPD_DATE:
                 element.UPD_DATE !== null
@@ -4034,9 +4049,9 @@ export const f_checkDuplicateAMZ = async () => {
         Swal.fire(
           "Thông báo",
           "Data trùng: " +
-          response.data.data[0].VALUE +
-          "______ Số lặp lại: " +
-          response.data.data[0].COUNT,
+            response.data.data[0].VALUE +
+            "______ Số lặp lại: " +
+            response.data.data[0].COUNT,
           "error"
         );
       } else {
@@ -4079,14 +4094,14 @@ export const f_traYCSX = async (searchFilter: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               PO_TDYCSX: element.PO_TDYCSX ?? 0,
               TOTAL_TKHO_TDYCSX: element.TOTAL_TKHO_TDYCSX ?? 0,
               TKHO_TDYCSX: element.TKHO_TDYCSX ?? 0,
@@ -4576,11 +4591,15 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
         NOTI_ID: -1,
         NOTI_TYPE: "warning",
         TITLE: "Xóa YCSX",
-        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME
-          }), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa YCSX: ${ycsxList[0].PROD_REQUEST_NO
-          }, CODE: ${ycsxList[0]?.G_CODE}, CUST_CD: ${ycsxList[0]?.CUST_CD
-          }, QTY: ${ycsxList[0]?.PROD_REQUEST_QTY
-          }, DELIVERY DATE: ${ycsxList[0]?.DELIVERY_DT?.toString()}, và có thể nhiều ycsx khác`,
+        CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${
+          getUserData()?.FIRST_NAME
+        }), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã xóa YCSX: ${
+          ycsxList[0].PROD_REQUEST_NO
+        }, CODE: ${ycsxList[0]?.G_CODE}, CUST_CD: ${
+          ycsxList[0]?.CUST_CD
+        }, QTY: ${
+          ycsxList[0]?.PROD_REQUEST_QTY
+        }, DELIVERY DATE: ${ycsxList[0]?.DELIVERY_DT?.toString()}, và có thể nhiều ycsx khác`,
         SUBDEPTNAME: "KD,QLSX",
         MAINDEPTNAME: "KD,QLSX",
         INS_EMPL: "NHU1903",
@@ -4642,7 +4661,7 @@ export const f_checktontaiMlotPlanIdSuDung = async (
     .then((response) => {
       console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-        if(response.data.data.length>0){
+        if (response.data.data.length > 0) {
           checkTonTai = false;
         }
       } else {
@@ -4666,7 +4685,7 @@ export const f_checktontaiMlotPlanIdSuDungKhoSub = async (
     .then((response) => {
       console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
-        if(response.data.data.length>0){
+        if (response.data.data.length > 0) {
           checkTonTai = false;
         }
       } else {
@@ -4697,24 +4716,27 @@ export const f_checkNextPlanFSC = async (NEXT_PLAN: string) => {
     });
   return { FSC: checkFSC, FSC_CODE: checkFSC_CODE };
 };
-export const f_isExistM_LOT_NO_QTY_P500 = async (M_LOT_NO: string, INPUT_QTY: number) => {
+export const f_isExistM_LOT_NO_QTY_P500 = async (
+  M_LOT_NO: string,
+  INPUT_QTY: number
+) => {
   let checkP500: boolean = false;
   await generalQuery("checkM_LOT_NO_QTY_P500", {
     M_LOT_NO: M_LOT_NO,
     INPUT_QTY: INPUT_QTY,
   })
-  .then((response) => {
-    console.log(response.data.data);
-    if (response.data.tk_status !== "NG") {
-      if (response.data.data.length>0) {
-        checkP500 = true;
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        if (response.data.data.length > 0) {
+          checkP500 = true;
+        }
+      } else {
       }
-    } else {
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   return checkP500;
 };
 export const f_checkNhapKhoTPDuHayChua = async (NEXT_PLAN: string) => {
@@ -5076,14 +5098,14 @@ export const f_lichsuinputlieu = async (DATA: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               INS_DATE: moment(element.INS_DATE)
                 .utc()
                 .format("YYYY-MM-DD HH:mm:ss"),
@@ -5170,33 +5192,33 @@ export const f_loadDataSXChiThi = async (DATA: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
               SETTING_START_TIME:
                 element.SETTING_START_TIME === null
                   ? ""
                   : moment
-                    .utc(element.SETTING_START_TIME)
-                    .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.SETTING_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
               MASS_START_TIME:
                 element.MASS_START_TIME === null
                   ? ""
                   : moment
-                    .utc(element.MASS_START_TIME)
-                    .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
               MASS_END_TIME:
                 element.MASS_END_TIME === null
                   ? ""
                   : moment
-                    .utc(element.MASS_END_TIME)
-                    .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_END_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
               SX_DATE:
                 element.SX_DATE === null
                   ? ""
@@ -5204,47 +5226,47 @@ export const f_loadDataSXChiThi = async (DATA: any) => {
               LOSS_SX_ST:
                 (element.ESTIMATED_QTY_ST ?? 0) !== 0
                   ? 1 -
-                  ((element.KETQUASX ?? 0) * 1.0) /
-                  (element.ESTIMATED_QTY_ST ?? 0)
+                    ((element.KETQUASX ?? 0) * 1.0) /
+                      (element.ESTIMATED_QTY_ST ?? 0)
                   : 0,
               LOSS_SX:
                 (element.ESTIMATED_QTY ?? 0) !== 0
                   ? 1 -
-                  ((element.KETQUASX ?? 0) * 1.0) /
-                  (element.ESTIMATED_QTY ?? 0)
+                    ((element.KETQUASX ?? 0) * 1.0) /
+                      (element.ESTIMATED_QTY ?? 0)
                   : 0,
               LOSS_SX_KT:
                 (element.KETQUASX ?? 0) !== 0
                   ? 1 -
-                  ((element.INS_INPUT ?? 0) * 1.0) / (element.KETQUASX ?? 0)
+                    ((element.INS_INPUT ?? 0) * 1.0) / (element.KETQUASX ?? 0)
                   : 0,
               LOSS_KT:
                 (element.INS_INPUT ?? 0) !== 0
                   ? 1 -
-                  ((element.INS_OUTPUT ?? 0) * 1.0) / (element.INS_INPUT ?? 0)
+                    ((element.INS_OUTPUT ?? 0) * 1.0) / (element.INS_INPUT ?? 0)
                   : 0,
               NOT_BEEP_QTY:
                 element.PROCESS_NUMBER !== 1 ? 0 : element.NOT_BEEP_QTY,
               KETQUASX_M:
                 element.PD !== null
                   ? (element.KETQUASX * element.PD * 1.0) /
-                  element.CAVITY /
-                  1000
+                    element.CAVITY /
+                    1000
                   : null,
               NG_MET:
                 element.PD !== null
                   ? element.USED_QTY -
-                  (element.KETQUASX * element.PD * 1.0) /
-                  element.CAVITY /
-                  1000 -
-                  element.SETTING_MET
+                    (element.KETQUASX * element.PD * 1.0) /
+                      element.CAVITY /
+                      1000 -
+                    element.SETTING_MET
                   : null,
               NG_EA:
                 element.ESTIMATED_QTY - element.SETTING_EA - element.KETQUASX,
               PLAN_LOSS:
                 element.PLAN_ORG_MET !== 0
                   ? (element.PLAN_TARGET_MET - element.PLAN_ORG_MET) /
-                  element.PLAN_ORG_MET
+                    element.PLAN_ORG_MET
                   : 0,
               id: index,
             };
@@ -5462,14 +5484,14 @@ export const f_loadDataSX_YCSX = async (DATA: any) => {
                 getAuditMode() == 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element?.G_NAME_KD
                   : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
               TOTAL_LOSS:
                 1 - (element.INS_OUTPUT * 1.0) / element.ESTIMATED_QTY,
               TOTAL_LOSS2:
@@ -5478,7 +5500,11 @@ export const f_loadDataSX_YCSX = async (DATA: any) => {
               PROD_REQUEST_DATE: moment
                 .utc(element.PROD_REQUEST_DATE)
                 .format("YYYY-MM-DD"),
-              LOSS_OVER:1 - (element.INS_OUTPUT * 1.0) / element.ESTIMATED_QTY > element.LOSS_LT ? 'OVER' : 'OK',
+              LOSS_OVER:
+                1 - (element.INS_OUTPUT * 1.0) / element.ESTIMATED_QTY >
+                element.LOSS_LT
+                  ? "OVER"
+                  : "OK",
               id: index,
             };
           }
@@ -5548,10 +5574,10 @@ export const f_loadDataSX_YCSX = async (DATA: any) => {
             maxprocess == 1
               ? loaded_data[i].CD1
               : maxprocess == 2
-                ? loaded_data[i].CD2
-                : maxprocess == 3
-                  ? loaded_data[i].CD3
-                  : loaded_data[i].CD4),
+              ? loaded_data[i].CD2
+              : maxprocess == 3
+              ? loaded_data[i].CD3
+              : loaded_data[i].CD4),
             (temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT);
           temp_loss_info.INSPECT_TOTAL_QTY += loaded_data[i].INSPECT_TOTAL_QTY;
           temp_loss_info.INSPECT_OK_QTY += loaded_data[i].INSPECT_OK_QTY;
@@ -5798,14 +5824,14 @@ export const f_getCodeInfo = async (DATA: any) => {
                 getAuditMode() == 0
                   ? element.G_NAME
                   : element.G_NAME?.search("CNDB") == -1
-                    ? element.G_NAME
-                    : "TEM_NOI_BO",
+                  ? element.G_NAME
+                  : "TEM_NOI_BO",
               G_NAME_KD:
                 getAuditMode() == 0
                   ? element.G_NAME_KD
                   : element.G_NAME?.search("CNDB") == -1
-                    ? element.G_NAME_KD
-                    : "TEM_NOI_BO",
+                  ? element.G_NAME_KD
+                  : "TEM_NOI_BO",
               id: index,
             };
           }
@@ -7063,18 +7089,19 @@ export const f_load_BTP_Auto = async () => {
     });
   return kq;
 };
-
-export const f_loadRollLossData = async (FROM_DATE: string, TO_DATE: string) => {
+export const f_loadRollLossData = async (
+  FROM_DATE: string,
+  TO_DATE: string
+) => {
   let kq: SX_LOSS_ROLL_DATA[] = [];
   await generalQuery("checkRollLieuBienMat", {
     FROM_DATE: FROM_DATE,
-    TO_DATE: TO_DATE
+    TO_DATE: TO_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data.map((element: any, index: number) => {
-          return { ...element, 
-            id: index };
+          return { ...element, id: index };
         });
       }
     })
@@ -7082,20 +7109,27 @@ export const f_loadRollLossData = async (FROM_DATE: string, TO_DATE: string) => 
       console.log(error);
     });
   return kq;
-}
-
-export const f_loadRollLossDataDaily = async (FROM_DATE: string, TO_DATE: string) => {
+};
+export const f_loadRollLossDataDaily = async (
+  FROM_DATE: string,
+  TO_DATE: string
+) => {
   let kq: SX_LOSS_ROLL_DATA[] = [];
   await generalQuery("checkRollLieuBienMatDaily", {
     FROM_DATE: FROM_DATE,
-    TO_DATE: TO_DATE
+    TO_DATE: TO_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data.map((element: any, index: number) => {
-          return { ...element, 
-            OUT_DATE: element.OUT_DATE !== null ? moment.utc(element.OUT_DATE).format('YYYY-MM-DD') : '',
-            id: index };
+          return {
+            ...element,
+            OUT_DATE:
+              element.OUT_DATE !== null
+                ? moment.utc(element.OUT_DATE).format("YYYY-MM-DD")
+                : "",
+            id: index,
+          };
         });
       }
     })
@@ -7103,7 +7137,7 @@ export const f_loadRollLossDataDaily = async (FROM_DATE: string, TO_DATE: string
       console.log(error);
     });
   return kq;
-}
+};
 export const f_load_BTP_Summary_Auto = async () => {
   let kq: BTP_AUTO_DATA_SUMMARY[] = [];
   await generalQuery("loadBTPSummaryAuto2", {})
@@ -7190,24 +7224,27 @@ export const f_getDepartmentList = async () => {
       console.log(error);
     });
   return kq;
-}
+};
 export const f_loadLongTermPlan = async (PLAN_DATE: string) => {
   let kq: LONGTERM_PLAN_DATA[] = [];
   await generalQuery("loadKHSXDAIHAN", {
-    PLAN_DATE: PLAN_DATE
+    PLAN_DATE: PLAN_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         let loaded_data: LONGTERM_PLAN_DATA[] = [];
-        loaded_data = response.data.data.map((element: LONGTERM_PLAN_DATA, index: number) => {
-          return (
-            {
+        loaded_data = response.data.data.map(
+          (element: LONGTERM_PLAN_DATA, index: number) => {
+            return {
               ...element,
-              PLAN_DATE: element.PLAN_DATE !== null ? moment.utc(element.PLAN_DATE).format('YYYY-MM-DD') : '',
-              id: index
-            }
-          )
-        })
+              PLAN_DATE:
+                element.PLAN_DATE !== null
+                  ? moment.utc(element.PLAN_DATE).format("YYYY-MM-DD")
+                  : "",
+              id: index,
+            };
+          }
+        );
         kq = loaded_data;
       }
     })
@@ -7215,23 +7252,25 @@ export const f_loadLongTermPlan = async (PLAN_DATE: string) => {
       console.log(error);
     });
   if (kq.length === 0) {
-    Swal.fire('Thông báo', 'Không có dòng nào', 'error');
+    Swal.fire("Thông báo", "Không có dòng nào", "error");
   }
   return kq;
-}
-export const f_insertLongTermPlan = async (DATA: LONGTERM_PLAN_DATA, PLAN_DATE: string) => {
-  let kq: string = '';
-  console.log(PLAN_DATE)
+};
+export const f_insertLongTermPlan = async (
+  DATA: LONGTERM_PLAN_DATA,
+  PLAN_DATE: string
+) => {
+  let kq: string = "";
+  console.log(PLAN_DATE);
   let insertData = {
     ...DATA,
-    PLAN_DATE: PLAN_DATE
-  }
-  console.log('insertData', insertData)
+    PLAN_DATE: PLAN_DATE,
+  };
+  console.log("insertData", insertData);
   await generalQuery("insertKHSXDAIHAN", insertData)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         f_updateLongTermPlan(insertData);
         kq = response.data.message;
       }
@@ -7243,12 +7282,11 @@ export const f_insertLongTermPlan = async (DATA: LONGTERM_PLAN_DATA, PLAN_DATE: 
   return kq;
 };
 export const f_updateLongTermPlan = async (DATA: LONGTERM_PLAN_DATA) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateKHSXDAIHAN", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
@@ -7258,38 +7296,39 @@ export const f_updateLongTermPlan = async (DATA: LONGTERM_PLAN_DATA) => {
     });
   return kq;
 };
-export const f_moveLongTermPlan = async (FROM_DATE: string, TO_DATE: string) => {
-  let kq: string = '';
+export const f_moveLongTermPlan = async (
+  FROM_DATE: string,
+  TO_DATE: string
+) => {
+  let kq: string = "";
   await generalQuery("moveKHSXDAIHAN", {
     FROM_DATE: FROM_DATE,
-    TO_DATE: TO_DATE
+    TO_DATE: TO_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
 };
 export const f_deleteNotExistLongTermPlan = async (PLAN_DATE: string) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deleteNotExistKHSXDAIHAN", {
-    PLAN_DATE: PLAN_DATE
+    PLAN_DATE: PLAN_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-}
-export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
+    .catch((error) => {});
+};
+export const f_getProductionPlanLeadTimeCapaData = async (
+  PLAN_DATE: string
+) => {
   let kq: PROD_PLAN_CAPA_DATA[] = [];
   await generalQuery("getProductionPlanCapaData", { PLAN_DATE: PLAN_DATE })
     .then((response) => {
@@ -7299,7 +7338,13 @@ export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => 
           (element: PROD_PLAN_CAPA_DATA, index: number) => {
             return {
               ...element,
-              PROD_DATE: element.PROD_DATE !== null ? moment.utc(PLAN_DATE).add(Number(element.PROD_DATE.substring(2, 4)) - 1, 'day').format('YYYY-MM-DD') : '',
+              PROD_DATE:
+                element.PROD_DATE !== null
+                  ? moment
+                      .utc(PLAN_DATE)
+                      .add(Number(element.PROD_DATE.substring(2, 4)) - 1, "day")
+                      .format("YYYY-MM-DD")
+                  : "",
               id: index,
             };
           }
@@ -7312,25 +7357,27 @@ export const f_getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => 
       console.log(error);
     });
   return kq;
-}
+};
 export const f_fetchPostListAll = async () => {
   let kq: POST_DATA[] = [];
   try {
-    let res = await generalQuery('loadPostAll', {});
+    let res = await generalQuery("loadPostAll", {});
     //console.log(res);
-    if (res.data.tk_status !== 'NG') {
+    if (res.data.tk_status !== "NG") {
       //console.log(res.data.data);
-      let loaded_data: POST_DATA[] = res.data.data.map((ele: POST_DATA, index: number) => {
-        return {
-          ...ele,
-          INS_DATE: moment.utc(ele.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
-          UPD_DATE: moment.utc(ele.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'),
-          id: index
+      let loaded_data: POST_DATA[] = res.data.data.map(
+        (ele: POST_DATA, index: number) => {
+          return {
+            ...ele,
+            INS_DATE: moment.utc(ele.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+            UPD_DATE: moment.utc(ele.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
+            id: index,
+          };
         }
-      })
+      );
       kq = loaded_data;
     } else {
-      console.log('fetch error');
+      console.log("fetch error");
     }
   } catch (error) {
     console.log(error);
@@ -7340,21 +7387,23 @@ export const f_fetchPostListAll = async () => {
 export const f_fetchPostList = async (DEPT_CODE: number) => {
   let kq: POST_DATA[] = [];
   try {
-    let res = await generalQuery('loadPost', { DEPT_CODE: DEPT_CODE });
+    let res = await generalQuery("loadPost", { DEPT_CODE: DEPT_CODE });
     //console.log(res);
-    if (res.data.tk_status !== 'NG') {
+    if (res.data.tk_status !== "NG") {
       //console.log(res.data.data);
-      let loaded_data: POST_DATA[] = res.data.data.map((ele: POST_DATA, index: number) => {
-        return {
-          ...ele,
-          INS_DATE: moment.utc(ele.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
-          UPD_DATE: moment.utc(ele.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'),
-          id: index
+      let loaded_data: POST_DATA[] = res.data.data.map(
+        (ele: POST_DATA, index: number) => {
+          return {
+            ...ele,
+            INS_DATE: moment.utc(ele.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+            UPD_DATE: moment.utc(ele.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
+            id: index,
+          };
         }
-      })
+      );
       kq = loaded_data;
     } else {
-      console.log('fetch error');
+      console.log("fetch error");
     }
   } catch (error) {
     console.log(error);
@@ -7363,37 +7412,32 @@ export const f_fetchPostList = async (DEPT_CODE: number) => {
 };
 export const f_updatePostData = async (DATA: POST_DATA) => {
   //console.log(DATA)
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updatePost", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-}
+    .catch((error) => {});
+};
 export const f_deletePostData = async (DATA: POST_DATA) => {
   //console.log(DATA)
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deletePost", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-    return kq;
-}
-
+    .catch((error) => {});
+  return kq;
+};
 export const f_downloadFile2 = async (
-  fileURL: string, 
-  fileName: string, 
+  fileURL: string,
+  fileName: string,
   onProgress: (percentage: number) => void // Callback để cập nhật tiến trình
 ) => {
   try {
@@ -7401,37 +7445,29 @@ export const f_downloadFile2 = async (
       method: "GET",
       headers: {
         "Content-Type": "application/octet-stream",
-        'Cache-Control': 'no-cache'
+        "Cache-Control": "no-cache",
       },
     });
-
     if (!response.ok) {
       throw new Error("Failed to download file");
     }
-
     // Lấy reader từ body
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error("Failed to get response reader");
     }
-
     // Lấy kích thước file từ header
-    const contentLength = Number(response.headers.get('Content-Length')) || 0;
+    const contentLength = Number(response.headers.get("Content-Length")) || 0;
     let receivedLength = 0;
-
     // Tạo mảng để chứa các chunk
     const chunks: Uint8Array[] = [];
-
     // Đọc dữ liệu theo từng chunk
     while (true) {
       const { done, value } = await reader.read();
-      
       if (done) break;
-
       if (value) {
         chunks.push(value);
         receivedLength += value.length;
-        
         // Tính phần trăm và gọi callback
         if (contentLength > 0) {
           const percentage = Math.round((receivedLength * 100) / contentLength);
@@ -7439,23 +7475,18 @@ export const f_downloadFile2 = async (
         }
       }
     }
-
     // Gộp các chunk thành blob
     const blob = new Blob(chunks);
     const tempUrl = window.URL.createObjectURL(blob);
-    
     const a = document.createElement("a");
     a.href = tempUrl;
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
-    
     window.URL.revokeObjectURL(tempUrl);
     document.body.removeChild(a);
-    
     // Reset progress về 0 sau khi hoàn thành
     onProgress(0);
-
   } catch (error) {
     console.error("Error downloading file:", error);
     Swal.fire("Thống báo", "Download file thất bại !", "error");
@@ -7491,395 +7522,392 @@ export const f_downloadFile = async (fileURL: string, fileName: string) => {
     console.error("Error downloading file:", error);
     Swal.fire("Thống báo", "Download file thất bại !", "error");
   }
-}
+};
 export const f_deleteLongtermPlan = async (DATA: LONGTERM_PLAN_DATA) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deleteLongtermPlan", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-    return kq;
-}
-export const f_cancelProductionLot = async (DATA: any) => { 
-  let kq: string = '';
+    .catch((error) => {});
+  return kq;
+};
+export const f_cancelProductionLot = async (DATA: any) => {
+  let kq: string = "";
   await generalQuery("cancelProductionLot", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-    return kq;
-}
+    .catch((error) => {});
+  return kq;
+};
 export const f_getEmployeeList = async () => {
   let kq: EmployeeTableData[] = [];
   try {
-    let res = await generalQuery('getemployee_full', {});
+    let res = await generalQuery("getemployee_full", {});
     //console.log(res);
-    if (res.data.tk_status !== 'NG') {
+    if (res.data.tk_status !== "NG") {
       //console.log(res.data.data);
-      let loaded_data: EmployeeTableData[] = res.data.data.map((element: EmployeeTableData, index: number) => {
-         return {
+      let loaded_data: EmployeeTableData[] = res.data.data.map(
+        (element: EmployeeTableData, index: number) => {
+          return {
             ...element,
-            DOB: element.DOB !== null ? moment.utc(element.DOB).format("YYYY-MM-DD") : "",
-            WORK_START_DATE: element.WORK_START_DATE !== null ? moment.utc(element.WORK_START_DATE).format("YYYY-MM-DD") : "",
-            RESIGN_DATE: element.RESIGN_DATE !== null ? moment.utc(element.RESIGN_DATE).format("YYYY-MM-DD") : "",
-            ONLINE_DATETIME: element.ONLINE_DATETIME !== null ? moment.utc(element.ONLINE_DATETIME).format("YYYY-MM-DD HH:mm:ss") : "",
+            DOB:
+              element.DOB !== null
+                ? moment.utc(element.DOB).format("YYYY-MM-DD")
+                : "",
+            WORK_START_DATE:
+              element.WORK_START_DATE !== null
+                ? moment.utc(element.WORK_START_DATE).format("YYYY-MM-DD")
+                : "",
+            RESIGN_DATE:
+              element.RESIGN_DATE !== null
+                ? moment.utc(element.RESIGN_DATE).format("YYYY-MM-DD")
+                : "",
+            ONLINE_DATETIME:
+              element.ONLINE_DATETIME !== null
+                ? moment
+                    .utc(element.ONLINE_DATETIME)
+                    .format("YYYY-MM-DD HH:mm:ss")
+                : "",
             FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
-            PASS_WORD: getUserData()?.EMPL_NO === 'NHU1903' ? element.PASSWORD : '********',
+            PASS_WORD:
+              getUserData()?.EMPL_NO === "NHU1903"
+                ? element.PASSWORD
+                : "********",
           };
-      })
+        }
+      );
       kq = loaded_data;
     } else {
-      console.log('fetch error');
+      console.log("fetch error");
     }
   } catch (error) {
     console.log(error);
   }
   return kq;
-}
+};
 export const f_loadWorkPositionList = async (SUBDEPTCODE?: number) => {
   let kq: WORK_POSITION_DATA[] = [];
   try {
-    let res = await generalQuery('workpositionlist', SUBDEPTCODE === undefined ? {} : { SUBDEPTCODE: SUBDEPTCODE });
+    let res = await generalQuery(
+      "workpositionlist",
+      SUBDEPTCODE === undefined ? {} : { SUBDEPTCODE: SUBDEPTCODE }
+    );
     //console.log(res);
-    if (res.data.tk_status !== 'NG') {
+    if (res.data.tk_status !== "NG") {
       //console.log(res.data.data);
-      let loaded_data: WORK_POSITION_DATA[] = res.data.data.map((element: WORK_POSITION_DATA, index: number) => {
-        return {
-          ...element,         
-          id: index
+      let loaded_data: WORK_POSITION_DATA[] = res.data.data.map(
+        (element: WORK_POSITION_DATA, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
         }
-      })
+      );
       kq = loaded_data;
     } else {
-      console.log('fetch error');
+      console.log("fetch error");
     }
   } catch (error) {
     console.log(error);
   }
   return kq;
-}
+};
 export const f_addEmployee = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertemployee", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_updateEmployee = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateemployee", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_loadMainDepList = async () => {
   let kq: MainDeptTableData[] = [];
   try {
-    let res = await generalQuery('getmaindept', {});
+    let res = await generalQuery("getmaindept", {});
     //console.log(res);
-    if (res.data.tk_status !== 'NG') {
+    if (res.data.tk_status !== "NG") {
       //console.log(res.data.data);
-      let loaded_data: MainDeptTableData[] = res.data.data.map((element: MainDeptTableData, index: number) => {
-        return {
-          ...element,
-          id: index
+      let loaded_data: MainDeptTableData[] = res.data.data.map(
+        (element: MainDeptTableData, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
         }
-      })
+      );
       kq = loaded_data;
     } else {
-      console.log('fetch error');
+      console.log("fetch error");
     }
   } catch (error) {
     console.log(error);
   }
   return kq;
-}
-
-export const f_loadSubDepList = async (MAINDEPTCODE?: number) => { 
+};
+export const f_loadSubDepList = async (MAINDEPTCODE?: number) => {
   let kq: SubDeptTableData[] = [];
   try {
-    let res = await generalQuery('getsubdeptall', MAINDEPTCODE === undefined ? {} : { MAINDEPTCODE: MAINDEPTCODE });
+    let res = await generalQuery(
+      "getsubdeptall",
+      MAINDEPTCODE === undefined ? {} : { MAINDEPTCODE: MAINDEPTCODE }
+    );
     //console.log(res);
-    if (res.data.tk_status !== 'NG') {
+    if (res.data.tk_status !== "NG") {
       //console.log(res.data.data);
-      let loaded_data: SubDeptTableData[] = res.data.data.map((element: SubDeptTableData, index: number) => {
-        return {
-          ...element,
-          id: index
+      let loaded_data: SubDeptTableData[] = res.data.data.map(
+        (element: SubDeptTableData, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
         }
-      })
+      );
       kq = loaded_data;
     } else {
-      console.log('fetch error');
+      console.log("fetch error");
     }
   } catch (error) {
     console.log(error);
   }
   return kq;
-}
-
+};
 export const f_addMainDept = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertmaindept", DATA)
     .then((response) => {
-      if (response.data.tk_status !== "NG") {        
-      }
-      else {
+      if (response.data.tk_status !== "NG") {
+      } else {
         kq = response.data.message;
       }
     })
     .catch((error) => {
       kq = error.message;
-    })
+    });
   return kq;
-}
-
+};
 export const f_addSubDept = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertsubdept", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_addWorkPosition = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertworkposition", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-  return kq;  
-}
-
+    .catch((error) => {});
+  return kq;
+};
 export const f_updateMainDept = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updatemaindept", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_updateSubDept = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updatesubdept", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_updateWorkPosition = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateworkposition", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_deleteWorkPosition = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deleteworkposition", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_deleteMainDept = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deletemaindept", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_deleteSubDept = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deletesubdept", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_update_Stock_M100_CMS = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateTONTP_M100_CMS", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_update_btp_p400 = async () => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateBTP_P400", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_update_tonkiem_p400 = async () => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updatetonkiemP400", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_loadKHKT_ADUNG = async (FROM_DATE: string) => {
   let kq: KHKT_DATA[] = [];
   await generalQuery("khkt_a_dung", {
-    FROM_DATE: FROM_DATE
+    FROM_DATE: FROM_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        Swal.fire('Thông báo', 'Load data thành công', 'success');
-        let loaded_data: KHKT_DATA[] = response.data.data.map((element: KHKT_DATA, index: number) => {
-          return {
-            ...element,
-            PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-            id: index
+        Swal.fire("Thông báo", "Load data thành công", "success");
+        let loaded_data: KHKT_DATA[] = response.data.data.map(
+          (element: KHKT_DATA, index: number) => {
+            return {
+              ...element,
+              PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-      }
-      else {
+      } else {
         //kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_loadInspect_status_G_CODE = async (PLAN_DATE: string) => {
   let kq: INSPECT_STATUS_DATA[] = [];
   await generalQuery("tinh_hinh_kiemtra_G_CODE", {
-    PLAN_DATE: PLAN_DATE
+    PLAN_DATE: PLAN_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: INSPECT_STATUS_DATA[] = response.data.data.map((element: INSPECT_STATUS_DATA, index: number) => {
-          return {
-            ...element,
-            PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-            FIRST_INPUT_TIME: element.FIRST_INPUT_TIME !== null ? moment.utc(element.FIRST_INPUT_TIME).format("YYYY-MM-DD HH:mm:ss") : '',
-            INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
-            TOTAL_OUTPUT: element.INIT_WH_STOCK + element.OUTPUT_QTY,
-            COVER_D1: element.INIT_WH_STOCK + element.OUTPUT_QTY >= element.D1 ? "OK" : "NG",
-            id: index
+        let loaded_data: INSPECT_STATUS_DATA[] = response.data.data.map(
+          (element: INSPECT_STATUS_DATA, index: number) => {
+            return {
+              ...element,
+              PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+              FIRST_INPUT_TIME:
+                element.FIRST_INPUT_TIME !== null
+                  ? moment
+                      .utc(element.FIRST_INPUT_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss")
+                  : "",
+              INS_DATE: moment
+                .utc(element.INS_DATE)
+                .format("YYYY-MM-DD HH:mm:ss"),
+              TOTAL_OUTPUT: element.INIT_WH_STOCK + element.OUTPUT_QTY,
+              COVER_D1:
+                element.INIT_WH_STOCK + element.OUTPUT_QTY >= element.D1
+                  ? "OK"
+                  : "NG",
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-      }
-      else {
+      } else {
         //kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
-  return kq;  
-}
-export const f_loadTemLotKTHistory = async (FROM_DATE: string, TO_DATE: string) => {
+    .catch((error) => {});
+  return kq;
+};
+export const f_loadTemLotKTHistory = async (
+  FROM_DATE: string,
+  TO_DATE: string
+) => {
   let kq: TEMLOTKT_DATA[] = [];
   await generalQuery("temlotktraHistory", {
     FROM_DATE: FROM_DATE,
@@ -7887,405 +7915,351 @@ export const f_loadTemLotKTHistory = async (FROM_DATE: string, TO_DATE: string) 
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        Swal.fire('Thông báo', 'Load data thành công', 'success');
-        let loaded_data: TEMLOTKT_DATA[] = response.data.data.map((element: TEMLOTKT_DATA, index: number) => {
-          return {
-            ...element,      
-            LOT_PRINT_DATE: moment.utc(element.LOT_PRINT_DATE).format("YYYY-MM-DD HH:mm:ss"),     
-            EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),     
-            MFT_DATE: moment.utc(element.MFT_DATE).format("YYYY-MM-DD"),     
-            id: index
+        Swal.fire("Thông báo", "Load data thành công", "success");
+        let loaded_data: TEMLOTKT_DATA[] = response.data.data.map(
+          (element: TEMLOTKT_DATA, index: number) => {
+            return {
+              ...element,
+              LOT_PRINT_DATE: moment
+                .utc(element.LOT_PRINT_DATE)
+                .format("YYYY-MM-DD HH:mm:ss"),
+              EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),
+              MFT_DATE: moment.utc(element.MFT_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-      }
-      else {
+      } else {
         //kq = response.data.message;
-        Swal.fire('Thông báo', 'Không có data', 'error');
+        Swal.fire("Thông báo", "Không có data", "error");
       }
     })
-    .catch((error) => {
-    })
-  return kq;  
-}
-
+    .catch((error) => {});
+  return kq;
+};
 export const f_loadMRPPlan = async (PLAN_DATE: string) => {
   let kq: MRPDATA[] = [];
   await generalQuery("loadMRPPlan", {
-    PLAN_DATE: PLAN_DATE,    
+    PLAN_DATE: PLAN_DATE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        Swal.fire('Thông báo', 'Load data thành công', 'success');
-        let loaded_data: MRPDATA[] = response.data.data.map((element: MRPDATA, index: number) => {
-          return {
-            ...element, 
-            id: index
+        Swal.fire("Thông báo", "Load data thành công", "success");
+        let loaded_data: MRPDATA[] = response.data.data.map(
+          (element: MRPDATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-      }
-      else {
+      } else {
         //kq = response.data.message;
-        Swal.fire('Thông báo', 'Không có data', 'error');
+        Swal.fire("Thông báo", "Không có data", "error");
       }
     })
-    .catch((error) => {
-    })
-  return kq;  
-}
-
+    .catch((error) => {});
+  return kq;
+};
 export const f_loadFormList = async () => {
   let kq: Form[] = [];
   await generalQuery("loadFormList", {})
     .then((response) => {
       console.log(response.data);
       if (response.data.tk_status !== "NG") {
-        Swal.fire('Thông báo', 'Load data thành công', 'success');
+        Swal.fire("Thông báo", "Load data thành công", "success");
         //console.log(response.data.data);
-        let loaded_data: Form[] = response.data.data.map((element: Form, index: number) => {
-          return {
-            ...element, 
-            id: index
+        let loaded_data: Form[] = response.data.data.map(
+          (element: Form, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-      }
-      else {
+      } else {
         //kq = response.data.message;
-        Swal.fire('Thông báo', 'Không có data', 'error');
+        Swal.fire("Thông báo", "Không có data", "error");
       }
     })
-    .catch((error) => {
-    })
-  return kq;  
-}
-
+    .catch((error) => {});
+  return kq;
+};
 export const f_updateForm = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateForm", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_deleteForm = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deleteForm", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_loadFormDetail = async (DATA: any) => {
   let kq: Form[] = [];
   await generalQuery("loadFormDetail", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_insertForm = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertForm", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_loadFieldList = async (DATA: any) => {
   let kq: Field[] = [];
   await generalQuery("loadFieldList", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data;
-      }
-      else {
-        
+      } else {
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-} 
-
+};
 export const f_insertField = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertField", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_updateField = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateField", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
- 
+};
 export const f_deleteField = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deleteField", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-} 
-
+};
 export const f_addField = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("addField", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_loadKPI = async (KPI_NAME: string) => {
   let kq: KPI_DATA[] = [];
   await generalQuery("loadKPI", { KPI_NAME: KPI_NAME })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        if(response.data.data.length > 0){
+        if (response.data.data.length > 0) {
           kq = response.data.data;
         }
-      }
-      else {
-        Swal.fire('Thông báo', 'Không có KPI', 'error');
+      } else {
+        Swal.fire("Thông báo", "Không có KPI", "error");
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_loadKPIList = async () => {
-  let kq: {KPI_NAME: string}[] = [];
+  let kq: { KPI_NAME: string }[] = [];
   await generalQuery("loadKPIList", {})
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        if(response.data.data.length > 0){
+        if (response.data.data.length > 0) {
           kq = response.data.data;
         }
-      }
-      else {
-        Swal.fire('Thông báo', 'Không có KPI', 'error');
+      } else {
+        Swal.fire("Thông báo", "Không có KPI", "error");
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const getNumberofDatesFromMonth = (month_num: number) => {
-  if([1,3,5,7,8,10,12].includes(month_num)){
+  if ([1, 3, 5, 7, 8, 10, 12].includes(month_num)) {
     return 31;
-  }else if([4,6,9,11].includes(month_num)){
+  } else if ([4, 6, 9, 11].includes(month_num)) {
     return 30;
-  }else{
+  } else {
     return 28;
   }
-}
-
+};
 export const getWorkingDaysInMonth = (date: string) => {
   // Lấy ngày đầu tiên và cuối cùng của tháng
-  const startOfMonth = moment(date).startOf('month');
-  const endOfMonth = moment(date).endOf('month');
-  
+  const startOfMonth = moment(date).startOf("month");
+  const endOfMonth = moment(date).endOf("month");
   let workingDays = 0;
-  
   // Duyệt qua từng ngày trong tháng
-  for (let day = startOfMonth; day <= endOfMonth; day.add(1, 'days')) {
+  for (let day = startOfMonth; day <= endOfMonth; day.add(1, "days")) {
     // Kiểm tra nếu là thứ 2 đến thứ 6 (weekday từ 1 đến 5)
     if (day.isoWeekday() <= 5) {
       workingDays++;
     }
   }
-  
   return workingDays;
-}
-
+};
 export const f_createKPI = async (DATA: KPI_DATA[]) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("insertKPI", {
-    KPI_DATA: DATA
+    KPI_DATA: DATA,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-       
-       
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
     .catch((error) => {
       kq = error.message;
-    })
+    });
   return kq;
-}
-
+};
 export const f_updateKPI = async (DATA: KPI_DATA[]) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("updateKPI", {
-    KPI_DATA: DATA
+    KPI_DATA: DATA,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-       
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
     .catch((error) => {
       kq = error.message;
-    })
+    });
   return kq;
-}
-
+};
 export const f_deleteKPI = async (DATA: any) => {
-  let kq: string = '';
+  let kq: string = "";
   await generalQuery("deleteKPI", {
     KPI_NAME: DATA[0].KPI_NAME,
     KPI_YEAR: DATA[0].KPI_YEAR,
     KPI_PERIOD: DATA[0].KPI_PERIOD,
     KPI_MONTH: DATA[0].KPI_MONTH,
-    VALUE_TYPE: DATA[0].VALUE_TYPE
+    VALUE_TYPE: DATA[0].VALUE_TYPE,
   })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-      }
-      else {
+      } else {
         kq = response.data.message;
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
-export async function encryptData(publicKey: string, data: object): Promise<{ encryptedData: string; encryptedKey: string; iv: string }> {
+};
+export async function encryptData(
+  publicKey: string,
+  data: object
+): Promise<{ encryptedData: string; encryptedKey: string; iv: string }> {
   try {
     // Chuyển object thành chuỗi JSON
     const dataString = JSON.stringify(data);
-
     // Tạo khóa AES ngẫu nhiên
     const aesKey = await crypto.subtle.generateKey(
-      { name: 'AES-GCM', length: 256 },
+      { name: "AES-GCM", length: 256 },
       true,
-      ['encrypt', 'decrypt']
+      ["encrypt", "decrypt"]
     );
-
     // Tạo initialization vector (IV)
     const iv = crypto.getRandomValues(new Uint8Array(12));
-
     // Mã hóa dữ liệu bằng AES-GCM
     const encodedData = new TextEncoder().encode(dataString);
     const encryptedData = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv },
+      { name: "AES-GCM", iv },
       aesKey,
       encodedData
     );
-
     // Export khóa AES để mã hóa bằng RSA
-    const exportedKey = await crypto.subtle.exportKey('raw', aesKey);
-    
+    const exportedKey = await crypto.subtle.exportKey("raw", aesKey);
     // Chuyển publicKey từ PEM sang ArrayBuffer
     const publicKeyBuffer = pemToArrayBuffer(publicKey);
-    
     // Import public key
     const importedKey = await crypto.subtle.importKey(
-      'spki',
+      "spki",
       publicKeyBuffer,
-      { name: 'RSA-OAEP', hash: 'SHA-256' },
+      { name: "RSA-OAEP", hash: "SHA-256" },
       false,
-      ['encrypt']
+      ["encrypt"]
     );
-
     // Mã hóa khóa AES bằng RSA
     const encryptedKey = await crypto.subtle.encrypt(
-      { name: 'RSA-OAEP' },
+      { name: "RSA-OAEP" },
       importedKey,
       exportedKey
     );
-
     // Chuyển dữ liệu mã hóa, khóa, và IV thành base64
     return {
       encryptedData: arrayBufferToBase64(encryptedData),
       encryptedKey: arrayBufferToBase64(encryptedKey),
-      iv: arrayBufferToBase64(iv)
+      iv: arrayBufferToBase64(iv),
     };
   } catch (error: unknown) {
     // Ép kiểu error thành Error và kiểm tra an toàn
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Encryption error:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("Encryption error:", error);
     throw new Error(`Failed to encrypt data: ${errorMessage}`);
   }
 }
-
 // Hàm hỗ trợ chuyển PEM sang ArrayBuffer
 function pemToArrayBuffer(pem: string): ArrayBuffer {
   try {
     const b64 = pem
-      .replace(/-----BEGIN PUBLIC KEY-----/, '')
-      .replace(/-----END PUBLIC KEY-----/, '')
-      .replace(/\s/g, '');
+      .replace(/-----BEGIN PUBLIC KEY-----/, "")
+      .replace(/-----END PUBLIC KEY-----/, "")
+      .replace(/\s/g, "");
     const binary = atob(b64);
     const buffer = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) {
@@ -8293,36 +8267,31 @@ function pemToArrayBuffer(pem: string): ArrayBuffer {
     }
     return buffer.buffer;
   } catch (error: unknown) {
-    throw new Error('Invalid public key format');
+    throw new Error("Invalid public key format");
   }
 }
-
 // Hàm hỗ trợ chuyển ArrayBuffer sang base64
 function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
-  let binary = '';
+  let binary = "";
   for (let i = 0; i < bytes.length; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary);
 }
-
 export const checkPLAN_ID = async (PLAN_ID: string) => {
   let kq: any = [];
   await generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = response.data.data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const ProtectedRoute: any = ({
   user,
   maindeptname,
@@ -8402,8 +8371,10 @@ export const ProtectedRoute: any = ({
     }
   }
 };
-
-export const requestFullScreen = (elementRef: React.MutableRefObject<null>, full_screen: number) => {
+export const requestFullScreen = (
+  elementRef: React.MutableRefObject<null>,
+  full_screen: number
+) => {
   if (elementRef.current && full_screen === 1) {
     const element = elementRef.current as HTMLElement;
     if (element.requestFullscreen) {
@@ -8420,266 +8391,342 @@ export const requestFullScreen = (elementRef: React.MutableRefObject<null>, full
     }
   }
 };
-
 export const f_load_SX_NV_KPI_DATA_Daily = async (DATA: any) => {
   let kq: SX_KPI_NV_DATA[] = [];
   await generalQuery("loadSX_KPI_NV_DATA_Daily", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
-          return {
-            ...element,
-            SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-            id: index
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map(
+          (element: SX_KPI_NV_DATA, index: number) => {
+            return {
+              ...element,
+              SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_load_SX_NV_KPI_DATA_Weekly = async (DATA: any) => {
   let kq: SX_KPI_NV_DATA[] = [];
   await generalQuery("loadSX_KPI_NV_DATA_Weekly", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map(
+          (element: SX_KPI_NV_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_load_SX_NV_KPI_DATA_Monthly = async (DATA: any) => {
   let kq: SX_KPI_NV_DATA[] = [];
   await generalQuery("loadSX_KPI_NV_DATA_Monthly", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map(
+          (element: SX_KPI_NV_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_load_SX_NV_KPI_DATA_Yearly = async (DATA: any) => {
   let kq: SX_KPI_NV_DATA[] = [];
   await generalQuery("loadSX_KPI_NV_DATA_Yearly", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map((element: SX_KPI_NV_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: SX_KPI_NV_DATA[] = response.data.data.map(
+          (element: SX_KPI_NV_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_load_TREND_NGUOI_HANG_DATA_DAILY = async (DATA: any) => {
   let kq: TREND_NGUOI_HANG_DATA[] = [];
   await generalQuery("trendNguoi_Hang_Ktra_daily", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
-          return {
-            ...element,     
-            INSPECT_DATE: moment.utc(element.INSPECT_DATE).format("YYYY-MM-DD"),      
-            id: index
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map(
+          (element: TREND_NGUOI_HANG_DATA, index: number) => {
+            return {
+              ...element,
+              INSPECT_DATE: moment
+                .utc(element.INSPECT_DATE)
+                .format("YYYY-MM-DD"),
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_load_TREND_NGUOI_HANG_DATA_WEEKLY = async (DATA: any) => {
   let kq: TREND_NGUOI_HANG_DATA[] = [];
   await generalQuery("trendNguoi_Hang_Ktra_weekly", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map(
+          (element: TREND_NGUOI_HANG_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
 export const f_load_TREND_NGUOI_HANG_DATA_MONTHLY = async (DATA: any) => {
   let kq: TREND_NGUOI_HANG_DATA[] = [];
   await generalQuery("trendNguoi_Hang_Ktra_monthly", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map(
+          (element: TREND_NGUOI_HANG_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_load_TREND_NGUOI_HANG_DATA_YEARLY = async (DATA: any) => {
   let kq: TREND_NGUOI_HANG_DATA[] = [];
   await generalQuery("trendNguoi_Hang_Ktra_yearly", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map((element: TREND_NGUOI_HANG_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: TREND_NGUOI_HANG_DATA[] = response.data.data.map(
+          (element: TREND_NGUOI_HANG_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
-
+};
 export const f_load_YCSX_GAP_RATE_DATA = async (DATA: any) => {
   let kq: CNT_GAP_DATA[] = [];
   await generalQuery("loadYCSX_GAP_RATE_DATA", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map(
+          (element: CNT_GAP_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
-    console.log('kq',kq)
+    .catch((error) => {});
+  console.log("kq", kq);
   return kq;
-}
-
+};
 export const f_load_SX_GAP_RATE_DATA = async (DATA: any) => {
   let kq: CNT_GAP_DATA[] = [];
   await generalQuery("loadSX_GAP_RATE_DATA", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map(
+          (element: CNT_GAP_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_load_KT_GAP_RATE_DATA = async (DATA: any) => {
   let kq: CNT_GAP_DATA[] = [];
   await generalQuery("loadKT_GAP_RATE_DATA", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map(
+          (element: CNT_GAP_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
-
+};
 export const f_load_ALL_GAP_RATE_DATA = async (DATA: any) => {
   let kq: CNT_GAP_DATA[] = [];
   await generalQuery("loadALL_GAP_RATE_DATA", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        let loaded_data: CNT_GAP_DATA[] = response.data.data.map((element: CNT_GAP_DATA, index: number) => {
-          return {
-            ...element,           
-            id: index
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map(
+          (element: CNT_GAP_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
           }
-        })
+        );
         kq = loaded_data;
-        }
-      else {
+      } else {
         kq = [];
       }
     })
-    .catch((error) => {
-    })
+    .catch((error) => {});
   return kq;
-}
+};
+export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
+  let kq: AUDIT_HISTORY_DATA[] = [];
+  await generalQuery("loadAUDIT_HISTORY_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: AUDIT_HISTORY_DATA[] = response.data.data.map(
+          (element: AUDIT_HISTORY_DATA, index: number) => {
+            return {
+              ...element,
+              AUDIT_DATE: moment.utc(element.AUDIT_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_add_AUDIT_HISTORY_DATA = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("add_AUDIT_HISTORY_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+};
+export const f_update_AUDIT_HISTORY_DATA = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("update_AUDIT_HISTORY_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+};
+export const f_delete_AUDIT_HISTORY_DATA = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("delete_AUDIT_HISTORY_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+};
+export const f_updateFileInfo_AUDIT_HISTORY = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("updateFileInfo_AUDIT_HISTORY", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+};

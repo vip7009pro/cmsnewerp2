@@ -70,9 +70,6 @@ function App() {
         console.log(error);
       });
   }, []);
-  const trangthaidiemdanh: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.diemdanhstate
-  );
   const globalLoginState: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.loginState
   );
@@ -214,7 +211,6 @@ function App() {
       }
     }
   }, []);
-  const [message, setMessage] = useState<string>('');
 
   // Hàm chuyển đổi VAPID key
   const urlBase64ToUint8Array = (base64String: string): Uint8Array => {

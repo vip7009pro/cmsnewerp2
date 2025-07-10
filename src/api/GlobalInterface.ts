@@ -5067,3 +5067,22 @@ export interface CNT_GAP_DATA {
   CNT: number;
   RATE: number;  
 }
+
+export interface AUDIT_HISTORY_DATA {
+  id: number;
+  CTR_CD: string;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  AUDIT_ID: number;
+  AUDIT_DATE: string;
+  AUDIT_NAME: string;
+  AUDIT_MAX_SCORE: number;
+  AUDIT_SCORE: number;
+  AUDIT_PASS_SCORE: number;
+  AUDIT_RESULT: string;
+  AUDIT_FILE_EXT: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
