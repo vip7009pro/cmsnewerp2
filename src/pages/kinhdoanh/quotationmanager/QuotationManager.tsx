@@ -6,13 +6,13 @@ import {
   createFilterOptions,
 } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel, AiOutlinePrinter } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QuotationManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP, f_getcustomerlist } from "../../../api/GlobalFunction";
 import { generalQuery, getAuditMode, getCompany, getSever } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
@@ -30,8 +30,19 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { useForm } from "react-hook-form";
 const QuotationManager = () => {
-  const dataGridRef = useRef<any>(null);
+  const {register,handleSubmit,watch, formState:{errors}} = useForm( {
+    defaultValues:{
+      fromdate:moment().format("YYYY-MM-DD"),
+      todate:moment().format("YYYY-MM-DD"),
+      codeKD:"",
+      codeCMS:"",
+      m_name:"",
+      cust_name:"",
+      alltime:true,
+    }
+  }) 
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -67,47 +78,22 @@ const QuotationManager = () => {
       PROD_MAIN_MATERIAL: "ST-5555HC",
     },
   ]);
-  const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getcustomerlist = async () => {
+    setCustomerList(await f_getcustomerlist())   
   };
+
   const [moq, setMOQ] = useState(1);
   const [newprice, setNewPrice] = useState("");
   const [newbep, setNewBep] = useState("");
-  const [newpricedate, setNewPriceDate] = useState(
-    moment.utc().format("YYYY-MM-DD"),
-  );
+  const [newpricedate, setNewPriceDate] = useState( moment.utc().format("YYYY-MM-DD"), );
   const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
   const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [alltime, setAllTime] = useState(true);
-  const [cust_name, setCust_Name] = useState("");
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [m_name, setM_Name] = useState("");
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [showhideQuotationForm, setShowHideQuotationForm] = useState(false);
-
   const [rows, setRows] = useState<Array<any>>([]);
-  const clearSelection = () => {
-    if (dataGridRef.current) {
-      dataGridRef.current.instance.clearSelection();
-      setselectedBangGiaDocRow([]);
-      //qlsxplandatafilter.current = [];
-      //console.log(dataGridRef.current);
-    }
-  };
+
   const pheduyetgia = async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
@@ -197,8 +183,8 @@ const QuotationManager = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-  const dongboGiaPO = () => {
-    generalQuery("dongbogiasptupo", {})
+  const dongboGiaPO = async() => {
+    await generalQuery("dongbogiasptupo", {})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -211,7 +197,7 @@ const QuotationManager = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-  const fields_banggia: any = [
+  const fields_banggia: any = useMemo(() => [
     {
       caption: "CUST_NAME_KD",
       width: 80,
@@ -902,8 +888,8 @@ const QuotationManager = () => {
         width: 300,
       },
     },
-  ];
-  const fields_banggia2: any = [
+  ],[]);
+  const fields_banggia2: any = useMemo(() => [
     {
       caption: "CUST_NAME_KD",
       width: 80,
@@ -1114,7 +1100,7 @@ const QuotationManager = () => {
         width: 300,
       },
     },
-  ];
+  ],[]);
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
       new PivotGridDataSource({
@@ -1122,7 +1108,7 @@ const QuotationManager = () => {
         store: banggia,
       }),
     );
-  const  column_giangang=[
+  const column_giangang= useMemo(()=>[
   { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },
   { field: "G_CODE", headerName: "G_CODE", width: 90 },
   { field: "G_NAME", headerName: "G_NAME", width: 90 },
@@ -1169,9 +1155,9 @@ const QuotationManager = () => {
   { field: "PRICE_DATE18", headerName: "PRICE_DATE18", width: 90 },
   { field: "PRICE_DATE19", headerName: "PRICE_DATE19", width: 90 },
   { field: "PRICE_DATE20", headerName: "PRICE_DATE20", width: 90 } 
-  ];
-  const column_gia_doc = [
-  { field: "PROD_ID", headerName: "PROD_ID", width: 50, headerCheckboxSelection: true, checkboxSelection: true  },
+  ],[]);
+  const column_gia_doc = useMemo(()=>[
+  { field: "PROD_ID", headerName: "PROD_ID", width: 100, headerCheckboxSelection: true, checkboxSelection: true  },
   { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 90 },  
   { field: "CUST_CD", headerName: "CUST_CD", width: 50 },
   { field: "G_CODE", headerName: "G_CODE", width: 60 },
@@ -1263,7 +1249,7 @@ const QuotationManager = () => {
   { field: "INS_EMPL", headerName: "INS_EMPL", width: 60 },
   { field: "UPD_DATE", headerName: "UPD_DATE", width: 95 },
   { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 60 },
-  ];
+  ],[]);
   const [columns, setColumns] = useState<Array<any>>(column_gia_doc);
   const priceTableDataAG = useMemo(() =>
     <AGTable      
@@ -1343,9 +1329,8 @@ const QuotationManager = () => {
         setselectedBangGiaDocRow(params!.api.getSelectedRows());
       }}
     />
-    , [rows, columns]);
-  
-  const columns_uploadexcel = [
+    , [rows, columns]);  
+  const columns_uploadexcel = useMemo(()=>[
     { field: "PROD_ID", headerName: "PROD_ID", width: 50 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 60 },
@@ -1412,7 +1397,7 @@ const QuotationManager = () => {
         </button>
       );
     }},
-  ]
+  ],[uploadExcelJson]);
   const uploadPriceTableDataAG = useMemo(() =>
     <AGTable      
       showFilter={true}
@@ -1494,15 +1479,15 @@ const QuotationManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-  const loadBangGia = () => {
-    generalQuery("loadbanggia", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      M_NAME: m_name,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      CUST_NAME_KD: cust_name,
+  const loadBangGia = useCallback(async() => {
+   await generalQuery("loadbanggia", {
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      M_NAME: watch("m_name"),
+      G_CODE: watch("codeCMS"),
+      G_NAME: watch("codeKD"),
+      CUST_NAME_KD: watch("cust_name"),
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1606,7 +1591,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
               store: loaded_data,
             }),
           );
-          clearSelection();
+          
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1616,16 +1601,16 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
     setselectedBangGiaDocRow([]);
-  };
-  const loadBangGia2 = () => {
-    generalQuery("loadbanggia2", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      M_NAME: m_name,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      CUST_NAME_KD: cust_name,
+  },[]);
+  const loadBangGia2 = useCallback(async() => {
+    await generalQuery("loadbanggia2", {
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      M_NAME: watch("m_name"),
+      G_CODE: watch("codeCMS"),
+      G_NAME: watch("codeKD"),
+      CUST_NAME_KD: watch("cust_name"),
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1655,7 +1640,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
               store: loaded_data,
             }),
           );
-          clearSelection();
+          
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1664,8 +1649,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
-  };
-  const confirmUpdateGiaHangLoat = () => {
+  },[]);
+  const confirmUpdateGiaHangLoat = useCallback(() => {
     Swal.fire({
       title: "Chắc chắn muốn update giá hàng loạt ?",
       text: "Hãy suy nghĩ kỹ trước khi làm",
@@ -1680,7 +1665,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
         updategia();
       }
     });
-  };
+  },[]);
   const confirmDeleteGiaHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn xóa giá hàng loạt ?",
@@ -1697,7 +1682,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
       }
     });
   };
-  const updategia = async () => {
+  const updategia = useCallback(async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
@@ -1727,8 +1712,8 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để update (Bảng giá dọc)", "error");
     }
-  };
-  const deletegia = async () => {
+  },[selectedBangGiaDocRow]);
+  const deletegia = useCallback(async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
@@ -1757,16 +1742,16 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để xóa(Bảng giá dọc)", "error");
     }
-  };
-  const loadBangGiaMoiNhat = () => {
-    generalQuery("loadbanggiamoinhat", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      M_NAME: m_name,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      CUST_NAME_KD: cust_name,
+  },[selectedBangGiaDocRow]);
+  const loadBangGiaMoiNhat = useCallback(async() => {
+    await generalQuery("loadbanggiamoinhat", {
+      ALLTIME: watch("alltime"),
+      FROM_DATE: watch("fromdate"),
+      TO_DATE: watch("todate"),
+      M_NAME: watch("m_name"),
+      G_CODE: watch("codeCMS"),
+      G_NAME: watch("codeKD"),
+      CUST_NAME_KD: watch("cust_name"),
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1796,7 +1781,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
               store: loaded_data,
             }),
           );
-          clearSelection();
+          
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1805,7 +1790,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
-  };
+  },[]);
   const quotationprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => quotationprintref.current,
@@ -1813,6 +1798,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {
     //loadBangGia();
+    getcustomerlist();
     if (getCompany() === 'CMS' && getSever() !=='http://222.252.1.63:3007' && getSever() !=='http://222.252.1.214:3007' ) {
       dongboGiaPO();
     }
@@ -1826,70 +1812,37 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
               <div className="forminputcolumn">
                 <label>
                   <b>Từ ngày:</b>
-                  <input
-                    type="date"
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
+                  <input type="date" {...register('fromdate')} ></input>
                 </label>
                 <label>
                   <b>Tới ngày:</b>{" "}
-                  <input
-                    type="date"
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
+                  <input type="date" {...register('todate')} ></input>
                 </label>
               </div>
               <div className="forminputcolumn">
                 <label>
                   <b>Code KD:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="GH63-xxxxxx"
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
+                  <input type="text" placeholder="GH63-xxxxxx" {...register('codeKD')} ></input>
                 </label>
                 <label>
                   <b>Code ERP:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="7C123xxx"
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
+                  <input type="text" placeholder="7C123xxx" {...register('codeCMS')} ></input>
                 </label>
               </div>
               <div className="forminputcolumn">
                 <label>
                   <b>Tên Liệu:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="SJ-203020HC"
-                    value={m_name}
-                    onChange={(e) => setM_Name(e.target.value)}
-                  ></input>
+                  <input type="text" placeholder="SJ-203020HC" {...register('m_name')} ></input>
                 </label>
                 <label>
                   <b>Tên khách hàng:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="SEVT"
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
+                  <input type="text" placeholder="SEVT" {...register('cust_name')} ></input>
                 </label>
               </div>
               <div className="forminputcolumn">
                 <label>
                   <b>All Time:</b>
-                  <input
-                    type="checkbox"
-                    name="alltimecheckbox"
-                    defaultChecked={alltime}
-                    onChange={() => setAllTime(!alltime)}
-                  ></input>
+                  <input type="checkbox" {...register('alltime')} ></input>
                 </label>
               </div>
               <div className="forminputcolumn"></div>
