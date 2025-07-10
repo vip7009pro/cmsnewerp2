@@ -570,8 +570,7 @@ export default function AccountInfo() {
                 onClick={() => {
                   if (file) {                 
                     uploadQuery(file, 'updatebe.exe', 'backend')
-                      .then(async (response) => {
-                        window.open("http://192.168.1.192:3005/update-be", "_blank");
+                      .then(async (response) => {                        
                         if(response.data.tk_status !== "NG"){       
                           Swal.fire("Thông báo", "Upload thành công", "success");
                           window.open("http://192.168.1.192:3005/update-be", "_blank");
