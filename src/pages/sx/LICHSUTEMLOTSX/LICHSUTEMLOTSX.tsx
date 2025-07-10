@@ -1,7 +1,7 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { checkBP, f_cancelProductionLot, f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement } from "../../../api/GlobalFunction";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { f_cancelProductionLot, f_handleGETBOMAMAZON, f_LichSuTemLot, renderElement } from "../../../api/GlobalFunction";
 import { MdPrint } from "react-icons/md";
 import { COMPONENT_DATA, TEMLOTSX_DATA } from "../../../api/GlobalInterface";
 import {
@@ -183,7 +183,7 @@ const LICHSUTEMLOTSX = () => {
       load_lichsutemlot_data();
     }
   };
-  const columns_lichsutemlot = [
+  const columns_lichsutemlot = useMemo(() => [
     { field: 'INS_DATE', headerName: 'INS_DATE', width: 100 },
     { field: 'G_CODE', headerName: 'G_CODE', width: 60 },
     { field: 'G_NAME', headerName: 'G_NAME', width: 120 },
@@ -213,7 +213,7 @@ const LICHSUTEMLOTSX = () => {
     { field: 'PROCESS_NUMBER', headerName: 'PROCESS_NUMBER', width: 100 },
     { field: 'LOT_STATUS', headerName: 'LOT_STATUS', width: 100 },
     { field: 'REMARK', headerName: 'REMARK', width: 100 },
-  ]
+  ],[]);
 
   const audit_list_data_ag_table = useMemo(() => {
     return (
@@ -245,7 +245,7 @@ const LICHSUTEMLOTSX = () => {
                       console.log(selectedRow.current.LOT_STATUS);
                       if(selectedRow.current.LOT_STATUS === null)
                       {
-                        await handleCancelLot(selectedRow.current.PROCESS_LOT_NO);
+                        handleCancelLot(selectedRow.current.PROCESS_LOT_NO);
                       }
                       else {
                         Swal.fire('Thông báo','Lot đã chuyển công đoạn, không hủy được','error')
@@ -304,7 +304,7 @@ const LICHSUTEMLOTSX = () => {
     )
   }, [lichsutemlotdata, columns_lichsutemlot]);
 
-  const handleCancelLot = async (PROCESS_LOT_NO: string) => {
+  const handleCancelLot = useCallback(async (PROCESS_LOT_NO: string) => {
       if(getUserData()?.EMPL_NO==='NHU1903') {
         Swal.fire({
           title: "Hủy LOT",
@@ -326,11 +326,11 @@ const LICHSUTEMLOTSX = () => {
       else {
         Swal.fire("Thông báo", "Bạn không có quyền hủy lot", "error");
       };   
-  }
+  },[]);
 
-  const loadLabelDesign = async() => {
+  const loadLabelDesign = useCallback(async() => {
     setComponentList(await f_handleGETBOMAMAZON("6E00002A"));
-  }
+  },[]);
   useEffect(() => {
     loadLabelDesign();
     }, []);

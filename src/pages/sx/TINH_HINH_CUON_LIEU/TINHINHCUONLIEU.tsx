@@ -19,9 +19,27 @@ import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import SXWeeklyLossRoll from "../../../components/Chart/SX/SXWeeklyLossRoll";
 import SXDailyRollLoss from "../../../components/Chart/SX/SXDailyRollLoss";
+import { useForm } from "react-hook-form";
 
 const TINHHINHCUONLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const {register,handleSubmit,watch, formState:{errors}} = useForm({   
+    defaultValues: {
+      fromdate: moment().format("YYYY-MM-DD"),
+      todate: moment().format("YYYY-MM-DD"),
+      codekd: "",
+      codecms: "",
+      machine: "ALL",
+      factory: "ALL",
+      prodrequestno: "",
+      plan_id: "",
+      alltime: false,
+      datasxtable: [],
+      m_name: "",
+      m_code: "",
+      cust_name_kd: "",
+    }
+  })
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
@@ -36,29 +54,17 @@ const TINHHINHCUONLIEU = () => {
     TOTAL_LOSS_KT: 0,
     TOTAL_LOSS: 0,
   });
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
-  const [factory, setFactory] = useState("ALL");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(false);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
-  const [cust_name_kd, setCUST_NAME_KD] = useState("");
+  const [datasxtable, setDataSXTable] = useState<Array<any>>([]); 
   const [columns, setColumns] = useState<Array<any>>([]);
   const [loss_roll_data, setLossRollData] = useState<SX_LOSS_ROLL_DATA[]>([])
   const handleLoadRollLossData = async () => {
     let kq: SX_LOSS_ROLL_DATA[] = [];
-    kq = await f_loadRollLossData(fromdate, todate)
+    kq = await f_loadRollLossData(watch('fromdate'), watch('todate'))
     setLossRollData(kq);
   }
   const handleLoadRollLossDataDaily = async () => {
     let kq: SX_LOSS_ROLL_DATA[] = [];
-    kq = await f_loadRollLossDataDaily(fromdate, todate)
+    kq = await f_loadRollLossDataDaily(watch('fromdate'), watch('todate'))
     setLossRollData(kq);
   }
   const handleSearchCodeKeyDown = (
@@ -88,18 +94,18 @@ const TINHHINHCUONLIEU = () => {
     }     
     
     generalQuery("materialLotStatus", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      PROD_REQUEST_NO: prodrequestno,
-      PLAN_ID: plan_id,
-      M_NAME: m_name,
-      M_CODE: m_code,
-      G_NAME: codeKD,
-      G_CODE: codeCMS,
-      FACTORY: factory,
-      PLAN_EQ: machine,
-      CUST_NAME_KD: cust_name_kd
+      ALLTIME: watch('alltime'),
+      FROM_DATE: watch('fromdate'),
+      TO_DATE: watch('todate'),
+      PROD_REQUEST_NO: watch('prodrequestno'),
+      PLAN_ID: watch('plan_id'),
+      M_NAME: watch('m_name'),
+      M_CODE: watch('m_code'),
+      G_NAME: watch('codekd'),
+      G_CODE: watch('codecms'),
+      FACTORY: watch('factory'),
+      PLAN_EQ: watch('machine'),
+      CUST_NAME_KD: watch('cust_name_kd')
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -400,7 +406,6 @@ const TINHHINHCUONLIEU = () => {
       }}
     />
     , [datasxtable, columns]);
-
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1053,23 +1058,21 @@ const TINHHINHCUONLIEU = () => {
               <label>
                 <b>Từ ngày:</b>
                 <input
+                  {...register('fromdate')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  type="date"                 
                 ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
+                  {...register('todate')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -1077,25 +1080,23 @@ const TINHHINHCUONLIEU = () => {
               <label>
                 <b>Code KD:</b>{" "}
                 <input
+                  {...register('codekd')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
                   placeholder="GH63-xxxxxx"
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Code ERP:</b>{" "}
                 <input
+                  {...register('codecms')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
                   placeholder="7C123xxx"
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -1103,25 +1104,23 @@ const TINHHINHCUONLIEU = () => {
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
+                  {...register('m_name')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
-                  placeholder="SJ-203020HC"
-                  value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
+                  placeholder="SJ-203020HC"                
                 ></input>
               </label>
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
                 <input
+                  {...register('m_code')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
-                  placeholder="A123456"
-                  value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
+                  placeholder="A123456"              
                 ></input>
               </label>
             </div>
@@ -1129,37 +1128,34 @@ const TINHHINHCUONLIEU = () => {
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
+                  {...register('prodrequestno')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
-                  placeholder="1F80008"
-                  value={prodrequestno}
-                  onChange={(e) => setProdRequestNo(e.target.value)}
+                  placeholder="1F80008"               
                 ></input>
               </label>
               <label>
                 <b>Số chỉ thị:</b>{" "}
                 <input
+                  {...register('plan_id')}
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
-                  placeholder="A123456"
-                  value={plan_id}
-                  onChange={(e) => setPlanID(e.target.value)}
+                  placeholder="A123456"               
                 ></input>
               </label>
               <label>
                 <b>Khách hàng:</b>{" "}
                 <input
-                  onKeyDown={(e) => {
+                    {...register('cust_name_kd')}
+                    onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
-                  placeholder="SEV"
-                  value={cust_name_kd}
-                  onChange={(e) => setCUST_NAME_KD(e.target.value)}
+                  placeholder="SEV"                
                 ></input>
               </label>
             </div>
@@ -1167,11 +1163,8 @@ const TINHHINHCUONLIEU = () => {
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name="phanloai"
-                  value={factory}
-                  onChange={(e) => {
-                    setFactory(e.target.value);
-                  }}
+                  {...register('factory')}
+                  name="phanloai"                
                 >
                   <option value="ALL">ALL</option>
                   <option value="NM1">NM1</option>
@@ -1181,11 +1174,7 @@ const TINHHINHCUONLIEU = () => {
               <label>
                 <b>MACHINE:</b>
                 <select
-                  name="machine2"
-                  value={machine}
-                  onChange={(e) => {
-                    setMachine(e.target.value);
-                  }}
+                  {...register('machine')}                
                 >
                   {machine_list.map((ele: MACHINE_LIST, index: number) => {
                     return (
@@ -1202,19 +1191,17 @@ const TINHHINHCUONLIEU = () => {
             <label>
               <b>All Time:</b>
               <input
+                {...register('alltime')}
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                type="checkbox"
-                name="alltimecheckbox"
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
+                type="checkbox"                
               ></input>
             </label>
             <button
               className="tranhatky"
               onClick={() => {
-                handle_loaddatasx();
+                handleSubmit(handle_loaddatasx)();
               }}
             >
               TRA LIỆU
