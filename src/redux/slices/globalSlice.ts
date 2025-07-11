@@ -4,7 +4,8 @@ import { ReactElement } from "react";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
-import { ELE_ARRAY, GlobalInterface, QLSXPLANDATA, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
+import { ELE_ARRAY, GlobalInterface, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
+import { QLSXPLANDATA } from "../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
@@ -402,6 +403,7 @@ export const glbSlice = createSlice({
           ) {
             state.tabIndex++;
           }
+          console.log('tab index: ',state.tabIndex);
         }
       } else {
         state.tabs = [];

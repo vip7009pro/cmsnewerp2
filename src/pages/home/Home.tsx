@@ -158,12 +158,8 @@ function Home() {
     <div className="home">
       <div className="navdiv">
         <Navbar />
-        {/* <PrimarySearchAppBar /> */}
       </div>
-      <div className="homeContainer">
-        {/* <div className='sidebardiv'>
-          <Sidebar />
-        </div> */}
+      <div className="homeContainer">       
         <div className="outletdiv">
           <animated.div
             className="animated_div"
@@ -207,7 +203,7 @@ function Home() {
                     }}
                   >
                     {tabs.map((ele: ELE_ARRAY, index: number) => {
-                      if (ele.ELE_CODE !== "-1") {
+                      if (ele?.ELE_CODE !== "-1") {
                         return (
                           <div key={index}>
                             <CustomTab

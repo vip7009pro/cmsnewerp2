@@ -1,10 +1,28 @@
 import "devextreme/dist/css/dx.light.css";
-import { useEffect, Suspense, useRef, useMemo, useCallback, useState } from "react";
-import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData, } from "./api/Api";
+import { useEffect, Suspense, useRef, useMemo, useCallback } from "react";
+import {
+  checkLogin,
+  generalQuery,
+  getCompany,
+  getGlobalSetting,
+  getNotiCount,
+  getSocket,
+  getUserData,
+} from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { changeDiemDanhState, changeUserData, update_socket, logout, login, setTabModeSwap, changeGLBSetting, changeServer, updateNotiCount, } from "./redux/slices/globalSlice";
+import {
+  changeDiemDanhState,
+  changeUserData,
+  update_socket,
+  logout,
+  login,
+  setTabModeSwap,
+  changeGLBSetting,
+  changeServer,
+  updateNotiCount,
+} from "./redux/slices/globalSlice";
 import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
@@ -26,7 +44,54 @@ function App() {
   const elementRef = useRef(null);
   const swalContainer = document.querySelector(".swal2-container");
   const defaultUser = useMemo(() => {
-    return { ADD_COMMUNE: "Đông Xuân", ADD_DISTRICT: "Sóc Sơn", ADD_PROVINCE: "Hà Nội", ADD_VILLAGE: "Thôn Phú Thọ", ATT_GROUP_CODE: 1, CMS_ID: "CMS1179", CTR_CD: "002", DOB: "1993-10-18T00:00:00.000Z", EMAIL: "nvh1903@cmsbando.com", EMPL_NO: "none", FACTORY_CODE: 1, FACTORY_NAME: "Nhà máy 1", FACTORY_NAME_KR: "1공장", FIRST_NAME: "HÙNG3", HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội", JOB_CODE: 1, JOB_NAME: "Dept Staff", JOB_NAME_KR: "부서담당자", MAINDEPTCODE: 1, MAINDEPTNAME: "QC", MAINDEPTNAME_KR: "품질", MIDLAST_NAME: "NGUYỄN VĂN", ONLINE_DATETIME: "2022-07-12T20:49:52.600Z", PASSWORD: "", PHONE_NUMBER: "0971092454", POSITION_CODE: 3, POSITION_NAME: "Staff", POSITION_NAME_KR: "사원", REMARK: "", SEX_CODE: 1, SEX_NAME: "Nam", SEX_NAME_KR: "남자", SUBDEPTCODE: 2, SUBDEPTNAME: "PD", SUBDEPTNAME_KR: "통역", WORK_POSITION_CODE: 2, WORK_POSITION_NAME: "PD", WORK_POSITION_NAME_KR: "PD", WORK_SHIFT_CODE: 0, WORK_SHIF_NAME: "Hành Chính", WORK_SHIF_NAME_KR: "정규", WORK_START_DATE: "2019-03-11T00:00:00.000Z", WORK_STATUS_CODE: 1, WORK_STATUS_NAME: "Đang làm", WORK_STATUS_NAME_KR: "근무중", EMPL_IMAGE: "N", }
+    return {
+      ADD_COMMUNE: "Đông Xuân",
+      ADD_DISTRICT: "Sóc Sơn",
+      ADD_PROVINCE: "Hà Nội",
+      ADD_VILLAGE: "Thôn Phú Thọ",
+      ATT_GROUP_CODE: 1,
+      CMS_ID: "CMS1179",
+      CTR_CD: "002",
+      DOB: "1993-10-18T00:00:00.000Z",
+      EMAIL: "nvh1903@cmsbando.com",
+      EMPL_NO: "none",
+      FACTORY_CODE: 1,
+      FACTORY_NAME: "Nhà máy 1",
+      FACTORY_NAME_KR: "1공장",
+      FIRST_NAME: "HÙNG3",
+      HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+      JOB_CODE: 1,
+      JOB_NAME: "Dept Staff",
+      JOB_NAME_KR: "부서담당자",
+      MAINDEPTCODE: 1,
+      MAINDEPTNAME: "QC",
+      MAINDEPTNAME_KR: "품질",
+      MIDLAST_NAME: "NGUYỄN VĂN",
+      ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+      PASSWORD: "",
+      PHONE_NUMBER: "0971092454",
+      POSITION_CODE: 3,
+      POSITION_NAME: "Staff",
+      POSITION_NAME_KR: "사원",
+      REMARK: "",
+      SEX_CODE: 1,
+      SEX_NAME: "Nam",
+      SEX_NAME_KR: "남자",
+      SUBDEPTCODE: 2,
+      SUBDEPTNAME: "PD",
+      SUBDEPTNAME_KR: "통역",
+      WORK_POSITION_CODE: 2,
+      WORK_POSITION_NAME: "PD",
+      WORK_POSITION_NAME_KR: "PD",
+      WORK_SHIFT_CODE: 0,
+      WORK_SHIF_NAME: "Hành Chính",
+      WORK_SHIF_NAME_KR: "정규",
+      WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+      WORK_STATUS_CODE: 1,
+      WORK_STATUS_NAME: "Đang làm",
+      WORK_STATUS_NAME_KR: "근무중",
+      EMPL_IMAGE: "N",
+    };
   }, []);
   if (swalContainer instanceof HTMLElement) {
     swalContainer.style.zIndex = "9999";
@@ -92,31 +157,31 @@ function App() {
   }, []);
   const checkLoginCallback = useCallback(() => {
     checkLogin()
-    .then((data: any) => {
-      if (data.data.tk_status === "ng") {
-        loadWebSetting();
-        dispatch(logout(false));
-        dispatch(changeUserData(defaultUser));
-      } else {          
-        dispatch(changeUserData(data.data.data));          
-        if (data.data.data.JOB_NAME === "Worker") {            
-          dispatch(setTabModeSwap(false));
+      .then((data: any) => {
+        if (data.data.tk_status === "ng") {
+          loadWebSetting();
+          dispatch(logout(false));
+          dispatch(changeUserData(defaultUser));
+        } else {
+          dispatch(changeUserData(data.data.data));
+          if (data.data.data.JOB_NAME === "Worker") {
+            dispatch(setTabModeSwap(false));
+          }
+          if (data.data.data.POSITION_CODE === 4) {
+            dispatch(setTabModeSwap(false));
+          }
+          dispatch(
+            update_socket({
+              event: "login",
+              data: data.data.data.EMPL_NO,
+            })
+          );
+          dispatch(login(true));
         }
-        if (data.data.data.POSITION_CODE === 4) {
-          dispatch(setTabModeSwap(false));
-        }          
-        dispatch(
-          update_socket({
-            event: "login",
-            data: data.data.data.EMPL_NO,
-          })
-        );
-        dispatch(login(true));
-      }
-    })
-    .catch((err: any) => {
-      console.log(err + " ");
-    });
+      })
+      .catch((err: any) => {
+        console.log(err + " ");
+      });
   }, []);
   const showNoti = useCallback((data: NotificationElement) => {
     dispatch(updateNotiCount((getNotiCount() ?? 0) + 1));
@@ -153,9 +218,9 @@ function App() {
     }
   }, []);
   const handleSetWebVer = useCallback((data: any) => {
-    console.log('co data web ver',data);
+    console.log("co data web ver", data);
     if (current_ver >= data) {
-      console.log('khong can update web');
+      console.log("khong can update web");
     } else {
       Swal.fire({
         title: "ERP has updates?",
@@ -185,8 +250,7 @@ function App() {
     console.log(data.server);
     if (
       getCompany() === "CMS" &&
-      (data.empl_no.toUpperCase() ===
-        getUserData()?.EMPL_NO?.toUpperCase() ||
+      (data.empl_no.toUpperCase() === getUserData()?.EMPL_NO?.toUpperCase() ||
         data.empl_no.toUpperCase() === "ALL")
     ) {
       dispatch(changeServer(data.server));
@@ -211,73 +275,69 @@ function App() {
       }
     }
   }, []);
-
   // Hàm chuyển đổi VAPID key
   const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
     const rawData = window.atob(base64);
-    return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
   };
-
   // Hàm yêu cầu quyền và đăng ký push
   const handleEnableNotifications = async (): Promise<void> => {
-    console.log('handleEnableNotifications');
+    console.log("handleEnableNotifications");
     try {
-      console.log('vao day');
+      console.log("vao day");
       // Kiểm tra hỗ trợ
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-        console.log('Trình duyệt không hỗ trợ thông báo đẩy!');
+      if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+        console.log("Trình duyệt không hỗ trợ thông báo đẩy!");
         return;
       }
-
       // Yêu cầu quyền thông báo
-      const permission: NotificationPermission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        console.log('Người dùng không cho phép thông báo!');
+      const permission: NotificationPermission =
+        await Notification.requestPermission();
+      if (permission !== "granted") {
+        console.log("Người dùng không cho phép thông báo!");
         return;
       }
-
       // Lấy Service Worker registration
-      const registration: ServiceWorkerRegistration = await navigator.serviceWorker.ready;
-
+      const registration: ServiceWorkerRegistration = await navigator
+        .serviceWorker.ready;
       // Đăng ký push subscription
-      const subscription: PushSubscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(
-          'BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE' // Thay bằng public VAPID key của đại ca
-        )
-      });
-    
+      const subscription: PushSubscription =
+        await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            "BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE" // Thay bằng public VAPID key của đại ca
+          ),
+        });
       // Gửi subscription đến server
-      const response = await generalQuery('addSubscription',  {
-        subscription: JSON.stringify(subscription)
+      const response = await generalQuery("addSubscription", {
+        subscription: JSON.stringify(subscription),
       });
       if (response.data.tk_status === "OK") {
-        console.log('Đã bật thông báo thành công!');
+        console.log("Đã bật thông báo thành công!");
       } else {
-        console.log('Lỗi khi gửi subscription đến server!');
+        console.log("Lỗi khi gửi subscription đến server!");
       }
     } catch (error: unknown) {
-      console.error('Lỗi:', error);
+      console.error("Lỗi:", error);
       console.log(`Có lỗi xảy ra: ${(error as Error).message}`);
     }
   };
-  
   const getIPAddress = async () => {
     try {
-      const response = await fetch('https://api.ipify.org?format=json');
+      const response = await fetch("https://api.ipify.org?format=json");
       const data = await response.json();
       console.log(data.ip);
       return data.ip;
     } catch (error) {
-      console.error('Lỗi khi lấy IP:', error);
+      console.error("Lỗi khi lấy IP:", error);
       return null;
     }
   };
-
-
-  useEffect(() => {   
+  useEffect(() => {
     checkLoginCallback();
     checkDiemDanh();
     const socket = getSocket();
@@ -300,7 +360,6 @@ function App() {
     }
     handleEnableNotifications();
     getIPAddress();
-    
     return () => {
       socket.off("setWebVer", (data: any) => {});
       socket.off("request_check_online", (data: any) => {});
@@ -308,11 +367,15 @@ function App() {
     };
   }, [globalLoginState]);
   return (
-    <> 
+    <>
       {globalLoginState && (
-        <div className="App" ref={elementRef} onClick={()=>requestFullScreen(elementRef, full_screen)}>
+        <div
+          className="App"
+          ref={elementRef}
+          onClick={() => requestFullScreen(elementRef, full_screen)}
+        >
           <Suspense fallback={<FallBackComponent />}>
-           <AppRoutes globalUserData={globalUserData} />
+            <AppRoutes globalUserData={globalUserData} />
           </Suspense>
         </div>
       )}
