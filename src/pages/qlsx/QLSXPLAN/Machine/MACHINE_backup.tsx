@@ -1999,7 +1999,6 @@ const MACHINE_OLD = () => {
                 LOSS_SETTING4: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ4 ? dmmacdinh.loss_setting : datadinhmuc.LOSS_SETTING4,
               })
   }
-  console.log('EMPL_NO', getUserData()?.EMPL_NO);
   function PlanTableAGToolbar() {
     return (
       <div className="toolbar">
