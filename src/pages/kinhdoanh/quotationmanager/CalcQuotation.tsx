@@ -11,15 +11,9 @@ import moment from "moment";
 import { BiSave } from "react-icons/bi";
 import { GrUpdate } from "react-icons/gr";
 import { TbLogout } from "react-icons/tb";
-import {
-  BANGGIA_DATA_CALC,
-  BOM_GIA,
-  CODEDATA,
-  DEFAULT_DM,
-  GIANVL,
-  UserData,
-} from "../../../api/GlobalInterface";
+import { BOM_GIA, UserData, } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { BANGGIA_DATA_CALC, CODEDATA, DEFAULT_DM, GIANVL } from "../interfaces/kdInterface";
 const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
@@ -341,7 +335,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     { field: "SALE_PRICE", headerName: "SALE_PRICE", width: 90 },
     { field: "PROFIT", headerName: "PROFIT", width: 90 },
   ];
-
   const columns_listbomvl = [
     { field: "G_CODE", headerName: "G_CODE", width: 60 },
     { field: "G_SEQ", headerName: "STT", width: 40 },
@@ -396,7 +389,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           setBangGia(banggia.filter((item) => item.id !== e.data.id));
         }}>Delete</button>  
       )}}
-      
     ,
   ];
   const listCodeTableAG = useMemo(() =>
@@ -414,7 +406,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   <TbLogout color="green" size={15} />
                   Show/Hide
                 </IconButton>
-          
         </div>
       }
       columns={columns_listcode}
@@ -465,7 +456,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         //clickedRow.current = params.data;
         //console.log(e.data) 
         //console.log(e.data.CUST_CD);
-       
       }} onSelectionChange={(params: any) => {
         //console.log(params)
         //setSelectedRows(params!.api.getSelectedRows()[0]);
@@ -489,7 +479,6 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         //clickedRow.current = params.data;
         //console.log(e.data) 
         //console.log(e.data.CUST_CD);
-       
       }} onSelectionChange={(params: any) => {
         //console.log(params)
         //setSelectedRows(params!.api.getSelectedRows()[0]);

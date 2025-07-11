@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import "./QuotationManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { SaveExcel, checkBP, f_getcustomerlist } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP} from "../../../api/GlobalFunction";
 import { generalQuery, getAuditMode, getCompany, getSever } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
@@ -23,14 +23,12 @@ import { TbLogout } from "react-icons/tb";
 import QuotationForm from "./QuotationForm/QuotationForm";
 import { useReactToPrint } from "react-to-print";
 import {
-  BANGGIA_DATA,
-  BANGGIA_DATA2,
-  CodeListDataUpGia,
-  CustomerListData,
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useForm } from "react-hook-form";
+import { BANGGIA_DATA, BANGGIA_DATA2, CodeListDataUpGia, CustomerListData } from "../interfaces/kdInterface";
+import { f_getcustomerlist } from "../utils/kdUtils";
 const QuotationManager = () => {
   const {register,handleSubmit,watch, formState:{errors}} = useForm( {
     defaultValues:{

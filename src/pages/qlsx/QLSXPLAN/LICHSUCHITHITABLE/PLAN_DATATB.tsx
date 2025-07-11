@@ -15,37 +15,14 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getSocket, getUserData } from "../../../../api/Api";
 import {
-  checkBP,
-  f_deleteChiThiMaterialLine,
-  f_getMachineListData,
-  f_handle_movePlan,
-  f_handle_xuatdao_sample,
-  f_handle_xuatlieu_sample,
-  f_handleDangKyXuatLieu,
-  f_handleGetChiThiTable,
-  f_handleGetChiThiTable_New,
-  f_handleResetChiThiTable,
-  f_loadQLSXPLANDATA2,
-  f_loadProdProcessData,
-  f_loadQLSXPLANDATA,
-  f_saveChiThiMaterialTable,
-  f_updateBatchPlan,
-  f_updateLossKT_ZTB_DM_HISTORY,
-  f_updatePlanOrder,
-  renderChiThi,
-  renderChiThi2,
+  checkBP,  
   SaveExcel,
-  f_handleResetChiThiTable_New,
   f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
-  PROD_PROCESS_DATA,
-  MACHINE_LIST,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
 import { FaWarehouse } from "react-icons/fa";
@@ -62,6 +39,8 @@ import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
+import { MACHINE_LIST, PROD_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleGetChiThiTable_New, f_handleResetChiThiTable_New, f_loadProdProcessData, f_loadQLSXPLANDATA, f_loadQLSXPLANDATA2, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
 const PLAN_DATATB = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);

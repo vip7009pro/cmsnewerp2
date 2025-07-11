@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './KHCT.scss'
 import { parseISO, format, addMinutes, compareAsc, setHours, setMinutes, addDays } from 'date-fns';
-import { f_handle_loadEQ_STATUS, f_loadLeadtimeData, SaveExcel } from '../../../../api/GlobalFunction';
 import moment from 'moment';
 import MachineTimeLine from './MachineTimeLine';
-import DateMarkers from './DateMarkers';
-import { EQ_STT, LEADTIME_DATA, ProductionPlan } from '../../../../api/GlobalInterface';
 import Swal from 'sweetalert2';
 import { Button, FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, TextField } from '@mui/material';
 import { MdCreate } from 'react-icons/md';
@@ -15,6 +12,8 @@ import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 import CustomDialog from '../../../../components/Dialog/CustomDialog';
 import AddPlanDialog from '../QUICKPLAN/AddPlanDialog';
 import { BiSave } from 'react-icons/bi';
+import { f_handle_loadEQ_STATUS, f_loadLeadtimeData } from '../utils/khsxUtils';
+import { EQ_STT, LEADTIME_DATA, ProductionPlan } from '../interfaces/khsxInterface';
 
 const KHCT = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

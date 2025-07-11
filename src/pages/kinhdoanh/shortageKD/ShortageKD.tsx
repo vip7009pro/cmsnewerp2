@@ -21,8 +21,8 @@ import "./ShortageKD.scss";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ShortageData } from "../../../api/GlobalInterface";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { ShortageData } from "../interfaces/kdInterface";
 const ShortageKD = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [selection, setSelection] = useState<any>({

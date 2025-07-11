@@ -7,30 +7,17 @@ import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
-import {
-  DAILY_YCSX_RESULT,
-  LICHSUINPUTLIEU_DATA,
-  LICHSUNHAPKHOAO,
-  LOSS_TABLE_DATA,
-  MACHINE_LIST,
-  SX_DATA,
-  YCSX_SX_DATA,
-} from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import {
-  f_getMachineListData,
-  f_lichsuinputlieu,
-  f_load_nhapkhoao,
-  f_loadDataSX_YCSX,
-  f_loadDataSXChiThi,
+import { 
   f_update_btp_p400,
   f_update_tonkiem_p400,
-  f_YCSXDailyChiThiData,
 } from "../../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { useForm } from "react-hook-form";
+import { DAILY_YCSX_RESULT, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, SX_DATA, YCSX_SX_DATA } from "../interfaces/khsxInterface";
+import { f_getMachineListData, f_lichsuinputlieu, f_load_nhapkhoao, f_loadDataSX_YCSX, f_loadDataSXChiThi, f_YCSXDailyChiThiData } from "../utils/khsxUtils";
 const DATASX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const {register,handleSubmit,watch, formState:{errors}, reset, setValue} = useForm({

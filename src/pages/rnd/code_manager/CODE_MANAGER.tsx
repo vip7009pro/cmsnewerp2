@@ -13,13 +13,6 @@ import {
   SaveExcel,
   checkBP,
   f_downloadFile,
-  f_getCodeInfo,
-  f_handleSaveLossSX,
-  f_handleSaveQLSX,
-  f_pdBanVe,
-  f_resetBanVe,
-  f_setNgoaiQuan,
-  f_updateBEP,
   f_updateLossKT,
 } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
@@ -30,6 +23,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { f_getCodeInfo, f_handleSaveLossSX, f_handleSaveQLSX, f_pdBanVe, f_resetBanVe, f_setNgoaiQuan, f_updateBEP } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const CODE_MANAGER = () => {
   const [activeOnly, setActiveOnly] = useState(true)
   const [cndb, setCNDB] = useState(false)

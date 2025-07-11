@@ -5,19 +5,17 @@ import { generalQuery } from "../../../api/Api";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/INSPECTION/ChartInspectionWorst";
-import {
-  CodeListData,
+import {  
   DEFECT_TRENDING_DATA,
   DailyPPMData,
   InspectSummary,
-  MonthlyPPMData,
-  PATROL_HEADER_DATA,
+  MonthlyPPMData,  
   TREND_NGUOI_HANG_DATA,
   WeeklyPPMData,
   WorstData,
   YearlyPPMData,
 } from "../../../api/GlobalInterface";
-import { f_load_TREND_NGUOI_HANG_DATA_DAILY, f_load_TREND_NGUOI_HANG_DATA_MONTHLY, f_load_TREND_NGUOI_HANG_DATA_WEEKLY, f_load_TREND_NGUOI_HANG_DATA_YEARLY, SaveExcel } from "../../../api/GlobalFunction";
+import {SaveExcel } from "../../../api/GlobalFunction";
 import {
   Autocomplete,
   Checkbox,
@@ -42,6 +40,9 @@ import InspectDailyNguoiHangTrending from "../../../components/Chart/INSPECTION/
 import InspectWeeklyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectWeeklyNguoiHangTrending";
 import InspectMonthlyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectMonthlyNguoiHangTrending";
 import InspectYearlyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectYearlyNguoiHangTrending";
+import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { PATROL_HEADER_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { f_load_TREND_NGUOI_HANG_DATA_DAILY, f_load_TREND_NGUOI_HANG_DATA_MONTHLY, f_load_TREND_NGUOI_HANG_DATA_WEEKLY, f_load_TREND_NGUOI_HANG_DATA_YEARLY } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);

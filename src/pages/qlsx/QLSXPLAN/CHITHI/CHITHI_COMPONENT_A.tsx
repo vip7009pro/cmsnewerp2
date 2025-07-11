@@ -6,11 +6,10 @@ import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT.scss";
 import Barcode from "react-barcode";
 import {
-  FullBOM,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
+import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 const CHITHI_COMPONENT_A = forwardRef(({ DATA }: { DATA: QLSXPLANDATA }, ref) => {
   const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   const company: string = useSelector(

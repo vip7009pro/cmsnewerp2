@@ -8,23 +8,7 @@ import { getCompany, getGlobalSetting, getSever, getSocket, getUserData } from "
 import {
   autoGetProdPrice,
   checkBP,
-  f_autogeneratePO_NO,
-  f_autopheduyetgia,
-  f_checkG_CODE_USE_YN,
-  f_checkPOExist,
-  f_compareDateToNow,
-  f_compareTwoDate,
-  f_deletePO,
-  f_dongboGiaPO,
-  f_getcodelist,
-  f_getcustomerlist,
   f_insert_Notification_Data,
-  f_insertInvoice,
-  f_insertPO,
-  f_loadPoDataFull,
-  f_loadprice,
-  f_readUploadFile,
-  f_updatePO,
 } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
@@ -34,11 +18,6 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  CodeListData,
-  CustomerListData,
-  POSummaryData,
-  POTableData,
-  PRICEWITHMOQ,
   UserData,
   WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
@@ -46,6 +25,8 @@ import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { CodeListData, CustomerListData, POSummaryData, POTableData, PRICEWITHMOQ } from "../interfaces/kdInterface";
+import { f_autogeneratePO_NO, f_autopheduyetgia, f_checkG_CODE_USE_YN, f_checkPOExist, f_compareDateToNow, f_compareTwoDate, f_deletePO, f_dongboGiaPO, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_insertPO, f_loadPoDataFull, f_loadprice, f_readUploadFile, f_updatePO } from "../utils/kdUtils";
 const PoManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openNewPODialog, setOpenNewPODialog] = useState(false);

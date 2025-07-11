@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./CUST_MANAGER.scss";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
-import { CUST_INFO } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import { BiLoaderCircle } from "react-icons/bi";
@@ -13,6 +12,7 @@ import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { CUST_INFO } from "../interfaces/kdInterface";
 const CUST_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);

@@ -11,10 +11,10 @@ import "./FCSTManager.scss";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
-import { FCSTTableData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { FCSTTableData } from "../interfaces/kdInterface";
 
 const FCSTManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

@@ -1,9 +1,8 @@
-import { Button } from "@mui/material";
 import moment from "moment";
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import { useState } from "react";
 import "./MACHINE_COMPONENT3.scss";
-import { MachineInterface2 } from "../../../../api/GlobalInterface";
+import { MachineInterface2 } from "../interfaces/khsxInterface";
+
 const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
   //console.log(machine_data)
   const runtopcolor: string = "#2fd5eb";

@@ -2,17 +2,7 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./BAOCAOTHEOROLL.scss";
-import { useSelector } from "react-redux";
-import {
-  MACHINE_LIST,
-  SX_BAOCAOROLLDATA,
-  SX_LOSS_TREND_DATA,
-  SX_TREND_LOSS_DATA,
-  UserData,
-} from "../../../api/GlobalInterface";
 import { generalQuery } from "../../../api/Api";
-import { RootState } from "../../../redux/store";
-import { f_getMachineListData } from "../../../api/GlobalFunction";
 import { Chart } from "devextreme-react";
 import { ArgumentAxis, CommonSeriesSettings, Format, Label, Legend, Series, Title, ValueAxis } from "devextreme-react/chart";
 import { IconButton } from "@mui/material";
@@ -24,14 +14,13 @@ import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend"
 import SX_MonthlyLossTrend from "../../../components/Chart/SX/SX_MonthlyLossTrend";
 import SX_YearlyLossTrend from "../../../components/Chart/SX/SX_YearlyLossTrend";
 import AGTable from "../../../components/DataTable/AGTable";
+import { MACHINE_LIST, SX_BAOCAOROLLDATA, SX_LOSS_TREND_DATA, SX_TREND_LOSS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const BAOCAOTHEOROLL = () => {
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
-  const [showhideM, setShowHideM] = useState(false);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const clickedRow = useRef<any>(null);
-  const [trigger, setTrigger] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
+
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
@@ -42,12 +31,7 @@ const BAOCAOTHEOROLL = () => {
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());     
   };
-  const [columns, setColumns] = useState<Array<any>>([]);
-  const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const [isLoading, setisLoading] = useState(false);
+
   const [fromdate, setFromDate] = useState(moment().add(-8, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [factory, setFactory] = useState("ALL");
@@ -203,15 +187,13 @@ const BAOCAOTHEOROLL = () => {
           setPlanDataTable(loadeddata);
           //console.log('loadeddata', loadeddata);
           datatbTotalRow.current = loadeddata.length;
-          setReadyRender(true);
-          setisLoading(false);
+         
           clearSelection();
-          if (!showhideM)
-            Swal.fire(
-              "Thông báo",
-              "Đã load: " + response.data.data.length + " dòng",
-              "success"
-            );
+          Swal.fire(
+            "Thông báo",
+            "Đã load: " + response.data.data.length + " dòng",
+            "success"
+          );
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -439,7 +421,7 @@ const BAOCAOTHEOROLL = () => {
       </Chart>
     );
   }, [sxlosstrendingdata]);
-  const columns_loss = [
+  const columns_loss = useMemo(() => [
     {
       field: 'PHANLOAI',
       headerName: 'PHANLOAI',
@@ -935,7 +917,7 @@ const BAOCAOTHEOROLL = () => {
       headerName: 'ID',
       width: 40
     },
-  ]
+  ], [plandatatable]);
 
   const loss_data_ag_table = useMemo(() => {
     return (
@@ -1494,13 +1476,8 @@ const BAOCAOTHEOROLL = () => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });    
   }
-    
   useEffect(() => {
     getMachineList();
-    //initFunction();
-    /* getDailySXLossTrendingData(machine,factory, moment().add(-8, "day").format("YYYY-MM-DD"), moment().add(0, "day").format("YYYY-MM-DD"));
-    loadBaoCaoTheoRoll(); */
-    
     return () => {
       /* window.clearInterval(intervalID);       */
     };
@@ -1568,9 +1545,7 @@ const BAOCAOTHEOROLL = () => {
               <div className='forminputcolumn'>
                 <button
                   className='tranhatky'
-                  onClick={() => {
-                    setisLoading(true);
-                    setReadyRender(false);
+                  onClick={() => {                 
                     initFunction();
                   }}
                 >

@@ -4,14 +4,15 @@ import Swal from "sweetalert2";
 import "./OVER_MONITOR.scss";
 import { getSocket, getUserData } from "../../../api/Api";
 import { MdCancel, MdInput, MdRefresh } from "react-icons/md";
-import { PROD_OVER_DATA } from "../../../api/GlobalInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { checkBP, f_insert_Notification_Data, f_loadProdOverData, f_updateProdOverData } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data} from "../../../api/GlobalFunction";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { f_loadProdOverData, f_updateProdOverData } from "../utils/kdUtils";
+import { PROD_OVER_DATA } from "../interfaces/kdInterface";
 const OVER_MONITOR = () => {
   const [only_pending, setOnly_Pending] = useState(true)
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);

@@ -5,7 +5,7 @@ import { FcSearch } from "react-icons/fc";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting, getSocket, getUserData } from "../../../api/Api";
-import { checkBP, f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insert_Notification_Data, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -15,18 +15,16 @@ import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { TbLogout } from "react-icons/tb";
 import {
-  CodeListData,
-  CustomerListData,
-  InvoiceSummaryData,
-  InvoiceTableData,
+
   UserData,
-  WEB_SETTING_DATA,
-  XUATKHOPODATA,
+  WEB_SETTING_DATA,  
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { CodeListData, CustomerListData, InvoiceSummaryData, InvoiceTableData, XUATKHOPODATA } from "../interfaces/kdInterface";
+import { f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_deleteInvoice, f_getcodelist, f_getcustomerlist, f_insertInvoice, f_loadInvoiceDataFull, f_readUploadFile, f_updateInvoice, f_updateInvoiceNo } from "../utils/kdUtils";
 const InvoiceManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);

@@ -4,16 +4,16 @@ import { getCompany, getUserData } from "../../../../api/Api";
 import MACHINE_COMPONENT3 from "../Machine/MACHINE_COMPONENT3";
 import EQ_SUMMARY from "./EQ_SUMMARY";
 import { IconButton } from "@mui/material";
-import { EQ_STT, MachineInterface2 } from "../../../../api/GlobalInterface";
 import "./EQ_STATUS2.scss";
-import { checkBP, f_addMachine, f_deleteMachine, f_handle_loadEQ_STATUS, f_handle_toggleMachineActiveStatus } from "../../../../api/GlobalFunction";
+import { checkBP} from "../../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import Swal from "sweetalert2";
 import { AiFillCloseCircle, AiFillDelete, AiFillFileAdd, AiFillPlusCircle, AiOutlineSetting } from "react-icons/ai";
 import AGTable from "../../../../components/DataTable/AGTable";
 import CustomDialog from "../../../../components/Dialog/CustomDialog";
-import { GiManualMeatGrinder } from "react-icons/gi";
+import { EQ_STT, MachineInterface2 } from "../interfaces/khsxInterface";
+import { f_addMachine, f_deleteMachine, f_handle_loadEQ_STATUS, f_handle_toggleMachineActiveStatus } from "../utils/khsxUtils";
 const EQ_STATUS2 = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [factory, setFactory] = useState("NM1");
@@ -256,7 +256,7 @@ const EQ_STATUS2 = () => {
                           onClick={() => { }}
                           onMouseEnter={() => { }}
                           onMouseLeave={() => { }}
-                          onDoubleClick={(e) => {
+                          onDoubleClick={(e: any) => {
                             console.log(e)
                             if (e.eq_active === "OK") {
                               handleToggleMachineActiveStatus(e.eq_code ?? "", "NG");

@@ -9,13 +9,11 @@ import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/Inspection
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/INSPECTION/ChartInspectionWorst";
-import {
-  CodeListData,
+import {  
   DEFECT_TRENDING_DATA,
   DailyPPMData,
   InspectSummary,
-  MonthlyPPMData,
-  PATROL_HEADER_DATA,
+  MonthlyPPMData,  
   WeeklyPPMData,
   WorstData,
   YearlyPPMData,
@@ -43,6 +41,8 @@ import InspectionWeeklyFcost2 from "../../../components/Chart/INSPECTION/Inspect
 import InspectionMonthlyFcost2 from "../../../components/Chart/INSPECTION/InspectMonthlyFcost2";
 import InspectionYearlyFcost2 from "../../../components/Chart/INSPECTION/InspectYearlyFcost2";
 import WidgetInspection2 from "../../../components/Widget/WidgetInspection2";
+import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { PATROL_HEADER_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 const INSPECT_REPORT2 = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);

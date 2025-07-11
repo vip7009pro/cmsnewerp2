@@ -10,28 +10,20 @@ import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow } from "react-icons/fc";
 import {
   checkBP,
-  f_getMachineListData,
-  f_getRecentDMData,
-  f_insertDMYCSX,
-  f_loadDMSX,
-  f_saveQLSX,
-  f_updateDMSX_LOSS_KT,
-  PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
 import { BiShow } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import {
-  DINHMUC_QSLX,
-  MACHINE_LIST,
-  QLSXPLANDATA,
-  RecentDM,
+import {  
   UserData,
   WEB_SETTING_DATA,
-  YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
+import { f_getMachineListData, f_getRecentDMData, f_loadDMSX, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
 const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: string, G_CODE: string, EQ_NAME: string }) => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;

@@ -2,18 +2,13 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./KPI_NVSX.scss";
 import { useSelector } from "react-redux";
-import { SX_KPI_NV_DATA } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";
-import {
-  f_load_SX_NV_KPI_DATA_Daily,
-  f_load_SX_NV_KPI_DATA_Monthly,
-  f_load_SX_NV_KPI_DATA_Weekly,
-  f_load_SX_NV_KPI_DATA_Yearly,
-} from "../../../api/GlobalFunction";
 import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { SX_KPI_NV_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { f_load_SX_NV_KPI_DATA_Daily, f_load_SX_NV_KPI_DATA_Monthly, f_load_SX_NV_KPI_DATA_Weekly, f_load_SX_NV_KPI_DATA_Yearly } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const KPI_NVSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm()

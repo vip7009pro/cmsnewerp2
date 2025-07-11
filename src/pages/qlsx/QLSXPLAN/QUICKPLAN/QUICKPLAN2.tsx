@@ -16,21 +16,8 @@ import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
-  checkBP,
-  f_addProcessDataTotalQLSX,
-  f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST,
-  f_checkProcessNumberContinuos,
-  f_deleteProcessNotInCurrentListFromDataBase,
-  f_deleteProdProcessData,
-  f_getMachineListData,
-  f_getRecentDMData,
+  checkBP, 
   f_insert_Notification_Data,
-  f_insertDMYCSX,
-  f_insertDMYCSX_New,
-  f_loadProdProcessData,
-  f_saveQLSX,
-  f_updateDMSX_LOSS_KT,
-  PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
@@ -42,18 +29,15 @@ import YCKT from "../YCKT/YCKT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
-  DINHMUC_QSLX,
-  MACHINE_LIST,
-  PROD_PROCESS_DATA,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
-  RecentDM,
   UserData,
   WEB_SETTING_DATA,
-  YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
+import { f_insertDMYCSX, f_insertDMYCSX_New, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { DINHMUC_QSLX, MACHINE_LIST, PROD_PROCESS_DATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
+import { f_addProcessDataTotalQLSX, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_getRecentDMData, f_loadProdProcessData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
 const QUICKPLAN2 = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)

@@ -1,11 +1,6 @@
-import { Button } from "@mui/material";
-import React from "react";
-import Swal from "sweetalert2";
 import "./MACHINE_COMPONENT.scss";
-import {
-  MachineInterface,
-  QLSXPLANDATA,
-} from "../../../../api/GlobalInterface";
+import { MachineInterface, QLSXPLANDATA } from "../interfaces/khsxInterface";
+
 const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
   const runtopcolor: string = "#2fd5eb";
   const runbotcolor: string = "#8ce9f5";

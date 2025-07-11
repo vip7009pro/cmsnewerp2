@@ -5,7 +5,8 @@ import { HiLogout, HiOutlineQrcode } from "react-icons/hi";
 import { TbPrinter, TbReportAnalytics } from "react-icons/tb";
 import "./PLAN_STATUS_COMPONENTS.scss";
 import { LinearProgressWithLabel } from "../../../../components/Navbar/AccountInfo/AccountInfo";
-import { SX_DATA } from "../../../../api/GlobalInterface";
+import { SX_DATA } from "../interfaces/khsxInterface";
+
 const PLAN_STATUS_COMPONENTS = ({ DATA }: { DATA: SX_DATA }) => {
   let kq_tem: number =
     DATA.CHOTBC === null

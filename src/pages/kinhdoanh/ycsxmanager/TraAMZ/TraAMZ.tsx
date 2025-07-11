@@ -9,10 +9,10 @@ import { SaveExcel } from "../../../../api/GlobalFunction";
 
 import "./TraAMZ.scss";
 import { TbLogout } from "react-icons/tb";
-import { AMAZON_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import { AMAZON_DATA } from "../../interfaces/kdInterface";
 
 const TraAMZ = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

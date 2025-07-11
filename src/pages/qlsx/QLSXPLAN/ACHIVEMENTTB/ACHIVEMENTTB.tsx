@@ -1,29 +1,20 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
-import { f_getMachineListData } from "../../../../api/GlobalFunction";
 import "./ACHIVEMENTTB.scss";
-import { MACHINE_LIST, SX_ACHIVE_DATE } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { MACHINE_LIST, SX_ACHIVE_DATE } from "../interfaces/khsxInterface";
+import { f_getMachineListData, f_loadTiLeDat } from "../utils/khsxUtils";
 
 const ACHIVEMENTTB = () => {
-  const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]); 
-  const clearSelection = () => {
-    if (dataGridRef.current) {
-      dataGridRef.current.instance.clearSelection();
-      qlsxplandatafilter.current = [];
-      console.log(dataGridRef.current);
-    }
-  };  
+
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());    
   }; 
 
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [factory, setFactory] = useState("NM1");
   const [machine, setMachine] = useState("ALL");
   const [plandatatable, setPlanDataTable] = useState<SX_ACHIVE_DATE[]>([]);
@@ -43,70 +34,17 @@ const ACHIVEMENTTB = () => {
     STEP:0,
     TOTAL_RATE:0
   });
-  const qlsxplandatafilter = useRef<SX_ACHIVE_DATE[]>([]);
-  const loadTiLeDat = (plan_date: string) => {
+  const loadTiLeDat = async (plan_date: string) => {
     //console.log(todate);
-    generalQuery("loadtiledat", {
-      PLAN_DATE: plan_date,
-      MACHINE: machine,
-      FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loadeddata: SX_ACHIVE_DATE[] = response.data.data.map(
-            (element: SX_ACHIVE_DATE, index: number) => {
-              
-              return {
-                ...element,                
-                id: index,
-              };
-            }
-          );
-          //console.log(loadeddata);
-          let temp_plan_data: SX_ACHIVE_DATE = {
-            id: -1,
-            DAY_RATE: 0,
-            EQ_NAME: 'TOTAL',
-            G_NAME_KD: 'TOTAL',
-            NIGHT_RATE: 0,
-            PLAN_DAY: 0,
-            PLAN_NIGHT: 0,
-            PLAN_TOTAL: 0,
-            PROD_REQUEST_NO: 'TOTAL',
-            RESULT_DAY: 0,
-            RESULT_NIGHT: 0,
-            RESULT_TOTAL: 0,
-            STEP: 0,
-            TOTAL_RATE: 0
-          };          
-          for (let i = 0; i < loadeddata.length; i++) {
-            temp_plan_data.PLAN_DAY += loadeddata[i].PLAN_DAY;
-            temp_plan_data.PLAN_NIGHT += loadeddata[i].PLAN_NIGHT;
-            temp_plan_data.PLAN_TOTAL += loadeddata[i].PLAN_TOTAL;                        
-            temp_plan_data.RESULT_DAY += loadeddata[i].RESULT_DAY;                        
-            temp_plan_data.RESULT_NIGHT += loadeddata[i].RESULT_NIGHT;                        
-            temp_plan_data.RESULT_TOTAL += loadeddata[i].RESULT_TOTAL;                        
-          }
-          temp_plan_data.DAY_RATE = (temp_plan_data.RESULT_DAY / temp_plan_data.PLAN_DAY) * 100;
-          temp_plan_data.NIGHT_RATE = (temp_plan_data.RESULT_NIGHT / temp_plan_data.PLAN_NIGHT) * 100;
-          temp_plan_data.TOTAL_RATE = (temp_plan_data.RESULT_TOTAL / temp_plan_data.PLAN_TOTAL) * 100;
-
-          setSummaryData(temp_plan_data);
-
-          setPlanDataTable([temp_plan_data, ...loadeddata, ]);
-          datatbTotalRow.current = loadeddata.length;   
-          clearSelection();      
-        } else {
-          setPlanDataTable([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let { summaryData, planDataTable } = await f_loadTiLeDat(plan_date, machine, factory);  
+    setSummaryData(summaryData);  
+    setPlanDataTable(planDataTable);  
+    datatbTotalRow.current = planDataTable.length;   
+    if(planDataTable.length === 0) {
+      Swal.fire("Thông báo", "Nội dung: " + "Không có dữ liệu", "error");
+    }
   };
-  const columns_planresult = [
+  const columns_planresult = useMemo(() => [
     {
       headerName: "EQ_NAME",
       field: "EQ_NAME",
@@ -364,7 +302,7 @@ const ACHIVEMENTTB = () => {
         }
       }
     },
-  ]
+  ],[]);
   const planDataTableAG = useMemo(() =>
     <AGTable      
       showFilter={true}

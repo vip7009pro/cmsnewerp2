@@ -17,12 +17,6 @@ import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
-  f_getMachineListData,
-  f_getRecentDMData,
-  f_insertDMYCSX,
-  f_saveQLSX,
-  f_updateDMSX_LOSS_KT,
-  PLAN_ID_ARRAY,
   SaveExcel,
 } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
@@ -34,15 +28,14 @@ import YCKT from "../YCKT/YCKT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
-  DINHMUC_QSLX,
-  MACHINE_LIST,
-  QLSXPLANDATA,
-  RecentDM,
   UserData,
   WEB_SETTING_DATA,
-  YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
+import { f_getMachineListData, f_getRecentDMData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
 const QUICKPLAN2_OLD = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)

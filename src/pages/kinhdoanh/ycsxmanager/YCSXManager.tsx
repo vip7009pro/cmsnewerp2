@@ -14,36 +14,8 @@ import * as XLSX from "xlsx";
 import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
 import {
   checkBP,
-  f_batchDeleteYCSX,
-  f_check_G_NAME_2Ver_active,
-  f_checkDuplicateAMZ,
-  f_checkFCST_G_CODE,
-  f_checkG_CODE_ACTIVE,
-  f_checkG_CODE_PO_BALANCE,
-  f_checkStock_G_CODE,
-  f_checkYCSX_EXIST,
   f_downloadFile,
-  f_generateNextProdRequestNo,
-  f_getcodelist,
-  f_getcustomerlist,
-  f_getNextP500_IN_NO,
-  f_handleAmazonData,
   f_insert_Notification_Data,
-  f_insertDMYCSX,
-  f_insertDMYCSX_New,
-  f_insertP500,
-  f_insertP501,
-  f_insertYCSX,
-  f_isBOM_M_CODE_MATCHING,
-  f_isBOMGIA_HAS_MAIN,
-  f_isIDCongViecExist,
-  f_loadPONOList,
-  f_process_lot_no_generate,
-  f_traYCSX,
-  f_updateDMSX_LOSS_KT,
-  f_updateYCSX,
-  renderBanVe,
-  renderYCSX,
 } from "../../../api/GlobalFunction";
 import { MdLock, MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import "./YCSXManager.scss";
@@ -54,22 +26,15 @@ import TraAMZ from "./TraAMZ/TraAMZ";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
-import {
-  CodeListData,
-  CustomerListData,
-  FCSTTDYCSX,
-  POBALANCETDYCSX,
-  PONOLIST,
-  TONKHOTDYCSX,
-  UploadAmazonData,
-  UserData,
-  YCSXTableData,
-} from "../../../api/GlobalInterface";
+import { UserData, } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { BiDownload } from "react-icons/bi";
 import MyTabs from "../../../components/MyTab/MyTab";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
+import { CodeListData, CustomerListData, FCSTTDYCSX, POBALANCETDYCSX, PONOLIST, TONKHOTDYCSX, UploadAmazonData, YCSXTableData } from "../interfaces/kdInterface";
+import { f_batchDeleteYCSX, f_check_G_NAME_2Ver_active, f_checkDuplicateAMZ, f_checkFCST_G_CODE, f_checkG_CODE_ACTIVE, f_checkG_CODE_PO_BALANCE, f_checkStock_G_CODE, f_checkYCSX_EXIST, f_generateNextProdRequestNo, f_getcodelist, f_getcustomerlist, f_getNextP500_IN_NO, f_handleAmazonData, f_insertDMYCSX, f_insertDMYCSX_New, f_insertP500, f_insertP501, f_insertYCSX, f_isBOM_M_CODE_MATCHING, f_isBOMGIA_HAS_MAIN, f_isIDCongViecExist, f_loadPONOList, f_process_lot_no_generate, f_traYCSX, f_updateDMSX_LOSS_KT, f_updateYCSX } from "../utils/kdUtils";
+import { renderBanVe, renderYCSX } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const YCSXManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tabIndex, setTabIndex] = useState(0);

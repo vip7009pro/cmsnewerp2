@@ -18,17 +18,13 @@ import {
 import PieChart, { Export, Font } from "devextreme-react/pie-chart";
 import "./CAPASX.scss";
 import CIRCLE_COMPONENT from "./CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-import {
-  DATA_DIEM_DANH,
-  DELIVERY_PLAN_CAPA,
-  EQ_STT,
-  MACHINE_COUNTING,
-  PROD_PLAN_CAPA_DATA,
+import { 
   WEB_SETTING_DATA,
-  YCSX_BALANCE_CAPA_DATA,
 } from "../../../../api/GlobalInterface";
-import { CustomResponsiveContainer, f_getProductionPlanLeadTimeCapaData, f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
+
 import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
+import { DATA_DIEM_DANH, DELIVERY_PLAN_CAPA, EQ_STT, MACHINE_COUNTING, PROD_PLAN_CAPA_DATA, YCSX_BALANCE_CAPA_DATA } from "../interfaces/khsxInterface";
+import { f_getProductionPlanLeadTimeCapaData, f_handle_loadEQ_STATUS } from "../utils/khsxUtils";
 const CAPASX = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime+300;

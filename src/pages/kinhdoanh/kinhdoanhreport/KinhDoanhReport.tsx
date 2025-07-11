@@ -17,14 +17,7 @@ import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClo
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
 import {
-  CUSTOMER_REVENUE_DATA,
-  CustomerListData,
-  MonthlyClosingData,
-  OVERDUE_DATA,
-  PIC_REVENUE_DATA,
-  RunningPOData,
   WEB_SETTING_DATA,
-  WeekLyPOData,
   WeeklyClosingData,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
@@ -35,6 +28,7 @@ import KDDailyOverdue from "../../../components/Chart/KD/KDDailyOverdue";
 import KDWeeklyOverdue from "../../../components/Chart/KD/KDWeeklyOverdue";
 import KDMonthlyOverdue from "../../../components/Chart/KD/KDMonthlyOverdue";
 import KDYearlyOverdue from "../../../components/Chart/KD/KDYearlyOverdue";
+import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, OVERDUE_DATA, PIC_REVENUE_DATA, RunningPOData, WeekLyPOData } from "../interfaces/kdInterface";
 interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;

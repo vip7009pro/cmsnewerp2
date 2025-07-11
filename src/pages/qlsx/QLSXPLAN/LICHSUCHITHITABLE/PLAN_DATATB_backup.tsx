@@ -15,31 +15,13 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
 import {
-  checkBP,
-  f_deleteChiThiMaterialLine,
-  f_getMachineListData,
-  f_handle_movePlan,
-  f_handle_xuatdao_sample,
-  f_handle_xuatlieu_sample,
-  f_handleDangKyXuatLieu,
-  f_handleGetChiThiTable,
-  f_handleResetChiThiTable,
-  f_loadQLSXPLANDATA,
-  f_saveChiThiMaterialTable,
-  f_updateBatchPlan,
-  f_updateLossKT_ZTB_DM_HISTORY,
-  f_updatePlanOrder,
-  renderChiThi,
-  renderChiThi2,
+  checkBP, 
   SaveExcel,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
-  MACHINE_LIST,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
 import { FaWarehouse } from "react-icons/fa";
@@ -55,6 +37,8 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
+import { MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
 const PLAN_DATATB_OLD = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);

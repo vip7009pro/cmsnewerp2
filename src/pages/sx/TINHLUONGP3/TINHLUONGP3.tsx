@@ -2,13 +2,15 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./TINHLUONGP3.scss";
 import { useSelector } from "react-redux";
-import { LUONGP3_DATA, MACHINE_LIST, UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { LUONGP3_DATA,  UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";
-import { f_getMachineListData } from "../../../api/GlobalFunction";
+
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
+import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 export const f_handleLoadluongP3Data = async (data: any) => {
   let kq: LUONGP3_DATA[] = [];
   try {

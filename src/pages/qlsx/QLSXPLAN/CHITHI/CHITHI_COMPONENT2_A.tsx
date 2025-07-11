@@ -6,11 +6,10 @@ import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT2.scss";
 import Barcode from "react-barcode";
 import {
-  FullBOM,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
+import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 interface PLAN_COMBO {
   PLAN_LIST: QLSXPLANDATA[];
 }

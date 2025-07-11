@@ -2,10 +2,10 @@ import React from 'react';
 import './MachineTimeLine.scss'; // Import file CSS để định dạng
 import { addMinutes } from 'date-fns';
 import moment from 'moment';
-import { ProductionPlan } from '../../../../api/GlobalInterface';
 import { Rnd } from 'react-rnd';
 import { IconButton } from '@mui/material';
 import { GridClearIcon } from '@mui/x-data-grid';
+import { ProductionPlan } from '../interfaces/khsxInterface';
 interface MachineTimeLineProps {
   plans: ProductionPlan[];
   onDoubleClick?: (plan: ProductionPlan) => void;

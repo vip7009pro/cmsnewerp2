@@ -19,32 +19,7 @@ import { MdOutlinePendingActions, MdResetTv } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
-  checkBP,
-  f_getMachineListData,
-  f_getRecentDMData,
-  renderBanVe,
-  renderChiThi,
-  renderChiThi2,
-  renderYCSX,
-  f_saveSinglePlan,
-  f_handle_loadEQ_STATUS,
-  f_saveQLSX,
-  f_insertDMYCSX,
-  f_updateBatchPlan,
-  f_loadQLSXPLANDATA,
-  f_handleGetChiThiTable,
-  f_handleResetChiThiTable,
-  f_saveChiThiMaterialTable,
-  f_handletraYCSXQLSX,
-  f_setPendingYCSX,
-  f_handleDangKyXuatLieu,
-  f_deleteQLSXPlan,
-  f_deleteChiThiMaterialLine,
-  f_addQLSXPLAN,
-  f_handle_xuatlieu_sample,
-  f_handle_xuatdao_sample,
-  f_neededSXQtyByYCSX,
-  f_updateLossKT_ZTB_DM_HISTORY,
+  checkBP,  
   f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
@@ -57,20 +32,16 @@ import { resetChithiArray } from "../../../../redux/slices/globalSlice";
 import KHOAO from "../KHOAO/KHOAO";
 import { TbLogout } from "react-icons/tb";
 import {
-  DINHMUC_QSLX,
-  EQ_STT,
-  MACHINE_LIST,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
-  RecentDM,
-  UserData,
-  YCSX_SLC_DATA,
-  YCSXTableData,
+  UserData 
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { getSettingUPHUnitLoss } from "../../../../components/JSONData/DinhMuc";
+import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { f_insertDMYCSX } from "../../../kinhdoanh/utils/kdUtils";
+import { f_addQLSXPLAN, f_deleteChiThiMaterialLine, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_handletraYCSXQLSX, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
+import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 const MACHINE_OLD = () => {
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])

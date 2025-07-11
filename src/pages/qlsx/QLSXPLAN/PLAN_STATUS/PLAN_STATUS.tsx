@@ -1,10 +1,10 @@
 import moment from "moment";
 import { useEffect, useState, useTransition } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { f_getMachineListData } from "../../../../api/GlobalFunction";
 import "./PLAN_STATUS.scss";
 import PLAN_STATUS_COMPONENTS from "./PLAN_STATUS_COMPONENTS";
-import { MACHINE_LIST, SX_DATA } from "../../../../api/GlobalInterface";
+import { f_getMachineListData } from "../utils/khsxUtils";
+import { MACHINE_LIST, SX_DATA } from "../interfaces/khsxInterface";
 const PLAN_STATUS = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {

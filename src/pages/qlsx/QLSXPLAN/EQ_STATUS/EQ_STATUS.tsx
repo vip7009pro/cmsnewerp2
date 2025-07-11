@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import "./EQ_STATUS.scss";
 import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
 import { Checkbox } from "@mui/material";
-import { EQ_STT } from "../../../../api/GlobalInterface";
 import { useSpring, animated } from "@react-spring/web";
-import { f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
+import { EQ_STT } from "../interfaces/khsxInterface";
+import { f_handle_loadEQ_STATUS } from "../utils/khsxUtils";
+
 const EQ_STATUS = () => {
   const [time, setTime] = useState(5);
   const [fullScreen, setFullScreen] = useState(false);

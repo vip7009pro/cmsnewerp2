@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../../../redux/store";
 import { useSelector } from "react-redux";
 import "./CHECKSHEETSX.scss";
-import { QLSXPLANDATA, UserData } from "../../../../api/GlobalInterface";
+import {UserData } from "../../../../api/GlobalInterface";
+import { QLSXPLANDATA } from "../interfaces/khsxInterface";
 const CHECKSHEETSX = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,

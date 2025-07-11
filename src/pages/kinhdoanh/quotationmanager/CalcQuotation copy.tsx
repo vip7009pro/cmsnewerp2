@@ -29,15 +29,10 @@ import moment from "moment";
 import { BiSave } from "react-icons/bi";
 import { GrUpdate } from "react-icons/gr";
 import { TbLogout } from "react-icons/tb";
-import {
-  BANGGIA_DATA_CALC,
-  BOM_GIA,
-  CODEDATA,
-  DEFAULT_DM,
-  GIANVL,
-  UserData,
-} from "../../../api/GlobalInterface";
+
 import { KeyboardNavigation } from "devextreme-react/tree-list";
+import { BANGGIA_DATA_CALC, CODEDATA, DEFAULT_DM, GIANVL } from "../interfaces/kdInterface";
+import { BOM_GIA, UserData } from "../../../api/GlobalInterface";
 const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,

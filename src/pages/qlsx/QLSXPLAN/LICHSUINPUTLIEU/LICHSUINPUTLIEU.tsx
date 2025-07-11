@@ -1,18 +1,18 @@
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { f_lichsuinputlieu } from "../../../../api/GlobalFunction";
 import "./LICHSUINPUTLIEU.scss";
-import { LICHSUINPUTLIEU_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { useForm } from "react-hook-form";
+import { LICHSUINPUTLIEU_DATA } from "../interfaces/khsxInterface";
+import { f_lichsuinputlieu } from "../utils/khsxUtils";
 const LICHSUINPUTLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm()
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]); 
-  const column_lichsuinputlieusanxuat = [
+  const column_lichsuinputlieusanxuat = useMemo(() => [
     { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80 },
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -28,7 +28,7 @@ const LICHSUINPUTLIEU = () => {
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 60 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
-  ];
+  ],[]);
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
     column_lichsuinputlieusanxuat
   );

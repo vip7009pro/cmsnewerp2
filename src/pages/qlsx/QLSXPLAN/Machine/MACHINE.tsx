@@ -33,43 +33,6 @@ import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
 import {
   checkBP,
-  f_getMachineListData,
-  f_getRecentDMData,
-  renderBanVe,
-  renderChiThi,
-  renderChiThi2,
-  renderYCSX,
-  f_saveSinglePlan,
-  f_handle_loadEQ_STATUS,
-  f_saveQLSX,
-  f_insertDMYCSX,
-  f_updateBatchPlan,
-  f_loadQLSXPLANDATA,
-  f_handleGetChiThiTable,
-  f_handleResetChiThiTable,
-  f_saveChiThiMaterialTable,
-  f_handletraYCSXQLSX,
-  f_setPendingYCSX,
-  f_handleDangKyXuatLieu,
-  f_deleteQLSXPlan,
-  f_deleteChiThiMaterialLine,
-  f_addQLSXPLAN,
-  f_handle_xuatlieu_sample,
-  f_handle_xuatdao_sample,
-  f_updateLossKT_ZTB_DM_HISTORY,
-  f_checkProcessNumberContinuos,
-  f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST,
-  f_deleteProcessNotInCurrentListFromDataBase,
-  f_deleteProdProcessData,
-  f_addProcessDataTotal,
-  f_loadProdProcessData,
-  f_addProcessDataTotalQLSX,
-  f_handleGetChiThiTable_New,
-  f_calcMaterialMet_New,
-  f_handleResetChiThiTable_New,
-  f_insertDMYCSX_New,
-  f_loadQLSXPLANDATA2,
-  f_handletraYCSXQLSX_New,
   f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
@@ -81,21 +44,16 @@ import { RootState } from "../../../../redux/store";
 import { resetChithiArray } from "../../../../redux/slices/globalSlice";
 import KHOAO from "../KHOAO/KHOAO";
 import { TbLogout } from "react-icons/tb";
-import {
-  DINHMUC_QSLX,
-  EQ_STT,
-  MACHINE_LIST,
-  PROD_PROCESS_DATA,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
-  RecentDM,
+import { 
   UserData,
-  YCSX_SLC_DATA,
-  YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
+import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { f_insertDMYCSX_New } from "../../../kinhdoanh/utils/kdUtils";
+import { f_addProcessDataTotalQLSX, f_addQLSXPLAN, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteChiThiMaterialLine, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleGetChiThiTable_New, f_handleResetChiThiTable, f_handleResetChiThiTable_New, f_handletraYCSXQLSX, f_handletraYCSXQLSX_New, f_loadProdProcessData, f_loadQLSXPLANDATA, f_loadQLSXPLANDATA2, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
+import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, PROD_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 const MACHINE = () => {
   console.log("vao machine");
   const myComponentRef = useRef();

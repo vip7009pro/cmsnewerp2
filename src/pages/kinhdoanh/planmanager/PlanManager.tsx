@@ -10,10 +10,11 @@ import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { INSPECT_STATUS_DATA, PlanTableData, UserData } from "../../../api/GlobalInterface";
+import { INSPECT_STATUS_DATA, UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { PlanTableData } from "../interfaces/kdInterface";
 const PlanManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);

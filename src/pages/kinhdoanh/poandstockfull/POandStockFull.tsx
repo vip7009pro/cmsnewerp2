@@ -7,12 +7,12 @@ import INSPECTION from "../../qc/inspection/INSPECTION";
 import KHOTP from "../../kho/khotp/KHOTP";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
-import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
 import { AgGridReact } from "ag-grid-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import MyTabs from "../../../components/MyTab/MyTab";
 import AGTable from "../../../components/DataTable/AGTable";
+import { POFullCMS, POFullSummary } from "../interfaces/kdInterface";
 const POandStockFull = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({

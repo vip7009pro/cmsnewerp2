@@ -19,17 +19,17 @@ import "./CAPADATA.scss";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { generalQuery } from "../../../../api/Api";
-import { SaveExcel, checkBP, f_getMachineListData, f_saveQLSX } from "../../../../api/GlobalFunction";
+import { SaveExcel, checkBP,} from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import { BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import {
-  CAPA_LEADTIME_DATA,
-  DINHMUC_QSLX,
-  MACHINE_LIST,
+import { 
   UserData,
 } from "../../../../api/GlobalInterface";
+import { f_getDataDinhMucGCode, f_getMachineListData, f_saveQLSX } from "../utils/khsxUtils";
+import { CAPA_LEADTIME_DATA, DINHMUC_QSLX, MACHINE_LIST } from "../interfaces/khsxInterface";
+
 const CAPADATA = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
@@ -86,38 +86,8 @@ const CAPADATA = () => {
     LOSS_KT: 0,
     NOTE: "",
   });
-  const getDataDinhMucGCode = (G_CODE: string) => {
-    generalQuery("getdatadinhmuc_G_CODE", {
-      G_CODE: G_CODE,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let rowData = response.data.data[0];
-          setDataDinhMuc({
-            ...datadinhmuc,
-            FACTORY: rowData.FACTORY ?? "NA",
-            EQ1: rowData.EQ1 === "" || rowData.EQ1 === null ? "NA" : rowData.EQ1,
-            EQ2: rowData.EQ2 === "" || rowData.EQ2 === null ? "NA" : rowData.EQ2,
-            Setting1: rowData.Setting1 ?? 0,
-            Setting2: rowData.Setting2 ?? 0,
-            UPH1: rowData.UPH1 ?? 0,
-            UPH2: rowData.UPH2 ?? 0,
-            Step1: rowData.Step1 ?? 0,
-            Step2: rowData.Step2 ?? 0,
-            LOSS_SX1: rowData.LOSS_SX1 ?? 0,
-            LOSS_SX2: rowData.LOSS_SX2 ?? 0,
-            LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
-            LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
-            NOTE: rowData.NOTE ?? "",
-          });
-        } else {
-          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getDataDinhMucGCode = async (G_CODE: string) => {
+    setDataDinhMuc(await f_getDataDinhMucGCode(G_CODE));
   };
   const handle_loaddatasx = () => {
     Swal.fire({

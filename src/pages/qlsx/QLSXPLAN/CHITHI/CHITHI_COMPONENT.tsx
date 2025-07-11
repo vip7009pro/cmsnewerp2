@@ -8,13 +8,13 @@ import Barcode from "react-barcode";
 import {
   DEFECT_PROCESS_DATA,
   FSC_LIST_DATA,
-  FullBOM,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
   UserData,
 } from "../../../../api/GlobalInterface";
-import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../../../../api/GlobalFunction";
+import { f_loadDefectProcessData } from "../../../../api/GlobalFunction";
 import { FaStar } from "react-icons/fa";
+import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
+import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { f_checkEQvsPROCESS } from "../utils/khsxUtils";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
   const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   const company: string = useSelector(

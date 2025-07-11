@@ -1,7 +1,7 @@
 import React from 'react'
 import './PATROL_COMPONENT.scss'
-import { PATROL_DATA } from '../../../api/GlobalInterface'
 import moment from 'moment';
+import { PATROL_DATA } from '../../qlsx/QLSXPLAN/interfaces/khsxInterface';
 const PATROL_COMPONENT = ({ data }: { data?: PATROL_DATA }) => {
   var datesetting1 = moment.utc(moment.utc().format('YYYY-MM-DD HH:mm:ss'));
   var datesetting2 = moment.utc(data?.TIME).format("YYYY-MM-DD HH:mm:ss");

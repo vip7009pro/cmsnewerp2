@@ -9,13 +9,11 @@ import { RootState } from "../../../../redux/store";
 /* import Barcode from 'react-barcode'; */
 import Barcode from "react-barcode";
 import {
-  FullBOM,
-  TONKHOTDYCSX,
-  TONVL,
   UserData,
-  YCSXTableData,
+ 
 } from "../../../../api/GlobalInterface";
 import { checkHSD2 } from "../../../../api/GlobalFunction";
+import { FullBOM, TONKHOTDYCSX, TONVL, YCSXTableData } from "../../interfaces/kdInterface";
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;

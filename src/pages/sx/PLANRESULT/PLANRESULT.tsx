@@ -19,19 +19,8 @@ import { BiSearch } from "react-icons/bi";
 import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
-
-import {
-  ACHIVEMENT_DATA,
-  DAILY_SX_DATA,
-  MACHINE_COUNTING,
-  MACHINE_LIST,
-  MONTHLY_SX_DATA,
-  OPERATION_TIME_DATA,
-  SX_LOSS_TREND_DATA,
-  TOTAL_TIME,
-  WEEKLY_SX_DATA,
-} from "../../../api/GlobalInterface";
-import { f_getMachineListData } from "../../../api/GlobalFunction";
+import { ACHIVEMENT_DATA, DAILY_SX_DATA, MACHINE_COUNTING, MACHINE_LIST, MONTHLY_SX_DATA, OPERATION_TIME_DATA, SX_LOSS_TREND_DATA, TOTAL_TIME, WEEKLY_SX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 
 const PLANRESULT = () => {
   const { height, width } = useWindowDimensions();

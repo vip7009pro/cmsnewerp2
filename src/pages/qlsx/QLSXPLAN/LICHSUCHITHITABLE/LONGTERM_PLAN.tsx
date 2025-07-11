@@ -1,17 +1,16 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { checkBP, f_deleteLongtermPlan, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { MACHINE_LIST, LONGTERM_PLAN_DATA, UserData, PROD_PLAN_CAPA_DATA } from "../../../../api/GlobalInterface";
-/* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
-import "ag-grid-community/styles/ag-theme-quartz.css"; */
+import {UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
+import { LONGTERM_PLAN_DATA, MACHINE_LIST, PROD_PLAN_CAPA_DATA } from "../interfaces/khsxInterface";
+import { f_deleteLongtermPlan, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../utils/khsxUtils";
 const LONGTERM_PLAN = () => {
-  const [showQuickPlan, setShowQuickPlan] = useState(false);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
     const [productionplancapadata, setProductionPlanCapaData] = useState<PROD_PLAN_CAPA_DATA[]>([]);
   const getMachineList = async () => {
@@ -39,7 +38,7 @@ const LONGTERM_PLAN = () => {
     "T7",
   ]
   
-  const columns_longterm_plan = [   
+  const columns_longterm_plan = useMemo(() => [   
     {
       field: "G_CODE",
       headerName: "G_CODE",
@@ -346,7 +345,7 @@ const LONGTERM_PLAN = () => {
       }
     },
     
-  ]
+  ], [longterm_plan]);
  
   const loadQLSXPlan = async (plan_date: string) => {
     setLongterm_plan(await f_loadLongTermPlan(plan_date));   

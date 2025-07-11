@@ -24,14 +24,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
 import {
   checkBP,
-  f_addProcessDataTotal,
-  f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST,
-  f_checkProcessNumberContinuos,
-  f_deleteProcessNotInCurrentListFromDataBase,
-  f_deleteProdProcessData,
-  f_getMachineListData,
   f_insert_Notification_Data,
-  f_loadProdProcessData,
   renderElement,
 } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
@@ -48,14 +41,10 @@ import {
   CODE_FULL_INFO,
   CODE_INFO,
   COMPONENT_DATA,
-  CustomerListData,
-  DEFAULT_DM,
-  FSC_LIST_DATA,
-  MACHINE_LIST,
+  FSC_LIST_DATA,  
   MASTER_MATERIAL_HSD,
   MATERIAL_INFO,
   MaterialListData,
-  PROD_PROCESS_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
@@ -63,6 +52,9 @@ import BOM_DESIGN from "./BOM_DESIGN";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { MACHINE_LIST, PROD_PROCESS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { CustomerListData, DEFAULT_DM } from "../../kinhdoanh/interfaces/kdInterface";
+import { f_addProcessDataTotal, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_loadProdProcessData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const BOM_MANAGER = () => {
   const [activeOnly, setActiveOnly] = useState(true)
   const [cndb, setCNDB] = useState(false)

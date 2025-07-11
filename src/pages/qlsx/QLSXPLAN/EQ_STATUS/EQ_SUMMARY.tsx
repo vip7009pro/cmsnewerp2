@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { EQ_STT } from "../interfaces/khsxInterface";
 import "./EQ_SUMMARY.scss";
-import { EQ_STT } from "../../../../api/GlobalInterface";
 
 interface EQ_STT_DATA {
   EQ_DATA: EQ_STT[];

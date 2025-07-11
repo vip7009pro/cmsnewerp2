@@ -10,11 +10,13 @@ import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { MdDelete } from "react-icons/md";
-import { CustomerListData, DKXL_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
+import { DKXL_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
-import { checkBP, f_insertO302, f_updateO301_OUT_CFM_QTY, f_updateStockM090 } from "../../../../api/GlobalFunction";
+import { checkBP,  f_updateStockM090 } from "../../../../api/GlobalFunction";
 import './XUATLIEU.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
+import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { f_insertO302, f_updateO301_OUT_CFM_QTY } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 const XUATLIEU = () => {
   const [giao_empl, setGiao_Empl] = useState("");
   const [nhan_empl, setNhan_Empl] = useState("");
