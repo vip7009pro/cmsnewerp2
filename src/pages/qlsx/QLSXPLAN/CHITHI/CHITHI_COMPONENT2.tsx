@@ -7,13 +7,12 @@ import "./CHITHI_COMPONENT2.scss";
 import Barcode from "react-barcode";
 import {
   UserData,
-  DEFECT_PROCESS_DATA,
-  FSC_LIST_DATA,
 } from "../../../../api/GlobalInterface";
-import { f_loadDefectProcessData } from "../../../../api/GlobalFunction";
 import { FaStar } from "react-icons/fa";
 import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
-import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { DEFECT_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { FSC_LIST_DATA } from "../../../muahang/interfaces/muaInterface";
+import { f_loadDefectProcessData } from "../utils/khsxUtils";
 interface PLAN_COMBO {
   PLAN_LIST: QLSXPLANDATA[];
 }
