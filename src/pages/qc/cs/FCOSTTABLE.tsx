@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import './CSFCOSTTABLE.scss'
-import { CSFCOST, InspectSummary, PATROL_HEADER_DATA, WEB_SETTING_DATA } from '../../../api/GlobalInterface'
 import { getGlobalSetting } from '../../../api/Api'
 import { nFormatter } from '../../../api/GlobalFunction'
+import { WEB_SETTING_DATA } from '../../../api/GlobalInterface'
+import { CSFCOST } from '../interfaces/qcInterface'
 const CSFCOSTTABLE = ({ data }: { data: CSFCOST }) => {
   let totalRMAAmount: number = 0;
   let totalTaxiAmount: number = 0;

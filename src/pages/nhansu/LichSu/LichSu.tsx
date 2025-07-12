@@ -20,7 +20,8 @@ import { SaveExcel, weekdayarray } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
+import { UserData } from "../../../api/GlobalInterface";
+import { DiemDanhLichSuData } from "../interfaces/nhansuInterface";
 
 const LichSu = () => {
   const userData: UserData | undefined = useSelector(

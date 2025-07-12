@@ -9,7 +9,7 @@ import {
   DAO_FILM_DATA,
   PQC3_DATA,
   TRA_PQC1_DATA,
-} from "../../../api/GlobalInterface";
+} from "../interfaces/qcInterface";
 import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 import AGTable from "../../../components/DataTable/AGTable";
 import { RootState } from "../../../redux/store";

@@ -15,7 +15,7 @@ import {
   INSPECT_NG_DATA,
   INSPECT_OUTPUT_DATA,
   INSPECT_PATROL,
-} from "../../../api/GlobalInterface";
+} from "../interfaces/qcInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

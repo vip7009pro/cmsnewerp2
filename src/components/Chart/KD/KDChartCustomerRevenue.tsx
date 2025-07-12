@@ -1,26 +1,10 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  PieChart,
-  Pie,
-} from "recharts";
+import { useEffect } from "react";
+import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 
-import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { CUSTOMER_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { CUSTOMER_REVENUE_DATA } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => { 
     const formatCash = (n: number) => {  

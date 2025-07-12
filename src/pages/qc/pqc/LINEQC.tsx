@@ -6,10 +6,13 @@ import { generalQuery, uploadQuery } from "../../../api/Api";
 import "./LINEQC.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { PQC1_DATA, SX_DATA, UserData } from "../../../api/GlobalInterface";
+import { UserData } from "../../../api/GlobalInterface";
+
 
 import 'react-html5-camera-photo/build/css/index.css';
 import { Html5QrcodeScanner } from 'html5-qrcode'
+import { PQC1_DATA } from "../interfaces/qcInterface";
+import { SX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const LINEQC = () => {
   const userData: UserData | undefined = useSelector(
@@ -405,9 +408,7 @@ const LINEQC = () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       console.log(devices);
-      const cameras = devices.filter(device => device.kind === 'videoinput');      
-      let kk  = cameras[0]?.getCapabilities();
-      console.log('kk',kk)
+      const cameras = devices.filter(device => device.kind === 'videoinput'); 
       setCameraDevices(cameras);
     } catch (error) {
       console.error('Error getting camera devices:', error);

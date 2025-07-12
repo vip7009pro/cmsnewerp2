@@ -16,7 +16,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { SamSungFCSTData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { SamSungFCSTData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const ChartFCSTSamSung = () => {
   const [runningPOData, setSamSungFCSTData] = useState<Array<SamSungFCSTData>>(

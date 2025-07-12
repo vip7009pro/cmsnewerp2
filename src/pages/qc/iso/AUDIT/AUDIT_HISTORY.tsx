@@ -2,14 +2,7 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./AUDIT_HISTORY.scss";
 import { useSelector } from "react-redux";
-import { AUDIT_HISTORY_DATA } from "../../../../api/GlobalInterface";
 import { RootState } from "../../../../redux/store";
-import {
-  f_add_AUDIT_HISTORY_DATA,
-  f_delete_AUDIT_HISTORY_DATA,
-  f_load_AUDIT_HISTORY_DATA,
-  f_updateFileInfo_AUDIT_HISTORY,
-} from "../../../../api/GlobalFunction";
 import AGTable from "../../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import {
@@ -23,12 +16,14 @@ import {
   Grid,
   Autocomplete,
 } from "@mui/material";
-import { f_update_AUDIT_HISTORY_DATA } from "../../../../api/GlobalFunction";
 import { useForm } from "react-hook-form";
 import { PlusOneOutlined } from "@mui/icons-material";
 import { AiFillDelete, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import { getCtrCd, uploadQuery } from "../../../../api/Api";
 import { DownloadButtonAll } from "../../../../components/DownloadButton/DownloadButtonAll";
+import { f_getcustomerlist } from "../../../kinhdoanh/utils/kdUtils";
+import { AUDIT_HISTORY_DATA } from "../../interfaces/qcInterface";
+import { f_add_AUDIT_HISTORY_DATA, f_delete_AUDIT_HISTORY_DATA, f_load_AUDIT_HISTORY_DATA, f_update_AUDIT_HISTORY_DATA, f_updateFileInfo_AUDIT_HISTORY } from "../../utils/qcUtils";
 
 
 const AUDIT_HISTORY = () => {
@@ -128,11 +123,7 @@ const AUDIT_HISTORY = () => {
 
   useEffect(() => {
     if (openAddDialog || openEditDialog) {
-      import("../../../../api/GlobalFunction").then((mod) => {
-        mod
-          .f_getcustomerlist()
-          .then((data: any[]) => setCustomerList(data || []));
-      });
+      f_getcustomerlist().then((data: any[]) => setCustomerList(data || []));
     }
   }, [openAddDialog, openEditDialog]);
   const columns_auditHistory = useMemo(() => {

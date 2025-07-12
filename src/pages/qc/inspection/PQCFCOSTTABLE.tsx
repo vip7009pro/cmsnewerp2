@@ -1,7 +1,5 @@
-import React from 'react'
 import './FCOSTTABLE.scss'
-import { InspectSummary, PATROL_HEADER_DATA, PQCSummary, WEB_SETTING_DATA } from '../../../api/GlobalInterface'
-import { getGlobalSetting } from '../../../api/Api'
+import { PQCSummary } from '../interfaces/qcInterface';
 import { nFormatter } from '../../../api/GlobalFunction'
 const PQCFCOSTTABLE = ({ data }: { data: PQCSummary[] }) => {
   return (

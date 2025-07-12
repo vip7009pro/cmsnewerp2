@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, PieChart, Pie } from "recharts";
-import { DiemDanhNhomDataSummary, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
 import { getGlobalSetting } from "../../../api/Api";
+import { DiemDanhNhomDataSummary } from "../../../pages/nhansu/interfaces/nhansuInterface";
 
 const ChartDiemDanhSUBDEPT = ({diemdanhMainDeptData}: {diemdanhMainDeptData: DiemDanhNhomDataSummary[]}) => {  
     const formatCash = (n: number) => {  

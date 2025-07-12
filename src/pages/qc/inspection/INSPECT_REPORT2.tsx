@@ -17,7 +17,7 @@ import {
   WeeklyPPMData,
   WorstData,
   YearlyPPMData,
-} from "../../../api/GlobalInterface";
+} from "../interfaces/qcInterface";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import {
   Autocomplete,
@@ -28,13 +28,8 @@ import {
   IconButton,
 } from "@mui/material";
 import FCOSTTABLE from "./FCOSTTABLE";
-import InspectionDailyFcost from "../../../components/Chart/INSPECTION/InspectDailyFcost";
-import InspectionWeeklyFcost from "../../../components/Chart/INSPECTION/InspectWeeklyFcost";
-import InspectionMonthlyFcost from "../../../components/Chart/INSPECTION/InspectMonthlyFcost";
-import InspectionYearlyFcost from "../../../components/Chart/INSPECTION/InspectYearlyFcost";
 import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
 import InspectDailyDefectTrending from "../../../components/Chart/INSPECTION/InspectDailyDefectTrending";
-import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import { AiFillFileExcel } from "react-icons/ai";
 import InspectionDailyFcost2 from "../../../components/Chart/INSPECTION/InspectDailyFcost2";
 import InspectionWeeklyFcost2 from "../../../components/Chart/INSPECTION/InspectWeeklyFcost2";

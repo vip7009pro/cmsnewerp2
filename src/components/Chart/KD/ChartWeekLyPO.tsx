@@ -16,7 +16,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { WEB_SETTING_DATA, WeekLyPOData } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WeekLyPOData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
   const digit: number = getCompany()==='CMS' ? 0: 2;

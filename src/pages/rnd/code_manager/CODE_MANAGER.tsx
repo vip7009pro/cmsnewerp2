@@ -21,7 +21,7 @@ import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { CODE_FULL_INFO } from "../../../api/GlobalInterface";
+import { CODE_FULL_INFO } from "../interfaces/rndInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_getCodeInfo, f_handleSaveLossSX, f_handleSaveQLSX, f_pdBanVe, f_resetBanVe, f_setNgoaiQuan, f_updateBEP } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const CODE_MANAGER = () => {

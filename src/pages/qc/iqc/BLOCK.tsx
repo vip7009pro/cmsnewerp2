@@ -9,17 +9,16 @@ import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  CustomerListData,
-  BLOCK_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiOutlineSearch } from "react-icons/ai";
 import {
-  f_updateNCRIDForFailing,
-  f_updateNCRIDForHolding,
   f_updateStockM090,
 } from "../../../api/GlobalFunction";
+import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { BLOCK_DATA } from "../interfaces/qcInterface";
+import { f_updateNCRIDForFailing, f_updateNCRIDForHolding } from "../utils/qcUtils";
 const BLOCK = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [onlyPending, setOnlyPending] = useState(true);

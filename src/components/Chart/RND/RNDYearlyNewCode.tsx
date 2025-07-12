@@ -1,9 +1,6 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
-  BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,13 +11,11 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyData, PQC_PPM_DATA, RND_NEWCODE_TREND_DATA } from "../../../api/GlobalInterface";
+import { RND_NEWCODE_TREND_DATA } from "../../../pages/rnd/interfaces/rndInterface";
 
 const RNDYearlyNewCode = ({
   dldata,

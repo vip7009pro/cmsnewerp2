@@ -30,14 +30,14 @@ import {
   DiemDanhHistoryData,
   DiemDanhNhomData,
   DiemDanhNhomDataSummary,
-  MainDeptData,
-  UserData,
-} from "../../../api/GlobalInterface";
+  MainDeptData,  
+} from "../interfaces/nhansuInterface";
 import { getlang } from "../../../components/String/String";
 import NSDailyGraph from "../../../components/Chart/NHANSU/NSDailyGraph";
 import ChartDiemDanhMAINDEPT from "../../../components/Chart/NHANSU/ChartDiemDanhMAINDEPT";
 import ChartDiemDanhSUBDEPT from "../../../components/Chart/NHANSU/ChartDiemDanhSUBDEPT";
 import AGTable from "../../../components/DataTable/AGTable";
+import { UserData } from "../../../api/GlobalInterface";
 const BaoCaoNhanSu = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,

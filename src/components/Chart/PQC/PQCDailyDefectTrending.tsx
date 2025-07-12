@@ -1,9 +1,5 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
-  BarChart,
-  Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,8 +10,6 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
 import {
   COLORS,
   CustomResponsiveContainer,
@@ -23,7 +17,7 @@ import {
   dynamicSort,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DEFECT_TRENDING_DATA, DailyData, FcostData } from "../../../api/GlobalInterface";
+import { DEFECT_TRENDING_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const PQCDailyDefectTrending = ({ dldata, onClick }: { dldata: DEFECT_TRENDING_DATA[], onClick: (e: any) => void }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);

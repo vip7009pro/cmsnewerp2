@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import {SX_LOSSTIME_REASON_DATA, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { SX_LOSSTIME_REASON_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 const SXLossTimeByReason = ({ data }: { data: SX_LOSSTIME_REASON_DATA[] }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");

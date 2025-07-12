@@ -1,30 +1,7 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-} from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
-import {
-  CustomResponsiveContainer,
-  nFormatter,
-} from "../../../api/GlobalFunction";
-import {
-  DailyData,
-  FcostData,
-  NguoiHangData,
-} from "../../../api/GlobalInterface";
+import { useEffect } from "react";
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, LabelList, Line, } from "recharts";
+import { CustomResponsiveContainer, nFormatter, } from "../../../api/GlobalFunction";
+import { NguoiHangData, } from "../../../pages/qc/interfaces/qcInterface";
 const InspectMonthlyNguoiHangTrending = ({
   dldata,
   processColor,

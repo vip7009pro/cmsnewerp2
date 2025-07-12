@@ -20,7 +20,7 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyData, OVERDUE_DATA, PQC_PPM_DATA } from "../../../api/GlobalInterface";
+import { OVERDUE_DATA } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const KDDailyOverdue = ({
   dldata,

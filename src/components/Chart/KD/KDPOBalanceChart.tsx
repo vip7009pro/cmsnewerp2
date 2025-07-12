@@ -16,7 +16,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { RunningPOData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { RunningPOData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const ChartPOBalance = ({ data }: { data: Array<RunningPOData> }) => {
   //const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
   const formatCash = (n: number) => {

@@ -18,10 +18,9 @@ import "./INPUTPQC.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  CodeListData,
-  CustomerListData,
   UserData,
 } from "../../../api/GlobalInterface";
+import { CodeListData, CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 
 const INPUTPQC = () => {
   const [file, setFile] = useState<any>();

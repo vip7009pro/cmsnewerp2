@@ -1,15 +1,13 @@
 import { MenuItem, Select, TextField } from "@mui/material";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
 import INSPECT_COMPONENT from "./INSPECT_COMPONENT";
 import "./INSPECT_STATUS.scss";
-import INS_SUMMARY from "./INS_SUMMARY";
-import INS_SUMMARY2 from "./INS_SUMMARY2";
 import {
   INS_STATUS,
   InSpectionSummaryData,
-} from "../../../../api/GlobalInterface";
+} from "../../interfaces/qcInterface";
 
 const INSPECT_STATUS = () => {
   const [searchString, setSearchString] = useState("");

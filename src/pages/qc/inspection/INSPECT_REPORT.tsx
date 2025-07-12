@@ -5,16 +5,6 @@ import { generalQuery } from "../../../api/Api";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/INSPECTION/ChartInspectionWorst";
-import {  
-  DEFECT_TRENDING_DATA,
-  DailyPPMData,
-  InspectSummary,
-  MonthlyPPMData,  
-  TREND_NGUOI_HANG_DATA,
-  WeeklyPPMData,
-  WorstData,
-  YearlyPPMData,
-} from "../../../api/GlobalInterface";
 import {SaveExcel } from "../../../api/GlobalFunction";
 import {
   Autocomplete,
@@ -32,10 +22,6 @@ import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
 import InspectDailyDefectTrending from "../../../components/Chart/INSPECTION/InspectDailyDefectTrending";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import { AiFillFileExcel } from "react-icons/ai";
-import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/InspectionYearlyPPM";
-import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
-import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
-import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
 import InspectDailyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectDailyNguoiHangTrending";
 import InspectWeeklyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectWeeklyNguoiHangTrending";
 import InspectMonthlyNguoiHangTrending from "../../../components/Chart/INSPECTION/InspectMonthlyNguoiHangTrending";
@@ -43,6 +29,14 @@ import InspectYearlyNguoiHangTrending from "../../../components/Chart/INSPECTION
 import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { PATROL_HEADER_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_load_TREND_NGUOI_HANG_DATA_DAILY, f_load_TREND_NGUOI_HANG_DATA_MONTHLY, f_load_TREND_NGUOI_HANG_DATA_WEEKLY, f_load_TREND_NGUOI_HANG_DATA_YEARLY } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import {   DEFECT_TRENDING_DATA,
+  DailyPPMData,
+  InspectSummary,
+  MonthlyPPMData,  
+  TREND_NGUOI_HANG_DATA,
+  WeeklyPPMData,
+  WorstData,
+  YearlyPPMData, } from "../interfaces/qcInterface";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);

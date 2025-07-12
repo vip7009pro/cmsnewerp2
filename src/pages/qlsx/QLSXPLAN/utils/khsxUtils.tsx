@@ -10,6 +10,7 @@ import {
   BTP_AUTO_DATA2,
   BTP_AUTO_DATA_SUMMARY,
   DAILY_YCSX_RESULT,
+  DEFECT_PROCESS_DATA,
   DINHMUC_QSLX,
   EQ_STT,
   LEADTIME_DATA,
@@ -39,15 +40,13 @@ import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
-import {
-  BOMSX_DATA,
-  CNT_GAP_DATA,
-  CODE_FULL_INFO,
-  TREND_NGUOI_HANG_DATA,
+import {  
   WEB_SETTING_DATA,
 } from "../../../../api/GlobalInterface";
 import { checkBP, zeroPad } from "../../../../api/GlobalFunction";
 import { f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { BOMSX_DATA, CODE_FULL_INFO } from "../../../rnd/interfaces/rndInterface";
+import { CNT_GAP_DATA, TREND_NGUOI_HANG_DATA } from "../../../qc/interfaces/qcInterface";
 export const f_loadTiLeDat = async (
   plan_date: string,
   machine: string,
@@ -5184,5 +5183,38 @@ export const f_loadLongTermPlan = async (PLAN_DATE: string) => {
   if (kq.length === 0) {
     Swal.fire("Thông báo", "Không có dòng nào", "error");
   }
+  return kq;
+};
+
+export const f_cancelProductionLot = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("cancelProductionLot", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadDefectProcessData = async (
+  G_CODE: string,
+  PROCESS_NUMBER: number
+) => {
+  let kq: DEFECT_PROCESS_DATA[] = [];
+  await generalQuery("loadDefectProcessData", {
+    G_CODE: G_CODE,
+    PROCESS_NUMBER: PROCESS_NUMBER,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   return kq;
 };

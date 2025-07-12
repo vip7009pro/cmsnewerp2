@@ -1,9 +1,6 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -11,7 +8,6 @@ import {
   Legend,
   ComposedChart,
   Label,
-  LabelList,
   Line,
 } from "recharts";
 import Swal from "sweetalert2";

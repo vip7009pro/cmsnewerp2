@@ -8,14 +8,13 @@ import {
   Legend,
   ComposedChart,
   Label,
-  LabelList,
   Line,
 } from "recharts";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { CPK_DATA, HISTOGRAM_DATA, XBAR_DATA } from "../../../api/GlobalInterface";
+import { HISTOGRAM_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const HISTOGRAM_CHART = ({
   dldata
 }: { dldata: HISTOGRAM_DATA[] }) => {

@@ -168,7 +168,6 @@ export const defaultDinhMuc = [
     ],
   },
 ];
-
 export const getDefaulDinhMucJson = (machine: string) => {
   if (["DC01", "DC02", "DC03", "DC04"].includes(machine)) {
     return defaultDinhMuc.find((item) => item.machine === machine);
@@ -178,24 +177,25 @@ export const getDefaulDinhMucJson = (machine: string) => {
     );
   }
 };
-
 export const getSettingUPHUnitLoss = (
-    machine: string,
-    numberOfColor: number,
-    met_qty: number
-  ) => {
-    console.log('machine',machine)
-    console.log('numberOfColor',numberOfColor)
-    console.log('met_qty',met_qty)
-    const item = getDefaulDinhMucJson(machine);
-    if (!item) return null;
-    const lossSetting =
-      met_qty < 500 ? item.number_of_color[numberOfColor].when_under_500m : item.number_of_color[numberOfColor].when_over_500m;
-    return {
-      setting: item.setting,
-      UPH: item.UPH,
-      unit: item.unit,
-      loss: item.number_of_color[numberOfColor].loss,
-      loss_setting: lossSetting,
-    };
+  machine: string,
+  numberOfColor: number,
+  met_qty: number
+) => {
+  console.log("machine", machine);
+  console.log("numberOfColor", numberOfColor);
+  console.log("met_qty", met_qty);
+  const item = getDefaulDinhMucJson(machine);
+  if (!item) return null;
+  const lossSetting =
+    met_qty < 500
+      ? item.number_of_color[numberOfColor].when_under_500m
+      : item.number_of_color[numberOfColor].when_over_500m;
+  return {
+    setting: item.setting,
+    UPH: item.UPH,
+    unit: item.unit,
+    loss: item.number_of_color[numberOfColor].loss,
+    loss_setting: lossSetting,
   };
+};

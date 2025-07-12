@@ -3,19 +3,16 @@ import moment from "moment";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  CheckAddedSPECDATA,
-  CodeListData,
-  DTC_ADD_SPEC_DATA,
-  TestListTable,
-  MaterialListData,
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { CheckAddedSPECDATA, DTC_ADD_SPEC_DATA, MaterialListData, TestListTable } from "../interfaces/qcInterface";
+import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { f_loadDTC_TestList } from "../utils/qcUtils";
 /* import { Autocomplete } from 'devextreme-react'; */
 const ADDSPECTDTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

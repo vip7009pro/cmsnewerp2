@@ -1,9 +1,6 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
-  BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,13 +11,11 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyData, PQC_PPM_DATA, SX_ACHIVE_DATA, SX_LOSS_ROLL_DATA } from "../../../api/GlobalInterface";
+import { SX_LOSS_ROLL_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const SXDailyRollLoss = ({
   dldata,

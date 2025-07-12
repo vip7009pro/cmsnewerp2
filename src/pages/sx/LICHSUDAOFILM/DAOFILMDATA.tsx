@@ -4,13 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./DAOFILMDATA.scss";
-import { DAO_FILM_DATA, QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { useForm } from "react-hook-form";
+import { DAO_FILM_DATA } from "../../qc/interfaces/qcInterface";
+import { QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 const DAOFILMDATA = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm()

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
 import './CSFCOSTTABLE.scss'
-import { CSFCOST, CS_REDUCE_AMOUNT_DATA, InspectSummary, PATROL_HEADER_DATA, WEB_SETTING_DATA } from '../../../api/GlobalInterface'
 import { getGlobalSetting } from '../../../api/Api'
 import { nFormatter } from '../../../api/GlobalFunction'
+import { CS_REDUCE_AMOUNT_DATA } from '../interfaces/qcInterface'
+import { WEB_SETTING_DATA } from '../../../api/GlobalInterface'
 const SAVINGTABLE = ({ data }: { data: CS_REDUCE_AMOUNT_DATA[] }) => {
   let totalSavingAmount: number = 0;
  

@@ -1,12 +1,12 @@
 import React from "react";
 import DataMatrix from "react-datamatrix-svg";
-import { COMPONENT_DATA } from "../../../../api/GlobalInterface";
+import { COMPONENT_DATA } from "../../interfaces/rndInterface";
 
 const DATAMATRIX = ({ DATA }: { DATA: COMPONENT_DATA }) => {
   return (
     <div
       className="amz_datamatrix"
-      style={{
+      style={{  
         position: "absolute",
         top: `${DATA.POS_Y}mm`,
         left: `${DATA.POS_X}mm`,

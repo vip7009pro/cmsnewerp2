@@ -10,13 +10,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getUserData, uploadQuery } from "../../../../api/Api";
-import {
-  AUDIT_CHECKLIST_RESULT,
-  AUDIT_CHECK_LIST,
-  AUDIT_LIST,
-  AUDIT_RESULT,
-  CustomerListData,
-} from "../../../../api/GlobalInterface";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import './AUDIT.scss'
 import { HiSave } from "react-icons/hi";
@@ -24,6 +17,8 @@ import { TbLogout } from "react-icons/tb";
 import { BiCloudUpload, BiRefresh } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { AUDIT_CHECK_LIST, AUDIT_CHECKLIST_RESULT, AUDIT_LIST, AUDIT_RESULT } from "../../interfaces/qcInterface";
 const AUDIT = () => {
   const [passScore, setPassScore] = useState(80);
   const [auditname, setAuditName] = useState("");

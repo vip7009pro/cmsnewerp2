@@ -1,6 +1,6 @@
 import React from "react";
 import Barcode from "react-barcode";
-import { COMPONENT_DATA } from "../../../../api/GlobalInterface";
+import { COMPONENT_DATA } from "../../interfaces/rndInterface";
 
 const BARCODE = ({ DATA }: { DATA: COMPONENT_DATA }) => {
   return (

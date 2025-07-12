@@ -1,26 +1,10 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  PieChart,
-  Pie,
-} from "recharts";
+import { useEffect } from "react";
+import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 
-import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { CS_CONFIRM_BY_CUSTOMER_DATA, CUSTOMER_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
+import { CS_CONFIRM_BY_CUSTOMER_DATA } from "../../../pages/qc/interfaces/qcInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 
 const CSIssuePICChart = ({data}: {data: CS_CONFIRM_BY_CUSTOMER_DATA[]}) => { 
     const formatCash = (n: number) => {  

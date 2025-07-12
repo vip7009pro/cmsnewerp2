@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TestListTable, DTC_ADD_SPEC_DATA, DTC_TEST_POINT } from '../../../api/GlobalInterface';
-import { f_addTestItem, f_addTestPoint, f_loadDTC_TestList, f_loadDTC_TestPointList } from '../../../api/GlobalFunction';
 import AGTable from '../../../components/DataTable/AGTable';
 import './TESTTABLE.scss';
 import { Button, Dialog, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material';
 import { AiOutlinePlus, AiOutlineReload } from 'react-icons/ai';
-import Swal from 'sweetalert2';
+import { DTC_TEST_POINT, TestListTable } from '../interfaces/qcInterface';
+import { f_addTestItem, f_addTestPoint, f_loadDTC_TestList, f_loadDTC_TestPointList } from '../utils/qcUtils';
 const TEST_TABLE: React.FC = () => {
   const [testList, setTestList] = useState<TestListTable[]>([]);
   const [testPointList, setTestPointList] = useState<DTC_TEST_POINT[]>([]);

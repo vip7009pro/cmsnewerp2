@@ -7,17 +7,13 @@ import "./TINHHINHCUONLIEU.scss";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import {
-  LOSS_TABLE_DATA_ROLL,
-  MATERIAL_STATUS,
-} from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import SXWeeklyLossRoll from "../../../components/Chart/SX/SXWeeklyLossRoll";
 import SXDailyRollLoss from "../../../components/Chart/SX/SXDailyRollLoss";
 import { useForm } from "react-hook-form";
-import { MACHINE_LIST, SX_LOSS_ROLL_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { LOSS_TABLE_DATA_ROLL, MACHINE_LIST, MATERIAL_STATUS, SX_LOSS_ROLL_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData, f_loadRollLossData, f_loadRollLossDataDaily } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 
 const TINHHINHCUONLIEU = () => {

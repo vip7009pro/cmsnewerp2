@@ -3,15 +3,6 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./OQC_REPORT.scss";
-import {
-  OQC_TREND_DATA,
-  OQC_NG_BY_CUSTOMER,
-  OQC_NG_BY_PRODTYPE,
-  DailyPPMData,
-  WeeklyPPMData,
-  MonthlyPPMData,
-  YearlyPPMData,
-} from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -26,6 +17,14 @@ import InspectionYearlyPPM from "../../../components/Chart/INSPECTION/Inspection
 import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
 import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
 import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
+import {   
+  OQC_TREND_DATA,
+  OQC_NG_BY_CUSTOMER,
+  OQC_NG_BY_PRODTYPE,
+  DailyPPMData,
+  WeeklyPPMData,
+  MonthlyPPMData,
+  YearlyPPMData, } from "../interfaces/qcInterface";
 const OQC_REPORT = () => {
   const [dailyppm, setDailyPPM] = useState<OQC_TREND_DATA[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<OQC_TREND_DATA[]>([]);

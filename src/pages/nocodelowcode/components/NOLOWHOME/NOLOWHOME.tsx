@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Grid, Typography, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Checkbox, FormLabel } from '@mui/material';
 import { Add, Edit, Delete, TableView, Refresh } from '@mui/icons-material';
 import type { Form, Field, Record as NCLRecord, FormData } from '../../types/types';
-import { f_deleteField, f_deleteForm,  f_insertField,  f_insertForm, f_loadFieldList, f_loadFormList, f_updateField, f_updateForm } from '../../../../api/GlobalFunction';
+import { f_deleteField, f_deleteForm,  f_insertField,  f_insertForm, f_loadFieldList, f_loadFormList, f_updateField, f_updateForm } from '../../utils/nocodelowcodeUtils';
 import Swal from 'sweetalert2';
 
 const SQL_DATA_TYPES = [

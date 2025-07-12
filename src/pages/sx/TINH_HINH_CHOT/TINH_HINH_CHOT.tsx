@@ -10,7 +10,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import { generalQuery } from "../../../api/Api";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./TINH_HINH_CHOT.scss";
-import { TINH_HINH_CHOT_BC } from "../../../api/GlobalInterface";
+import { TINH_HINH_CHOT_BC } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const TINH_HINH_CHOT = () => {
   const [isPending, startTransition] = useTransition();

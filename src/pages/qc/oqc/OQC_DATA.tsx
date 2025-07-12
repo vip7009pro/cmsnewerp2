@@ -3,7 +3,6 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { OQC_DATA } from "../../../api/GlobalInterface";
 import {
   DataDiv,
   DataTBDiv,
@@ -15,6 +14,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
+import { OQC_DATA } from "../interfaces/qcInterface";
 const OQC_DATA_TB = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

@@ -32,12 +32,10 @@ import { useReactToPrint } from "react-to-print";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  BOM_AMAZON,
-  CODE_INFO,
-  COMPONENT_DATA,
-  POINT_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
+import { BOM_AMAZON, CODE_INFO, COMPONENT_DATA, POINT_DATA } from "../interfaces/rndInterface";
+
 
 const DESIGN_AMAZON = () => {
   const protocol = window.location.protocol.startsWith("https") ? "https" : "http";

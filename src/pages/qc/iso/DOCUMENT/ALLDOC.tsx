@@ -2,16 +2,16 @@ import React, { useEffect, useState, useRef } from "react";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import moment from "moment";
-import { ALL_DOC_DATA, ALL_FILE_DATA, DOC_CATEGORY1_DATA, DOC_CATEGORY2_DATA, DOC_LIST_DATA, DOCUMENT_DATA, MAT_DOC_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCtrCd, getUserData, uploadQuery } from "../../../../api/Api";
-import { checkBP, f_autoUpdateDocUSE_YN, f_checkDocVersion, f_getMaterialDocData, f_insertMaterialDocData, f_updateDtcApp, f_updateMaterialDocData, f_updatePurApp, f_updateRndApp } from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/GlobalFunction";
 import './ALLDOC.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
 import DocumentComponent from "../../../../components/DocumentComponent/DocumentComponent";
-import { DownloadButton } from "../../../../components/DownloadButton/DownloadButton";
 import { DownloadButtonAll } from "../../../../components/DownloadButton/DownloadButtonAll";
 import { FaFile, FaFileExcel, FaFileImage, FaFilePdf, FaFilePowerpoint, FaFileWord } from "react-icons/fa";
 import { FaFileZipper } from "react-icons/fa6";
+import { ALL_FILE_DATA, DOC_CATEGORY1_DATA, DOC_CATEGORY2_DATA, DOC_LIST_DATA, DOCUMENT_DATA } from "../../interfaces/qcInterface";
+import { f_autoUpdateDocUSE_YN, f_updateMaterialDocData } from "../../../muahang/utils/muaUtils";
 
 
 export const f_getDocCategory1 = async () => {

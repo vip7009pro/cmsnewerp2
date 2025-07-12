@@ -20,8 +20,8 @@ import {
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { f_createKPI, f_deleteKPI, f_loadKPI, f_loadKPIList, f_updateKPI } from "../../api/GlobalFunction";
-import { KPI_DATA } from "../../api/GlobalInterface";
+import { f_createKPI, f_deleteKPI, f_loadKPI, f_loadKPIList, f_updateKPI } from "./utils/kpiUtils";
+import { KPI_DATA } from "./interfaces/kpiInterface";
 import "./KPIManager.scss";
 type KPI_ROW = KPI_DATA & { id: number };
 export const KPIManager = () => {

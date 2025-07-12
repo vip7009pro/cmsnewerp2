@@ -20,7 +20,8 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { MonthlyClosingData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { MonthlyClosingData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
     const digit: number = getCompany()==='CMS' ? 1: 2;
   const [monthlyClosingData, setMonthlyClosingData] = useState<

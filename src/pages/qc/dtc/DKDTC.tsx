@@ -3,20 +3,15 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
-import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./DKDTC.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  CheckAddedSPECDATA,
-  DTC_REG_DATA,
-  TestListTable,
-  UserData,
-} from "../../../api/GlobalInterface";
+import { UserData, } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { BiBellOff, BiScan } from "react-icons/bi";
-import { FcCancel } from "react-icons/fc";
+import { BiScan } from "react-icons/bi";
+import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable } from "../interfaces/qcInterface";
+import { f_loadDTC_TestList } from "../utils/qcUtils";
 const DKDTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const userData: UserData | undefined = useSelector(
@@ -493,8 +488,17 @@ const DKDTC = () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
       console.log(devices);
       const cameras = devices.filter((device) => device.kind === "videoinput");
-      let kk = cameras[0]?.getCapabilities();
-      console.log("kk", kk);
+      if (cameras.length > 0) {
+        // Get a stream from the first camera
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: cameras[0].deviceId }
+        });
+        const videoTrack = stream.getVideoTracks()[0];
+        const kk = videoTrack.getCapabilities();
+        console.log("kk", kk);
+        // Stop the track after getting capabilities to free the camera
+        videoTrack.stop();
+      }
       setCameraDevices(cameras);
     } catch (error) {
       console.error("Error getting camera devices:", error);

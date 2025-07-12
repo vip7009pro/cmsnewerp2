@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./BNK_COMPONENT.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { generalQuery, getCompany } from "../../../api/Api";
-import { DTC_DATA, IQC_INCOMMING_DATA } from "../../../api/GlobalInterface";
 import moment from "moment";
-import Swal from "sweetalert2";
+import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
 const BNK_COMPONENT = ({
   data,
   dtc_data,

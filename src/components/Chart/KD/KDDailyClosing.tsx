@@ -18,11 +18,13 @@ import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
-  f_loadKPI,
   getWorkingDaysInMonth,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyClosingData, KPI_DATA, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { DailyClosingData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
+import { f_loadKPI } from "../../../pages/KPI/utils/kpiUtils";
+import { KPI_DATA } from "../../../pages/KPI/interfaces/kpiInterface";
 const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
   const [dailyClosingData, setDailyClosingData] = useState<Array<DailyClosingData>>([]);
   const digit: number = getCompany()==='CMS' ? 0: 2;

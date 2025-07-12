@@ -4,11 +4,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./SPECDTC.scss";
-import { DTC_SPEC_DATA, TestListTable } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
+import { DTC_SPEC_DATA, TestListTable } from "../interfaces/qcInterface";
+import { f_loadDTC_TestList } from "../utils/qcUtils";
 const SPECDTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

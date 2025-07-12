@@ -1,0 +1,280 @@
+import moment from "moment";
+import { generalQuery, getUserData } from "../../../api/Api";
+import { EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
+import { WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
+
+export const f_getEmployeeList = async () => {
+  let kq: EmployeeTableData[] = [];
+  try {
+    let res = await generalQuery("getemployee_full", {});
+    //console.log(res);
+    if (res.data.tk_status !== "NG") {
+      //console.log(res.data.data);
+      let loaded_data: EmployeeTableData[] = res.data.data.map(
+        (element: EmployeeTableData, index: number) => {
+          return {
+            ...element,
+            DOB: element.DOB !== null ? moment.utc(element.DOB).format("YYYY-MM-DD") : "",
+            WORK_START_DATE: element.WORK_START_DATE !== null ? moment.utc(element.WORK_START_DATE).format("YYYY-MM-DD") : "",
+            RESIGN_DATE: element.RESIGN_DATE !== null ? moment.utc(element.RESIGN_DATE).format("YYYY-MM-DD") : "",
+            ONLINE_DATETIME: element.ONLINE_DATETIME !== null ? moment .utc(element.ONLINE_DATETIME) .format("YYYY-MM-DD HH:mm:ss") : "",
+            FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
+            PASS_WORD: getUserData()?.EMPL_NO === "NHU1903" ? element.PASSWORD : "********",
+          };
+        }
+      );
+      kq = loaded_data;
+    } else {
+      console.log("fetch error");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+};
+export const f_loadWorkPositionList = async (SUBDEPTCODE?: number) => {
+  let kq: WORK_POSITION_DATA[] = [];
+  try {
+    let res = await generalQuery(
+      "workpositionlist",
+      SUBDEPTCODE === undefined ? {} : { SUBDEPTCODE: SUBDEPTCODE }
+    );
+    //console.log(res);
+    if (res.data.tk_status !== "NG") {
+      //console.log(res.data.data);
+      let loaded_data: WORK_POSITION_DATA[] = res.data.data.map(
+        (element: WORK_POSITION_DATA, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
+        }
+      );
+      kq = loaded_data;
+    } else {
+      console.log("fetch error");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+};
+export const f_addEmployee = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("insertemployee", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_updateEmployee = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("updateemployee", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_loadMainDepList = async () => {
+  let kq: MainDeptTableData[] = [];
+  try {
+    let res = await generalQuery("getmaindept", {});
+    //console.log(res);
+    if (res.data.tk_status !== "NG") {
+      //console.log(res.data.data);
+      let loaded_data: MainDeptTableData[] = res.data.data.map(
+        (element: MainDeptTableData, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
+        }
+      );
+      kq = loaded_data;
+    } else {
+      console.log("fetch error");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+};
+export const f_loadSubDepList = async (MAINDEPTCODE?: number) => {
+  let kq: SubDeptTableData[] = [];
+  try {
+    let res = await generalQuery(
+      "getsubdeptall",
+      MAINDEPTCODE === undefined ? {} : { MAINDEPTCODE: MAINDEPTCODE }
+    );
+    //console.log(res);
+    if (res.data.tk_status !== "NG") {
+      //console.log(res.data.data);
+      let loaded_data: SubDeptTableData[] = res.data.data.map(
+        (element: SubDeptTableData, index: number) => {
+          return {
+            ...element,
+            id: index,
+          };
+        }
+      );
+      kq = loaded_data;
+    } else {
+      console.log("fetch error");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return kq;
+};
+export const f_addMainDept = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("insertmaindept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      kq = error.message;
+    });
+  return kq;
+};
+export const f_addSubDept = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("insertsubdept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_addWorkPosition = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("insertworkposition", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_updateMainDept = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("updatemaindept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_updateSubDept = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("updatesubdept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_updateWorkPosition = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("updateworkposition", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_deleteWorkPosition = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("deleteworkposition", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_deleteMainDept = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("deletemaindept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_deleteSubDept = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("deletesubdept", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_setCa = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("setca", {
+    EMPL_NO: DATA.EMPL_NO,
+    CALV: DATA.CALV,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+export const f_setCaDiemDanh = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("setcadiemdanh", {
+    EMPL_NO: DATA.EMPL_NO,
+    APPLY_DATE: DATA.APPLY_DATE,
+    CALV: DATA.CALV,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};

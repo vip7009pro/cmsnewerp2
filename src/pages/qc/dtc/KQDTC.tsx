@@ -3,7 +3,6 @@ import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, XBAR_DATA } from "../../../api/GlobalInterface";
 import "./KQDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import XBAR_CHART from "../../../components/Chart/DTC/XBAR_CHART";
@@ -12,6 +11,7 @@ import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 import HISTOGRAM_CHART from "../../../components/Chart/DTC/HISTOGRAM_CHART";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, XBAR_DATA } from "../interfaces/qcInterface";
 const KQDTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);

@@ -4,11 +4,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./TINHLIEU.scss";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { MaterialPOData, MaterialPOSumData, MRPDATA } from "../../../api/GlobalInterface";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
-import { f_loadMRPPlan } from "../../../api/GlobalFunction";
+import { MaterialPOData, MaterialPOSumData, MRPDATA } from "../interfaces/muaInterface";
+import { f_loadMRPPlan } from "../utils/muaUtils";
+
 const TINHLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);

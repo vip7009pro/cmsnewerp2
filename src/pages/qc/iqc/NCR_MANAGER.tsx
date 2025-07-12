@@ -3,13 +3,14 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineExport, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import "./NCR_MANAGER.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { DTC_DATA, HOLDDING_BY_NCR_ID, NCR_DATA, UserData } from "../../../api/GlobalInterface";
+import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { checkBP } from "../../../api/GlobalFunction";
+import { HOLDDING_BY_NCR_ID, NCR_DATA } from "../interfaces/qcInterface";
 const NCR_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [isNewRegister, setNewRegister] = useState(false);

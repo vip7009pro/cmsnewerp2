@@ -1,21 +1,10 @@
 import { useEffect } from "react";
-import {
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-} from "recharts";
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, Line } from "recharts";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { XBAR_DATA } from "../../../api/GlobalInterface";
+import { XBAR_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const R_CHART = ({
   dldata

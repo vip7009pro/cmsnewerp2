@@ -3,15 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./UserManager.scss";
 import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
-import { EmployeeTableData } from "../../../api/GlobalInterface";
+import { EmployeeTableData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import {
-  checkBP,
   f_addEmployee,
   f_getEmployeeList,
   f_loadWorkPositionList,
   f_updateEmployee,
-} from "../../../api/GlobalFunction";
+} from "../utils/nhansuUtils";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
@@ -21,6 +20,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
 import moment from "moment";
+import { checkBP } from "../../../api/GlobalFunction";
 const UserManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);

@@ -6,7 +6,7 @@ import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import {
   DiemDanhNhomData,
   WorkPositionTableData,
-} from "../../../api/GlobalInterface";
+} from "../interfaces/nhansuInterface";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

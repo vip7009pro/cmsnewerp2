@@ -5,8 +5,9 @@ import "./UpHangLoat.scss";
 import { generalQuery, getCompany, getUserData } from "../../../api/Api";
 import { zeroPad } from "../../../api/GlobalFunction";
 import * as XLSX from "xlsx";
-import { CODE_FULL_INFO, DEFAULT_DM } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { CODE_FULL_INFO } from "../interfaces/rndInterface";
+import { DEFAULT_DM } from "../../kinhdoanh/interfaces/kdInterface";
 const UpHangLoat = () => {
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
   const [columns, setColumns] = useState<Array<any>>([]);

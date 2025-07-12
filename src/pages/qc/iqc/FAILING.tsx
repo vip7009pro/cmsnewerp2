@@ -9,15 +9,16 @@ import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  QC_FAIL_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { checkBP, f_isM_CODE_in_M140_Main, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_O302, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/GlobalFunction";
 import { GiConfirmed } from "react-icons/gi";
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { f_isM_LOT_NO_in_P500, f_nhapkhoao } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { QC_FAIL_DATA } from "../interfaces/qcInterface";
+import { f_isM_CODE_in_M140_Main, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_O302, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../utils/qcUtils";
 const FAILING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [cmsvcheck, setCMSVCheck] = useState(true);

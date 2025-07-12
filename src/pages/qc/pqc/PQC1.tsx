@@ -8,8 +8,10 @@ import "./PQC1.scss";
 import { BiShow } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { PQC1_DATA, SX_DATA, UserData } from "../../../api/GlobalInterface";
+import {UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { PQC1_DATA } from "../interfaces/qcInterface";
+import { SX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 const PQC1 = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

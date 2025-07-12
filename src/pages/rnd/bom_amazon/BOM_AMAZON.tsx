@@ -11,10 +11,10 @@ import {
   BOM_AMAZON as BOM_AMAZON_DATA,
   CODE_INFO,
   CODEPHOI,
-  LIST_BOM_AMAZON,
-  UserData,
-} from "../../../api/GlobalInterface";
+  LIST_BOM_AMAZON, 
+} from "../interfaces/rndInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { UserData } from "../../../api/GlobalInterface";
 const BOM_AMAZON = () => {
   const [codephoilist, setCodePhoiList] = useState<Array<CODEPHOI>>([]);
   const [listamazontable, setListBomAmazonTable] = useState<LIST_BOM_AMAZON[]>(

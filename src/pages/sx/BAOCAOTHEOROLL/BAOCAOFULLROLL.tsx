@@ -2,14 +2,14 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./BAOCAOFULLROLL.scss";
 import { useSelector } from "react-redux";
-import { FULL_ROLL_DATA, UserData } from "../../../api/GlobalInterface";
+import { UserData } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { FULL_ROLL_DATA, MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 export const f_handleLoadFullRollData = async (data: any) => {
   let kq: FULL_ROLL_DATA[] = [];

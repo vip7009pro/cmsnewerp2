@@ -1100,3 +1100,240 @@ export interface LONGTERM_PLAN_DATA {
   D15: number;
   D16: number;
 }
+
+//tinh hinh chot bao cao
+export interface TINH_HINH_CHOT_BC {
+  SX_DATE: string;
+  TOTAL: number;
+  DA_CHOT: number;
+  CHUA_CHOT: number;
+  DA_NHAP_HIEUSUAT: number;
+  CHUA_NHAP_HIEUSUAT: number;
+}
+//tinh hinh cuon lieu
+export interface MATERIAL_STATUS {
+  FIRST_INPUT_DATE: string;
+  INS_DATE: string;
+  FACTORY: string;
+  M_LOT_NO: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  ROLL_QTY: number;
+  OUT_CFM_QTY: number;
+  TOTAL_OUT_QTY: number;
+  PROD_REQUEST_NO: string;
+  PLAN_ID: string;
+  PLAN_EQ: string;
+  G_CODE: string;
+  G_NAME: string;
+  XUAT_KHO: string;
+  VAO_FR: string;
+  VAO_SR: string;
+  VAO_DC: string;
+  VAO_ED: string;
+  CONFIRM_GIAONHAN: string;
+  VAO_KIEM: string;
+  NHATKY_KT: string;
+  RA_KIEM: string;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INS_OUT: number;
+  ROLL_LOSS_KT: number;
+  ROLL_LOSS: number;
+  PD: number;
+  CAVITY: number;
+  FR_RESULT: number;
+  SR_RESULT: number;
+  DC_RESULT: number;
+  ED_RESULT: number;
+  TOTAL_OUT_EA: number;
+  FR_EA: number;
+  SR_EA: number;
+  DC_EA: number;
+  ED_EA: number;
+  INSPECT_TOTAL_EA: number;
+  INSPECT_OK_EA: number;
+  INS_OUTPUT_EA: number;
+  CUST_NAME_KD?: string;
+}
+export interface LOSS_TABLE_DATA_ROLL {
+  XUATKHO_MET: number;
+  INSPECTION_INPUT: number;
+  INSPECTION_OK: number;
+  INSPECTION_OUTPUT: number;
+  TOTAL_LOSS_KT: number;
+  TOTAL_LOSS: number;
+}
+
+export interface DKXL_DATA {
+  OUT_DATE: string;
+  OUT_NO: string;
+  OUT_SEQ: string;
+  CODE_03: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  OUT_PRE_QTY: number;
+  OUT_CFM_QTY: number;
+  REMK: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  FACTORY: string;
+  CUST_CD: string;
+  TOTAL_ROLL_QTY: number;
+  PLAN_ID: string;
+  PLAN_ID2: string;
+}
+
+export interface FULL_ROLL_DATA {
+  PLAN_ID: string;
+  M_LOT_NO: string;
+  IQC_IN: number;
+  OUT_KHO_QTY: number;
+  LOCK_QTY: number;
+  INPUT_QTY: number;
+  USED_QTY: number;
+  REMAIN_QTY: number;
+  SETTING_MET: number;
+  PR_NG: number;
+  RESULT_MET: number;
+  BTP_REMAIN_QTY: number;
+  TON_KHO_SX: number;
+  RETURN_KHO_QTY: number;
+  RETURN_IQC_QTY: number;
+  PD: number;
+  CAVITY: number;
+  INS_INPUT_MET: number;
+  TON_KIEM_MET: number;
+  INSPECT_TOTAL_MET: number;
+  INSPECT_OK_MET: number;
+  INSPECT_OUTPUT_MET: number;
+  IQC_IN_EA: number;
+  OUT_KHO_EA: number;
+  LOCK_EA: number;
+  INPUT_EA: number;
+  USED_EA: number;
+  REMAIN_EA: number;
+  SETTING_EA: number;
+  PR_NG_EA: number;
+  RESULT_EA: number;
+  BTP_REMAIN_EA: number;
+  TON_KHO_SX_EA: number;
+  RETURN_EA: number;
+  RETURN_IQC_EA: number;
+  INS_INPUT_EA: number;
+  TON_KIEM_EA: number;
+  INSPECT_TOTAL_EA: number;
+  INSPECT_OK_EA: number;
+  INSPECT_OUTPUT_EA: number;
+  IQC_IN_M2: number;
+  OUT_KHO_M2: number;
+  LOCK_M2: number;
+  INPUT_M2: number;
+  USED_M2: number;
+  REMAIN_M2: number;
+  SETTING_M2: number;
+  PR_NG_M2: number;
+  RESULT_M2: number;
+  BTP_REMAIN_M2: number;
+  TON_KHO_SX_M2: number;
+  RETURN_KHO_M2: number;
+  RETURN_IQC_M2: number;
+  INS_INPUT_M2: number;
+  TON_KIEM_M2: number;
+  INSPECT_TOTAL_M2: number;
+  INSPECT_OK_M2: number;
+  INSPECT_OUTPUT_M2: number;
+  PROCESS_NUMBER: number;
+  STEP: number;
+  PLAN_DATE: string;
+  G_NAME_KD: string;
+  PROD_MAIN_MATERIAL: string;
+  PROD_REQUEST_NO: string;
+  PHAN_LOAI: string;
+}
+
+export interface QUANLYDAOFILM_DATA {
+  KNIFE_FILM_ID: number;
+  FACTORY_NAME: string;
+  CUST_CD: string;
+  KNIFE_TYPE: string;
+  KNIFE_FILM_STEP: string;
+  G_CODE: string;
+  KNIFE_FILM_QTY: number;
+  FULL_KNIFE_CODE: string;
+  KT_KNIFE_CODE: string;
+  KNIFE_BOX_NUMBER: string;
+  CAVITY_NGANG: number;
+  CAVITY_DOC: number;
+  STANDARD_PRESS_QTY: number;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  KNIFE_STATUS: string;
+  REMARK: string;
+  KNIFE_FILM_NO: string;
+  KNIFE_FILM_SEQ: string;
+  PD: number;
+  TOTAL_PRESS: number;
+  BOGOC: string;
+  KCTD: string;
+  KNIFE_TYPE2: string;
+  SONG_GIUA: number;
+  TOTAL_PRESS2: number;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  REV_NO: string;
+  VENDOR: string;
+}
+export interface XUATDAOFILM_DATA {
+  CA_LAM_VIEC: string;
+  PLAN_ID: string;
+  KNIFE_FILM_NO: string;
+  QTY_KNIFE_FILM: string;
+  CAVITY: number;
+  PD: number;
+  EQ_THUC_TE: string;
+  PRESS_QTY: number;
+  EMPL_NO: string;
+  LOAIBANGIAO_PDP: string;
+  F_WIDTH: number;
+  F_LENGTH: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  SX_EMPL_NO: string;
+  PLAN_ID2: string;
+  PRESS_QTY2: number;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PLAN_DATE: string;
+  SX_DATE: string;
+}
+export interface DEFECT_PROCESS_DATA {
+  CTR_CD: string;
+  NG_SX100_ID: string;
+  G_CODE: string;
+  PROCESS_NUMBER: number;
+  STT: number;
+  DEFECT: string;
+  TEST_ITEM: string;
+  TEST_METHOD: string;
+  INS_PATROL_ID: string;
+  IMAGE_YN: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  PROD_MODEL: string;
+  DESCR: string;
+  G_NAME: string;
+}

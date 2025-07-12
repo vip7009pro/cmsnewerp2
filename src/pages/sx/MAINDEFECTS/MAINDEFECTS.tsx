@@ -2,15 +2,14 @@ import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./MAINDEFECTS.scss";
-import { DAO_FILM_DATA, DEFECT_PROCESS_DATA, QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_loadDefectProcessData } from "../../../api/GlobalFunction";
+import { DEFECT_PROCESS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { f_loadDefectProcessData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 const MAINDEFECTS = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);

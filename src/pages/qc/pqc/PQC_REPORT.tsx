@@ -1,10 +1,17 @@
 import moment from "moment";
-import React, { startTransition, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { generalQuery } from "../../../api/Api";
 import "./PQC_REPORT.scss";
-import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, PQC3_DATA, PQCSummary, PQC_PPM_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
-import { Autocomplete, Checkbox, FormControlLabel, FormGroup, IconButton, TextField, Typography, createFilterOptions } from "@mui/material";
+
+import {
+  Autocomplete,
+  Checkbox,
+  IconButton,
+  TextField,
+  Typography,
+  createFilterOptions,
+} from "@mui/material";
 import PQCDailyNGRate from "../../../components/Chart/PQC/PQCDailyNGRate";
 import PQCWeeklyNGRate from "../../../components/Chart/PQC/PQCWeeklyNGRate";
 import PQCMonthlyNGRate from "../../../components/Chart/PQC/PQCMonthlyNGRate";
@@ -16,10 +23,11 @@ import PQCDailyFcost from "../../../components/Chart/PQC/PQCDailyFcost";
 import PQCWeeklyFcost from "../../../components/Chart/PQC/PQCWeeklyFcost";
 import PQCMonthlyFcost from "../../../components/Chart/PQC/PQCMonthlyFcost";
 import PQCYearlyFcost from "../../../components/Chart/PQC/PQCYearlyFcost";
-import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 import PATROL_COMPONENT2 from "../../sx/PATROL/PATROL_COMPONENT2";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
+import { DEFECT_TRENDING_DATA, PQC3_DATA, PQCSummary, PQC_PPM_DATA } from "../interfaces/qcInterface";
+import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
 const PQC_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<PQC_PPM_DATA[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<PQC_PPM_DATA[]>([]);

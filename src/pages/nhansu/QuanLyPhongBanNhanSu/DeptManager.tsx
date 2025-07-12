@@ -3,10 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./DeptManager.scss";
 import { getCompany, getUserData } from "../../../api/Api";
-import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WORK_POSITION_DATA } from "../../../api/GlobalInterface";
+import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import {
-  checkBP,
+import { 
   f_addEmployee,
   f_addMainDept,
   f_addSubDept,
@@ -22,7 +21,7 @@ import {
   f_updateMainDept,
   f_updateSubDept,
   f_updateWorkPosition,
-} from "../../../api/GlobalFunction";
+} from "../utils/nhansuUtils";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
@@ -30,6 +29,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getlang } from "../../../components/String/String";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
+import { checkBP } from "../../../api/GlobalFunction";
 const DeptManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tableSelection, setTableSelection] = useState(1);

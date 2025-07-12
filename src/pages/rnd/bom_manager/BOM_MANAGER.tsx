@@ -35,16 +35,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
 import { useReactToPrint } from "react-to-print";
-import {
-  BOM_GIA,
-  BOM_SX,
-  CODE_FULL_INFO,
-  CODE_INFO,
-  COMPONENT_DATA,
-  FSC_LIST_DATA,  
-  MASTER_MATERIAL_HSD,
-  MATERIAL_INFO,
-  MaterialListData,
+import {  
   UserData,
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
@@ -55,6 +46,9 @@ import MyTabs from "../../../components/MyTab/MyTab";
 import { MACHINE_LIST, PROD_PROCESS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { CustomerListData, DEFAULT_DM } from "../../kinhdoanh/interfaces/kdInterface";
 import { f_addProcessDataTotal, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_loadProdProcessData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { BOM_GIA, BOM_SX, CODE_FULL_INFO, CODE_INFO, COMPONENT_DATA, MASTER_MATERIAL_HSD, MATERIAL_INFO } from "../interfaces/rndInterface";
+import { MaterialListData } from "../../qc/interfaces/qcInterface";
+import { FSC_LIST_DATA } from "../../muahang/interfaces/muaInterface";
 const BOM_MANAGER = () => {
   const [activeOnly, setActiveOnly] = useState(true)
   const [cndb, setCNDB] = useState(false)

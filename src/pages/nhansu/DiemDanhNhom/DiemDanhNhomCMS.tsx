@@ -4,12 +4,12 @@ import "./DiemDanhNhom.scss";
 import Swal from "sweetalert2";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import moment from "moment";
-import { DiemDanhNhomData } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
+import { DiemDanhNhomData } from "../interfaces/nhansuInterface";
 const DiemDanhNhomCMS = ({ option }: { option: string }) => {
   const glbLang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang

@@ -19,22 +19,15 @@ import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  DTC_DATA,
-  IQC_INCOMMING_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import {
-  MdDocumentScanner,
-  MdShowChart,
-  MdShower,
-  MdUpdate,
-} from "react-icons/md";
+import { MdDocumentScanner, MdUpdate } from "react-icons/md";
 import { checkBP, f_updateStockM090 } from "../../../api/GlobalFunction";
 import { CustomCellRendererProps } from "ag-grid-react";
 import BNK_COMPONENT from "./BNK_COMPONENT";
 import { useReactToPrint } from "react-to-print";
-import { FaClosedCaptioning } from "react-icons/fa";
+import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
 const INCOMMING = () => {
   const incomingChecksheetPrintRef = useRef(null);
   const handlePrint = useReactToPrint({

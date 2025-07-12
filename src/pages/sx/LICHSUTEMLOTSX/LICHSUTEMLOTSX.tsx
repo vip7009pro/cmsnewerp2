@@ -1,9 +1,8 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { f_cancelProductionLot, f_handleGETBOMAMAZON, renderElement } from "../../../api/GlobalFunction";
+import { renderElement } from "../../../api/GlobalFunction";
 import { MdPrint } from "react-icons/md";
-import { COMPONENT_DATA} from "../../../api/GlobalInterface";
 import {
   DataDiv,
   DataTBDiv,
@@ -20,7 +19,9 @@ import { FcCancel } from "react-icons/fc";
 import { getUserData } from "../../../api/Api";
 import Swal from "sweetalert2";
 import { TEMLOTSX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
-import { f_LichSuTemLot } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { f_cancelProductionLot, f_LichSuTemLot } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { COMPONENT_DATA } from "../../rnd/interfaces/rndInterface";
+import { f_handleGETBOMAMAZON } from "../../rnd/utils/rndUtils";
 const LICHSUTEMLOTSX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [lichsutemlotdata, setlichsutemlotdata] = useState<Array<TEMLOTSX_DATA>>([]);

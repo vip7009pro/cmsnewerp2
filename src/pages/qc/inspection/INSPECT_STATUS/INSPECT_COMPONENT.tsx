@@ -1,7 +1,7 @@
 import React from "react";
 import { BiUser } from "react-icons/bi";
 import "./INSPECT_COMPONENT.scss";
-import { INS_STATUS } from "../../../../api/GlobalInterface";
+import { INS_STATUS } from "../../interfaces/qcInterface";
 import { generalQuery } from "../../../../api/Api";
 import Swal from "sweetalert2";
 

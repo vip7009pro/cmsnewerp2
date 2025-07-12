@@ -1,4 +1,4 @@
-import { Button, Icon, IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -9,15 +9,13 @@ import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import "./KHOLIEU.scss";
 import {
-  NHAPLIEUDATA,
-  TONLIEUDATA,
   UserData,
-  XUATLIEUDATA,
 } from "../../../api/GlobalInterface";
 import NHAPLIEU from "./nhaplieu/NHAPLIEU";
 import XUATLIEU from "./xuatlieu/XUATLIEU";
 import AGTable from "../../../components/DataTable/AGTable";
 import { MdInput, MdOutput } from "react-icons/md";
+import { NHAPLIEUDATA, TONLIEUDATA, XUATLIEUDATA } from "../interfaces/khoInterface";
 const KHOLIEU = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,

@@ -1,32 +1,15 @@
 import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import {
-  generalQuery,
-  getCompany,
-  getUserData,
-} from "./Api";
-import {
-  AUDIT_HISTORY_DATA,
-  CODE_FULL_INFO,
-  COMPONENT_DATA,
-  DEFECT_PROCESS_DATA,
+import { generalQuery, getCompany, getUserData } from "./Api";
+import {  
   DEPARTMENT_DATA,
-  DTC_TEST_POINT,
-  EmployeeTableData,
   INSPECT_STATUS_DATA,
   KHKT_DATA,
-  KPI_DATA,
-  MainDeptTableData,
-  MAT_DOC_DATA,
-  MRPDATA,
   POST_DATA,
-  SubDeptTableData,
   TEMLOTKT_DATA,
-  TestListTable,
   UserData,
   userDataInterface,
-  WORK_POSITION_DATA,
 } from "./GlobalInterface";
 import moment from "moment";
 import TEXT from "../pages/rnd/design_amazon/design_components/TEXT";
@@ -36,10 +19,10 @@ import BARCODE from "../pages/rnd/design_amazon/design_components/BARCODE";
 import IMAGE from "../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../pages/rnd/design_amazon/design_components/QRCODE";
 import { NotificationElement } from "../components/NotificationPanel/Notification";
-import { Field, Form } from "../pages/nocodelowcode/types/types";
 import { Component } from "react";
 import { Login } from "./lazyPages";
 import { PRICEWITHMOQ } from "../pages/kinhdoanh/interfaces/kdInterface";
+import { CODE_FULL_INFO, COMPONENT_DATA } from "../pages/rnd/interfaces/rndInterface";
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
@@ -249,7 +232,6 @@ export async function checkBP(
     }
   }
 }
-
 export const weekdayarray = [
   "Sunday",
   "Monday",
@@ -430,138 +412,11 @@ export function dynamicSort(property: string) {
     return result * sortOrder;
   };
 }
-
-// dtc
-export const f_loadDTC_TestList = async () => {
-  let kq: TestListTable[] = [];
-  await generalQuery("loadDtcTestList", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: TestListTable[] = response.data.data.map(
-          (element: TestListTable, index: number) => {
-            return {
-              ...element,
-              id: index,
-            };
-          }
-        );
-        kq = loadeddata;
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-//create load test point list from test code
-export const f_loadDTC_TestPointList = async (testCode: number) => {
-  let kq: DTC_TEST_POINT[] = [];
-  await generalQuery("loadDtcTestPointList", {
-    TEST_CODE: testCode,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: DTC_TEST_POINT[] = response.data.data.map(
-          (element: DTC_TEST_POINT, index: number) => {
-            return {
-              ...element,
-              id: index,
-            };
-          }
-        );
-        kq = loadeddata;
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-//create add test item
-export const f_addTestItem = async (testCode: number, testName: string) => {
-  await generalQuery("addTestItem", {
-    TEST_CODE: getCompany() !== "CMS" ? testCode : -1,
-    TEST_NAME: testName,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        Swal.fire("Thông báo", "Thêm thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Thêm thất bại", "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-//create add test point
-export const f_addTestPoint = async (
-  testCode: number,
-  pointCode: number,
-  pointName: string
-) => {
-  await generalQuery("addTestPoint", {
-    TEST_CODE: testCode,
-    POINT_CODE: pointCode,
-    POINT_NAME: pointName,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        Swal.fire("Thông báo", "Thêm thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Thêm thất bại", "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
 export const isValidInput = (input: string) => {
   const regex = /^[a-zA-Z0-9_]*$/; // Example: allow only alphanumeric and underscores
   return regex.test(input);
 };
-//update ncr id for holding material
-export const f_updateNCRIDForHolding = async (
-  HOLD_ID: number,
-  ncrId: number
-) => {
-  await generalQuery("updateNCRIDForHolding", {
-    HOLD_ID: HOLD_ID,
-    NCR_ID: ncrId,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //Swal.fire("Thông báo", "Cập nhật thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Cập nhật thất bại", "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-//update ncr id for failing material
-export const f_updateNCRIDForFailing = async (
-  FAIL_ID: number,
-  ncrId: number
-) => {
-  await generalQuery("updateNCRIDForFailing", {
-    FAIL_ID: FAIL_ID,
-    NCR_ID: ncrId,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //Swal.fire("Thông báo", "Cập nhật thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Cập nhật thất bại", "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+
 export const checkHSD2 = (
   hsdVL: number,
   hsdSP: number,
@@ -591,34 +446,6 @@ export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
     }
   });
 };
-export const f_handleGETBOMAMAZON = async (G_CODE: string) => {
-  let kq: COMPONENT_DATA[] = [];
-  await generalQuery("getAMAZON_DESIGN", {
-    G_CODE: G_CODE,
-  })
-    .then((response) => {
-      ////console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: COMPONENT_DATA[] = response.data.data.map(
-          (element: COMPONENT_DATA, index: number) => {
-            return {
-              ...element,
-              id: index,
-            };
-          }
-        );
-        ////console.log(loadeddata);
-        kq = loadeddata;
-      } else {
-        //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-        kq = [];
-      }
-    })
-    .catch((error) => {
-      //console.log(error);
-    });
-  return kq;
-};
 
 export const f_updateStockM090 = async () => {
   let kq: boolean = false;
@@ -633,171 +460,8 @@ export const f_updateStockM090 = async () => {
     });
   return kq;
 };
-export const f_loadDefectProcessData = async (
-  G_CODE: string,
-  PROCESS_NUMBER: number
-) => {
-  let kq: DEFECT_PROCESS_DATA[] = [];
-  await generalQuery("loadDefectProcessData", {
-    G_CODE: G_CODE,
-    PROCESS_NUMBER: PROCESS_NUMBER,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = response.data.data;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_resetIN_KHO_SX_IQC1 = async (
-  PLAN_ID: string,
-  M_LOT_NO: string
-) => {
-  let kq: boolean = false;
-  await generalQuery("resetKhoSX_IQC1", {
-    PLAN_ID: PLAN_ID,
-    M_LOT_NO: M_LOT_NO,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_resetIN_KHO_SX_IQC2 = async (
-  PLAN_ID: string,
-  M_LOT_NO: string
-) => {
-  let kq: boolean = false;
-  await generalQuery("resetKhoSX_IQC2", {
-    PLAN_ID: PLAN_ID,
-    M_LOT_NO: M_LOT_NO,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_getMaterialDocData = async (filterData: any) => {
-  let mat_doc_data: MAT_DOC_DATA[] = [];
-  await generalQuery("getMaterialDocData", filterData)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: MAT_DOC_DATA[] = response.data.data.map(
-          (element: MAT_DOC_DATA, index: number) => {
-            return {
-              ...element,
-              id: index,
-              REG_DATE: element.REG_DATE?.slice(0, 10) ?? "",
-              EXP_DATE: element.EXP_DATE?.slice(0, 10) ?? "",
-              PUR_APP_DATE: element.PUR_APP_DATE?.slice(0, 10) ?? "",
-              DTC_APP_DATE: element.DTC_APP_DATE?.slice(0, 10) ?? "",
-              RND_APP_DATE: element.RND_APP_DATE?.slice(0, 10) ?? "",
-              INS_DATE: element.INS_DATE?.slice(0, 10) ?? "",
-              UPD_DATE: element.UPD_DATE?.slice(0, 10) ?? "",
-            };
-          }
-        );
-        mat_doc_data = loadeddata;
-      } else {
-        mat_doc_data = [];
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return mat_doc_data;
-};
-export const f_insertMaterialDocData = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("insertMaterialDocData", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_checkDocVersion = async (DATA: any) => {
-  let kq: number = 0;
-  await generalQuery("checkDocVersion", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = response.data.data[0].VER;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq + 1;
-};
-export const f_updateMaterialDocData = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("updateMaterialDocData", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_updatePurApp = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("updatePurApp", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_updateDtcApp = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("updateDtcApp", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_updateRndApp = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("updateRndApp", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
+
+
 export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
   if (codeList.length >= 1) {
     checkBP(getUserData(), ["ALL"], ["ALL"], ["ALL"], async () => {
@@ -821,57 +485,8 @@ export const f_updateLossKT = async (codeList: CODE_FULL_INFO[]) => {
     Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
   }
 };
-export const f_autoUpdateDocUSE_YN = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("autoUpdateDocUSEYN_EXP", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_isM_LOT_NO_in_IN_KHO_SX = async (
-  PLAN_ID: string,
-  M_LOT_NO: string
-) => {
-  let kq: boolean = false;
-  await generalQuery("isM_LOT_NO_in_IN_KHO_SX", {
-    PLAN_ID: PLAN_ID,
-    M_LOT_NO: M_LOT_NO,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_isM_CODE_in_M140_Main = async (
-  M_CODE: string,
-  G_CODE: string
-) => {
-  let kq: boolean = false;
-  await generalQuery("check_m_code_m140_main", {
-    M_CODE: M_CODE,
-    G_CODE: G_CODE,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
+
+
 export const f_load_Notification_Data = async () => {
   let kq: NotificationElement[] = [];
   await generalQuery("load_Notification_Data", {
@@ -909,25 +524,7 @@ export const f_insert_Notification_Data = async (DATA: any) => {
     });
   return kq;
 };
-export const f_isM_LOT_NO_in_O302 = async (
-  planId: string,
-  m_lot_no: string
-) => {
-  let kq: boolean = false;
-  await generalQuery("isM_LOT_NO_in_O302", {
-    PLAN_ID: planId,
-    M_LOT_NO: m_lot_no,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
+
 export const f_getI221NextIN_NO = async () => {
   let next_in_no: string = "001";
   await generalQuery("getI221Lastest_IN_NO", {})
@@ -994,7 +591,6 @@ export const f_Insert_I222 = async (DATA: any) => {
     });
   return kq;
 };
-
 export const f_updateBTP_M100 = async () => {
   let kq: boolean = false;
   await generalQuery("updateBTP_M1002", {})
@@ -1008,39 +604,7 @@ export const f_updateBTP_M100 = async () => {
     });
   return kq;
 };
-export const f_setCa = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("setca", {
-    EMPL_NO: DATA.EMPL_NO,
-    CALV: DATA.CALV,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
-export const f_setCaDiemDanh = async (DATA: any) => {
-  let kq: boolean = false;
-  await generalQuery("setcadiemdanh", {
-    EMPL_NO: DATA.EMPL_NO,
-    APPLY_DATE: DATA.APPLY_DATE,
-    CALV: DATA.CALV,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return kq;
-};
+
 export const f_updateTONKIEM_M100 = async () => {
   let kq: boolean = false;
   await generalQuery("updateTONKIEM_M100", {})
@@ -1054,6 +618,7 @@ export const f_updateTONKIEM_M100 = async () => {
     });
   return kq;
 };
+//bang tin
 export const f_getDepartmentList = async () => {
   let kq: DEPARTMENT_DATA[] = [];
   await generalQuery("getDepartmentList", {})
@@ -1067,9 +632,6 @@ export const f_getDepartmentList = async () => {
     });
   return kq;
 };
-
-
-
 export const f_fetchPostListAll = async () => {
   let kq: POST_DATA[] = [];
   try {
@@ -1236,276 +798,6 @@ export const f_downloadFile = async (fileURL: string, fileName: string) => {
   }
 };
 
-export const f_cancelProductionLot = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("cancelProductionLot", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_getEmployeeList = async () => {
-  let kq: EmployeeTableData[] = [];
-  try {
-    let res = await generalQuery("getemployee_full", {});
-    //console.log(res);
-    if (res.data.tk_status !== "NG") {
-      //console.log(res.data.data);
-      let loaded_data: EmployeeTableData[] = res.data.data.map(
-        (element: EmployeeTableData, index: number) => {
-          return {
-            ...element,
-            DOB:
-              element.DOB !== null
-                ? moment.utc(element.DOB).format("YYYY-MM-DD")
-                : "",
-            WORK_START_DATE:
-              element.WORK_START_DATE !== null
-                ? moment.utc(element.WORK_START_DATE).format("YYYY-MM-DD")
-                : "",
-            RESIGN_DATE:
-              element.RESIGN_DATE !== null
-                ? moment.utc(element.RESIGN_DATE).format("YYYY-MM-DD")
-                : "",
-            ONLINE_DATETIME:
-              element.ONLINE_DATETIME !== null
-                ? moment
-                    .utc(element.ONLINE_DATETIME)
-                    .format("YYYY-MM-DD HH:mm:ss")
-                : "",
-            FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
-            PASS_WORD:
-              getUserData()?.EMPL_NO === "NHU1903"
-                ? element.PASSWORD
-                : "********",
-          };
-        }
-      );
-      kq = loaded_data;
-    } else {
-      console.log("fetch error");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return kq;
-};
-export const f_loadWorkPositionList = async (SUBDEPTCODE?: number) => {
-  let kq: WORK_POSITION_DATA[] = [];
-  try {
-    let res = await generalQuery(
-      "workpositionlist",
-      SUBDEPTCODE === undefined ? {} : { SUBDEPTCODE: SUBDEPTCODE }
-    );
-    //console.log(res);
-    if (res.data.tk_status !== "NG") {
-      //console.log(res.data.data);
-      let loaded_data: WORK_POSITION_DATA[] = res.data.data.map(
-        (element: WORK_POSITION_DATA, index: number) => {
-          return {
-            ...element,
-            id: index,
-          };
-        }
-      );
-      kq = loaded_data;
-    } else {
-      console.log("fetch error");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return kq;
-};
-export const f_addEmployee = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("insertemployee", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_updateEmployee = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updateemployee", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_loadMainDepList = async () => {
-  let kq: MainDeptTableData[] = [];
-  try {
-    let res = await generalQuery("getmaindept", {});
-    //console.log(res);
-    if (res.data.tk_status !== "NG") {
-      //console.log(res.data.data);
-      let loaded_data: MainDeptTableData[] = res.data.data.map(
-        (element: MainDeptTableData, index: number) => {
-          return {
-            ...element,
-            id: index,
-          };
-        }
-      );
-      kq = loaded_data;
-    } else {
-      console.log("fetch error");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return kq;
-};
-export const f_loadSubDepList = async (MAINDEPTCODE?: number) => {
-  let kq: SubDeptTableData[] = [];
-  try {
-    let res = await generalQuery(
-      "getsubdeptall",
-      MAINDEPTCODE === undefined ? {} : { MAINDEPTCODE: MAINDEPTCODE }
-    );
-    //console.log(res);
-    if (res.data.tk_status !== "NG") {
-      //console.log(res.data.data);
-      let loaded_data: SubDeptTableData[] = res.data.data.map(
-        (element: SubDeptTableData, index: number) => {
-          return {
-            ...element,
-            id: index,
-          };
-        }
-      );
-      kq = loaded_data;
-    } else {
-      console.log("fetch error");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return kq;
-};
-export const f_addMainDept = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("insertmaindept", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      kq = error.message;
-    });
-  return kq;
-};
-export const f_addSubDept = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("insertsubdept", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_addWorkPosition = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("insertworkposition", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_updateMainDept = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updatemaindept", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_updateSubDept = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updatesubdept", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_updateWorkPosition = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updateworkposition", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_deleteWorkPosition = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("deleteworkposition", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_deleteMainDept = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("deletemaindept", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_deleteSubDept = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("deletesubdept", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
 export const f_update_Stock_M100_CMS = async (DATA: any) => {
   let kq: string = "";
   await generalQuery("updateTONTP_M100_CMS", DATA)
@@ -1639,194 +931,8 @@ export const f_loadTemLotKTHistory = async (
     .catch((error) => {});
   return kq;
 };
-export const f_loadMRPPlan = async (PLAN_DATE: string) => {
-  let kq: MRPDATA[] = [];
-  await generalQuery("loadMRPPlan", {
-    PLAN_DATE: PLAN_DATE,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        Swal.fire("Thông báo", "Load data thành công", "success");
-        let loaded_data: MRPDATA[] = response.data.data.map(
-          (element: MRPDATA, index: number) => {
-            return {
-              ...element,
-              id: index,
-            };
-          }
-        );
-        kq = loaded_data;
-      } else {
-        //kq = response.data.message;
-        Swal.fire("Thông báo", "Không có data", "error");
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_loadFormList = async () => {
-  let kq: Form[] = [];
-  await generalQuery("loadFormList", {})
-    .then((response) => {
-      console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        Swal.fire("Thông báo", "Load data thành công", "success");
-        //console.log(response.data.data);
-        let loaded_data: Form[] = response.data.data.map(
-          (element: Form, index: number) => {
-            return {
-              ...element,
-              id: index,
-            };
-          }
-        );
-        kq = loaded_data;
-      } else {
-        //kq = response.data.message;
-        Swal.fire("Thông báo", "Không có data", "error");
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_updateForm = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updateForm", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_deleteForm = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("deleteForm", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_loadFormDetail = async (DATA: any) => {
-  let kq: Form[] = [];
-  await generalQuery("loadFormDetail", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_insertForm = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("insertForm", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_loadFieldList = async (DATA: any) => {
-  let kq: Field[] = [];
-  await generalQuery("loadFieldList", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        kq = response.data.data;
-      } else {
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_insertField = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("insertField", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_updateField = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updateField", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_deleteField = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("deleteField", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_addField = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("addField", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_loadKPI = async (KPI_NAME: string) => {
-  let kq: KPI_DATA[] = [];
-  await generalQuery("loadKPI", { KPI_NAME: KPI_NAME })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        if (response.data.data.length > 0) {
-          kq = response.data.data;
-        }
-      } else {
-        Swal.fire("Thông báo", "Không có KPI", "error");
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_loadKPIList = async () => {
-  let kq: { KPI_NAME: string }[] = [];
-  await generalQuery("loadKPIList", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        if (response.data.data.length > 0) {
-          kq = response.data.data;
-        }
-      } else {
-        Swal.fire("Thông báo", "Không có KPI", "error");
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
+
+
 export const getNumberofDatesFromMonth = (month_num: number) => {
   if ([1, 3, 5, 7, 8, 10, 12].includes(month_num)) {
     return 31;
@@ -1850,56 +956,7 @@ export const getWorkingDaysInMonth = (date: string) => {
   }
   return workingDays;
 };
-export const f_createKPI = async (DATA: KPI_DATA[]) => {
-  let kq: string = "";
-  await generalQuery("insertKPI", {
-    KPI_DATA: DATA,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      kq = error.message;
-    });
-  return kq;
-};
-export const f_updateKPI = async (DATA: KPI_DATA[]) => {
-  let kq: string = "";
-  await generalQuery("updateKPI", {
-    KPI_DATA: DATA,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      kq = error.message;
-    });
-  return kq;
-};
-export const f_deleteKPI = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("deleteKPI", {
-    KPI_NAME: DATA[0].KPI_NAME,
-    KPI_YEAR: DATA[0].KPI_YEAR,
-    KPI_PERIOD: DATA[0].KPI_PERIOD,
-    KPI_MONTH: DATA[0].KPI_MONTH,
-    VALUE_TYPE: DATA[0].VALUE_TYPE,
-  })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
+
 export async function encryptData(
   publicKey: string,
   data: object
@@ -1980,7 +1037,6 @@ function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
   }
   return btoa(binary);
 }
-
 export const ProtectedRoute: any = ({
   user,
   maindeptname,
@@ -2079,87 +1135,4 @@ export const requestFullScreen = (
       (element as any).msRequestFullscreen();
     }
   }
-};
-
-export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
-  let kq: AUDIT_HISTORY_DATA[] = [];
-  await generalQuery("loadAUDIT_HISTORY_DATA", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        let loaded_data: AUDIT_HISTORY_DATA[] = response.data.data.map(
-          (element: AUDIT_HISTORY_DATA, index: number) => {
-            return {
-              ...element,
-              AUDIT_DATE: moment.utc(element.AUDIT_DATE).format("YYYY-MM-DD"),
-              id: index,
-            };
-          }
-        );
-        kq = loaded_data;
-      } else {
-        kq = [];
-      }
-    })
-    .catch((error) => {});
-  return kq;
-};
-export const f_add_AUDIT_HISTORY_DATA = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("add_AUDIT_HISTORY_DATA", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      kq = error.message;
-    });
-  return kq;
-};
-export const f_update_AUDIT_HISTORY_DATA = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("update_AUDIT_HISTORY_DATA", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      kq = error.message;
-    });
-  return kq;
-};
-export const f_delete_AUDIT_HISTORY_DATA = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("delete_AUDIT_HISTORY_DATA", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      kq = error.message;
-    });
-  return kq;
-};
-export const f_updateFileInfo_AUDIT_HISTORY = async (DATA: any) => {
-  let kq: string = "";
-  await generalQuery("updateFileInfo_AUDIT_HISTORY", DATA)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        kq = response.data.message;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      kq = error.message;
-    });
-  return kq;
 };

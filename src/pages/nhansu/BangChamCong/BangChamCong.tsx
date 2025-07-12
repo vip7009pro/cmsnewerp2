@@ -6,22 +6,17 @@ import Swal from "sweetalert2";
 import "./BangChamCong.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import { checkBP, f_setCaDiemDanh, weekdayarray } from "../../../api/GlobalFunction";
+import { checkBP, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
-import {
-  BANGCHAMCONG_DATA,
-  BANGCHAMCONG_DATA2,
-  CA_INFO,
-  IN_OUT_DATA,
-  IN_OUT_DATA2,
-  IN_OUT_DATA22,
-  IN_OUT_DATA3,
+import {  
   UserData,
 } from "../../../api/GlobalInterface";
 import AGTable from '../../../components/DataTable/AGTable';
+import { BANGCHAMCONG_DATA, BANGCHAMCONG_DATA2, CA_INFO, IN_OUT_DATA, IN_OUT_DATA2, IN_OUT_DATA22, IN_OUT_DATA3 } from "../interfaces/nhansuInterface";
+import { f_setCaDiemDanh } from "../utils/nhansuUtils";
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

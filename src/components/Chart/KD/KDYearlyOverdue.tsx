@@ -1,9 +1,6 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
-  BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,13 +11,11 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyData, OVERDUE_DATA, PQC_PPM_DATA } from "../../../api/GlobalInterface";
+import { OVERDUE_DATA } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const KDYearlyOverdue = ({
   dldata,

@@ -812,3 +812,21 @@ export interface OVERDUE_DATA {
   OVER_IV: number;
   OK_RATE: number;
 }
+export interface YearlyClosingData {
+  YEAR_NUM: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
+  KPI_VALUE?: number;
+}
+
+export interface SamSungFCSTData {
+  WEEKNO: string;
+  SEVT1: number;
+  SEV1: number;
+  SAMSUNG_ASIA1: number;
+  TT_SS1: number;
+  SEVT2: number;
+  SEV2: number;
+  SAMSUNG_ASIA2: number;
+  TT_SS2: number;
+}

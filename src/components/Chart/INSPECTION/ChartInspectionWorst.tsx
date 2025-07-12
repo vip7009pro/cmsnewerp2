@@ -1,26 +1,10 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  PieChart,
-  Pie,
-} from "recharts";
+import { useEffect, useState } from "react";
+import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { WEB_SETTING_DATA, WeeklyClosingData, WorstData } from "../../../api/GlobalInterface";
-import Swal from "sweetalert2";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WorstData } from "../../../pages/qc/interfaces/qcInterface";
 
 const ChartInspectionWorst = ({dailyClosingData, worstby}: {dailyClosingData: Array<WorstData>, worstby: string}) => {
   const [tempdata, setTempData]= useState<Array<WorstData>>([]);

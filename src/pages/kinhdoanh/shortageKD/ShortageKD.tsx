@@ -9,7 +9,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -25,13 +25,7 @@ import MyTabs from "../../../components/MyTab/MyTab";
 import { ShortageData } from "../interfaces/kdInterface";
 const ShortageKD = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    testinvoicetable: false,
-  });
+
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -57,7 +51,7 @@ const ShortageKD = () => {
   const [shortagedatatablefilter, setShortageDataTableFilter] = useState<
     Array<ShortageData>
   >([]);
-  const column_shortage = [
+  const column_shortage = useMemo(() => [
     { field: "ST_ID", headerName: "ST_ID", width: 50 },
     { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 100 },
     { field: "CUST_NAME_KD", headerName: "KHACH", width: 100 },
@@ -280,8 +274,8 @@ const ShortageKD = () => {
       },
     },
     { field: "PRIORITY", headerName: "PRIORITY", width: 100 },
-  ];
-  const column_excel_shortage = [
+  ],[shortagedatatable]);
+  const column_excel_shortage = useMemo(() => [
     { field: "G_CODE", headerName: "G_CODE", width: 100 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },
@@ -300,7 +294,7 @@ const ShortageKD = () => {
     { field: "D4_CHIEU", headerName: "D4_CHIEU", width: 100 },
     { field: "PRIORITY", headerName: "PRIORITY", width: 100 },
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 100 },
-  ];
+  ],[shortagedatatable]);
   function CustomToolbar() {
     return (
       <GridToolbarContainer>

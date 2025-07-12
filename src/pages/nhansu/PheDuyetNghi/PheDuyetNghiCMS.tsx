@@ -3,7 +3,7 @@ import { generalQuery, getUserData } from "../../../api/Api";
 import "./PheDuyetNghi.scss";
 import Swal from "sweetalert2";
 import { checkBP } from "../../../api/GlobalFunction";
-import { PheDuyetNghiData } from "../../../api/GlobalInterface";
+import { PheDuyetNghiData } from "../interfaces/nhansuInterface";
 import moment from "moment";
 import AGTable from "../../../components/DataTable/AGTable";
 const PheDuyetNghiCMS = ({ option }: { option: string }) => {

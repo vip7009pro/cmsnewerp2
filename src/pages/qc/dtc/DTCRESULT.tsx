@@ -2,16 +2,13 @@ import { Button, FormControlLabel, Radio, RadioGroup, Typography } from "@mui/ma
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
-import { f_loadDTC_TestList } from "../../../api/GlobalFunction";
 import "./DTCRESULT.scss";
-import {
-  DTC_REG_DATA,
-  TestListTable,
-} from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import * as XLSX from "xlsx";
+import { DTC_REG_DATA, TestListTable } from "../interfaces/qcInterface";
+import { f_loadDTC_TestList } from "../utils/qcUtils";
 export interface DTC_RESULT_INPUT {
   DTC_ID: number;
   G_CODE: string;

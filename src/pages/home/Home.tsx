@@ -141,7 +141,6 @@ function Home() {
         console.log(error);
       });
   }, []);
-
   useEffect(() => {
     console.log("local ver", current_ver);
     checkWebVer();
@@ -159,7 +158,7 @@ function Home() {
       <div className="navdiv">
         <Navbar />
       </div>
-      <div className="homeContainer">       
+      <div className="homeContainer">
         <div className="outletdiv">
           <animated.div
             className="animated_div"

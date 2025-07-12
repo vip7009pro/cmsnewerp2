@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./INS_SUMMARY.scss";
-import { EQ_STT, INS_STATUS } from "../../../../api/GlobalInterface";
+import { EQ_STT } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { INS_STATUS } from "../../interfaces/qcInterface";
 
 interface EQ_STT_DATA {
   EQ_DATA: EQ_STT[];

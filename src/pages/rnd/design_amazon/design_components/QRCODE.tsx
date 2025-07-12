@@ -1,6 +1,6 @@
 import React from "react";
 import QRCode from "qrcode.react";
-import { COMPONENT_DATA } from "../../../../api/GlobalInterface";
+import { COMPONENT_DATA } from "../../interfaces/rndInterface";
 /* import QRCode from "react-qr-code"; */
 
 const QRCODE = ({ DATA }: { DATA: COMPONENT_DATA }) => {

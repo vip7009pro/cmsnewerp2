@@ -1,5 +1,5 @@
 import React from "react";
-import { COMPONENT_DATA } from "../../../../api/GlobalInterface";
+import { COMPONENT_DATA } from "../../interfaces/rndInterface";
 
 const RECTANGLE = ({ DATA }: { DATA: COMPONENT_DATA }) => {
   return (

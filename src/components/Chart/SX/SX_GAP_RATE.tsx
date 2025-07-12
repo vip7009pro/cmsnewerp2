@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import {CNT_GAP_DATA, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { CNT_GAP_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const SX_GAP_RATE = ({ data }: { data: CNT_GAP_DATA[] }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");

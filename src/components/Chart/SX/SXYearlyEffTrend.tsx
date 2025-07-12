@@ -1,28 +1,10 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  AreaChart,
-  Area,
-} from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { useEffect } from "react";
+import { XAxis, YAxis, Tooltip, Legend, ComposedChart, Label, Line, Area } from "recharts";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { DailyData, PQC_PPM_DATA, PRODUCTION_EFFICIENCY_DATA, SX_ACHIVE_DATA } from "../../../api/GlobalInterface";
+import { PRODUCTION_EFFICIENCY_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const SXYearlyEffTrend = ({
   dldata,

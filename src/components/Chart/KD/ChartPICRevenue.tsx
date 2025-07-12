@@ -1,29 +1,10 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  PieChart,
-  Pie,
-} from "recharts";
-
-import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { useEffect } from "react";
+import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
+import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { PIC_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
-
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { PIC_REVENUE_DATA } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const ChartPICRevenue = ({data}: {data: PIC_REVENUE_DATA[]}) => {
-
     const formatCash = (n: number) => {  
      return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
@@ -33,7 +14,6 @@ const ChartPICRevenue = ({data}: {data: PIC_REVENUE_DATA[]}) => {
       compactDisplay: "short",
     }).format(value);
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -55,7 +35,6 @@ const ChartPICRevenue = ({data}: {data: PIC_REVENUE_DATA[]}) => {
     }
     return null;
   };
-
   const CustomLabel = ({
     cx,
     cy,
@@ -95,10 +74,7 @@ const ChartPICRevenue = ({data}: {data: PIC_REVENUE_DATA[]}) => {
       </text>
     );
   };
-
-
   useEffect(() => {
-    
   }, []);
   const COLORS = [
     "#cc0000",

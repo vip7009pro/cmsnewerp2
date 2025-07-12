@@ -1,26 +1,10 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-} from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { useEffect } from "react";
+import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, Line, } from "recharts";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { CS_REDUCE_AMOUNT_DATA, CS_RMA_AMOUNT_DATA, DailyData, FcostData } from "../../../api/GlobalInterface";
+import { CS_RMA_AMOUNT_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const CSMonthlyRMAChart = ({
   dldata,

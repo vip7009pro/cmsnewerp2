@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
-import { MAT_DOC_DATA } from "../../../api/GlobalInterface";
-import { checkBP, f_autoUpdateDocUSE_YN, f_checkDocVersion, f_downloadFile, f_getMaterialDocData, f_insertMaterialDocData, f_updateDtcApp, f_updateMaterialDocData, f_updatePurApp, f_updateRndApp } from "../../../api/GlobalFunction";
+import { checkBP, f_downloadFile} from "../../../api/GlobalFunction";
 import AGTable from "../../../components/DataTable/AGTable";
 import { getUserData, uploadQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
 import moment from "moment";
 import DocumentComponent from "../../../components/DocumentComponent/DocumentComponent";
 import { BiDownload } from "react-icons/bi";
+import { MAT_DOC_DATA } from "../interfaces/muaInterface";
+import { f_updateDtcApp, f_updatePurApp, f_updateRndApp } from "../../rnd/utils/rndUtils";
+import { f_autoUpdateDocUSE_YN, f_checkDocVersion, f_getMaterialDocData, f_insertMaterialDocData, f_updateMaterialDocData } from "../utils/muaUtils";
 
 // Move SearchForm outside the main component
 const SearchForm = ({

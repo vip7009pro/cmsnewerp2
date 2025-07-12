@@ -6,9 +6,10 @@ import { generalQuery } from "../../../api/Api";
 import "./HOLDING.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { HOLDING_DATA, UserData } from "../../../api/GlobalInterface";
+import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { f_updateNCRIDForHolding } from "../../../api/GlobalFunction";
+import { f_updateNCRIDForHolding } from "../utils/qcUtils";
+import { HOLDING_DATA } from "../interfaces/qcInterface";
 const HOLDING = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const selectedRowsData = useRef<Array<HOLDING_DATA>>([]);

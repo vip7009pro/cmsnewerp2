@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
-import { RND_NEWCODE_BY_CUSTOMER, RND_NEWCODE_BY_PRODTYPE, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { RND_NEWCODE_BY_PRODTYPE } from "../../../pages/rnd/interfaces/rndInterface";
+import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 const RNDNewCodeByProdType = ({ data }: { data: RND_NEWCODE_BY_PRODTYPE[] }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");

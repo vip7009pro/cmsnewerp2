@@ -6,11 +6,12 @@ import Swal from "sweetalert2";
 import { generalQuery, getGlobalSetting, uploadQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { CSCONFIRM_DATA, CS_RMA_DATA, CS_CNDB_DATA, CS_TAXI_DATA, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NNDSDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
+import { CS_CNDB_DATA, CS_RMA_DATA, CS_TAXI_DATA, CSCONFIRM_DATA } from "../interfaces/qcInterface";
 const CS_DATA_TB = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);

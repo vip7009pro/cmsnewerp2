@@ -17,17 +17,14 @@ import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { BiRefresh } from "react-icons/bi";
 import {
-  EmployeeTableData,
-  MainDeptTableData,
-  SubDeptTableData,
   UserData,
-  WorkPositionTableData,
 } from "../../../api/GlobalInterface";
 import { changeUserData } from "../../../redux/slices/globalSlice";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { IconButton } from "@mui/material";
 import { getlang } from "../../../components/String/String";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WorkPositionTableData } from "../interfaces/nhansuInterface";
 
 
 const QuanLyPhongBanNhanSu_Old = () => {

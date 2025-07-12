@@ -7,14 +7,9 @@ import { zeroPad } from "../../../api/GlobalFunction";
 import "./PQC3.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import {
-  ERROR_TABLE,
-  PQC1_DATA,
-  PQC3_DATA,
-  SX_DATA,
-  UserData,
-} from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { ERROR_TABLE, PQC1_DATA, PQC3_DATA } from "../interfaces/qcInterface";
+import { UserData } from "../../../api/GlobalInterface";
 const PQC3 = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

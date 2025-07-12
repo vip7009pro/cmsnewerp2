@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import "./IQC.scss";
 import DTC from "../dtc/DTC";
-import HOLD_FAIL from "./HOLD_FAIL";
 import NCR_MANAGER from "./NCR_MANAGER";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

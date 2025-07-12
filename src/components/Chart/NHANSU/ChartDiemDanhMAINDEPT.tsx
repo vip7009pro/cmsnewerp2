@@ -1,26 +1,12 @@
 import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ComposedChart,
-  Label,
-  LabelList,
-  Line,
-  PieChart,
-  Pie,
-} from "recharts";
+import { useEffect, useState } from "react";
+import { Cell, Tooltip, PieChart, Pie } from "recharts";
 
 import Swal from "sweetalert2";
-import { DiemDanhMainDeptData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
+import { DiemDanhMainDeptData } from "../../../pages/nhansu/interfaces/nhansuInterface";
 
 const ChartDiemDanhMAINDEPT = () => {
   const [diemdanhMainDeptData, setDiemDanhMainDeptData] = useState<

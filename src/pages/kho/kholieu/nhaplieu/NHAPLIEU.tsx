@@ -2,7 +2,6 @@ import { Button, Autocomplete, TextField, createFilterOptions, Typography, IconB
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { CustomerListData, MaterialListData, WH_M_INPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
 import { checkBP, f_getI221NextIN_NO, f_getI222Next_M_LOT_NO, f_Insert_I221, f_Insert_I222, f_updateStockM090, zeroPad } from "../../../../api/GlobalFunction";
 import './NHAPLIEU.scss';
@@ -10,6 +9,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { MdDelete } from "react-icons/md";
+import { WH_M_INPUT_DATA } from "../../interfaces/khoInterface";
+import { MaterialListData } from "../../../qc/interfaces/qcInterface";
+import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
 const NHAPLIEU = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [material_table_data, set_material_table_data] = useState<Array<WH_M_INPUT_DATA>>([]);
