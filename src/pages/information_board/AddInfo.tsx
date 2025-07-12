@@ -1,15 +1,13 @@
 import { Button } from "@mui/material";
-import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./AddInfo.scss";
 import { useSelector } from "react-redux";
-
 import 'react-html5-camera-photo/build/css/index.css';
-import { DEPARTMENT_DATA, PQC1_DATA, SX_DATA, UserData } from "../../api/GlobalInterface";
+import { UserData } from "../../api/GlobalInterface";
 import { RootState } from "../../redux/store";
 import { generalQuery, getCtrCd, uploadQuery } from "../../api/Api";
-
+import { DEPARTMENT_DATA } from "./interfaces/infoInterface";
 const AddInfo = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -19,7 +17,6 @@ const AddInfo = () => {
   const [selectedDept, setSelectedDept] = useState<number>(1);
   const [title, setTitle] = useState<string>("");
   const [content, setContent]= useState<string>("");
-
   const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Enter") {
@@ -28,8 +25,6 @@ const AddInfo = () => {
       refArray[nextIndex].current.focus();
     }
   };
-
-
   const getlastestPostId = async () => {
     let lastPostId: number = 1;
     try {
@@ -45,7 +40,6 @@ const AddInfo = () => {
     }
     return lastPostId;
   }
-
   const insertPost = async (CTR_CD: string, DEPT_CODE: number, FILENAME: string) => {
     console.log('DEPT_CODE',DEPT_CODE);
     let insertData = {
@@ -55,13 +49,11 @@ const AddInfo = () => {
       FILE_NAME: CTR_CD+ "_" + DEPT_CODE + "_" + FILENAME,
     }
     console.log(insertData);
-
     try {
       let res = await generalQuery('insert_information', insertData);
       if (res.data.tk_status !== 'NG') {
         //console.log(res.data.data);
         uploadFile2(CTR_CD, DEPT_CODE, FILENAME);
-       
       } else {
         console.log('getlastestPostId error'); 
       }
@@ -69,8 +61,6 @@ const AddInfo = () => {
       console.log(error);
     } 
   }
-  
-
   const uploadFile2 = async (ctr_cd: string, dept_code: number, filename: string) => {
     console.log(file);
     uploadQuery(file, ctr_cd + "_" + dept_code + "_" + filename, "informationboard")
@@ -93,8 +83,6 @@ const AddInfo = () => {
         console.log(error);
       });
   };
-
-
   const handleGetDepartmentList = async () => {
     try {
       let res = await generalQuery('getDepartmentList', {});
@@ -111,12 +99,9 @@ const AddInfo = () => {
   }
   useEffect(() => {
     handleGetDepartmentList();
-   
     return ()=> {
-       
     }    
   }, []);
-
   return (
     <div className="addinfo">
       <div className="tracuuDataInspection"> 
@@ -165,7 +150,6 @@ const AddInfo = () => {
                     disabled={userData?.EMPL_NO !== 'NHU1903'}
                     ref={refArray[1]}
                     onKeyDown={(e) => {
-                      
                     }}                    
                     placeholder={""}
                     value={content}

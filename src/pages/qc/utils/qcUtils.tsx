@@ -1,7 +1,8 @@
 import moment from "moment";
 import { generalQuery, getCompany } from "../../../api/Api";
-import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, TestListTable } from "../interfaces/qcInterface";
+import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, KHKT_DATA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
 import Swal from "sweetalert2";
+
 
 export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
     let kq: AUDIT_HISTORY_DATA[] = [];
@@ -313,3 +314,103 @@ export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
         console.log(error);
       });
   };
+  export const f_loadTemLotKTHistory = async (
+    FROM_DATE: string,
+    TO_DATE: string
+  ) => {
+    let kq: TEMLOTKT_DATA[] = [];
+    await generalQuery("temlotktraHistory", {
+      FROM_DATE: FROM_DATE,
+      TO_DATE: TO_DATE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", "Load data thành công", "success");
+          let loaded_data: TEMLOTKT_DATA[] = response.data.data.map(
+            (element: TEMLOTKT_DATA, index: number) => {
+              return {
+                ...element,
+                LOT_PRINT_DATE: moment
+                  .utc(element.LOT_PRINT_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),
+                MFT_DATE: moment.utc(element.MFT_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+          Swal.fire("Thông báo", "Không có data", "error");
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+  
+  export const f_loadKHKT_ADUNG = async (FROM_DATE: string) => {
+    let kq: KHKT_DATA[] = [];
+    await generalQuery("khkt_a_dung", {
+      FROM_DATE: FROM_DATE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", "Load data thành công", "success");
+          let loaded_data: KHKT_DATA[] = response.data.data.map(
+            (element: KHKT_DATA, index: number) => {
+              return {
+                ...element,
+                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+
+  export const f_loadInspect_status_G_CODE = async (PLAN_DATE: string) => {
+    let kq: INSPECT_STATUS_DATA[] = [];
+    await generalQuery("tinh_hinh_kiemtra_G_CODE", {
+      PLAN_DATE: PLAN_DATE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: INSPECT_STATUS_DATA[] = response.data.data.map(
+            (element: INSPECT_STATUS_DATA, index: number) => {
+              return {
+                ...element,
+                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+                FIRST_INPUT_TIME:
+                  element.FIRST_INPUT_TIME !== null
+                    ? moment
+                        .utc(element.FIRST_INPUT_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                INS_DATE: moment
+                  .utc(element.INS_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                TOTAL_OUTPUT: element.INIT_WH_STOCK + element.OUTPUT_QTY,
+                COVER_D1:
+                  element.INIT_WH_STOCK + element.OUTPUT_QTY >= element.D1
+                    ? "OK"
+                    : "NG",
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+  

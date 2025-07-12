@@ -1,12 +1,6 @@
 import React from "react";
-import { POST_DATA } from "../../api/GlobalInterface";
 import moment from "moment";
-
-interface NewsItem {
-  thumbnail: string;
-  imageSrc: string;
-  title: string;
-}
+import { POST_DATA } from "./interfaces/infoInterface";
 
 interface NewsListProps {
   newsItems: POST_DATA[];

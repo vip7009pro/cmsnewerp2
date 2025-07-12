@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 import MainNews from './MainNews';
 import NewsList from './NewsList';
 import "./Information.scss";
-import { DEPARTMENT_DATA, POST_DATA } from '../../api/GlobalInterface';
-import { generalQuery } from '../../api/Api';
-import moment from 'moment';
-import { f_fetchPostList, f_getDepartmentList } from '../../api/GlobalFunction';
+import { DEPARTMENT_DATA, POST_DATA } from './interfaces/infoInterface';
+import { f_fetchPostList, f_getDepartmentList } from './utils/infoUtils';
 const Information = () => {
   const [deptlist, setDeptList] = useState<DEPARTMENT_DATA[]>([]);
   const [postList, setPostList] = useState<POST_DATA[]>([]);

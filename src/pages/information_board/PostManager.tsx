@@ -4,11 +4,11 @@ import Swal from "sweetalert2";
 import "./PostManager.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { POST_DATA } from "../../api/GlobalInterface";
-import { f_deletePostData, f_fetchPostList, f_fetchPostListAll, f_updatePostData, } from "../../api/GlobalFunction";
 import AGTable from "../../components/DataTable/AGTable";
 import AddInfo from "./AddInfo";
 import { getUserData } from "../../api/Api";
+import { POST_DATA } from "./interfaces/infoInterface";
+import { f_deletePostData, f_fetchPostListAll, f_updatePostData } from "./utils/infoUtils";
 const PostManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
