@@ -1,6 +1,6 @@
 import moment from "moment";
 import { generalQuery, getUserData } from "../../../api/Api";
-import { EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
+import { DiemDanhNhomData, EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
 import { WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
 
 export const f_getEmployeeList = async () => {
@@ -271,6 +271,40 @@ export const f_setCaDiemDanh = async (DATA: any) => {
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_getDiemDanhNhom = async (
+  option: string,
+  teamnamelist: number
+) => {
+  let kq: DiemDanhNhomData[] = [];
+  await generalQuery(option, { team_name_list: teamnamelist })
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        let loaded_data = response.data.data.map((e: any, index: number) => {
+          return {
+            ...e,
+            REQUEST_DATE:
+              e.REQUEST_DATE !== null
+                ? moment.utc(e.REQUEST_DATE).format('YYYY-MM-DD')
+                : '',
+            APPLY_DATE:
+              e.APPLY_DATE !== null
+                ? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD')
+                : '',
+            FULL_NAME: e.MIDLAST_NAME + ' ' + e.FIRST_NAME,
+            id: index + 1,
+          };
+        });
+        kq = loaded_data;
+      } else {
+        console.log(response.data.message);
       }
     })
     .catch((error) => {

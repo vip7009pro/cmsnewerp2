@@ -1,13 +1,7 @@
 import { Outlet } from "react-router-dom";
 import "../home/home.scss";
 import { animated } from "@react-spring/web";
-import React, {
-  useEffect,
-  useState,
-  Suspense,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, Suspense, useMemo, useCallback, } from "react";
 import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
