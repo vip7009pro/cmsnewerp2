@@ -4,12 +4,9 @@ import App from "./App";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import "./index.css";
-
 import { SnackbarProvider } from 'notistack';
 import { getCompany } from "./api/Api";
 import AppVendors from "./AppVendors";
-
-
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -20,7 +17,6 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
-
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );

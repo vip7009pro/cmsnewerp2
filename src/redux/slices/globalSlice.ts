@@ -363,12 +363,7 @@ export const glbSlice = createSlice({
       );
     },
     closeTab: (state, action: PayloadAction<number>) => {
-      /* state.tabs = state.tabs.filter(
-            (ele: ELE_ARRAY, index1: number) => {
-              return index1 !== state.tabIndex;
-            }
-          );
-          state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
+      console.log('close index', action.payload)
       let checkallDeleted: number = 0;
       for (let i = 0; i < state.tabs.length; i++) {
         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
@@ -407,6 +402,7 @@ export const glbSlice = createSlice({
         }
       } else {
         state.tabs = [];
+        state.tabIndex = 0;
       }
     },
     settabIndex: (state, action: PayloadAction<number>) => {
