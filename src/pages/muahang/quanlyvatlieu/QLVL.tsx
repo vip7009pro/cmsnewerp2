@@ -8,11 +8,6 @@ import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from ".
 import { MdAdd } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import {
-  CustomerListData,
-  FSC_LIST_DATA,
-  MATERIAL_TABLE_DATA,
-} from "../../../api/GlobalInterface";
 import { CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Component
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
@@ -24,6 +19,8 @@ import { BiLoaderCircle } from "react-icons/bi";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import VLDOC from "./VLDOC";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { FSC_LIST_DATA, MATERIAL_TABLE_DATA } from "../interfaces/muaInterface";
+import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 const QLVL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showdialog, setShowDialog] = useState(false);
