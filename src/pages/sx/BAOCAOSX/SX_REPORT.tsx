@@ -3,12 +3,6 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./SX_REPORT.scss";
-import {
-  CNT_GAP_DATA,
-  PQC3_DATA,
-  RND_NEWCODE_BY_CUSTOMER,
-  RND_NEWCODE_BY_PRODTYPE,
-} from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -33,6 +27,8 @@ import SXPlanLossTrend from "../../../components/Chart/SX/SXPlanLossTrend";
 import YCSX_GAP_RATE from "../../../components/Chart/SX/YCSX_GAP_RATE";
 import { MACHINE_LIST, PLAN_LOSS_DATA, PRODUCTION_EFFICIENCY_DATA, SX_ACHIVE_DATA, SX_LOSSTIME_BY_EMPL, SX_LOSSTIME_REASON_DATA, SX_TREND_LOSS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData, f_load_ALL_GAP_RATE_DATA, f_load_KT_GAP_RATE_DATA, f_load_SX_GAP_RATE_DATA, f_load_YCSX_GAP_RATE_DATA } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { RND_NEWCODE_BY_CUSTOMER, RND_NEWCODE_BY_PRODTYPE } from "../../rnd/interfaces/rndInterface";
+import { CNT_GAP_DATA } from "../../qc/interfaces/qcInterface";
 
 const SX_REPORT = () => {
   const [planLossData, setPlanLossData] = useState<PLAN_LOSS_DATA[]>([]);

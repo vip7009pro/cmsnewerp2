@@ -4,11 +4,10 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./RND_REPORT.scss";
 import {
-  PQC3_DATA,
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
   RND_NEWCODE_TREND_DATA,
-} from "../../../api/GlobalInterface";
+} from "../interfaces/rndInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";

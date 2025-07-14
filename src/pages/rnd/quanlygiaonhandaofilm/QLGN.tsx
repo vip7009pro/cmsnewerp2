@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import "./QLGN.scss";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
-import { CodeListData, CustomerListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
+import { HANDOVER_DATA } from "../interfaces/rndInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
+import { CodeListData, CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 const QLGN = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([

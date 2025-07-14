@@ -8,15 +8,9 @@ import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { checkBP } from "../../../api/GlobalFunction";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import {
-  KTP_IN,
-  KTP_OUT,
-  STOCK_G_CODE,
-  STOCK_G_NAME_KD,
-  STOCK_PROD_REQUEST_NO,
-} from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { MdOutlinePivotTableChart } from "react-icons/md";
+import { KTP_IN, KTP_OUT, STOCK_G_CODE, STOCK_G_NAME_KD, STOCK_PROD_REQUEST_NO } from "../interfaces/khoInterface";
 
 const KHOTPNEW = () => {
   const dataGridRef = useRef<any>(null);

@@ -9,11 +9,12 @@ import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import QRCODE from "../design_amazon/design_components/QRCODE";
 import BARCODE from "../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
-import { BARCODE_DATA, CodeListData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 import AGTable from "../../../components/DataTable/AGTable";
+import { BARCODE_DATA } from "../interfaces/rndInterface";
+import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
 const PRODUCT_BARCODE_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);

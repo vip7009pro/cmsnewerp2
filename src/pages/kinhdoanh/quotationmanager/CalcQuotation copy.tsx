@@ -32,7 +32,8 @@ import { TbLogout } from "react-icons/tb";
 
 import { KeyboardNavigation } from "devextreme-react/tree-list";
 import { BANGGIA_DATA_CALC, CODEDATA, DEFAULT_DM, GIANVL } from "../interfaces/kdInterface";
-import { BOM_GIA, UserData } from "../../../api/GlobalInterface";
+import { UserData } from "../../../api/GlobalInterface";
+import { BOM_GIA } from "../../rnd/interfaces/rndInterface";
 const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,

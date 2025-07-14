@@ -1,7 +1,8 @@
 import React from 'react'
 import './PATROL_HEADER.scss'
-import { PATROL_HEADER_DATA, WEB_SETTING_DATA } from '../../../api/GlobalInterface'
+import { PATROL_HEADER_DATA } from '../../qlsx/QLSXPLAN/interfaces/khsxInterface'
 import { getGlobalSetting } from '../../../api/Api'
+import { WEB_SETTING_DATA } from '../../../api/GlobalInterface'
 const PATROL_HEADER = ({ data }: { data: PATROL_HEADER_DATA[] }) => {
   return (
     <div className='patrolheader'>

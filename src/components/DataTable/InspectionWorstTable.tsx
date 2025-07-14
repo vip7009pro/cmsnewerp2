@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
-import { WEB_SETTING_DATA, WorstCodeData, WorstData } from '../../api/GlobalInterface';
+import { WEB_SETTING_DATA} from '../../api/GlobalInterface';
 import ChartWorstCodeByErrCode from '../Chart/INSPECTION/ChartWorstCodeByErrCode';
 import { generalQuery, getGlobalSetting } from '../../api/Api';
 import Swal from 'sweetalert2';
 import './InspectionWorstTable.scss'
 import AGTable from './AGTable';
+import { WorstCodeData, WorstData } from '../../pages/qc/interfaces/qcInterface';
 const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, ng_type, listCode, cust_name }: { dailyClosingData: Array<WorstData>, worstby: string, from_date: string, to_date: string, ng_type: string, listCode: string[], cust_name: string }) => {
   console.log(dailyClosingData)
 

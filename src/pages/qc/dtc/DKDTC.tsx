@@ -399,7 +399,7 @@ const DKDTC = () => {
       .then(async (response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
-          let tested_code_list = [];
+          let tested_code_list: any[] = [];
           tested_code_list =
             response.data.data.length > 0
               ? response.data.data.map((item: any) => item.TEST_CODE)

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import './PATROL.scss'
 import PATROL_COMPONENT from './PATROL_COMPONENT'
 import PATROL_HEADER from './PATROL_HEADER'
-import { DTC_PATROL_DATA, INSP_PATROL_DATA, PATROL_HEADER_DATA, PQC3_DATA } from '../../../api/GlobalInterface'
+
 import { generalQuery } from '../../../api/Api'
 import { Button, Checkbox } from '@mui/material'
 import moment from 'moment'
@@ -10,6 +10,8 @@ import { FromInputColumn } from '../../../components/StyledComponents/ComponentL
 import Swal from 'sweetalert2'
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { PATROL_HEADER_DATA } from '../../qlsx/QLSXPLAN/interfaces/khsxInterface'
+import { DTC_PATROL_DATA, INSP_PATROL_DATA, PQC3_DATA } from '../../qc/interfaces/qcInterface'
 const PATROL = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);

@@ -16,7 +16,8 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { WEB_SETTING_DATA, YearlyClosingData } from "../../../api/GlobalInterface";
+import { WEB_SETTING_DATA} from "../../../api/GlobalInterface";
+import { YearlyClosingData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const ChartYearly = ({data}: {data: YearlyClosingData[]}) => {
   const [yearlyClosingData, setYearlyClosingData] = useState<
     Array<YearlyClosingData>

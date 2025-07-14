@@ -5,12 +5,9 @@ import { RootState } from "../../../../redux/store";
 import { useSelector } from "react-redux";
 import "./YCKT.scss";
 import Barcode from "react-barcode";
-import {
-  FullBOM,
-  QLSXCHITHIDATA,
-  QLSXPLANDATA,
-  UserData,
-} from "../../../../api/GlobalInterface";
+import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { UserData } from "../../../../api/GlobalInterface";
+import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 
 const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const userData: UserData | undefined = useSelector(

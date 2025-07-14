@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import "./SAMPLE_MONITOR.scss";
 import { generalQuery, getUserData, uploadQuery } from "../../../api/Api";
 import { MdAdd, MdFaceUnlock, MdLock, MdOutlinePivotTableChart, MdRefresh } from "react-icons/md";
-import { CustomerListData, FullBOM, SAMPLE_MONITOR_DATA } from "../../../api/GlobalInterface";
+import { SAMPLE_MONITOR_DATA } from "../interfaces/rndInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
@@ -12,6 +12,7 @@ import { CustomCellRendererProps } from "ag-grid-react";
 import { checkBP } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { AiFillCloseCircle } from "react-icons/ai";
+import { FullBOM } from "../../kinhdoanh/interfaces/kdInterface";
 const SAMPLE_MONITOR = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [data, setData] = useState<Array<SAMPLE_MONITOR_DATA>>([]);

@@ -314,7 +314,7 @@ const MATERIAL_MANAGER = () => {
               onRowSelectionModelChange={(ids) => {
                 handleMaterialDataSelectionforUpdate(ids);
               }}
-              onCellEditCommit={(
+              onCellEditStop={(
                 params: GridCellEditStopParams,
                 event: MuiEvent<MuiBaseEvent>,
                 details: GridCallbackDetails,

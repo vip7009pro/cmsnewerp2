@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../../api/Api";
 import moment from "moment";
 import {
   Chart,
-  Connector,
   Legend,
   Label,
   Series,
@@ -15,20 +14,11 @@ import {
   ArgumentAxis,
   ValueAxis,
 } from "devextreme-react/chart";
-import PieChart, { Export, Font } from "devextreme-react/pie-chart";
 import "./CAPASX.scss";
 import CIRCLE_COMPONENT from "./CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-import {
-  DATA_DIEM_DANH,
-  DELIVERY_PLAN_CAPA,
-  EQ_STT,
-  MACHINE_COUNTING,
-  SX_CAPA_DATA,
-  WEB_SETTING_DATA,
-  YCSX_BALANCE_CAPA_DATA,
-} from "../../../../api/GlobalInterface";
-import { CustomResponsiveContainer, f_handle_loadEQ_STATUS } from "../../../../api/GlobalFunction";
+import { WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { DATA_DIEM_DANH, DELIVERY_PLAN_CAPA, EQ_STT, SX_CAPA_DATA } from "../interfaces/khsxInterface";
 const CAPASX2 = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime;

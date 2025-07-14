@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./RNR.scss";
 import { generalQuery } from "../../../../api/Api";
-import { RNR_DATA, RNR_DATA_EMPL } from "../../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { RNR_DATA, RNR_DATA_EMPL } from "../../interfaces/qcInterface";
 const RNR = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(true);

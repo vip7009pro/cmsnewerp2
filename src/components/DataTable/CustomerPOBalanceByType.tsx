@@ -25,12 +25,9 @@ interface CustomerPOBalanceByTypeData {
   OTHERS: number;
 }
 const CustomerPOBalanceByType = () => {
-  const [customerpobalancebytypedata, setCustomerPoBalanceByType] = useState<
-    Array<CustomerPOBalanceByTypeData>
-  >([]);
+  const [customerpobalancebytypedata, setCustomerPoBalanceByType] = useState< Array<CustomerPOBalanceByTypeData> >([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const customerpobalancebytype_potable = [
+  const customerpobalancebytype_potable: any = [
     {
       field: "CUST_NAME_KD",
       headerName: "CUST_NAME_KD",
