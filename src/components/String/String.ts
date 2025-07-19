@@ -1,4 +1,6 @@
 export const vn_lang = {
+  baocaokho: "Báo cáo kho",
+  yctk: "Yêu cầu thiết kế",
   nocodelowcode: 'Nocode-Lowcode',
   tinhluongP3: "Tính lương P3",
   baocaofullroll: "Báo cáo full Roll",
@@ -152,6 +154,8 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = { 
+  baocaokho: "Warehouse Report",
+  yctk: "Design Request",
   nocodelowcode: 'Nocode-Lowcode',
   tinhluongP3: "P3 Salary calculation",
   baocaofullroll: "Full Roll Report",
@@ -304,6 +308,8 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  baocaokho: "창고 리포트",
+  yctk: "디자인 요청",
   nocodelowcode: 'Nocode-Lowcode',
   tinhluongP3: "P3 급여 계산",
   baocaofullroll: "풀 롤 리포트",

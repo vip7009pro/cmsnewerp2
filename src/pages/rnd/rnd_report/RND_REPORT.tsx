@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import "./RND_REPORT.scss";
 import {
   RND_NEWCODE_BY_CUSTOMER,
@@ -18,11 +18,21 @@ import RNDMonthlyNewCode from "../../../components/Chart/RND/RNDMonthlyNewCode";
 import RNDYearlyNewCode from "../../../components/Chart/RND/RNDYearlyNewCode";
 import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
 import RNDNewCodeByProdType from "../../../components/Chart/RND/RNDNewCodeByProdType";
+import { YCTK_TREND_DATA } from "../../kinhdoanh/interfaces/kdInterface";
+import { f_load_YCTK_TREND_DAILY, f_load_YCTK_TREND_MONTHLY, f_load_YCTK_TREND_WEEKLY, f_load_YCTK_TREND_YEARLY } from "../../kinhdoanh/utils/kdUtils";
+import RNDDailyDesignRequest from "../../../components/Chart/RND/RNDDailyDesignRequest";
+import RNDWeeklyDesignRequest from "../../../components/Chart/RND/RNDWeeklyDesignRequest";
+import RNDMonthlyDesignRequest from "../../../components/Chart/RND/RNDMonthlyDesignRequest";
+import RNDYearlyDesignRequest from "../../../components/Chart/RND/RNDYearlyDesignRequest";
 const RND_REPORT = () => {
   const [dailynewcode, setDailyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
   const [weeklynewcode, setWeeklyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
   const [monthlynewcode, setMonthlyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
   const [yearlynewcode, setYearlyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
+  const [yctkdailynewcode, setYCTKDailyNewCode] = useState<YCTK_TREND_DATA[]>([]);
+  const [yctkweeklynewcode, setYCTKWeeklyNewCode] = useState<YCTK_TREND_DATA[]>([]);
+  const [yctkmonthlynewcode, setYCTKMonthlyNewCode] = useState<YCTK_TREND_DATA[]>([]);
+  const [yctkyearlynewcode, setYCTKYearlyNewCode] = useState<YCTK_TREND_DATA[]>([]);
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
@@ -211,6 +221,46 @@ const RND_REPORT = () => {
         console.log(error);
       });
   }
+  const handle_getYCTKDataDaily = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    setYCTKDailyNewCode(await f_load_YCTK_TREND_DAILY(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getYCTKDataWeekly = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    setYCTKWeeklyNewCode(await f_load_YCTK_TREND_WEEKLY(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getYCTKDataMonthly = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    setYCTKMonthlyNewCode(await f_load_YCTK_TREND_MONTHLY(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getYCTKDataYearly = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    setYCTKYearlyNewCode(await f_load_YCTK_TREND_YEARLY(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -228,6 +278,10 @@ const RND_REPORT = () => {
       handle_getYearlyNewCodeData("ALL", searchCodeArray),
       handle_newCodeByCustomer(fromdate, todate, searchCodeArray),
       handle_newCodeByProdType(fromdate, todate, searchCodeArray),
+      handle_getYCTKDataDaily(fromdate, todate),
+      handle_getYCTKDataWeekly(fromdate, todate),
+      handle_getYCTKDataMonthly(fromdate, todate),
+      handle_getYCTKDataYearly(fromdate, todate),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -415,6 +469,80 @@ const RND_REPORT = () => {
               </div>
             </div>
           </div>
+          {getCompany() === "PVN" && <>
+          <span className="section_title">3. Design Request Trending</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Daily Design Request <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yctkdailynewcode, "Daily Design Request Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>
+                </span>
+                <RNDDailyDesignRequest
+                  dldata={[...yctkdailynewcode].reverse()}
+                  processColor="#53eb34"
+                  materialColor="#ff0000"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly Design Request <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yctkweeklynewcode, "Weekly Design Request Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <RNDWeeklyDesignRequest
+                  dldata={[...yctkweeklynewcode].reverse()}
+                  processColor="#53eb34"
+                  materialColor="#ff0000"
+                />
+              </div>
+            </div>
+            <div className="monthlyweeklygraph">
+              <div className="dailygraph">
+                <span className="subsection">Monthly Design Request <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yctkmonthlynewcode, "Monthly Design Request Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <RNDMonthlyDesignRequest
+                  dldata={[...yctkmonthlynewcode].reverse()}
+                  processColor="#53eb34"
+                  materialColor="#ff0000"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly Design Request <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yctkyearlynewcode, "Yearly Design Request Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <RNDYearlyDesignRequest
+                  dldata={[...yctkyearlynewcode].reverse()}
+                  processColor="#53eb34"
+                  materialColor="#ff0000"
+                />
+              </div>
+            </div>
+          </div>
+          </>}
           <span className="subsection_title">2.5 New Code By Customer and Prod Type ({fromdate}- {todate})
           </span>
           <div className="defect_trending">

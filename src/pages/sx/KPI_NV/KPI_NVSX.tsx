@@ -131,7 +131,7 @@ const KPI_NVSX = () => {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               })}{" "}
-              %
+              
             </span>
           );
         },
@@ -148,7 +148,7 @@ const KPI_NVSX = () => {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               })}{" "}
-              %
+              
             </span>
           );
         },

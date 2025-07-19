@@ -158,6 +158,7 @@ function App() {
   const checkLoginCallback = useCallback(() => {
     checkLogin()
       .then((data: any) => {
+        console.log('data check login', data);
         if (data.data.tk_status === "ng") {
           loadWebSetting();
           dispatch(logout(false));

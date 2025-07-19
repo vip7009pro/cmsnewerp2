@@ -3,7 +3,7 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/GlobalFunction";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
@@ -39,6 +39,7 @@ const KHOLIEU = () => {
   const [inputlieufilter, setInputLieuFilter] = useState<NHAPLIEUDATA[]>([]);
   const [shownhaplieu, setShowNhapLieu] = useState(false);
   const [showxuatlieu, setShowXuatLieu] = useState(false);
+  const [in_nhanh, setInNhanh] = useState(false);
   const column_STOCK_LIEU = [
     { field: "M_CODE", headerName: "M_CODE", width: 50 },
     { field: "M_NAME", headerName: "M_NAME", width: 100 },
@@ -312,6 +313,7 @@ const KHOLIEU = () => {
       FROM_DATE: fromdate,
       TO_DATE: todate,
       PLAN_ID: plan_id,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -607,6 +609,15 @@ const KHOLIEU = () => {
                 onChange={() => setJustBalanceCode(!justbalancecode)}
               ></input>
             </label>
+            {getCompany() === "PVN" && <label>
+              <b>In nhanh:</b>
+              <input
+                type="checkbox"
+                name="alltimecheckbox"
+                defaultChecked={in_nhanh}
+                onChange={() => setInNhanh(!in_nhanh)}
+              ></input>
+            </label>}
           </div>
         </div>
         <div className="formbutton">

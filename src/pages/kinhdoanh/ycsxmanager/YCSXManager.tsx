@@ -2684,7 +2684,7 @@ const YCSXManager = () => {
   return (
     <div className='ycsxmanager'>
       <MyTabs defaultActiveTab={0}>
-        <MyTabs.Tab title="Tra YCSX">
+        <MyTabs.Tab title='Tra YCSX'>
           <div className='tracuuYCSX'>
             {showhidesearchdiv && (
               <div className='tracuuYCSXform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
@@ -2702,7 +2702,7 @@ const YCSXManager = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>Tới ngày:</b>{" "}
+                      <b>Tới ngày:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2715,7 +2715,7 @@ const YCSXManager = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>Code KD:</b>{" "}
+                      <b>Code KD:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2727,7 +2727,7 @@ const YCSXManager = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>Code ERP:</b>{" "}
+                      <b>Code ERP:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2741,7 +2741,7 @@ const YCSXManager = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>Tên nhân viên:</b>{" "}
+                      <b>Tên nhân viên:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2753,7 +2753,7 @@ const YCSXManager = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>Khách:</b>{" "}
+                      <b>Khách:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2767,7 +2767,7 @@ const YCSXManager = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>Loại sản phẩm:</b>{" "}
+                      <b>Loại sản phẩm:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2779,7 +2779,7 @@ const YCSXManager = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>Số YCSX:</b>{" "}
+                      <b>Số YCSX:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2810,7 +2810,7 @@ const YCSXManager = () => {
                       </select>
                     </label>
                     <label>
-                      <b>Vật liệu:</b>{" "}
+                      <b>Vật liệu:</b>{' '}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
@@ -2822,7 +2822,7 @@ const YCSXManager = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>Loại hàng:</b>
                       <select
@@ -2843,51 +2843,44 @@ const YCSXManager = () => {
                         <option value='M4'>NM4 (M4)</option>
                         <option value='GC'>Hàng Gia Công (GC)</option>
                         <option value='TM'>Hàng Thương Mại (TM)</option>
-                        {getCompany() !== 'CMS' && <>
-                          <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                          <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                          <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                          <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                          <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                          <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                          <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                          <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                          <option value='I9'>Hàng In Nhanh 9 (I9)</option>
-                        </>}
+                        {getCompany() !== 'CMS' && (
+                          <>
+                            <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                            <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                            <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                            <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                            <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                            <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                            <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                            <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                            <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                          </>
+                        )}
                         {/* <option value='SL'>Slitting (SL)</option> */}
                       </select>
                     </label>
-                    {getCompany() === 'CMS' && <label>
-                      <b>YC Tạm thời:</b>
-                      <select
-                        name='is_tam_thoi'
-                        value={is_tam_thoi}
-                        onChange={(e) => {
-                          setIs_Tam_Thoi(e.target.value);
-                        }}
-                      >
-                        <option value='Y'>Tạm thời</option>
-                        <option value='N'>Bình thường</option>                       
-                        
-                      </select>
-                    </label>}
+                    {getCompany() === 'CMS' && (
+                      <label>
+                        <b>YC Tạm thời:</b>
+                        <select
+                          name='is_tam_thoi'
+                          value={is_tam_thoi}
+                          onChange={(e) => {
+                            setIs_Tam_Thoi(e.target.value);
+                          }}
+                        >
+                          <option value='Y'>Tạm thời</option>
+                          <option value='N'>Bình thường</option>
+                        </select>
+                      </label>
+                    )}
                     <label>
                       <b>All Time:</b>
-                      <input
-                        type='checkbox'
-                        name='alltimecheckbox'
-                        checked={alltime}
-                        onChange={() => setAllTime(!alltime)}
-                      ></input>
+                      <input type='checkbox' name='alltimecheckbox' checked={alltime} onChange={() => setAllTime(!alltime)}></input>
                     </label>
                     <label>
                       <b>Material YES Only:</b>
-                      <input
-                        type='checkbox'
-                        name='alltimecheckbox'
-                        checked={materialYES}
-                        onChange={() => setMaterialYES(!materialYES)}
-                      ></input>
+                      <input type='checkbox' name='alltimecheckbox' checked={materialYES} onChange={() => setMaterialYES(!materialYES)}></input>
                     </label>
                   </div>
                   <div className='forminputcolumn'>
@@ -2940,46 +2933,45 @@ const YCSXManager = () => {
                           Khách hàng:
                           <DropdownSearch
                             options={customerList.map((x) => ({ label: x.CUST_CD + ':' + x.CUST_NAME_KD, value: x.CUST_CD }))}
-                            value={selectedCust_CD?.CUST_CD ?? ""}
+                            value={selectedCust_CD?.CUST_CD ?? ''}
                             onChange={(e) => {
                               let customer = customerList.find((x) => x.CUST_CD === e) ?? {
-                                CUST_CD: "0000",
-                                CUST_NAME_KD: "SEOJIN",
-                                CUST_NAME: "SEOJIN",
+                                CUST_CD: '0000',
+                                CUST_NAME_KD: 'SEOJIN',
+                                CUST_NAME: 'SEOJIN',
                               };
                               setSelectedCust_CD(customer);
                               loadPONO(selectedCode?.G_CODE, customer.CUST_CD);
                             }}
-                            style={{ width: "180px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                            style={{ width: '180px', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
                             itemHeight={25}
                           />
                           CODE:
                           <DropdownSearch
                             options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME, value: x.G_CODE }))}
-                            value={selectedCode?.G_CODE ?? ""}
+                            value={selectedCode?.G_CODE ?? ''}
                             onChange={async (e) => {
                               let code = codeList.find((x) => x.G_CODE === e) ?? {
-                                G_CODE: "6A00001B",
-                                G_NAME: "GT-I9500_SJ68-01284A",
-                                G_NAME_KD: "GT-I9500_SJ68-01284A",
+                                G_CODE: '6A00001B',
+                                G_NAME: 'GT-I9500_SJ68-01284A',
+                                G_NAME_KD: 'GT-I9500_SJ68-01284A',
                                 PROD_LAST_PRICE: 0,
-                                USE_YN: "N",
+                                USE_YN: 'N',
                               };
-                              if(loaisx==='04'){
+                              if (loaisx === '04') {
                                 setIsFirstLot(false);
-                              }else{
-                                setIsFirstLot(await isG_CODE_FL(code?.G_CODE))
+                              } else {
+                                setIsFirstLot(await isG_CODE_FL(code?.G_CODE));
                               }
                               //console.log('check FL',await isG_CODE_FL(code?.G_CODE))
                               setSelectedCode(code);
                               loadPONO(code?.G_CODE, selectedCust_CD?.CUST_CD);
                             }}
-                            style={{ width: "180px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                            style={{ width: '180px', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
                             itemHeight={25}
                           />
                         </div>
                         <div className='dangkyinputbox'>
-                          
                           Loại SP:
                           <select
                             name='phanloaihang'
@@ -2998,17 +2990,19 @@ const YCSXManager = () => {
                             <option value='M4'>NM4 (M4)</option>
                             <option value='GC'>Hàng Gia Công (GC)</option>
                             <option value='TM'>Hàng Thương Mại (TM)</option>
-                            {getCompany() !== 'CMS' && <>
-                              <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                              <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                              <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                              <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                              <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                              <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                              <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                              <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                              <option value='I9'>Hàng In Nhanh 9 (I9)</option>
-                            </>}
+                            {getCompany() !== 'CMS' && (
+                              <>
+                                <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                                <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                                <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                                <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                                <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                                <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                                <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                                <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                                <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                              </>
+                            )}
                           </select>
                           Loại SX:
                           <select
@@ -3016,7 +3010,7 @@ const YCSXManager = () => {
                             value={loaisx}
                             onChange={(e) => {
                               setLoaiSX(e.target.value);
-                              if(e.target.value ==='04'){
+                              if (e.target.value === '04') {
                                 setIsFirstLot(false);
                               }
                             }}
@@ -3027,122 +3021,145 @@ const YCSXManager = () => {
                             <option value='04'>SAMPLE</option>
                           </select>
                         </div>
+
                         <div className='dangkyinputbox'>
-                         
-                         Loại XH:
-                         <select
-                           name='loaixh'
-                           value={loaixh}
-                           onChange={(e) => {
-                             setLoaiXH(e.target.value);
-                           }}
-                         >
-                           <option value='01'>GC</option>
-                           <option value='02'>SK</option>
-                           <option value='03'>KD</option>
-                           <option value='04'>VN</option>
-                           <option value='05'>SAMPLE</option>
-                           <option value='06'>Vai bac 4</option>
-                           <option value='07'>ETC</option>
-                         </select>
-                         {getCompany() === 'CMS' && <>
-                         YC Tạm:
-                         <select
-                           name='tamthoi'
-                           value={is_tam_thoi}
-                           onChange={(e) => {
-                             setIs_Tam_Thoi(e.target.value);
-                           }}
-                         >
-                           <option value='Y'>Tạm thời</option>
-                           <option value='N'>Bình thường</option>                           
-                         </select>
-                         </>}
-                       </div>
-                   
-                      
-                       <div className='dangkyinputbox'>
-                       DELIVERY DT:
-                          <input
-                            className='inputdata'
-                            type='date'
-                            value={deliverydate.slice(0, 10)}
-                            onChange={(e) => setNewDeliveryDate(e.target.value)}
-                          ></input>
-                         PO NO:
-                         <DropdownSearch
-                           options={ponolist.map((x) => ({ label: x.PO_NO + ' | ' + moment.utc(x.RD_DATE).format('YYYY-MM-DD') + ' | ' + x.PO_QTY, value: x.PO_NO }))}
-                           value={selectedPoNo?.PO_NO ?? ""}
-                           onChange={(e) => {
-                             let selectedPONO = ponolist.find((x) => x.PO_NO === e) ?? {
-                               CUST_CD: "",
-                               G_CODE: "",
-                               PO_NO: "",
-                               PO_DATE: "",
-                               RD_DATE: "",
-                               PO_QTY: 0,
-                             }
-                             setSelectedPoNo(selectedPONO);
-                             setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format("YYYY-MM-DD"));
-                             setNewYcsxQty(selectedPONO?.PO_QTY ?? 0)
-                           }}
-                           style={{ width: "100px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
-                           itemHeight={25}
-                         />
-                       </div>
-                       <div className='dangkyinputbox'>
-                         YCSX QTY:
-                         <input className='inputdata' type='number' value={newycsxqty}
-                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                             setNewYcsxQty(Number(e.target.value))
-                           }>
-                         </input>
-                         Remark:
-                         <input className='inputdata' type='text' value={newycsxremark}
-                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                             setNewYcsxRemark(e.target.value)
-                           }>
-                         </input>                        
-                       </div>
-                       <div className='dangkyinputbox'>
-                        
-                         First LOT:
-                         <select
-                           name='loasx'
-                           value={isFirstLOT ? 'Y' : 'N'}
-                           onChange={(e) => {
-                             setIsFirstLot(e.target.value === 'Y');
-                           }}
-                         >
-                           <option value='Y'>First LOT</option>
-                           <option value='N'>Not First LOT</option>
-                         </select>
-                       </div>
-                      
-                       
-                      </div>               
+                          DELIVERY DT:
+                          <input className='inputdata' type='date' value={deliverydate.slice(0, 10)} onChange={(e) => setNewDeliveryDate(e.target.value)}></input>
+                          PO NO:
+                          <DropdownSearch
+                            options={ponolist.map((x) => ({ label: x.PO_NO + ' | ' + moment.utc(x.RD_DATE).format('YYYY-MM-DD') + ' | ' + x.PO_QTY, value: x.PO_NO }))}
+                            value={selectedPoNo?.PO_NO ?? ''}
+                            onChange={(e) => {
+                              let selectedPONO = ponolist.find((x) => x.PO_NO === e) ?? {
+                                CUST_CD: '',
+                                G_CODE: '',
+                                PO_NO: '',
+                                PO_DATE: '',
+                                RD_DATE: '',
+                                PO_QTY: 0,
+                              };
+                              setSelectedPoNo(selectedPONO);
+                              setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format('YYYY-MM-DD'));
+                              setNewYcsxQty(selectedPONO?.PO_QTY ?? 0);
+                            }}
+                            style={{ width: '100px', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                            itemHeight={25}
+                          />
+                        </div>
+                        <div className='dangkyinputbox'>
+                          YCSX QTY:
+                          <input className='inputdata' type='number' value={newycsxqty} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewYcsxQty(Number(e.target.value))}></input>
+                          Remark:
+                          <input className='inputdata' type='text' value={newycsxremark} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewYcsxRemark(e.target.value)}></input>
+                        </div>
+                        {getCompany() === 'CMS' && (
+                          <div className='dangkyinputbox'>
+                            First LOT:
+                            <select
+                              name='loasx'
+                              value={isFirstLOT ? 'Y' : 'N'}
+                              onChange={(e) => {
+                                setIsFirstLot(e.target.value === 'Y');
+                              }}
+                            >
+                              <option value='Y'>First LOT</option>
+                              <option value='N'>Not First LOT</option>
+                            </select>
+                            YC Tạm:
+                            <select
+                              name='tamthoi'
+                              value={is_tam_thoi}
+                              onChange={(e) => {
+                                setIs_Tam_Thoi(e.target.value);
+                              }}
+                            >
+                              <option value='Y'>Tạm thời</option>
+                              <option value='N'>Bình thường</option>
+                            </select>
+                          </div>
+                        )}
+
+                        <div className='dangkyinputbox'>
+                          Loại XH:
+                          <select
+                            name='loaixh'
+                            value={loaixh}
+                            onChange={(e) => {
+                              setLoaiXH(e.target.value);
+                            }}
+                          >
+                            <option value='01'>GC</option>
+                            <option value='02'>SK</option>
+                            <option value='03'>KD</option>
+                            <option value='04'>VN</option>
+                            <option value='05'>SAMPLE</option>
+                            <option value='06'>Vai bac 4</option>
+                            <option value='07'>ETC</option>
+                          </select>
+                        </div>
+                      </div>
                       <div className='dangkybutton'>
                         {selection.themycsx && (
-                          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                            handle_add_1YCSX();
-                          }}>Add</Button>
+                          <Button
+                            color={'success'}
+                            variant='contained'
+                            size='small'
+                            sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }}
+                            onClick={() => {
+                              handle_add_1YCSX();
+                            }}
+                          >
+                            Add
+                          </Button>
                         )}
                         {selection.inserttableycsx && (
-                          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
-                            handle_InsertYCSXTable();
-                          }}>Insert</Button>
+                          <Button
+                            color={'success'}
+                            variant='contained'
+                            size='small'
+                            sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }}
+                            onClick={() => {
+                              handle_InsertYCSXTable();
+                            }}
+                          >
+                            Insert
+                          </Button>
                         )}
                         {selection.suaycsx && (
-                          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
-                            updateYCSX();
-                          }}>Update</Button>
+                          <Button
+                            color={'success'}
+                            variant='contained'
+                            size='small'
+                            sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }}
+                            onClick={() => {
+                              updateYCSX();
+                            }}
+                          >
+                            Update
+                          </Button>
                         )}
-                        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                          clearYCSXform();
-                        }}>Clear</Button>
-                        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
-                          setSelection({ ...selection, them1po: false });
-                        }}>Close</Button>
+                        <Button
+                          color={'success'}
+                          variant='contained'
+                          size='small'
+                          sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }}
+                          onClick={() => {
+                            clearYCSXform();
+                          }}
+                        >
+                          Clear
+                        </Button>
+                        <Button
+                          color={'success'}
+                          variant='contained'
+                          size='small'
+                          sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }}
+                          onClick={() => {
+                            setSelection({ ...selection, them1po: false });
+                          }}
+                        >
+                          Close
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -3152,7 +3169,7 @@ const YCSXManager = () => {
             </div>
           </div>
         </MyTabs.Tab>
-        <MyTabs.Tab title="Thêm YCSX">
+        <MyTabs.Tab title='Thêm YCSX'>
           <div className='newycsx' style={{ backgroundImage: theme.CMS.backgroundImage }}>
             <div className='batchnewycsx'>
               <div className='them1ycsx'>
@@ -3163,52 +3180,45 @@ const YCSXManager = () => {
                         KH:
                         <DropdownSearch
                           options={customerList.map((x) => ({ label: x.CUST_CD + ':' + x.CUST_NAME_KD, value: x.CUST_CD }))}
-                          value={selectedCust_CD?.CUST_CD ?? ""}
+                          value={selectedCust_CD?.CUST_CD ?? ''}
                           onChange={(e) => {
                             let customer = customerList.find((x) => x.CUST_CD === e) ?? {
-                              CUST_CD: "0000",
-                              CUST_NAME_KD: "SEOJIN",
-                              CUST_NAME: "SEOJIN",
+                              CUST_CD: '0000',
+                              CUST_NAME_KD: 'SEOJIN',
+                              CUST_NAME: 'SEOJIN',
                             };
                             setSelectedCust_CD(customer);
                             loadPONO(selectedCode?.G_CODE, customer.CUST_CD);
                           }}
-                          style={{ width: "120px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                          style={{ width: '120px', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
                           itemHeight={25}
                         />
                         CODE:
                         <DropdownSearch
                           options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME, value: x.G_CODE }))}
-                          value={selectedCode?.G_CODE ?? ""}
+                          value={selectedCode?.G_CODE ?? ''}
                           onChange={(e) => {
                             let code = codeList.find((x) => x.G_CODE === e) ?? {
-                              G_CODE: "6A00001B",
-                              G_NAME: "GT-I9500_SJ68-01284A",
-                              G_NAME_KD: "GT-I9500_SJ68-01284A",
+                              G_CODE: '6A00001B',
+                              G_NAME: 'GT-I9500_SJ68-01284A',
+                              G_NAME_KD: 'GT-I9500_SJ68-01284A',
                               PROD_LAST_PRICE: 0,
-                              USE_YN: "N",
+                              USE_YN: 'N',
                             };
                             setSelectedCode(code);
                             loadPONO(code?.G_CODE, selectedCust_CD?.CUST_CD);
                           }}
-                          style={{ width: "180px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                          style={{ width: '180px', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
                           itemHeight={25}
                         />
                       </div>
                       <div className='dangkyinputbox'>
-                      Delivery Date:
+                        Delivery Date:
                         <label>
-                         
-                          <input
-                            className='inputdata'
-                            type='date'
-                            value={deliverydate.slice(0, 10)}
-                            onChange={(e) => setNewDeliveryDate(e.target.value)}
-                          ></input>
+                          <input className='inputdata' type='date' value={deliverydate.slice(0, 10)} onChange={(e) => setNewDeliveryDate(e.target.value)}></input>
                         </label>
                         Loại hàng:
                         <label>
-                         
                           <select
                             name='phanloaihang'
                             value={newphanloai}
@@ -3226,24 +3236,25 @@ const YCSXManager = () => {
                             <option value='M4'>NM4 (M4)</option>
                             <option value='GC'>Hàng Gia Công (GC)</option>
                             <option value='TM'>Hàng Thương Mại (TM)</option>
-                            {getCompany() !== 'CMS' && <>
-                              <option value='I1'>Hàng In Nhanh 1 (I1)</option>
-                              <option value='I2'>Hàng In Nhanh 2 (I2)</option>
-                              <option value='I3'>Hàng In Nhanh 3 (I3)</option>
-                              <option value='I4'>Hàng In Nhanh 4 (I4)</option>
-                              <option value='I5'>Hàng In Nhanh 5 (I5)</option>
-                              <option value='I6'>Hàng In Nhanh 6 (I6)</option>
-                              <option value='I7'>Hàng In Nhanh 7 (I7)</option>
-                              <option value='I8'>Hàng In Nhanh 8 (I8)</option>
-                              <option value='I9'>Hàng In Nhanh 9 (I9)</option>
-                            </>}
+                            {getCompany() !== 'CMS' && (
+                              <>
+                                <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                                <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                                <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                                <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                                <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                                <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                                <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                                <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                                <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                              </>
+                            )}
                           </select>
                         </label>
                       </div>
                       <div className='dangkyinputbox'>
-                      Loại sản xuất:
+                        Loại sản xuất:
                         <label>
-                          
                           <select
                             name='loasx'
                             value={loaisx}
@@ -3259,7 +3270,6 @@ const YCSXManager = () => {
                         </label>
                         Loại xuất hàng:
                         <label>
-                          
                           <select
                             name='loaixh'
                             value={loaixh}
@@ -3276,44 +3286,43 @@ const YCSXManager = () => {
                             <option value='07'>ETC</option>
                           </select>
                         </label>
-                        
                       </div>
                       <div className='dangkyinputbox'>
                         PO NO:
                         <DropdownSearch
                           options={ponolist.map((x) => ({ label: x.PO_NO + ' | ' + moment.utc(x.RD_DATE).format('YYYY-MM-DD') + ' | ' + x.PO_QTY, value: x.PO_NO }))}
-                          value={selectedPoNo?.PO_NO ?? ""}
+                          value={selectedPoNo?.PO_NO ?? ''}
                           onChange={(e) => {
                             let selectedPONO = ponolist.find((x) => x.PO_NO === e) ?? {
-                              CUST_CD: "",
-                              G_CODE: "",
-                              PO_NO: "",
-                              PO_DATE: "",
-                              RD_DATE: "",
+                              CUST_CD: '',
+                              G_CODE: '',
+                              PO_NO: '',
+                              PO_DATE: '',
+                              RD_DATE: '',
                               PO_QTY: 0,
-                            }
+                            };
                             setSelectedPoNo(selectedPONO);
-                            setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format("YYYY-MM-DD"));
-                            setNewYcsxQty(selectedPONO?.PO_QTY ?? 0)
+                            setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format('YYYY-MM-DD'));
+                            setNewYcsxQty(selectedPONO?.PO_QTY ?? 0);
                           }}
-                          style={{ width: "100px", height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                          style={{ width: '100px', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
                           itemHeight={25}
                         />
-
-{getCompany() === 'CMS' && <>
-                          YC Tạm:
-                          <select
-                            name='tamthoi'
-                            value={is_tam_thoi}
-                            onChange={(e) => {
-                              setIs_Tam_Thoi(e.target.value);
-                            }}
-                          >
-                            <option value='Y'>Tạm thời</option>
-                            <option value='N'>Bình thường</option>                           
-                          </select>
-                          </>}
-
+                        {getCompany() === 'CMS' && (
+                          <>
+                            YC Tạm:
+                            <select
+                              name='tamthoi'
+                              value={is_tam_thoi}
+                              onChange={(e) => {
+                                setIs_Tam_Thoi(e.target.value);
+                              }}
+                            >
+                              <option value='Y'>Tạm thời</option>
+                              <option value='N'>Bình thường</option>
+                            </select>
+                          </>
+                        )}
                         {/* <Autocomplete
                               size='small'
                               disablePortal
@@ -3346,29 +3355,45 @@ const YCSXManager = () => {
                       </div>
                       <div className='dangkyinputbox'>
                         YCSX QTY:
-                        <input className='inputdata' type='number' value={newycsxqty}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setNewYcsxQty(Number(e.target.value))
-                          }>
-                        </input>
+                        <input className='inputdata' type='number' value={newycsxqty} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewYcsxQty(Number(e.target.value))}></input>
                         Remark:
-                        <input className='inputdata' type='text' value={newycsxremark}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setNewYcsxRemark(e.target.value)
-                          }>
-                        </input>
+                        <input className='inputdata' type='text' value={newycsxremark} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewYcsxRemark(e.target.value)}></input>
                       </div>
                     </div>
                     <div className='dangkybutton'>
-                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
-                        handle_InsertYCSXTable();
-                      }}>Insert</Button>
-                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                        clearYCSXform();
-                      }}>Clear</Button>
-                      <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
-                        setSelection({ ...selection, them1po: false });
-                      }}>Close</Button>
+                      <Button
+                        color={'success'}
+                        variant='contained'
+                        size='small'
+                        sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }}
+                        onClick={() => {
+                          handle_InsertYCSXTable();
+                        }}
+                      >
+                        Insert
+                      </Button>
+                      <Button
+                        color={'success'}
+                        variant='contained'
+                        size='small'
+                        sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }}
+                        onClick={() => {
+                          clearYCSXform();
+                        }}
+                      >
+                        Clear
+                      </Button>
+                      <Button
+                        color={'success'}
+                        variant='contained'
+                        size='small'
+                        sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }}
+                        onClick={() => {
+                          setSelection({ ...selection, them1po: false });
+                        }}
+                      >
+                        Close
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -3387,24 +3412,46 @@ const YCSXManager = () => {
                   />
                 </label>
                 <div className='ycsxbutton'>
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue' }} onClick={() => {
-                    confirmCheckYcsxHangLoat();
-                  }}>Check YCSX</Button>
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#3EAF45' }} onClick={() => {
-                    confirmUpYcsxHangLoat();
-                  }}>Up YCSX</Button>
-                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                    handle_DeleteYCSX_Excel();
-                  }}>Clear YCSX</Button>
+                  <Button
+                    color={'success'}
+                    variant='contained'
+                    size='small'
+                    sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue' }}
+                    onClick={() => {
+                      confirmCheckYcsxHangLoat();
+                    }}
+                  >
+                    Check YCSX
+                  </Button>
+                  <Button
+                    color={'success'}
+                    variant='contained'
+                    size='small'
+                    sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#3EAF45' }}
+                    onClick={() => {
+                      confirmUpYcsxHangLoat();
+                    }}
+                  >
+                    Up YCSX
+                  </Button>
+                  <Button
+                    color={'success'}
+                    variant='contained'
+                    size='small'
+                    sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }}
+                    onClick={() => {
+                      handle_DeleteYCSX_Excel();
+                    }}
+                  >
+                    Clear YCSX
+                  </Button>
                 </div>
               </form>
-              <div className='insertYCSXTable'>
-                {ycsxUploadExcelDataTableAG}
-              </div>
+              <div className='insertYCSXTable'>{ycsxUploadExcelDataTableAG}</div>
             </div>
           </div>
         </MyTabs.Tab>
-        <MyTabs.Tab title="Add AMZ Data">
+        {getCompany() === 'CMS' && <MyTabs.Tab title='Add AMZ Data'>
           <div className='amazonetab'>
             <div className='newamazon'>
               <div className='amazonInputform'>
@@ -3424,25 +3471,18 @@ const YCSXManager = () => {
                     </label>
                     <label>
                       <b>ID Công việc:</b>
-                      <input
-                        type='text'
-                        placeholder='CG7607845474986040938'
-                        value={id_congviec}
-                        onChange={(e) => setID_CongViec(e.target.value)}
-                      ></input>
+                      <input type='text' placeholder='CG7607845474986040938' value={id_congviec} onChange={(e) => setID_CongViec(e.target.value)}></input>
                     </label>
                   </div>
                   <div className='prod_request_info'>
-                    <div style={{ color: "green" }}>Code KD: {codeKD}</div>
-                    <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
-                    <div style={{ color: "blue" }}>
-                      Cavity Amazon: {cavityAmazon}
-                    </div>
-                    <div style={{ color: "black" }}>Model: {prod_model}</div>
+                    <div style={{ color: 'green' }}>Code KD: {codeKD}</div>
+                    <div style={{ color: 'red' }}>Code ERP: {codeCMS}</div>
+                    <div style={{ color: 'blue' }}>Cavity Amazon: {cavityAmazon}</div>
+                    <div style={{ color: 'black' }}>Model: {prod_model}</div>
                   </div>
                 </div>
                 <form className='formupload'>
-                  <div className="uploadfile">
+                  <div className='uploadfile'>
                     <label htmlFor='upload'>
                       <input
                         className='selectfilebutton'
@@ -3455,36 +3495,58 @@ const YCSXManager = () => {
                       />
                     </label>
                   </div>
-                  <div className="uploadbutton">
-                    <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
-                      upAmazonDataSuperFast();
-                    }}>Up</Button>
+                  <div className='uploadbutton'>
+                    <Button
+                      color={'success'}
+                      variant='contained'
+                      size='small'
+                      sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }}
+                      onClick={() => {
+                        upAmazonDataSuperFast();
+                      }}
+                    >
+                      Up
+                    </Button>
                     {/*  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
                     testData();
                   }}>Test</Button> */}
-                    <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }} onClick={() => {
-                      f_checkDuplicateAMZ();
-                    }}>Check</Button>
-                    <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
-                      setUploadExcelJSon([]);
-                    }}>Clear</Button>
+                    <Button
+                      color={'success'}
+                      variant='contained'
+                      size='small'
+                      sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }}
+                      onClick={() => {
+                        f_checkDuplicateAMZ();
+                      }}
+                    >
+                      Check
+                    </Button>
+                    <Button
+                      color={'success'}
+                      variant='contained'
+                      size='small'
+                      sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }}
+                      onClick={() => {
+                        setUploadExcelJSon([]);
+                      }}
+                    >
+                      Clear
+                    </Button>
                   </div>
                   {progressvalue}/{uploadExcelJson.length}
                 </form>
               </div>
               <div className='batchnewycsx'>
-                <div className='insertYCSXTable'>
-                  {amzDataTableAG}
-                </div>
+                <div className='insertYCSXTable'>{amzDataTableAG}</div>
               </div>
             </div>
           </div>
-        </MyTabs.Tab>
-        <MyTabs.Tab title="Tra AMZ Data">
+        </MyTabs.Tab>}
+        {getCompany() === 'CMS' && <MyTabs.Tab title='Tra AMZ Data'>
           <div className='traamazdata'>
             <TraAMZ />
           </div>
-        </MyTabs.Tab>
+        </MyTabs.Tab>}
       </MyTabs>
       {selection.renderycsx && (
         <div className='printycsxpage'>

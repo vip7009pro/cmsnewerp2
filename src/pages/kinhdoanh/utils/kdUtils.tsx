@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
-import { CodeListData, CustomerListData, FCSTTDYCSX, InvoiceTableData, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, TONKHOTDYCSX, UploadAmazonData, YCSXTableData } from "../interfaces/kdInterface";
+import { CodeListData, CustomerListData, FCSTTDYCSX, InvoiceTableData, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, TONKHOTDYCSX, UploadAmazonData, YCSXTableData, YCTK_TREND_DATA, YCTKData } from "../interfaces/kdInterface";
 import moment from "moment";
 import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import * as XLSX from "xlsx";
@@ -1406,6 +1406,7 @@ export const f_deleteDMYCSX2 = async (PROD_REQUEST_NO: string) => {
 
 
 export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
+  console.log('vao delete')
   let err_code: boolean = false;
   await generalQuery("delete_ycsx", {
     PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -1427,14 +1428,17 @@ export const f_deleteYCSX = async (PROD_REQUEST_NO: string) => {
 
 
 export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
-  if (ycsxList.length >= 1) {
+  if (ycsxList.length >= 1) {    
     let err_code: boolean = false;
-    for (let i = 0; i < ycsxList.length; i++) {
+    for (let i = 0; i < ycsxList.length; i++) {      
+     
       if (ycsxList[i].EMPL_NO === getUserData()?.EMPL_NO) {
         let checkO300: boolean = await f_checkYCSX_DKXL(
           ycsxList[i].PROD_REQUEST_NO
         );
-        if (checkO300) {
+        
+        if (checkO300) {     
+           
           err_code = true;
           Swal.fire(
             "Thông báo",
@@ -1442,6 +1446,7 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
             "error"
           );
         } else {
+          
           err_code = await f_deleteYCSX(ycsxList[i].PROD_REQUEST_NO);
           if (ycsxList[i].PL_HANG != "TT" && ycsxList[i].PL_HANG != "AM") {
             await f_deleteP500_YCSX(
@@ -1538,3 +1543,194 @@ export const f_deleteDataAMZ = async (PROD_REQUEST_NO: string) => {
       console.log(error);
     });
 };
+
+export const f_load_YCTK = async (DATA: any) => {
+  let kq: YCTKData[] = [];
+  await generalQuery("loadyctkdata", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: YCTKData[] = response.data.data.map(
+          (element: YCTKData, index: number) => {            
+            return {
+              ...element,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+    
+}
+
+export const f_insert_YCTK = async (DATA: any) => {
+  let kq: string = "NG";
+  await generalQuery("addYCTK", DATA)
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq = "OK";
+      } else {
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_update_YCTK = async (DATA: any) => {
+  let kq: string = "NG";
+  await generalQuery("updateYCTK", DATA)
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq = "OK";
+      } else {
+        kq = "NG: Lỗi SQL: " + response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_load_YCTK_TREND_DAILY = async (DATA: any) => {
+  let kq: YCTK_TREND_DATA[] = [];
+  await generalQuery("loadyctkdatatrenddaily", {
+    FROM_DATE: DATA.FROM_DATE,
+    TO_DATE: DATA.TO_DATE
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: YCTK_TREND_DATA[] = response.data.data.map(
+          (element: YCTK_TREND_DATA, index: number) => {            
+            return {
+              ...element,
+              RATE: element.TOTAL !== 0 ? element.COMPLETED / element.TOTAL : 0,
+              REQ_DATE: moment(element.REQ_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_YCTK_TREND_WEEKLY = async (DATA: any) => {
+  let kq: YCTK_TREND_DATA[] = [];
+  await generalQuery("loadyctkdatatrendweekly", {
+    FROM_DATE: DATA.FROM_DATE,
+    TO_DATE: DATA.TO_DATE
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: YCTK_TREND_DATA[] = response.data.data.map(
+          (element: YCTK_TREND_DATA, index: number) => {            
+            return {
+              ...element,
+              RATE: element.TOTAL !== 0 ? element.COMPLETED / element.TOTAL : 0,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_YCTK_TREND_MONTHLY = async (DATA: any) => {
+  let kq: YCTK_TREND_DATA[] = [];
+  await generalQuery("loadyctkdatatrendmonthly", {
+    FROM_DATE: DATA.FROM_DATE,
+    TO_DATE: DATA.TO_DATE
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: YCTK_TREND_DATA[] = response.data.data.map(
+          (element: YCTK_TREND_DATA, index: number) => {            
+            return {
+              ...element,
+              RATE: element.TOTAL !== 0 ? element.COMPLETED / element.TOTAL : 0,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_YCTK_TREND_YEARLY = async (DATA: any) => {
+  let kq: YCTK_TREND_DATA[] = [];
+  await generalQuery("loadyctkdatatrendyearly", {
+    FROM_DATE: DATA.FROM_DATE,
+    TO_DATE: DATA.TO_DATE
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: YCTK_TREND_DATA[] = response.data.data.map(
+          (element: YCTK_TREND_DATA, index: number) => {            
+            return {
+              ...element,
+              RATE: element.TOTAL !== 0 ? element.COMPLETED / element.TOTAL : 0,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}

@@ -11,16 +11,16 @@ const ISO = () => {
   return (
     <div className="iso">
       <MyTabs defaultActiveTab={0}>
-        <MyTabs.Tab title="TEST">
+        {(getCompany() ==='CMS') && <MyTabs.Tab title="TEST">
           <div className="rnr">
             <RNR />
           </div>
-        </MyTabs.Tab>
-        <MyTabs.Tab title="SELF AUDIT">
+        </MyTabs.Tab>}
+        {(getCompany() ==='CMS') && <MyTabs.Tab title="SELF AUDIT">
           <div className="audit">
             <AUDIT />
           </div>
-        </MyTabs.Tab>
+        </MyTabs.Tab>}
         <MyTabs.Tab title="AUDIT HISTORY">
           <div className="audit">
            <AUDIT_HISTORY/>

@@ -39,10 +39,7 @@ function Home() {
       tabs: state.totalSlice.tabs,
     }));
   console.log("company", company);
-  const menulist: MENU_LIST_DATA[] = useMemo(
-    () => getMenuList(company, lang),
-    [company, lang]
-  );
+  const menulist: MENU_LIST_DATA[] = useMemo( () => getMenuList(company, lang), [company, lang] );
   const dispatch = useDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = useCallback(() => {

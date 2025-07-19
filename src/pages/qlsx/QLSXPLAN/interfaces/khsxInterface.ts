@@ -1316,6 +1316,7 @@ export interface XUATDAOFILM_DATA {
   G_NAME_KD: string;
   PLAN_DATE: string;
   SX_DATE: string;
+  F_NEW: string;
 }
 export interface DEFECT_PROCESS_DATA {
   CTR_CD: string;

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from './api/GlobalFunction';
-import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, BulletinBoard, CAPA_MANAGER, CAPASX2, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeam, DTC, EQ_STATUS, FCSTManager, FileTransfer, Info, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTABS, KHOTOTAL, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanh, KinhDoanhReport, LichSu, LICHSUINPUTLIEU, LICHSUTEMLOTSX, MUAHANG, NhanSu, NOLOWHOME, OQC, OVER_MONITOR, PheDuyetNghi, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QC, QCReport, QLGN, QLSX, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, YCSXManager, } from "./api/lazyPages";
+import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, BulletinBoard, CAPA_MANAGER, CAPASX2, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeam, DTC, EQ_STATUS, FCSTManager, FileTransfer, Info, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTABS, KHOTOTAL, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanh, KinhDoanhReport, LichSu, LICHSUINPUTLIEU, LICHSUTEMLOTSX, MUAHANG, NhanSu, NOLOWHOME, OQC, OVER_MONITOR, PheDuyetNghi, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QC, QCReport, QLGN, QLSX, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, WH_REPORT, YCSXManager,  YCTKManager, } from "./api/lazyPages";
 import Home from './pages/home/Home';
 import { getCompany } from './api/Api';
 import { animated } from '@react-spring/web';
@@ -67,6 +67,7 @@ const AppRoutes = ({ globalUserData }: { globalUserData: any }) => {
           <Route path="ins_status" element={<INSPECT_STATUS />} />
           <Route path="shortage" element={<ShortageKD />} />
           <Route path="overmonitor" element={<OVER_MONITOR />} />
+          <Route path="yctk" element={<YCTKManager />} />
         </Route>
         <Route
           path="rnd"
@@ -163,11 +164,10 @@ const AppRoutes = ({ globalUserData }: { globalUserData: any }) => {
           <Route path="khotabs" element={<KHOTABS />} />
           <Route
             path="nhapxuattontp"
-            element={
-              getCompany() !== "CMS" ? <KHOTPNEW /> : <KHOTP />
-            }
+            element={ getCompany() !== "CMS" ? <KHOTPNEW /> : <KHOTP /> }
           />
           <Route path="nhapxuattonlieu" element={<KHOLIEU />} />
+          <Route path="baocaokho" element={<WH_REPORT />} />
         </Route>
         <Route
           path="setting"

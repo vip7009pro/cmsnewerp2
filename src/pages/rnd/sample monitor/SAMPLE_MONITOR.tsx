@@ -1,9 +1,9 @@
-import { Button, IconButton, createFilterOptions } from "@mui/material";
+import { IconButton } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./SAMPLE_MONITOR.scss";
-import { generalQuery, getUserData, uploadQuery } from "../../../api/Api";
-import { MdAdd, MdFaceUnlock, MdLock, MdOutlinePivotTableChart, MdRefresh, MdSave } from "react-icons/md";
+import { generalQuery, getUserData } from "../../../api/Api";
+import { MdAdd, MdLock, MdRefresh, MdSave } from "react-icons/md";
 import { SAMPLE_MONITOR_DATA } from "../interfaces/rndInterface";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
@@ -55,6 +55,7 @@ const SAMPLE_MONITOR = () => {
     PROD_REQUEST_QTY: 0
   });
   const [prod_request_no, setProd_Request_No]= useState('');
+  const [reqID, setReqID]= useState(0);
   const [ycsxInfo, setYCSXINFO]= useState<FullBOM[]>([]);
   const loadYCSXDataSAMPLE_MONITOR = (ycsx: string)=> {
     generalQuery("ycsx_fullinfo", {      
@@ -251,29 +252,7 @@ const SAMPLE_MONITOR = () => {
         console.log(error);
       });
   }
-  const updateDataTable = (data_row: SAMPLE_MONITOR_DATA, key: string, value: any) => {   
-        let dataToUpdate: SAMPLE_MONITOR_DATA = data.filter((ele:SAMPLE_MONITOR_DATA, index: number)=> ele.SAMPLE_ID === data_row.SAMPLE_ID)[0];
-       /*  switch (getUserData()?.MAINDEPTNAME) {
-          case 'RND':        
-              updateRND_STATUS({ ...dataToUpdate, [key]: value });       
-            break;
-          case 'SX':        
-              updateSX_STATUS({ ...dataToUpdate, [key]: value });       
-            break;
-          case 'QC':        
-              updateQC_STATUS({ ...dataToUpdate, [key]: value });       
-            break;
-          case 'KD':        
-              updateAPPROVE_STATUS({ ...dataToUpdate, [key]: value });        
-            break;
-          case 'MUA':        
-              updateMATERIAL_STATUS({ ...dataToUpdate, [key]: value });        
-            break;
-          case 'KHO':        
-              updateMATERIAL_STATUS({ ...dataToUpdate, [key]: value });        
-            break;
-          
-        } */
+  const updateDataTable = (data_row: SAMPLE_MONITOR_DATA, key: string, value: any) => {
         setData(prev => {
           const newData = prev.map((p) =>
             p.SAMPLE_ID === data_row.SAMPLE_ID
@@ -283,13 +262,6 @@ const SAMPLE_MONITOR = () => {
           return newData;
         });        
   }
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Enter") {
-      loadSampleListTable();
-    }
-  };
   const handleUpdateData = (e: React.ChangeEvent<HTMLInputElement>, rowdata: SAMPLE_MONITOR_DATA, key: string) => {
     if (e.target.checked) {
       updateDataTable(rowdata, key, 'Y')
@@ -298,43 +270,40 @@ const SAMPLE_MONITOR = () => {
       updateDataTable(rowdata, key, 'N')
     }
   }
-  const handle_Add_Sample =(ycsx: FullBOM) => {
+  const handle_Add_Sample =(ycsx: FullBOM, reqID: number) => {    
     if(ycsxInfo.length>0)
     {
       generalQuery("addMonitoringSample", {      
         PROD_REQUEST_NO: ycsx.PROD_REQUEST_NO,   
-        G_NAME_KD: ycsx.G_NAME_KD 
+        G_NAME_KD: ycsx.G_NAME_KD,
+        REQ_ID: reqID 
       })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo","Thêm sample thành công","success");
-            loadSampleListTable();
-            
-          } else {
-            if(response.data.message.indexOf('PRIMARY KEY') > -1)
-            {
-              Swal.fire("Thông báo","Thêm sample thất bại, ycsx này đã thêm rồi","error");            
-            }
-            else
-            {
-              Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
-            }
-            
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo","Thêm sample thành công","success");
+          loadSampleListTable();
+          
+        } else {
+          if(response.data.message.indexOf('PRIMARY KEY') > -1)
+          {
+            Swal.fire("Thông báo","Thêm sample thất bại, ycsx này đã thêm rồi","error");            
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
+          else
+          {
+            Swal.fire("Thông báo","Thêm sample thất bại:"+ response.data.message,"error");            
+          }
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
     else 
     {
       Swal.fire("Thông báo","Hãy nhập số YCSX","error");        
     }
-    
-
-
   }
   const handle_Update_Data_Row = async (selectedDataRows: SAMPLE_MONITOR_DATA[], MAINDEPARTMENT: string) => {
     for(let i=0; i<selectedDataRows.length; i++)
@@ -367,14 +336,6 @@ const SAMPLE_MONITOR = () => {
     Swal.fire("Thông báo","Update data thành công","success");
     loadSampleListTable();
   }
-  function CustomHeader({displayName}:{displayName: string}) {
-    return (
-      <div className="custom-header">
-      <span className="custom-header-icon">🔍</span>
-      <span className="custom-header-text">{displayName}</span>
-      </div>
-    )
-  }
   const colDefs = [    
     {
       field: 'SAMPLE_ID', headerName: 'ID', headerCheckboxSelection: true, checkboxSelection: true, width: 50, resizable: true, pinned:'left', floatingFilter: true, /* cellStyle: (params:any) => {     
@@ -387,6 +348,7 @@ const SAMPLE_MONITOR = () => {
     {
       headerName:'SAMPLE INFO',
       children: [       
+        { field: 'REQ_ID', headerName: 'REQ_ID', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'CUST_NAME_KD', headerName: 'CUSTOMER', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'G_CODE', headerName: 'G_CODE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
@@ -782,13 +744,22 @@ const SAMPLE_MONITOR = () => {
                 ></input>
               </label>
               <span style={{fontSize:'0.8rem', fontWeight:'bold', color:'blueviolet'}}>{ycsxInfo.length>0 && ycsxInfo[0].G_NAME_KD} |  {ycsxInfo.length>0 && ycsxInfo[0].G_NAME}</span>
+              <span style={{fontSize:'0.8rem', fontWeight:'bold'}}>ID YCTK:</span>                
+                <input
+                  type='number'
+                  placeholder='1234'
+                  value={reqID}
+                  onChange={(e) => {
+                    setReqID(parseInt(e.target.value));                   
+                  }}
+                ></input>
             </div>
             
             <IconButton
               className="buttonIcon"
               onClick={() => {
                 //setShowHidePivotTable(!showhidePivotTable);
-                handle_Add_Sample(ycsxInfo[0]);
+                handle_Add_Sample(ycsxInfo[0], reqID);
               }}
             >
               <MdAdd color="#05ac1b" size={15} />

@@ -4948,6 +4948,27 @@ export const f_load_ALL_GAP_RATE_DATA = async (DATA: any) => {
     .catch((error) => {});
   return kq;
 };
+export const f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA = async (DATA: any) => {
+  let kq: CNT_GAP_DATA[] = [];
+  await generalQuery("loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: CNT_GAP_DATA[] = response.data.data.map(
+          (element: CNT_GAP_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
 export const f_load_BTP_Auto = async () => {
   let kq: BTP_AUTO_DATA2[] = [];
   await generalQuery("loadBTPAuto2", {})
@@ -5185,7 +5206,6 @@ export const f_loadLongTermPlan = async (PLAN_DATE: string) => {
   }
   return kq;
 };
-
 export const f_cancelProductionLot = async (DATA: any) => {
   let kq: string = "";
   await generalQuery("cancelProductionLot", DATA)

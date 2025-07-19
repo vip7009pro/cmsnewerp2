@@ -222,6 +222,7 @@ const DAOFILMDATA = () => {
     },
     { field: 'F_WIDTH', headerName: 'F_WIDTH', resizable: true, width: 70 },
     { field: 'F_LENGTH', headerName: 'F_LENGTH', resizable: true, width: 70 },
+    { field: 'F_NEW', headerName: 'F_NEW', resizable: true, width: 70 },
     { field: 'INS_EMPL', headerName: 'DF_EMPL', resizable: true, width: 70 },
     { field: 'SX_EMPL_NO', headerName: 'SX_EMPL', resizable: true, width: 70 },
     { field: 'SX_DATE', headerName: 'SX_DATE', resizable: true, width: 60 },

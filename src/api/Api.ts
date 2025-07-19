@@ -96,6 +96,7 @@ export function login(user: string, pass: string) {
         localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {
+            console.log("data", data);
             
             if (data.data.tk_status.toUpperCase() === "NG") {              
               store.dispatch(loginSlice(false));

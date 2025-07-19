@@ -42,8 +42,11 @@ import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { f_insertDMYCSX } from "../../../kinhdoanh/utils/kdUtils";
 import { f_addQLSXPLAN, f_deleteChiThiMaterialLine, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_handletraYCSXQLSX, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
 import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
+import useLocalStorageArray from "./LoadSelectedMachineHook";
 const MACHINE_OLD = () => {
   const myComponentRef = useRef();
+  const [selected_eq, setSelected_eq] = useLocalStorageArray('selected_eq');
+
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
   const getRecentDM = async (G_CODE: string) => {
     setRecentDMData(await f_getRecentDMData(G_CODE));
@@ -1548,7 +1551,7 @@ const MACHINE_OLD = () => {
   const handle_loadEQ_STATUS = async () => {
     let eq_data = await f_handle_loadEQ_STATUS();
     setEQ_STATUS(eq_data.EQ_STATUS);
-    setEQ_SERIES(eq_data.EQ_SERIES);
+    setEQ_SERIES(["ALL", ...eq_data.EQ_SERIES]);
   };
   const handleSaveQLSX = async () => {
     if(tempDM){
@@ -2818,10 +2821,72 @@ const MACHINE_OLD = () => {
           <BiRefresh color='blue' size={20} />
           Refresh PLAN
         </IconButton>
+        <div className='checkboxlist' style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '15px', justifyContent: 'center'}}>
+          {eq_series.map((ele_series: string, index: number) => {
+            return (
+              <div key={index} className='checkboxitem'>
+                <label>
+                <input
+                  type='checkbox'
+                  name={ele_series}
+                  checked={selected_eq.includes(ele_series)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelected_eq([...selected_eq, ele_series]);
+                    } else {
+                      setSelected_eq(
+                        selected_eq.filter((item) => item !== ele_series)
+                      );
+                    }
+                  }}
+                />
+                <span className='mininavtext'>{ele_series}</span>
+                </label>
+              </div>
+            )
+          })}
+          
+        </div>
       </div>
       {selection.tab1 && (
         <div className='NM1'>
-          {eq_series.map((ele_series: string, index: number) => {          
+          {selected_eq.includes("ALL") ? eq_series.map((ele_series: string, index: number) => {          
+            return (
+              <div key={index}>
+                <span className='machine_title'>{ele_series}-NM1</span>
+                <div className='FRlist'>
+                  {eq_status
+                    .filter(
+                      (element: EQ_STT, index: number) =>
+                        element.FACTORY === "NM1" &&
+                        (element.EQ_NAME ?? "NA").substring(0, 2) === ele_series
+                    )
+                    .map((element: EQ_STT, index: number) => {
+                      return (
+                        <MACHINE_COMPONENT
+                          key={index}
+                          factory={element.FACTORY}
+                          machine_name={element.EQ_NAME}
+                          eq_status={element.EQ_STATUS}
+                          current_g_name={element.G_NAME}
+                          current_plan_id={element.CURR_PLAN_ID}
+                          run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                          machine_data={plandatatable}
+                          onClick={() => {
+                            setShowPlanWindow(true);
+                            setSelectedFactory(element.FACTORY ?? "NM1");
+                            setSelectedMachine(element.EQ_NAME ?? "NA");
+                            setTrigger(!trigger);
+                            setSelectedPlan(defaultPlan);
+                            setChiThiDataTable([]);
+                          }}
+                        />
+                      );
+                    })}
+                </div>
+              </div>
+            );
+          }) : eq_series.filter((e, i)=> selected_eq.includes(e)).map((ele_series: string, index: number) => {          
             return (
               <div key={index}>
                 <span className='machine_title'>{ele_series}-NM1</span>
@@ -2979,7 +3044,7 @@ const MACHINE_OLD = () => {
       )}
       {selection.tab2 && (
         <div className='NM2'>
-          {eq_series.map((ele_series: string, index: number) => {
+          {selected_eq.includes("ALL") ? eq_series.map((ele_series: string, index: number) => {
             return (
               <>
                 <span className='machine_title'>{ele_series}-NM2</span>
@@ -3015,7 +3080,44 @@ const MACHINE_OLD = () => {
                 </div>
               </>
             );
-          })}
+          }) : eq_series.filter((e, i)=> selected_eq.includes(e)).map((ele_series: string, index: number) => {
+            return (
+              <>
+                <span className='machine_title'>{ele_series}-NM2</span>
+                <div className='FRlist'>
+                  {eq_status
+                    .filter(
+                      (element: EQ_STT, index: number) =>
+                        element.FACTORY === "NM2" &&
+                        (element.EQ_NAME ?? "NA").substring(0, 2) === ele_series
+                    )
+                    .map((element: EQ_STT, index: number) => {
+                      return (
+                        <MACHINE_COMPONENT
+                          key={index}
+                          factory={element.FACTORY}
+                          machine_name={element.EQ_NAME}
+                          eq_status={element.EQ_STATUS}
+                          current_g_name={element.G_NAME ?? ""}
+                          current_plan_id={element.CURR_PLAN_ID}
+                          run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                          machine_data={plandatatable}
+                          onClick={() => {
+                            setShowPlanWindow(true);
+                            setSelectedFactory(element.FACTORY ?? "NM1");
+                            setSelectedMachine(element.EQ_NAME ?? "NA");
+                            setSelectedPlan(defaultPlan);
+                            setTrigger(!trigger);
+                            setChiThiDataTable([]);
+                          }}
+                        />
+                      );
+                    })}
+                </div>
+              </>
+            );
+          }) 
+        }
           {/* <span className='machine_title'>FR-NM2</span>
           <div className='FRlist'>
             {eq_status

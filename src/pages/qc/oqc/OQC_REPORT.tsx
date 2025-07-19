@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import "./OQC_REPORT.scss";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
@@ -705,6 +705,7 @@ const OQC_REPORT = () => {
               </div>
             </div>
           </div>
+          {getCompany() === "CMS" && <>
           <span className="section_title">2. NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
@@ -788,6 +789,7 @@ const OQC_REPORT = () => {
               </div>
             </div>
           </div>
+          </>}
           
           <span className="subsection_title">
             2.5 NG by Customer and Prod Type{" "}

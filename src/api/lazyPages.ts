@@ -88,3 +88,5 @@ export const PLAN_DATATB = lazy(() => import("../pages/qlsx/QLSXPLAN/LICHSUCHITH
 export const PLAN_STATUS = lazy(() => import("../pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS"));
 export const QUICKPLAN2 = lazy(() => import("../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2"));
 export const LichSu_New = lazy(() => import("../pages/nhansu/LichSu/LichSu_New"));
+export const YCTKManager = lazy(() => import("../pages/kinhdoanh/YCTK/YCTKManager"));
+export const WH_REPORT = lazy(() => import("../pages/kho/khoreport/WH_REPORT"));

@@ -4,42 +4,42 @@ import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, KHKT_DATA, TEM
 import Swal from "sweetalert2";
 
 
-export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
-    let kq: AUDIT_HISTORY_DATA[] = [];
-    await generalQuery("loadAUDIT_HISTORY_DATA", DATA)
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          let loaded_data: AUDIT_HISTORY_DATA[] = response.data.data.map(
-            (element: AUDIT_HISTORY_DATA, index: number) => {
-              return {
-                ...element,
-                AUDIT_DATE: moment.utc(element.AUDIT_DATE).format("YYYY-MM-DD"),
-                id: index,
-              };
-            }
-          );
-          kq = loaded_data;
-        } else {
-          kq = [];
-        }
-      })
-      .catch((error) => {});
-    return kq;
-  };
+  export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
+      let kq: AUDIT_HISTORY_DATA[] = [];
+      await generalQuery("loadAUDIT_HISTORY_DATA", DATA)
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            let loaded_data: AUDIT_HISTORY_DATA[] = response.data.data.map(
+              (element: AUDIT_HISTORY_DATA, index: number) => {
+                return {
+                  ...element,
+                  AUDIT_DATE: moment.utc(element.AUDIT_DATE).format("YYYY-MM-DD"),
+                  id: index,
+                };
+              }
+            );
+            kq = loaded_data;
+          } else {
+            kq = [];
+          }
+        })
+        .catch((error) => {});
+      return kq;
+    };
   export const f_add_AUDIT_HISTORY_DATA = async (DATA: any) => {
-    let kq: string = "";
-    await generalQuery("add_AUDIT_HISTORY_DATA", DATA)
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-        } else {
-          kq = response.data.message;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        kq = error.message;
-      });
-    return kq;
+      let kq: string = "";
+      await generalQuery("add_AUDIT_HISTORY_DATA", DATA)
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+          } else {
+            kq = response.data.message;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          kq = error.message;
+        });
+      return kq;
   };
   export const f_update_AUDIT_HISTORY_DATA = async (DATA: any) => {
     let kq: string = "";

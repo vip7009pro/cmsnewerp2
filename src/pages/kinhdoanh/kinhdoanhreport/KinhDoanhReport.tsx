@@ -60,6 +60,7 @@ interface WidgetData_POBalanceSummary {
   po_balance_amount: number;
 }
 const KinhDoanhReport = () => {
+  const [in_nhanh, setInNhanh] = useState(false);
   const [df, setDF] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -88,9 +89,7 @@ const KinhDoanhReport = () => {
   const [columnsweek, setColumnsWeek] = useState<Array<any>>([]);
   const [columnsmonth, setColumnsMonth] = useState<Array<any>>([]);
   const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
-  const [runningPOBalanceData, setRunningPOBalanceData] = useState<
-    Array<RunningPOData>
-  >([]);
+  const [runningPOBalanceData, setRunningPOBalanceData] = useState< Array<RunningPOData> >([]);
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
     useState<WidgetData_POBalanceSummary>({
       po_balance_qty: 0,
@@ -115,6 +114,7 @@ const KinhDoanhReport = () => {
   const [yearlyOverdueData, setyearlyOverdueData] = useState<OVERDUE_DATA[]>(
     []
   );
+
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [selectedCustomerList, setSelectedCustomerList] = useState<
     CustomerListData[]
@@ -190,11 +190,11 @@ const KinhDoanhReport = () => {
   const handleGetDailyClosing = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
-    let kq: DailyClosingData[] = [];
-    console.log("default->: ", df);
+    let kq: DailyClosingData[] = [];    
     await generalQuery("kd_dailyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -216,7 +216,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetWeeklyClosing = useCallback(async () => {
     let yesterday = moment().add(1, "day").endOf("week").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-56, "day").format("YYYY-MM-DD");
@@ -224,6 +224,7 @@ const KinhDoanhReport = () => {
     await generalQuery("kd_weeklyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -244,7 +245,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetMonthlyClosing = useCallback(async () => {
     let yesterday = moment().endOf("month").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");
@@ -252,6 +253,7 @@ const KinhDoanhReport = () => {
     await generalQuery("kd_monthlyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -274,7 +276,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetYearlyClosing = useCallback(async () => {
     let yesterday = moment().endOf("year").format("YYYY-MM-DD");
     let yesterday2 = "2020-01-01";
@@ -282,6 +284,7 @@ const KinhDoanhReport = () => {
     await generalQuery("kd_annuallyclosing", {
       START_DATE: df ? yesterday2 : fromdate,
       END_DATE: df ? yesterday : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -303,7 +306,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetPOBalanceSummary = useCallback(async () => {
     let kq: POBalanceSummaryData[] = [];
     await generalQuery("traPOSummaryTotal", {})
@@ -335,7 +338,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetCustomerRevenue = useCallback(async () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
@@ -343,6 +346,7 @@ const KinhDoanhReport = () => {
     await generalQuery("customerRevenue", {
       START_DATE: df ? sunday : fromdate,
       END_DATE: df ? monday : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -401,7 +405,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetPICRevenue = useCallback(async () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
@@ -409,6 +413,7 @@ const KinhDoanhReport = () => {
     await generalQuery("PICRevenue", {
       START_DATE: df ? sunday : fromdate,
       END_DATE: df ? monday : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -463,7 +468,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetDailyOverdue = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
@@ -497,7 +502,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const handleGetWeeklyOverdue = useCallback(async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-70, "day").format("YYYY-MM-DD");
@@ -619,6 +624,7 @@ const KinhDoanhReport = () => {
     await generalQuery("getDailyClosingKD", {
       FROM_DATE: df ? moment.utc().format("YYYY-MM-01") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -683,6 +689,7 @@ const KinhDoanhReport = () => {
             TO_DATE: df
               ? lastmonth.endOf("month").format("YYYY-MM-DD")
               : todate,
+            IN_NHANH: in_nhanh,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -750,12 +757,13 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const loadWeeklyClosing = useCallback(async () => {
     let kq: any[] = [];
     await generalQuery("getWeeklyClosingKD", {
       FROM_DATE: df ? moment.utc().format("YYYY-MM-01") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         //console.log(response);
@@ -984,12 +992,13 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const loadPoOverWeek = useCallback(async () => {
     let kq: WeekLyPOData[] = [];
     await generalQuery("kd_pooverweek", {
       FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -1011,7 +1020,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const loadRunningPOBalanceData = useCallback(async () => {
     let kq: RunningPOData[] = [];
     await generalQuery("kd_runningpobalance", {
@@ -1041,12 +1050,13 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const loadMonthlyRevenueByCustomer = useCallback(async () => {
     let kq: any[] = [];
     await generalQuery("loadMonthlyRevenueByCustomer", {
       FROM_DATE: df ? moment.utc().format("YYYY-01-01") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -1123,12 +1133,13 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const loadMonthlyRevenueByCustomerAndEmpl = useCallback(async () => {
     let kq: any[] = [];
     await generalQuery("baocaodanhthutheokhachtheonguoimonthly", {
       FROM_DATE: df ? moment.utc().format("YYYY-01-01") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -1205,7 +1216,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   const initFunction = useCallback(async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -1637,9 +1648,9 @@ const KinhDoanhReport = () => {
       }
       Swal.close();
     });
-  }, [df, fromdate, todate]);
+  }, [df, fromdate, todate, in_nhanh]);
   useEffect(() => {
-    initFunction();
+    //initFunction();
   }, []);
   return (
     <div className="kinhdoanhreport">
@@ -1665,12 +1676,22 @@ const KinhDoanhReport = () => {
           <Checkbox
             checked={df}
             onChange={(e) => {
-              //console.log(e.target.checked);
+              console.log(e.target.checked);
               setDF(e.target.checked);
             }}
             inputProps={{ "aria-label": "controlled" }}
           />
         </label>
+        {getCompany() === "PVN" && <label>
+          <b>In nhanh:</b>{" "}
+          <Checkbox
+            checked={in_nhanh}
+            onChange={(e) => {              
+              setInNhanh(e.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        </label>}
         <button
           className="searchbutton"
           onClick={() => {

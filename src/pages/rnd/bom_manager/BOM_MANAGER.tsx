@@ -3840,24 +3840,7 @@ const BOM_MANAGER = () => {
                           <option value="N">NO</option>
                         </select>
                       </label>}
-                      {getCompany() === 'CMS' && <label>
-                        PHE_DUYET:
-                        <select
-                          disabled={enableform}
-                          name="may1"
-                          value={
-                            codefullinfo?.APPROVED_YN === null || codefullinfo?.APPROVED_YN === ""
-                              ? "N"
-                              : codefullinfo?.APPROVED_YN
-                          }
-                          onChange={(e) => {
-                            handleSetCodeInfo("APPROVED_YN", e.target.value);
-                          }}
-                        >
-                          <option value="Y">YES</option>
-                          <option value="N">NO</option>
-                        </select>
-                      </label>}
+                     
                       {getCompany() === 'CMS' && <label>
                         HSD
                         <select
@@ -3947,6 +3930,24 @@ const BOM_MANAGER = () => {
                           </div>
                         </div>}
                       </label>
+                      {getCompany() === 'CMS' && <label>
+                        PHE_DUYET:
+                        <select
+                          disabled={enableform}
+                          name="may1"
+                          value={
+                            codefullinfo?.APPROVED_YN === null || codefullinfo?.APPROVED_YN === ""
+                              ? "N"
+                              : codefullinfo?.APPROVED_YN
+                          }
+                          onChange={(e) => {
+                            handleSetCodeInfo("APPROVED_YN", e.target.value);
+                          }}
+                        >
+                          <option value="Y">YES</option>
+                          <option value="N">NO</option>
+                        </select>
+                      </label>}
                       <FormControlLabel
                         disabled={enableform}
                         label="Mở/Khóa"

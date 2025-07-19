@@ -241,3 +241,51 @@ export interface WH_M_INPUT_DATA {
     EXP_DATE: string;
     Outtype: string;
   }
+
+  export interface MSTOCK_BY_POPULAR_DATA {
+    PHANLOAI: string;
+    TOTAL_STOCK: number;
+  }
+  export interface MSTOCK_BY_POPULAR_DETAIL_DATA {
+    M_CODE: string;
+    M_NAME: string;
+    WIDTH_CD: number;
+    STOCK_SQM: number;
+    PHANLOAI: string;
+  }
+
+  export interface M_INPUT_BY_POPULAR_DATA {
+    PHANLOAI: string;
+    IN_SQM: number;
+  }
+  export interface M_INPUT_BY_POPULAR_DETAIL_DATA {
+    M_CODE: string;
+    M_NAME: string;
+    WIDTH_CD: number;
+    IN_SQM: number;
+    PHANLOAI: string;
+  }
+
+  export interface M_OUTPUT_BY_POPULAR_DATA {
+    PHANLOAI: string;
+    OUT_SQM: number;
+  }
+  export interface M_OUTPUT_BY_POPULAR_DETAIL_DATA {
+    M_CODE: string;
+    M_NAME: string;
+    WIDTH_CD: number;
+    OUT_SQM: number;
+    PHANLOAI: string;
+  }
+
+  export interface M_STOCK_BY_MONTH_DATA {
+    PHANLOAI: string;
+    TOTAL_STOCK: number;
+  }
+  export interface M_STOCK_BY_MONTH_DETAIL_DATA {
+    M_CODE: string;
+    M_NAME: string;
+    WIDTH_CD: number;
+    STOCK_SQM: number;
+    PHANLOAI: string;
+  }

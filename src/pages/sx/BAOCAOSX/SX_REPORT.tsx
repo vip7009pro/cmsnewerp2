@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import "./SX_REPORT.scss";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
@@ -26,7 +26,7 @@ import SXLossTimeByEmpl from "../../../components/Chart/SX/SXLossTimeByEmpl";
 import SXPlanLossTrend from "../../../components/Chart/SX/SXPlanLossTrend";
 import YCSX_GAP_RATE from "../../../components/Chart/SX/YCSX_GAP_RATE";
 import { MACHINE_LIST, PLAN_LOSS_DATA, PRODUCTION_EFFICIENCY_DATA, SX_ACHIVE_DATA, SX_LOSSTIME_BY_EMPL, SX_LOSSTIME_REASON_DATA, SX_TREND_LOSS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
-import { f_getMachineListData, f_load_ALL_GAP_RATE_DATA, f_load_KT_GAP_RATE_DATA, f_load_SX_GAP_RATE_DATA, f_load_YCSX_GAP_RATE_DATA } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { f_getMachineListData, f_load_ALL_GAP_RATE_DATA, f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA, f_load_KT_GAP_RATE_DATA, f_load_SX_GAP_RATE_DATA, f_load_YCSX_GAP_RATE_DATA } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { RND_NEWCODE_BY_CUSTOMER, RND_NEWCODE_BY_PRODTYPE } from "../../rnd/interfaces/rndInterface";
 import { CNT_GAP_DATA } from "../../qc/interfaces/qcInterface";
 
@@ -62,11 +62,10 @@ const SX_REPORT = () => {
     SETTING_TIME_RATE:0,
     TOTAL_TIME:0,
   })
-
   const [sxLossTimeByReason, setSXLossTimeByReason] = useState<SX_LOSSTIME_REASON_DATA[]>([]);
   const [sxLossTimeByEmpl, setSXLossTimeByEmpl] = useState<SX_LOSSTIME_BY_EMPL[]>([]);
 
-  const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
+  const [fromdate, setFromDate] = useState(moment().add(-12, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
@@ -78,6 +77,7 @@ const SX_REPORT = () => {
   const [sx_gap_rate_data, setSX_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
   const [kt_gap_rate_data, setKT_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
   const [all_gap_rate_data, setALL_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
+  const [all_hoanthanh_truoc_han_rate_data, setALL_HOAN_THANH_TRUOC_HAN_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
 
   const handle_getMachineList = async (FACTORY: string) => {
     setMachineList(await f_getMachineListData());    
@@ -292,7 +292,6 @@ const SX_REPORT = () => {
         console.log(error);
       });
   }
-
   const handle_getDailyEffData = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
@@ -629,6 +628,9 @@ const SX_REPORT = () => {
   const handle_loadSX_GAP_RATE_DATA = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+
+    console.log('fromdate',frd);
+    console.log('todate',td);
     setSX_GAP_RATE_DATA(await f_load_SX_GAP_RATE_DATA({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
@@ -652,6 +654,17 @@ const SX_REPORT = () => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
     setALL_GAP_RATE_DATA(await f_load_ALL_GAP_RATE_DATA({
+      FACTORY: FACTORY,
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
+    }));   
+  };
+  const handle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA = async (FACTORY: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    setALL_HOAN_THANH_TRUOC_HAN_RATE_DATA(await f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -692,6 +705,7 @@ const SX_REPORT = () => {
       handle_loadSX_GAP_RATE_DATA("ALL", searchCodeArray),
       handle_loadKT_GAP_RATE_DATA("ALL", searchCodeArray),
       handle_loadALL_GAP_RATE_DATA("ALL", searchCodeArray),
+      handle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA("ALL", searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -894,7 +908,7 @@ const SX_REPORT = () => {
               </div>
             </div>
           </div>
-          <div className="dailygraphtotal">
+          {getCompany() === "CMS" && <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
                 <span className="subsection">PLAN LOSS GRAPH <IconButton
@@ -928,7 +942,7 @@ const SX_REPORT = () => {
                 />
               </div>
             </div>
-          </div>
+          </div>}
           <span className="section_title">3. PRODUCTION ACHIVEMENT OVERVIEW</span>
           <div className="revenuewidget">
             <div className="revenuwdg">
@@ -1275,6 +1289,21 @@ const SX_REPORT = () => {
               </IconButton>
               </span>
               <YCSX_GAP_RATE data={[...all_gap_rate_data].reverse()} />
+            </div>
+          </div>
+          <div className="defect_trending">
+            <div className="dailygraph" style={{ height: '600px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span className="subsection">Tỉ trọng số ngày hoàn thành trước hạn (Dương: trước hạn, Âm: quá hạn) <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(all_hoanthanh_truoc_han_rate_data, "ALL HOAN THANH TRUOC HAN RATE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span>
+              <YCSX_GAP_RATE data={[...all_hoanthanh_truoc_han_rate_data].reverse()} />
             </div>
           </div>
         </div>

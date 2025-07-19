@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { generalQuery, getCompany} from "../../../api/Api";
 import "./LichSu_New.scss";
 import Swal from "sweetalert2";
 import { weekdayarray } from "../../../api/GlobalFunction";
@@ -633,7 +633,7 @@ const LichSu_New = () => {
           Search
         </button>
       </div>
-      <div className='filterform'>
+      {getCompany() === 'CMS' && <div className='filterform'>
         <label>
           <b>Số ngày được phê duyệt nghỉ:</b>
           <input
@@ -696,7 +696,7 @@ const LichSu_New = () => {
         </button>
        
        
-      </div>
+      </div>}
       <div className='maindept_table'>
         {
           workHistoryAGTable

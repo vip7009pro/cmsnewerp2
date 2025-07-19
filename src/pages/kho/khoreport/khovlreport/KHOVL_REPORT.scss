@@ -1,0 +1,40 @@
+@media only screen and (max-width: 5000px) {
+    .khovlreport {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      .title {
+        display: flex;
+        align-self: center;
+        span {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color:#4953df
+        }
+      }
+      .stock_popular {
+        display: flex;
+        flex-direction: row;
+        width: 100%;        
+        justify-content: space-between;
+        gap: 5px;
+        .dailygraph {
+          width: 100%;          
+        }
+      }
+      .stock_popular_detail {
+        display: flex;
+        flex-direction: row;
+        width: 100%;        
+        justify-content: space-between;
+        .dailytable {
+          width: 50%;          
+        }
+      }
+      
+    }
+  }
+  @media only screen and (max-width: 768px) {
+   
+  }
+  @media only screen and (max-width: 320px) {}

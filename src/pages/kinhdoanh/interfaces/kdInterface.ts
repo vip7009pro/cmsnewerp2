@@ -830,3 +830,62 @@ export interface SamSungFCSTData {
   SAMSUNG_ASIA2: number;
   TT_SS2: number;
 }
+
+export interface YCTKData {
+  CTR_CD: string;
+  REQ_ID: number;
+  CUST_CD: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  CUST_NAME_KD: string;
+  DESIGN_REQUEST_DATE: string;
+  ESTIMATED_PO: number;
+  MATERIAL: string;
+  Coating_KhongPhu: boolean;
+  Coating_LamiBong: boolean;
+  Coating_OpamMo: boolean;
+  Coating_UVBong: boolean;
+  Coating_UVMo: boolean;
+  LabelWidth: number;
+  LabelHeight: number;
+  Tolerance: number;
+  FaceOut: number;
+  FaceIn: number;
+  TopBottomSpacing: number;
+  BetweenLabelSpacing: number;
+  LinerSpacing: number;
+  CornerRadius: number;
+  AdhesiveRemoval: boolean;
+  HasToothCut: boolean;
+  DieCutType: string;
+  LabelForm: string;
+  LabelFormQty: number;
+  RollCore: string;
+  PrintYN: string;
+  DecalType: string;
+  ApproveType: string;
+  SpecialRequirement: string;
+  SpecialRequirementLevel: number;
+  SAMPLE_STATUS: string;
+  RND_EMPL: string;
+  QC_EMPL: string;
+  KD_EMPL: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+
+export interface YCTK_TREND_DATA  {
+  REQ_DATE?: string;
+  REQ_YEAR?: number;
+  REQ_WEEK?: number;
+  REQ_YW?: string;
+  REQ_MONTH?: number;
+  REQ_YM?: string;
+  COMPLETED: number;
+  PENDING: number;
+  TOTAL: number;
+  RATE: number;
+}

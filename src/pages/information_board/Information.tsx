@@ -4,6 +4,7 @@ import NewsList from './NewsList';
 import "./Information.scss";
 import { DEPARTMENT_DATA, POST_DATA } from './interfaces/infoInterface';
 import { f_fetchPostList, f_getDepartmentList } from './utils/infoUtils';
+import { getCompany } from '../../api/Api';
 const Information = () => {
   const [deptlist, setDeptList] = useState<DEPARTMENT_DATA[]>([]);
   const [postList, setPostList] = useState<POST_DATA[]>([]);
@@ -70,7 +71,7 @@ const Information = () => {
       <div className="title" onClick={() => {
         fetchPostList(menustate);
       }}>
-        BẢNG TIN TRUYỀN THÔNG CMS VINA
+        BẢNG TIN TRUYỀN THÔNG {getCompany()}
       </div>
       <div className="content">
         <MainNews onClick={() => { setFullScreen(prev => !prev) }} imageSrc={encodeURI(`/informationboard/${selectedNews?.FILE_NAME}`)} title={selectedNews?.TITLE ?? ""} dept={selectedNews?.SUBDEPT ?? ""} date={selectedNews?.INS_DATE ?? ""} />
