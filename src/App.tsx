@@ -359,7 +359,9 @@ function App() {
     if (!socket.hasListeners("notification_panel")) {
       socket.on("notification_panel", handleNotification);
     }
-    handleEnableNotifications();
+    if(getCompany() === 'CMS') {
+      handleEnableNotifications();
+    }
     getIPAddress();
     return () => {
       socket.off("setWebVer", (data: any) => {});

@@ -30,6 +30,7 @@ import { f_getMachineListData, f_load_ALL_GAP_RATE_DATA, f_load_ALL_HOAN_THANH_T
 import { RND_NEWCODE_BY_CUSTOMER, RND_NEWCODE_BY_PRODTYPE } from "../../rnd/interfaces/rndInterface";
 import { CNT_GAP_DATA } from "../../qc/interfaces/qcInterface";
 import { usehandle_loadYCSX_GAP_RATE_DATA } from "./hooks/BAOCAOSX_HOOKS";
+import { useQuery } from "@tanstack/react-query";
 
 const SX_REPORT = () => {
   const [planLossData, setPlanLossData] = useState<PLAN_LOSS_DATA[]>([]);
@@ -80,7 +81,20 @@ const SX_REPORT = () => {
   const [all_gap_rate_data, setALL_GAP_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
   const [all_hoanthanh_truoc_han_rate_data, setALL_HOAN_THANH_TRUOC_HAN_RATE_DATA] = useState<CNT_GAP_DATA[]>([]);
 
-  const { data: ycgapData, loading: ycgapLoading, error: ycgapError, triggerFetch: ycgapTriggerFetch } = usehandle_loadYCSX_GAP_RATE_DATA(fromdate, todate, df);
+ // const { data: ycgapData, loading: ycgapLoading, error: ycgapError, triggerFetch: ycgapTriggerFetch } = usehandle_loadYCSX_GAP_RATE_DATA(fromdate, todate, df);
+/*   const {data: ycgapData, isLoading, error} = useQuery({
+    queryKey: ["ycsx_gap_rate_data", {FROM_DATE: fromdate, TO_DATE: todate, DF: df}],
+    queryFn: async ({queryKey}) => {
+      let td = moment().add(0, "day").format("YYYY-MM-DD");
+      let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+      const [,params] = queryKey;
+      console.log('params',params)
+      return await f_load_YCSX_GAP_RATE_DATA({       
+        FROM_DATE: frd,
+        TO_DATE: td,        
+      })
+    },
+  }) */
 
   const handle_getMachineList = async (FACTORY: string) => {
     setMachineList(await f_getMachineListData());    
@@ -1245,14 +1259,14 @@ const SX_REPORT = () => {
               <span className="subsection">Tỉ trọng YCSX gấp theo số ngày (Ngày YC- Ngày Giao)<IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(ycgapData, "YCSX GAP RATE");
+                  SaveExcel(ycsx_gap_rate_data, "YCSX GAP RATE");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
                 Excel
               </IconButton>
               </span>
-              <YCSX_GAP_RATE data={[...ycgapData].reverse()} />
+              <YCSX_GAP_RATE data={[...ycsx_gap_rate_data].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
               <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX <IconButton

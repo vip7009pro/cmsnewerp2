@@ -363,7 +363,6 @@ export const glbSlice = createSlice({
       );
     },
     closeTab: (state, action: PayloadAction<number>) => {
-      console.log('close index', action.payload)
       let checkallDeleted: number = 0;
       for (let i = 0; i < state.tabs.length; i++) {
         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
