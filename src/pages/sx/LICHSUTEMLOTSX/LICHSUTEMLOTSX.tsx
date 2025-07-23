@@ -115,7 +115,7 @@ const LICHSUTEMLOTSX = () => {
       PHANLOAI_DT: "IMAGE",
       DOITUONG_STT: "A3",
       CAVITY_PRINT: 2,
-      GIATRI: "http://14.160.33.94/images/logoAMAZON.png",
+      GIATRI: "https://cmsvina4285.com/images/logoAMAZON.png",
       FONT_NAME: "Arial",
       FONT_SIZE: 6,
       FONT_STYLE: "B",

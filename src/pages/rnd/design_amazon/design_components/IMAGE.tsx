@@ -18,7 +18,7 @@ const IMAGE = ({ DATA }: { DATA: COMPONENT_DATA }) => {
       <img
         src={
           DATA.GIATRI === "logoAMAZON.jpg" || DATA.GIATRI === "logoAMAZON.png"
-            ? "http://14.160.33.94/images/logoAMAZON.png"
+            ? "https://cmsvina4285.com/images/logoAMAZON.png"
             : DATA.GIATRI
         }
         alt="anhlogo"
