@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
 import { ELE_ARRAY, GlobalInterface, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
 import { QLSXPLANDATA } from "../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
-const startCPN: string = "PVN";
+const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
 const main_port = protocol === "https" ? "5014" : "5013";
@@ -121,10 +121,7 @@ socket.on("connect_error", (e) => {
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
 } else {
-  localStorage.setItem(
-    "server_ip",
-    companyInfo[startCPN as keyof typeof companyInfo].apiUrl
-  );
+  localStorage.setItem( "server_ip", companyInfo[startCPN as keyof typeof companyInfo].apiUrl );
 }
 let notiCount: any = localStorage.getItem("notification_count")?.toString();
 if (notiCount !== undefined) {

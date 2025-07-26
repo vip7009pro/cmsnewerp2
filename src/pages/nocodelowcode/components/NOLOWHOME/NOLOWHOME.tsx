@@ -11,7 +11,7 @@ const SQL_DATA_TYPES = [
   "TEXT", "NTEXT", "DATE", "TIME", "DATETIME","Reference"];
 
 const emptyForm: Form = { FormID: 0, FormName: '', Description: '', CreatedAt: new Date() };
-const emptyField: Field = { FieldID: 0, FormID: 0, FieldName: '', DataType: '', ReferenceFormID: undefined, IsRequired: false, CreatedAt: new Date() };
+const emptyField: Field = { FieldID: 0, FormID: 0, FieldName: '', DataType: '', IsRequired: false, CreatedAt: new Date() };
 const emptyRecord: NCLRecord = { RecordID: 0, FormID: 0, CreatedAt: new Date() };
 const emptyFormData: FormData = { DataID: 0, FormID: 0, RecordID: 0, FieldID: 0, Value: '', CreatedAt: new Date() };
 
@@ -264,8 +264,7 @@ const NOLOWHOME: React.FC = () => {
                     ))}
                   </Select>
                 </FormControl>
-                <TextField label="Length" name="Length" type="number" value={selectedField.Length ?? ''} onChange={handleFieldChange} size="small" /> 
-                <TextField label="ReferenceFormID" name="ReferenceFormID" value={selectedField.ReferenceFormID || ''} onChange={handleFieldChange} size="small" />
+                <TextField label="Length" name="Length" type="number" value={selectedField.Length ?? ''} onChange={handleFieldChange} size="small" />              
                 <FormControl size="small">
                   <InputLabel>Is Required</InputLabel>
                   <Select
@@ -297,8 +296,7 @@ const NOLOWHOME: React.FC = () => {
                       <TableCell>FieldID</TableCell>
                       <TableCell>FieldName</TableCell>
                       <TableCell>DataType</TableCell>
-                      <TableCell>Length</TableCell>
-                      <TableCell>ReferenceFormID</TableCell>
+                      <TableCell>Length</TableCell>                      
                       <TableCell>IsRequired</TableCell>
                       <TableCell>Actions</TableCell>
                     </TableRow>
@@ -309,8 +307,7 @@ const NOLOWHOME: React.FC = () => {
                         <TableCell>{field.FieldID}</TableCell>
                         <TableCell>{field.FieldName}</TableCell>
                         <TableCell>{field.DataType}</TableCell>
-                        <TableCell>{field.Length}</TableCell>
-                        <TableCell>{field.ReferenceFormID}</TableCell>
+                        <TableCell>{field.Length}</TableCell>                       
                         <TableCell>{field.IsRequired ? 'true' : 'false'}</TableCell>
                         <TableCell>
                           <IconButton onClick={() => setSelectedField(field)}><Edit /></IconButton>

@@ -20,15 +20,21 @@ import {
   LONGTERM_PLAN_DATA,
   LOSS_TABLE_DATA,
   MACHINE_LIST,
+  PLAN_LOSS_DATA,
   PROD_PLAN_CAPA_DATA,
   PROD_PROCESS_DATA,
+  PRODUCTION_EFFICIENCY_DATA,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
   RecentDM,
+  SX_ACHIVE_DATA,
   SX_ACHIVE_DATE,
   SX_DATA,
   SX_KPI_NV_DATA,
   SX_LOSS_ROLL_DATA,
+  SX_LOSSTIME_BY_EMPL,
+  SX_LOSSTIME_REASON_DATA,
+  SX_TREND_LOSS_DATA,
   TEMLOTSX_DATA,
   TONLIEUXUONG,
   YCSX_SLC_DATA,
@@ -4882,7 +4888,6 @@ export const f_load_YCSX_GAP_RATE_DATA = async (DATA: any) => {
       }
     })
     .catch((error) => {});
-  console.log("kq", kq);
   return kq;
 };
 export const f_load_SX_GAP_RATE_DATA = async (DATA: any) => {
@@ -5236,5 +5241,367 @@ export const f_loadDefectProcessData = async (
     .catch((error) => {
       console.log(error);
     });
+  return kq;
+};
+
+
+export const f_load_SX_Daily_Loss_Trend = async (DATA: any) => {
+  let kq: SX_TREND_LOSS_DATA[] = [];
+  await generalQuery('datasxdailylosstrend', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
+          return {
+            ...element,
+            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_SX_Weekly_Loss_Trend = async (DATA: any) => {
+  let kq: SX_TREND_LOSS_DATA[] = [];
+  await generalQuery('datasxweeklylosstrend', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
+          return {
+            ...element,
+            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });  
+  return kq;
+};
+
+export const f_load_SX_Monthly_Loss_Trend = async (DATA: any) => {
+  let kq: SX_TREND_LOSS_DATA[] = [];
+  await generalQuery('datasxmonthlylosstrend', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
+          return {
+            ...element,
+            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });    
+  return kq;
+};
+
+export const f_load_SX_Yearly_Loss_Trend = async (DATA: any) => {
+  let kq: SX_TREND_LOSS_DATA[] = [];
+  await generalQuery('datasxyearlylosstrend', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
+          return {
+            ...element,
+            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_dailyAchive_data = async (DATA: any) => {
+  let kq: SX_ACHIVE_DATA[] = [];
+  await generalQuery('sxdailyachivementtrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map((element: SX_ACHIVE_DATA, index: number) => {
+          return {
+            ...element,
+            ACHIVE_RATE: (element.SX_RESULT * 1.0) / element.PLAN_QTY,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_weeklyAchive_data = async (DATA: any) => {
+  let kq: SX_ACHIVE_DATA[] = [];
+  await generalQuery('sxweeklyachivementtrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map((element: SX_ACHIVE_DATA, index: number) => {
+          return {
+            ...element,
+            ACHIVE_RATE: (element.SX_RESULT * 1.0) / element.PLAN_QTY,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_monthlyAchive_data = async (DATA: any) => {
+  let kq: SX_ACHIVE_DATA[] = [];
+  await generalQuery('sxmonthlyachivementtrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map((element: SX_ACHIVE_DATA, index: number) => {
+          return {
+            ...element,
+            ACHIVE_RATE: (element.SX_RESULT * 1.0) / element.PLAN_QTY,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_yearlyAchive_data = async (DATA: any) => {
+  let kq: SX_ACHIVE_DATA[] = [];
+  await generalQuery('sxyearlyachivementtrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_ACHIVE_DATA[] = response.data.data.map((element: SX_ACHIVE_DATA, index: number) => {
+          return {
+            ...element,
+            ACHIVE_RATE: (element.SX_RESULT * 1.0) / element.PLAN_QTY,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_dailyEff_data = async (DATA: any) => {
+  let kq:{efficiency: PRODUCTION_EFFICIENCY_DATA[], overview: PRODUCTION_EFFICIENCY_DATA} = {efficiency: [], overview: {
+    ALVB_TIME: 0,
+    HIEU_SUAT_TIME:0,
+    LOSS_TIME:0,
+    LOSS_TIME_RATE:0,
+    OPERATION_RATE:0,
+    PURE_RUN_RATE:0,
+    PURE_RUN_TIME:0,
+    RUN_TIME_SX:0,
+    SETTING_TIME:0,
+    SETTING_TIME_RATE:0,
+    TOTAL_TIME:0,
+  }};
+  await generalQuery('dailyEQEffTrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map(
+                    (element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+                      return {
+                        ...element,
+                        PURE_RUN_RATE: element.PURE_RUN_TIME * 1.0 / element.TOTAL_TIME,
+                        OPERATION_RATE: element.TOTAL_TIME*1.0/element.ALVB_TIME,
+                        SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+                      };
+                    },
+                  );  
+                  let temp_aff: PRODUCTION_EFFICIENCY_DATA =  {
+                    ALVB_TIME: 0,
+                    HIEU_SUAT_TIME:0,
+                    LOSS_TIME:0,
+                    LOSS_TIME_RATE:0,
+                    OPERATION_RATE:0,
+                    PURE_RUN_RATE:0,
+                    PURE_RUN_TIME:0,
+                    RUN_TIME_SX:0,
+                    SETTING_TIME:0,
+                    SETTING_TIME_RATE:0,
+                    TOTAL_TIME:0,
+                  }
+                  for(let i=0;i<loadeddata.length;i++) 
+                  {
+                    temp_aff.ALVB_TIME += loadeddata[i].ALVB_TIME;
+                    temp_aff.LOSS_TIME += loadeddata[i].LOSS_TIME;
+                    temp_aff.PURE_RUN_TIME += loadeddata[i].PURE_RUN_TIME;
+                    temp_aff.RUN_TIME_SX += loadeddata[i].RUN_TIME_SX;
+                    temp_aff.SETTING_TIME += loadeddata[i].SETTING_TIME;
+                    temp_aff.TOTAL_TIME += loadeddata[i].TOTAL_TIME;
+                  }
+                  temp_aff.OPERATION_RATE = temp_aff.TOTAL_TIME/temp_aff.ALVB_TIME; // ti le van hanh
+                  temp_aff.HIEU_SUAT_TIME = temp_aff.RUN_TIME_SX/temp_aff.TOTAL_TIME; // hieu suat may
+                  temp_aff.SETTING_TIME_RATE = temp_aff.PURE_RUN_TIME/temp_aff.TOTAL_TIME; //hieu suat san xuat
+        kq.efficiency = loadeddata;
+        kq.overview = temp_aff;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+export const f_load_weeklyEff_data = async (DATA: any) => {
+  let kq: PRODUCTION_EFFICIENCY_DATA[] = [];
+  await generalQuery('weeklyEQEffTrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map((element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+          return {
+            ...element,
+            PURE_RUN_RATE: (element.PURE_RUN_TIME * 1.0) / element.TOTAL_TIME,
+            OPERATION_RATE: (element.TOTAL_TIME * 1.0) / element.ALVB_TIME,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_load_monthlyEff_data = async (DATA: any) => {
+  let kq: PRODUCTION_EFFICIENCY_DATA[] = [];
+  await generalQuery('monthlyEQEffTrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map((element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+          return {
+            ...element,
+            PURE_RUN_RATE: (element.PURE_RUN_TIME * 1.0) / element.TOTAL_TIME,
+            OPERATION_RATE: (element.TOTAL_TIME * 1.0) / element.ALVB_TIME,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_load_yearlyEff_data = async (DATA: any) => {
+  let kq: PRODUCTION_EFFICIENCY_DATA[] = [];
+  await generalQuery('yearlyEQEffTrending', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: PRODUCTION_EFFICIENCY_DATA[] = response.data.data.map((element: PRODUCTION_EFFICIENCY_DATA, index: number) => {
+          return {
+            ...element,
+            PURE_RUN_RATE: (element.PURE_RUN_TIME * 1.0) / element.TOTAL_TIME,
+            OPERATION_RATE: (element.TOTAL_TIME * 1.0) / element.ALVB_TIME,
+            SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+          };
+        });
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_loadPlanLossData = async (DATA: any) => {
+  let kq: PLAN_LOSS_DATA[] = [];
+  await generalQuery('traDataPlanLossSX', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: PLAN_LOSS_DATA[] = response.data.data.map(
+          (element: PLAN_LOSS_DATA, index: number) => {
+            return {
+              ...element,
+              id: index
+            };
+          },
+        );
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_SXLossTimeByReason = async (DATA: any) => {
+  let kq: SX_LOSSTIME_REASON_DATA[] = [];
+  await generalQuery('sxLossTimeByReason', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_LOSSTIME_REASON_DATA[] = response.data.data.map(
+          (element: SX_LOSSTIME_REASON_DATA, index: number) => {
+            return {
+              ...element,
+              id: index
+            };
+          },
+        );
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
+  return kq;
+};
+
+export const f_load_SXLossTimeByEmpl =  async (DATA: any) => {
+  let kq: SX_LOSSTIME_BY_EMPL[] = [];
+  await generalQuery('sxLossTimeByEmpl', DATA)
+    .then((response) => {
+      if (response.data.tk_status !== 'NG') {
+        const loadeddata: SX_LOSSTIME_BY_EMPL[] = response.data.data.map(
+          (element: SX_LOSSTIME_BY_EMPL, index: number) => {
+            return {
+              ...element,
+              id: index
+            };
+          },
+        );
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });   
   return kq;
 };
