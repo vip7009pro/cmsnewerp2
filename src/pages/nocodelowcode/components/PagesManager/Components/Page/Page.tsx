@@ -11,9 +11,9 @@ export default function PageShow({ pageId }: { pageId: string | number }) {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '20px',
-        padding: '20px',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '10px',
+        padding: '10px',
       }}
     >
       {components.map((component) => {
@@ -21,11 +21,10 @@ export default function PageShow({ pageId }: { pageId: string | number }) {
           <div
             key={component.ComponentID}
             style={{
-              gridColumn: component.GridWidth !== 'full' ? 'span 2' : 'span 1',
-              gridRow: `span 1`,
-              minHeight: component.Height || 200,
-              border: '1px solid #d9d9d9',
-              padding: '5px',
+              gridColumn: component.GridWidth === 'full' ? 'span 3' : component.GridWidth === 'half' ? 'span 2' : 'span 1',
+              gridRow: `span 1`,              
+             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              padding: '2px',
             }}
           >
             {component.ComponentType === 'Form' && (

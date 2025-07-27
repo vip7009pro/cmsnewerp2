@@ -74,11 +74,11 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
   return (
     <div className="form-component-root" style={{ width: '100%' }}>
       {fields && fields.length > 0 ? (
-        <div className="form-component-fields" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="form-component-fields" style={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
           {fields.map((field: Field, idx: number) => (
-            <div key={idx} className="form-component-field" style={{ marginBottom: 8 }}>
+            <div key={idx} className="form-component-field" style={{display:'flex',flexDirection:'row',alignItems:'center',gap:0, marginBottom: 2 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span className="form-component-field-name" style={{ minWidth: 120, fontWeight: 500 }}>
+                <span className="form-component-field-name" style={{ minWidth: 100, fontWeight: 500, fontSize: '0.7rem' }}>
                   {field.FieldName}
                 </span>
                 <input
@@ -90,7 +90,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
               </label>
             </div>
           ))}
-          <Button variant="contained" color="primary" onClick={handleSubmit((data)=>handleSaveData(fields,Number(formId),data))}>Lưu</Button>
+          <Button style={{width:'20%'}} variant="contained" color="primary" onClick={handleSubmit((data)=>handleSaveData(fields,Number(formId),data))}>Lưu</Button>
         </div>
       ) : (
         <div style={{ color: '#888' }}>Không có trường dữ liệu nào cho form này.</div>
