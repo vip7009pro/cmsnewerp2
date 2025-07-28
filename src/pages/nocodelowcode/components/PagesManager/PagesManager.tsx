@@ -440,21 +440,23 @@ export default function PagesManager() {
   }, []);
   return (
     <>
-      <Box display='flex' gap={1} p={0} sx={{ height: '90vh', overflow: 'auto' }}>
+      <Box display='flex' gap={1} sx={{ height: '90vh', overflow: 'auto' }}>
         {/* Bảng Trang */}
-        <Box width='25%'>
-          <Typography variant='h6'>Danh sách Trang</Typography>
+        <Box width='15%'>
+          <Typography >Danh sách Trang</Typography>
           {pageAG_Table}
         </Box>
         {/* Bảng Component */}
-        <Box width='37%'>
-          <Typography variant='h6'>Danh sách Component</Typography>
+        <Box width='20%' display='flex' flexDirection='column' gap={0}>
+          <Typography >Danh sách Component</Typography>
           {componentAG_Table}
+          <Typography >Thuộc tính Component</Typography>
+          {attributeAG_Table}
         </Box>
         {/* Bảng Thuộc tính */}
-        <Box width='38%'>
-          <Typography variant='h6'>Thuộc tính Component</Typography>
-          {attributeAG_Table}
+        <Box width='65%' display='flex' flexDirection='column' gap={1}>
+        <Typography >Hiển thị Trang</Typography>
+          <PageShow pageId={selectedPage?.PageID || ''}/>
         </Box>
       </Box>
       {/* Dialog nhập liệu Page */}

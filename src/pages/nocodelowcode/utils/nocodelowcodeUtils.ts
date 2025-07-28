@@ -8,7 +8,7 @@ export const f_loadFormList = async () => {
     .then((response) => {
       console.log(response.data);
       if (response.data.tk_status !== "NG") {
-        Swal.fire("Thông báo", "Load data thành công", "success");
+        //Swal.fire("Thông báo", "Load data thành công", "success");
         //console.log(response.data.data);
         let loaded_data: Form[] = response.data.data.map(
           (element: Form, index: number) => {
@@ -456,9 +456,83 @@ export const f_insertFormData = async (DATA: any) => {
   return kq;
 };
 
+
+// Relationship utils
+export const f_loadRelationshipList = async () => {
+  let kq: any[] = [];
+  await generalQuery("loadRelationshipList", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map((element: any, index: number) => ({ ...element, id: index }));
+        kq = loaded_data;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_insertRelationship = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("insertRelationship", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_updateRelationship = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("updateRelationship", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_deleteRelationship = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("deleteRelationship", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
 export const f_load_pivotedData = async (DATA: any) => {
   let kq: any[] = [];
   await generalQuery("load_pivotedData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadTwoTableRelationship = async (DATA: any) => {
+  let kq: any[] = [];
+  await generalQuery("loadTwoTableRelationship", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         let loaded_data: any[] = response.data.data.map(

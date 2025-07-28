@@ -9,6 +9,7 @@ import { KPIManager } from "../KPI/KPIManager";
 import NOLOWHOME from "./components/NOLOWHOME/NOLOWHOME";
 import MenuManager from "./MenuManager/MenuManager";
 import PagesManager from "./components/PagesManager/PagesManager";
+import RelationshipsManager from "./components/RelationshipsManager/RelationshipsManager";
 
 const  NOCODELOWCODE = () => {
   useEffect(() => { }, []);
@@ -32,6 +33,9 @@ const  NOCODELOWCODE = () => {
         </MyTabs.Tab>
         <MyTabs.Tab title={"Form Manager"}>
           <NOLOWHOME/>         
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"Relationship Manager"}>
+          <RelationshipsManager/>         
         </MyTabs.Tab>
         <MyTabs.Tab title={"Pages Manager"}>
           <PagesManager/>         
