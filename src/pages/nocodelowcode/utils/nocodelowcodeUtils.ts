@@ -6,10 +6,7 @@ export const f_loadFormList = async () => {
   let kq: Form[] = [];
   await generalQuery("loadFormList", {})
     .then((response) => {
-      console.log(response.data);
       if (response.data.tk_status !== "NG") {
-        //Swal.fire("Thông báo", "Load data thành công", "success");
-        //console.log(response.data.data);
         let loaded_data: Form[] = response.data.data.map(
           (element: Form, index: number) => {
             return {
@@ -512,6 +509,26 @@ export const f_deleteRelationship = async (DATA: any) => {
 export const f_load_pivotedData = async (DATA: any) => {
   let kq: any[] = [];
   await generalQuery("load_pivotedData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const load_pivotedDataSpecificFields = async (DATA: any) => {
+  let kq: any[] = [];
+  await generalQuery("load_pivotedDataSpecificFields", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         let loaded_data: any[] = response.data.data.map(

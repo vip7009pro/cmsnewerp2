@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import AGTable from '../../../../components/DataTable/AGTable';
-import { use_f_loadRelationshipList, use_f_insertRelationship, use_f_loadTwoTableRelationship } from '../../utils/nocodelowcodeHooks';
+import { use_f_loadRelationshipList, use_f_insertRelationship, use_f_loadTwoTableRelationship, use_f_deleteRelationship } from '../../utils/nocodelowcodeHooks';
 import { use_f_loadFormList, use_f_loadFieldList } from '../../utils/nocodelowcodeHooks';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Select, MenuItem, FormControl, InputLabel, Box, Typography, Grid } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Select, MenuItem, FormControl, InputLabel, Box, Typography, Grid, IconButton } from '@mui/material';
 import { f_loadTwoTableRelationship } from '../../utils/nocodelowcodeUtils';
+import { IoMdAdd } from 'react-icons/io';
+import { MdDeleteOutline, MdRefresh } from 'react-icons/md';
+import { Relationship } from '../../types/types';
 
 const RELATIONSHIP_TYPES = [
   { value: 'OneToOne', label: 'One To One' },
@@ -19,14 +22,8 @@ const RelationshipsManager: React.FC = () => {
   const [childTableId, setChildTableId] = useState<number | null>(null);
 
   // Hook lấy quan hệ giữa 2 bảng
-  const {
-    data: twoTableRelationships,
-    loading: loadingTwoTableRel,
-    error: errorTwoTableRel,
-    triggerFetch: triggerFetchTwoTableRel,
-    triggerFetchWithParams: triggerFetchTwoTableRelWithParams
-  } = use_f_loadTwoTableRelationship(parentTableId || 0, childTableId || 0);
-  console.log('twoTableRelationships',twoTableRelationships);   
+  const { data: twoTableRelationships, loading: loadingTwoTableRel, error: errorTwoTableRel, triggerFetch: triggerFetchTwoTableRel, triggerFetchWithParams: triggerFetchTwoTableRelWithParams } = use_f_loadTwoTableRelationship(parentTableId || 0, childTableId || 0);
+  console.log('twoTableRelationships', twoTableRelationships);
 
   // State cho chọn field mapping mới dạng từng cặp
   const [selectedParentField, setSelectedParentField] = useState<string>(''); // Field bảng chính
@@ -34,13 +31,15 @@ const RelationshipsManager: React.FC = () => {
   const [relationshipType, setRelationshipType] = useState('OneToMany');
   const [saving, setSaving] = useState(false);
   const [pendingMappings, setPendingMappings] = useState<{ parentFieldId: string; childFieldId: string; parentFieldName: string; childFieldName: string }[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const { deleteRel } = use_f_deleteRelationship();
 
   // Reset mapping khi đổi bảng
   useEffect(() => {
     setPendingMappings([]);
     setSelectedParentField('');
     setSelectedChildField('');
-    if(parentTableId && childTableId) {
+    if (parentTableId && childTableId) {
       triggerFetchTwoTableRel();
     }
   }, [parentTableId, childTableId]);
@@ -48,11 +47,14 @@ const RelationshipsManager: React.FC = () => {
   // Thêm một cặp mapping vào danh sách tạm
   const handleAddMapping = () => {
     if (!selectedParentField || !selectedChildField) return;
+    // Kiểm tra nếu parentFieldId đã có trong pendingMappings
+    if (pendingMappings.some((m) => m.parentFieldId === selectedParentField)) {
+      setErrorMessage('Trường bảng chính đã tồn tại trong danh sách mapping!');
+      return;
+    }
     // Lấy tên field
     const parentField = parentFields.find((f: any) => f.FieldID === selectedParentField);
     const childField = childFields.find((f: any) => f.FieldID === selectedChildField);
-    // Kiểm tra trùng
-    if (pendingMappings.some((m) => m.parentFieldId === selectedParentField && m.childFieldId === selectedChildField)) return;
     setPendingMappings([
       ...pendingMappings,
       {
@@ -64,6 +66,7 @@ const RelationshipsManager: React.FC = () => {
     ]);
     setSelectedParentField('');
     setSelectedChildField('');
+    setErrorMessage(''); // clear lỗi nếu thành công
   };
 
   // Xóa một cặp mapping khỏi danh sách tạm
@@ -76,24 +79,22 @@ const RelationshipsManager: React.FC = () => {
   const { data: forms, triggerFetch: triggerFetchForms } = use_f_loadFormList();
   const { data: parentFields, triggerFetch: triggerFetchParentFields } = use_f_loadFieldList({ FormID: parentTableId });
   const { data: childFields, triggerFetch: triggerFetchChildFields } = use_f_loadFieldList({ FormID: childTableId });
-  console.log('relationships',relationships)
-
   const { insert } = use_f_insertRelationship();
+  const [selectedRelationship, setSelectedRelationship] = useState<Relationship | null>(null);
 
-  const loadTwoTableRelationship = async (parentTableId:number, childTableId:number) => {
-    let twoTableRelationships = await f_loadTwoTableRelationship({ParentTableID: parentTableId, ChildTableID: childTableId});
-    console.log('twoTableRelationships',twoTableRelationships)
+  const loadTwoTableRelationship = async (parentTableId: number, childTableId: number) => {
+    let twoTableRelationships = await f_loadTwoTableRelationship({ ParentTableID: parentTableId, ChildTableID: childTableId });
     let tempPendingMappings = twoTableRelationships.map((item: any) => {
       return {
         parentFieldId: item.ParentFieldID,
         childFieldId: item.ChildFieldID,
         parentFieldName: item.ParentFieldName,
         childFieldName: item.ChildFieldName,
-      }
+      };
     });
-    setPendingMappings(prev => [...prev, ...tempPendingMappings]);
-    triggerFetchTwoTableRelWithParams(parentTableId, childTableId);    
-  }
+    setPendingMappings(tempPendingMappings);
+    triggerFetchTwoTableRelWithParams(parentTableId, childTableId);
+  };
 
   // Load fields khi chọn bảng
   useEffect(() => {
@@ -140,28 +141,83 @@ const RelationshipsManager: React.FC = () => {
     { headerName: 'ChildTableID', field: 'ChildTableID', minWidth: 120 },
     { headerName: 'ParentFieldID', field: 'ParentFieldID', minWidth: 120 },
     { headerName: 'ChildFieldID', field: 'ChildFieldID', minWidth: 120 },
+    { headerName: 'ParentTableName', field: 'ParentTableName', minWidth: 120 },
+    { headerName: 'ChildTableName', field: 'ChildTableName', minWidth: 120 },
+    { headerName: 'ParentFieldName', field: 'ParentFieldName', minWidth: 120 },
+    { headerName: 'ChildFieldName', field: 'ChildFieldName', minWidth: 120 },
     { headerName: 'RelationshipType', field: 'RelationshipType', minWidth: 120 },
     { headerName: 'CreatedAt', field: 'CreatedAt', minWidth: 120 },
     { headerName: 'UpdatedAt', field: 'UpdatedAt', minWidth: 120 },
   ];
 
+  const relationShipAGTable = useMemo(() => {
+    return (
+      <AGTable
+      suppressRowClickSelection={false}
+        toolbar={
+          <>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                setOpen(true);
+                setParentTableId(null);
+                setChildTableId(null);
+                setPendingMappings([]);
+              }}
+            >
+              <IoMdAdd color='green' size={15} />
+              Thêm
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              disabled={!selectedRelationship}
+              onClick={() => {  
+                if (!selectedRelationship) return;
+                deleteRel(selectedRelationship);
+                triggerFetchRelationships();
+              }}
+            >
+              <MdDeleteOutline color='red' size={15} />
+              Xóa
+            </IconButton>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                triggerFetchRelationships();
+              }}
+            >
+              <MdRefresh color='#f02bc5' size={15} />
+              Refresh
+            </IconButton>
+          </>
+        }
+        data={relationships}
+        columns={columns}
+        onRowClick={(params) => {
+          setSelectedRelationship(params.data);
+        }}
+        onRowDoubleClick={(params) => {
+          setSelectedRelationship(params.data);
+          setParentTableId(Number(params.data.ParentTableID));
+          setChildTableId(Number(params.data.ChildTableID));
+          loadTwoTableRelationship(Number(params.data.ParentTableID), Number(params.data.ChildTableID));
+          setOpen(true);
+        }}
+        onSelectionChange={(params) => {
+          //setSelectedRelationship(params.data);
+        }}  
+      />
+    );
+  }, [relationships, selectedRelationship]);
   useEffect(() => {
     triggerFetchForms();
     triggerFetchRelationships();
   }, []);
 
   return (
-    <Box p={2}>
-      <Typography variant='h5' gutterBottom>
-        Quản lý Relationship giữa các Form
-      </Typography>
-      <Box mb={2}>
-        <Button variant='contained' color='primary' onClick={() => setOpen(true)}>
-          Thêm Relationship
-        </Button>
-      </Box>
-      <Box mb={2} height={'79vh'}>
-        <AGTable toolbar={<></>} data={relationships} columns={columns} onSelectionChange={(params) => console.log(params)} />
+    <Box sx={{ background: 'transparent' }} p={0}>
+      <Box sx={{ background: 'transparent' }} mb={2} height={'91vh'}>
+        {relationShipAGTable}
       </Box>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth='md' fullWidth>
         <DialogTitle>Tạo Relationship mới</DialogTitle>
@@ -170,10 +226,14 @@ const RelationshipsManager: React.FC = () => {
             <Grid item xs={6}>
               <FormControl fullWidth margin='normal'>
                 <InputLabel>Bảng chính</InputLabel>
-                <Select value={parentTableId || ''} onChange={(e) => {
-                  setParentTableId(Number(e.target.value))
-                  loadTwoTableRelationship(Number(e.target.value), childTableId || 0);
-                }} label='Bảng chính'>
+                <Select
+                  value={parentTableId || ''}
+                  onChange={(e) => {
+                    setParentTableId(Number(e.target.value));
+                    loadTwoTableRelationship(Number(e.target.value), childTableId || 0);
+                  }}
+                  label='Bảng chính'
+                >
                   {forms.map((form: any) => (
                     <MenuItem value={form.FormID} key={form.FormID}>
                       {form.FormName}
@@ -181,32 +241,21 @@ const RelationshipsManager: React.FC = () => {
                   ))}
                 </Select>
               </FormControl>
-              <Box mt={2}>
+              <Box sx={{ background: 'transparent' }} mt={2}>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1'>Chọn trường bảng chính</Typography>
                     <FormControl fullWidth margin='normal'>
                       <InputLabel>Field bảng chính</InputLabel>
-                      <Select value={selectedParentField} onChange={(e) => {
-                        setSelectedParentField(e.target.value as string)                       
-                      }} label='Field bảng chính'>
+                      <Select
+                        disabled={!parentTableId}
+                        value={selectedParentField}
+                        onChange={(e) => {
+                          setSelectedParentField(e.target.value as string);
+                        }}
+                        label='Field bảng chính'
+                      >
                         {parentFields.map((field: any) => (
-                          <MenuItem value={field.FieldID} key={field.FieldID}>
-                            {field.FieldID}.{field.FieldName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>Chọn trường bảng ngoại</Typography>
-                    <FormControl fullWidth margin='normal'>
-                      <InputLabel>Field bảng ngoại</InputLabel>
-                      <Select value={selectedChildField} onChange={(e) =>{ 
-                        setSelectedChildField(e.target.value as string)                       
-                    }
-                        } label='Field bảng ngoại'>
-                        {childFields.map((field: any) => (
                           <MenuItem value={field.FieldID} key={field.FieldID}>
                             {field.FieldID}.{field.FieldName}
                           </MenuItem>
@@ -218,24 +267,49 @@ const RelationshipsManager: React.FC = () => {
               </Box>
             </Grid>
             <Grid item xs={6}>
-              <FormControl fullWidth margin="normal">
+              <FormControl fullWidth margin='normal'>
                 <InputLabel>Bảng ngoại</InputLabel>
                 <Select
                   value={childTableId || ''}
                   onChange={(e) => {
-                    setChildTableId(Number(e.target.value))
+                    setChildTableId(Number(e.target.value));
                     loadTwoTableRelationship(parentTableId || 0, Number(e.target.value));
                   }}
-                  label="Bảng ngoại"
+                  label='Bảng ngoại'
                 >
                   {forms.map((form: any) => (
-                    <MenuItem value={form.FormID} key={form.FormID}>{form.FormName}</MenuItem>
+                    <MenuItem value={form.FormID} key={form.FormID}>
+                      {form.FormName}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
+              <Box sx={{ background: 'transparent' }} mt={2}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle1'>Chọn trường bảng ngoại</Typography>
+                    <FormControl fullWidth margin='normal'>
+                      <InputLabel>Field bảng ngoại</InputLabel>
+                      <Select
+                        value={selectedChildField}
+                        onChange={(e) => {
+                          setSelectedChildField(e.target.value as string);
+                        }}
+                        label='Field bảng ngoại'
+                      >
+                        {childFields.map((field: any) => (
+                          <MenuItem value={field.FieldID} key={field.FieldID}>
+                            {field.FieldID}.{field.FieldName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Box>
             </Grid>
             {/* Hiển thị bảng các quan hệ đã tạo giữa 2 bảng */}
-           
+
             <Grid item xs={12}>
               <FormControl fullWidth margin='normal'>
                 <InputLabel>Loại Relationship</InputLabel>
@@ -247,7 +321,12 @@ const RelationshipsManager: React.FC = () => {
                   ))}
                 </Select>
               </FormControl>
-              <Box mt={2} textAlign='right'>
+              {errorMessage && (
+                <Typography color='error' variant='body2' sx={{ mb: 1 }}>
+                  {errorMessage}
+                </Typography>
+              )}
+              <Box sx={{ background: 'transparent' }} mt={2} textAlign='right'>
                 <Button variant='contained' color='primary' onClick={handleAddMapping} disabled={!selectedParentField || !selectedChildField}>
                   Add Mapping
                 </Button>
@@ -255,7 +334,7 @@ const RelationshipsManager: React.FC = () => {
             </Grid>
             <Grid item xs={12}>
               {pendingMappings.length > 0 && (
-                <Box mt={2}>
+                <Box sx={{ background: 'transparent' }} mt={2}>
                   <Typography variant='subtitle2'>Các trường đã mapping:</Typography>
                   <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
                     <thead>
@@ -285,9 +364,12 @@ const RelationshipsManager: React.FC = () => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            loadTwoTableRelationship(parentTableId ?? 0, childTableId ?? 0);
-          }} color='secondary'>
+          <Button
+            onClick={() => {
+              loadTwoTableRelationship(parentTableId ?? 0, childTableId ?? 0);
+            }}
+            color='secondary'
+          >
             Load Relationship
           </Button>
           <Button onClick={() => setOpen(false)} color='secondary'>

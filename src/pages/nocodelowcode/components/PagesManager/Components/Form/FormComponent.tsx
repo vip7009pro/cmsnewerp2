@@ -3,8 +3,9 @@ import { use_f_loadFieldList } from '../../../../utils/nocodelowcodeHooks';
 import { Button } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { Field, FormData, Record } from '../../../../types/types';
-import { f_insertFormData, f_insertRecord } from '../../../../utils/nocodelowcodeUtils';
+import { f_insertFormData, f_insertRecord, load_pivotedDataSpecificFields } from '../../../../utils/nocodelowcodeUtils';
 import Swal from 'sweetalert2';
+import CustomOption from './CustomOption';
 interface FormComponentProps {
   formId: string | number;
 }
@@ -77,16 +78,23 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
         <div className="form-component-fields" style={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
           {fields.map((field: Field, idx: number) => (
             <div key={idx} className="form-component-field" style={{display:'flex',flexDirection:'row',alignItems:'center',gap:0, marginBottom: 2 }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, width: '300px' }}>
                 <span className="form-component-field-name" style={{ minWidth: 100, fontWeight: 500, fontSize: '0.7rem' }}>
                   {field.FieldName}
                 </span>
-                <input
+                {field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0 &&  <select
+                {...register(field.FieldName)}
+                  className="form-component-field-input"
+                  style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4, width: '100%' }}
+                >
+                  <CustomOption FormID={Number(field.ReferenceFormID)} FieldIDs={field.ReferenceFieldIDs} FieldName={field.FieldName}/>
+                </select>   }             
+                {!(field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0) &&  <input
                 {...register(field.FieldName)}
                   type={field.DataType === 'BIT' ? 'checkbox' : 'text'}
                   className="form-component-field-input"
-                  style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4 }}
-                />
+                  style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4, width: '100%' }}
+                />   }             
               </label>
             </div>
           ))}

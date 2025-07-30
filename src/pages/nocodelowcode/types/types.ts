@@ -11,6 +11,8 @@ export interface Form {
     FieldName: string;
     DataType: string;
     Length?: number;
+    ReferenceFormID?: number;
+    ReferenceFieldIDs?: string;
     IsRequired: boolean;
     CreatedAt: Date;
   }
