@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { use_f_loadFieldList } from '../../../../utils/nocodelowcodeHooks';
-import { Button } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Autocomplete, Button, TextField } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
 import { Field, FormData, Record } from '../../../../types/types';
-import { f_insertFormData, f_insertRecord, load_pivotedDataSpecificFields } from '../../../../utils/nocodelowcodeUtils';
+import { f_insertFormData, f_insertRecord, f_load_pivotedData, f_loadFieldList, load_pivotedDataSpecificFields } from '../../../../utils/nocodelowcodeUtils';
 import Swal from 'sweetalert2';
 import CustomOption from './CustomOption';
 interface FormComponentProps {
@@ -26,7 +26,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
     error: errorFields,
     triggerFetch: fetchFields,
   } = use_f_loadFieldList({ FormID: formId });
-   const {register,handleSubmit,watch, formState:{errors}} = useForm( {
+   const {register,control,handleSubmit,watch, formState:{errors}} = useForm( {
       
     })  
 
@@ -64,9 +64,40 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
         });
       };
 
+    const [optionsMap, setOptionsMap] = useState<any>({});
+
+    const loadOptions = async (fields: Field[]) => {
+      let refFields = fields.filter((field: Field) => field.ReferenceFieldIDs !== null || field.ReferenceFieldIDs !== '');
+      for(let i=0;i<refFields.length;i++){
+        let refField = refFields[i];
+        let refFieldData = await f_load_pivotedData({FormID: Number(refField.ReferenceFormID)});
+        const orgFieldList = await f_loadFieldList({FormID: Number(refField.ReferenceFormID)});
+        let showFieldList = orgFieldList.filter((field: any) => refField.ReferenceFieldIDs?.split(',').includes(String(field.FieldID)));
+        console.log('showFieldList',showFieldList)
+        // get refFieldData with fieldID in refField.ReferenceFieldIDs
+        //create new refFieldData with FieldName in showFieldList
+        let newRefFieldData = refFieldData.map((item: any) => {
+          let newItem = item;
+          showFieldList.forEach((field: any) => {
+            newItem[field.FieldName] = item[field.FieldName];
+          });
+          return newItem;
+        });
+        console.log('newRefFieldData',newRefFieldData)
+        
+        setOptionsMap((prevOptionsMap: any) => ({
+          ...prevOptionsMap,
+          [refField.FieldName]: newRefFieldData,
+        }));
+      }
+    }
+
+
+   
       
   useEffect(() => {
     fetchFields();
+    loadOptions(fields);
   }, [formId]);
 
  /*  if (loadingFields) return <div>Đang tải dữ liệu...</div>;
@@ -82,13 +113,38 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
                 <span className="form-component-field-name" style={{ minWidth: 100, fontWeight: 500, fontSize: '0.7rem' }}>
                   {field.FieldName}
                 </span>
-                {field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0 &&  <select
+                {field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0 &&  <Controller
+        name="selectedOption"
+        control={control}
+        rules={{ required: 'Vui lòng chọn một tùy chọn' }}
+        render={({ field: { onChange, value } }) => (
+          <Autocomplete
+          sx={{width:'100%'}}
+            options={optionsMap[field.FieldName]}
+            getOptionLabel={(option) => { 
+           return option[field.FieldName]
+            }}
+            isOptionEqualToValue={(option, val) => option.value === val?.value}
+            disabled={optionsMap[field.FieldName] === undefined || optionsMap[field.FieldName].length === 0}
+            value={value}
+            onChange={(_, newValue) => onChange(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Chọn một tùy chọn"
+                error={!!errors.selectedOption}               
+              />
+            )}
+          />
+        )}
+      />  }             
+                {/* {field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0 &&  <select
                 {...register(field.FieldName)}
                   className="form-component-field-input"
                   style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4, width: '100%' }}
                 >
                   <CustomOption FormID={Number(field.ReferenceFormID)} FieldIDs={field.ReferenceFieldIDs} FieldName={field.FieldName}/>
-                </select>   }             
+                </select>   }  */}            
                 {!(field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0) &&  <input
                 {...register(field.FieldName)}
                   type={field.DataType === 'BIT' ? 'checkbox' : 'text'}

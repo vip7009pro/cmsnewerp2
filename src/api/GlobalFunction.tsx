@@ -757,6 +757,13 @@ export async function encryptData(
   data: object
 ): Promise<{ encryptedData: string; encryptedKey: string; iv: string }> {
   try {
+    // Kiểm tra context bảo mật trước khi dùng Web Crypto API
+    if (!window.isSecureContext || !window.crypto || !window.crypto.subtle) {
+      Swal.fire("Thống báo", "Crypto API is not available. Please use HTTPS or localhost.", "error");
+      throw new Error(
+        'Crypto API is not available. Please use HTTPS or localhost.'
+      );
+    }
     // Chuyển object thành chuỗi JSON
     const dataString = JSON.stringify(data);
     // Tạo khóa AES ngẫu nhiên

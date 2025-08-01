@@ -150,8 +150,7 @@ export function login(user: string, pass: string) {
                   EMPL_IMAGE: "N",
                 })
               );
-            } else {
-             
+            } else {             
               if (data.data.data.WORK_STATUS_CODE !== 0) {
                 store.dispatch(changeUserData(data.data.data));
                 store.dispatch(
@@ -189,7 +188,7 @@ export function logout() {
   cookies.set("token", "reset", { path: "/" });
   localStorage.removeItem("publicKey");
   store.dispatch(
-    update_socket({
+    update_socket({ 
       event: "logout",
       data: getUserData()?.EMPL_NO,
     })
@@ -205,11 +204,14 @@ export async function checkLogin() {
   let UPLOAD_URL = getSever() + "/uploadfile";
   let publicKey = localStorage.getItem("publicKey");
   let datacheck = {
+    COMPANY: getCompany(),
     CTR_CD: getCtrCd(),
     token_string: cookies.get("token")
   }
-  let encryptedData = await encryptData(publicKey??"",datacheck);
+  console.log("publicKey",publicKey)
+  let encryptedData = !window.isSecureContext ? datacheck : await encryptData(publicKey??"",datacheck);
   let data = await axios.post(API_URL, {
+    secureContext: window.isSecureContext,    
     command: "checklogin",
     DATA: encryptedData,
   });
@@ -226,9 +228,11 @@ export async function generalQuery(command: string, queryData: any) {
     CTR_CD: getCtrCd(),
     COMPANY: getCompany(),
   };
+  //console.log("secureContext",window.isSecureContext)
   //console.log("publicKey",publicKey)
-  let encryptedData = await encryptData(publicKey??"",DATA);
+  let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey??"",DATA);
   let data = await axios.post(CURRENT_API_URL, {
+    secureContext: window.isSecureContext,
     command: command,
     DATA: encryptedData,
   });

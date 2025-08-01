@@ -39,7 +39,7 @@ export default function CustomOption({FormID, FieldIDs, FieldName}: {FormID: num
         <option key={index} value={item[FieldName]}>
           {
             fieldNameList.map((fieldName: string, idx: number) => {
-                console.log('fieldName',fieldName)
+                //console.log('fieldName',fieldName)
                 return(
               <span key={idx}>{item[fieldName]}.</span>
             )})

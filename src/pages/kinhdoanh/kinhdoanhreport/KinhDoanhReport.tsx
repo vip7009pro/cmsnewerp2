@@ -1650,7 +1650,7 @@ const KinhDoanhReport = () => {
     });
   }, [df, fromdate, todate, in_nhanh]);
   useEffect(() => {
-    //initFunction();
+    initFunction();
   }, []);
   return (
     <div className="kinhdoanhreport">
