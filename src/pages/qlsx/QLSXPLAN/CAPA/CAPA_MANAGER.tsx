@@ -12,7 +12,7 @@ const CAPA_MANAGER = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <MyTabs defaultActiveTab={0}>
           <MyTabs.Tab title="CAPA STATUS">
-            {getCompany() === "CMS" ? <CAPASX /> : <CAPASX2 />}
+            {getCompany() === "CMS" ? <CAPASX /> : <CAPASX2 />}           
           </MyTabs.Tab>
           <MyTabs.Tab title="CAPA DATA">
             <CAPADATA />

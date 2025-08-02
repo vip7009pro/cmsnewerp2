@@ -11,6 +11,7 @@ import {
   BTP_AUTO_DATA_SUMMARY,
   DAILY_YCSX_RESULT,
   DEFECT_PROCESS_DATA,
+  DELIVERY_PLAN_CAPA,
   DINHMUC_QSLX,
   EQ_STT,
   LEADTIME_DATA,
@@ -5253,7 +5254,7 @@ export const f_load_SX_Daily_Loss_Trend = async (DATA: any) => {
         const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
           return {
             ...element,
-            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            LOSS_RATE: element.PURE_INPUT > 0 ? 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT : 0,
             INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
           };
         });
@@ -5274,7 +5275,7 @@ export const f_load_SX_Weekly_Loss_Trend = async (DATA: any) => {
         const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
           return {
             ...element,
-            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            LOSS_RATE: element.PURE_INPUT > 0 ? 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT : 0,
             INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
           };
         });
@@ -5295,7 +5296,7 @@ export const f_load_SX_Monthly_Loss_Trend = async (DATA: any) => {
         const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
           return {
             ...element,
-            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            LOSS_RATE: element.PURE_INPUT > 0 ? 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT : 0,
             INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
           };
         });
@@ -5316,7 +5317,7 @@ export const f_load_SX_Yearly_Loss_Trend = async (DATA: any) => {
         const loadeddata: SX_TREND_LOSS_DATA[] = response.data.data.map((element: SX_TREND_LOSS_DATA, index: number) => {
           return {
             ...element,
-            LOSS_RATE: 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT,
+            LOSS_RATE: element.PURE_INPUT > 0 ? 1 - (element.PURE_OUTPUT * 1.0) / element.PURE_INPUT : 0,
             INPUT_DATE: moment.utc(element.INPUT_DATE).format('YYYY-MM-DD'),
           };
         });
@@ -5703,6 +5704,29 @@ export const f_loadYCSX_GAP_RATE_BACKDATA = async (DATA: any) => {
           (element: KD_YC_GAP_RATE_BACK_DATA, index: number) => {
             return {
               ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadcapabydeliveryplan = async (DATA: any) => {
+  let kq: DELIVERY_PLAN_CAPA[] = [];
+  await generalQuery("capabydeliveryplan", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: DELIVERY_PLAN_CAPA[] = response.data.data.map(
+          (element: DELIVERY_PLAN_CAPA, index: number) => {
+            return {
+              ...element,
+              PL_DATE: moment.utc(element.PL_DATE).format("YYYY-MM-DD"),
               id: index,
             };
           }

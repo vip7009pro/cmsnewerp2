@@ -15,7 +15,7 @@ const BCSX = () => {
             <SX_REPORT />
           </MyTabs.Tab>
           <MyTabs.Tab title="PRODUCTION CAPA REPORT">
-            {getCompany() === "CMS" ? <CAPASX /> : <CAPASX2 />}
+            {getCompany() === "CMS" ? <CAPASX /> : <CAPASX2 />}            
           </MyTabs.Tab>
         </MyTabs>
       </Suspense>

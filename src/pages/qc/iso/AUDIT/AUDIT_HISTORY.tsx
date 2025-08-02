@@ -96,7 +96,8 @@ const AUDIT_HISTORY = () => {
                   AUDIT_ID: auditRow.AUDIT_ID,
                   AUDIT_FILE_EXT: '.' + file.name.split('.').pop(),
                 });
-                if(kq !== '') {
+                console.log('kq',kq)
+                if(kq === '') {
                   Swal.fire("Thông báo", "Upload file thành công", "success");
                 }
                else {

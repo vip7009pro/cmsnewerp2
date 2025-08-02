@@ -17,13 +17,29 @@ import "./CAPASX.scss";
 import CIRCLE_COMPONENT from "./CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { SX_CAPA_DATA } from "../interfaces/khsxInterface";
+import { DELIVERY_PLAN_CAPA, EQ_STT, SX_CAPA_DATA } from "../interfaces/khsxInterface";
+import { f_handle_loadEQ_STATUS, f_loadcapabydeliveryplan } from "../utils/khsxUtils";
+import moment from "moment";
 const CAPASX2 = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime;
+  const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
+  const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const [trigger, setTrigger] = useState(true);
+  const [selectedFactory, setSelectedFactory] = useState("NM1");
+  const [selectedMachine, setSelectedMachine] = useState("FR");
+  const [selectedPlanDate, setSelectedPlanDate] = useState(moment.utc().format("YYYY-MM-DD"));
   const [capadata, setCapaData]= useState<SX_CAPA_DATA[]>([]);
-
+  const [dlleadtime, setDlLeadTime] = useState<DELIVERY_PLAN_CAPA[]>([
+      {
+        PL_DATE: "",
+        FACTORY: "",
+        AVL_CAPA: 0,
+        EQ: "",
+        LEADTIME: 0,
+        REAL_CAPA: 0,
+      },
+    ]);
   function customizeTooltip(pointInfo: any) {
     return {
       text: `${pointInfo.argumentText}<br/>${Number(
@@ -109,6 +125,28 @@ const CAPASX2 = () => {
       });
 
   }
+  const getDailyDeliveryPlanCapa = async (PLAN_DATE: string, EQ: string, FACTORY: string) => {
+    let kq: DELIVERY_PLAN_CAPA[] = [];
+    kq = await f_loadcapabydeliveryplan({
+      PLAN_DATE: PLAN_DATE,
+      EQ: EQ, 
+      FACTORY: FACTORY,
+    })
+    kq = kq.map((ele: DELIVERY_PLAN_CAPA, index: number) => {
+      return {
+        ...ele,
+        AVL_CAPA: capadata.filter((e: SX_CAPA_DATA, i: number) => e.EQ_SERIES === ele.EQ)[0]?.RETAIN_WF_MIN_CAPA*1300/900,
+        REAL_CAPA: capadata.filter((e: SX_CAPA_DATA, i: number) => e.EQ_SERIES === ele.EQ)[0]?.RETAIN_WF_MIN_CAPA,
+        id: index,
+      }
+    })
+    setDlLeadTime(kq)
+  }
+    const handle_loadEQ_STATUS = async () => {
+      let eq_data = await f_handle_loadEQ_STATUS();
+      setEQ_STATUS(eq_data.EQ_STATUS);
+      setEQ_SERIES(eq_data.EQ_SERIES);   
+    };
   const workforcechartMM = useMemo(() => {
     return (
       <Chart
@@ -280,18 +318,75 @@ const CAPASX2 = () => {
       }}
     />
     , [capadata, capacolumns, trigger]);
+
+  function renderCapaCharts(capaByDeliveryPlan: DELIVERY_PLAN_CAPA[], eq_series: string[]){ 
+    return (
+      <>
+      {
+        eq_series.map((eq: string, index:  number)=> {
+          return (
+            <Chart
+                    id='workforcechart'
+                    title={`PRODUCTION CAPA BY DELIVERY PLAN [${eq}]`}
+                    dataSource={capaByDeliveryPlan.filter(
+                      (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === eq
+                    )}
+                    width={`100%`}
+                    resolveLabelOverlapping='hide'
+                  >
+                    {/* <Title
+                      text='PRODUCTION CAPA BY DELIVERY PLAN'
+                      subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
+                    /> */}
+                    <ArgumentAxis title='PL_DATE' />
+                    <ValueAxis title='LEADTIME' />
+                    <CommonSeriesSettings
+                      argumentField='PL_DATE'
+                      type='bar'
+                      hoverMode='allArgumentPoints'
+                      selectionMode='allArgumentPoints'
+                    >
+                      <Label visible={true}>
+                        <Format type='fixedPoint' precision={0} />
+                      </Label>
+                    </CommonSeriesSettings>
+                    <Series
+                      argumentField='PL_DATE'
+                      valueField='LEADTIME'
+                      name='Leadtime'
+                      color='#28DF67'
+                    />
+                    <Series
+                      argumentField='PL_DATE'
+                      valueField='AVL_CAPA'
+                      name='12H'
+                      color='#E80020'
+                      type='line'
+                    />
+                    <Series
+                      argumentField='PL_DATE'
+                      valueField='REAL_CAPA'
+                      name='8H'
+                      color='#089ED6 '
+                      type='line'
+                    />
+                    <Legend
+                      verticalAlignment='bottom'
+                      horizontalAlignment='center'
+                    ></Legend>
+                  </Chart>
+          )
+        })
+      }
+      </>
+    )
+  }
   useEffect(() => {   
     getCapaData();   
-    //getDeliveryLeadTime(selectedFactory, selectedMachine, selectedPlanDate);
-    /* let intervalID = window.setInterval(() => {
-      handle_loadEQ_STATUS();
-      getDeliveryLeadTime(selectedFactory,selectedMachine,selectedPlanDate); 
-      getDiemDanhAllBP();
-      getMachineCounting();
-      getYCSXBALANCE();
-    }, 30000); */
+    getDailyDeliveryPlanCapa(selectedPlanDate, selectedMachine, selectedFactory);
+    handle_loadEQ_STATUS();    
     return () => {
-      //window.clearInterval(intervalID);
+     
     };
   }, []);
   return (
@@ -358,6 +453,30 @@ const CAPASX2 = () => {
       <div className="capadatatable">
         {capaDataAGTable}
       </div>      
+      <div className='selectcontrol'>
+            Plan Date:
+            <input
+              type='date'
+              value={selectedPlanDate}
+              onChange={(e) => {
+                setSelectedPlanDate(e.target.value);
+                getDailyDeliveryPlanCapa(e.target.value, selectedMachine, selectedFactory);                
+              }}
+            ></input>
+            Factory:
+            <select
+              name='factory'
+              value={selectedFactory}
+              onChange={(e) => {
+                setSelectedFactory(e.target.value);
+                getDailyDeliveryPlanCapa(selectedPlanDate, selectedMachine, e.target.value);
+              }}
+            >
+              <option value='NM1'>NM1</option>
+              <option value='NM2'>NM2</option>
+            </select>           
+          </div>
+      {renderCapaCharts(dlleadtime, eq_series)}
     </div>
   );
 };
