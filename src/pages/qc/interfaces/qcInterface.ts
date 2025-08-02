@@ -1148,6 +1148,42 @@ export interface OQC_NG_BY_PRODTYPE {
     CNT: number;
     RATE: number;
   }
+  export interface TRUOCHAN_BACK_DATA {
+    PROD_REQUEST_NO: string;
+    NGAY_GH: string;
+    MAX_DATE: string;
+    GAP: number;
+  }
+  export interface ALL_GAP_RATE_BACK_DATA {
+    PROD_REQUEST_NO: string;
+    NGAY_YC: string;
+    MAX_DATE: string;
+    GAP: number;
+  }
+  export interface KT_GAP_RATE_BACK_DATA {
+    PROD_REQUEST_NO: string;
+    MIN_DATE: string;
+    MAX_DATE: string;
+    GAP: number;
+  }
+  export interface SX_GAP_RATE_BACK_DATA {
+    PROD_REQUEST_NO: string;
+    MIN_DATE: string;
+    MAX_DATE: string;
+    GAP: number;
+  }
+  export interface KD_YC_GAP_RATE_BACK_DATA {
+    PROD_REQUEST_NO: string;
+    G_CODE: string;
+    G_NAME_KD: string;
+    G_NAME: string;
+    EMPL_NO: string;
+    PROD_REQUEST_DATE: string;
+    DELIVERY_DT: string;
+    NGAY_YC: string;
+    NGAY_GH: string;
+    GAP: number;
+  }
   export interface AUDIT_HISTORY_DATA {
     id: number;
     CTR_CD: string;

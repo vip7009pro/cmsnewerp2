@@ -60,7 +60,13 @@ const emptyYCTKData: YCTKData = {
 
 const YCTKManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const {register,handleSubmit,watch, formState:{errors}} = useForm()
+  const {register,handleSubmit,watch, formState:{errors}} = useForm({
+    defaultValues: {
+      fromdate: moment().format('YYYY-MM-DD'),
+      todate: moment().format('YYYY-MM-DD'),
+      alltime: true,
+    }
+  })
   const [yctkdata, setYCTKData] = useState<YCTKData[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>("add");
@@ -170,6 +176,7 @@ const YCTKManager = () => {
         kq = await f_load_YCTK({
         FROM_DATE: watch("fromdate"),
         TO_DATE: watch("todate"),
+        ALL_TIME: watch("alltime"),
       });      
     //console.log(kq);
     if (kq.length > 0) {

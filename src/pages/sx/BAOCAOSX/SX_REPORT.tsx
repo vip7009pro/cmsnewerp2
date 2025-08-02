@@ -27,7 +27,7 @@ import SXPlanLossTrend from "../../../components/Chart/SX/SXPlanLossTrend";
 import YCSX_GAP_RATE from "../../../components/Chart/SX/YCSX_GAP_RATE";
 import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
-import { usehandle_loadYCSX_GAP_RATE_DATA, usehandle_loadSX_GAP_RATE_DATA, usehandle_loadKT_GAP_RATE_DATA, usehandle_loadALL_GAP_RATE_DATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA, usehandle_load_SX_Daily_Loss_Trend, usehandle_load_SX_Weekly_Loss_Trend, usehandle_load_SX_Monthly_Loss_Trend, usehandle_load_SX_Yearly_Loss_Trend, usehandle_getWeeklyAchiveData, usehandle_getDailyAchiveData, usehandle_getMonthlyAchiveData, usehandle_getYearlyAchiveData, usehandle_getDailyEffData, usehandle_getWeeklyEffData, usehandle_getMonthlyEffData, usehandle_getYearlyEffData, usehandle_getPlanLossData, usehandle_getSXLossTimeByEmpl, usehandle_getSXLossTimeByReason } from "./hooks/BAOCAOSX_HOOKS";
+import { usehandle_loadYCSX_GAP_RATE_DATA, usehandle_loadSX_GAP_RATE_DATA, usehandle_loadKT_GAP_RATE_DATA, usehandle_loadALL_GAP_RATE_DATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA, usehandle_load_SX_Daily_Loss_Trend, usehandle_load_SX_Weekly_Loss_Trend, usehandle_load_SX_Monthly_Loss_Trend, usehandle_load_SX_Yearly_Loss_Trend, usehandle_getWeeklyAchiveData, usehandle_getDailyAchiveData, usehandle_getMonthlyAchiveData, usehandle_getYearlyAchiveData, usehandle_getDailyEffData, usehandle_getWeeklyEffData, usehandle_getMonthlyEffData, usehandle_getYearlyEffData, usehandle_getPlanLossData, usehandle_getSXLossTimeByEmpl, usehandle_getSXLossTimeByReason, usehandle_loadYCSX_GAP_RATE_BACKDATA, usehandle_loadSX_GAP_RATE_BACKDATA, usehandle_loadKT_GAP_RATE_BACKDATA, usehandle_loadALL_GAP_RATE_BACKDATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA } from "./hooks/BAOCAOSX_HOOKS";
 
 const SX_REPORT = () => {
   const [machineList, setMachineList] = useState<MACHINE_LIST[]>([]);
@@ -44,6 +44,16 @@ const SX_REPORT = () => {
   const { data: ktgapData, loading: ktgapLoading, error: ktgapError, triggerFetch: ktgapTriggerFetch } = usehandle_loadKT_GAP_RATE_DATA(fromdate, todate, df);
   const { data: allgapData, loading: allgapLoading, error: allgapError, triggerFetch: allgapTriggerFetch } = usehandle_loadALL_GAP_RATE_DATA(fromdate, todate, df);
   const { data: allhoanthanhtruochanrateData, loading: allhoanthanhtruochanrateLoading, error: allhoanthanhtruochanrateError, triggerFetch: allhoanthanhtruochanrateTriggerFetch } = usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA(fromdate, todate, df);
+
+  const { data: ycsxgapbackData, loading: ycsxgapbackLoading, error: ycsxgapbackError, triggerFetch: ycsxgapbackTriggerFetch } = usehandle_loadYCSX_GAP_RATE_BACKDATA(fromdate, todate, df);
+  const { data: sxgapbackData, loading: sxgapbackLoading, error: sxgapbackError, triggerFetch: sxgapbackTriggerFetch } = usehandle_loadSX_GAP_RATE_BACKDATA(fromdate, todate, df);
+  const { data: ktgapbackData, loading: ktgapbackLoading, error: ktgapbackError, triggerFetch: ktgapbackTriggerFetch } = usehandle_loadKT_GAP_RATE_BACKDATA(fromdate, todate, df);
+  const { data: allgapbackData, loading: allgapbackLoading, error: allgapbackError, triggerFetch: allgapbackTriggerFetch } = usehandle_loadALL_GAP_RATE_BACKDATA(fromdate, todate, df);
+  const { data: allhoanthanhtruochanratebackData, loading: allhoanthanhtruochanratebackLoading, error: allhoanthanhtruochanratebackError, triggerFetch: allhoanthanhtruochanratebackTriggerFetch } = usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA(fromdate, todate, df);
+
+
+
+
   const { data: sxdailylosstrendData, loading: sxdailylosstrendLoading, error: sxdailylosstrendError, triggerFetch: sxdailylosstrendTriggerFetch } = usehandle_load_SX_Daily_Loss_Trend(fromdate, todate, df);
   const { data: sxweeklylosstrendData, loading: sxweeklylosstrendLoading, error: sxweeklylosstrendError, triggerFetch: sxweeklylosstrendTriggerFetch } = usehandle_load_SX_Weekly_Loss_Trend(fromdate, todate, df);
   const { data: sxmonthlylosstrendData, loading: sxmonthlylosstrendLoading, error: sxmonthlylosstrendError, triggerFetch: sxmonthlylosstrendTriggerFetch } = usehandle_load_SX_Monthly_Loss_Trend(fromdate, todate, df);
@@ -95,6 +105,11 @@ const SX_REPORT = () => {
       sxgapTriggerFetch(),
       ktgapTriggerFetch(),
       allgapTriggerFetch(),
+      ycsxgapbackTriggerFetch(),
+      sxgapbackTriggerFetch(),
+      ktgapbackTriggerFetch(),
+      allgapbackTriggerFetch(),
+      allhoanthanhtruochanratebackTriggerFetch(),
       allhoanthanhtruochanrateTriggerFetch(),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
@@ -632,7 +647,7 @@ const SX_REPORT = () => {
               <span className="subsection">Tỉ trọng YCSX gấp theo số ngày (Ngày YC- Ngày Giao)<IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(ycgapData, "YCSX GAP RATE");
+                  SaveExcel(ycsxgapbackData, "YCSX GAP RATE");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
@@ -645,7 +660,7 @@ const SX_REPORT = () => {
               <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(sxgapData, "SX GAP RATE");
+                  SaveExcel(sxgapbackData, "SX GAP RATE");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
@@ -660,7 +675,7 @@ const SX_REPORT = () => {
               <span className="subsection">Tỉ trọng số ngày kiểm tra hoàn thành YCSX <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(ktgapData, "KT GAP RATE");
+                  SaveExcel(ktgapbackData, "KT GAP RATE");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
@@ -673,7 +688,7 @@ const SX_REPORT = () => {
               <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX ALL CĐ (Từ lúc lên yc tới lúc kiểm tra xong) <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(allgapData, "ALL GAP RATE");
+                  SaveExcel(allgapbackData, "ALL GAP RATE");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />
@@ -688,7 +703,7 @@ const SX_REPORT = () => {
               <span className="subsection">Tỉ trọng số ngày hoàn thành trước hạn (Dương: trước hạn, Âm: quá hạn) <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  SaveExcel(allhoanthanhtruochanrateData, "ALL HOAN THANH TRUOC HAN RATE");
+                  SaveExcel(allhoanthanhtruochanratebackData, "ALL HOAN THANH TRUOC HAN RATE");
                 }}
               >
                 <AiFillFileExcel color='green' size={15} />

@@ -52,7 +52,7 @@ import {
 import { checkBP, zeroPad } from "../../../../api/GlobalFunction";
 import { f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
 import { BOMSX_DATA, CODE_FULL_INFO } from "../../../rnd/interfaces/rndInterface";
-import { CNT_GAP_DATA, TREND_NGUOI_HANG_DATA } from "../../../qc/interfaces/qcInterface";
+import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TREND_NGUOI_HANG_DATA, TRUOCHAN_BACK_DATA } from "../../../qc/interfaces/qcInterface";
 export const f_loadTiLeDat = async (
   plan_date: string,
   machine: string,
@@ -5603,5 +5603,115 @@ export const f_load_SXLossTimeByEmpl =  async (DATA: any) => {
     .catch((error) => {
       console.log(error);
     });   
+  return kq;
+};
+
+export const f_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA = async (DATA: any) => {
+  let kq: TRUOCHAN_BACK_DATA[] = [];
+  await generalQuery("loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: TRUOCHAN_BACK_DATA[] = response.data.data.map(
+          (element: TRUOCHAN_BACK_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadALL_GAP_RATE_BACKDATA = async (DATA: any) => {
+  let kq: ALL_GAP_RATE_BACK_DATA[] = [];
+  await generalQuery("loadALL_GAP_RATE_BACKDATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: ALL_GAP_RATE_BACK_DATA[] = response.data.data.map(
+          (element: ALL_GAP_RATE_BACK_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadKT_GAP_RATE_BACKDATA = async (DATA: any) => {
+  let kq: KT_GAP_RATE_BACK_DATA[] = [];
+  await generalQuery("loadKT_GAP_RATE_BACKDATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: KT_GAP_RATE_BACK_DATA[] = response.data.data.map(
+          (element: KT_GAP_RATE_BACK_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadSX_GAP_RATE_BACKDATA = async (DATA: any) => {
+  let kq: SX_GAP_RATE_BACK_DATA[] = [];
+  await generalQuery("loadSX_GAP_RATE_BACKDATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_GAP_RATE_BACK_DATA[] = response.data.data.map(
+          (element: SX_GAP_RATE_BACK_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadYCSX_GAP_RATE_BACKDATA = async (DATA: any) => {
+  let kq: KD_YC_GAP_RATE_BACK_DATA[] = [];
+  await generalQuery("loadYCSX_GAP_RATE_BACKDATA", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: KD_YC_GAP_RATE_BACK_DATA[] = response.data.data.map(
+          (element: KD_YC_GAP_RATE_BACK_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
   return kq;
 };
