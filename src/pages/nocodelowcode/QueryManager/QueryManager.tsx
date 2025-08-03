@@ -99,7 +99,7 @@ const QueryManager: React.FC = () => {
   const fetchFilterList = async (queryId: number) => {
     try {
       // API này cần chỉnh lại theo backend thực tế
-      console.log(queryId);
+      //console.log(queryId);
       const res = await generalQuery("getQueryFilter", { QueryID: queryId });
       if (res?.data?.data) {
         let loaded_data: QueryFilter[] = res.data.data.map(
