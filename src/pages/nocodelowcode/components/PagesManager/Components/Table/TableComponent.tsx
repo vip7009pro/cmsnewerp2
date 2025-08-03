@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo } from 'react'
-import { use_f_load_pivotedData } from '../../../../utils/nocodelowcodeHooks';
+import { useEffect, useMemo, useState } from 'react';
 import AGTable from '../../../../../../components/DataTable/AGTable';
 import { IconButton } from '@mui/material';
 import { MdRefresh } from 'react-icons/md';
+import { f_getViewNameFromFormID, f_loadViewData } from '../../../../utils/nocodelowcodeUtils';
 
 export default function TableComponent({formID}: {formID: string | number}) {
-  const {
-    data: records,
-    loading: loadingRecords,
-    error: errorRecords,
-    triggerFetch: fetchRecords, 
-  } = use_f_load_pivotedData({ FormID: formID });
+ 
+  const [records, setRecords] = useState<any[]>([]);
+  const loadRecords = async () => {
+    let viewName = await f_getViewNameFromFormID({ FormID: Number(formID) });
+    const result = await f_loadViewData({ ViewName: viewName });
+    setRecords(result);
+  } 
 
   const formAG_Table = useMemo(() => {
     return (
@@ -21,7 +22,7 @@ export default function TableComponent({formID}: {formID: string | number}) {
         <IconButton
         className='buttonIcon'
         onClick={() => {
-          fetchRecords();
+          loadRecords();
         }}
       >
         <MdRefresh  color='#f02bc5' size={15} />
@@ -40,7 +41,7 @@ export default function TableComponent({formID}: {formID: string | number}) {
   }, [records]);
 
   useEffect(() => {
-    fetchRecords();
+    loadRecords();
   }, [formID]);
   return (
     <div style={{ height: '100%', width: '100%' }}>
