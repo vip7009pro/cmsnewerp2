@@ -567,3 +567,112 @@ export const f_loadTwoTableRelationship = async (DATA: any) => {
     .catch((error) => {});
   return kq;
 };
+
+export const f_loadViewData = async (DATA: any) => {
+  let kq: any[] = [];
+  await generalQuery("loadViewData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_loadViewDataSpecificFields = async (DATA: any) => {
+  let kq: any[] = [];
+  await generalQuery("loadViewDataSpecificFields", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadViewList = async (DATA: any) => {
+  let kq: any[] = [];
+  await generalQuery("loadViewList", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_getFormIDFromViewName = async (DATA: any) => {
+  let kq: number = -1;
+  await generalQuery("getFormIDFromViewName", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        if(loaded_data.length > 0){
+          kq = loaded_data[0].FormID;
+        }
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_getViewNameFromFormID = async (DATA: any) => {
+  let kq: string = "";
+  await generalQuery("getViewNameFromFormID", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        //console.log('loaded_data',loaded_data)
+        if(loaded_data.length > 0){
+          kq = loaded_data[0].ViewName;
+        }
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
