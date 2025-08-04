@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { use_f_loadComponents } from '../../../../utils/nocodelowcodeHooks';
 import FormComponent from '../Form/FormComponent';
 import TableComponent from '../Table/TableComponent';
+import TableFromQueryComponent from '../Table/TableFromQueryComponent';
 export default function PageShow({ pageId }: { pageId: string | number }) {
   const { data: components, loading: loadingComponents, error: errorComponents, triggerFetch: fetchComponents, triggerFetchWithParams: triggerFetchComponentsWithParams } = use_f_loadComponents({ PageID: pageId });
   useEffect(() => {
@@ -32,6 +33,12 @@ export default function PageShow({ pageId }: { pageId: string | number }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', width: '100%', height: '100%' }}>
                 <h4>{component.ComponentName}</h4>
                 <FormComponent formId={component.ReferenceID ?? 0} />
+              </div>
+            )}
+            {component.ComponentType === 'FormFromQuery' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', width: '100%', height: '100%' }}>
+                <h4>{component.ComponentName}</h4>
+                <TableFromQueryComponent queryName='loadPoTable' />
               </div>
             )}
             {component.ComponentType === 'DataTable' && (

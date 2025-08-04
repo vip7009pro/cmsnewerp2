@@ -1,6 +1,8 @@
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { ComponentAttribute, Field, Form, Page, PageComponent, Record } from "../types/types";
+import { QueryFilter } from "../QueryManager/QueryManager";
+
 
 export const f_loadFormList = async () => {
   let kq: Form[] = [];
@@ -669,6 +671,91 @@ export const f_getViewNameFromFormID = async (DATA: any) => {
         //console.log('loaded_data',loaded_data)
         if(loaded_data.length > 0){
           kq = loaded_data[0].ViewName;
+        }
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_runQuery = async (DATA: any) => {
+  let kq: any[] = [];
+  await generalQuery("runQuery", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_getQueryFilterByQueryName = async (DATA: any) => {
+  let kq: QueryFilter[] = [];
+  await generalQuery("getQueryFilterByQueryName", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: QueryFilter[] = response.data.data.map(
+          (element: QueryFilter, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_getQueryFilterList = async (DATA: any) => {
+  let kq: QueryFilter[] = [];
+  await generalQuery("getQueryFilter", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: QueryFilter[] = response.data.data.map(
+          (element: QueryFilter, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_getQueryIDFromQueryName = async (DATA: any) => {
+  let kq: number = -1;
+  await generalQuery("getQueryIDFromQueryName", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        if(loaded_data.length > 0){
+          kq = loaded_data[0].QueryID;
         }
       } else {
       }

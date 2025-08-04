@@ -17,7 +17,7 @@ import { generalQuery, getCtrCd } from "../../../api/Api";
 import Swal from "sweetalert2";
 import "./QueryManager.scss";
 // Interface cho Query và QueryFilter
-interface Query {
+export interface Query {
   QueryID: number;
   QueryName: string;
   BaseQuery: string;
@@ -26,7 +26,7 @@ interface Query {
   UpdatedAt: string;
   IsActive: boolean;
 }
-interface QueryFilter {
+export interface QueryFilter {
   FilterID: number;
   QueryID: number;
   Placeholder: string;
