@@ -763,3 +763,44 @@ export const f_getQueryIDFromQueryName = async (DATA: any) => {
     .catch((error) => {});
   return kq;
 };
+
+export const f_loadPageListFromGroupName = async (DATA: any) => {
+    let kq: Page[] = [];
+    await generalQuery("loadPageListFromGroupName", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: Page[] = response.data.data.map(
+            (element: Page, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+export const f_loadPageListFromGroupID = async (DATA: any) => {
+    let kq: Page[] = [];
+    await generalQuery("loadPageListFromGroupID", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: Page[] = response.data.data.map(
+            (element: Page, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };

@@ -47,6 +47,8 @@ export interface Form {
   export interface Page {
     PageID: number;
     PageName: string;
+    PageGroupID?: number;
+    PageGroupName?: string;
     Description?: string;
     Layout?: string;
     CreatedAt: Date;

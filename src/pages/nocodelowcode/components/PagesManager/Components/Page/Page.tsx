@@ -11,15 +11,19 @@ export default function PageShow({ pageId }: { pageId: string | number }) {
   return (
     <div
       style={{
+        width: '100%',    
+        height: '95vh'  ,
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
         gap: '10px',     
-        background: 'linear-gradient(to bottom, #f5f5f5, #e0e0e0)',
+        background: 'linear-gradient(to bottom, #f5f5f5, #8cfa60)',
+        overflowY: 'auto',
       }}
     >
       {components.map((component) => {
         return (
           <div
+            className='page-component'
             key={component.ComponentID}
             style={{
               gridColumn: component.GridWidth === 'full' ? 'span 3' : component.GridWidth === 'half' ? 'span 2' : 'span 1',
@@ -38,7 +42,7 @@ export default function PageShow({ pageId }: { pageId: string | number }) {
             {component.ComponentType === 'FormFromQuery' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', width: '100%', height: '100%' }}>
                 <h4>{component.ComponentName}</h4>
-                <TableFromQueryComponent queryName='loadPoTable' />
+                <TableFromQueryComponent queryName='loadBlockingData' />
               </div>
             )}
             {component.ComponentType === 'DataTable' && (

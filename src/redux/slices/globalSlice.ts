@@ -321,7 +321,7 @@ export const glbSlice = createSlice({
           .length < 8
       ) {
         state.tabs = [...state.tabs, action.payload];
-        //console.log(state.tabs);
+        console.log(action.payload);
         localStorage.setItem(
           "tabs",
           JSON.stringify(
@@ -329,6 +329,7 @@ export const glbSlice = createSlice({
               return {
                 MENU_CODE: ele.ELE_CODE,
                 MENU_NAME: ele.ELE_NAME,
+                PAGE_ID: ele.PAGE_ID,
               };
             })
           )
@@ -354,6 +355,7 @@ export const glbSlice = createSlice({
             return {
               MENU_CODE: ele.ELE_CODE,
               MENU_NAME: ele.ELE_NAME,
+              PAGE_ID: ele.PAGE_ID,
             };
           })
         )
@@ -369,6 +371,7 @@ export const glbSlice = createSlice({
           ELE_CODE: "-1",
           ELE_NAME: "DELETED",
           REACT_ELE: "",
+          PAGE_ID: -1,
         };
         localStorage.setItem(
           "tabs",
@@ -377,6 +380,7 @@ export const glbSlice = createSlice({
               return {
                 MENU_CODE: ele.ELE_CODE,
                 MENU_NAME: ele.ELE_NAME,
+                PAGE_ID: ele.PAGE_ID,
               };
             })
           )

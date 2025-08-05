@@ -14,11 +14,14 @@ import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo, Navbar } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
+import PageShow from "../nocodelowcode/components/PagesManager/Components/Page/Page";
+import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
 export const current_ver: number = getCompany() === "CMS" ? 2635 : 423;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
   ELE_CODE: string;
+  PAGE_ID?: number;
 }
 export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
   // Tùy chỉnh kiểu cho tab tại đây
@@ -270,12 +273,15 @@ function Home() {
                         width: sidebarStatus ? "100%" : "100%",
                       }}
                     >
-                      <Suspense fallback={<div>Loading...</div>}>
+                      <Suspense fallback={<div>Loading...</div>}>   
+                      {/* <PageShow pageId={ele.PAGE_ID ?? 0} /> */}                     
                         {
-                          menulist.find(
-                            (menu) => menu.MENU_CODE === ele.ELE_CODE
-                          )?.MENU_ITEM
-                        }
+                          ele.PAGE_ID !== -1 ?  <PageTabs PageGroupID={ele.PAGE_ID ?? 0} />
+                        
+                        : 
+                        menulist.find(
+                          (menu) => menu.MENU_CODE === ele.ELE_CODE
+                        )?.MENU_ITEM}
                       </Suspense>
                     </div>
                   );

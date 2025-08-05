@@ -70,6 +70,7 @@ const NavMenu = () => {
   }, []);
   const dispatch = useDispatch();
   const SidebarData: NAVMENUDATA[] = useMemo( () => getNavMenu(company, lang), [company, lang] );
+
   return (
     <div className="navmenu">
       <nav>
@@ -82,7 +83,7 @@ const NavMenu = () => {
                   {sidebar_element.title}
                 </Link>
                 <ul className="submenu">
-                  {sidebar_element.subNav.map(
+                  {sidebar_element.subNav?.map(
                     (subnav_element: any, index: number) => {
                       return (
                         <li key={index}>
@@ -119,6 +120,7 @@ const NavMenu = () => {
                                           ELE_NAME: subnav_element.title,
                                           ELE_CODE: subnav_element.MENU_CODE,
                                           REACT_ELE: "",
+                                          PAGE_ID: -1,
                                         })
                                       );
                                       dispatch(settabIndex(tabs.length));

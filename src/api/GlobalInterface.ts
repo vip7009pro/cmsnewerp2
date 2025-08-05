@@ -54,6 +54,7 @@ export interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
   ELE_CODE: string;
+  PAGE_ID?: number;
 }
 export interface GlobalInterface {
   notificationCount?: number;

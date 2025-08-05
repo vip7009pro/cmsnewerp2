@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SwitchRightIcon from "@mui/icons-material/SwitchRight";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { getCompany, logout } from "../../api/Api";
+import { getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { FcList } from "react-icons/fc";
 import {
@@ -29,6 +29,7 @@ import { MdOutlineSettings } from "react-icons/md";
 import NavMenu from "../NavMenu/NavMenu";
 import { IoIosNotifications } from "react-icons/io";
 import NotificationPanel from "../NotificationPanel/NotificationPanel";
+import NavMenuNew from "../NavMenu/NavMenuNew";
 
 
 interface SEARCH_LIST_DATA {
@@ -574,6 +575,7 @@ export default function Navbar() {
                 ELE_NAME: selected.MENU_NAME,
                 ELE_CODE: selected.MENU_CODE,
                 REACT_ELE: "",
+                PAGE_ID: -1,
               }),
             );
             dispatch(settabIndex(tabs.length));
@@ -601,6 +603,7 @@ export default function Navbar() {
               ELE_CODE: tempTab[i].MENU_CODE,
               ELE_NAME: tempTab[i].MENU_NAME,
               REACT_ELE: "",
+              PAGE_ID: -1,
             }),
           );
       }
@@ -664,7 +667,7 @@ export default function Navbar() {
             }}
             size={15}
           />
-          {sidebarStatus && <NavMenu />}
+          {sidebarStatus && (getUserData()?.EMPL_NO !== "NHU1903" ? <NavMenu/> : <NavMenuNew/>)}
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>
@@ -814,6 +817,7 @@ export default function Navbar() {
                                   ELE_CODE: "NS0",
                                   ELE_NAME: "ACCOUNT_INFO",
                                   REACT_ELE: "",
+                                  PAGE_ID: -1,
                                 }),
                               );
                             }
@@ -854,6 +858,7 @@ export default function Navbar() {
                                     ELE_CODE: "ST01",
                                     ELE_NAME: "SETTING",
                                     REACT_ELE: "",
+                                    PAGE_ID: -1,
                                   }),
                                 );
                                 dispatch(settabIndex(tabs.length));
@@ -919,6 +924,7 @@ export default function Navbar() {
                               (ele: MENU_LIST_DATA, index: number) =>
                                 ele.MENU_CODE === "NS0",
                             )[0].MENU_ITEM,
+                            PAGE_ID: -1,
                           }),
                         );
                       }

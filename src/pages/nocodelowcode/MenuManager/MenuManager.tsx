@@ -40,6 +40,7 @@ export interface ISubMenu {
   SubIconColor: string;
   Link: string;
   MenuCode: string;
+  PAGE_ID: number;
 }
 
 // --- Icon List Logic (from NavMenuNew) ---
@@ -269,7 +270,8 @@ const MenuManager: React.FC = () => {
       SubMenuIcon: '',
       SubIconColor: '#000000',
       Link: '',
-      MenuCode: ''
+      MenuCode: '',
+      PAGE_ID: -1
     });
     setSelectedSubMenu(null); // reset khi thêm mới
     setIconSearch('');
@@ -286,8 +288,10 @@ const MenuManager: React.FC = () => {
   const handleSaveSubMenu = () => {
     if (!editSubMenu) return;
     if (subMenus.some((sm) => sm.SubMenuID === editSubMenu.SubMenuID)) {
+      console.log(editSubMenu);
       updateSubMenu(editSubMenu);
     } else {
+      console.log(editSubMenu);
       createSubMenu(editSubMenu);
     }
     setOpenSubMenuModal(false);
@@ -397,6 +401,7 @@ const MenuManager: React.FC = () => {
                 <th>SubText</th>
                 <th>Link</th>
                 <th>Menu Code</th>
+                <th>Page ID</th>
                 <th>Icon</th>
                 <th>Màu</th>
               </tr>
@@ -415,6 +420,7 @@ const MenuManager: React.FC = () => {
                     <td>{submenu.Text}</td>
                     <td>{submenu.Link}</td>
                     <td>{submenu.MenuCode}</td>
+                    <td>{submenu.PAGE_ID}</td>
                     <td>{iconObj ? <iconObj.IconComponent color={submenu.SubIconColor} /> : null}</td>
                     <td>
                       <div style={{ width: 20, height: 20, background: submenu.SubIconColor, borderRadius: '50%' }} />
@@ -475,6 +481,7 @@ const MenuManager: React.FC = () => {
           <TextField label="Text" value={editSubMenu?.Text || ''} onChange={e => setEditSubMenu(prev => prev && { ...prev, Text: e.target.value })} fullWidth margin="normal" />
           <TextField label="Link" value={editSubMenu?.Link || ''} onChange={e => setEditSubMenu(prev => prev && { ...prev, Link: e.target.value })} fullWidth margin="normal" />
           <TextField label="Menu Code" value={editSubMenu?.MenuCode || ''} onChange={e => setEditSubMenu(prev => prev && { ...prev, MenuCode: e.target.value })} fullWidth margin="normal" />
+          <TextField label="Page ID" value={editSubMenu?.PAGE_ID || -1} onChange={e => setEditSubMenu(prev => prev && { ...prev, PAGE_ID: Number(e.target.value) })} fullWidth margin="normal" />
           <Box mt={2}>
             <Typography variant="subtitle2">Chọn icon</Typography>
             {renderIconDropdown('sub')}

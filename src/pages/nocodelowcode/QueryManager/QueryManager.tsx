@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import AGTable from "../../../components/DataTable/AGTable";
-import SqlEditor from "../components/TestBackEnd/SqlEditor";
 import {
   Box,
   Button,
@@ -34,6 +33,11 @@ export interface QueryFilter {
   ParamName: string;
   LikeType?: string;
   SkipValues?: string; // JSON array string
+  INPUT_TYPE: string;
+  QueryName: string;
+  SELECTION_TEXT: string;
+  SELECTION_VALUE: string;
+  STT: number;
   CreatedAt: string;
   UpdatedAt: string;
 }
@@ -294,6 +298,10 @@ const QueryManager: React.FC = () => {
       cellRenderer: (params: any) => params.value || "--None--",
     },
     { field: "SkipValues", headerName: "Skip", width: 50 },
+    { field: "INPUT_TYPE", headerName: "Input", width: 50 },
+    { field: "SELECTION_TEXT", headerName: "Selection Text", width: 50 },
+    { field: "SELECTION_VALUE", headerName: "Selection Value", width: 50 },
+    { field: "STT", headerName: "STT", width: 50 },
     /*  { field: 'CreatedAt', headerName: 'Created', width: 110 },
     { field: 'UpdatedAt', headerName: 'Updated', width: 110 }, */
     {
@@ -448,24 +456,6 @@ const QueryManager: React.FC = () => {
             {editFilter?.FilterID ? "Sửa Filter" : "Thêm Filter"}
           </Typography>
           <TextField
-            label="Placeholder"
-            value={editFilter?.Placeholder || ""}
-            onChange={(e) =>
-              setEditFilter((f) => ({ ...f!, Placeholder: e.target.value }))
-            }
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Clause"
-            value={editFilter?.Clause || ""}
-            onChange={(e) =>
-              setEditFilter((f) => ({ ...f!, Clause: e.target.value }))
-            }
-            fullWidth
-            margin="normal"
-          />
-          <TextField
             label="Param Name"
             value={editFilter?.ParamName || ""}
             onChange={(e) => {
@@ -476,8 +466,27 @@ const QueryManager: React.FC = () => {
               }));
             }}
             fullWidth
-            margin="normal"
+            margin="dense"
           />
+          <TextField
+            label="Placeholder"
+            value={editFilter?.Placeholder || ""}
+            onChange={(e) =>
+              setEditFilter((f) => ({ ...f!, Placeholder: e.target.value }))
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Clause"
+            value={editFilter?.Clause || ""}
+            onChange={(e) =>
+              setEditFilter((f) => ({ ...f!, Clause: e.target.value }))
+            }
+            fullWidth
+            margin="dense"
+          />
+         
           <TextField
             select
             label="Like Type"
@@ -486,13 +495,70 @@ const QueryManager: React.FC = () => {
               setEditFilter((f) => ({ ...f!, LikeType: e.target.value }))
             }
             fullWidth
-            margin="normal"
+            margin="dense"
           >
             <MenuItem value="">--None--</MenuItem>
             <MenuItem value="both">both</MenuItem>
             <MenuItem value="left">left</MenuItem>
             <MenuItem value="right">right</MenuItem>
           </TextField>
+          <TextField
+            select
+            label="Input Type"
+            value={editFilter?.INPUT_TYPE || ""}
+            onChange={(e) =>
+              setEditFilter((f) => ({ ...f!, INPUT_TYPE: e.target.value }))
+            }
+            fullWidth
+            margin="dense"
+          >
+            <MenuItem value="">--None--</MenuItem>
+            <MenuItem value="text">text</MenuItem>
+            <MenuItem value="selection">selection</MenuItem>
+            <MenuItem value="date">date</MenuItem>
+            <MenuItem value="checkbox">checkbox</MenuItem>
+          </TextField>
+          <TextField
+            label="Query Name"
+            value={editFilter?.QueryName || ""}
+            onChange={(e) =>
+              setEditFilter((f) => ({
+                ...f!,
+                QueryName: e.target.value,
+              }))
+            }
+            fullWidth
+            margin="dense"            
+            minRows={2}
+          />
+           <TextField
+            label="Selection Text"
+            value={editFilter?.SELECTION_TEXT || ""}
+            onChange={(e) =>
+              setEditFilter((f) => ({
+                ...f!,
+                SELECTION_TEXT: e.target.value,
+              }))
+            }
+            fullWidth
+            margin="dense"           
+            minRows={2}
+          />
+          
+           <TextField
+            label="Selection Value"
+            value={editFilter?.SELECTION_VALUE || ""}
+            onChange={(e) =>
+              setEditFilter((f) => ({
+                ...f!,
+                SELECTION_VALUE: e.target.value,
+              }))
+            }
+            fullWidth
+            margin="dense"            
+            minRows={2}
+          />
+          
           <TextField
             label="Skip Values"
             value={editFilter?.SkipValues || ""}
@@ -503,10 +569,25 @@ const QueryManager: React.FC = () => {
               }))
             }
             fullWidth
-            margin="normal"
-            multiline
+            margin="dense"            
             minRows={2}
           />
+
+          <TextField
+            label="STT"
+            type="number"
+            value={editFilter?.STT || 1}
+            onChange={(e) =>
+              setEditFilter((f) => ({
+                ...f!,
+                STT: Number(e.target.value),
+              }))
+            }
+            fullWidth
+            margin="dense"            
+            minRows={2}
+          />
+
           <Box className="popup-actions">
             <Button variant="contained" onClick={handleSaveFilter}>
               {editFilter?.FilterID ? "Cập nhật" : "Thêm mới"}

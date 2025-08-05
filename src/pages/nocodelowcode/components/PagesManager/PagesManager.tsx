@@ -218,16 +218,18 @@ export default function PagesManager() {
 
   // Columns cho AGTable
   const pageColumns = [
-    { field: 'PageID', headerName: 'ID', width: 60 },
-    { field: 'PageName', headerName: 'Tên trang', width: 160 },
-    { field: 'Description', headerName: 'Mô tả', width: 120 },
-    { field: 'CreatedAt', headerName: 'Tạo lúc', width: 120 },
-    { field: 'LastModifiedAt', headerName: 'Sửa lúc', width: 120 },
+    { field: 'PageID', headerName: 'ID', width: 30 },
+    { field: 'PageName', headerName: 'Tên trang', width: 60 },
+    { field: 'PageGroupID', headerName: 'Nhóm', width: 40 },
+    { field: 'PageGroupName', headerName: 'Tên nhóm', width: 50 },
+    { field: 'Description', headerName: 'Mô tả', width: 80 },
+    { field: 'CreatedAt', headerName: 'Tạo lúc', width: 80 },
+    { field: 'LastModifiedAt', headerName: 'Sửa lúc', width: 80 },
   ];
   const componentColumns = [
     { field: 'ComponentID', headerName: 'ID', width: 60 },
-    { field: 'ComponentType', headerName: 'Loại', width: 100 },
-    { field: 'ComponentName', headerName: 'Tên', width: 120 },
+    { field: 'ComponentType', headerName: 'Loại', width: 80 },
+    { field: 'ComponentName', headerName: 'Tên', width: 80 },
     { field: 'PositionX', headerName: 'X', width: 60 },
     { field: 'PositionY', headerName: 'Y', width: 60 },
     { field: 'Width', headerName: 'Rộng', width: 60 },
@@ -236,10 +238,10 @@ export default function PagesManager() {
   ];
   const attributeColumns = [
     { field: 'AttributeID', headerName: 'ID', width: 60 },
-    { field: 'AttributeName', headerName: 'Tên thuộc tính', width: 120 },
-    { field: 'AttributeValue', headerName: 'Giá trị', width: 120 },
-    { field: 'CreatedAt', headerName: 'Tạo lúc', width: 120 },
-    { field: 'LastModifiedAt', headerName: 'Sửa lúc', width: 120 },
+    { field: 'AttributeName', headerName: 'Tên thuộc tính', width: 80 },
+    { field: 'AttributeValue', headerName: 'Giá trị', width: 80 },
+    { field: 'CreatedAt', headerName: 'Tạo lúc', width: 80 },
+    { field: 'LastModifiedAt', headerName: 'Sửa lúc', width: 80 },
   ];
 
   // Toolbar cho từng bảng (sẽ bổ sung CRUD sau)
@@ -468,6 +470,8 @@ export default function PagesManager() {
           <TextField label='Tên Trang' fullWidth value={pageForm.PageName || ''} onChange={(e) => setPageForm((f) => ({ ...f, PageName: e.target.value }))} margin='normal' />
           <TextField label='Mô tả' fullWidth value={pageForm.Description || ''} onChange={(e) => setPageForm((f) => ({ ...f, Description: e.target.value }))} margin='normal' />
           <TextField label='Layout' fullWidth value={pageForm.Layout || ''} onChange={(e) => setPageForm((f) => ({ ...f, Layout: e.target.value }))} margin='normal' />
+          <TextField label='Nhóm' fullWidth value={pageForm.PageGroupID || 0} onChange={(e) => setPageForm((f) => ({ ...f, PageGroupID: Number(e.target.value) }))} margin='normal' />
+          <TextField label='Tên nhóm' fullWidth value={pageForm.PageGroupName || ''} onChange={(e) => setPageForm((f) => ({ ...f, PageGroupName: e.target.value }))} margin='normal' />
           <Box mt={2} display='flex' justifyContent='flex-end' gap={2}>
             <Button onClick={handleSubmitPage} variant='contained'>
               {editPage ? 'Lưu' : 'Thêm'}

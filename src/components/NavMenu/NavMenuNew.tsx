@@ -33,6 +33,7 @@ interface MENUDATA {
   MenuCode: string;
   SubMenuIcon: string;
   SubIconColor: string;
+  PAGE_ID?: number;
 }
 const NavMenuNew = () => {
   const [icons, setIcons] = useState<
@@ -199,6 +200,7 @@ const NavMenuNew = () => {
                                         ELE_NAME: subMenu.SubText,
                                         ELE_CODE: subMenu.MenuCode,
                                         REACT_ELE: "",
+                                        PAGE_ID: subMenu.PAGE_ID,
                                       })
                                     );
                                     dispatch(settabIndex(tabs.length));
