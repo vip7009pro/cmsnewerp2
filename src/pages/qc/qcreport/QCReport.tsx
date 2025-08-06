@@ -4,8 +4,6 @@ const PQC_REPORT = React.lazy(() => import("../pqc/PQC_REPORT"));
 const INSPECT_REPORT = React.lazy(() => import("../inspection/INSPECT_REPORT"));
 const CSREPORT = React.lazy(() => import("../cs/CSREPORT"));
 const OQC_REPORT = React.lazy(() => import("../oqc/OQC_REPORT"));
-import { getCompany } from "../../../api/Api";
-import INSPECT_REPORT2 from "../inspection/INSPECT_REPORT2";
 import MyTabs from "../../../components/MyTab/MyTab";
 const QCReport = () => {
   useEffect(() => {}, []);
@@ -17,7 +15,7 @@ const QCReport = () => {
             <PQC_REPORT />
           </MyTabs.Tab>
           <MyTabs.Tab title="INSPECTION REPORT">
-            {getCompany() === "CMS" ? <INSPECT_REPORT /> : <INSPECT_REPORT2 />}
+            <INSPECT_REPORT />
           </MyTabs.Tab>
           <MyTabs.Tab title="CS REPORT">
             <CSREPORT />
