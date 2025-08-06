@@ -1659,7 +1659,7 @@ const PoManager = () => {
     />
     , [uploadExcelJson, columnsExcel, trigger]);
   useEffect(() => {
-    if (getCompany() === 'CMS' && getSever() !== 'http://222.252.1.63:3007') {
+    if (getCompany() === 'CMS' && (getSever() !== 'http://222.252.1.63:3007' || getSever() !== 'https://erp.printvietnam.com.vn:3007')) {
       f_autopheduyetgia();
       f_dongboGiaPO();
     }
