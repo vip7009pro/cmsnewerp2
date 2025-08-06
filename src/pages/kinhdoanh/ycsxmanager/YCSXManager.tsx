@@ -2948,7 +2948,7 @@ const YCSXManager = () => {
                           />
                           CODE:
                           <DropdownSearch
-                            options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME, value: x.G_CODE }))}
+                            options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME_KD + ':'+ x.G_NAME, value: x.G_CODE }))}
                             value={selectedCode?.G_CODE ?? ''}
                             onChange={async (e) => {
                               let code = codeList.find((x) => x.G_CODE === e) ?? {
