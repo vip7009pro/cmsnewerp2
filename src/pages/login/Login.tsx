@@ -17,7 +17,7 @@ const Login = () => {
     ? "https"
     : "http";
   const main_port = protocol === "https" ? "5014" : "5013";
-  const sub_port = protocol === "https" ? "3006" : "3007";
+  const sub_port = protocol === "https" ? "3007" : "3007";
   //console.log('sub_port', sub_port)
   const ref = useRef<any>(null);
 
