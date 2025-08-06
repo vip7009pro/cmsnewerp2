@@ -10,7 +10,7 @@ const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
 const main_port = protocol === "https" ? "5014" : "5013";
-const sub_port = protocol === "https" ? "3006" : "3007";
+const sub_port = protocol === "https" ? "3007" : "3007";
 const companyInfo = {
   CMS: {
     logo: "/companylogo.png",
@@ -54,11 +54,11 @@ const companyInfo = {
     loginLogoWidth: 190,
     loginLogoHeight: 80,
     backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
-    apiUrl: `${protocol}://222.252.1.63:${sub_port}`,
+    apiUrl: `${protocol}://erp.printvietnam.com.vn:${sub_port}`,
     apiUrlArray: [
       {
         server_name: "MAIN_SERVER",
-        apiUrl: `${protocol}://222.252.1.63:${sub_port}`,
+        apiUrl: `${protocol}://erp.printvietnam.com.vn:${sub_port}`,
       },
       {
         server_name: "TEST_SERVER",
