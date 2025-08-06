@@ -657,7 +657,7 @@ const SX_REPORT = () => {
               <YCSX_GAP_RATE data={[...ycgapData].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX <IconButton
+              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX (Ngày yc- Ngày nhập kiểm cuối) <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   SaveExcel(sxgapbackData, "SX GAP RATE");
@@ -672,7 +672,7 @@ const SX_REPORT = () => {
           </div>
           <div className="defect_trending">
             <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">Tỉ trọng số ngày kiểm tra hoàn thành YCSX <IconButton
+              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX (Ngày nhập kiểm đầu- Ngày xuất kiểm cuối) <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   SaveExcel(ktgapbackData, "KT GAP RATE");
@@ -685,7 +685,7 @@ const SX_REPORT = () => {
               <YCSX_GAP_RATE data={[...ktgapData].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
-              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX ALL CĐ (Từ lúc lên yc tới lúc kiểm tra xong) <IconButton
+              <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX ALL CĐ (Từ lúc lên yc tới ngày kiểm cuối) <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   SaveExcel(allgapbackData, "ALL GAP RATE");
