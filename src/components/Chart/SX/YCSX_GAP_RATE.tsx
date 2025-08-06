@@ -126,7 +126,7 @@ const YCSX_GAP_RATE = ({ data }: { data: CNT_GAP_DATA[] }) => {
           {data?.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={COLORS[((index) % COLORS.length) * 2]}
+              fill={COLORS[(index) % COLORS.length]}
             />
           ))}
         </Pie>
