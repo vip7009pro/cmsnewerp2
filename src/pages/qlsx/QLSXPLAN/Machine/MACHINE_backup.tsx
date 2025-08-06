@@ -1976,7 +1976,7 @@ const MACHINE_OLD = () => {
     let dmmacdinh = getSettingUPHUnitLoss(selectedPlan.PLAN_EQ, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? selectedPlan.PLAN_QTY * (selectedPlan.PD??0) / selectedPlan.CAVITY/1000 : 0);
               dmmacdinh = {
                 ...dmmacdinh,
-                UPH: Math.round(dmmacdinh?.unit ==='MET' ? dmmacdinh.UPH / (selectedPlan.PD??0) * (selectedPlan.CAVITY??0)*1000 :( dmmacdinh?.UPH ?? 0)),
+                UPH: Math.round(dmmacdinh?.unit ==='MET' ? dmmacdinh.UPH / (selectedPlan.PD??0) * (selectedPlan.CAVITY??0)*1000 :((dmmacdinh?.UPH??0)*(selectedPlan.CAVITY??0))),
                 setting: dmmacdinh?.setting ?? 0,
                 unit: dmmacdinh?.unit ?? "",
                 loss: dmmacdinh?.loss ?? 0,
