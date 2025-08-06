@@ -36,6 +36,7 @@ export const f_updateForm = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_deleteForm = async (DATA: any) => {
@@ -48,6 +49,7 @@ export const f_deleteForm = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_loadFormDetail = async (DATA: any) => {
@@ -81,6 +83,7 @@ export const f_insertForm = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_loadFieldList = async (DATA: any) => {
@@ -101,6 +104,7 @@ export const f_loadFieldList = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_insertField = async (DATA: any) => {
@@ -113,6 +117,7 @@ export const f_insertField = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_updateField = async (DATA: any) => {
@@ -125,6 +130,7 @@ export const f_updateField = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_deleteField = async (DATA: any) => {
@@ -137,6 +143,7 @@ export const f_deleteField = async (DATA: any) => {
       }
     })
     .catch((error) => {});
+    f_executeUpdateViewForOneForm({ FormID: DATA.FormID });
   return kq;
 };
 export const f_addField = async (DATA: any) => {
@@ -783,7 +790,7 @@ export const f_loadPageListFromGroupName = async (DATA: any) => {
       })
       .catch((error) => {});
     return kq;
-  };
+};
 export const f_loadPageListFromGroupID = async (DATA: any) => {
     let kq: Page[] = [];
     await generalQuery("loadPageListFromGroupID", DATA)
@@ -803,4 +810,30 @@ export const f_loadPageListFromGroupID = async (DATA: any) => {
       })
       .catch((error) => {});
     return kq;
-  };
+};
+
+export const f_executeUpdateViewForOneForm = async (DATA: any) => {
+    let kq: string = "";
+    await generalQuery("excuteUpdateViewForOneForm", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+        } else {
+          kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+};
+
+export const f_executeUpdateViewForAllForm = async (DATA: any) => {
+    let kq: string = "";
+    await generalQuery("excuteUpdateViewForAllForm", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+        } else {
+          kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+};

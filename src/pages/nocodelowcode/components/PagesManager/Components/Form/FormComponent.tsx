@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, Button, TextField } from '@mui/material';
+import { Autocomplete, Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { Field, FormData, Record } from '../../../../types/types';
 import {
@@ -31,6 +31,8 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
     control,
     handleSubmit,
     watch,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm({});
   const handleSaveData = async (fields: Field[], formID: number, data: any) => {
@@ -90,6 +92,24 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
     loadFields();
     loadOptions(fields);
   }, [formId]);
+
+  // Set default value for date fields to today if not already set
+  useEffect(() => {
+    if (!fields || fields.length === 0) return;
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${yyyy}-${mm}-${dd}`;
+    fields.forEach((field) => {
+      if (field.DataType === 'DATE') {
+        const val = getValues(field.FieldName);
+        if (!val) {
+          setValue(field.FieldName, todayStr);
+        }
+      }
+    });
+  }, [fields, getValues, setValue]);
   /*  if (loadingFields) return <div>Đang tải dữ liệu...</div>;
   if (errorFields) return <div style={{ color: 'red' }}>Lỗi: {String(errorFields)}</div>; */
   return (
@@ -109,34 +129,97 @@ const FormComponent: React.FC<FormComponentProps> = ({ formId }) => {
                     rules={{ required: 'Vui lòng chọn một tùy chọn' }}
                     render={({ field: { onChange, value } }) => (
                       <Autocomplete
-                        sx={{ width: '100%' }}
+                        size='small'
+                        sx={{
+                          width: '100%',
+                          minHeight: 32,
+                          // background: '#fff',
+                          '& .MuiInputBase-root': {
+                            minHeight: 32,
+                            fontSize: '0.85rem',
+                            padding: '0 4px',
+                            background: '#fff',
+                          },
+                          '& .MuiAutocomplete-inputRoot': {
+                            padding: '0px !important',
+                          },
+                          '& .MuiOutlinedInput-input': {
+                            padding: '4px 8px',
+                            fontSize: '0.85rem',
+                            background: '#fff',
+                          },
+                          '& .MuiFormLabel-root': {
+                            fontSize: '0.85rem',
+                          },
+                          '& .MuiAutocomplete-listbox': {
+                            fontSize: '0.72rem',
+                            padding: '2px 0',
+                          },
+                          '& .MuiAutocomplete-option': {
+                            fontSize: '0.72rem',
+                            minHeight: 24,
+                            paddingTop: 2,
+                            paddingBottom: 2,
+                          },
+                        }}
                         options={optionsMap[field.FieldName]}
                         getOptionLabel={(option) => {
                           let opt = Object.entries(option)
                             .filter(([key]) => !['id', 'RecordID', 'CreatedAt'].includes(key))
                             .map(([key, value]) => String(value))
                             .join('.');
-                          return opt;                      
+                          return opt;
+                        }}
+                        renderOption={(props, option: any) => {
+                          let opt = Object.entries(option)
+                            .filter(([key]) => !['id', 'RecordID', 'CreatedAt'].includes(key))
+                            .map(([key, value]) => String(value))
+                            .join('.');
+
+                          return (
+                            <Typography style={{ fontSize: '0.7rem', padding: '5px' }} {...props}>
+                              {opt}
+                            </Typography>
+                          );
                         }}
                         isOptionEqualToValue={(option, val) => option.value === val?.value}
                         disabled={optionsMap[field.FieldName] === undefined || optionsMap[field.FieldName].length === 0}
                         value={value}
-                        onChange={(_, newValue) =>{
-                          onChange(newValue ? newValue[field.FieldName] : '')                         
+                        onChange={(_, newValue) => {
+                          onChange(newValue ? newValue[field.FieldName] : '');
                         }}
-                        renderInput={(params) => <TextField {...params} label='Chọn một tùy chọn' error={!!errors.selectedOption} />}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={`Chọn ${field.FieldName}`}
+                            error={!!errors.selectedOption}
+                            size='small'
+                            margin='dense'
+                            sx={{
+                              minHeight: 32,
+                              // background: '#fff', // ĐÃ XÓA!
+                              '& .MuiInputBase-root': {
+                                minHeight: 32,
+                                fontSize: '0.85rem',
+                                padding: '0 4px',
+                                background: '#fff',
+                              },
+                              '& .MuiOutlinedInput-input': {
+                                padding: '4px 8px',
+                                fontSize: '0.85rem',
+                                background: '#fff',
+                              },
+                              '& .MuiFormLabel-root': {
+                                fontSize: '0.85rem',
+                              },
+                            }}
+                          />
+                        )}
                       />
                     )}
                   />
                 )}
-                {/* {field.ReferenceFieldIDs  && field.ReferenceFieldIDs.split(',').length > 0 &&  <select
-                {...register(field.FieldName)}
-                  className="form-component-field-input"
-                  style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4, width: '100%' }}
-                >
-                  <CustomOption FormID={Number(field.ReferenceFormID)} FieldIDs={field.ReferenceFieldIDs} FieldName={field.FieldName}/>
-                </select>   }  */}
-                {!(field.ReferenceFieldIDs && field.ReferenceFieldIDs.split(',').length > 0) && <input {...register(field.FieldName)} type={field.DataType === 'BIT' ? 'checkbox' : 'text'} className='form-component-field-input' style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4, width: '100%' }} />}
+                {!(field.ReferenceFieldIDs && field.ReferenceFieldIDs.split(',').length > 0) && <input {...register(field.FieldName)} type={field.DataType === 'BIT' ? 'checkbox' : field.DataType === 'DATE' ? 'date' : 'text'} className='form-component-field-input' style={{ flex: 1, padding: 6, border: '1px solid #ccc', borderRadius: 4, width: '100%' }} />}
               </label>
             </div>
           ))}

@@ -84,7 +84,7 @@ export default function PagesManager() {
     setPageForm({});
   };
   const handleSubmitPage = async () => {
-    const { PageName, Description, Layout } = pageForm;
+    const { PageName, Description, Layout, PageGroupID, PageGroupName } = pageForm;
     if (!PageName) return;
     if (editPage) {
       // Update
@@ -96,7 +96,7 @@ export default function PagesManager() {
     } else {
       // Insert
       await import('../../utils/nocodelowcodeUtils').then(async utils => {
-        await utils.f_insertPage({ PageName, Description, Layout });
+        await utils.f_insertPage({ PageName, Description, Layout, PageGroupID, PageGroupName });
         fetchPages();
         handleClosePageDialog();
       });
@@ -486,15 +486,16 @@ export default function PagesManager() {
           <Typography variant='h6' mb={2}>
             {editComponent ? 'Sửa Component' : 'Thêm Component'}
           </Typography>
-          <TextField label='Tên Component' fullWidth value={componentForm.ComponentName || ''} onChange={(e) => setComponentForm((f) => ({ ...f, ComponentName: e.target.value }))} margin='normal' />
-          <TextField label='Loại Component' fullWidth value={componentForm.ComponentType || ''} onChange={(e) => setComponentForm((f) => ({ ...f, ComponentType: e.target.value }))} margin='normal' />
-          <TextField label='Vị trí X' fullWidth type='number' value={componentForm.PositionX ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, PositionX: parseInt(e.target.value) }))} margin='normal' />
-          <TextField label='Vị trí Y' fullWidth type='number' value={componentForm.PositionY ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, PositionY: parseInt(e.target.value) }))} margin='normal' />
-          <TextField label='Rộng' fullWidth type='number' value={componentForm.Width ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, Width: parseInt(e.target.value) }))} margin='normal' />
-          <TextField label='Cao' fullWidth type='number' value={componentForm.Height ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, Height: parseInt(e.target.value) }))} margin='normal' />
-          <TextField label='Grid Width' fullWidth type='string' value={componentForm.GridWidth ?? 'full'} onChange={(e) => setComponentForm((f) => ({ ...f, GridWidth: e.target.value }))} margin='normal' />
-          <TextField label='Reference ID' fullWidth type='number' value={componentForm.ReferenceID ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, ReferenceID: parseInt(e.target.value) }))} margin='normal' />
-          <TextField label='Thứ tự' fullWidth type='number' value={componentForm.ComponentOrder ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, ComponentOrder: parseInt(e.target.value) }))} margin='normal' />
+          <TextField margin="dense" label='PageID' fullWidth value={componentForm.PageID || ''} onChange={(e) => setComponentForm((f) => ({ ...f, PageID: Number(e.target.value) }))} />
+          <TextField margin="dense" label='Tên Component' fullWidth value={componentForm.ComponentName || ''} onChange={(e) => setComponentForm((f) => ({ ...f, ComponentName: e.target.value }))} />
+          <TextField margin="dense" label='Loại Component' fullWidth value={componentForm.ComponentType || ''} onChange={(e) => setComponentForm((f) => ({ ...f, ComponentType: e.target.value }))} />
+          <TextField margin="dense" label='Vị trí X' fullWidth type='number' value={componentForm.PositionX ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, PositionX: parseInt(e.target.value) }))} />
+          <TextField margin="dense" label='Vị trí Y' fullWidth type='number' value={componentForm.PositionY ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, PositionY: parseInt(e.target.value) }))} />
+          <TextField margin="dense" label='Rộng' fullWidth type='number' value={componentForm.Width ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, Width: parseInt(e.target.value) }))} />
+          <TextField margin="dense" label='Cao' fullWidth type='number' value={componentForm.Height ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, Height: parseInt(e.target.value) }))} />
+          <TextField margin="dense" label='Grid Width' fullWidth type='string' value={componentForm.GridWidth ?? 'full'} onChange={(e) => setComponentForm((f) => ({ ...f, GridWidth: e.target.value }))} />
+          <TextField margin="dense" label='Reference ID' fullWidth type='number' value={componentForm.ReferenceID ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, ReferenceID: parseInt(e.target.value) }))} />
+          <TextField margin="dense" label='Thứ tự' fullWidth type='number' value={componentForm.ComponentOrder ?? ''} onChange={(e) => setComponentForm((f) => ({ ...f, ComponentOrder: parseInt(e.target.value) }))} />
           <Box mt={2} display='flex' justifyContent='flex-end' gap={2}>
             <Button onClick={handleSubmitComponent} variant='contained'>
               {editComponent ? 'Lưu' : 'Thêm'}
