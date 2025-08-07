@@ -938,3 +938,45 @@ export const requestFullScreen = (
     }
   }
 };
+
+
+function hexToRgb(hex: string) {
+  hex = hex.replace('#', '');
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return { r, g, b };
+}
+// Hàm chuyển đổi RGB sang HEX
+function rgbToHex(r: number, g: number, b: number) {
+  return (
+    '#' +
+    [r, g, b]
+      .map(x => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      })
+      .join('')
+  );
+}
+// Hàm sinh mảng màu gradient
+export function generateMultiGradientColors(colorArr: string[], steps: number): string[] {
+  if (colorArr.length < 2) return [];
+  const colors: string[] = [];
+  const segments = colorArr.length - 1;
+  const stepsPerSegment = Math.floor(steps / segments);
+  let remainder = steps - stepsPerSegment * segments;
+  for (let s = 0; s < segments; s++) {
+    const start = hexToRgb(colorArr[s]);
+    const end = hexToRgb(colorArr[s + 1]);
+    const segSteps = stepsPerSegment + (remainder-- > 0 ? 1 : 0);
+    for (let i = 0; i < segSteps; i++) {
+      const r = Math.round(start.r + ((end.r - start.r) * i) / (segSteps - 1));
+      const g = Math.round(start.g + ((end.g - start.g) * i) / (segSteps - 1));
+      const b = Math.round(start.b + ((end.b - start.b) * i) / (segSteps - 1));
+      colors.push(rgbToHex(r, g, b));
+    }
+  }
+  return colors.slice(0, steps);
+}

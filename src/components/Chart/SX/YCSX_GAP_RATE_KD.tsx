@@ -5,7 +5,7 @@ import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } fr
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { CNT_GAP_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
-const YCSX_GAP_RATE = ({ data }: { data: CNT_GAP_DATA[] }) => {
+const YCSX_GAP_RATE_KD = ({ data }: { data: CNT_GAP_DATA[] }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
   };
@@ -71,9 +71,9 @@ const YCSX_GAP_RATE = ({ data }: { data: CNT_GAP_DATA[] }) => {
   };
   useEffect(() => {
   }, []);
- 
-// COLORS động từ lạnh (xanh dương) đến nóng (đỏ)
-const COLORS = generateMultiGradientColors(['#3dff0c','#fbff00', '#ff1100'], data.length).reverse();
+
+
+const COLORS = generateMultiGradientColors(['#3dff0c','#fbff00', '#ff1100'], data.length);
 console.log('Colors', COLORS);
   return (
     <CustomResponsiveContainer>
@@ -111,4 +111,4 @@ console.log('Colors', COLORS);
     </CustomResponsiveContainer>
   );
 };
-export default YCSX_GAP_RATE;
+export default YCSX_GAP_RATE_KD;

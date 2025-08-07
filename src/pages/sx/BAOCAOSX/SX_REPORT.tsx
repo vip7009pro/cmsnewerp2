@@ -28,6 +28,7 @@ import YCSX_GAP_RATE from "../../../components/Chart/SX/YCSX_GAP_RATE";
 import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { usehandle_loadYCSX_GAP_RATE_DATA, usehandle_loadSX_GAP_RATE_DATA, usehandle_loadKT_GAP_RATE_DATA, usehandle_loadALL_GAP_RATE_DATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA, usehandle_load_SX_Daily_Loss_Trend, usehandle_load_SX_Weekly_Loss_Trend, usehandle_load_SX_Monthly_Loss_Trend, usehandle_load_SX_Yearly_Loss_Trend, usehandle_getWeeklyAchiveData, usehandle_getDailyAchiveData, usehandle_getMonthlyAchiveData, usehandle_getYearlyAchiveData, usehandle_getDailyEffData, usehandle_getWeeklyEffData, usehandle_getMonthlyEffData, usehandle_getYearlyEffData, usehandle_getPlanLossData, usehandle_getSXLossTimeByEmpl, usehandle_getSXLossTimeByReason, usehandle_loadYCSX_GAP_RATE_BACKDATA, usehandle_loadSX_GAP_RATE_BACKDATA, usehandle_loadKT_GAP_RATE_BACKDATA, usehandle_loadALL_GAP_RATE_BACKDATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA } from "./hooks/BAOCAOSX_HOOKS";
+import YCSX_GAP_RATE_KD from "../../../components/Chart/SX/YCSX_GAP_RATE_KD";
 
 const SX_REPORT = () => {
   const [machineList, setMachineList] = useState<MACHINE_LIST[]>([]);
@@ -654,7 +655,7 @@ const SX_REPORT = () => {
                 Excel
               </IconButton>
               </span>
-              <YCSX_GAP_RATE data={[...ycgapData].reverse()} />
+              <YCSX_GAP_RATE_KD data={[...ycgapData].reverse()} />
             </div>
             <div className="dailygraph" style={{ height: '600px' }}>
               <span className="subsection">Tỉ trọng số ngày hoàn thành YCSX (Ngày yc- Ngày nhập kiểm cuối) <IconButton

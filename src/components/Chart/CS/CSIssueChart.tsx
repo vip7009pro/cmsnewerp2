@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/GlobalFunction";
 import { CS_CONFIRM_BY_CUSTOMER_DATA } from "../../../pages/qc/interfaces/qcInterface";
 import { getGlobalSetting } from "../../../api/Api";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
@@ -82,33 +82,7 @@ const CSIssueChart = ({data}: {data: CS_CONFIRM_BY_CUSTOMER_DATA[]}) => {
   useEffect(() => {
     
   }, []);
-  const COLORS = [
-    "#cc0000",
-    "#cc3300",
-    "#cc6600",
-    "#cc9900",
-    "#cccc00",
-    "#99cc00",
-    "#66cc00",
-    "#33cc00",
-    "#00cc00",
-    "#00cc33",
-    "#00cc66",
-    "#00cc99",
-    "#00cccc",
-    "#0099cc",
-    "#0066cc",
-    "#0033cc",
-    "#0000cc",
-    "#3300cc",
-    "#6600cc",
-    "#9900cc",
-    "#cc00cc",
-    "#cc0099",
-    "#cc0066",
-    "#cc0033",
-    "#cc0000",
-  ];
+const COLORS = generateMultiGradientColors(['#3dff0c','#fbff00', '#ff1100'], data.length);
   return (
     <CustomResponsiveContainer>
       <PieChart width={900} height={900}>
