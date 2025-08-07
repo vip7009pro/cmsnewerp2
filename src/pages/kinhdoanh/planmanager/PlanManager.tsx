@@ -45,6 +45,7 @@ const PlanManager = () => {
   const plandatatablefilter = useRef<Array<PlanTableData>>([]);
   const [planStatus, setPlanStatus] = useState<Array<INSPECT_STATUS_DATA>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  
   const column_plantable: any = [
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 100, checkboxSelection: true, headerCheckboxSelection: true },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 100 },
@@ -993,6 +994,8 @@ const PlanManager = () => {
       },
     },
   ];
+  const [planColums, setPlanColums] = useState<Array<any>>(column_plantable);
+
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -1119,6 +1122,31 @@ const PlanManager = () => {
             },
           );
           setPlanDataTable(loadeddata);
+          if(fromdate === todate)
+          {
+            setPlanColums(prev => prev.map((ele: any) => {              
+              if(ele.field === "D1" || ele.field === "D2" || ele.field === "D3" || ele.field === "D4" || ele.field === "D5" || ele.field === "D6" || ele.field === "D7" || ele.field === "D8" || ele.field === "D9" || ele.field === "D10" || ele.field === "D11" || ele.field === "D12" || ele.field === "D13" || ele.field === "D14" || ele.field === "D15")
+              {
+                return {
+                  ...ele, 
+                  headerName: moment(fromdate).add(parseInt(ele.field.slice(1))-1, 'days').format("DD/MM"),
+                }              
+              }
+              return ele;
+            }));
+          }
+          else {
+            setPlanColums(prev => prev.map((ele: any) => {
+              if(ele.field === "D1" || ele.field === "D2" || ele.field === "D3" || ele.field === "D4" || ele.field === "D5" || ele.field === "D6" || ele.field === "D7" || ele.field === "D8" || ele.field === "D9" || ele.field === "D10" || ele.field === "D11" || ele.field === "D12" || ele.field === "D13" || ele.field === "D14" || ele.field === "D15")
+              {
+                return {
+                  ...ele, 
+                  headerName: ele.field,  
+                }              
+              }
+              return ele;
+            }));
+          }
           setisLoading(false);
           Swal.fire(
             "Thông báo",
@@ -1485,7 +1513,7 @@ const PlanManager = () => {
           </IconButton>
         </>
       }
-      columns={column_plantable}
+      columns={planColums}
       data={plandatatable}
       onCellEditingStopped={(params: any) => {
         //console.log(e.data)
@@ -1499,7 +1527,7 @@ const PlanManager = () => {
         plandatatablefilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [plandatatable]);
+    , [plandatatable, planColums]);
   const planStatusDataAGTable = useMemo(() =>
     <AGTable
       suppressRowClickSelection={false}
