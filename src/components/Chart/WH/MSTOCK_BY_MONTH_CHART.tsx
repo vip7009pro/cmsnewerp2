@@ -71,33 +71,7 @@ const MSTOCK_BY_MONTH_CHART = ({ data }: { data: M_STOCK_BY_MONTH_DATA[] }) => {
   };
   useEffect(() => {
   }, []);
-  const COLORS = [
-    "#cc0000",
-    "#cc3300",
-    "#cc6600",
-    "#cc9900",
-    "#cccc00",
-    "#99cc00",
-    "#66cc00",
-    "#33cc00",
-    "#00cc00",
-    "#00cc33",
-    "#00cc66",
-    "#00cc99",
-    "#00cccc",
-    "#0099cc",
-    "#0066cc",
-    "#0033cc",
-    "#0000cc",
-    "#3300cc",
-    "#6600cc",
-    "#9900cc",
-    "#cc00cc",
-    "#cc0099",
-    "#cc0066",
-    "#cc0033",
-    "#cc0000",
-  ];
+  const COLORS = ['#3dff0c','#fbff00', '#ff1100'];
   return (
     <CustomResponsiveContainer>
       <PieChart width={900} height={900}>
@@ -126,7 +100,7 @@ const MSTOCK_BY_MONTH_CHART = ({ data }: { data: M_STOCK_BY_MONTH_DATA[] }) => {
           {data?.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={COLORS[((index) % COLORS.length) * 2]}
+              fill={COLORS[(index) % COLORS.length]}
             />
           ))}
         </Pie>
