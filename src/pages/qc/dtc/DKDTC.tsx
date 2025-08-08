@@ -298,11 +298,13 @@ const DKDTC = () => {
           M_CODE: checkNVL ? m_code : "B0000035",
         };
         //console.log(data);
+        
         if (
-          await isM_LOT_NO_AND_TEST_CODE_EXIST(data.M_LOT_NO, data.TEST_CODE)
+          (await isM_LOT_NO_AND_TEST_CODE_EXIST(data.M_LOT_NO, data.TEST_CODE)) && checkNVL
         ) {
           continue;
         }
+        
         await generalQuery("registerDTCTest", data)
           // eslint-disable-next-line no-loop-func
           .then((response) => {
@@ -318,7 +320,8 @@ const DKDTC = () => {
     }
     if (err_code === "") {
       let final_ID: number = showdkbs ? oldDTC_ID : nextDTC_ID;
-      insertIncomingData({
+      if(getUserData()?.SUBDEPTNAME?.includes("IQC")){
+        insertIncomingData({
         M_CODE: m_code,
         M_LOT_NO: inputno,
         LOT_CMS: inputno.substring(0, 6),
@@ -332,6 +335,7 @@ const DKDTC = () => {
         TEST_EMPL: getUserData()?.EMPL_NO,
         REMARK: "",
       });
+      }
       Swal.fire(
         "Thông báo",
         "Đăng ký ĐTC thành công, ID test là: " + final_ID,

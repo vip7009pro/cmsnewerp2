@@ -1327,7 +1327,7 @@ const QuotationManager = () => {
         setselectedBangGiaDocRow(params!.api.getSelectedRows());
       }}
     />
-    , [rows, columns]);  
+    , [rows, columns, selectedBangGiaDocRow]);  
   const columns_uploadexcel = useMemo(()=>[
     { field: "PROD_ID", headerName: "PROD_ID", width: 50 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
@@ -1681,6 +1681,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     });
   };
   const updategia = useCallback(async () => {
+    console.log(selectedBangGiaDocRow);
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
@@ -1710,7 +1711,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để update (Bảng giá dọc)", "error");
     }
-  },[selectedBangGiaDocRow]);
+  },[selectedBangGiaDocRow,banggia, banggia2]);
   const deletegia = useCallback(async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";

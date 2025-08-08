@@ -16,7 +16,7 @@ import { AccountInfo, Navbar } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
 import PageShow from "../nocodelowcode/components/PagesManager/Components/Page/Page";
 import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
-export const current_ver: number = getCompany() === "CMS" ? 2636 : 423;
+export const current_ver: number = getCompany() === "CMS" ? 2637 : 425;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
