@@ -1392,6 +1392,7 @@ export const f_deleteDMYCSX = async (PROD_REQUEST_NO: string) => {
       console.log(error);
     });
 };
+
 export const f_deleteDMYCSX2 = async (PROD_REQUEST_NO: string) => {
   await generalQuery("deleteDMYCSX2", {
     PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -1445,24 +1446,21 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
             "Xóa YCSX thất bại, ycsx đã được xuất liệu: ",
             "error"
           );
-        } else {
-          
-          err_code = await f_deleteYCSX(ycsxList[i].PROD_REQUEST_NO);
-          if (ycsxList[i].PL_HANG != "TT" && ycsxList[i].PL_HANG != "AM") {
-            await f_deleteP500_YCSX(
-              ycsxList[i].PROD_REQUEST_NO,
-              ycsxList[i].EMPL_NO
-            );
-            await f_deleteP501_YCSX(
-              ycsxList[i].PROD_REQUEST_NO + "A",
-              ycsxList[i].EMPL_NO
-            );
-            if (ycsxList[i].PL_HANG === "AM" || ycsxList[i].PL_HANG === "TT") {
-              if (!(await f_isHasInLaiCountAMZ(ycsxList[i].PROD_REQUEST_NO))) {
-                await f_deleteDataAMZ(ycsxList[i].PROD_REQUEST_NO);
-              }
-            }
+        } else {          
+          err_code = await f_deleteYCSX(ycsxList[i].PROD_REQUEST_NO);        
+          await f_deleteP500_YCSX(
+            ycsxList[i].PROD_REQUEST_NO,
+            ycsxList[i].EMPL_NO
+          );
+          await f_deleteP501_YCSX(
+            ycsxList[i].PROD_REQUEST_NO + "A",
+            ycsxList[i].EMPL_NO
+          );       
+          if (!(await f_isHasInLaiCountAMZ(ycsxList[i].PROD_REQUEST_NO))) {
+            await f_deleteDataAMZ(ycsxList[i].PROD_REQUEST_NO);
           }
+          
+          
         }
       }
     }
