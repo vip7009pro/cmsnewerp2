@@ -2062,6 +2062,7 @@ const YCSXManager = () => {
             .then((response) => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
+                
               } else {
                 err_code = true;
               }
