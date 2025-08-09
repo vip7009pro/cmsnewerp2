@@ -22,6 +22,7 @@ import M_INPUT_BY_POPULAR_CHART from '../../../../components/Chart/WH/M_INPUT_BY
 import M_OUTPUT_BY_POPULAR_CHART from '../../../../components/Chart/WH/M_OUTPUT_BY_POPULAR_CHART';
 import AGTable from '../../../../components/DataTable/AGTable';
 import MSTOCK_BY_MONTH_CHART from '../../../../components/Chart/WH/MSTOCK_BY_MONTH_CHART';
+import { getUserData } from '../../../../api/Api';
 const KHOVL_REPORT = () => {
   const [stockpopularmonth, setStockPopularMonth] = useState<MSTOCK_BY_POPULAR_DATA[]>([]);
   const [stockpopularmonthdetailA, setStockPopularMonthDetailA] = useState<MSTOCK_BY_POPULAR_DETAIL_DATA[]>([]);
@@ -33,6 +34,9 @@ const KHOVL_REPORT = () => {
   const [inputpopulardetail, setInputPopularDetail] = useState<M_INPUT_BY_POPULAR_DETAIL_DATA[]>([]);
   const [outputpopular, setOutputPopular] = useState<M_OUTPUT_BY_POPULAR_DATA[]>([]);
   const [outputpopulardetail, setOutputPopularDetail] = useState<M_OUTPUT_BY_POPULAR_DETAIL_DATA[]>([]);
+
+  const [moc1,setMoc1] = useState(3);
+  const [moc2,setMoc2] = useState(6);
 
 
 
@@ -103,17 +107,19 @@ const KHOVL_REPORT = () => {
       })
     );
   };
-  const handle_stockPopularMonth = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_stockPopularMonth = async (from_date: string, to_date: string, listCode: string[], moc1: number, moc2: number) => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setStockPopularMonth(
       await f_load_Stock_By_Month({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
+        MOC1: moc1,
+        MOC2: moc2,
       })
     );
   };
-  const handle_stockPopularMonthDetail = async (from_date: string, to_date: string, listCode: string[], phanloai:string) => {
+  const handle_stockPopularMonthDetail = async (from_date: string, to_date: string, listCode: string[], phanloai:string, moc1: number, moc2: number) => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     if (phanloai === "A") {
@@ -122,6 +128,8 @@ const KHOVL_REPORT = () => {
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
+          MOC1: moc1,
+          MOC2: moc2,
       })
     );
     } else if (phanloai === "B") {
@@ -130,6 +138,8 @@ const KHOVL_REPORT = () => {
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
+          MOC1: moc1,
+          MOC2: moc2,
       })
     );
     } else if (phanloai === "C") {
@@ -138,6 +148,8 @@ const KHOVL_REPORT = () => {
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
+          MOC1: moc1,
+          MOC2: moc2,
       })
     );
     }
@@ -252,7 +264,7 @@ const KHOVL_REPORT = () => {
       confirmButtonText: 'OK',
       showConfirmButton: false,
     });
-    Promise.all([handle_stockPopular(fromdate, todate, searchCodeArray), handle_stockPopularDetail(fromdate, todate, searchCodeArray), handle_inputPopular(fromdate, todate, searchCodeArray), handle_inputPopularDetail(fromdate, todate, searchCodeArray), handle_outputPopular(fromdate, todate, searchCodeArray), handle_outputPopularDetail(fromdate, todate, searchCodeArray), handle_stockPopularMonth(fromdate, todate, searchCodeArray), handle_stockPopularMonthDetail(fromdate, todate, searchCodeArray, 'A'), handle_stockPopularMonthDetail(fromdate, todate, searchCodeArray, 'B'), handle_stockPopularMonthDetail(fromdate, todate, searchCodeArray, 'C')]).then((values) => {
+    Promise.all([handle_stockPopular(fromdate, todate, searchCodeArray), handle_stockPopularDetail(fromdate, todate, searchCodeArray), handle_inputPopular(fromdate, todate, searchCodeArray), handle_inputPopularDetail(fromdate, todate, searchCodeArray), handle_outputPopular(fromdate, todate, searchCodeArray), handle_outputPopularDetail(fromdate, todate, searchCodeArray), handle_stockPopularMonth(fromdate, todate, searchCodeArray,moc1, moc2), handle_stockPopularMonthDetail(fromdate, todate, searchCodeArray, 'A', moc1, moc2), handle_stockPopularMonthDetail(fromdate, todate, searchCodeArray, 'B', moc1, moc2), handle_stockPopularMonthDetail(fromdate, todate, searchCodeArray, 'C', moc1, moc2)]).then((values) => {
       Swal.close();
       //Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -391,8 +403,17 @@ const KHOVL_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className='graph'>
-          <span className='section_title'>2. Tình hình tồn liệu dài hạn</span>
-          <span style={{ fontSize: '1rem', alignSelf: 'center', color: '#4953df' }}>(A: Tồn dưới 3 tháng, B: Tồn từ 3 tháng đến 6 tháng, C: Tồn trên 6 tháng)</span>
+          <span className='section_title'>2. Tình hình tồn liệu dài hạn</span>{(getUserData()?.EMPL_NO === "NHU1903" || getUserData()?.EMPL_NO === "none") && <div style={{ display: 'flex', alignItems: 'center' }}>Mốc 1: <input type="number" value={moc1} style={{width: '50px'}} onChange={(e) => setMoc1(Number(e.target.value))} /> Mốc 2: <input type="number" value={moc2} style={{width: '50px'}} onChange={(e) => setMoc2(Number(e.target.value))}/>
+          <button
+            className='searchbutton'
+            onClick={() => {
+              initFunction();
+            }}
+          >
+            Search
+          </button>
+          </div>}
+          <span style={{ fontSize: '1rem', alignSelf: 'center', color: '#4953df' }}>(A: Tồn dưới {moc1} tháng, B: Tồn từ {moc1} tháng đến {moc2} tháng, C: Tồn trên {moc2} tháng)</span>
           <div className='stock_popular'>
           <div className='dailygraph' style={{ height: '600px' }}>
             <span className='subsection'>
@@ -411,19 +432,19 @@ const KHOVL_REPORT = () => {
           </div>
           <div className='dailygraph' style={{ height: '600px' }}>
             <span className='subsection'>
-              Stock By Month Detail A   (less than 3 months)            
+              Stock By Month Detail A   (less than {moc1} months)            
             </span>
            {stockMonth_A_AGTable}
           </div>
           <div className='dailygraph' style={{ height: '600px' }}>
             <span className='subsection'>
-              Stock By Month Detail B   (less than 6 months)       
+              Stock By Month Detail B   (less than {moc2} months)       
             </span>
            {stockMonth_B_AGTable}
           </div>
           <div className='dailygraph' style={{ height: '600px' }}>
             <span className='subsection'>
-              Stock By Month Detail C   (more than 6 months)          
+              Stock By Month Detail C   (more than {moc2} months)          
             </span>
            {stockMonth_C_AGTable}
           </div>

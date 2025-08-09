@@ -2428,7 +2428,7 @@ const YCSXManager = () => {
   //console.log(userData);
   function AddYCSXForm() {
     return (
-      <Modal open={isYCSXDialogOpen} onClose={() => setIsYCSXDialogOpen(false)}>
+      <Modal open={isYCSXDialogOpen} onClose={()=>setIsYCSXDialogOpen(false)}>
         <Box sx={{fontSize:'0.8rem', alignContent: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: '800px', bgcolor: 'background.paper', p: 4, borderRadius: '8px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',backgroundImage:  theme.CMS.backgroundImage}}>
           <Typography variant='h6' gutterBottom alignContent='center' textAlign='center'>
             Thêm YCSX
@@ -3190,8 +3190,9 @@ const YCSXManager = () => {
                 </div>
               </div>
             )}
+           
             <div className='tracuuYCSXTable'>
-              {false && (
+              {selection.them1po && (
                 <div className='them1ycsx'>
                   <div className='formnho' style={{ backgroundImage: theme.CMS.backgroundImage }}>
                     <div className='dangkyform'>
@@ -3432,7 +3433,7 @@ const YCSXManager = () => {
                   </div>
                 </div>
               )}
-              <AddYCSXForm/>
+         {/*      <AddYCSXForm/> */}
               {ycsxDataTableAG}
             </div>
           </div>

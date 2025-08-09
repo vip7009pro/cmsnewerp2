@@ -111,3 +111,6 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
 }
+.swal2-container {
+  z-index: 10000 !important; /* Hoặc số lớn hơn 1300 */
+}
