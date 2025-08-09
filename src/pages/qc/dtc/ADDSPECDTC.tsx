@@ -1,6 +1,6 @@
 import { Button, Autocomplete, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import "./ADDSPECTDTC.scss";
@@ -57,9 +57,8 @@ const ADDSPECTDTC = () => {
     [],
   );
   const [m_name, setM_Name] = useState("");
-  const [selectedRowsData, setSelectedRowsData] = useState<
-    Array<DTC_ADD_SPEC_DATA>
-  >([]);
+
+  const selectedRowsData = useRef<Array<DTC_ADD_SPEC_DATA>>([]);
   const getcodelist = (G_NAME: string) => {
     generalQuery("selectcodeList", { G_NAME: G_NAME })
       .then((response) => {
@@ -313,37 +312,37 @@ const ADDSPECTDTC = () => {
     });
     if (testname === "0") {
       Swal.fire("Thông báo", "Hãy chọn một hạng mục test bất kỳ", "error");
-    } else if (selectedRowsData.length < 1) {
+    } else if (selectedRowsData.current.length < 1) {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để update", "error");
     } else {
       if (!checkNVL) {
         let err_code: string = "";
-        for (let i = 0; i < selectedRowsData.length; i++) {
+        for (let i = 0; i < selectedRowsData.current.length; i++) {
           await generalQuery("updateSpecDTC", {
             checkNVL: checkNVL,
             G_CODE: selectedCode?.G_CODE,
             M_CODE: "B0000035",
             TEST_CODE: testname,
-            POINT_CODE: selectedRowsData[i].POINT_CODE,
-            PRI: selectedRowsData[i].PRI,
-            CENTER_VALUE: selectedRowsData[i].CENTER_VALUE,
-            UPPER_TOR: selectedRowsData[i].UPPER_TOR,
-            LOWER_TOR: selectedRowsData[i].LOWER_TOR,
-            BARCODE_CONTENT: selectedRowsData[i].BARCODE_CONTENT,
-            REMARK: selectedRowsData[i].REMARK,
+            POINT_CODE: selectedRowsData.current[i].POINT_CODE,
+            PRI: selectedRowsData.current[i].PRI,
+            CENTER_VALUE: selectedRowsData.current[i].CENTER_VALUE,
+            UPPER_TOR: selectedRowsData.current[i].UPPER_TOR,
+            LOWER_TOR: selectedRowsData.current[i].LOWER_TOR,
+            BARCODE_CONTENT: selectedRowsData.current[i].BARCODE_CONTENT,
+            REMARK: selectedRowsData.current[i].REMARK,
           })
             // eslint-disable-next-line no-loop-func
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
               } else {
-                err_code +=
+                /* err_code +=
                   " Lỗi: " +
                   inspectiondatatable[i].TEST_CODE +
                   "| " +
                   inspectiondatatable[i].POINT_CODE +
                   " : " +
-                  response.data.message;
+                  response.data.message; */
               }
             })
             .catch((error) => {
@@ -368,35 +367,35 @@ const ADDSPECTDTC = () => {
           });
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
-          for (let i = 0; i < selectedRowsData.length; i++) {
+          for (let i = 0; i < selectedRowsData.current.length; i++) {
             await generalQuery("updateSpecDTC", {
               checkNVL: checkNVL,
               G_CODE: "7A07540A",
               M_CODE: mCodeList[j].M_CODE,
               TEST_CODE: testname,
-              POINT_CODE: selectedRowsData[i].POINT_CODE,
-              PRI: selectedRowsData[i].PRI,
+              POINT_CODE: selectedRowsData.current[i].POINT_CODE,
+              PRI: selectedRowsData.current[i].PRI,
               CENTER_VALUE:
                 testname === "1"
                   ? mCodeList[j].WIDTH_CD
-                  : selectedRowsData[i].CENTER_VALUE,
-              UPPER_TOR: selectedRowsData[i].UPPER_TOR,
-              LOWER_TOR: selectedRowsData[i].LOWER_TOR,
-              BARCODE_CONTENT: selectedRowsData[i].BARCODE_CONTENT,
-              REMARK: selectedRowsData[i].REMARK,
+                  : selectedRowsData.current[i].CENTER_VALUE,
+              UPPER_TOR: selectedRowsData.current[i].UPPER_TOR,
+              LOWER_TOR: selectedRowsData.current[i].LOWER_TOR,
+              BARCODE_CONTENT: selectedRowsData.current[i].BARCODE_CONTENT,
+              REMARK: selectedRowsData.current[i].REMARK,
             })
               // eslint-disable-next-line no-loop-func
               .then((response) => {
                 //console.log(response.data.data);
                 if (response.data.tk_status !== "NG") {
                 } else {
-                  err_code +=
+                 /*  err_code +=
                     " Lỗi: " +
                     inspectiondatatable[i].TEST_CODE +
                     "| " +
                     inspectiondatatable[i].POINT_CODE +
                     " : " +
-                    response.data.message;
+                    response.data.message; */
                 }
               })
               .catch((error) => {
@@ -562,7 +561,7 @@ const ADDSPECTDTC = () => {
   const spectDTCTable = useMemo(() => {
     return (
       <AGTable
-      suppressRowClickSelection = {false}
+        suppressRowClickSelection = {false}
         toolbar={
           <div>
           </div>}
@@ -573,7 +572,7 @@ const ADDSPECTDTC = () => {
         }} onRowClick={(e) => {
           //console.log(e.data)
         }} onSelectionChange={(e) => {
-          //console.log(e!.api.getSelectedRows())
+          selectedRowsData.current = e!.api.getSelectedRows()
         }}
         onRowDoubleClick={async (e) => {
           //console.log(e.data)

@@ -1,4 +1,4 @@
-import { Button, IconButton, createFilterOptions } from "@mui/material";
+import { Box, Button, IconButton, Modal, Typography, createFilterOptions } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { FcApprove, FcSearch } from "react-icons/fc";
@@ -115,6 +115,7 @@ const YCSXManager = () => {
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState("");
   const [amz_PL_HANG, setAMZ_PL_HANG] = useState("TT");
+  const [isYCSXDialogOpen, setIsYCSXDialogOpen] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const [clickedRows, setClickedRows] = useState<YCSXTableData>({
     BLOCK_TDYCSX: 0,
@@ -2062,7 +2063,7 @@ const YCSXManager = () => {
             .then((response) => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
-                
+
               } else {
                 err_code = true;
               }
@@ -2425,6 +2426,270 @@ const YCSXManager = () => {
     }
   };
   //console.log(userData);
+  function AddYCSXForm() {
+    return (
+      <Modal open={isYCSXDialogOpen} onClose={() => setIsYCSXDialogOpen(false)}>
+        <Box sx={{fontSize:'0.8rem', alignContent: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', maxWidth: '800px', bgcolor: 'background.paper', p: 4, borderRadius: '8px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',backgroundImage:  theme.CMS.backgroundImage}}>
+          <Typography variant='h6' gutterBottom alignContent='center' textAlign='center'>
+            Thêm YCSX
+          </Typography>
+          <div className='dangkyinput' style={{display:'flex', flexDirection:'row', gap:'10px', width:'100%', justifyContent:'center',alignItems:'start'}}>
+            <div className='dangkyinputbox' style={{width:'50%', gap:'10px'}}>
+              <label>
+              Khách hàng:
+              <DropdownSearch
+                options={customerList.map((x) => ({ label: x.CUST_CD + ':' + x.CUST_NAME_KD, value: x.CUST_CD }))}
+                value={selectedCust_CD?.CUST_CD ?? ''}
+                onChange={(e) => {
+                  let customer = customerList.find((x) => x.CUST_CD === e) ?? {
+                    CUST_CD: '0000',
+                    CUST_NAME_KD: 'SEOJIN',
+                    CUST_NAME: 'SEOJIN',
+                  };
+                  setSelectedCust_CD(customer);
+                  loadPONO(selectedCode?.G_CODE, customer.CUST_CD);
+                }}
+                style={{ width: '105%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                itemHeight={25}
+              />
+              </label>
+              <label>
+              CODE:
+              <DropdownSearch
+                options={codeList.map((x) => ({ label: x.G_CODE + ':' + x.G_NAME_KD + ':' + x.G_NAME, value: x.G_CODE }))}
+                value={selectedCode?.G_CODE ?? ''}
+                onChange={async (e) => {
+                  let code = codeList.find((x) => x.G_CODE === e) ?? {
+                    G_CODE: '6A00001B',
+                    G_NAME: 'GT-I9500_SJ68-01284A',
+                    G_NAME_KD: 'GT-I9500_SJ68-01284A',
+                    PROD_LAST_PRICE: 0,
+                    USE_YN: 'N',
+                  };
+                  if (loaisx === '04') {
+                    setIsFirstLot(false);
+                  } else {
+                    setIsFirstLot(await isG_CODE_FL(code?.G_CODE));
+                  }
+                  //console.log('check FL',await isG_CODE_FL(code?.G_CODE))
+                  setSelectedCode(code);
+                  loadPONO(code?.G_CODE, selectedCust_CD?.CUST_CD);
+                }}
+                style={{ width: '105%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                itemHeight={25}
+              />
+              </label>
+              <label>
+              Loại SP: <br/>
+              <select
+                name='phanloaihang'
+                value={newphanloai}
+                onChange={(e) => {
+                  setNewPhanLoai(e.target.value);
+                }}
+                style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+              >
+                <option value='TT'>Hàng Thường (TT)</option>
+                <option value='SP'>Sample sang FL (SP)</option>
+                <option value='RB'>Ribbon (RB)</option>
+                <option value='HQ'>Hàn Quốc (HQ)</option>
+                <option value='VN'>Việt Nam (VN)</option>
+                <option value='AM'>Amazon (AM)</option>
+                <option value='DL'>Đổi LOT (DL)</option>
+                <option value='M4'>NM4 (M4)</option>
+                <option value='GC'>Hàng Gia Công (GC)</option>
+                <option value='TM'>Hàng Thương Mại (TM)</option>
+                {getCompany() !== 'CMS' && (
+                  <>
+                    <option value='I1'>Hàng In Nhanh 1 (I1)</option>
+                    <option value='I2'>Hàng In Nhanh 2 (I2)</option>
+                    <option value='I3'>Hàng In Nhanh 3 (I3)</option>
+                    <option value='I4'>Hàng In Nhanh 4 (I4)</option>
+                    <option value='I5'>Hàng In Nhanh 5 (I5)</option>
+                    <option value='I6'>Hàng In Nhanh 6 (I6)</option>
+                    <option value='I7'>Hàng In Nhanh 7 (I7)</option>
+                    <option value='I8'>Hàng In Nhanh 8 (I8)</option>
+                    <option value='I9'>Hàng In Nhanh 9 (I9)</option>
+                  </>
+                )}
+              </select><br/>
+              </label>
+              <label>
+              Loại SX:<br/>
+              <select
+                name='loasx'
+                value={loaisx}
+                onChange={(e) => {
+                  setLoaiSX(e.target.value);
+                  if (e.target.value === '04') {
+                    setIsFirstLot(false);
+                  }
+                }}
+                style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+              >
+                <option value='01'>Thông Thường</option>
+                <option value='02'>SDI</option>
+                <option value='03'>ETC</option>
+                <option value='04'>SAMPLE</option>
+              </select><br/>
+              </label>
+              <label>
+              Loại XH:<br/>
+              <select
+                name='loaixh'
+                value={loaixh}
+                onChange={(e) => {
+                  setLoaiXH(e.target.value);
+                }}
+                style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+              >
+                <option value='01'>GC</option>
+                <option value='02'>SK</option>
+                <option value='03'>KD</option>
+                <option value='04'>VN</option>
+                <option value='05'>SAMPLE</option>
+                <option value='06'>Vai bac 4</option>
+                <option value='07'>ETC</option>
+              </select><br/>
+              </label>
+              {getCompany() === 'CMS' && (
+              <label>
+                First LOT:<br/>
+                <select
+                  name='loasx'
+                  value={isFirstLOT ? 'Y' : 'N'}
+                  onChange={(e) => {
+                    setIsFirstLot(e.target.value === 'Y');
+                  }}
+                  style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                >
+                  <option value='Y'>First LOT</option>
+                  <option value='N'>Not First LOT</option>
+                </select><br/>
+              </label>
+              )}
+              {getCompany() === 'CMS' && (<label>
+              YC Tạm:<br/>
+                <select
+                  name='tamthoi'
+                  value={is_tam_thoi}
+                  onChange={(e) => {
+                    setIs_Tam_Thoi(e.target.value);
+                  }}
+                  style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                >
+                  <option value='Y'>Tạm thời</option>
+                  <option value='N'>Bình thường</option>
+                </select>
+                </label>)}
+            </div> 
+            <div className='dangkyinputbox' style={{width:'50%',gap:'10px'}}>
+              <label>
+              DELIVERY DT:<br/>
+              <input style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none' }} className='inputdata' type='date' value={deliverydate.slice(0, 10)} onChange={(e) => setNewDeliveryDate(e.target.value)}></input><br/>
+              </label>
+              <label>
+              PO NO:<br/>
+              <DropdownSearch
+                options={ponolist.map((x) => ({ label: x.PO_NO + ' | ' + moment.utc(x.RD_DATE).format('YYYY-MM-DD') + ' | ' + x.PO_QTY, value: x.PO_NO }))}
+                value={selectedPoNo?.PO_NO ?? ''}
+                onChange={(e) => {
+                  let selectedPONO = ponolist.find((x) => x.PO_NO === e) ?? {
+                    CUST_CD: '',
+                    G_CODE: '',
+                    PO_NO: '',
+                    PO_DATE: '',
+                    RD_DATE: '',
+                    PO_QTY: 0,
+                  };
+                  setSelectedPoNo(selectedPONO);
+                  setNewDeliveryDate(selectedPONO?.RD_DATE ?? moment.utc().format('YYYY-MM-DD'));
+                  setNewYcsxQty(selectedPONO?.PO_QTY ?? 0);
+                }}
+                style={{ width: '105%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none', padding: '1px' }}
+                itemHeight={25}
+              />
+              </label>
+              <label>
+              YCSX QTY:<br/>
+              <input style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none' }} className='inputdata' type='number' value={newycsxqty} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewYcsxQty(Number(e.target.value))}></input><br/>
+              </label>
+              <label>
+              Remark:<br/>
+              <input style={{ width: '80%', height: '25px', borderRadius: '5px', borderWidth: '1px', backgroundColor: 'transparent', fontSize: '0.6rem', outline: 'none' }} className='inputdata' type='text' value={newycsxremark} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewYcsxRemark(e.target.value)}></input><br/>
+              </label>
+            </div>
+          </div>
+          <Box mt={2} display='flex' justifyContent='flex-end' gap={2}>
+            <div className='dangkybutton' style={{display:'flex', flexDirection:'row', justifyContent:'center',alignItems:'center', width:'100%', gap:'10px', borderRadius:'5px'}}>
+              {selection.themycsx && (
+                <Button
+                  color={'success'}
+                  variant='contained'
+                  size='small'
+                  sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }}
+                  onClick={() => {
+                    handle_add_1YCSX();
+                  }}
+                >
+                  Add
+                </Button>
+              )}
+              {selection.inserttableycsx && (
+                <Button
+                  color={'success'}
+                  variant='contained'
+                  size='small'
+                  sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }}
+                  onClick={() => {
+                    handle_InsertYCSXTable();
+                  }}
+                >
+                  Insert
+                </Button>
+              )}
+              {selection.suaycsx && (
+                <Button
+                  color={'success'}
+                  variant='contained'
+                  size='small'
+                  sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }}
+                  onClick={() => {
+                    updateYCSX();
+                  }}
+                >
+                  Update
+                </Button>
+              )}
+              <Button
+                color={'success'}
+                variant='contained'
+                size='small'
+                sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }}
+                onClick={() => {
+                  clearYCSXform();
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                color={'success'}
+                variant='contained'
+                size='small'
+                sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }}
+                onClick={() => {
+                  setSelection({ ...selection, them1po: false });
+                  setIsYCSXDialogOpen(false);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </Box>
+        </Box>
+      </Modal>
+    );
+  }
   const ycsxDataTableAG = useMemo(() => {
     return (
       <AGTable
@@ -2455,6 +2720,7 @@ const YCSXManager = () => {
                   suaycsx: false,
                   inserttableycsx: false,
                 });
+                setIsYCSXDialogOpen(true);
                 clearYCSXform();
               }}
             >
@@ -2925,7 +3191,7 @@ const YCSXManager = () => {
               </div>
             )}
             <div className='tracuuYCSXTable'>
-              {selection.them1po && (
+              {false && (
                 <div className='them1ycsx'>
                   <div className='formnho' style={{ backgroundImage: theme.CMS.backgroundImage }}>
                     <div className='dangkyform'>
@@ -3166,6 +3432,7 @@ const YCSXManager = () => {
                   </div>
                 </div>
               )}
+              <AddYCSXForm/>
               {ycsxDataTableAG}
             </div>
           </div>

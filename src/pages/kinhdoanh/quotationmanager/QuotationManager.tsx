@@ -46,9 +46,7 @@ const QuotationManager = () => {
   );
   const [sh, setSH] = useState(false);
   const showhidesearchdiv = useRef(true);
-  const [selectedBangGiaDocRow, setselectedBangGiaDocRow] = useState<
-    BANGGIA_DATA2[]
-  >([]);
+  const selectedBangGiaDocRow = useRef<BANGGIA_DATA2[]>([]);
   const [selectedCode, setSelectedCode] = useState<CodeListDataUpGia | null>({
     G_CODE: "6A00001A",
     G_NAME: "GT-I9500_SJ68-01284A",
@@ -93,12 +91,12 @@ const QuotationManager = () => {
   const [rows, setRows] = useState<Array<any>>([]);
 
   const pheduyetgia = async () => {
-    if (selectedBangGiaDocRow.length > 0) {
+    if (selectedBangGiaDocRow.current.length > 0) {
       let err_code: string = "";
-      for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
+      for (let i = 0; i < selectedBangGiaDocRow.current.length; i++) {
         await generalQuery("pheduyetgia", {
-          ...selectedBangGiaDocRow[i],
-          FINAL: selectedBangGiaDocRow[i].FINAL === "Y" ? "N" : "Y",
+          ...selectedBangGiaDocRow.current[i],
+          FINAL: selectedBangGiaDocRow.current[i].FINAL === "Y" ? "N" : "Y",
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -1249,6 +1247,11 @@ const QuotationManager = () => {
   { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 60 },
   ],[]);
   const [columns, setColumns] = useState<Array<any>>(column_gia_doc);
+  const handleSelectionChange = useCallback((params: any) => {
+    console.log('Vào onSelectionChange');
+    console.log(params.api.getSelectedRows());
+    selectedBangGiaDocRow.current = params.api.getSelectedRows();
+  }, []);
   const priceTableDataAG = useMemo(() =>
     <AGTable      
       showFilter={true}
@@ -1320,14 +1323,9 @@ const QuotationManager = () => {
         //clickedRow.current = params.data;
         //clickedRow.current = params.data;
         //console.log(e.data) 
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())
-        setselectedBangGiaDocRow(params!.api.getSelectedRows());
-      }}
+      }} onSelectionChange={handleSelectionChange}
     />
-    , [rows, columns, selectedBangGiaDocRow]);  
+    , [rows, columns]);  
   const columns_uploadexcel = useMemo(()=>[
     { field: "PROD_ID", headerName: "PROD_ID", width: 50 },
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
@@ -1416,7 +1414,7 @@ const QuotationManager = () => {
         //console.log(params)
         //setSelectedRows(params!.api.getSelectedRows()[0]);
         //console.log(e!.api.getSelectedRows())
-        setselectedBangGiaDocRow(params!.api.getSelectedRows());
+        selectedBangGiaDocRow.current = params!.api.getSelectedRows();
       }}
     />
     , [uploadExcelJson, columns_uploadexcel]);
@@ -1598,7 +1596,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
-    setselectedBangGiaDocRow([]);
+    selectedBangGiaDocRow.current = [];
   },[]);
   const loadBangGia2 = useCallback(async() => {
     await generalQuery("loadbanggia2", {
@@ -1681,12 +1679,12 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     });
   };
   const updategia = useCallback(async () => {
-    console.log(selectedBangGiaDocRow);
-    if (selectedBangGiaDocRow.length > 0) {
+    console.log(selectedBangGiaDocRow.current);
+    if (selectedBangGiaDocRow.current.length > 0) {
       let err_code: string = "";
-      for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
+      for (let i = 0; i < selectedBangGiaDocRow.current.length; i++) {
         await generalQuery("updategia", {
-          ...selectedBangGiaDocRow[i],
+          ...selectedBangGiaDocRow.current[i],
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -1711,13 +1709,13 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để update (Bảng giá dọc)", "error");
     }
-  },[selectedBangGiaDocRow,banggia, banggia2]);
+  },[selectedBangGiaDocRow.current,banggia, banggia2]);
   const deletegia = useCallback(async () => {
-    if (selectedBangGiaDocRow.length > 0) {
+    if (selectedBangGiaDocRow.current.length > 0) {
       let err_code: string = "";
-      for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
+      for (let i = 0; i < selectedBangGiaDocRow.current.length; i++) {
         await generalQuery("deletegia", {
-          ...selectedBangGiaDocRow[i],
+          ...selectedBangGiaDocRow.current[i],
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -1741,7 +1739,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element?.G_NAME_KD?.search('
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để xóa(Bảng giá dọc)", "error");
     }
-  },[selectedBangGiaDocRow]);
+  },[selectedBangGiaDocRow.current]);
   const loadBangGiaMoiNhat = useCallback(async() => {
     await generalQuery("loadbanggiamoinhat", {
       ALLTIME: watch("alltime"),
@@ -2094,7 +2092,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
               </Button>
             </div>
             <div className="printpagediv" ref={quotationprintref}>
-              <QuotationForm QUOTATION_DATA={selectedBangGiaDocRow} />
+              <QuotationForm QUOTATION_DATA={selectedBangGiaDocRow.current} />
             </div>
           </div>
         )}
