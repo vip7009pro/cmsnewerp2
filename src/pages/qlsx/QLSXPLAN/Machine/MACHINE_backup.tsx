@@ -1973,15 +1973,82 @@ const MACHINE_OLD = () => {
       Swal.fire("Thông báo", "Chọn Plan trước", "error");
       return;
     }
-    let dmmacdinh = getSettingUPHUnitLoss(selectedPlan.PLAN_EQ, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? selectedPlan.PLAN_QTY * (selectedPlan.PD??0) / selectedPlan.CAVITY/1000 : 0);
-              dmmacdinh = {
-                ...dmmacdinh,
-                UPH: Math.round(dmmacdinh?.unit ==='MET' ? dmmacdinh.UPH / (selectedPlan.PD??0) * (selectedPlan.CAVITY??0)*1000 :((dmmacdinh?.UPH??0)*(selectedPlan.CAVITY??0))),
-                setting: dmmacdinh?.setting ?? 0,
-                unit: dmmacdinh?.unit ?? "",
-                loss: dmmacdinh?.loss ?? 0,
-                loss_setting: dmmacdinh?.loss_setting ?? 0,
-              }                   
+     let dmmacdinh = getSettingUPHUnitLoss(selectedPlan.PLAN_EQ, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? (selectedPlan.PLAN_QTY * (selectedPlan.PD ?? 0)) / selectedPlan.CAVITY / 1000 : 0);
+
+    dmmacdinh = {
+      ...dmmacdinh,
+      UPH: Math.round(dmmacdinh?.unit === 'MET' ? (dmmacdinh.UPH / (selectedPlan.PD ?? 0)) * (selectedPlan.CAVITY ?? 0) * 1000 : (dmmacdinh?.UPH ?? 0) * (selectedPlan.CAVITY ?? 0)),
+      setting: dmmacdinh?.setting ?? 0,
+      unit: dmmacdinh?.unit ?? '',
+      loss: dmmacdinh?.loss ?? 0,
+      loss_setting: dmmacdinh?.loss_setting ?? 0,
+    };      
+
+    /* let dmmacdinh1 = getSettingUPHUnitLoss(datadinhmuc.EQ1, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? (selectedPlan.PLAN_QTY * (selectedPlan.PD ?? 0)) / selectedPlan.CAVITY / 1000 : 0);
+    let dmmacdinh2 = getSettingUPHUnitLoss(datadinhmuc.EQ2, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? (selectedPlan.PLAN_QTY * (selectedPlan.PD ?? 0)) / selectedPlan.CAVITY / 1000 : 0);
+    let dmmacdinh3 = getSettingUPHUnitLoss(datadinhmuc.EQ3, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? (selectedPlan.PLAN_QTY * (selectedPlan.PD ?? 0)) / selectedPlan.CAVITY / 1000 : 0);
+    let dmmacdinh4 = getSettingUPHUnitLoss(datadinhmuc.EQ4, selectedPlan.PROD_PRINT_TIMES ?? 0, selectedPlan.CAVITY ? (selectedPlan.PLAN_QTY * (selectedPlan.PD ?? 0)) / selectedPlan.CAVITY / 1000 : 0);
+    
+    dmmacdinh1 = {
+      ...dmmacdinh1,
+      UPH: Math.round(dmmacdinh1?.unit === 'MET' ? (dmmacdinh1.UPH / (selectedPlan.PD ?? 0)) * (selectedPlan.CAVITY ?? 0) * 1000 : (dmmacdinh1?.UPH ?? 0) * (selectedPlan.CAVITY ?? 0)),
+      setting: dmmacdinh1?.setting ?? 0,
+      unit: dmmacdinh1?.unit ?? '',
+      loss: dmmacdinh1?.loss ?? 0,
+      loss_setting: dmmacdinh1?.loss_setting ?? 0,
+    };  
+    
+    dmmacdinh2 = {
+      ...dmmacdinh2,
+      UPH: Math.round(dmmacdinh2?.unit === 'MET' ? (dmmacdinh2.UPH / (selectedPlan.PD ?? 0)) * (selectedPlan.CAVITY ?? 0) * 1000 : (dmmacdinh2?.UPH ?? 0) * (selectedPlan.CAVITY ?? 0)),
+      setting: dmmacdinh2?.setting ?? 0,
+      unit: dmmacdinh2?.unit ?? '',
+      loss: dmmacdinh2?.loss ?? 0,
+      loss_setting: dmmacdinh2?.loss_setting ?? 0,
+    };  
+    
+    dmmacdinh3 = {
+      ...dmmacdinh3,
+      UPH: Math.round(dmmacdinh3?.unit === 'MET' ? (dmmacdinh3.UPH / (selectedPlan.PD ?? 0)) * (selectedPlan.CAVITY ?? 0) * 1000 : (dmmacdinh3?.UPH ?? 0) * (selectedPlan.CAVITY ?? 0)),
+      setting: dmmacdinh3?.setting ?? 0,
+      unit: dmmacdinh3?.unit ?? '',
+      loss: dmmacdinh3?.loss ?? 0,
+      loss_setting: dmmacdinh3?.loss_setting ?? 0,
+    };  
+    
+    dmmacdinh4 = {
+      ...dmmacdinh4,
+      UPH: Math.round(dmmacdinh4?.unit === 'MET' ? (dmmacdinh4.UPH / (selectedPlan.PD ?? 0)) * (selectedPlan.CAVITY ?? 0) * 1000 : (dmmacdinh4?.UPH ?? 0) * (selectedPlan.CAVITY ?? 0)),
+      setting: dmmacdinh4?.setting ?? 0,
+      unit: dmmacdinh4?.unit ?? '',
+      loss: dmmacdinh4?.loss ?? 0,
+      loss_setting: dmmacdinh4?.loss_setting ?? 0,
+    };  
+    
+
+
+              setDataDinhMuc({
+                ...datadinhmuc,
+                Setting1: (datadinhmuc.EQ1 !== 'NO' && datadinhmuc.EQ1 !== 'NA') ? dmmacdinh1.setting : datadinhmuc.Setting1,
+                UPH1: (datadinhmuc.EQ1 !== 'NO' && datadinhmuc.EQ1 !== 'NA') ? dmmacdinh1.UPH : datadinhmuc.UPH1,                    
+                LOSS_SX1: (datadinhmuc.EQ1 !== 'NO' && datadinhmuc.EQ1 !== 'NA') ? dmmacdinh1.loss : datadinhmuc.LOSS_SX1,
+                LOSS_SETTING1: (datadinhmuc.EQ1 !== 'NO' && datadinhmuc.EQ1 !== 'NA') ? dmmacdinh1.loss_setting : datadinhmuc.LOSS_SETTING1,
+
+                Setting2: (datadinhmuc.EQ2 !== 'NO' && datadinhmuc.EQ2 !== 'NA') ? dmmacdinh2.setting : datadinhmuc.Setting2,
+                UPH2: (datadinhmuc.EQ2 !== 'NO' && datadinhmuc.EQ2 !== 'NA') ? dmmacdinh2.UPH : datadinhmuc.UPH2,                    
+                LOSS_SX2: (datadinhmuc.EQ2 !== 'NO' && datadinhmuc.EQ2 !== 'NA') ? dmmacdinh2.loss : datadinhmuc.LOSS_SX2,
+                LOSS_SETTING2: (datadinhmuc.EQ2 !== 'NO' && datadinhmuc.EQ2 !== 'NA') ? dmmacdinh2.loss_setting : datadinhmuc.LOSS_SETTING2,
+
+                Setting3: (datadinhmuc.EQ3 !== 'NO' && datadinhmuc.EQ3 !== 'NA') ? dmmacdinh3.setting : datadinhmuc.Setting3,
+                UPH3: (datadinhmuc.EQ3 !== 'NO' && datadinhmuc.EQ3 !== 'NA') ? dmmacdinh3.UPH : datadinhmuc.UPH3,                    
+                LOSS_SX3: (datadinhmuc.EQ3 !== 'NO' && datadinhmuc.EQ3 !== 'NA') ? dmmacdinh3.loss : datadinhmuc.LOSS_SX3,
+                LOSS_SETTING3: (datadinhmuc.EQ3 !== 'NO' && datadinhmuc.EQ3 !== 'NA') ? dmmacdinh3.loss_setting : datadinhmuc.LOSS_SETTING3,
+
+                Setting4: (datadinhmuc.EQ4 !== 'NO' && datadinhmuc.EQ4 !== 'NA') ? dmmacdinh4.setting : datadinhmuc.Setting4,
+                UPH4: (datadinhmuc.EQ4 !== 'NO' && datadinhmuc.EQ4 !== 'NA') ? dmmacdinh4.UPH : datadinhmuc.UPH4,                    
+                LOSS_SX4: (datadinhmuc.EQ4 !== 'NO' && datadinhmuc.EQ4 !== 'NA') ? dmmacdinh4.loss : datadinhmuc.LOSS_SX4,
+                LOSS_SETTING4: (datadinhmuc.EQ4 !== 'NO' && datadinhmuc.EQ4 !== 'NA') ? dmmacdinh4.loss_setting : datadinhmuc.LOSS_SETTING4,
+              }) */
               setDataDinhMuc({
                 ...datadinhmuc,
                 Setting1: selectedPlan.PLAN_EQ.substring(0, 2) === datadinhmuc.EQ1 ? dmmacdinh.setting : datadinhmuc.Setting1,
