@@ -667,7 +667,7 @@ export default function Navbar() {
             }}
             size={15}
           />
-          {sidebarStatus && ((getUserData()?.EMPL_NO !== "NHU1903" && company === "CMS") ? <NavMenuNew/> : <NavMenu/>)}
+          {sidebarStatus && ((getUserData()?.EMPL_NO === "NHU1903" && company === "CMS") ? <NavMenuNew/> : <NavMenu/>)}
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>

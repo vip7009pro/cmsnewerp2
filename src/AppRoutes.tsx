@@ -368,7 +368,7 @@ const AppRoutes = ({ globalUserData }: { globalUserData: any }) => {
             <ProtectedRoute
               user={globalUserData}
               maindeptname="all"
-              jobname="Leader"
+              jobname="all"
             >
               <QC />
             </ProtectedRoute>
@@ -414,13 +414,7 @@ const AppRoutes = ({ globalUserData }: { globalUserData: any }) => {
           <Route
             path="datasx"
             element={
-              <ProtectedRoute
-                user={globalUserData}
-                maindeptname="all"
-                jobname="Leader"
-              >
-                <BAOCAOSXALL />
-              </ProtectedRoute>
+              <BAOCAOSXALL />
             }
           />
           <Route

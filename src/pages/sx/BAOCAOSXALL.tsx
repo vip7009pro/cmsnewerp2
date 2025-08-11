@@ -13,11 +13,12 @@ const FAILING = React.lazy(() => import("../qc/iqc/FAILING"));
 const MAINDEFECTS = React.lazy(() => import("./MAINDEFECTS/MAINDEFECTS"));
 const BAOCAOFULLROLL = React.lazy(() => import("./BAOCAOTHEOROLL/BAOCAOFULLROLL"));
 import { getlang } from "../../components/String/String";
-import { getCompany } from "../../api/Api";
+import { getCompany, getUserData } from "../../api/Api";
 import MyTabs from "../../components/MyTab/MyTab";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import KPI_NVSX from "./KPI_NV/KPI_NVSX";
+import DATASAMPLESX from "./DATASAMPLE/DATASAMPLESX";
 const BAOCAOSXALL = () => {
     const lang: string | undefined = useSelector(
       (state: RootState) => state.totalSlice.lang
@@ -28,50 +29,52 @@ const BAOCAOSXALL = () => {
     <div className="qlsxplan">
       <Suspense fallback={<div>Loading...</div>}>
         <MyTabs defaultActiveTab={0}>
-          <MyTabs.Tab title={getlang("nhatkysanxuat", lang ?? "en")}>
+          
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title={getlang("nhatkysanxuat", lang ?? "en")}>
             <DATASX />
-          </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("lichsuxuatlieuthat", lang ?? "en")}>
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title={getlang("lichsuxuatlieuthat", lang ?? "en")}>
             <LICHSUINPUTLIEU />
-          </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("lichsutemlotsx", lang ?? "en")}>
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title={getlang("lichsutemlotsx", lang ?? "en")}>
             <LICHSUTEMLOTSX />
-          </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("materiallotstatus", lang ?? "en")}>
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title={getlang("materiallotstatus", lang ?? "en")}>
             <TINHHINHCUONLIEU />
-          </MyTabs.Tab>
-          <MyTabs.Tab title={getlang("sxrolldata", lang ?? "en")}>
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title={getlang("sxrolldata", lang ?? "en")}>
             <BAOCAOTHEOROLL />
-          </MyTabs.Tab>
-          {getCompany()==='CMS' && <MyTabs.Tab title={getlang("baocaofullroll", lang ?? "en")}>
+          </MyTabs.Tab>}
+          {getCompany()==='CMS' &&  getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title={getlang("baocaofullroll", lang ?? "en")}>
             <BAOCAOFULLROLL />
           </MyTabs.Tab>}
-          <MyTabs.Tab title="Plan-Result">
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Plan-Result">
             <ACHIVEMENTTB />
-          </MyTabs.Tab>
-          <MyTabs.Tab title="Data Dao Film">
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Data Dao Film">
             <DAOFILMDATA />
-          </MyTabs.Tab>
-          {getCompany() === "CMS" && (
-            <MyTabs.Tab title="Failing">
-              <FAILING />
-            </MyTabs.Tab>
-          )}
-          <MyTabs.Tab title="Patrol">
+          </MyTabs.Tab>}
+          {getCompany() === "CMS" && getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Failing">
+            <FAILING />
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Patrol">
             <PATROL />
-          </MyTabs.Tab>
-          {getCompany() === "CMS" && (
+          </MyTabs.Tab>}
+          {getCompany() === "CMS" && getUserData()?.JOB_NAME !== "Worker" && (
             <MyTabs.Tab title="Main Defects">
               <MAINDEFECTS />
             </MyTabs.Tab>
           )}
-          {getCompany() === "CMS" && (
+          {getCompany() === "CMS" && getUserData()?.JOB_NAME !== "Worker" && (
             <MyTabs.Tab title="BTP Data">
               <BTP_AUTO />
             </MyTabs.Tab>
           )}
-          <MyTabs.Tab title="KPI NV">
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="KPI NV">
             <KPI_NVSX />
+          </MyTabs.Tab>}
+          <MyTabs.Tab title="Data Sample">
+            <DATASAMPLESX />
           </MyTabs.Tab>
         </MyTabs>
       </Suspense>
