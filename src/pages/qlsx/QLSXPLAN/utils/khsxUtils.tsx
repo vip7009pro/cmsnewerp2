@@ -1364,6 +1364,7 @@ export const f_handleResetChiThiTable = async (
       planData.IS_SETTING ?? "Y"
     );
   } else {
+
     M_MET_NEEDED = await f_calcMaterialMet(
       planData.PLAN_QTY,
       planData.PD ?? 0,

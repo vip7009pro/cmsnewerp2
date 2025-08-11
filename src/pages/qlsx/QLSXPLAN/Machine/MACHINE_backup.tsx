@@ -2843,7 +2843,7 @@ const MACHINE_OLD = () => {
         qlsxchithidatafilter.current = params!.api.getSelectedRows();
       }}
     />
-    , [chithidatatable, datadinhmuc]);  
+    , [chithidatatable, datadinhmuc, tempDM]);  
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
