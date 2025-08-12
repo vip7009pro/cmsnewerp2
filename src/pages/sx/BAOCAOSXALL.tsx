@@ -73,9 +73,9 @@ const BAOCAOSXALL = () => {
           {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="KPI NV">
             <KPI_NVSX />
           </MyTabs.Tab>}
-          <MyTabs.Tab title="Data Sample">
+          {getCompany() === "CMS" && <MyTabs.Tab title="Data Sample">
             <DATASAMPLESX />
-          </MyTabs.Tab>
+          </MyTabs.Tab>}
         </MyTabs>
       </Suspense>
     </div>
