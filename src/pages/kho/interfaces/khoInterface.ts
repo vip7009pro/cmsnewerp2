@@ -289,3 +289,14 @@ export interface WH_M_INPUT_DATA {
     STOCK_SQM: number;
     PHANLOAI: string;
   }
+  export interface P_STOCK_BY_MONTH_DATA {
+    PHANLOAI: string;
+    TOTAL_STOCK: number;
+  }
+  export interface P_STOCK_BY_MONTH_DETAIL_DATA {
+    G_CODE: string;
+    G_NAME: string;
+    G_NAME_KD: string;
+    TOTAL_STOCK: number;
+    PHANLOAI: string;
+  }

@@ -2,6 +2,8 @@ import React, { useEffect, Suspense } from "react";
 import "./WH_REPORT.scss";
 import MyTabs from "../../../components/MyTab/MyTab";
 import KHOVL_REPORT from "./khovlreport/KHOVL_REPORT";
+import KHOTP_REPORT from "./khotpreport/KHOTP_REPORT";
+import { getUserData } from "../../../api/Api";
 const WH_REPORT = () => {
   useEffect(() => {}, []);
   return (
@@ -12,7 +14,7 @@ const WH_REPORT = () => {
             <KHOVL_REPORT />
           </MyTabs.Tab>
           <MyTabs.Tab title="PRODUCT WH REPORT">
-            <></>
+            {getUserData()?.EMPL_NO === "NHU1903" ? <KHOTP_REPORT /> : <KHOTP_REPORT />}
           </MyTabs.Tab>         
         </MyTabs>
       </Suspense>

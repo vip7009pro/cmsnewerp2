@@ -1,5 +1,5 @@
 import { generalQuery } from "../../../api/Api";
-import { M_INPUT_BY_POPULAR_DATA, M_INPUT_BY_POPULAR_DETAIL_DATA, M_OUTPUT_BY_POPULAR_DATA, M_OUTPUT_BY_POPULAR_DETAIL_DATA, M_STOCK_BY_MONTH_DATA, M_STOCK_BY_MONTH_DETAIL_DATA, MSTOCK_BY_POPULAR_DATA, MSTOCK_BY_POPULAR_DETAIL_DATA } from "../interfaces/khoInterface";
+import { M_INPUT_BY_POPULAR_DATA, M_INPUT_BY_POPULAR_DETAIL_DATA, M_OUTPUT_BY_POPULAR_DATA, M_OUTPUT_BY_POPULAR_DETAIL_DATA, M_STOCK_BY_MONTH_DATA, M_STOCK_BY_MONTH_DETAIL_DATA, MSTOCK_BY_POPULAR_DATA, MSTOCK_BY_POPULAR_DETAIL_DATA, P_STOCK_BY_MONTH_DATA, P_STOCK_BY_MONTH_DETAIL_DATA } from "../interfaces/khoInterface";
 
 export const f_loadMSTOCK_BY_POPULAR = async (DATA: any) => {
     let kq: MSTOCK_BY_POPULAR_DATA[] = [];
@@ -184,6 +184,49 @@ export const f_loadMSTOCK_BY_POPULAR = async (DATA: any) => {
         if (response.data.tk_status !== "NG") {
           let loaded_data: M_STOCK_BY_MONTH_DETAIL_DATA[] = response.data.data.map(
             (element: M_STOCK_BY_MONTH_DETAIL_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+  export const f_load_P_Stock_By_Month = async (DATA: any) => {
+    let kq: P_STOCK_BY_MONTH_DATA[] = [];
+    await generalQuery("load_P_STOCK_BY_MONTH", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: P_STOCK_BY_MONTH_DATA[] = response.data.data.map(
+            (element: P_STOCK_BY_MONTH_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+
+  export const f_load_P_Stock_By_Month_Detail = async (DATA: any) => {
+    let kq: P_STOCK_BY_MONTH_DETAIL_DATA[] = [];
+    await generalQuery("load_P_STOCK_BY_MONTH_DETAIL", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: P_STOCK_BY_MONTH_DETAIL_DATA[] = response.data.data.map(
+            (element: P_STOCK_BY_MONTH_DETAIL_DATA, index: number) => {
               return {
                 ...element,
                 id: index,

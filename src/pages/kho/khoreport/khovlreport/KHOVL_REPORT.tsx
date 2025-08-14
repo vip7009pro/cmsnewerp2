@@ -275,7 +275,7 @@ const KHOVL_REPORT = () => {
   return (
     <div className='khovlreport'>
       <div className='title'>
-        <span>WH REPORT</span>
+        <span>MATERIAL WH REPORT</span>
       </div>
       <div className='doanhthureport'>
         <div className='pobalancesummary'>
