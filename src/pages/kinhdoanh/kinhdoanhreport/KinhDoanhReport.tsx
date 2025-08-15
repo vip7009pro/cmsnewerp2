@@ -28,7 +28,11 @@ import KDDailyOverdue from "../../../components/Chart/KD/KDDailyOverdue";
 import KDWeeklyOverdue from "../../../components/Chart/KD/KDWeeklyOverdue";
 import KDMonthlyOverdue from "../../../components/Chart/KD/KDMonthlyOverdue";
 import KDYearlyOverdue from "../../../components/Chart/KD/KDYearlyOverdue";
-import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, OVERDUE_DATA, PIC_REVENUE_DATA, RunningPOData, WeekLyPOData } from "../interfaces/kdInterface";
+import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, OVERDUE_DATA, PIC_REVENUE_DATA, PO_BALANCE_CUSTOMER, PO_BALANCE_CUSTOMER_BY_YEAR, PO_BALANCE_DETAIL, PO_BALANCE_SUMMARY, RunningPOData, WeekLyPOData } from "../interfaces/kdInterface";
+import { f_load_PO_BALANCE_CUSTOMER, f_load_PO_BALANCE_CUSTOMER_BY_YEAR, f_load_PO_BALANCE_DETAIL, f_load_PO_BALANCE_SUMMARY } from "../utils/kdUtils";
+import KDPOBalanceSummaryByYear from "../../../components/Chart/KD/KDPOBalanceSummaryByYear";
+import KDPOBalanceSummaryByWeek from "../../../components/Chart/KD/KDPOBalanceSummaryByWeek";
+import KDPOBalanceSummaryByCustomer from "../../../components/Chart/KD/KDPOBalanceSummaryByCustomer";
 interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;
@@ -64,6 +68,7 @@ const KinhDoanhReport = () => {
   const [df, setDF] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [selectedYW, setSelectedYW] = useState("ALL");
   const [widgetdata_yesterday, setWidgetData_Yesterday] = useState<
     DailyClosingData[]
   >([]);
@@ -114,6 +119,9 @@ const KinhDoanhReport = () => {
   const [yearlyOverdueData, setyearlyOverdueData] = useState<OVERDUE_DATA[]>(
     []
   );
+  const [pobalanceDetail, setPoBalanceDetail] = useState<PO_BALANCE_DETAIL[]>([]);
+  const [pobalanceSummary, setPoBalanceSummary] = useState<PO_BALANCE_SUMMARY[]>([]);
+  const [pobalanceCustomer, setPoBalanceCustomer] = useState<PO_BALANCE_CUSTOMER[]>([]);
 
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [selectedCustomerList, setSelectedCustomerList] = useState<
@@ -1133,7 +1141,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
     return kq;
-  }, [df, fromdate, todate, in_nhanh]);
+  }, [df, fromdate, todate, in_nhanh]);  
   const loadMonthlyRevenueByCustomerAndEmpl = useCallback(async () => {
     let kq: any[] = [];
     await generalQuery("baocaodanhthutheokhachtheonguoimonthly", {
@@ -1217,6 +1225,46 @@ const KinhDoanhReport = () => {
       });
     return kq;
   }, [df, fromdate, todate, in_nhanh]);
+  const loadPOBalanceSummary = useCallback(async () => {
+    let kq: PO_BALANCE_SUMMARY[] = [];
+    kq = await f_load_PO_BALANCE_SUMMARY({
+      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
+    })
+    return kq;    
+  }, [df, fromdate, todate, in_nhanh]);
+  const loadPOBalanceDetail = useCallback(async () => {
+    let kq: PO_BALANCE_DETAIL[] = [];
+    kq = await f_load_PO_BALANCE_DETAIL({
+      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
+    })
+    return kq;    
+  }, [df, fromdate, todate, in_nhanh]);
+
+  const loadPOBalanceCustomer = useCallback(async () => {
+    let kq: PO_BALANCE_CUSTOMER[] = [];
+    kq = await f_load_PO_BALANCE_CUSTOMER({
+      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
+    })
+    return kq;    
+  }, [df, fromdate, todate, in_nhanh]);
+
+  const loadPOBalanceCustomerByYear = useCallback(async () => {
+    let kq: PO_BALANCE_CUSTOMER[] = [];
+    kq = await f_load_PO_BALANCE_CUSTOMER_BY_YEAR({
+      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
+      TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+      IN_NHANH: in_nhanh,
+    })
+    return kq;    
+  }, [df, fromdate, todate, in_nhanh]);
+  
+
   const initFunction = useCallback(async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -1248,6 +1296,9 @@ const KinhDoanhReport = () => {
       getCompany() === "CMS"
         ? loadMonthlyRevenueByCustomer()
         : loadMonthlyRevenueByCustomerAndEmpl(),
+        loadPOBalanceSummary(),
+        loadPOBalanceDetail(),
+        loadPOBalanceCustomerByYear(),
     ]).then((values) => {
       if (values.length > 0) {
         //danh sach khach hang
@@ -1644,6 +1695,24 @@ const KinhDoanhReport = () => {
         if (values[16].length > 0) {
           setWidgetData_FcstAmount(values[16][0]);
         } else {
+        }
+        //po balance summary
+        if (values[18].length > 0) {
+          setPoBalanceSummary(values[18]);
+        } else {
+          setPoBalanceSummary([]);
+        }
+        //po balance detail
+        if (values[19].length > 0) {
+          setPoBalanceDetail(values[19]);
+        } else {
+          setPoBalanceDetail([]);
+        }
+        //po balance customer
+        if (values[20].length > 0) {
+          setPoBalanceCustomer(values[20]);
+        } else {
+          setPoBalanceCustomer([]);
         }
       }
       Swal.close();
@@ -2106,6 +2175,80 @@ const KinhDoanhReport = () => {
               <ChartPOBalance data={runningPOBalanceData} />
             </div>
           </div>
+          {getCompany() === "CMS" && <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">
+                Current PO Balance Summary By Year
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(pobalanceSummary, "RunningPOBalance");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDPOBalanceSummaryByYear data={pobalanceSummary} onClick={async (e) => { 
+                console.log(e.activePayload[0].payload)
+                const PO_YEAR= e.activePayload[0].payload.PO_YEAR
+                setSelectedYW('Y'+PO_YEAR)
+                setPoBalanceDetail(
+                  await f_load_PO_BALANCE_DETAIL({
+                    PO_YEAR: PO_YEAR,
+                  })
+                );
+                setPoBalanceCustomer(
+                  await f_load_PO_BALANCE_CUSTOMER_BY_YEAR({
+                    PO_YEAR: PO_YEAR,
+                  })
+                );
+                 }} />
+            </div>
+            <div className="dailygraph">
+              <span className="subsection">
+                Current PO Balance Summary Customer- {selectedYW}
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(pobalanceDetail, "RunningPOBalance");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDPOBalanceSummaryByCustomer data={pobalanceCustomer} />
+            </div>
+          </div>}
+          {getCompany() === "CMS" && <div className="monthlyweeklygraph">            
+            <div className="dailygraph">
+              <span className="subsection">
+                Current PO Balance Summary By Week
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(runningPOBalanceData, "RunningPOBalance");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel
+                </IconButton>
+              </span>
+              <KDPOBalanceSummaryByWeek data={pobalanceDetail} onClick={async (e) => { 
+                console.log(e.activePayload[0].payload) 
+                const PO_YEAR= e.activePayload[0].payload.PO_YEAR
+                const PO_WEEK= e.activePayload[0].payload.PO_WEEK
+                setSelectedYW('Y'+PO_YEAR +'-W'+PO_WEEK)
+                setPoBalanceCustomer(
+                  await f_load_PO_BALANCE_CUSTOMER({
+                    PO_YEAR: PO_YEAR,
+                    PO_WEEK: PO_WEEK,
+                  })
+                );
+                }}/>
+            </div>
+          </div>}
           <div className="datatable">
             <div className="dailygraph">
               <span className="subsection">

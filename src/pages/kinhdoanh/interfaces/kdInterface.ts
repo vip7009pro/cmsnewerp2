@@ -889,3 +889,35 @@ export interface YCTK_TREND_DATA  {
   TOTAL: number;
   RATE: number;
 }
+
+export interface PO_BALANCE_DETAIL {
+  PO_YW: string;
+  PO_YEAR: number;
+  PO_WEEK: number;
+  PO_QTY: number;
+  DELIVERY_QTY: number;
+  PO_BALANCE: number;
+}
+
+export interface PO_BALANCE_SUMMARY 
+{
+  PO_YEAR: number;
+  PO_BALANCE: number;
+}
+
+export interface PO_BALANCE_CUSTOMER 
+{
+  CUST_CD: string;
+  PO_YW: string;
+  PO_YEAR: number;
+  PO_WEEK: number;
+  PO_QTY: number;
+  DELIVERY_QTY: number;
+  PO_BALANCE: number;
+  CUST_NAME_KD: string;
+}
+export interface PO_BALANCE_CUSTOMER_BY_YEAR 
+{
+  CUST_NAME_KD: string;
+  PO_BALANCE: number;
+}

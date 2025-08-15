@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
-import { CodeListData, CustomerListData, FCSTTDYCSX, InvoiceTableData, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, TONKHOTDYCSX, UploadAmazonData, YCSXTableData, YCTK_TREND_DATA, YCTKData } from "../interfaces/kdInterface";
+import { CodeListData, CustomerListData, FCSTTDYCSX, InvoiceTableData, PO_BALANCE_CUSTOMER, PO_BALANCE_CUSTOMER_BY_YEAR, PO_BALANCE_DETAIL, PO_BALANCE_SUMMARY, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, TONKHOTDYCSX, UploadAmazonData, YCSXTableData, YCTK_TREND_DATA, YCTKData } from "../interfaces/kdInterface";
 import moment from "moment";
 import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import * as XLSX from "xlsx";
@@ -1715,6 +1715,117 @@ export const f_load_YCTK_TREND_YEARLY = async (DATA: any) => {
             return {
               ...element,
               RATE: element.TOTAL !== 0 ? element.COMPLETED / element.TOTAL : 0,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_PO_BALANCE_DETAIL = async (DATA: any) => {
+  let kq: PO_BALANCE_DETAIL[] = [];
+  await generalQuery("pobalanceYearByWeekDetail", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: PO_BALANCE_DETAIL[] = response.data.data.map(
+          (element: PO_BALANCE_DETAIL, index: number) => {            
+            return {
+              ...element,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_PO_BALANCE_SUMMARY = async (DATA: any) => {
+  let kq: PO_BALANCE_SUMMARY[] = [];
+  await generalQuery("pobalanceByYear", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: PO_BALANCE_SUMMARY[] = response.data.data.map(
+          (element: PO_BALANCE_SUMMARY, index: number) => {            
+            return {
+              ...element,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_PO_BALANCE_CUSTOMER = async (DATA: any) => {
+  let kq: PO_BALANCE_CUSTOMER[] = [];
+  await generalQuery("poBalanceByYearWeekCustomer", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: PO_BALANCE_CUSTOMER[] = response.data.data.map(
+          (element: PO_BALANCE_CUSTOMER, index: number) => {            
+            return {
+              ...element,
+              //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+export const f_load_PO_BALANCE_CUSTOMER_BY_YEAR = async (DATA: any) => {
+  let kq: PO_BALANCE_CUSTOMER[] = [];
+  await generalQuery("poBalanceByYearWeekCustomerByYear", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: PO_BALANCE_CUSTOMER[] = response.data.data.map(
+          (element: PO_BALANCE_CUSTOMER, index: number) => {            
+            return {
+              ...element,
               //DESIGN_REQUEST_DATE: moment(element.DESIGN_REQUEST_DATE).format("YYYY-MM-DD"),
               id: index,
             };
