@@ -272,6 +272,7 @@ const INSPECTION = () => {
     },
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
     { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
+    { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
     { field: "G_NAME_KD", headerName: "Code KD", width: 110 },
     { field: "G_NAME", headerName: "Code full", width: 150 },

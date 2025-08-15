@@ -216,6 +216,7 @@ export interface INSPECT_INOUT_YCSX {
   INSPECT_BALANCE: number;
 }
 export interface INSPECT_NG_DATA {
+  PHANLOAI: string;
   INSPECT_ID: number;
   YEAR_WEEK: string;
   CUST_NAME_KD: string;
