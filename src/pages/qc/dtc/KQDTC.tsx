@@ -579,7 +579,7 @@ const KQDTC = () => {
             {xbar.length > 0 && <R_CHART dldata={xbar} />}
           </div>
           <div className="xbar">
-            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>CPK TREND (n=25)</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>CPK TREND (n=32)</span>
             {cpk.length > 0 && <CPK_CHART dldata={cpk} />}
           </div>
         </div>}
