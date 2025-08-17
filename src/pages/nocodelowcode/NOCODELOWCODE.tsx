@@ -10,6 +10,7 @@ import NOLOWHOME from "./components/NOLOWHOME/NOLOWHOME";
 import MenuManager from "./MenuManager/MenuManager";
 import PagesManager from "./components/PagesManager/PagesManager";
 import RelationshipsManager from "./components/RelationshipsManager/RelationshipsManager";
+import ProcessManager from "./ProcessManager/ProcessManager";
 
 const  NOCODELOWCODE = () => {
   useEffect(() => { }, []);
@@ -39,6 +40,9 @@ const  NOCODELOWCODE = () => {
         </MyTabs.Tab>
         <MyTabs.Tab title={"Pages Manager"}>
           <PagesManager/>         
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"Process Manager"}>
+          <ProcessManager/>         
         </MyTabs.Tab>
       </MyTabs>
     </div>
