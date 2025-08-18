@@ -1,4 +1,4 @@
-import React, { JSX, useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
@@ -26,6 +26,7 @@ import { FcProcess } from 'react-icons/fc';
 import { HiOutlineAnnotation } from 'react-icons/hi';
 import { RootState } from '../../../redux/store';
 import { setEdges, setNodes } from '../../../redux/slices/workflowSlice';
+import { Modal, TextField, Button, Box } from '@mui/material';
 
 /* ================== HELPERS: xoay vị trí Handle theo rotation ================== */
 const normalizeRotation = (deg: number) => ((deg % 360) + 360) % 360;
@@ -61,8 +62,6 @@ const rotatePosition = (pos: Position, rotation: number): Position => {
   return pos;
 };
 
-const isHorizontal = (pos: Position) => pos === Position.Left || pos === Position.Right;
-/** Thêm top:50% khi Handle ở trái/phải, left:50% khi trên/dưới để nằm giữa cạnh */
 const styleForSide = (pos: Position, base?: React.CSSProperties): React.CSSProperties | undefined => {
   let style = { ...(base || {}) };
   if (pos === Position.Left || pos === Position.Right) {
@@ -74,262 +73,267 @@ const styleForSide = (pos: Position, base?: React.CSSProperties): React.CSSPrope
 };
 
 /* ================== NODE TYPES ================== */
-const BaseNode =
-  (baseStyle: React.CSSProperties, getContent: (data: any) => JSX.Element, getHandles: (rot: number, data: any) => JSX.Element) =>
-  // eslint-disable-next-line react/display-name
-  ({ data, selected }: any) =>
-    (
+const BaseNode = React.memo(
+  ({
+    baseStyle,
+    getContent,
+    getHandles,
+    data,
+    selected,
+  }: {
+    baseStyle: React.CSSProperties;
+    getContent: (data: any) => JSX.Element;
+    getHandles: (rot: number, data: any) => JSX.Element;
+    data: any;
+    selected: boolean;
+  }) => (
+    <div
+      style={{
+        ...baseStyle,
+        boxShadow: selected ? '0 0 8px rgba(0, 128, 255, 0.8)' : 'none',
+        position: 'relative',
+      }}
+    >
+      {getHandles(data.rotation || 0, data)}
       <div
         style={{
-          ...baseStyle,
-          boxShadow: selected ? '0 0 8px rgba(0, 128, 255, 0.8)' : 'none',
-          position: 'relative',
+          transform: `rotate(${data.rotation || 0}deg)`,
+          transformOrigin: 'center center',
         }}
       >
-        {getHandles(data.rotation || 0, data)}
-        <div
-          style={{
-            transform: `rotate(${data.rotation || 0}deg)`,
-            transformOrigin: 'center center',
-          }}
-        >
-          {getContent(data)}
-        </div>
+        {getContent(data)}
       </div>
-    );
+    </div>
+  )
+);
 
 const nodeTypes: NodeTypes = {
-  start: BaseNode(
-    {
-      fontSize: '0.6rem',
-      padding: '4px',
-      border: '1px solid #777',
-      borderRadius: 5,
-      background: '#4ff54f',
-      maxWidth: '160px',
-    },
-    (data) => (
-      <>
-        <strong>{data.label}</strong>
-        <div
-          style={{
-            fontSize: '0.55rem',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {data.details || 'No details'}
-        </div>
-        <div style={{ fontSize: '0.55rem', color: '#333' }}>
-          <em>{data.department || 'Chưa gán bộ phận'}</em>
-        </div>
-      </>
-    ),
-    (rot) => {
-      const srcPos = rotatePosition(Position.Bottom, rot);
-      return <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />;
-    }
-  ),
-
-  end: BaseNode(
-    {
-      fontSize: '0.6rem',
-      padding: '4px',
-      border: '1px solid #777',
-      borderRadius: 5,
-      background: '#ff6f6f',
-      maxWidth: '160px',
-    },
-    (data) => (
-      <>
-        <strong>{data.label}</strong>
-        <div style={{ fontSize: '0.55rem' }}>{data.details || 'No details'}</div>
-        <div style={{ fontSize: '0.55rem', color: '#333' }}>
-          <em>{data.department || 'Chưa gán bộ phận'}</em>
-        </div>
-      </>
-    ),
-    (rot) => {
-      const tgtPos = rotatePosition(Position.Top, rot);
-      return <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />;
-    }
-  ),
-
-  action: BaseNode(
-    {
-      fontSize: '0.6rem',
-      padding: '4px',
-      border: '1px solid #777',
-      borderRadius: 5,
-      background: '#8fcdff',
-      maxWidth: '160px',
-    },
-    (data) => (
-      <>
-        <strong>{data.label}</strong>
-        <div style={{ fontSize: '0.55rem' }}>{data.details || 'No details'}</div>
-        <div style={{ fontSize: '0.55rem', color: '#333' }}>
-          <em>{data.department || 'Chưa gán bộ phận'}</em>
-        </div>
-      </>
-    ),
-    (rot) => {
-      const tgtPos = rotatePosition(Position.Top, rot);
-      const srcPos = rotatePosition(Position.Bottom, rot);
-      return (
+  start: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        fontSize: '0.6rem',
+        padding: '4px',
+        border: '1px solid #777',
+        borderRadius: 5,
+        background: '#4ff54f',
+        maxWidth: '160px',
+      }}
+      getContent={(data) => (
         <>
-          <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />
-          <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />
+          <strong>{data.label}</strong>
+          <div
+            style={{
+              fontSize: '0.55rem',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {data.details || 'No details'}
+          </div>
+          <div style={{ fontSize: '0.55rem', color: '#333' }}>
+            <em>{data.department || 'Chưa gán bộ phận'}</em>
+          </div>
         </>
-      );
-    }
+      )}
+      getHandles={(rot) => {
+        const srcPos = rotatePosition(Position.Bottom, rot);
+        return <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />;
+      }}
+      {...props}
+    />
   ),
-
-  condition: BaseNode(
-    {
-      fontSize: '0.6rem',
-      padding: '8px',
-      border: '2px solid #ff9800',
-      borderRadius: '20%',
-      background: '#fff3e0',
-      width: 70,
-      height: 70,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontWeight: 'bold',
-      position: 'relative',
-      flexDirection: 'column',
-      textAlign: 'center',
-    },
-    (data) => (
-      <>
-        {data.label || 'Condition'}
-        <div style={{ fontSize: '0.5rem' }}>
-          <em>{data.department || 'Chưa gán bộ phận'}</em>
-        </div>
-      </>
-    ),
-    (rot) => {
-      const posIn = rotatePosition(Position.Top, rot);
-      const posTrue = rotatePosition(Position.Bottom, rot);
-      const posFalseLeft = rotatePosition(Position.Left, rot);
-      const posFalseRight = rotatePosition(Position.Right, rot);
-
-      return (
+  end: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        fontSize: '0.6rem',
+        padding: '4px',
+        border: '1px solid #777',
+        borderRadius: 5,
+        background: '#ff6f6f',
+        maxWidth: '160px',
+      }}
+      getContent={(data) => (
         <>
-          {/* Input */}
-          <Handle type="target" position={posIn} id="in" style={styleForSide(posIn)} />
-
-          {/* Output True (gốc Bottom) */}
-          <Handle
-            type="source"
-            position={posTrue}
-            id="true"
-            style={styleForSide(posTrue, { background: 'green' })}
-          />
-
-          {/* Output False - từ Left/Right xoay theo node */}
-          <Handle
-            type="source"
-            position={posFalseLeft}
-            id="false_left"
-            style={styleForSide(posFalseLeft, { background: 'red' })}
-          />
-          <Handle
-            type="source"
-            position={posFalseRight}
-            id="false_right"
-            style={styleForSide(posFalseRight, { background: 'red' })}
-          />
+          <strong>{data.label}</strong>
+          <div style={{ fontSize: '0.55rem' }}>{data.details || 'No details'}</div>
+          <div style={{ fontSize: '0.55rem', color: '#333' }}>
+            <em>{data.department || 'Chưa gán bộ phận'}</em>
+          </div>
         </>
-      );
-    }
+      )}
+      getHandles={(rot) => {
+        const tgtPos = rotatePosition(Position.Top, rot);
+        return <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />;
+      }}
+      {...props}
+    />
   ),
-
-  event: BaseNode(
-    {
-      fontSize: '0.6rem',
-      padding: '8px',
-      border: '2px dashed #673ab7',
-      borderRadius: '50%',
-      background: '#ede7f6',
-      width: 60,
-      height: 60,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'column',
-    },
-    (data) => (
-      <>
-        {data.label || 'Event'}
-        <div style={{ fontSize: '0.45rem' }}>
-          <em>{data.department || ''}</em>
-        </div>
-      </>
-    ),
-    (rot) => {
-      const tgtPos = rotatePosition(Position.Top, rot);
-      const srcPos = rotatePosition(Position.Bottom, rot);
-      return (
+  action: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        fontSize: '0.6rem',
+        padding: '4px',
+        border: '1px solid #777',
+        borderRadius: 5,
+        background: '#8fcdff',
+        maxWidth: '160px',
+      }}
+      getContent={(data) => (
         <>
-          <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />
-          <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />
+          <strong>{data.label}</strong>
+          <div style={{ fontSize: '0.55rem' }}>{data.details || 'No details'}</div>
+          <div style={{ fontSize: '0.55rem', color: '#333' }}>
+            <em>{data.department || 'Chưa gán bộ phận'}</em>
+          </div>
         </>
-      );
-    }
+      )}
+      getHandles={(rot) => {
+        const tgtPos = rotatePosition(Position.Top, rot);
+        const srcPos = rotatePosition(Position.Bottom, rot);
+        return (
+          <>
+            <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />
+            <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />
+          </>
+        );
+      }}
+      {...props}
+    />
   ),
-
-  subprocess: BaseNode(
-    {
-      padding: '8px',
-      border: '1px dashed #999',
-      borderRadius: 5,
-      background: '#f9f9f9',
-      fontSize: '0.6rem',
-      maxWidth: '160px',
-    },
-    (data) => (
-      <>
-        <strong>{data.label || 'Subprocess'}</strong>
-        <div style={{ fontSize: '0.55rem' }}>{data.details || ''}</div>
-        <div style={{ fontSize: '0.55rem', color: '#333' }}>
-          <em>{data.department || 'Chưa gán bộ phận'}</em>
-        </div>
-      </>
-    ),
-    (rot) => {
-      const tgtPos = rotatePosition(Position.Top, rot);
-      const srcPos = rotatePosition(Position.Bottom, rot);
-      return (
+  condition: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        fontSize: '0.6rem',
+        padding: '8px',
+        border: '2px solid #ff9800',
+        borderRadius: '20%',
+        background: '#fff3e0',
+        width: 70,
+        height: 70,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        position: 'relative',
+        flexDirection: 'column',
+        textAlign: 'center',
+      }}
+      getContent={(data) => (
         <>
-          <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />
-          <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />
+          {data.label || 'Condition'}
+          <div style={{ fontSize: '0.5rem' }}>
+            <em>{data.department || 'Chưa gán bộ phận'}</em>
+          </div>
         </>
-      );
-    }
-  ),
+      )}
+      getHandles={(rot) => {
+        const posIn = rotatePosition(Position.Top, rot);
+        const posTrue = rotatePosition(Position.Bottom, rot);
+        const posFalseLeft = rotatePosition(Position.Left, rot);
+        const posFalseRight = rotatePosition(Position.Right, rot);
 
-  annotation: BaseNode(
-    {
-      padding: '6px',
-      border: '1px dotted #666',
-      borderRadius: 3,
-      background: '#ffffe0',
-      fontSize: '0.55rem',
-      maxWidth: '140px',
-    },
-    (data) => (
-      <>
-        {data.label || 'Note'}
-        <div style={{ fontSize: '0.5rem', color: '#333' }}>
-          <em>{data.department || ''}</em>
-        </div>
-      </>
-    ),
-    () => <></> // No handles
+        return (
+          <>
+            <Handle type="target" position={posIn} id="in" style={styleForSide(posIn)} />
+            <Handle type="source" position={posTrue} id="true" style={styleForSide(posTrue, { background: 'green' })} />
+            <Handle type="source" position={posFalseLeft} id="false_left" style={styleForSide(posFalseLeft, { background: 'red' })} />
+            <Handle type="source" position={posFalseRight} id="false_right" style={styleForSide(posFalseRight, { background: 'red' })} />
+          </>
+        );
+      }}
+      {...props}
+    />
+  ),
+  event: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        fontSize: '0.6rem',
+        padding: '8px',
+        border: '2px dashed #673ab7',
+        borderRadius: '50%',
+        background: '#ede7f6',
+        width: 60,
+        height: 60,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+      }}
+      getContent={(data) => (
+        <>
+          {data.label || 'Event'}
+          <div style={{ fontSize: '0.45rem' }}>
+            <em>{data.department || ''}</em>
+          </div>
+        </>
+      )}
+      getHandles={(rot) => {
+        const tgtPos = rotatePosition(Position.Top, rot);
+        const srcPos = rotatePosition(Position.Bottom, rot);
+        return (
+          <>
+            <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />
+            <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />
+          </>
+        );
+      }}
+      {...props}
+    />
+  ),
+  subprocess: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        padding: '8px',
+        border: '1px dashed #999',
+        borderRadius: 5,
+        background: '#f9f9f9',
+        fontSize: '0.6rem',
+        maxWidth: '160px',
+      }}
+      getContent={(data) => (
+        <>
+          <strong>{data.label || 'Subprocess'}</strong>
+          <div style={{ fontSize: '0.55rem' }}>{data.details || ''}</div>
+          <div style={{ fontSize: '0.55rem', color: '#333' }}>
+            <em>{data.department || 'Chưa gán bộ phận'}</em>
+          </div>
+        </>
+      )}
+      getHandles={(rot) => {
+        const tgtPos = rotatePosition(Position.Top, rot);
+        const srcPos = rotatePosition(Position.Bottom, rot);
+        return (
+          <>
+            <Handle type="target" position={tgtPos} id="target" style={styleForSide(tgtPos)} />
+            <Handle type="source" position={srcPos} id="source" style={styleForSide(srcPos)} />
+          </>
+        );
+      }}
+      {...props}
+    />
+  ),
+  annotation: (props: any) => (
+    <BaseNode
+      baseStyle={{
+        padding: '6px',
+        border: '1px dotted #666',
+        borderRadius: 3,
+        background: '#ffffe0',
+        fontSize: '0.55rem',
+        maxWidth: '140px',
+      }}
+      getContent={(data) => (
+        <>
+          {data.label || 'Note'}
+          <div style={{ fontSize: '0.5rem', color: '#333' }}>
+            <em>{data.department || ''}</em>
+          </div>
+        </>
+      )}
+      getHandles={() => <></>}
+      {...props}
+    />
   ),
 };
 
@@ -338,58 +342,61 @@ const WorkflowEditor: React.FC = () => {
   const dispatch = useDispatch();
   const { nodes: reduxNodes, edges: reduxEdges } = useSelector((state: RootState) => state.workflowSlice);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [renderKey, setRenderKey] = useState(Date.now()); // State để trigger rerender
+  const [renderKey, setRenderKey] = useState(Date.now());
+  const [openModal, setOpenModal] = useState(false); // State cho Modal
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null); // Node đang chỉnh sửa
+  const [formData, setFormData] = useState({ label: '', details: '', department: '' }); // Dữ liệu form
 
   const savedFlow = typeof window !== 'undefined' ? localStorage.getItem('workflow-data') : null;
   const parsedFlow = savedFlow ? JSON.parse(savedFlow) : null;
 
   const [nodes, setNodesState, onNodesChange] = useNodesState(parsedFlow?.nodes || reduxNodes);
   const [edges, setEdgesState, onEdgesChange] = useEdgesState(parsedFlow?.edges || reduxEdges);
-  const { screenToFlowPosition, getNodes, fitView } = useReactFlow();
-
-  /* Tự động lưu */
-  useEffect(() => {
-    const data = JSON.stringify({ nodes, edges });
-    localStorage.setItem('workflow-data', data);
-  }, [nodes, edges]);
+  const { screenToFlowPosition, fitView } = useReactFlow();
 
   /* Kết nối cạnh */
   const onConnect = useCallback(
     (params: Connection) => {
-      const sourceNode = nodes.find((node) => node.id === params.source);
-      const isGateway = sourceNode?.type === 'condition';
-      const newEdges = addEdge(
-        {
-          ...params,
-          type: 'step',
-          markerEnd: { type: MarkerType.ArrowClosed },
-          label: isGateway
-            ? params.sourceHandle === 'true'
-              ? 'True'
-              : params.sourceHandle!.includes('false')
-              ? 'False'
-              : 'Default'
-            : undefined,
-          style: { stroke: '#555', strokeWidth: 1 },
-        },
-        edges
-      );
-      setEdgesState(newEdges);
-      dispatch(setEdges(newEdges));
+      setNodesState((currentNodes) => {
+        const sourceNode = currentNodes.find((node) => node.id === params.source);
+        const isGateway = sourceNode?.type === 'condition';
+        setEdgesState((currentEdges) =>
+          addEdge(
+            {
+              ...params,
+              type: 'step',
+              markerEnd: { type: MarkerType.ArrowClosed },
+              label: isGateway
+                ? params.sourceHandle === 'true'
+                  ? 'True'
+                  : params.sourceHandle!.includes('false')
+                  ? 'False'
+                  : 'Default'
+                : undefined,
+              style: { stroke: '#555', strokeWidth: 1 },
+            },
+            currentEdges
+          )
+        );
+        return currentNodes;
+      });
     },
-    [nodes, edges, setEdgesState, dispatch]
+    [setNodesState, setEdgesState]
   );
 
-  /* Thay đổi node */
+  /* Thay đổi node - Force rerender sau dragEnd */
   const onNodesChangeHandler = useCallback(
     (changes: NodeChange[]) => {
       onNodesChange(changes);
-      const updatedNodes = getNodes();
-      dispatch(setNodes(updatedNodes));
-      // Force rerender edges
-      setEdgesState([...edges]);
+      // Kiểm tra dragEnd (position change + dragging: false)
+      const hasDragEnd = changes.some(
+        (change) => change.type === 'position' && !('dragging' in change ? (change as any).dragging : true)
+      );
+      if (hasDragEnd) {
+        setRenderKey(Date.now()); // Force rerender sau dragEnd
+      }
     },
-    [onNodesChange, dispatch, getNodes, edges, setEdgesState]
+    [onNodesChange]
   );
 
   /* Thay đổi cạnh */
@@ -411,42 +418,36 @@ const WorkflowEditor: React.FC = () => {
 
   /* Click cạnh */
   const onEdgeClick = useCallback(
-    (_: React.MouseEvent, edge: Edge) => {
-      const updatedEdges = edges.map((e) => ({
-        ...e,
-        selected: e.id === edge.id,
-        style: {
-          stroke: e.id === edge.id ? '#0080ff' : '#555',
-          strokeWidth: e.id === edge.id ? 2 : 1,
-        },
-      }));
-      setEdgesState(updatedEdges);
-      dispatch(setEdges(updatedEdges));
+    (_: React.MouseEvent, clickedEdge: Edge) => {
+      setEdgesState((eds) =>
+        eds.map((e) => ({
+          ...e,
+          selected: e.id === clickedEdge.id,
+          style: {
+            stroke: e.id === clickedEdge.id ? '#0080ff' : '#555',
+            strokeWidth: e.id === clickedEdge.id ? 2 : 1,
+          },
+        }))
+      );
     },
-    [edges, setEdgesState, dispatch]
+    [setEdgesState]
   );
 
-  /* Double click node để sửa */
+  /* Double click node để mở Modal */
   const onNodeDoubleClick = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      const newLabel = prompt('Enter new node label:', node.data.label);
-      const newDetails = prompt('Enter task details:', node.data.details || '');
-      const newDepartment = prompt('Enter department:', node.data.department || '');
-      if (newLabel && newLabel.trim()) {
-        const updatedNode = {
-          ...node,
-          data: {
-            ...node.data,
-            label: newLabel.trim(),
-            details: newDetails ? newDetails.trim() : node.data.details || '',
-            department: newDepartment ? newDepartment.trim() : node.data.department || '',
-          },
-        };
-        setNodesState((nds) => nds.map((n) => (n.id === node.id ? updatedNode : n)));
-        dispatch(setNodes(getNodes().map((n) => (n.id === node.id ? updatedNode : n))));
-      }
+    (event: React.MouseEvent, node: Node) => {
+      console.log('Double click detected on node:', node.id); // Debug
+      event.preventDefault(); // Ngăn chặn xung đột sự kiện
+      event.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+      setSelectedNode(node);
+      setFormData({
+        label: node.data.label || '',
+        details: node.data.details || '',
+        department: node.data.department || '',
+      });
+      setOpenModal(true);
     },
-    [setNodesState, dispatch, getNodes]
+    []
   );
 
   /* Drag & drop từ sidebar */
@@ -456,27 +457,27 @@ const WorkflowEditor: React.FC = () => {
       const nodeType = event.dataTransfer.getData('application/reactflow');
       if (!nodeType) return;
       const position = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-      // Validate position
       if (isNaN(position.x) || isNaN(position.y)) {
         console.error('Invalid drop position:', position);
         return;
       }
-      const newNode: Node = {
-        id: `${nodes.length + 1}`,
-        type: nodeType,
-        position,
-        data: {
-          label: `New ${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)} Node`,
-          details: '',
-          department: '',
-          rotation: 0,
-          ...(nodeType === 'condition' ? { conditions: ['x > 10', 'x <= 10'] } : {}),
-        },
-      };
-      setNodesState((nds) => nds.concat(newNode));
-      dispatch(setNodes([...nodes, newNode]));
+      setNodesState((nds) => {
+        const newNode: Node = {
+          id: `${nds.length + 1}`,
+          type: nodeType,
+          position,
+          data: {
+            label: `New ${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)} Node`,
+            details: '',
+            department: '',
+            rotation: 0,
+            ...(nodeType === 'condition' ? { conditions: ['x > 10', 'x <= 10'] } : {}),
+          },
+        };
+        return [...nds, newNode];
+      });
     },
-    [nodes, setNodesState, dispatch, screenToFlowPosition]
+    [setNodesState, screenToFlowPosition]
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -484,10 +485,15 @@ const WorkflowEditor: React.FC = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  /* Save: Sync Redux và localStorage */
   const onSave = useCallback(() => {
-    console.log('Nodes:', nodes);
-    console.log('Edges:', edges);
-  }, [nodes, edges]);
+    const data = JSON.stringify({ nodes, edges });
+    localStorage.setItem('workflow-data', data);
+    dispatch(setNodes(nodes));
+    dispatch(setEdges(edges));
+    console.log('Saved Nodes:', nodes);
+    console.log('Saved Edges:', edges);
+  }, [nodes, edges, dispatch]);
 
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
@@ -498,47 +504,46 @@ const WorkflowEditor: React.FC = () => {
     setSelectedNodeId(node.id);
   }, []);
 
-  const rotateNode = (direction: 'left' | 'right') => {
-    if (!selectedNodeId) return;
-    const updatedNodes = nodes.map((n) => {
-      if (n.id === selectedNodeId) {
-        const currentRotation = n.data.rotation || 0;
-        const newRotation = direction === 'left' ? currentRotation - 90 : currentRotation + 90;
-        if (isNaN(newRotation)) {
-          console.error(`Invalid rotation for node ${n.id}: ${newRotation}`);
+  /* Rotate node - Kiểm tra và tối ưu */
+  const rotateNode = useCallback(
+    (direction: 'left' | 'right') => {
+      if (!selectedNodeId) return;
+
+      setNodesState((nds) => {
+        const updatedNodes = nds.map((n) => {
+          if (n.id === selectedNodeId) {
+            const currentRotation = n.data.rotation || 0;
+            const newRotation = normalizeRotation(direction === 'left' ? currentRotation - 90 : currentRotation + 90);
+
+            // Kiểm tra vị trí hợp lệ
+            if (isNaN(n.position.x) || isNaN(n.position.y)) {
+              console.error(`Invalid position for node ${n.id}:`, n.position);
+              return n; // Không update nếu vị trí không hợp lệ
+            }
+
+            console.log(`Rotating node ${n.id} to ${newRotation} degrees, position:`, n.position); // Debug
+            return {
+              ...n,
+              data: { ...n.data, rotation: newRotation },
+            };
+          }
           return n;
-        }
-        console.log(`Rotating node ${n.id} to ${newRotation} degrees`); // Debug
-        return {
-          ...n,
-          data: { ...n.data, rotation: newRotation },
-          key: `${n.id}-${Date.now()}`, // Force rerender node
-        };
-      }
-      return n;
-    });
+        });
 
-    const updatedEdges = edges.map((edge) => {
-      if (edge.source === selectedNodeId || edge.target === selectedNodeId) {
-        return {
-          ...edge,
-          key: `${edge.id}-${Date.now()}`, // Force rerender edge
-        };
-      }
-      return edge;
-    });
+        // Trì hoãn fitView để tránh lỗi layout
+        setTimeout(() => {
+          fitView({ duration: 200 });
+        }, 0);
 
-    // Update nodes, edges và trigger rerender toàn bộ flow
-    setNodesState([...updatedNodes]);
-    setEdgesState([...updatedEdges]);
-    setRenderKey(Date.now()); // Trigger rerender toàn bộ component
-    dispatch(setNodes(updatedNodes));
-    dispatch(setEdges(updatedEdges));
-    // Force recalculate layout
-    fitView({ duration: 200 });
-  };
+        return updatedNodes;
+      });
 
-  /* Phím tắt: Ctrl + ← / Ctrl + → */
+      setRenderKey(Date.now()); // Force rerender sau rotation
+    },
+    [selectedNodeId, setNodesState, fitView]
+  );
+
+  /* Phím tắt */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (!selectedNodeId) return;
@@ -552,8 +557,7 @@ const WorkflowEditor: React.FC = () => {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNodeId, nodes]);
+  }, [selectedNodeId, rotateNode]);
 
   const nodeTypesList = useMemo(
     () => [
@@ -567,6 +571,56 @@ const WorkflowEditor: React.FC = () => {
     ],
     []
   );
+
+  /* Auto save localStorage khi unmount */
+  useEffect(() => {
+    return () => {
+      const data = JSON.stringify({ nodes, edges });
+      localStorage.setItem('workflow-data', data);
+    };
+  }, [nodes, edges]);
+
+  /* Xử lý lưu Modal */
+  const handleSaveModal = () => {
+    if (selectedNode) {
+      setNodesState((nds) =>
+        nds.map((n) =>
+          n.id === selectedNode.id
+            ? {
+                ...n,
+                data: {
+                  ...n.data,
+                  label: formData.label.trim(),
+                  details: formData.details.trim() || n.data.details || '',
+                  department: formData.department.trim() || n.data.department || '',
+                },
+              }
+            : n
+        )
+      );
+    }
+    setOpenModal(false);
+  };
+
+  /* Xử lý đóng Modal */
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setFormData({ label: '', details: '', department: '' }); // Reset form
+    setSelectedNode(null);
+  };
+
+  /* Modal style */
+  const modalStyle = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex' }} key={renderKey}>
@@ -652,7 +706,7 @@ const WorkflowEditor: React.FC = () => {
           onNodesChange={onNodesChangeHandler}
           onEdgesChange={onEdgesChangeHandler}
           onConnect={onConnect}
-          onNodeDoubleClick={onNodeDoubleClick}
+          onNodeDoubleClick={onNodeDoubleClick} // Đảm bảo sự kiện được gọi
           onEdgeClick={onEdgeClick}
           onNodeClick={onNodeClick}
           nodeTypes={nodeTypes}
@@ -671,11 +725,45 @@ const WorkflowEditor: React.FC = () => {
             setSelectedNodeId(selNodes.length === 1 ? selNodes[0].id : null);
           }}
         >
-          <Background />
+          <Background gap={10} />
           <Controls />
           <MiniMap />
         </ReactFlow>
       </div>
+
+      {/* Modal nhập liệu */}
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box sx={modalStyle}>
+          <h2>Edit Node</h2>
+          <TextField
+            label="Label"
+            value={formData.label}
+            onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Details"
+            value={formData.details}
+            onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Department"
+            value={formData.department}
+            onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+          <Button onClick={handleSaveModal} variant="contained" color="primary" style={{ marginTop: '20px' }}>
+            Save
+          </Button>
+          <Button onClick={handleCloseModal} variant="outlined" style={{ marginTop: '20px', marginLeft: '10px' }}>
+            Cancel
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };
