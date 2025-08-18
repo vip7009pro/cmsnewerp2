@@ -115,7 +115,7 @@ const nodeTypes: NodeTypes = {
   start: (props: any) => (
     <BaseNode
       baseStyle={{
-        fontSize: '0.6rem',
+        fontSize: '0.5rem',
         padding: '4px',
         border: '1px solid #777',
         borderRadius: 5,
@@ -150,7 +150,7 @@ const nodeTypes: NodeTypes = {
   end: (props: any) => (
     <BaseNode
       baseStyle={{
-        fontSize: '0.6rem',
+        fontSize: '0.5rem',
         padding: '4px',
         border: '1px solid #777',
         borderRadius: 5,
@@ -176,9 +176,9 @@ const nodeTypes: NodeTypes = {
   action: (props: any) => (
     <BaseNode
       baseStyle={{
-        fontSize: '0.6rem',
+        fontSize: '0.5rem',
         padding: '4px',
-        border: '1px solid #777',
+        border: '1px solid #7777777a',
         borderRadius: 5,
         background: '#8fcdff',
         maxWidth: '160px',
@@ -208,13 +208,13 @@ const nodeTypes: NodeTypes = {
   condition: (props: any) => (
     <BaseNode
       baseStyle={{
-        fontSize: '0.6rem',
+        fontSize: '0.5rem',
         padding: '8px',
-        border: '2px solid #ff9800',
+        border: '1px solid #ff9800',
         borderRadius: '20%',
         background: '#fff3e0',
-        width: 70,
-        height: 70,
+        width: 80,
+        height: 20,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -226,7 +226,7 @@ const nodeTypes: NodeTypes = {
       getContent={(data) => (
         <>
           {data.label || 'Condition'}
-          <div style={{ fontSize: '0.5rem' }}>
+          <div style={{ fontSize: '0.4rem' }}>
             <em>{data.department || 'Chưa gán bộ phận'}</em>
           </div>
         </>
