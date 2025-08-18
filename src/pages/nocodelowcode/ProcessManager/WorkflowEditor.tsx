@@ -92,13 +92,17 @@ const BaseNode = React.memo(
         ...baseStyle,
         boxShadow: selected ? '0 0 8px rgba(0, 128, 255, 0.8)' : 'none',
         position: 'relative',
-      }}
+        pointerEvents: 'auto',
+        userSelect: 'none',
+      }}      
+      data-no-pan={true}
     >
       {getHandles(data.rotation || 0, data)}
       <div
         style={{
           transform: `rotate(${data.rotation || 0}deg)`,
           transformOrigin: 'center center',
+          pointerEvents: 'auto',
         }}
       >
         {getContent(data)}
@@ -343,9 +347,9 @@ const WorkflowEditor: React.FC = () => {
   const { nodes: reduxNodes, edges: reduxEdges } = useSelector((state: RootState) => state.workflowSlice);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [renderKey, setRenderKey] = useState(Date.now());
-  const [openModal, setOpenModal] = useState(false); // State cho Modal
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null); // Node đang chỉnh sửa
-  const [formData, setFormData] = useState({ label: '', details: '', department: '' }); // Dữ liệu form
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [formData, setFormData] = useState({ label: '', details: '', department: '' });
 
   const savedFlow = typeof window !== 'undefined' ? localStorage.getItem('workflow-data') : null;
   const parsedFlow = savedFlow ? JSON.parse(savedFlow) : null;
@@ -384,17 +388,10 @@ const WorkflowEditor: React.FC = () => {
     [setNodesState, setEdgesState]
   );
 
-  /* Thay đổi node - Force rerender sau dragEnd */
+  /* Thay đổi node */
   const onNodesChangeHandler = useCallback(
     (changes: NodeChange[]) => {
       onNodesChange(changes);
-      // Kiểm tra dragEnd (position change + dragging: false)
-      const hasDragEnd = changes.some(
-        (change) => change.type === 'position' && !('dragging' in change ? (change as any).dragging : true)
-      );
-      if (hasDragEnd) {
-        setRenderKey(Date.now()); // Force rerender sau dragEnd
-      }
     },
     [onNodesChange]
   );
@@ -403,29 +400,21 @@ const WorkflowEditor: React.FC = () => {
   const onEdgesChangeHandler = useCallback(
     (changes: EdgeChange[]) => {
       onEdgesChange(changes);
-      setEdgesState((eds) =>
-        eds.map((edge) => ({
-          ...edge,
-          style: {
-            stroke: edge.selected ? '#0080ff' : '#555',
-            strokeWidth: edge.selected ? 2 : 1,
-          },
-        }))
-      );
     },
-    [onEdgesChange, setEdgesState]
+    [onEdgesChange]
   );
 
   /* Click cạnh */
   const onEdgeClick = useCallback(
     (_: React.MouseEvent, clickedEdge: Edge) => {
+      console.log('Edge clicked:', clickedEdge.id); // Debug
       setEdgesState((eds) =>
         eds.map((e) => ({
           ...e,
-          selected: e.id === clickedEdge.id,
+          selected: e.id === clickedEdge.id, // Đặt selected cho cạnh được click
           style: {
-            stroke: e.id === clickedEdge.id ? '#0080ff' : '#555',
-            strokeWidth: e.id === clickedEdge.id ? 2 : 1,
+            stroke: e.id === clickedEdge.id ? '#0080ff' : '#555', // Highlight màu xanh
+            strokeWidth: e.id === clickedEdge.id ? 2 : 1, // Tăng độ dày
           },
         }))
       );
@@ -436,9 +425,9 @@ const WorkflowEditor: React.FC = () => {
   /* Double click node để mở Modal */
   const onNodeDoubleClick = useCallback(
     (event: React.MouseEvent, node: Node) => {
-      console.log('Double click detected on node:', node.id); // Debug
-      event.preventDefault(); // Ngăn chặn xung đột sự kiện
-      event.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+      console.log('onNodeDoubleClick triggered:', node.id);
+      event.preventDefault();
+      event.stopPropagation();
       setSelectedNode(node);
       setFormData({
         label: node.data.label || '',
@@ -446,6 +435,17 @@ const WorkflowEditor: React.FC = () => {
         department: node.data.department || '',
       });
       setOpenModal(true);
+    },
+    []
+  );
+
+  /* Click node */
+  const onNodeClick = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      console.log('onNodeClick triggered:', node.id);
+      event.preventDefault();
+      event.stopPropagation();
+      setSelectedNodeId(node.id);
     },
     []
   );
@@ -491,8 +491,8 @@ const WorkflowEditor: React.FC = () => {
     localStorage.setItem('workflow-data', data);
     dispatch(setNodes(nodes));
     dispatch(setEdges(edges));
-    console.log('Saved Nodes:', nodes);
-    console.log('Saved Edges:', edges);
+    console.log('Nodes', nodes);
+    console.log('Edges', edges);
   }, [nodes, edges, dispatch]);
 
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
@@ -500,11 +500,7 @@ const WorkflowEditor: React.FC = () => {
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
-    setSelectedNodeId(node.id);
-  }, []);
-
-  /* Rotate node - Kiểm tra và tối ưu */
+  /* Rotate node */
   const rotateNode = useCallback(
     (direction: 'left' | 'right') => {
       if (!selectedNodeId) return;
@@ -514,14 +510,6 @@ const WorkflowEditor: React.FC = () => {
           if (n.id === selectedNodeId) {
             const currentRotation = n.data.rotation || 0;
             const newRotation = normalizeRotation(direction === 'left' ? currentRotation - 90 : currentRotation + 90);
-
-            // Kiểm tra vị trí hợp lệ
-            if (isNaN(n.position.x) || isNaN(n.position.y)) {
-              console.error(`Invalid position for node ${n.id}:`, n.position);
-              return n; // Không update nếu vị trí không hợp lệ
-            }
-
-            console.log(`Rotating node ${n.id} to ${newRotation} degrees, position:`, n.position); // Debug
             return {
               ...n,
               data: { ...n.data, rotation: newRotation },
@@ -529,18 +517,12 @@ const WorkflowEditor: React.FC = () => {
           }
           return n;
         });
-
-        // Trì hoãn fitView để tránh lỗi layout
-        setTimeout(() => {
-          fitView({ duration: 200 });
-        }, 0);
-
+        setRenderKey(Date.now()); // Re-render component
+        setTimeout(() => fitView({ duration: 200 }), 0);
         return updatedNodes;
       });
-
-      setRenderKey(Date.now()); // Force rerender sau rotation
     },
-    [selectedNodeId, setNodesState, fitView]
+    [selectedNodeId, setNodesState, fitView, setRenderKey]
   );
 
   /* Phím tắt */
@@ -605,7 +587,7 @@ const WorkflowEditor: React.FC = () => {
   /* Xử lý đóng Modal */
   const handleCloseModal = () => {
     setOpenModal(false);
-    setFormData({ label: '', details: '', department: '' }); // Reset form
+    setFormData({ label: '', details: '', department: '' });
     setSelectedNode(null);
   };
 
@@ -623,7 +605,7 @@ const WorkflowEditor: React.FC = () => {
   };
 
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex' }} key={renderKey}>
+    <div style={{ width: '100vw', height: '90vh', display: 'flex' }} key={renderKey}>
       {/* Sidebar */}
       <div
         style={{
@@ -706,17 +688,17 @@ const WorkflowEditor: React.FC = () => {
           onNodesChange={onNodesChangeHandler}
           onEdgesChange={onEdgesChangeHandler}
           onConnect={onConnect}
-          onNodeDoubleClick={onNodeDoubleClick} // Đảm bảo sự kiện được gọi
-          onEdgeClick={onEdgeClick}
+          onNodeDoubleClick={onNodeDoubleClick}
           onNodeClick={onNodeClick}
+          onEdgeClick={onEdgeClick}
           nodeTypes={nodeTypes}
           fitView
           selectionKeyCode="Shift"
           multiSelectionKeyCode="Control"
           deleteKeyCode="Delete"
           selectionMode={SelectionMode.Partial}
-          selectionOnDrag={true}
-          panOnDrag={false}
+          selectionOnDrag={true} // Bật selection bằng drag
+          panOnDrag={false} // Tắt pan khi drag để ưu tiên selection
           panOnScroll={true}
           zoomOnScroll={true}
           zoomOnPinch={true}
