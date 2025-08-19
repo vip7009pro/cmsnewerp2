@@ -330,6 +330,7 @@ const nodeTypes: NodeTypes = {
       getContent={(data) => (
         <>
           {data.label || 'Note'}
+          <div style={{ fontSize: '0.5rem' }}>{data.details || ''}</div>
           <div style={{ fontSize: '0.5rem', color: '#333' }}>
             <em>{data.department || ''}</em>
           </div>
@@ -543,13 +544,13 @@ const WorkflowEditor: React.FC = () => {
 
   const nodeTypesList = useMemo(
     () => [
-      { nodeType: 'start', icon: <MdOutlineNotStarted size={24} /> },
-      { nodeType: 'end', icon: <FaRegStopCircle size={24} /> },
-      { nodeType: 'action', icon: <FaRunning size={24} /> },
-      { nodeType: 'condition', icon: <FaExpandArrowsAlt size={24} /> },
-      { nodeType: 'event', icon: <MdEventRepeat size={24} /> },
-      { nodeType: 'subprocess', icon: <FcProcess size={24} /> },
-      { nodeType: 'annotation', icon: <HiOutlineAnnotation size={24} /> },
+      { nodeType: 'start', icon: <MdOutlineNotStarted size={24} color={randomColor()} /> },
+      { nodeType: 'end', icon: <FaRegStopCircle size={24} color={randomColor()} /> },
+      { nodeType: 'action', icon: <FaRunning size={24} color={randomColor()} /> },
+      { nodeType: 'condition', icon: <FaExpandArrowsAlt size={24} color={randomColor()} /> },
+      { nodeType: 'event', icon: <MdEventRepeat size={24} color={randomColor()} /> },
+      { nodeType: 'subprocess', icon: <FcProcess size={24} color={randomColor()} /> },
+      { nodeType: 'annotation', icon: <HiOutlineAnnotation size={24} color={randomColor()} /> },
     ],
     []
   );
@@ -609,7 +610,7 @@ const WorkflowEditor: React.FC = () => {
       {/* Sidebar */}
       <div
         style={{
-          width: '200px',
+          width: '120px',
           background: '#f0f0f0',
           padding: '10px',
           borderRight: '1px solid #ccc',
@@ -625,15 +626,16 @@ const WorkflowEditor: React.FC = () => {
             draggable
             onDragStart={(event) => onDragStart(event, type.nodeType)}
             style={{
-              padding: '10px',
+              padding: '5px',
               background: '#fff',
               border: '1px solid #777',
               borderRadius: '5px',
               cursor: 'grab',
               textAlign: 'center',
+              fontSize:'0.8rem'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               {type.nodeType.charAt(0).toUpperCase() + type.nodeType.slice(1)}
               {type.icon}
             </div>
@@ -751,3 +753,8 @@ const WorkflowEditor: React.FC = () => {
 };
 
 export default WorkflowEditor;
+
+function randomColor(): string | undefined {
+  const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'brown'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
