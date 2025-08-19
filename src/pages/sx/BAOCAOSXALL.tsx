@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import KPI_NVSX from "./KPI_NV/KPI_NVSX";
 import DATASAMPLESX from "./DATASAMPLE/DATASAMPLESX";
+import KPI_NVSX_NEW from "./KPI_NV_NEW/KPI_NV_NEW";
 const BAOCAOSXALL = () => {
     const lang: string | undefined = useSelector(
       (state: RootState) => state.totalSlice.lang
@@ -72,6 +73,9 @@ const BAOCAOSXALL = () => {
           )}
           {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="KPI NV">
             <KPI_NVSX />
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="KPI NEW">
+            <KPI_NVSX_NEW />
           </MyTabs.Tab>}
           {getCompany() === "CMS" && <MyTabs.Tab title="Data Sample">
             <DATASAMPLESX />

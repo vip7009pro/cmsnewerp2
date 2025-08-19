@@ -1374,3 +1374,29 @@ export interface LUONGP3_DATA {
   OUT_FILM_AMOUNT: number;
   TOTAL_P3_AMOUNT: number;
 }
+
+
+export interface SX_KPI_NEW_DETAIL_DATA {
+  CTR_CD: string;
+  EQ_NAME: string;
+  INS_EMPL: string;
+  RUN_COUNT: number;
+  INPUT_QTY: number;
+  REMAIN_QTY: number;
+  USED_QTY: number;
+  DEFAULT_QTY: number;
+  RATE_MET_TONG: number;
+  RATE_MET_MAY: number;
+  WORK_HOURS: number;
+  REAL_RUN_HOURS: number;
+  KPI_BY_MET: number;
+  KPI: number;
+}
+
+export interface SX_KPI_NEW_SUMMARY_DATA {
+  INS_EMPL: string;
+  RUN_COUNT: number;
+  TOTAL_SANLUONG: number;
+  KPI: number;
+  WORK_HOURS: number;
+}

@@ -31,6 +31,8 @@ import {
   SX_ACHIVE_DATA,
   SX_ACHIVE_DATE,
   SX_DATA,
+  SX_KPI_NEW_DETAIL_DATA,
+  SX_KPI_NEW_SUMMARY_DATA,
   SX_KPI_NV_DATA,
   SX_LOSS_ROLL_DATA,
   SX_LOSSTIME_BY_EMPL,
@@ -5735,6 +5737,62 @@ export const f_loadcapabydeliveryplan = async (DATA: any) => {
         kq = loaded_data;
       } else {
         kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_loadSXKPINEW_DETAIL = async (DATA: any) => {
+  let kq: SX_KPI_NEW_DETAIL_DATA[] = [];
+  await generalQuery("loadSXKPINEW_DETAIL", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_KPI_NEW_DETAIL_DATA[] = response.data.data.map(
+          (element: SX_KPI_NEW_DETAIL_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_loadSXKPINEW_SUMMARY = async (DATA: any) => {
+  let kq: SX_KPI_NEW_SUMMARY_DATA[] = [];
+  await generalQuery("loadSXKPINEW_SUMMARY", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: SX_KPI_NEW_SUMMARY_DATA[] = response.data.data.map(
+          (element: SX_KPI_NEW_SUMMARY_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+
+export const f_insertupdateworkhours = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertupdateworkhours", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+      } else {
+        kq += "_" + response.data.message;
       }
     })
     .catch((error) => {});

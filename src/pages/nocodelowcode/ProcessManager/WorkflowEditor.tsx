@@ -544,13 +544,13 @@ const WorkflowEditor: React.FC = () => {
 
   const nodeTypesList = useMemo(
     () => [
-      { nodeType: 'start', icon: <MdOutlineNotStarted size={24} color={randomColor()} /> },
-      { nodeType: 'end', icon: <FaRegStopCircle size={24} color={randomColor()} /> },
-      { nodeType: 'action', icon: <FaRunning size={24} color={randomColor()} /> },
-      { nodeType: 'condition', icon: <FaExpandArrowsAlt size={24} color={randomColor()} /> },
-      { nodeType: 'event', icon: <MdEventRepeat size={24} color={randomColor()} /> },
-      { nodeType: 'subprocess', icon: <FcProcess size={24} color={randomColor()} /> },
-      { nodeType: 'annotation', icon: <HiOutlineAnnotation size={24} color={randomColor()} /> },
+      { nodeType: 'start', icon: <MdOutlineNotStarted size={24} color={'green'} /> },
+      { nodeType: 'end', icon: <FaRegStopCircle size={24} color={'red'} /> },
+      { nodeType: 'action', icon: <FaRunning size={24} color={'blue'} /> },
+      { nodeType: 'condition', icon: <FaExpandArrowsAlt size={24} color={'orange'} /> },
+      { nodeType: 'event', icon: <MdEventRepeat size={24} color={'purple'} /> },
+      { nodeType: 'subprocess', icon: <FcProcess size={24} color={'black'} /> },
+      { nodeType: 'annotation', icon: <HiOutlineAnnotation size={24} color={'#cac13c'} /> },
     ],
     []
   );
