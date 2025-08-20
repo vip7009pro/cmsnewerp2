@@ -37,8 +37,7 @@ const PostManager = () => {
   ]
   const [postList, setPostList] = useState<POST_DATA[]>([]);
   const selectedPostList = useRef<POST_DATA[]>([]);
-  const fetchPostList = async () => {
-    console.log('vao day')
+  const fetchPostList = async () => {    
     let kq: POST_DATA[] = [];
     kq = await f_fetchPostListAll();
     if (kq.length > 0) {
@@ -54,9 +53,17 @@ const PostManager = () => {
       Swal.fire('Thông báo', 'Chọn ít nhất một dòng', 'warning');
       return;
     }
+    console.log(selectedPostList.current)
+    console.log(getUserData()?.EMPL_NO)
     for (let i = 0; i < selectedPostList.current.length; i++) {
       if (getUserData()?.EMPL_NO === selectedPostList.current[i].INS_EMPL)
+      {        
         await f_updatePostData(selectedPostList.current[i])
+      }
+      else
+      {
+        Swal.fire('Thông báo', 'Bạn không có quyền update post', 'error')
+      }
     }
     fetchPostList();
     Swal.fire('Thông báo', "Đã update hoàn thành", 'success')

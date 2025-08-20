@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, useContext } from "react";
+import React, { useEffect, Suspense, useContext, lazy } from "react";
 import "./BAOCAOSXALL.scss";
 const LICHSUINPUTLIEU = React.lazy(() => import("../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
 const DATASX = React.lazy(() => import("../qlsx/QLSXPLAN/DATASX/DATASX"));
@@ -17,9 +17,9 @@ import { getCompany, getUserData } from "../../api/Api";
 import MyTabs from "../../components/MyTab/MyTab";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import KPI_NVSX from "./KPI_NV/KPI_NVSX";
-import DATASAMPLESX from "./DATASAMPLE/DATASAMPLESX";
-import KPI_NVSX_NEW from "./KPI_NV_NEW/KPI_NV_NEW";
+const KPI_NVSX = lazy(() => import("./KPI_NV/KPI_NVSX"));
+const DATASAMPLESX = lazy(() => import("./DATASAMPLE/DATASAMPLESX"));
+const KPI_NVSX_NEW = lazy(() => import("./KPI_NV_NEW/KPI_NV_NEW"));
 const BAOCAOSXALL = () => {
     const lang: string | undefined = useSelector(
       (state: RootState) => state.totalSlice.lang
@@ -71,10 +71,10 @@ const BAOCAOSXALL = () => {
               <BTP_AUTO />
             </MyTabs.Tab>
           )}
-          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="KPI NV">
+          {getUserData()?.JOB_NAME !== "Worker" && getCompany() === "CMS" && <MyTabs.Tab title="KPI NV">
             <KPI_NVSX />
           </MyTabs.Tab>}
-          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="KPI NEW">
+          {getUserData()?.JOB_NAME !== "Worker" && getCompany() !== "CMS" &&<MyTabs.Tab title="KPI NEW">
             <KPI_NVSX_NEW />
           </MyTabs.Tab>}
           {getCompany() === "CMS" && <MyTabs.Tab title="Data Sample">

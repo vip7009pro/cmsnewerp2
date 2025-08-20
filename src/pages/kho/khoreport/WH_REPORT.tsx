@@ -14,7 +14,7 @@ const WH_REPORT = () => {
             <KHOVL_REPORT />
           </MyTabs.Tab>
           <MyTabs.Tab title="PRODUCT WH REPORT">
-            {getUserData()?.EMPL_NO === "NHU1903" ? <KHOTP_REPORT /> : <KHOTP_REPORT />}
+            {getUserData()?.EMPL_NO === "NHU1903" ? <KHOTP_REPORT /> : <></>}
           </MyTabs.Tab>         
         </MyTabs>
       </Suspense>
