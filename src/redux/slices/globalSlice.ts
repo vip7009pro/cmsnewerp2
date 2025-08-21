@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
 import { ELE_ARRAY, GlobalInterface, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
 import { QLSXPLANDATA } from "../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
-const startCPN: string = "PVN";
+const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
 const main_port = protocol === "https" ? "5014" : "5013";
