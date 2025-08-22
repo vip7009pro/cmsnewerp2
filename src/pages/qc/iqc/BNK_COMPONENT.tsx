@@ -596,6 +596,7 @@ const BNK_COMPONENT = ({
         </table>
         <div />
       </div>
+      <div>HSD: {data?.EXP_DATE} (OK)</div>
       <div className="note">Ghi chú:</div>
     </div>
   );
