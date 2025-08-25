@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TRUOCHAN_BACK_DATA } from "../../../qc/interfaces/qcInterface";
-import { f_load_ALL_GAP_RATE_DATA, f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA,  f_load_dailyAchive_data,  f_load_dailyEff_data,  f_load_KT_GAP_RATE_DATA, f_load_monthlyAchive_data, f_load_monthlyEff_data, f_load_SX_Daily_Loss_Trend, f_load_SX_GAP_RATE_DATA, f_load_SX_Monthly_Loss_Trend, f_load_SX_Weekly_Loss_Trend, f_load_SX_Yearly_Loss_Trend, f_load_SXLossTimeByEmpl, f_load_SXLossTimeByReason, f_load_weeklyAchive_data,f_load_weeklyEff_data,f_load_YCSX_GAP_RATE_DATA, f_load_yearlyAchive_data, f_load_yearlyEff_data, f_loadALL_GAP_RATE_BACKDATA, f_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA, f_loadKT_GAP_RATE_BACKDATA, f_loadPlanLossData, f_loadSX_GAP_RATE_BACKDATA, f_loadYCSX_GAP_RATE_BACKDATA,  } from '../../../qlsx/QLSXPLAN/utils/khsxUtils';
+import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, CNT_GAP_DATA2, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TRUOCHAN_BACK_DATA, TRUOCHAN_BACK_DATA2 } from "../../../qc/interfaces/qcInterface";
+import { f_load_ALL_GAP_RATE_DATA, f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2, f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA,  f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA2,  f_load_dailyAchive_data,  f_load_dailyEff_data,  f_load_KT_GAP_RATE_DATA, f_load_monthlyAchive_data, f_load_monthlyEff_data, f_load_SX_Daily_Loss_Trend, f_load_SX_GAP_RATE_DATA, f_load_SX_Monthly_Loss_Trend, f_load_SX_Weekly_Loss_Trend, f_load_SX_Yearly_Loss_Trend, f_load_SXLossTimeByEmpl, f_load_SXLossTimeByReason, f_load_weeklyAchive_data,f_load_weeklyEff_data,f_load_YCSX_GAP_RATE_DATA, f_load_yearlyAchive_data, f_load_yearlyEff_data, f_loadALL_GAP_RATE_BACKDATA, f_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA, f_loadKT_GAP_RATE_BACKDATA, f_loadPlanLossData, f_loadSX_GAP_RATE_BACKDATA, f_loadYCSX_GAP_RATE_BACKDATA,  } from '../../../qlsx/QLSXPLAN/utils/khsxUtils';
 import moment from 'moment';
 import { PLAN_LOSS_DATA, PRODUCTION_EFFICIENCY_DATA, SX_ACHIVE_DATA, SX_LOSSTIME_BY_EMPL, SX_LOSSTIME_REASON_DATA, SX_TREND_LOSS_DATA } from '../../../qlsx/QLSXPLAN/interfaces/khsxInterface';
 
@@ -126,6 +126,32 @@ export const usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA = (fromDate: strin
       setLoading(true);
       setError(null);
       setData(await f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA({
+            FROM_DATE: df ? frd : fromDate,
+            TO_DATE: df ? td : toDate,            
+          })); 
+    },
+    [fromDate, toDate, df]
+  );
+
+  const triggerFetch = useCallback(() => {
+    fetchData();
+  }, [fromDate, toDate, fetchData]);
+
+  return { data, loading, error, triggerFetch };
+};
+export const usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA2 = (fromDate: string, toDate: string, df: boolean) => {
+  const [data, setData] = useState<CNT_GAP_DATA2[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);  
+
+  let td = moment().add(0, "day").format("YYYY-MM-DD");
+  let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+
+  const fetchData = useCallback(
+    async () => {  
+      setLoading(true);
+      setError(null);
+      setData(await f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA2({
             FROM_DATE: df ? frd : fromDate,
             TO_DATE: df ? td : toDate,            
           })); 
@@ -579,6 +605,33 @@ export const usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA = (fromDate: s
       setLoading(true);
       setError(null);
       let result = await f_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA({
+            FROM_DATE: df ? frd : fromDate,
+            TO_DATE: df ? td : toDate,            
+          }); 
+      setData(result);     
+    },
+    [fromDate, toDate, df]
+  );
+
+  const triggerFetch = useCallback(() => {
+    fetchData();
+  }, [fromDate, toDate, fetchData]);
+
+  return { data, loading, error, triggerFetch};
+};
+export const usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2 = (fromDate: string, toDate: string, df: boolean) => {
+  const [data, setData] = useState<TRUOCHAN_BACK_DATA2[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);  
+
+  let td = moment().add(0, "day").format("YYYY-MM-DD");
+  let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+
+  const fetchData = useCallback(
+    async () => {  
+      setLoading(true);
+      setError(null);
+      let result = await f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2({
             FROM_DATE: df ? frd : fromDate,
             TO_DATE: df ? td : toDate,            
           }); 

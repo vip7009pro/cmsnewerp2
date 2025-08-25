@@ -206,6 +206,7 @@ const Login = () => {
               name="select_server"
               value={server_string}
               onChange={(e) => {
+                console.log(e.target.value);
                 localStorage.setItem("server_ip", e.target.value);
                 setServer_String(e.target.value);
                 dispatch(changeServer(e.target.value));

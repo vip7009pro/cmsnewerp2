@@ -27,8 +27,9 @@ import SXPlanLossTrend from "../../../components/Chart/SX/SXPlanLossTrend";
 import YCSX_GAP_RATE from "../../../components/Chart/SX/YCSX_GAP_RATE";
 import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
-import { usehandle_loadYCSX_GAP_RATE_DATA, usehandle_loadSX_GAP_RATE_DATA, usehandle_loadKT_GAP_RATE_DATA, usehandle_loadALL_GAP_RATE_DATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA, usehandle_load_SX_Daily_Loss_Trend, usehandle_load_SX_Weekly_Loss_Trend, usehandle_load_SX_Monthly_Loss_Trend, usehandle_load_SX_Yearly_Loss_Trend, usehandle_getWeeklyAchiveData, usehandle_getDailyAchiveData, usehandle_getMonthlyAchiveData, usehandle_getYearlyAchiveData, usehandle_getDailyEffData, usehandle_getWeeklyEffData, usehandle_getMonthlyEffData, usehandle_getYearlyEffData, usehandle_getPlanLossData, usehandle_getSXLossTimeByEmpl, usehandle_getSXLossTimeByReason, usehandle_loadYCSX_GAP_RATE_BACKDATA, usehandle_loadSX_GAP_RATE_BACKDATA, usehandle_loadKT_GAP_RATE_BACKDATA, usehandle_loadALL_GAP_RATE_BACKDATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA } from "./hooks/BAOCAOSX_HOOKS";
+import { usehandle_loadYCSX_GAP_RATE_DATA, usehandle_loadSX_GAP_RATE_DATA, usehandle_loadKT_GAP_RATE_DATA, usehandle_loadALL_GAP_RATE_DATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA, usehandle_load_SX_Daily_Loss_Trend, usehandle_load_SX_Weekly_Loss_Trend, usehandle_load_SX_Monthly_Loss_Trend, usehandle_load_SX_Yearly_Loss_Trend, usehandle_getWeeklyAchiveData, usehandle_getDailyAchiveData, usehandle_getMonthlyAchiveData, usehandle_getYearlyAchiveData, usehandle_getDailyEffData, usehandle_getWeeklyEffData, usehandle_getMonthlyEffData, usehandle_getYearlyEffData, usehandle_getPlanLossData, usehandle_getSXLossTimeByEmpl, usehandle_getSXLossTimeByReason, usehandle_loadYCSX_GAP_RATE_BACKDATA, usehandle_loadSX_GAP_RATE_BACKDATA, usehandle_loadKT_GAP_RATE_BACKDATA, usehandle_loadALL_GAP_RATE_BACKDATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA2, usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2 } from "./hooks/BAOCAOSX_HOOKS";
 import YCSX_GAP_RATE_KD from "../../../components/Chart/SX/YCSX_GAP_RATE_KD";
+import YCSX_GAP_RATE2 from "../../../components/Chart/SX/YCSX_GAP_RATE2";
 
 const SX_REPORT = () => {
   const [machineList, setMachineList] = useState<MACHINE_LIST[]>([]);
@@ -45,12 +46,14 @@ const SX_REPORT = () => {
   const { data: ktgapData, loading: ktgapLoading, error: ktgapError, triggerFetch: ktgapTriggerFetch } = usehandle_loadKT_GAP_RATE_DATA(fromdate, todate, df);
   const { data: allgapData, loading: allgapLoading, error: allgapError, triggerFetch: allgapTriggerFetch } = usehandle_loadALL_GAP_RATE_DATA(fromdate, todate, df);
   const { data: allhoanthanhtruochanrateData, loading: allhoanthanhtruochanrateLoading, error: allhoanthanhtruochanrateError, triggerFetch: allhoanthanhtruochanrateTriggerFetch } = usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA(fromdate, todate, df);
+  const { data: allhoanthanhtruochanrateData2, loading: allhoanthanhtruochanrateLoading2, error: allhoanthanhtruochanrateError2, triggerFetch: allhoanthanhtruochanrateTriggerFetch2 } = usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_DATA2(fromdate, todate, df);
 
   const { data: ycsxgapbackData, loading: ycsxgapbackLoading, error: ycsxgapbackError, triggerFetch: ycsxgapbackTriggerFetch } = usehandle_loadYCSX_GAP_RATE_BACKDATA(fromdate, todate, df);
   const { data: sxgapbackData, loading: sxgapbackLoading, error: sxgapbackError, triggerFetch: sxgapbackTriggerFetch } = usehandle_loadSX_GAP_RATE_BACKDATA(fromdate, todate, df);
   const { data: ktgapbackData, loading: ktgapbackLoading, error: ktgapbackError, triggerFetch: ktgapbackTriggerFetch } = usehandle_loadKT_GAP_RATE_BACKDATA(fromdate, todate, df);
   const { data: allgapbackData, loading: allgapbackLoading, error: allgapbackError, triggerFetch: allgapbackTriggerFetch } = usehandle_loadALL_GAP_RATE_BACKDATA(fromdate, todate, df);
   const { data: allhoanthanhtruochanratebackData, loading: allhoanthanhtruochanratebackLoading, error: allhoanthanhtruochanratebackError, triggerFetch: allhoanthanhtruochanratebackTriggerFetch } = usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA(fromdate, todate, df);
+  const { data: allhoanthanhtruochanratebackData2, loading: allhoanthanhtruochanratebackLoading2, error: allhoanthanhtruochanratebackError2, triggerFetch: allhoanthanhtruochanratebackTriggerFetch2 } = usehandle_loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2(fromdate, todate, df);
 
 
 
@@ -112,6 +115,8 @@ const SX_REPORT = () => {
       allgapbackTriggerFetch(),
       allhoanthanhtruochanratebackTriggerFetch(),
       allhoanthanhtruochanrateTriggerFetch(),
+      allhoanthanhtruochanrateTriggerFetch2(),
+      allhoanthanhtruochanratebackTriggerFetch2()
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -712,6 +717,19 @@ const SX_REPORT = () => {
               </IconButton>
               </span>
               <YCSX_GAP_RATE data={[...allhoanthanhtruochanrateData].reverse()} />
+            </div>
+            <div className="dailygraph" style={{ height: '600px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span className="subsection">Chi tiết tỉ trọng giao chậm theo bộ phận <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(allhoanthanhtruochanratebackData2, "ALL HOAN THANH TRUOC HAN RATE2");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span> 
+              <YCSX_GAP_RATE2 dldata={[...allhoanthanhtruochanrateData2].reverse()} processColor="#dda224" materialColor="#74c938" />
             </div>
           </div>
         </div>

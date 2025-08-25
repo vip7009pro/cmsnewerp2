@@ -74,7 +74,7 @@ const YCSX_GAP_RATE = ({ data }: { data: CNT_GAP_DATA[] }) => {
  
 // COLORS động từ lạnh (xanh dương) đến nóng (đỏ)
 const COLORS = generateMultiGradientColors(['#3dff0c','#fbff00', '#ff1100'], data.length).reverse();
-console.log('Colors', COLORS);
+//console.log('Colors', COLORS);
   return (
     <CustomResponsiveContainer>
       <PieChart width={900} height={900}>

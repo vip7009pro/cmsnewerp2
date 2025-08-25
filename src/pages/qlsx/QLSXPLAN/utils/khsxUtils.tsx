@@ -55,7 +55,7 @@ import {
 import { checkBP, zeroPad } from "../../../../api/GlobalFunction";
 import { f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
 import { BOMSX_DATA, CODE_FULL_INFO } from "../../../rnd/interfaces/rndInterface";
-import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TREND_NGUOI_HANG_DATA, TRUOCHAN_BACK_DATA } from "../../../qc/interfaces/qcInterface";
+import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, CNT_GAP_DATA2, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TREND_NGUOI_HANG_DATA, TRUOCHAN_BACK_DATA, TRUOCHAN_BACK_DATA2 } from "../../../qc/interfaces/qcInterface";
 export const f_loadTiLeDat = async (
   plan_date: string,
   machine: string,
@@ -4964,6 +4964,48 @@ export const f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA = async (DATA: any) => {
       if (response.data.tk_status !== "NG") {
         let loaded_data: CNT_GAP_DATA[] = response.data.data.map(
           (element: CNT_GAP_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2 = async (DATA: any) => {
+  let kq: TRUOCHAN_BACK_DATA2[] = [];
+  await generalQuery("loadALL_HOAN_THANH_TRUOC_HAN_RATE_BACKDATA2", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: TRUOCHAN_BACK_DATA2[] = response.data.data.map(
+          (element: TRUOCHAN_BACK_DATA2, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_load_ALL_HOAN_THANH_TRUOC_HAN_RATE_DATA2 = async (DATA: any) => {
+  let kq: CNT_GAP_DATA2[] = [];
+  await generalQuery("loadALL_HOAN_THANH_TRUOC_HAN_RATE2", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: CNT_GAP_DATA2[] = response.data.data.map(
+          (element: CNT_GAP_DATA2, index: number) => {
             return {
               ...element,
               id: index,

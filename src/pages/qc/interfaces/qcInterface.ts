@@ -1149,11 +1149,30 @@ export interface OQC_NG_BY_PRODTYPE {
     CNT: number;
     RATE: number;
   }
+  export interface CNT_GAP_DATA2 {
+    GAP: number;
+    CNT_TOTAL: number;
+    CNT_SX: number;
+    CNT_QC: number;
+    CNT_OK: number;
+    RATE_SX: number;
+    RATE_QC: number;
+    RATE_OK: number;
+  }
   export interface TRUOCHAN_BACK_DATA {
     PROD_REQUEST_NO: string;
     NGAY_GH: string;
     MAX_DATE: string;
     GAP: number;
+  }
+  export interface TRUOCHAN_BACK_DATA2 {
+    PROD_REQUEST_NO: string;
+    NGAY_GH: string;
+    LAST_INPUT_DATE: string;
+    LAST_OUTPUT_DATE: string;
+    GAP: number;
+    SX_CHAM: string;
+    QC_CHAM: string;
   }
   export interface ALL_GAP_RATE_BACK_DATA {
     PROD_REQUEST_NO: string;

@@ -70,7 +70,7 @@
   "scripts": {
     "start": "vite --port 3001",
     "build": "set \"GENERATE_SOURCEMAP=false\"  && vite build --mode production",
-    "serve": "vite preview",
+    "serve": "vite preview --port 3001",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
