@@ -1000,6 +1000,9 @@ export interface SX_DATA {
   CHO_QC: number;
   CHOT_BAOCAO: number;
   CHUYEN_CODE: number;
+  CHO_FILM: number;
+  K_CHO_DUYET: number;
+  CHA_BAN: number;
   KHAC: number;
   REMARK: string;
   MACHINE_NAME: string;

@@ -113,6 +113,7 @@ const DATASX = () => {
     LOSS_KT: 0
   });
   const selectedYCSX = useRef<YCSX_SX_DATA>({
+
     YCSX_PENDING: "",
     PHAN_LOAI: "",
     PROD_REQUEST_NO: "",
@@ -1968,6 +1969,9 @@ const DATASX = () => {
         { field: 'HOP_FL', headerName: 'HOP_FL', resizable: true, width: 80 },
         { field: 'CHOT_BAOCAO', headerName: 'CHOT_BAOCAO', resizable: true, width: 80 },
         { field: 'CHUYEN_CODE', headerName: 'CHUYEN_CODE', resizable: true, width: 80 },
+        { field: 'CHO_FILM', headerName: 'CHO_FILM', resizable: true, width: 80 },
+        { field: 'K_CHO_DUYET', headerName: 'K_CHO_DUYET', resizable: true, width: 80 },
+        { field: 'CHA_BAN', headerName: 'CHA_BAN', resizable: true, width: 80 },
         { field: 'KHAC', headerName: 'KHAC', resizable: true, width: 80 },
         { field: 'REMARK', headerName: 'REMARK', resizable: true, width: 80 },
       ],
