@@ -83,7 +83,7 @@
       }
     }
     .ag-row {
-      background-color: rgba(187, 247, 147, 0) ;
+      background-color: rgba(241, 239, 198, 0) !important;
       /* Set your desired background color */
     }
     .ag-row-selected {
@@ -101,7 +101,7 @@
     }
     /* Add border to the right of each data cell */
     .ag-cell {
-      border-right: 1px solid #c2cdf3 !important;
+      border-right: 1px solid #1f1f1f3b !important;
       padding: 0;
       /* Light gray border */
     }
@@ -113,7 +113,7 @@
     .ag-floating-filter-input {
       height: 22px;
       /* Set your desired height */
-      line-height: 40px;
+      line-height: 20px;
       /* Set the line height to match for proper text alignment */
       padding: 1;
     }

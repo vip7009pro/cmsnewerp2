@@ -98,7 +98,7 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
               : renderedTabs[index] || activeTab === index; // Giữ render nếu đã render trước đó
 
           return (
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense key={index} fallback={<div>Loading...</div>}>
             <div
               key={index}
               style={{

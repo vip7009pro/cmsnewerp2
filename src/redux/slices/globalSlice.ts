@@ -86,8 +86,7 @@ const companyInfo = {
     ],
   },
 };
-console.log('companyInfo',companyInfo);
-
+//console.log('companyInfo',companyInfo);
 const socket = io(companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
 socket.on("connect", () => {
   console.log(socket.id);
@@ -135,7 +134,7 @@ let crST: WEB_SETTING_DATA[] = [];
 if (crST_string !== "") {
   crST = JSON.parse(crST_string);
 }
-console.log("notiCount", notiCount);
+//console.log("notiCount", notiCount);
 const initialState: GlobalInterface = {
   notificationCount: Number.parseInt(notiCount),
   globalSetting: crST,
@@ -322,8 +321,9 @@ export const glbSlice = createSlice({
         state.tabs.filter((e: ELE_ARRAY, index: number) => e.ELE_CODE !== "-1")
           .length < 8
       ) {
+        if(state.tabs.map((e: ELE_ARRAY, index: number) => e.ELE_CODE).includes(action.payload.ELE_CODE)) return;
         state.tabs = [...state.tabs, action.payload];
-        console.log(action.payload);
+//        console.log(action.payload);
         localStorage.setItem(
           "tabs",
           JSON.stringify(
@@ -387,6 +387,92 @@ export const glbSlice = createSlice({
             })
           )
         );
+       
+
+
+
+
+        //get the next tabIndex which ELE_CODE  !== - 1
+        if(action.payload < state.tabs.length - 1) {
+          let nextTabIndex = action.payload + 1;
+          while (nextTabIndex < state.tabs.length && state.tabs[nextTabIndex].ELE_CODE === "-1") {
+            nextTabIndex++;
+          }
+          if(nextTabIndex === state.tabs.length) {
+            nextTabIndex = action.payload;
+            while (nextTabIndex > 0 && state.tabs[nextTabIndex].ELE_CODE === "-1") {
+              nextTabIndex--;
+            }
+          }
+          console.log('next tab index: ',nextTabIndex);
+          state.tabIndex = nextTabIndex;
+        }
+        else {
+          let nextTabIndex = action.payload;
+          while (nextTabIndex > 0 && state.tabs[nextTabIndex].ELE_CODE === "-1") {
+            nextTabIndex--;
+          }
+          state.tabIndex = nextTabIndex;
+        }
+       
+
+        /* while (
+          state.tabIndex > 0 &&
+          state.tabs[state.tabIndex].ELE_CODE === "-1"
+        ) {
+          state.tabIndex--;
+        }
+        if (state.tabIndex === 0) {
+          while (
+            state.tabIndex < state.tabs.length &&
+            state.tabs[state.tabIndex].ELE_CODE === "-1"
+          ) {
+            state.tabIndex++;
+          }
+          console.log('tab index: ',state.tabIndex);
+        } */
+      } else {
+        state.tabs = [];
+        state.tabIndex = 0;
+        localStorage.setItem(
+          "tabs",
+          JSON.stringify(
+            state.tabs.map((ele: ELE_ARRAY, index: number) => {
+              return {
+                MENU_CODE: ele.ELE_CODE,
+                MENU_NAME: ele.ELE_NAME,
+                PAGE_ID: ele.PAGE_ID,
+              };
+            })
+          )
+        );
+        
+      }
+    },
+   /*  closeTab: (state, action: PayloadAction<number>) => {
+      let checkallDeleted: number = 0;
+      for (let i = 0; i < state.tabs.length; i++) {
+        if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
+      }
+      if (checkallDeleted > 1) {
+        state.tabs[action.payload] = {
+          ELE_CODE: "-1",
+          ELE_NAME: "DELETED",
+          REACT_ELE: "",
+          PAGE_ID: -1,
+        };
+        localStorage.setItem(
+          "tabs",
+          JSON.stringify(
+            state.tabs.map((ele: ELE_ARRAY, index: number) => {
+              return {
+                MENU_CODE: ele.ELE_CODE,
+                MENU_NAME: ele.ELE_NAME,
+                PAGE_ID: ele.PAGE_ID,
+              };
+            })
+          )
+        );
         while (
           state.tabIndex > 0 &&
           state.tabs[state.tabIndex].ELE_CODE === "-1"
@@ -406,8 +492,9 @@ export const glbSlice = createSlice({
         state.tabs = [];
         state.tabIndex = 0;
       }
-    },
+    }, */
     settabIndex: (state, action: PayloadAction<number>) => {
+      console.log('set tab index: ',action.payload);
       state.tabIndex = action.payload;
     },
     setTabModeSwap: (state, action: PayloadAction<boolean>) => {

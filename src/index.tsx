@@ -12,7 +12,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration: ServiceWorkerRegistration = await navigator.serviceWorker.register('service-worker.js');
-      console.log('Service Worker đăng ký thành công:', registration);
+      console.log('Service Worker đăng ký thành công');
     } catch (error) {
       console.error('Lỗi đăng ký Service Worker:', error);
     }

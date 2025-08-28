@@ -1,0 +1,129 @@
+.app-container {
+    min-height: 100vh;
+    background-color: #f7fafc;
+    padding: 1.5rem;
+  }
+  
+  .todo-container {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+  }
+  
+  .todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .todo-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .todo-id {
+    color: #a0aec0;
+  }
+  
+  .todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #ebf4ff;
+    border-radius: 0.25rem;
+  }
+  
+  .todo-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .todo-icon {
+    margin-right: 0.5rem;
+    color: #3182ce;
+  }
+  
+  .todo-status {
+    display: flex;
+    space-x: 1rem;
+  }
+  
+  .status-overdue {
+    color: #e53e3e;
+  }
+  
+  .status-normal {
+    color: #ecc94b;
+  }
+  
+  .status-completed {
+    color: #48bb78;
+  }
+  
+  .rfq-container {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #ebf4ff;
+    border-radius: 0.25rem;
+  }
+  
+  .rfq-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .rfq-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .status-labels {
+    display: flex;
+    space-x: 0.5rem;
+  }
+  
+  .status-tight {
+    color: #e53e3e;
+  }
+  
+  .status-normal {
+    color: #ecc94b;
+  }
+  
+  .status-flexible {
+    color: #48bb78;
+  }
+  
+  .rfx-button {
+    background-color: #3182ce;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+  
+  .rfq-table {
+    width: 100%;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .table-header {
+    background-color: #edf2f7;
+  }
+  
+  .table-cell {
+    padding: 0.5rem;
+    text-align: center;
+  }
+  
+  .table-row {
+    text-align: center;
+  }

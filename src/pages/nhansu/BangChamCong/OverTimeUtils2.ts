@@ -1,51 +1,36 @@
 interface TimeInput {
-  date: string; // Dạng 'YYYY-MM-DD'
-  inTime: string; // Dạng 'HH:MM'
-  outTime: string; // Dạng 'HH:MM'
+  date: string;
+  inTime: string;
+  outTime: string;
 }
 
 export interface WorkMinutesByPercentage {
-  [percentage: string]: number; // Ví dụ: '100%': 480, '150%': 180, '100%+30%': 120, v.v.
+  [percentage: string]: number;
 }
 
 export interface CalculationOptions {
-  weeklyDaysOff: number[]; // Mảng các số (0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7)
+  weeklyDaysOff: number[];
 }
 
 export function calculateWorkMinutesByPercentage(
   input: TimeInput,
-  options: CalculationOptions // Thêm tham số options
+  options: CalculationOptions
 ): WorkMinutesByPercentage {
-  // --- Định nghĩa các tham số cố định ---
+  const VIETNAM_HOLIDAYS: string[] = ['01-01', '04-30', '05-01', '09-02'];
 
-  // Ngày nghỉ lễ của Việt Nam (Định dạng 'MM-DD' để dễ so sánh)
-  // CẦN CẬP NHẬT CÁC NGÀY TẾT ÂM LỊCH VÀ GIỖ TỔ HÙNG VƯƠNG HÀNG NĂM
-  const VIETNAM_HOLIDAYS: string[] = [
-    '01-01', // Tết Dương lịch
-    '04-30', // Giải phóng miền Nam
-    '05-01', // Quốc tế Lao động
-    '09-02', // Quốc khánh
-    // Các ngày Tết Âm lịch 2025 (ví dụ, cần cập nhật cho năm thực tế):
-    // '01-29', '01-30', '01-31', '02-01', '02-02',
-    // Giỗ Tổ Hùng Vương 2025 (mùng 10/3 ÂL, ví dụ, cần tính toán/cập nhật):
-    // '04-28'
-  ];
+  const REGULAR_SHIFT_START_DAY = { hour: 8, minute: 0 };
+  const REGULAR_SHIFT_END_DAY = { hour: 17, minute: 0 };
+  const LUNCH_BREAK_START = { hour: 12, minute: 0 };
+  const LUNCH_BREAK_END = { hour: 13, minute: 0 };
 
-  // Giờ làm việc chính quy và nghỉ giữa ca (phút)
-  const REGULAR_SHIFT_START_DAY = { hour: 8, minute: 0 }; // 08:00
-  const REGULAR_SHIFT_END_DAY = { hour: 17, minute: 0 }; // 17:00
-  const LUNCH_BREAK_START = { hour: 12, minute: 0 }; // 12:00
-  const LUNCH_BREAK_END = { hour: 13, minute: 0 }; // 13:00
+  const REGULAR_SHIFT_START_NIGHT = { hour: 20, minute: 0 };
+  const REGULAR_SHIFT_END_NIGHT = { hour: 6, minute: 0 };
+  const NIGHT_BREAK_START = { hour: 0, minute: 0 };
+  const NIGHT_BREAK_END = { hour: 1, minute: 0 };
 
-  const REGULAR_SHIFT_START_NIGHT = { hour: 20, minute: 0 }; // 20:00
-  const REGULAR_SHIFT_END_NIGHT = { hour: 5, minute: 0 }; // 05:00 (của ngày hôm sau)
-  const NIGHT_BREAK_START = { hour: 0, minute: 0 }; // 00:00 (của ngày hôm sau)
-  const NIGHT_BREAK_END = { hour: 1, minute: 0 }; // 01:00 (của ngày hôm sau)
+  const NIGHT_SHIFT_HOURS_START = 22;
+  const NIGHT_SHIFT_HOURS_END = 6;
 
-  const NIGHT_SHIFT_HOURS_START = 22; // 22h tối (khung giờ ban đêm theo luật)
-  const NIGHT_SHIFT_HOURS_END = 6; // 6h sáng hôm sau (khung giờ ban đêm theo luật)
-
-  // --- Khởi tạo kết quả ---
   const result: WorkMinutesByPercentage = {
     '100%': 0,
     '150%': 0,
@@ -54,41 +39,43 @@ export function calculateWorkMinutesByPercentage(
     '100%+30%': 0,
     '150%+30%+20%': 0,
     '200%+30%': 0,
-    '200%+30%+20%': 0,
+    '200%+30%+20%X200%': 0,
     '300%+30%': 0,
     '300%+30%+20%': 0,
   };
 
-  // --- Chuyển đổi đầu vào thành đối tượng Date ---
   const startDate = new Date(`${input.date}T${input.inTime}:00`);
   let endDate = new Date(`${input.date}T${input.outTime}:00`);
 
-  // Xử lý trường hợp làm việc qua nửa đêm (outTime nhỏ hơn inTime hoặc bằng inTime nhưng qua ngày)
-  // Ví dụ: 20:00 -> 08:00
   if (endDate.getTime() <= startDate.getTime() && input.inTime !== input.outTime) {
-      endDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000); // Thêm 1 ngày
+    endDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
   }
 
-
-  // --- Lặp qua từng phút để tính toán ---
   let currentTime = new Date(startDate);
 
   while (currentTime.getTime() < endDate.getTime()) {
     const currentHour = currentTime.getHours();
     const currentMinute = currentTime.getMinutes();
-    const currentDayOfWeek = currentTime.getDay(); // 0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7
+    const currentDayOfWeek = currentTime.getDay();
     const currentMonthDay = `${(currentTime.getMonth() + 1).toString().padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}`;
 
-    // Kiểm tra các thuộc tính của PHÚT HIỆN TẠI
+    // Bỏ qua thời gian trước 20:00
+    if (currentHour < REGULAR_SHIFT_START_NIGHT.hour && currentMinute < REGULAR_SHIFT_START_NIGHT.minute) {
+      currentTime.setMinutes(currentTime.getMinutes() + 1);
+      continue;
+    }
+
+    // Dừng khi vượt quá 8:00
+    if (currentHour > 8) {
+      break;
+    }
+
     const isCurrentMinuteInNightTimeRange = (currentHour >= NIGHT_SHIFT_HOURS_START || currentHour < NIGHT_SHIFT_HOURS_END);
     const isCurrentDateHoliday = VIETNAM_HOLIDAYS.includes(currentMonthDay);
-    
-    // Sử dụng options.weeklyDaysOff để xác định ngày nghỉ hàng tuần
     const isCurrentDateWeeklyDayOff = options.weeklyDaysOff.includes(currentDayOfWeek);
 
     let isBreakTime = false;
 
-    // Kiểm tra giờ nghỉ trưa cho ca ngày (12h-13h)
     const isCurrentMinuteInLunchBreak =
       (currentHour > LUNCH_BREAK_START.hour || (currentHour === LUNCH_BREAK_START.hour && currentMinute >= LUNCH_BREAK_START.minute)) &&
       (currentHour < LUNCH_BREAK_END.hour || (currentHour === LUNCH_BREAK_END.hour && currentMinute < LUNCH_BREAK_END.minute));
@@ -97,11 +84,9 @@ export function calculateWorkMinutesByPercentage(
       isBreakTime = true;
     }
 
-    // Kiểm tra giờ nghỉ giữa ca cho ca đêm (0h-1h)
-    // Chỉ áp dụng giờ nghỉ đêm nếu là giờ làm việc chính thức của ca đêm
     const isCurrentMinuteInRegularNightShiftFrame =
-      (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour <= 23) || // 20h-23h
-      (currentHour >= 0 && currentHour < REGULAR_SHIFT_END_NIGHT.hour); // 0h-5h
+      (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour <= 23) ||
+      (currentHour >= NIGHT_BREAK_END.hour && currentHour < 5);
 
     const isCurrentMinuteInNightBreak =
       (currentHour > NIGHT_BREAK_START.hour || (currentHour === NIGHT_BREAK_START.hour && currentMinute >= NIGHT_BREAK_START.minute)) &&
@@ -112,109 +97,76 @@ export function calculateWorkMinutesByPercentage(
     }
 
     if (!isBreakTime) {
-      // Mức lương cơ bản cho phút này (100%, 200%, 300%)
       let basePercentageKey: '100%' | '150%' | '200%' | '300%';
 
-      // Xác định mức phần trăm cơ bản (không có cộng thêm 30% hoặc 20%)
-      if (isCurrentDateHoliday) { // Dùng isCurrentDateHoliday để kiểm tra ngày lễ của phút hiện tại
+      if (isCurrentDateHoliday) {
         basePercentageKey = '300%';
-      } else if (isCurrentDateWeeklyDayOff) { // Sử dụng biến mới isCurrentDateWeeklyDayOff
+      } else if (isCurrentDateWeeklyDayOff) {
         basePercentageKey = '200%';
-      } else { // Ngày thường
-        // Xác định xem phút hiện tại có thuộc giờ làm việc bình thường của công ty trên ngày thường không
+      } else {
         let isRegularWorkingHourForNormalDay = false;
-        
-        // Ca ngày: 8h-17h (trừ nghỉ trưa)
+
         const isCurrentMinuteInRegularDayShift =
-            (currentHour >= REGULAR_SHIFT_START_DAY.hour && currentHour < LUNCH_BREAK_START.hour) || // 8h-12h
-            (currentHour >= LUNCH_BREAK_END.hour && currentHour < REGULAR_SHIFT_END_DAY.hour); // 13h-17h
+          (currentHour >= REGULAR_SHIFT_START_DAY.hour && currentHour < LUNCH_BREAK_START.hour) ||
+          (currentHour >= LUNCH_BREAK_END.hour && currentHour < REGULAR_SHIFT_END_DAY.hour);
 
-        // Ca đêm: 20h-5h (trừ nghỉ đêm)
         const isCurrentMinuteInRegularNightShift =
-            (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour <= 23) || // 20h-23h
-            (currentHour >= 1 && currentHour < REGULAR_SHIFT_END_NIGHT.hour); // 1h-5h
-
+          (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour <= 23) ||
+          (currentHour >= NIGHT_BREAK_END.hour && currentHour < 5);
 
         if (isCurrentMinuteInRegularDayShift || isCurrentMinuteInRegularNightShift) {
-             isRegularWorkingHourForNormalDay = true;
+          isRegularWorkingHourForNormalDay = true;
         }
 
         if (isRegularWorkingHourForNormalDay) {
           basePercentageKey = '100%';
         } else {
-          basePercentageKey = '150%'; // Giờ làm thêm vào ngày thường
+          basePercentageKey = '150%';
         }
       }
 
-      // --- Cộng phút vào loại phù hợp ---
       let finalKey: string = basePercentageKey;
 
-      // Xác định liệu phút hiện tại có phải là giờ làm thêm của ca đó hay không
-      // Giờ làm thêm là khi vượt quá khung giờ làm việc bình thường của ca (không kể ngày nghỉ/lễ)
-      let isCurrentMinuteOvertimeForThisShift = true; // Mặc định là làm thêm
-      
-      // Nếu là ca ngày 8h-17h
-      if (input.inTime === '08:00' && input.outTime === '20:00') {
-        const isInRegularDayShiftHours =
-            (currentHour >= REGULAR_SHIFT_START_DAY.hour && currentHour < LUNCH_BREAK_START.hour) ||
-            (currentHour >= LUNCH_BREAK_END.hour && currentHour < REGULAR_SHIFT_END_DAY.hour);
-        if (isInRegularDayShiftHours) {
-            isCurrentMinuteOvertimeForThisShift = false;
+      let isCurrentMinuteOvertimeForThisShift = true;
+      if (input.inTime === '20:00' && input.outTime === '08:00') {
+        const isInRegularNightShiftHours = 
+          (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour <= 23) ||
+          (currentHour >= NIGHT_BREAK_END.hour && currentHour < 5);
+        if (isInRegularNightShiftHours) {
+          isCurrentMinuteOvertimeForThisShift = false;
+        } else if (currentHour === 5 && isCurrentMinuteInNightTimeRange) {
+          isCurrentMinuteOvertimeForThisShift = true; // 5h-6h là tăng ca ban đêm
+        } else if (currentHour >= 6 && currentHour < 8) {
+          isCurrentMinuteOvertimeForThisShift = true; // 6h-8h là tăng ca ban ngày
         }
-      } 
-      // Nếu là ca đêm 20h-5h
-      else if (input.inTime === '20:00' && input.outTime === '08:00') {
-         const isInRegularNightShiftHours = 
-            (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour <= 23) || // 20h-23h
-            (currentHour >= 1 && currentHour < REGULAR_SHIFT_END_NIGHT.hour); // 1h-5h
-         if (isInRegularNightShiftHours) {
-            isCurrentMinuteOvertimeForThisShift = false;
-         }
       }
-      // Các trường hợp khác mặc định là làm thêm hoặc cần định nghĩa thêm giờ làm bình thường của ca đó.
 
-      // Điều chỉnh finalKey dựa trên giờ làm đêm và làm thêm giờ ban đêm
-      if (isCurrentMinuteInNightTimeRange) { // Nếu phút đó nằm trong khung giờ ban đêm theo luật (22h-6h)
-          if (basePercentageKey === '100%') {
-              finalKey = '100%+30%';
-          } else if (basePercentageKey === '150%') {
-              finalKey = '150%+30%+20%'; // Làm thêm giờ vào ban đêm của ngày thường
-          } else if (basePercentageKey === '200%') {
-              // Mặc định là 200%+30% nếu là giờ đêm
-              finalKey = '200%+30%';
-              if (isCurrentMinuteOvertimeForThisShift) { // Nếu phút này là làm thêm của ca đó
-                  finalKey = '200%+30%+20%'; // Cộng thêm 20%
-              }
-          } else if (basePercentageKey === '300%') {
-              // Mặc định là 300%+30% nếu là giờ đêm
-              finalKey = '300%+30%';
-              if (isCurrentMinuteOvertimeForThisShift) { // Nếu phút này là làm thêm của ca đó
-                  finalKey = '300%+30%+20%'; // Cộng thêm 20%
-              }
+      if (isCurrentMinuteInNightTimeRange) {
+        if (basePercentageKey === '100%') {
+          finalKey = '100%+30%';
+        } else if (basePercentageKey === '150%') {
+          finalKey = '150%+30%+20%';
+        } else if (basePercentageKey === '200%') {
+          finalKey = '200%+30%';
+          if (isCurrentMinuteOvertimeForThisShift) {
+            finalKey = '200%+30%+20%X200%';
           }
-      } else { // Nếu không phải giờ ban đêm theo luật (22h-6h)
-         // Xử lý đặc biệt cho giờ 20h-22h của ca đêm, thường vẫn được hưởng +30% làm đêm dù không phải 22h-6h
-         const isStartNightShiftHour = (currentHour >= REGULAR_SHIFT_START_NIGHT.hour && currentHour < NIGHT_SHIFT_HOURS_START); // 20h-21h
-         if (isStartNightShiftHour && !isBreakTime) { // Nếu là giờ đầu ca đêm (20h-22h) và không phải giờ nghỉ
-             if (basePercentageKey === '100%') {
-                 finalKey = '100%+30%';
-             } else if (basePercentageKey === '200%') {
-                 finalKey = '200%+30%';
-             } else if (basePercentageKey === '300%') {
-                 finalKey = '300%+30%';
-             }
-         } else {
-             finalKey = basePercentageKey; // Giữ nguyên basePercentageKey
-         }
+        } else if (basePercentageKey === '300%') {
+          finalKey = '300%+30%';
+          if (isCurrentMinuteOvertimeForThisShift) {
+            finalKey = '300%+30%+20%';
+          }
+        }
+      } else {
+        finalKey = basePercentageKey;
       }
 
       result[finalKey] = (result[finalKey] || 0) + 1;
     }
 
-    currentTime.setMinutes(currentTime.getMinutes() + 1); // Tăng lên 1 phút
+    currentTime.setMinutes(currentTime.getMinutes() + 1);
   }
 
-  // Loại bỏ các key có giá trị 0 để kết quả gọn hơn
   for (const key in result) {
     if (result[key] === 0) {
       delete result[key];

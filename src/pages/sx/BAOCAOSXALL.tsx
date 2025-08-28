@@ -17,6 +17,7 @@ import { getCompany, getUserData } from "../../api/Api";
 import MyTabs from "../../components/MyTab/MyTab";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import TestHome from "../home/TestHome";
 const KPI_NVSX = lazy(() => import("./KPI_NV/KPI_NVSX"));
 const DATASAMPLESX = lazy(() => import("./DATASAMPLE/DATASAMPLESX"));
 const KPI_NVSX_NEW = lazy(() => import("./KPI_NV_NEW/KPI_NV_NEW"));
@@ -80,6 +81,9 @@ const BAOCAOSXALL = () => {
           {getCompany() === "CMS" && <MyTabs.Tab title="Data Sample">
             <DATASAMPLESX />
           </MyTabs.Tab>}
+          {/* {<MyTabs.Tab title="Test Home">
+            <TestHome />
+          </MyTabs.Tab>} */}
         </MyTabs>
       </Suspense>
     </div>

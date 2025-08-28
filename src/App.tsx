@@ -158,7 +158,7 @@ function App() {
   const checkLoginCallback = useCallback(() => {
     checkLogin()
       .then((data: any) => {
-        console.log('data check login', data);
+//        console.log('data check login', data);
         if (data.data.tk_status === "ng") {
           loadWebSetting();
           dispatch(logout(false));
@@ -287,9 +287,9 @@ function App() {
   };
   // Hàm yêu cầu quyền và đăng ký push
   const handleEnableNotifications = async (): Promise<void> => {
-    console.log("handleEnableNotifications");
+//    console.log("handleEnableNotifications");
     try {
-      console.log("vao day");
+//      console.log("vao day");
       // Kiểm tra hỗ trợ
       if (!("Notification" in window) || !("serviceWorker" in navigator)) {
         console.log("Trình duyệt không hỗ trợ thông báo đẩy!");

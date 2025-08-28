@@ -594,10 +594,11 @@ export default function Navbar() {
       dispatch(changeGLBLanguage("en"));
     }
     let saveTab: any = localStorage.getItem("tabs")?.toString();
+//    console.log('saveTab',saveTab);
     if (saveTab !== undefined) {
       let tempTab: SEARCH_LIST_DATA[] = JSON.parse(saveTab);
       for (let i = 0; i < tempTab.length; i++) {
-        if (tempTab[i].MENU_CODE !== "-1")
+        //if (tempTab[i].MENU_CODE !== "-1")
           dispatch(
             addTab({
               ELE_CODE: tempTab[i].MENU_CODE,

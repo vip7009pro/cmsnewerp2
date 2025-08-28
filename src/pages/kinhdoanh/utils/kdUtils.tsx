@@ -1347,6 +1347,26 @@ export const f_checkYCSX_DKXL = async (PROD_REQUEST_NO: string) => {
     });
   return kq;
 };
+
+export const f_checkPlanIDExist = async (PROD_REQUEST_NO: string) => {
+  let kq: boolean = false;
+  await generalQuery("checkPLAN_ID_Exist", {
+    PROD_REQUEST_NO: PROD_REQUEST_NO,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      } else {
+        kq = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
 export const f_deleteP500_YCSX = async (
   PROD_REQUEST_NO: string,
   EMPL_NO: string
@@ -1432,21 +1452,32 @@ export const f_batchDeleteYCSX = async (ycsxList: YCSXTableData[]) => {
   if (ycsxList.length >= 1) {    
     let err_code: boolean = false;
     for (let i = 0; i < ycsxList.length; i++) {      
+      console.log(getUserData()?.EMPL_NO)
      
       if (ycsxList[i].EMPL_NO === getUserData()?.EMPL_NO) {
-        let checkO300: boolean = await f_checkYCSX_DKXL(
-          ycsxList[i].PROD_REQUEST_NO
-        );
+        const checkO300: boolean = await f_checkYCSX_DKXL(ycsxList[i].PROD_REQUEST_NO);
+        const checkPlanIDExist: boolean = await f_checkPlanIDExist(ycsxList[i].PROD_REQUEST_NO);
+
         
         if (checkO300) {     
            
           err_code = true;
+          console.log("Xóa YCSX thất bại, ycsx đã được xuất liệu: ")
           Swal.fire(
             "Thông báo",
             "Xóa YCSX thất bại, ycsx đã được xuất liệu: ",
             "error"
           );
-        } else {          
+        } else if (checkPlanIDExist) {
+          err_code = true;
+          console.log("Xóa YCSX thất bại, ycsx đã được tạo chỉ thị sản xuất ")
+          Swal.fire(
+            "Thông báo",
+            "Xóa YCSX thất bại, ycsx đã được tạo chỉ thị sản xuất ",
+            "error"
+          );
+        }
+          else {          
           err_code = await f_deleteYCSX(ycsxList[i].PROD_REQUEST_NO);        
           await f_deleteP500_YCSX(
             ycsxList[i].PROD_REQUEST_NO,

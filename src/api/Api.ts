@@ -208,7 +208,7 @@ export async function checkLogin() {
     CTR_CD: getCtrCd(),
     token_string: cookies.get("token")
   }
-  console.log("publicKey",publicKey)
+//  console.log("publicKey",publicKey)
   let encryptedData = !window.isSecureContext ? datacheck : await encryptData(publicKey??"",datacheck);
   let data = await axios.post(API_URL, {
     secureContext: window.isSecureContext,    

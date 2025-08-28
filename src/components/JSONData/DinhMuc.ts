@@ -199,17 +199,17 @@ export const getSettingUPHUnitLoss = (
   console.log("machine", machine);
   console.log("numberOfColor", numberOfColor);
   console.log("met_qty", met_qty);
-  const item = getDefaulDinhMucJson(machine);
+  const item = getDefaulDinhMucJson(machine); 
   if (!item) return null;
   const lossSetting =
     met_qty < 500
-      ? item.number_of_color[numberOfColor].when_under_500m
-      : item.number_of_color[numberOfColor].when_over_500m;
+      ? item.number_of_color[numberOfColor >5 ? 5: numberOfColor].when_under_500m
+      : item.number_of_color[numberOfColor >5 ? 5: numberOfColor].when_over_500m;
   return {
     setting: item.setting,
     UPH: item.UPH,
     unit: item.unit,
-    loss: item.number_of_color[numberOfColor].loss,
+    loss: item.number_of_color[numberOfColor >5 ? 5: numberOfColor].loss,
     loss_setting: lossSetting,
   };
 };

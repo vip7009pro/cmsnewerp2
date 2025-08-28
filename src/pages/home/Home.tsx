@@ -15,7 +15,7 @@ import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo, Navbar } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
 import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
-export const current_ver: number = getCompany() === "CMS" ? 2642 : 428;
+export const current_ver: number = getCompany() === "CMS" ? 2643 : 428;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -203,20 +203,19 @@ function Home() {
                               label={
                                 <div
                                   className="tabdiv"
-                                  style={{
+                                  style={{                                    
                                     display: "flex",
                                     fontSize: "0.8rem",
                                     justifyContent: "center",
                                     alignContent: "center",
-                                    padding: 0,
+                                    padding: '5px 5px 5px 5px',
                                     color: "black",
-                                    borderRadius: "5px",
-                                    margin: "5px",
+                                    borderRadius: "25px",
+                                    margin: "2px",
                                     cursor: "pointer",
+                                    backgroundColor: tabIndex === index ? "#1976d23e" : "transparent",                                    
                                   }}
-                                  onClick={() => {
-                                    dispatch(settabIndex(index));
-                                  }}
+                                 
                                 >
                                   <CustomTabLabel
                                     style={{
@@ -225,8 +224,11 @@ function Home() {
                                       whiteSpace: "nowrap",
                                       alignItems: "center",
                                     }}
+                                    
                                   >
-                                    <span style={{ marginRight: "5px" }}>
+                                    <span style={{ marginRight: "5px" }} onClick={() => {
+                                      dispatch(settabIndex(index));
+                                    }}>
                                       {index + 1}.{ele.ELE_NAME}
                                     </span>
                                     <IconButton

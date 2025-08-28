@@ -58,7 +58,7 @@ export function getCtrCd() {
   const state = store.getState();
   return state.totalSlice.ctr_cd;
 }
-console.log("company", getCompany());
+//console.log("company", getCompany());
 let API_URL = getSever() + "/apivendors";
 let UPLOAD_URL = getSever() + "/uploadfile";
 let UPLOAD_CHECKSHEET_URL = getSever() + "/uploadfilechecksheet";
