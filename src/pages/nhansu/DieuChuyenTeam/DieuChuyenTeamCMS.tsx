@@ -182,25 +182,25 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       field: "id",
       headerName: "ID",
       width: 30,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "FULL_NAME",
       headerName: "FULL_NAME",
       width: 130,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "WORK_SHIF_NAME",
       headerName: "WORK_SHIF_NAME",
       width: 130,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "SET_TEAM",
       headerName: "SET_TEAM",
       width: 120,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
       cellRenderer: (params: any) => {
         if (params.data?.WORK_SHIF_NAME === "Hành Chính") {
           return (
@@ -293,19 +293,19 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
           </div>
         );
       },
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "FACTORY_NAME",
       headerName: "FACTORY_NAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "SET_NM",
       headerName: "SET_NM",
       width: 100,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
       cellRenderer: (params: any) => {
         if (params.data?.FACTORY_NAME === "Nhà máy 1") {
           return (
@@ -353,13 +353,13 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       field: "WORK_POSITION_NAME",
       headerName: "VI_TRI",
       width: 60,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "SETVITRI",
       headerName: "SET_VI_TRI",
       width: 120,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
       cellRenderer: (params: any) => {
         const onClick = (work_position_code: number) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.data?.EMPL_NO, "success");
@@ -440,61 +440,61 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       field: "EMPL_NO",
       headerName: "EMPL_NO",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "CMS_ID",
       headerName: "NS_ID",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "MIDLAST_NAME",
       headerName: "MIDLAST_NAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "FIRST_NAME",
       headerName: "FIRST_NAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "SUBDEPTNAME",
       headerName: "SUBDEPTNAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "MAINDEPTNAME",
       headerName: "MAINDEPTNAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "PHONE_NUMBER",
       headerName: "PHONE_NUMBER",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "SEX_NAME",
       headerName: "SEX_NAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "WORK_STATUS_NAME",
       headerName: "WORK_STATUS_NAME",
       width: 120,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
     {
       field: "JOB_NAME",
       headerName: "JOB_NAME",
       width: 80,
-      headerClassName: "super-app-theme--header",
+      headerClass: "super-app-theme--header",
     },
   ], [diemdanhnhomtable]);
   const loadDiemDanhNhomTable = useCallback(async (teamnamelist: number) => {

@@ -980,3 +980,13 @@ export function generateMultiGradientColors(colorArr: string[], steps: number): 
   }
   return colors.slice(0, steps);
 }
+
+export function minutesSince(upd_time: string): number {
+  const now = moment().utcOffset(7 * 60);   
+  const upd = moment(upd_time); // parse upd_time theo UTC
+
+  let diff = now.diff(upd, "minutes");
+  //console.log("diff", diff);
+  //if (diff < 0) diff = 0; // nếu future thì trả về 0
+  return diff;
+}

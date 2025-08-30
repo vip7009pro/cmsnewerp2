@@ -35,12 +35,12 @@ const LichSu_New = () => {
     {
       field: "DATE_COLUMN",
       headerName: "DATE",
-      width: 60,headerClassName: 'super-app-theme--header',      
+      width: 60,headerClass: 'super-app-theme--header',      
     },
     {
       field: "WEEKDAY",
       headerName: "WEEKDAY",
-      width: 60,headerClassName: 'super-app-theme--header',
+      width: 60,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if (params.data.WEEKDAY === "Sunday") {
           return (
@@ -64,7 +64,7 @@ const LichSu_New = () => {
     {
       field: "ON_OFF",
       headerName: "ON_OFF",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if (params.data.ON_OFF === 1) {
           return (
@@ -92,7 +92,7 @@ const LichSu_New = () => {
     {
       field: "CHECK1",
       headerName: "CHECK1",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -106,7 +106,7 @@ const LichSu_New = () => {
     {
       field: "CHECK2",
       headerName: "CHECK2",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -120,7 +120,7 @@ const LichSu_New = () => {
     {
       field: "CHECK3",
       headerName: "CHECK3",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -134,7 +134,7 @@ const LichSu_New = () => {
     {
       field: "IN_TIME",
       headerName: "FIXED_IN",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if(params.data.IN_TIME !== 'OFF')
         {
@@ -158,7 +158,7 @@ const LichSu_New = () => {
     {
       field: "OUT_TIME",
       headerName: "FIXED_OUT",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if(params.data.OUT_TIME !== 'OFF')
         {
@@ -182,7 +182,7 @@ const LichSu_New = () => {
     {
       field: "EARLY_IN_MINUTES",
       headerName: "DI_SOM",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -196,7 +196,7 @@ const LichSu_New = () => {
     {
       field: "LATE_IN_MINUTES",
       headerName: "DI_MUON",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -210,7 +210,7 @@ const LichSu_New = () => {
     {
       field: "EARLY_OUT_MINUTES",
       headerName: "VE_SOM",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -224,7 +224,7 @@ const LichSu_New = () => {
     {
       field: "OVERTIME_MINUTES",
       headerName: "TANG_CA",
-      width: 50,headerClassName: 'super-app-theme--header',
+      width: 50,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -238,7 +238,7 @@ const LichSu_New = () => {
     {
       field: "WORKING_MINUTES",
       headerName: "HANH_CHINH",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -252,7 +252,7 @@ const LichSu_New = () => {
     {
       field: "FINAL_OVERTIMES",
       headerName: "FIX_TANG_CA",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -266,7 +266,7 @@ const LichSu_New = () => {
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 60,headerClassName: 'super-app-theme--header',
+      width: 60,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if (params.data.APPROVAL_STATUS === 0) {
           return (
@@ -295,34 +295,34 @@ const LichSu_New = () => {
         }
       },
     },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 80,headerClassName: 'super-app-theme--header' },
-    { field: "REMARK", headerName: "REMARK", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 50,headerClassName: 'super-app-theme--header' },
-    { field: "CMS_ID", headerName: "NS_ID", width: 50,headerClassName: 'super-app-theme--header' },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 90,headerClassName: 'super-app-theme--header' },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 70,headerClassName: 'super-app-theme--header' },
-    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 80,headerClass: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 100,headerClass: 'super-app-theme--header' },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 50,headerClass: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 50,headerClass: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 90,headerClass: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 70,headerClass: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClass: 'super-app-theme--header' },
+    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClass: 'super-app-theme--header' },
    
-    { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120,headerClass: 'super-app-theme--header' },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 120,headerClass: 'super-app-theme--header',
     },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120,headerClass: 'super-app-theme--header' },
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 120,headerClassName: 'super-app-theme--header',  
+      width: 120,headerClass: 'super-app-theme--header',  
       cellRenderer: (params: any) => {
         return (
          
@@ -333,17 +333,17 @@ const LichSu_New = () => {
         );
       },  
     },
-    { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClass: 'super-app-theme--header' },
   ]: [
     {
       field: "DATE_COLUMN",
       headerName: "DATE_COLUMN",
-      width: 120,headerClassName: 'super-app-theme--header',      
+      width: 120,headerClass: 'super-app-theme--header',      
     },
     {
       field: "WEEKDAY",
       headerName: "WEEKDAY",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 120,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if (params.data.WEEKDAY === "Sunday") {
           return (
@@ -367,7 +367,7 @@ const LichSu_New = () => {
     {
       field: "ON_OFF",
       headerName: "ON_OFF",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 120,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if (params.data.ON_OFF === 1) {
           return (
@@ -395,7 +395,7 @@ const LichSu_New = () => {
     {
       field: "CHECK1",
       headerName: "CHECK1",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -409,7 +409,7 @@ const LichSu_New = () => {
     {
       field: "CHECK2",
       headerName: "CHECK2",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -423,7 +423,7 @@ const LichSu_New = () => {
     {
       field: "CHECK3",
       headerName: "CHECK3",
-      width: 70,headerClassName: 'super-app-theme--header',
+      width: 70,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         return (
           <div className='onoffdiv'>
@@ -437,7 +437,7 @@ const LichSu_New = () => {
     {
       field: "PHE_DUYET",
       headerName: "PHE_DUYET",
-      width: 100,headerClassName: 'super-app-theme--header',
+      width: 100,headerClass: 'super-app-theme--header',
       cellRenderer: (params: any) => {
         if (params.data.APPROVAL_STATUS === 0) {
           return (
@@ -466,34 +466,34 @@ const LichSu_New = () => {
         }
       },
     },
-    { field: "REASON_NAME", headerName: "REASON_NAME", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "REMARK", headerName: "REMARK", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClassName: 'super-app-theme--header' },
-    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClassName: 'super-app-theme--header' },
-    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClassName: 'super-app-theme--header' },
+    { field: "REASON_NAME", headerName: "REASON_NAME", width: 100,headerClass: 'super-app-theme--header' },
+    { field: "REMARK", headerName: "REMARK", width: 100,headerClass: 'super-app-theme--header' },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170,headerClass: 'super-app-theme--header' },
+    { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "CA_NGHI", headerName: "CA_NGHI", width: 100,headerClass: 'super-app-theme--header' },
+    { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "OVERTIME", headerName: "OVERTIME", width: 100,headerClass: 'super-app-theme--header' },
    
-    { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "XACNHAN", headerName: "XACNHAN", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "SEX_NAME", headerName: "SEX_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "JOB_NAME", headerName: "JOB_NAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 120,headerClass: 'super-app-theme--header' },
     {
       field: "WORK_POSITION_NAME",
       headerName: "WORK_POSITION_NAME",
-      width: 120,headerClassName: 'super-app-theme--header',
+      width: 120,headerClass: 'super-app-theme--header',
     },
-    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
-    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 120,headerClass: 'super-app-theme--header' },
+    { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 120,headerClass: 'super-app-theme--header' },
     {
       field: "REQUEST_DATE",
       headerName: "REQUEST_DATE",
-      width: 120,headerClassName: 'super-app-theme--header',  
+      width: 120,headerClass: 'super-app-theme--header',  
       cellRenderer: (params: any) => {
         return (
          
@@ -504,7 +504,7 @@ const LichSu_New = () => {
         );
       },  
     },
-    { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClassName: 'super-app-theme--header' },
+    { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClass: 'super-app-theme--header' },
   ]; 
   const handleSearch = () => {
     generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })

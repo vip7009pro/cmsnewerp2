@@ -34,11 +34,11 @@ const BOM_AMAZON = () => {
   const [amz_country, setAMZ_COUNTRY] = useState<any>("");
   const [amz_prod_name, setAMZ_PROD_NAME] = useState<any>("");
   const [column_codeinfo, setcolumn_codeinfo] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 30, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClass: 'super-app-theme--header', width: 30, editable: enableEdit },
     {
       field: "G_CODE",
       headerName: "G_CODE",
-      headerClassName: 'super-app-theme--header',
+      headerClass: 'super-app-theme--header',
       width: 100,
       editable: enableEdit,
     },
@@ -47,58 +47,58 @@ const BOM_AMAZON = () => {
       headerName: "G_NAME",
       flex: 1,
       minWidth: 120,
-      headerClassName: 'super-app-theme--header',
+      headerClass: 'super-app-theme--header',
       editable: enableEdit,
     },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      headerClassName: 'super-app-theme--header',
+      headerClass: 'super-app-theme--header',
       width: 120,
       editable: enableEdit,
     },
   ]);
   const [column_listbomamazon, setcolumn_listbomamazon] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 30, editable: enableEdit },
-    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 120, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClass: 'super-app-theme--header', width: 30, editable: enableEdit },
+    { field: "G_NAME", headerName: "G_NAME", headerClass: 'super-app-theme--header', width: 120, editable: enableEdit },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      headerClassName: 'super-app-theme--header', width: 100,
+      headerClass: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
-    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 110, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", headerClass: 'super-app-theme--header', width: 110, editable: enableEdit },
   ]);
   const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
-    { field: "id", headerName: "ID", headerClassName: 'super-app-theme--header', width: 30, editable: enableEdit },
-    { field: "G_CODE", headerName: "G_CODE", headerClassName: 'super-app-theme--header', width: 60, editable: enableEdit },
-    { field: "G_NAME", headerName: "G_NAME", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
+    { field: "id", headerName: "ID", headerClass: 'super-app-theme--header', width: 30, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", headerClass: 'super-app-theme--header', width: 60, editable: enableEdit },
+    { field: "G_NAME", headerName: "G_NAME", headerClass: 'super-app-theme--header', width: 100, editable: enableEdit },
     {
       field: "G_CODE_MAU",
       headerName: "G_CODE_MAU",
-      headerClassName: 'super-app-theme--header', width: 100,
+      headerClass: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     {
       field: "TEN_MAU",
       headerName: "TEN_MAU",
-      headerClassName: 'super-app-theme--header', width: 100,
+      headerClass: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     {
       field: "DOITUONG_NO",
       headerName: "DOITUONG_NO",
-      headerClassName: 'super-app-theme--header', width: 100,
+      headerClass: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
     {
       field: "DOITUONG_NAME",
       headerName: "DOITUONG_NAME",
-      headerClassName: 'super-app-theme--header', width: 100,
+      headerClass: 'super-app-theme--header', width: 100,
       editable: enableEdit,
     },
-    { field: "GIATRI", headerName: "GIATRI", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
-    { field: "REMARK", headerName: "REMARK", headerClassName: 'super-app-theme--header', width: 100, editable: enableEdit },
+    { field: "GIATRI", headerName: "GIATRI", headerClass: 'super-app-theme--header', width: 100, editable: enableEdit },
+    { field: "REMARK", headerName: "REMARK", headerClass: 'super-app-theme--header', width: 100, editable: enableEdit },
   ]);
   const handle_saveAMAZONCODEINFO = async () => {
     const { value: pass1 } = await Swal.fire({
