@@ -573,7 +573,8 @@ export default function AccountInfo() {
                       .then(async (response) => {                        
                         if(response.data.tk_status !== "NG"){       
                           Swal.fire("Thông báo", "Upload thành công", "success");
-                          window.open("http://192.168.1.192:3005/update-be", "_blank");
+                          window.open("http://192.168.1.192:5005/api/test/updatebackend", "_blank");
+                          //window.open("http://192.168.1.192:3005/update-be", "_blank");
                         }
                         else{
                           Swal.fire("Thông báo", "Upload thất bại: " + response.data.message, "error");
