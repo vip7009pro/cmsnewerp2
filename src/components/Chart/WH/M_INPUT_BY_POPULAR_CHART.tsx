@@ -92,7 +92,7 @@ const COLORS = ['#3dff0c','#fbff00', '#ff1100'];
           data={data}
           cx='50%'
           cy='50%'
-          outerRadius={200}
+          outerRadius={150}
           fill='#8884d8'
           label={CustomLabel}
         >

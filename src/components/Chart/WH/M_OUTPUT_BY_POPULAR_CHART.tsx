@@ -92,7 +92,7 @@ const M_OUTPUT_BY_POPULAR_CHART = ({ data }: { data: M_OUTPUT_BY_POPULAR_DATA[] 
           data={data}
           cx='50%'
           cy='50%'
-          outerRadius={200}
+          outerRadius={150}
           fill='#8884d8'
           label={CustomLabel}
         >
