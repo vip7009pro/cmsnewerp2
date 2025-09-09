@@ -133,7 +133,7 @@ const InspectionWeeklyFcost = ({
         formatter={(value, entry) => (
           <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
         )}/>
-         <YAxis yAxisId='right-axis' dataKey='TOTAL_PPM' tick={{ fontSize: '0.7rem' }} orientation='right' tickCount={10} tickFormatter={(value) =>
+         <YAxis yAxisId='right-axis' tick={{ fontSize: '0.7rem' }} orientation='right' tickCount={10} tickFormatter={(value) =>
           new Intl.NumberFormat("en", {
             notation: "compact",
             compactDisplay: "short",
@@ -169,17 +169,18 @@ const InspectionWeeklyFcost = ({
         <Line
           yAxisId='right-axis'
           type='monotone'
-          dataKey='TOTAL_PPM'
-          stroke='red'
-          label={{ position: "top", formatter: labelFormatter2, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
-        />
-         <Line
-          yAxisId='right-axis'
-          type='monotone'
           dataKey='KPI_VALUE'
           stroke='blue'
           label={{ position: "top", formatter: labelFormatter2, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
         />
+        <Line
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='TOTAL_PPM'
+          stroke='red'
+          label={{ position: "top", formatter: labelFormatter2, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+        />
+         
       </ComposedChart>
     </CustomResponsiveContainer>
   );

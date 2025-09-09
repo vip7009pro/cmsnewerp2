@@ -134,7 +134,7 @@ const InspectionMonthlyFcost = ({
         formatter={(value, entry) => (
           <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
         )}/>
-        <YAxis yAxisId='right-axis' dataKey='TOTAL_PPM' tick={{ fontSize: '0.7rem' }} orientation='right' tickCount={10} tickFormatter={(value) =>
+        <YAxis yAxisId='right-axis' tick={{ fontSize: '0.7rem' }} orientation='right' tickCount={10} tickFormatter={(value) =>
           new Intl.NumberFormat("en", {
             notation: "compact",
             compactDisplay: "short",
