@@ -30,6 +30,7 @@ const TEST_TABLE: React.FC = () => {
   const testListColumns = useMemo(() => [
     { field: 'TEST_CODE', headerName: 'Test Code', width: 120 },
     { field: 'TEST_NAME', headerName: 'Test Name', width: 200 },
+    { field: 'TEST_TIME', headerName: 'Test Time', width: 200 },
   ], []);
   const handleTestListRowClick = (params: any) => {
     setTestCode(params.data.TEST_CODE);

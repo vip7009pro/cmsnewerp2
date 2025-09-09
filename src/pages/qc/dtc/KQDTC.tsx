@@ -11,7 +11,8 @@ import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 import HISTOGRAM_CHART from "../../../components/Chart/DTC/HISTOGRAM_CHART";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, XBAR_DATA } from "../interfaces/qcInterface";
+import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, TestListTable, XBAR_DATA } from "../interfaces/qcInterface";
+import { f_loadDTC_TestList } from "../utils/qcUtils";
 const KQDTC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [readyRender, setReadyRender] = useState(false);
@@ -157,6 +158,14 @@ const KQDTC = () => {
       handletraDTCData();
     }
   };
+    const [testList, setTestList] = useState<TestListTable[]>([]);
+    const getTestList = async () => {
+      let tempList: TestListTable[] = await f_loadDTC_TestList();
+      setTestList(tempList);
+    };
+    useEffect(() => {
+      getTestList();
+    }, []);
   const [selectedData, setSelectedData] = useState<any>(null);
   const getXbar = async (DATA: any) => {
     await generalQuery("loadXbarData", {
@@ -478,24 +487,11 @@ const KQDTC = () => {
                 }}
               >
                 <option value='0'>ALL</option>
-                <option value='1'>Kích thước</option>
-                <option value='2'>Kéo keo</option>
-                <option value='3'>XRF</option>
-                <option value='4'>Điện trở</option>
-                <option value='5'>Tĩnh điện</option>
-                <option value='6'>Độ bóng</option>
-                <option value='7'>Phtalate</option>
-                <option value='8'>FTIR</option>
-                <option value='9'>Mài mòn</option>
-                <option value='10'>Màu sắc</option>
-                <option value='11'>TVOC</option>
-                <option value='12'>Cân nặng</option>
-                <option value='13'>Scanbarcode</option>
-                <option value='14'>Nhiệt cao Ẩm cao</option>
-                <option value='15'>Shock nhiệt</option>
-                <option value='1002'>Kéo keo 2</option>
-                <option value='1003'>Ngoại quan</option>
-                <option value='1005'>Độ dày</option>
+                {testList.map((item) => (
+                  <option key={item.TEST_CODE} value={item.TEST_CODE}>
+                    {item.TEST_NAME}
+                  </option>
+                ))}
               </select>
             </label>
             <label>

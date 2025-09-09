@@ -12,6 +12,7 @@ import INCOMMING from "./INCOMMING";
 import HOLDING from "./HOLDING";
 import FAILING from "./FAILING";
 import BLOCK from "./BLOCK";
+import IQC_REPORT from "./IQC_REPORT";
 const IQC = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {}, []);
@@ -53,6 +54,9 @@ const IQC = () => {
             <NCR_MANAGER />
           </MyTabs.Tab>
         )}
+         <MyTabs.Tab title={"IQC REPORT"}>
+          <IQC_REPORT />
+        </MyTabs.Tab>
       </MyTabs>
     </div>
   );

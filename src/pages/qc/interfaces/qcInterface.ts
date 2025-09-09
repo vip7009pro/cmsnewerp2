@@ -1526,3 +1526,47 @@ export interface INSPECT_STATUS_DATA {
   D15: number;
   STATUS: string;
 }
+
+export interface IQC_TREND_DATA {
+  INSPECT_DATE?: string;
+  INSPECT_YEAR?: number;
+  INSPECT_MONTH?: number;
+  INSPECT_WEEK?: number;
+  INSPECT_YM?: string;
+  INSPECT_YW?: string;
+  TEST_CNT: number;
+  OK_CNT: number;
+  NG_CNT: number;
+  PD_CNT: number;
+  NG_RATE: number;
+}
+
+export interface IQC_VENDOR_NGRATE_DATA {
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  INSPECT_YEAR: number;
+  INSPECT_WEEK?: number;
+  INSPECT_YW?: string;
+  INSPECT_MONTH?: number;
+  INSPECT_YM?: string;
+  TEST_CNT: number;
+  OK_CNT: number;
+  NG_CNT: number;
+  PD_CNT: number;
+  NG_RATE: number;
+}
+
+export interface IQC_FAILING_TREND_DATA {
+  FAIL_YEAR: number;
+  FAIL_WEEK: number;
+  FAIL_YW: string;
+  TOTAL_QTY: number;
+  CLOSED_QTY: number;
+  PENDING_QTY: number;
+  COMPLETE_RATE: number;
+}
+export interface IQC_FAIL_PENDING
+ {
+  CUST_NAME_KD: string; 
+  FAIL_QTY: number;
+ }

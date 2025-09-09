@@ -1,6 +1,6 @@
 import moment from "moment";
 import { generalQuery, getCompany } from "../../../api/Api";
-import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, KHKT_DATA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
+import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, IQC_FAIL_PENDING, IQC_FAILING_TREND_DATA, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, KHKT_DATA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
 import Swal from "sweetalert2";
 
 
@@ -413,4 +413,234 @@ import Swal from "sweetalert2";
       .catch((error) => {});
     return kq;
   };
+  
+  export const f_loadIQCDailyNGTrend = async(DATA: any) => {
+    let kq: IQC_TREND_DATA[] = [];
+    await generalQuery("dailyIncomingData", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_TREND_DATA[] = response.data.data.map(
+            (element: IQC_TREND_DATA, index: number) => {
+              return {
+                ...element,      
+                NG_RATE: element.NG_CNT / element.TEST_CNT,      
+                INSPECT_DATE: moment.utc(element.INSPECT_DATE).format("YYYY-MM-DD"),    
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+
+  export const f_loadIQCWeeklyTrend = async(DATA:any) => {
+    let kq: IQC_TREND_DATA[] = [];
+    await generalQuery("weeklyIncomingData", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_TREND_DATA[] = response.data.data.map(
+            (element: IQC_TREND_DATA, index: number) => {
+              return {
+                ...element,     
+                NG_RATE: element.NG_CNT / element.TEST_CNT,               
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+  export const f_loadIQCMonthlyTrend = async(DATA:any) => {
+    let kq: IQC_TREND_DATA[] = [];
+    await generalQuery("monthlyIncomingData", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_TREND_DATA[] = response.data.data.map(
+            (element: IQC_TREND_DATA, index: number) => {
+              return {
+                ...element,      
+                NG_RATE: element.NG_CNT / element.TEST_CNT,              
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+
+  export const f_loadIQCYearlyTrend = async(DATA:any) => {
+    let kq: IQC_TREND_DATA[] = [];
+    await generalQuery("yearlyIncomingData", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_TREND_DATA[] = response.data.data.map(
+            (element: IQC_TREND_DATA, index: number) => {
+              return {
+                ...element,      
+                NG_RATE: element.NG_CNT / element.TEST_CNT,              
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+  
+
+  export const f_loadVendorIncomingNGRateByWeek = async(DATA:any) => {
+    let kq: IQC_VENDOR_NGRATE_DATA[] = [];
+    await generalQuery("vendorIncommingNGRatebyWeek", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_VENDOR_NGRATE_DATA[] = response.data.data.map(
+            (element: IQC_VENDOR_NGRATE_DATA, index: number) => {
+              return {
+                ...element,                
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+  
+  export const f_loadVendorIncomingNGRateByMonth = async(DATA:any) => {
+    let kq: IQC_VENDOR_NGRATE_DATA[] = [];
+    await generalQuery("vendorIncommingNGRatebyMonth", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_VENDOR_NGRATE_DATA[] = response.data.data.map(
+            (element: IQC_VENDOR_NGRATE_DATA, index: number) => {
+              return {
+                ...element,                
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+  
+  export const f_loadIQCFailTrending = async (DATA: any) => {
+    let kq: IQC_FAILING_TREND_DATA[] = [];
+    await generalQuery("iqcfailtrending", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_FAILING_TREND_DATA[] = response.data.data.map(
+            (element: IQC_FAILING_TREND_DATA, index: number) => {
+              return {
+                ...element,                
+                COMPLETE_RATE: element.CLOSED_QTY / element.TOTAL_QTY,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+
+  export const f_loadIQCHoldingTrending = async (DATA: any) => {
+    let kq: IQC_FAILING_TREND_DATA[] = [];
+    await generalQuery("iqcholdingtrending", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_FAILING_TREND_DATA[] = response.data.data.map(
+            (element: IQC_FAILING_TREND_DATA, index: number) => {
+              return {
+                ...element,       
+                COMPLETE_RATE: element.CLOSED_QTY / element.TOTAL_QTY,         
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+
+  }
+  
+  export const f_loadIQCFailPending = async (DATA: any) => {
+    let kq: IQC_FAIL_PENDING[] = [];
+    await generalQuery("iqcfailpending", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_FAIL_PENDING[] = response.data.data.map(
+            (element: IQC_FAIL_PENDING, index: number) => {
+              return {
+                ...element, 
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+
+  }
+  
+  export const f_loadIQCHoldingPending = async (DATA: any) => {
+    let kq: IQC_FAIL_PENDING[] = [];
+    await generalQuery("iqcholdingpending", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: IQC_FAIL_PENDING[] = response.data.data.map(
+            (element: IQC_FAIL_PENDING, index: number) => {
+              return {
+                ...element, 
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          //kq = response.data.message;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+
+  }
   

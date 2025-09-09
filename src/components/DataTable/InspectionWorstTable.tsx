@@ -7,7 +7,7 @@ import './InspectionWorstTable.scss'
 import AGTable from './AGTable';
 import { WorstCodeData, WorstData } from '../../pages/qc/interfaces/qcInterface';
 const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, ng_type, listCode, cust_name }: { dailyClosingData: Array<WorstData>, worstby: string, from_date: string, to_date: string, ng_type: string, listCode: string[], cust_name: string }) => {
-  console.log(dailyClosingData)
+  //console.log(dailyClosingData)
 
   const [worstByCodeData, setWorstByCodeData] = useState<Array<WorstCodeData>>([]); 
   const columns = [

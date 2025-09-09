@@ -962,22 +962,37 @@ function rgbToHex(r: number, g: number, b: number) {
 }
 // Hàm sinh mảng màu gradient
 export function generateMultiGradientColors(colorArr: string[], steps: number): string[] {
-  if (colorArr.length < 2) return [];
+  console.log('steps', steps);
+  if (colorArr.length < 2 || steps < 1) return [];
+  
   const colors: string[] = [];
   const segments = colorArr.length - 1;
-  const stepsPerSegment = Math.floor(steps / segments);
+  
+  // Nếu steps nhỏ hơn số màu, trả về các màu đầu tiên trong colorArr
+  if (steps <= colorArr.length) {
+    return colorArr.slice(0, steps);
+  }
+
+  // Tính số bước mỗi segment
+  const stepsPerSegment = Math.max(1, Math.floor(steps / segments));
   let remainder = steps - stepsPerSegment * segments;
+
   for (let s = 0; s < segments; s++) {
     const start = hexToRgb(colorArr[s]);
     const end = hexToRgb(colorArr[s + 1]);
     const segSteps = stepsPerSegment + (remainder-- > 0 ? 1 : 0);
+
     for (let i = 0; i < segSteps; i++) {
-      const r = Math.round(start.r + ((end.r - start.r) * i) / (segSteps - 1));
-      const g = Math.round(start.g + ((end.g - start.g) * i) / (segSteps - 1));
-      const b = Math.round(start.b + ((end.b - start.b) * i) / (segSteps - 1));
+      // Tính tỷ lệ dựa trên vị trí hiện tại
+      const ratio = segSteps > 1 ? i / (segSteps - 1) : 0;
+      const r = Math.round(start.r + (end.r - start.r) * ratio);
+      const g = Math.round(start.g + (end.g - start.g) * ratio);
+      const b = Math.round(start.b + (end.b - start.b) * ratio);
       colors.push(rgbToHex(r, g, b));
     }
   }
+
+  // Đảm bảo trả về đúng số lượng màu
   return colors.slice(0, steps);
 }
 

@@ -1570,7 +1570,7 @@ const YCSXManager = () => {
               PDUYET: pobalance_tdycsx.PO_BALANCE > 0 || uploadExcelJson[i].CODE_55 === "04" ? 1 : 0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
               MATERIAL_YN: 'Y',
-              IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI,
+              IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI ?? 'N',
               FL_YN: loaisx === "04" ? "N" : isFL ? "Y" : "N",
             });
             if (kq === 'OK') {
