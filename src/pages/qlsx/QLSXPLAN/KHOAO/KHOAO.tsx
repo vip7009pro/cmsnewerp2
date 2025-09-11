@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { datediff } from "../../../kinhdoanh/utils/kdUtils";
+import { datediff, f_checkPlanIDExist } from "../../../kinhdoanh/utils/kdUtils";
 import { LICHSUNHAPKHOAO, LICHSUXUATKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
 import { checkPLAN_ID, f_anrackhoao, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_delete_IN_KHO_AO, f_delete_OUT_KHO_AO, f_is2MCODE_IN_KHO_AO, f_isExistM_LOT_NO_QTY_P500, f_isM_CODE_CHITHI, f_isM_LOT_NO_in_P500, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../utils/khsxUtils";
 import { checkBP } from "../../../../api/GlobalFunction";
@@ -262,11 +262,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       Swal.fire("Thông báo", "Không có dòng nào", "error");
     }
   }; 
-
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
-      let checkPlanID = await checkPLAN_ID(nextPlan);
+      let checkPlanID = await checkPLAN_ID(nextPlan);    
       console.log(checkPlanID);
       if (checkPlanID.length === 0) {
         Swal.fire('Thông báo', 'Không tìm thấy plan ID', 'error');
@@ -275,6 +274,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       if (tonkhoaodatafilter.current.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
+          let isFactoryMatched: boolean = checkPlanID[0].PLAN_FACTORY === tonkhoaodatafilter.current[i].FACTORY;
           let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
           let checktontaixuatkhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
           let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
@@ -298,7 +298,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             !checkNextPlanClosed &&
             isTonKhoAoMLOTNO &&
             !isExpired &&
-            !isMLOTNO_INPUT_QTY_P500
+            !isMLOTNO_INPUT_QTY_P500 && 
+            isFactoryMatched
           ) {
             if (await f_xuatkhoao({
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
@@ -356,6 +357,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             }
             else if (isMLOTNO_INPUT_QTY_P500) {
               err_code += `| Cuộn liệu đã được sử dụng rồi, không thể next, báo admin!`;
+            }
+            else if (!isFactoryMatched) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} không cùng factory với code được chỉ thị vào`;
             }
           }
         }
