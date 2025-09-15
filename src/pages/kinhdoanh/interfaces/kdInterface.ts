@@ -875,6 +875,9 @@ export interface YCTKData {
   INS_EMPL: string;
   UPD_DATE: string;
   UPD_EMPL: string;
+  Co_Sx_Mau: boolean;
+  ManualCloseStatus: boolean;
+  FINAL_STATUS: string;
 }
 
 export interface YCTK_TREND_DATA  {

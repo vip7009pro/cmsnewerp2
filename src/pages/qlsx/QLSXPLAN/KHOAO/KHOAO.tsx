@@ -314,7 +314,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               USE_YN: "O",
               REMARK: "WEB_OUT"
             })) {
-              if (!(await f_set_YN_KHO_AO_INPUT({
+              let kq: string = await f_set_YN_KHO_AO_INPUT({
                 FACTORY: tonkhoaodatafilter.current[i].FACTORY,
                 PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
                 PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT.toUpperCase(),
@@ -326,8 +326,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 USE_YN: "O",
                 USE_YN_TEST: tonkhoaodatafilter.current[i].USE_YN,
                 IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
-              }))) {
-                err_code += "| Có lỗi trong quá trình set YN IN KHO SX";
+              });
+              console.log(kq);
+              if (kq !== '') {
+                err_code += "| " + kq;
               }
             }
           } else {

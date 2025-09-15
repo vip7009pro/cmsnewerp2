@@ -55,7 +55,10 @@ const emptyYCTKData: YCTKData = {
   INS_DATE: moment().format('YYYY-MM-DD'),
   INS_EMPL: "",
   UPD_DATE: moment().format('YYYY-MM-DD'),
-  UPD_EMPL: ""
+  UPD_EMPL: "",
+  Co_Sx_Mau: true,
+  ManualCloseStatus: false,
+  FINAL_STATUS: "P",
 };
 
 const YCTKManager = () => {
@@ -77,9 +80,16 @@ const YCTKManager = () => {
     return [
       { field: "id", headerName: "ID", width: 30, checkboxSelection: true, headerCheckboxSelection: true },
       { field: "REQ_ID", headerName: "REQ_ID", width: 40 },
+      { field: "FINAL_STATUS", headerName: "FINAL_STATUS", width: 100, cellRenderer: (params: any) =>  {
+        return <span style={{ color: params.value === "P" ? "red" : "green", fontWeight: "bold" }}>{params.value === "P" ? "Pending" : "Completed"}</span>
+      } },
       { field: "SAMPLE_STATUS", headerName: "SAMPLE_STATUS", width: 100, cellRenderer: (params: any) =>  {
         return <span style={{ color: params.value === "P" ? "red" : "green" }}>{params.value === "P" ? "Pending" : "Completed"}</span>
       } },
+      { field: "ManualCloseStatus", headerName: "ManualCloseStatus", width: 60, cellRenderer: (params: any) =>  {
+        return <span style={{ color: params.value === false ? "red" : "green" }}>{params.value === false ? "Pending" : "Completed"}</span>
+      } },
+      { field: "Co_Sx_Mau", headerName: "Co_Sx_Mau", width: 60 },
       { field: "CUST_CD", headerName: "CUST_CD", width: 60 },
       { field: "G_CODE", headerName: "G_CODE", width: 60 },
       { field: "G_NAME", headerName: "G_NAME", width: 60 },

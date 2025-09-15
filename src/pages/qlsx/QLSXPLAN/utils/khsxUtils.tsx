@@ -3090,7 +3090,7 @@ export const f_isM_CODE_CHITHI = async (PLAN_ID: string, M_CODE: string) => {
   return checklieuchithi;
 };
 export const f_set_YN_KHO_AO_INPUT = async (DATA: any) => {
-  let kq: boolean = false;
+  let kq: string = '';
   await generalQuery("setUSE_YN_KHO_AO_INPUT", {
     FACTORY: DATA.FACTORY,
     PHANLOAI: DATA.PHANLOAI,
@@ -3107,9 +3107,9 @@ export const f_set_YN_KHO_AO_INPUT = async (DATA: any) => {
     .then((response) => {
       console.log(response.data);
       if (response.data.tk_status !== "NG") {
-        kq = true;
+      
       } else {
-        kq = false;
+        kq = response.data.message;
       }
     })
     .catch((error) => {

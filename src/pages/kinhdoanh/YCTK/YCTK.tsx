@@ -53,6 +53,9 @@ const sampleYCTKData: YCTKData[] = [
       G_NAME: "KH233-0910",
       G_NAME_KD: "KH233-0910",
       CUST_NAME_KD: "KH233-0910",
+      ManualCloseStatus: false,
+      Co_Sx_Mau: false,
+      FINAL_STATUS: "P",
     },  
 ];
 export default function YCTK({ data}: YCTKProps) {
@@ -486,6 +489,14 @@ export default function YCTK({ data}: YCTKProps) {
             <td colSpan={6} className='text-highlight'>
               Cấp độ:<input type='number' name='SpecialRequirementLevel' value={formData.SpecialRequirementLevel} onChange={handleInputChange} className='input-inline' placeholder='Cấp độ' />
               Nội dung yêu cầu:<input type='text' name='SpecialRequirement' value={formData.SpecialRequirement} onChange={handleInputChange} className='input-inline' placeholder='Yêu cầu đặc biệt' />
+            </td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td>Làm mẫu / Close Manual</td>
+            <td colSpan={6}>
+              Làm mẫu: <input type='checkbox' name='Co_Sx_Mau' checked={formData.Co_Sx_Mau} onChange={handleInputChange} />
+              Close Manual: <input type='checkbox' name='ManualCloseStatus' checked={formData.ManualCloseStatus} onChange={handleInputChange} />
             </td>
           </tr>
         </tbody>
