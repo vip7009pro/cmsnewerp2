@@ -79,7 +79,7 @@ export interface BANGCHAMCONG_DATA {
     MAINDEPTNAME: string;
     REQUEST_DATE: string;
     APPLY_DATE: string;
-    APPROVAL_STATUS: string;
+    APPROVAL_STATUS: number;
     OFF_ID: number;
     CA_NGHI: number;
     ON_OFF: number;
@@ -362,6 +362,14 @@ export interface BANGCHAMCONG_DATA {
     OVERTIME_MINUTES: number;
     WORKING_MINUTES: number;
     FINAL_OVERTIMES: number;
+    L100: number;
+    L130: number;
+    L150: number;
+    L200: number;
+    L210: number;
+    L270: number;
+    L300: number;
+    L390: number;
   }
   export interface PheDuyetNghiData {
     id: string;

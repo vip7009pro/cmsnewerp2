@@ -7,7 +7,7 @@ import "./BangChamCong.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import { checkBP, weekdayarray } from "../../../api/GlobalFunction";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import {
 import AGTable from '../../../components/DataTable/AGTable';
 import { BANGCHAMCONG_DATA, BANGCHAMCONG_DATA2, CA_INFO, IN_OUT_DATA, IN_OUT_DATA2, IN_OUT_DATA22, IN_OUT_DATA3 } from "../interfaces/nhansuInterface";
 import { f_setCaDiemDanh } from "../utils/nhansuUtils";
+import { calcMinutesByRate } from "./OverTimeUtils3";
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -31,7 +32,221 @@ const BANGCHAMCONG = () => {
   const [alltime, setAllTime] = useState(false);
   const [trunghiviec, setTruNghiViec] = useState(true);
   const [trunghisinh, setTruNghiSinh] = useState(true);
-  const columns = [
+  const columns = getCompany() ==='CMS' ? [
+    {
+      field: 'DATE_COLUMN',
+      headerName: 'DATE_COLUMN',
+      width: 120,
+      type: 'date',
+      checkboxSelection: true,
+      headerCheckboxSelection: true
+    },
+    {
+      field: 'WEEKDAY',
+      headerName: 'WEEKDAY',
+      width: 50,
+      type: 'date'
+    },
+    {
+      field: 'NV_CCID',
+      headerName: 'NV_CCID',
+      width: 50
+    },
+    {
+      field: 'EMPL_NO',
+      headerName: 'EMPL_NO',
+      width: 50
+    },
+    {
+      field: 'CMS_ID',
+      headerName: 'NS_ID',
+      width: 50
+    },
+    {
+      field: 'FULL_NAME',
+      headerName: 'FULL_NAME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: "#013b92", fontWeight: "bold" }}>{params.data.FULL_NAME}</span>;
+      }
+    },
+    {
+      field: 'FACTORY_NAME',
+      headerName: 'FACTORY_NAME',
+      width: 80
+    },
+    {
+      field: 'WORK_SHIF_NAME',
+      headerName: 'WORK_SHIFT_NAME',
+      width: 100
+    },
+    {
+      field: 'CALV',
+      headerName: 'CALV',
+      width: 60
+    },
+    {
+      field: 'MAINDEPTNAME',
+      headerName: 'MAINDEPTNAME',
+      width: 80
+    },
+    {
+      field: 'SUBDEPTNAME',
+      headerName: 'SUBDEPTNAME',
+      width: 80
+    },
+    {
+      field: 'FIXED_IN_TIME',
+      headerName: 'FIXED_IN_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.data.FIXED_IN_TIME !== "OFF") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.FIXED_IN_TIME}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.FIXED_IN_TIME}</span>;
+        }
+      }
+    },
+    {
+      field: 'FIXED_OUT_TIME',
+      headerName: 'FIXED_OUT_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.data.FIXED_OUT_TIME !== "OFF") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.FIXED_OUT_TIME}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.FIXED_OUT_TIME}</span>;
+        }
+      }
+    },
+    {
+      field: 'IN_TIME',
+      headerName: 'AUTO_IN_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu giờ vào") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.IN_TIME}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.IN_TIME}</span>;
+        }
+      }
+    },
+    {
+      field: 'OUT_TIME',
+      headerName: 'AUTO_OUT_TIME',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu giờ ra") {
+          return <span style={{ color: "blue", fontWeight: "bold" }}>{params.data.OUT_TIME}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "bold" }}>{params.data.OUT_TIME}</span>;
+        }
+      }
+    },
+    {
+      field: "L100",
+      headerName: "L100",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L130",
+      headerName: "L130",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L150",
+      headerName: "L150",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L200",
+      headerName: "L200",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L210",
+      headerName: "L210",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L270",
+      headerName: "L270",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L300",
+      headerName: "L300",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    {
+      field: "L390",
+      headerName: "L390",
+      width: 50,headerClass: 'super-app-theme--header',
+    },
+    
+    {
+      field: 'STATUS',
+      headerName: 'STATUS',
+      width: 100,
+      cellRenderer: (params: any) => {
+        if (params.value !== "Thiếu công") {
+          return <span style={{ color: "blue", fontWeight: "normal" }}>{params.data.STATUS}</span>;
+        } else {
+          return <span style={{ color: "red", fontWeight: "normal" }}>{params.data.STATUS}</span>;
+        }
+      }
+    },
+    {
+      field: 'REASON_NAME',
+      headerName: 'REASON_NAME',
+      width: 100
+    },
+    {
+      field: 'CHECK1',
+      headerName: 'CHECK1',
+      width: 100
+    },
+    {
+      field: 'CHECK2',
+      headerName: 'CHECK2',
+      width: 100
+    },
+    {
+      field: 'CHECK3',
+      headerName: 'CHECK3',
+      width: 100
+    },
+    {
+      field: 'PREV_CHECK1',
+      headerName: 'PREV_CHECK1',
+      width: 100
+    },
+    {
+      field: 'PREV_CHECK2',
+      headerName: 'PREV_CHECK2',
+      width: 100
+    },
+    {
+      field: 'PREV_CHECK3',
+      headerName: 'PREV_CHECK3',
+      width: 100
+    },
+    {
+      field: 'NEXT_CHECK1',
+      headerName: 'NEXT_CHECK1',
+      width: 100
+    },
+    {
+      field: 'NEXT_CHECK2',
+      headerName: 'NEXT_CHECK2',
+      width: 100
+    },
+    {
+      field: 'NEXT_CHECK3',
+      headerName: 'NEXT_CHECK3',
+      width: 100
+    }
+  ]: [
     {
       field: 'DATE_COLUMN',
       headerName: 'DATE_COLUMN',
@@ -1303,6 +1518,7 @@ const BANGCHAMCONG = () => {
                 NEXT_CHECK2: element.NEXT_CHECK2 !== null ? moment.utc(element.NEXT_CHECK2).format("HH:mm") : "",
                 NEXT_CHECK3: element.NEXT_CHECK3 !== null ? moment.utc(element.NEXT_CHECK3).format("HH:mm") : "",
               },);
+              const ratetb = calcMinutesByRate(element.FIXED_IN_TIME, element.FIXED_OUT_TIME, moment(element.DATE_COLUMN).format("YYYY-MM-DD"));           
               /* const intime_calc: string = tinhInOutTime22({                
                 SHIFT_NAME: element.WORK_SHIF_NAME,
                 CHECK1:
@@ -1388,6 +1604,14 @@ const BANGCHAMCONG = () => {
                 FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
                 DATE_COLUMN: element.DATE_COLUMN.substring(0, 10),
                 CALV: element.CALV === 0 ? 'Hành Chính' : element.CALV === 1 ? 'Ca Ngày' : element.CALV === 2 ? 'Ca Đêm' : 'Không có ca',
+                L100:element.REASON_NAME==='Phép năm' ? 480 : element.REASON_NAME==='Nửa phép' ? 240 + ratetb["100%"] : ratetb["100%"] ,
+                L130: ratetb["130%"],
+                L150: ratetb["150%"],
+                L200: ratetb["200%"],
+                L210: ratetb["210%"],
+                L270: ratetb["270%"],
+                L300: ratetb["300%"],
+                L390: ratetb["390%"],
                 APPLY_DATE:
                   element.APPLY_DATE !== null
                     ? moment.utc(element.APPLY_DATE).format("YYYY-MM-DD")
