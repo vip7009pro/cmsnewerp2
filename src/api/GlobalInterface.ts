@@ -80,6 +80,7 @@ export interface GlobalInterface {
   };
   cpnInfo: any;
   selectedServer: string;
+  lag_mode: boolean;
 }
 export interface userDataInterface {
   EMPL_IMAGE?: string;

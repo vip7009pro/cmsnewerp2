@@ -35,6 +35,7 @@ import { enqueueSnackbar } from "notistack";
 import { Login } from "./api/lazyPages";
 import { requestFullScreen } from "./api/GlobalFunction";
 import AppRoutes from "./AppRoutes";
+import { useRenderLag } from "./api/userRenderLag";
 function App() {
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(
@@ -338,6 +339,7 @@ function App() {
       return null;
     }
   };
+
   useEffect(() => {
     checkLoginCallback();
     checkDiemDanh();

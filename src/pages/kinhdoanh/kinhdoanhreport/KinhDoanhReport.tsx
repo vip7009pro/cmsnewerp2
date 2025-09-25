@@ -2190,7 +2190,7 @@ const KinhDoanhReport = () => {
                 </IconButton>
               </span>
               <KDPOBalanceSummaryByYear data={pobalanceSummary} onClick={async (e) => { 
-                console.log(e.activePayload[0].payload)
+                //console.log(e.activePayload[0].payload)
                 const PO_YEAR= e.activePayload[0].payload.PO_YEAR
                 setSelectedYW('Y'+PO_YEAR)
                 setPoBalanceDetail(

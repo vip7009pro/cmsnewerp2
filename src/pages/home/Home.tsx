@@ -15,6 +15,7 @@ import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo, Navbar } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
 import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
+import { useRenderLag } from "../../api/userRenderLag";
 export const current_ver: number = getCompany() === "CMS" ? 2645 : 429;
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -146,6 +147,7 @@ function Home() {
       window.clearInterval(intervalID);
     };
   }, []);
+  //useRenderLag(true, 2500);
   return (
     <div className="home">
       <div className="navdiv">

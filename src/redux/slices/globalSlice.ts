@@ -214,11 +214,15 @@ const initialState: GlobalInterface = {
   selectedServer:
     companyInfo[startCPN as keyof typeof companyInfo].apiUrlArray[0]
       .server_name,
+  lag_mode: false,
 };
 export const glbSlice = createSlice({
   name: "totalSlice",
   initialState,
   reducers: {
+    changeLagMode: (state, action: PayloadAction<boolean>) => {
+      state.lag_mode = action.payload;
+    },
     changeDiemDanhState: (state, action: PayloadAction<boolean>) => {
       //console.log(action.payload);
       state.diemdanhstate = action.payload;
@@ -534,5 +538,5 @@ export const glbSlice = createSlice({
     },
   },
 });
-export const { changeDiemDanhState, changeUserData, update_socket, toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket, addTab, addComponent, closeTab, settabIndex, setTabModeSwap, resetTab, logout, login, vendorLogin, vendorLogout, changeGLBLanguage, changeGLBSetting, switchTheme, changeCtrCd, changeSelectedServer, updateNotiCount, } = glbSlice.actions;
+export const { changeDiemDanhState, changeUserData, update_socket, toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket, addTab, addComponent, closeTab, settabIndex, setTabModeSwap, resetTab, logout, login, vendorLogin, vendorLogout, changeGLBLanguage, changeGLBSetting, switchTheme, changeCtrCd, changeSelectedServer, updateNotiCount, changeLagMode} = glbSlice.actions;
 export default glbSlice.reducer;

@@ -35,7 +35,10 @@ import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch"
 import { CodeListData, CustomerListData, FCSTTDYCSX, POBALANCETDYCSX, PONOLIST, TONKHOTDYCSX, UploadAmazonData, YCSXTableData } from "../interfaces/kdInterface";
 import { f_batchDeleteYCSX, f_check_G_NAME_2Ver_active, f_checkDuplicateAMZ, f_checkFCST_G_CODE, f_checkG_CODE_ACTIVE, f_checkG_CODE_PO_BALANCE, f_checkStock_G_CODE, f_checkYCSX_EXIST, f_generateNextProdRequestNo, f_getcodelist, f_getcustomerlist, f_getNextP500_IN_NO, f_handleAmazonData, f_insertDMYCSX, f_insertDMYCSX_New, f_insertP500, f_insertP501, f_insertYCSX, f_isBOM_M_CODE_MATCHING, f_isBOMGIA_HAS_MAIN, f_isIDCongViecExist, f_loadPONOList, f_process_lot_no_generate, f_traYCSX, f_updateDMSX_LOSS_KT, f_updateYCSX } from "../utils/kdUtils";
 import { renderBanVe, renderYCSX } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useLaggy } from "../../../api/useLaggy";
+import { useRenderLag } from "../../../api/userRenderLag";
 const YCSXManager = () => {
+  
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tabIndex, setTabIndex] = useState(0);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
@@ -2944,6 +2947,9 @@ const YCSXManager = () => {
         }} />
     )
   }, [uploadExcelJson, isLoading])
+
+
+
   useEffect(() => {
     getcustomerlist();
     getcodelist("");

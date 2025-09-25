@@ -25,6 +25,11 @@ export function getCompany(): string {
   //console.log(state.totalSlice.server_ip);
   return state.totalSlice.company;
 }
+export function getLagMode(): boolean {
+  const state = store.getState();
+  //console.log(state.totalSlice.server_ip);
+  return state.totalSlice.lag_mode;
+}
 export function getUserData(): UserData | undefined {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
@@ -236,6 +241,10 @@ export async function generalQuery(command: string, queryData: any) {
     command: command,
     DATA: encryptedData,
   });
+  //delay 1s
+ /*  if(getCompany() === "CMS"){
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  } */
   return data;
 }
 export async function uploadQuery(

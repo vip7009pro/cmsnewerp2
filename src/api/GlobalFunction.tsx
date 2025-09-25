@@ -962,7 +962,7 @@ function rgbToHex(r: number, g: number, b: number) {
 }
 // Hàm sinh mảng màu gradient
 export function generateMultiGradientColors(colorArr: string[], steps: number): string[] {
-  console.log('steps', steps);
+ // console.log('steps', steps);
   if (colorArr.length < 2 || steps < 1) return [];
   
   const colors: string[] = [];
