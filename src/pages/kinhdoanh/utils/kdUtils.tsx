@@ -5,6 +5,7 @@ import moment from "moment";
 import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import * as XLSX from "xlsx";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
+import { RND_FILM_SAVING_TREND_DATA } from "../../rnd/interfaces/rndInterface";
 //PO Manager Functions
 export const monthArray = [ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", ];
 export const dayArray = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", ];
@@ -1866,6 +1867,148 @@ export const f_load_PO_BALANCE_CUSTOMER_BY_YEAR = async (DATA: any) => {
       } else {
         kq = [];
         Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_film_saving_daily = async (DATA: any) => {
+  let kq: RND_FILM_SAVING_TREND_DATA[] = [];
+  await generalQuery("tilefilmbandaily", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: RND_FILM_SAVING_TREND_DATA[] = response.data.data.map(
+          (element: RND_FILM_SAVING_TREND_DATA, index: number) => {            
+            return {
+              ...element,
+              PLAN_DATE: moment(element.PLAN_DATE).format("YYYY-MM-DD"),
+              SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_film_saving_weekly = async (DATA: any) => {
+  let kq: RND_FILM_SAVING_TREND_DATA[] = [];
+  await generalQuery("tilefilmbanweekly", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: RND_FILM_SAVING_TREND_DATA[] = response.data.data.map(
+          (element: RND_FILM_SAVING_TREND_DATA, index: number) => {            
+            return {
+              ...element,              
+              SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_film_saving_monthly = async (DATA: any) => {
+  let kq: RND_FILM_SAVING_TREND_DATA[] = [];
+  await generalQuery("tilefilmbanmonthly", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: RND_FILM_SAVING_TREND_DATA[] = response.data.data.map(
+          (element: RND_FILM_SAVING_TREND_DATA, index: number) => {            
+            return {
+              ...element,              
+              SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+
+export const f_load_film_saving_yearly = async (DATA: any) => {
+  let kq: RND_FILM_SAVING_TREND_DATA[] = [];
+  await generalQuery("tilefilmbanyearly", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: RND_FILM_SAVING_TREND_DATA[] = response.data.data.map(
+          (element: RND_FILM_SAVING_TREND_DATA, index: number) => {            
+            return {
+              ...element,              
+              SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      Swal.fire("Thông báo", "Nội dung: " + error, "error");
+      console.log(error);
+    });
+  return kq;
+}
+
+export const f_load_tilefilmbanBackData = async (DATA: any) => {
+  let kq: RND_FILM_SAVING_TREND_DATA[] = [];
+  await generalQuery("tilefilmbanbackdata", DATA)
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: RND_FILM_SAVING_TREND_DATA[] = response.data.data.map(
+          (element: RND_FILM_SAVING_TREND_DATA, index: number) => {            
+            return {
+              ...element,
+              PLAN_DATE: moment(element.PLAN_DATE).format("YYYY-MM-DD"), 
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      } else {
+        kq = [];
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
       }
     })
     .catch((error) => {

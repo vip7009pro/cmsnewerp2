@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getCompany } from "../../../api/Api";
 import "./RND_REPORT.scss";
 import {
+  RND_FILM_SAVING_TREND_DATA,
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
   RND_NEWCODE_TREND_DATA,
@@ -19,11 +20,15 @@ import RNDYearlyNewCode from "../../../components/Chart/RND/RNDYearlyNewCode";
 import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
 import RNDNewCodeByProdType from "../../../components/Chart/RND/RNDNewCodeByProdType";
 import { YCTK_TREND_DATA } from "../../kinhdoanh/interfaces/kdInterface";
-import { f_load_YCTK_TREND_DAILY, f_load_YCTK_TREND_MONTHLY, f_load_YCTK_TREND_WEEKLY, f_load_YCTK_TREND_YEARLY } from "../../kinhdoanh/utils/kdUtils";
+import { f_load_film_saving_daily, f_load_film_saving_monthly, f_load_film_saving_weekly, f_load_film_saving_yearly, f_load_tilefilmbanBackData, f_load_YCTK_TREND_DAILY, f_load_YCTK_TREND_MONTHLY, f_load_YCTK_TREND_WEEKLY, f_load_YCTK_TREND_YEARLY } from "../../kinhdoanh/utils/kdUtils";
 import RNDDailyDesignRequest from "../../../components/Chart/RND/RNDDailyDesignRequest";
 import RNDWeeklyDesignRequest from "../../../components/Chart/RND/RNDWeeklyDesignRequest";
 import RNDMonthlyDesignRequest from "../../../components/Chart/RND/RNDMonthlyDesignRequest";
 import RNDYearlyDesignRequest from "../../../components/Chart/RND/RNDYearlyDesignRequest";
+import RNDDailyFilmSaving from "../../../components/Chart/RND/RNDDailyFilmSaving";
+import RNDWeeklyFilmSaving from "../../../components/Chart/RND/RNDWeeklyFilmSaving";
+import RNDMonthlyFilmSaving from "../../../components/Chart/RND/RNDMonthlyFilmSaving";
+import RNDYearlyFilmSaving from "../../../components/Chart/RND/RNDYearlyFilmSaving";
 const RND_REPORT = () => {
   const [dailynewcode, setDailyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
   const [weeklynewcode, setWeeklyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
@@ -33,6 +38,15 @@ const RND_REPORT = () => {
   const [yctkweeklynewcode, setYCTKWeeklyNewCode] = useState<YCTK_TREND_DATA[]>([]);
   const [yctkmonthlynewcode, setYCTKMonthlyNewCode] = useState<YCTK_TREND_DATA[]>([]);
   const [yctkyearlynewcode, setYCTKYearlyNewCode] = useState<YCTK_TREND_DATA[]>([]);
+  const [filmSavingDaily, setFilmSavingDaily] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
+  const [filmSavingWeekly, setFilmSavingWeekly] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
+  const [filmSavingMonthly, setFilmSavingMonthly] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
+  const [filmSavingYearly, setFilmSavingYearly] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
+  const [tilefilmbanBackData, setTileFilmBanBackData] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
+
+
+
+
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [cust_name, setCust_Name] = useState('');
@@ -261,6 +275,61 @@ const RND_REPORT = () => {
       }
     )); 
   }
+  const handle_getFilmSavingDaily = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    setFilmSavingDaily(await f_load_film_saving_daily(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getFilmSavingWeekly = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    setFilmSavingWeekly(await f_load_film_saving_weekly(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getFilmSavingMonthly = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    setFilmSavingMonthly(await f_load_film_saving_monthly(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getFilmSavingYearly = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    setFilmSavingYearly(await f_load_film_saving_yearly(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+  const handle_getTileFilmBanBackData = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    setTileFilmBanBackData(await f_load_tilefilmbanBackData(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
+
+
+
+
+
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -282,6 +351,11 @@ const RND_REPORT = () => {
       handle_getYCTKDataWeekly(fromdate, todate),
       handle_getYCTKDataMonthly(fromdate, todate),
       handle_getYCTKDataYearly(fromdate, todate),
+      handle_getFilmSavingDaily(fromdate, todate),
+      handle_getFilmSavingWeekly(fromdate, todate),
+      handle_getFilmSavingMonthly(fromdate, todate),
+      handle_getFilmSavingYearly(fromdate, todate),
+      handle_getTileFilmBanBackData(fromdate, todate),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -541,6 +615,93 @@ const RND_REPORT = () => {
                 />
               </div>
             </div>
+          </div>
+          </>}
+          {getCompany() === "PVN" && <>
+          <span className="section_title">4. Film Saving Trending <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(tilefilmbanBackData, "Tile Film Ban Back Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Daily Film Saving <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yctkdailynewcode, "Daily Film Saving Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>
+                </span>
+                <RNDDailyFilmSaving
+                  dldata={[...filmSavingDaily].reverse()}
+                  processColor="#64b8fd"
+                  materialColor="#53eb34"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly Film Saving <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(filmSavingWeekly, "Weekly Film Saving Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <RNDWeeklyFilmSaving
+                  dldata={[...filmSavingWeekly].reverse()}
+                  processColor="#64b8fd"
+                  materialColor="#53eb34"
+                />
+              </div>
+            </div>
+           
+          </div>
+          <div className="dailygraphtotal">
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Monthly Film Saving <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(yctkdailynewcode, "Monthly Film Saving Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>
+                </span>
+                <RNDMonthlyFilmSaving
+                  dldata={[...filmSavingMonthly].reverse()}
+                  processColor="#64b8fd"
+                  materialColor="#53eb34"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly Film Saving <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(filmSavingYearly, "Yearly Film Saving Data");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton></span>
+                <RNDYearlyFilmSaving
+                  dldata={[...filmSavingYearly].reverse()}
+                  processColor="#64b8fd"
+                  materialColor="#53eb34"
+                />
+              </div>
+            </div>
+           
           </div>
           </>}
           <span className="subsection_title">2.5 New Code By Customer and Prod Type ({fromdate}- {todate})

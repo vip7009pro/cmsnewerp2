@@ -333,3 +333,15 @@ export interface MASTER_MATERIAL_HSD {
   M_NAME: string;
   EXP_DATE: number;
 }
+
+export interface RND_FILM_SAVING_TREND_DATA {
+  PLAN_DATE?: string;
+  PLAN_YW?: string;
+  PLAN_YM?: string;
+  PLAN_YEAR?: string;
+  PLAN_WEEK?: string;
+  PLAN_MONTH?: string;
+  FILM_QTY_LT: number;
+  FILM_QTY_TT: number;
+  SAVING_RATE: number;
+}

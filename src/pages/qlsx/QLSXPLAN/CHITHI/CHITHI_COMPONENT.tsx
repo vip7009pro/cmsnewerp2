@@ -908,8 +908,46 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
                 </tbody>
             </table>
           </div>}
-
-
+          {getCompany() !== 'CMS' && <div className="text1">
+            3.2. 금형정보 Thông tin film bản
+          </div>}
+          {getCompany() !== 'CMS' && <div className="thongtinyeucau">
+            <table className="ttyc1">
+              <thead>
+                <tr>  
+                  <th>Dài SP</th>    
+                  <th>Rộng SP</th>    
+                  <th>Mép trái</th>
+                  <th>Mép phải</th>
+                  <th>K/C hàng</th>
+                  <th>K/C cột</th>
+                  <th>Số hàng</th>            
+                  <th>Số cột</th>
+                  <th>Số màu</th>
+                  <th>Film Width</th>
+                  <th>Film Length</th>                  
+                  <th>Diện tích Film</th>                 
+                </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                    <td>{request_codeinfo[0].G_LENGTH?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                    <td>{request_codeinfo[0].G_WIDTH?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>                   
+                    <td>{request_codeinfo[0].G_SG_L?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                    <td>{request_codeinfo[0].G_SG_R?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                    <td>{request_codeinfo[0].G_LG?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                    <td>{request_codeinfo[0].G_CG?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                    <td>{request_codeinfo[0].G_C_R?.toLocaleString("en-US",{minimumFractionDigits: 2})} </td>
+                    <td>{request_codeinfo[0].G_C?.toLocaleString("en-US",{minimumFractionDigits: 2})} </td>
+                    <td>{request_codeinfo[0].PROD_PRINT_TIMES} màu</td>
+                    <td style={{ fontWeight: "bold", backgroundColor: "#b5f392" }}>{(request_codeinfo[0].G_SG_L +(request_codeinfo[0].G_CG + request_codeinfo[0].G_WIDTH) * (request_codeinfo[0].G_C - 1) +request_codeinfo[0].G_WIDTH +request_codeinfo[0].G_SG_R)?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                    <td style={{ fontWeight: "bold", backgroundColor: "#b5f392" }}>{((request_codeinfo[0].G_LENGTH + request_codeinfo[0].G_LG) * request_codeinfo[0].G_C_R)?.toLocaleString("en-US",{minimumFractionDigits: 2})} mm</td>
+                   
+                    <td style={{ fontWeight: "bold", backgroundColor: "#b5f392" }}>{((request_codeinfo[0].G_SG_L +(request_codeinfo[0].G_CG + request_codeinfo[0].G_WIDTH) * (request_codeinfo[0].G_C - 1) +request_codeinfo[0].G_WIDTH +request_codeinfo[0].G_SG_R) * ((request_codeinfo[0].G_LENGTH + request_codeinfo[0].G_LG) * request_codeinfo[0].G_C_R)/1000000)?.toLocaleString("en-US",{minimumFractionDigits: 2})} m²</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>}
             <div className="text1">
               4. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
               {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}
