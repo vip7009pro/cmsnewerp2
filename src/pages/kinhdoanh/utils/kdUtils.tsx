@@ -1888,6 +1888,7 @@ export const f_load_film_saving_daily = async (DATA: any) => {
               ...element,
               PLAN_DATE: moment(element.PLAN_DATE).format("YYYY-MM-DD"),
               SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              SQM_SAVING_RATE: element.SQM_LT !== 0 ? 1-element.SQM_TT / element.SQM_LT : 0,
               id: index,
             };
           }
@@ -1916,6 +1917,7 @@ export const f_load_film_saving_weekly = async (DATA: any) => {
             return {
               ...element,              
               SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              SQM_SAVING_RATE: element.SQM_LT !== 0 ? 1-element.SQM_TT / element.SQM_LT : 0,
               id: index,
             };
           }
@@ -1944,6 +1946,7 @@ export const f_load_film_saving_monthly = async (DATA: any) => {
             return {
               ...element,              
               SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              SQM_SAVING_RATE: element.SQM_LT !== 0 ? 1-element.SQM_TT / element.SQM_LT : 0,
               id: index,
             };
           }
@@ -1973,6 +1976,7 @@ export const f_load_film_saving_yearly = async (DATA: any) => {
             return {
               ...element,              
               SAVING_RATE: element.FILM_QTY_LT !== 0 ? 1-element.FILM_QTY_TT / element.FILM_QTY_LT : 0,
+              SQM_SAVING_RATE: element.SQM_LT !== 0 ? 1-element.SQM_TT / element.SQM_LT : 0,
               id: index,
             };
           }

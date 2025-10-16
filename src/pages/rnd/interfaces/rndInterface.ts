@@ -343,5 +343,8 @@ export interface RND_FILM_SAVING_TREND_DATA {
   PLAN_MONTH?: string;
   FILM_QTY_LT: number;
   FILM_QTY_TT: number;
+  SQM_TT: number;
+  SQM_LT: number;
   SAVING_RATE: number;
+  SQM_SAVING_RATE: number;
 }

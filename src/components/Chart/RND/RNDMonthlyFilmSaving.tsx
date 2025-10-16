@@ -58,13 +58,22 @@ const RNDMonthlyFilmSaving = ({
           Tháng: {`${payload[0].payload.PLAN_YM.toLocaleString("en-US")}`} EA
           </p>
           <p className='label'>
-            FILM_QTY_LT: {`${payload[0].payload.FILM_QTY_LT.toLocaleString("en-US")}`} EA
+            FILM_QTY_LT: {`${payload[0].payload.FILM_QTY_LT?.toLocaleString("en-US")}`} EA
           </p>          
           <p className='label'>
-            FILM_QTY_TT: {`${payload[0].payload.FILM_QTY_TT.toLocaleString("en-US",)}`}
+            FILM_QTY_TT: {`${payload[0].payload.FILM_QTY_TT?.toLocaleString("en-US",)}`}
           </p>
           <p className='label'>
-            SAVING_RATE: {`${payload[0].payload.SAVING_RATE.toLocaleString("en-US",{style: 'percent'})}`}
+            SAVING_RATE: {`${payload[0].payload.SAVING_RATE?.toLocaleString("en-US",{style: 'percent'})}`}
+          </p>
+          <p className='label'>
+            SQM_LT: {`${payload[0].payload.SQM_LT?.toLocaleString("en-US",)}`}
+          </p>
+          <p className='label'>
+            SQM_TT: {`${payload[0].payload.SQM_TT?.toLocaleString("en-US",)}`}
+          </p>
+          <p className='label'>
+            SQM_SAVING_RATE: {`${payload[0].payload.SQM_SAVING_RATE?.toLocaleString("en-US",{style: 'percent'})}`}
           </p>
           
         </div>
@@ -93,7 +102,7 @@ const RNDMonthlyFilmSaving = ({
         <YAxis
           yAxisId='left-axis'
           label={{
-            value: "FILM QTY",
+            value: "FILM SQM",
             angle: -90,
             position: "insideLeft",
             fontSize:'0.7rem'    
@@ -111,7 +120,7 @@ const RNDMonthlyFilmSaving = ({
         orientation="right"
           yAxisId='right-axis'
           label={{
-            value: "Saving Rate",
+            value: "SQM Saving Rate",
             angle: -90,
             position: "insideLeft",
             fontSize:'0.7rem'    
@@ -138,25 +147,25 @@ const RNDMonthlyFilmSaving = ({
         <Bar          
           yAxisId='left-axis'
           type='monotone'
-          dataKey='FILM_QTY_LT'
+          dataKey='SQM_LT'
           stroke='white'
           fill={processColor}          
         >          
-          <LabelList dataKey="FILM_QTY_LT" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="SQM_LT" fill="black" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
         <Bar         
           yAxisId='left-axis'
           type='monotone'
-          dataKey='FILM_QTY_TT'
+          dataKey='SQM_TT'
           stroke='white'
           fill={materialColor}              
         >
-          <LabelList dataKey="FILM_QTY_TT" fill="white" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="SQM_TT" fill="white" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>       
         <Line
           yAxisId='right-axis'
           type='monotone'
-          dataKey='SAVING_RATE'
+          dataKey='SQM_SAVING_RATE'
           stroke='green'
           label={{ position: "top", fill:'blue', formatter: labelFormatterPercent, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
         />
