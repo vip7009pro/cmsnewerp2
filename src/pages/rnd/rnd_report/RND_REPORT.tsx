@@ -633,7 +633,7 @@ const RND_REPORT = () => {
                 <span className="subsection">Daily Film Saving <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(yctkdailynewcode, "Daily Film Saving Data");
+                    SaveExcel(filmSavingDaily, "Daily Film Saving Data");
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
@@ -671,7 +671,7 @@ const RND_REPORT = () => {
                 <span className="subsection">Monthly Film Saving <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(yctkdailynewcode, "Monthly Film Saving Data");
+                    SaveExcel(filmSavingMonthly, "Monthly Film Saving Data");
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
@@ -690,7 +690,7 @@ const RND_REPORT = () => {
                   onClick={() => {
                     SaveExcel(filmSavingYearly, "Yearly Film Saving Data");
                   }}
-                >
+                > 
                   <AiFillFileExcel color='green' size={15} />
                   Excel
                 </IconButton></span>
