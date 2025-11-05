@@ -9,7 +9,9 @@ import {
   f_addEmployee,
   f_getEmployeeList,
   f_loadWorkPositionList,
+  f_recognizeFaceID,
   f_updateEmployee,
+  f_updateFaceID,
 } from "../utils/nhansuUtils";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
@@ -21,7 +23,14 @@ import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
 import moment from "moment";
 import { checkBP } from "../../../api/GlobalFunction";
+import * as faceapi from 'face-api.js';
+
 const UserManager = () => {
+ 
+  const [loading, setLoading] = useState(false);
+
+  
+  
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
@@ -324,6 +333,136 @@ const UserManager = () => {
     loadEmplInfo();
     loadWorkPosition();
   }, []);
+
+  // Load face-api.js models khi component mount
+  useEffect(() => {
+    const loadModels = async () => {
+      try {
+        await Promise.all([
+          faceapi.nets.ssdMobilenetv1.loadFromUri('/models'), // Model detect mặt
+          faceapi.nets.faceRecognitionNet.loadFromUri('/models'), // Model trích xuất embedding
+          faceapi.nets.faceLandmark68Net.loadFromUri('/models'), // Optional: landmarks
+        ]);
+        console.log('Models loaded successfully');
+        Swal.fire('Thông báo', 'Tải models thành công!', 'success');
+      } catch (error) {
+        console.error('Error loading models:', error);
+        Swal.fire('Thông báo', 'Không tải được models!', 'error');
+        //message.error('Không tải được models!');
+      }
+    };
+    loadModels();
+  }, []);
+
+  // Hàm trích xuất face embedding từ URL ảnh
+  const extractEmbedding = async (imageUrl: string) => {
+    console.log("imageUrl",imageUrl);
+    if (!imageUrl) {
+      //message.error('Vui lòng nhập URL ảnh!');
+      Swal.fire('Thông báo', 'Vui lòng nhập URL ảnh!', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Tạo img element để load ảnh
+      const img = await faceapi.fetchImage(imageUrl); // Fetch ảnh từ server
+      // Detect khuôn mặt và trích xuất embedding
+      const detections = await faceapi
+        .detectSingleFace(img)
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+
+      if (!detections) {
+        Swal.fire('Thông báo', 'Không tìm thấy khuôn mặt trong ảnh!', 'error');
+        setLoading(false);
+        return;
+      }
+
+      // Lấy embedding (vector 128D)
+      const embedding = Array.from(detections.descriptor); // Chuyển Float32Array thành array thường
+      console.log('Embedding:', embedding);
+      Swal.fire('Embedding', embedding.join(','));
+      const buffer = new ArrayBuffer(embedding.length * 4);
+      const floatArray = new Float32Array(buffer);
+      embedding.forEach((val, i) => floatArray[i] = val);
+      const byteArray = new Uint8Array(buffer);
+      console.log('byteArray',byteArray);
+      let kq: boolean = await f_updateFaceID({EMPL_NO: selectedRows.EMPL_NO, FACE_ID: byteArray});
+      if (kq) {
+        Swal.fire('Thông báo', 'Lưu embedding thành công!', 'success');
+      } else {
+        Swal.fire('Thông báo', 'Lưu embedding thất bại!', 'error');
+      }
+      //Swal.fire('byteArray',byteArray.join(','));
+
+      // Gửi embedding lên server (mock API)
+      /* const response = await axios.post('http://localhost:3001/users', {
+        name: 'Tên User', // Đại ca thay bằng tên từ form
+        faceEncoding: JSON.stringify(embedding), // Lưu embedding dưới dạng string
+      }); */
+
+      /* Swal.fire('Thông báo', 'Trích xuất và lưu embedding thành công!', 'success');
+      console.log('Response from server:', response.data); */
+    } catch (error) {
+      console.error('Error extracting embedding:', error);
+      Swal.fire('Thông báo', 'Lỗi khi trích xuất embedding!', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const checkEmbedding = async (imageUrl: string) => {
+    console.log("imageUrl",imageUrl);
+    if (!imageUrl) {
+      //message.error('Vui lòng nhập URL ảnh!');
+      Swal.fire('Thông báo', 'Vui lòng nhập URL ảnh!', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Tạo img element để load ảnh
+      const img = await faceapi.fetchImage(imageUrl); // Fetch ảnh từ server
+      // Detect khuôn mặt và trích xuất embedding
+      const detections = await faceapi
+        .detectSingleFace(img)
+        .withFaceLandmarks()
+        .withFaceDescriptor();
+
+      if (!detections) {
+        Swal.fire('Thông báo', 'Không tìm thấy khuôn mặt trong ảnh!', 'error');
+        setLoading(false);
+        return;
+      }
+
+      // Lấy embedding (vector 128D)
+      const embedding = Array.from(detections.descriptor); // Chuyển Float32Array thành array thường
+      console.log('Embedding:', embedding);
+      Swal.fire('Embedding', embedding.join(','));
+      let kq: any = await f_recognizeFaceID({FACE_ID: embedding});
+      console.log('kq',kq.data.EMPL_NO);
+      if (kq.tk_status !== "NG") {
+        Swal.fire('Thông báo','Xin chào ' + kq.data.EMPL_NO, 'success');
+      } else {
+        Swal.fire('Thông báo', kq.message, 'error');
+      }
+      //Swal.fire('byteArray',byteArray.join(','));
+
+      // Gửi embedding lên server (mock API)
+      /* const response = await axios.post('http://localhost:3001/users', {
+        name: 'Tên User', // Đại ca thay bằng tên từ form
+        faceEncoding: JSON.stringify(embedding), // Lưu embedding dưới dạng string
+      }); */
+
+      /* Swal.fire('Thông báo', 'Trích xuất và lưu embedding thành công!', 'success');
+      console.log('Response from server:', response.data); */
+    } catch (error) {
+      console.error('Error extracting embedding:', error);
+      Swal.fire('Thông báo', 'Lỗi khi trích xuất embedding!', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="user_manager">
       <div className="tracuuDataInspection">
@@ -594,6 +733,12 @@ const UserManager = () => {
               }
               loadEmplInfo();
             }}>Update</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
+              extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg");
+            }}>Train Face</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
+              checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg");
+            }}>Check Face</Button>
           </div>}
         />
         <div className="tracuuYCSXTable">{emplAGTable}</div>

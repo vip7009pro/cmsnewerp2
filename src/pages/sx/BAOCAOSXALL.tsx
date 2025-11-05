@@ -18,6 +18,7 @@ import MyTabs from "../../components/MyTab/MyTab";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import TestHome from "../home/TestHome";
+import LOSS_TIME_DATA from "./LOSS_TIME_DATA/LOSS_TIME_DATA";
 const KPI_NVSX = lazy(() => import("./KPI_NV/KPI_NVSX"));
 const DATASAMPLESX = lazy(() => import("./DATASAMPLE/DATASAMPLESX"));
 const KPI_NVSX_NEW = lazy(() => import("./KPI_NV_NEW/KPI_NV_NEW"));
@@ -84,6 +85,11 @@ const BAOCAOSXALL = () => {
           {/* {<MyTabs.Tab title="Test Home">
             <TestHome />
           </MyTabs.Tab>} */}
+          {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
+            <MyTabs.Tab title="Loss Time New">
+              <LOSS_TIME_DATA/>
+            </MyTabs.Tab>
+          )}
         </MyTabs>
       </Suspense>
     </div>

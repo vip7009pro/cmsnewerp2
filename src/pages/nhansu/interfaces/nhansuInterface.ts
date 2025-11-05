@@ -85,6 +85,7 @@ export interface BANGCHAMCONG_DATA {
     ON_OFF: number;
     OVERTIME_INFO: string;
     OVERTIME: number;
+    WORK_HOUR: number;
     REASON_NAME: string;
     REMARK: string;
     XACNHAN: string;

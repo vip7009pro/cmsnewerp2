@@ -2021,3 +2021,28 @@ export const f_load_tilefilmbanBackData = async (DATA: any) => {
     });
   return kq;
 }
+
+export const f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR = async (G_CODE: string) => {
+  let kq: boolean = true;
+  await generalQuery("checkgcodeexists_approved_samplemonitor", {
+    G_CODE: G_CODE,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        if(response.data.data.length > 0){
+          if(response.data.data[0].APPROVE_STATUS === "Y"){
+            kq = true;
+          }else{
+            kq = false;
+          }
+        }else{
+          
+        }
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};

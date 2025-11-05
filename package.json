@@ -25,6 +25,7 @@
     "date-fns": "^4.1.0",
     "devextreme": "22.2.4",
     "devextreme-react": "22.2.4",
+    "face-api.js": "^0.22.2",
     "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
     "jquery": "^3.7.1",

@@ -310,6 +310,11 @@ const BANGCHAMCONG = () => {
       width: 80
     },
     {
+      field: 'WORK_HOUR',
+      headerName: 'WORK_HOUR',
+      width: 80
+    },
+    {
       field: 'FIXED_IN_TIME',
       headerName: 'FIXED_IN_TIME',
       width: 100,
@@ -2597,7 +2602,8 @@ const BANGCHAMCONG = () => {
             APPLY_DATE: row.DATE_COLUMN,
             EMPL_NO: row.EMPL_NO,
             IN_TIME: row.FIXED_IN_TIME,
-            OUT_TIME: row.FIXED_OUT_TIME
+            OUT_TIME: row.FIXED_OUT_TIME,
+            WORK_HOUR: row.WORK_HOUR,
           })
             .then((response) => {
               //console.log(response.data.data);
@@ -2614,6 +2620,7 @@ const BANGCHAMCONG = () => {
       }
     })
   }
+
   const handleFixTimeAuto = () => {
     //swal confirm to fix time
     Swal.fire({
@@ -2776,14 +2783,28 @@ const BANGCHAMCONG = () => {
               ></input>
             </label>
             <Button color={'primary'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#15a012' }} onClick={() => {
-              checkBP(
+              if(getCompany() === "CMS"){
+                 checkBP(
                 userData,
                 ["NHANSU"],
                 ["ALL"],
                 ["ALL"],
                 loadBangChamCong2
               );
-            }}>Tra chấm công</Button>
+                
+              }
+              else {
+                 checkBP(
+                userData,
+                ["ALL"],
+                ["Leader"],
+                ["ALL"],
+                loadBangChamCong2
+              );
+              }
+
+             
+            }}>Tra chấm công</Button>    
             <Button color={'warning'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f78923' }} onClick={() => {
               checkBP(
                 userData,

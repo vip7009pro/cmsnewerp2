@@ -186,12 +186,12 @@ export const NavMenuPVN = (lang?: string) => {
           MENU_CODE: 'KD12',
           cName: 'sub-nav',
         },
-        {
+        /* {
           title: getlang('yctk', lang ?? 'vi'),
           path: '/kinhdoanh/kinhdoanhreport',
           icon: <MdOutlineDraw size={15} />,
           MENU_CODE: 'KD16',
-        },
+        }, */
         {
           title: getlang('baocao', lang ?? 'vi'),
           path: '/kinhdoanh/kinhdoanhreport',

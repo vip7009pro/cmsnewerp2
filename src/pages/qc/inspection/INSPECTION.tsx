@@ -39,6 +39,7 @@ const INSPECTION = () => {
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([],);
   const [sumaryINSPECT, setSummaryInspect] = useState("");
+  
   const column_inspect_input = [
     {
       field: "INSPECT_INPUT_ID", headerName: "ID", width: 100, headerCheckboxSelection: true,

@@ -348,3 +348,11 @@ export interface RND_FILM_SAVING_TREND_DATA {
   SAVING_RATE: number;
   SQM_SAVING_RATE: number;
 }
+
+export interface DAOFILM_ERR_DATA {
+  CTR_CD: string;
+  ERR_CODE: string;
+  CNT: number;
+  RATE: number;
+  ERR_NAME: string;
+}

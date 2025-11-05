@@ -312,3 +312,57 @@ export const f_getDiemDanhNhom = async (
     });
   return kq;
 };
+
+export const f_updateFaceID = async (DATA: any) => {
+  let kq: boolean = false;
+  await generalQuery("updatefaceid", {
+    EMPL_NO: DATA.EMPL_NO,
+    FACE_ID: DATA.FACE_ID,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+export const f_recognizeFaceID = async (DATA: any) => {
+  let kq: any = null;
+  await generalQuery("recognizeface", {    
+    FACE_ID: DATA.FACE_ID,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data;
+      }
+      else {
+        kq = response.data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      kq = error.message;
+    });
+  return kq;
+};
+
+export const f_updateWorkHour = async (DATA: any, APPLY_DATE: string) => {
+  let kq: boolean = false;
+  await generalQuery("updateworkhour", {
+    EMPL_NO: DATA.EMPL_NO,
+    APPLY_DATE: APPLY_DATE,
+    WORK_HOUR: DATA.WORK_HOUR,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};

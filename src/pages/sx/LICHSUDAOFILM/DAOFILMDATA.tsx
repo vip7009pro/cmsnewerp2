@@ -226,6 +226,9 @@ const DAOFILMDATA = () => {
     { field: 'INS_EMPL', headerName: 'DF_EMPL', resizable: true, width: 70 },
     { field: 'SX_EMPL_NO', headerName: 'SX_EMPL', resizable: true, width: 70 },
     { field: 'SX_DATE', headerName: 'SX_DATE', resizable: true, width: 60 },
+    { field: 'ERR_CODE', headerName: 'ERR_CODE', resizable: true, width: 60 },
+    { field: 'ERR_NAME', headerName: 'ERR_NAME', resizable: true, width: 60 },
+
   ]
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_daofilm_data);
   const handletraGiaoNhanDaoFilm = () => {

@@ -33,10 +33,11 @@ import { BiDownload } from "react-icons/bi";
 import MyTabs from "../../../components/MyTab/MyTab";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 import { CodeListData, CustomerListData, FCSTTDYCSX, POBALANCETDYCSX, PONOLIST, TONKHOTDYCSX, UploadAmazonData, YCSXTableData } from "../interfaces/kdInterface";
-import { f_batchDeleteYCSX, f_check_G_NAME_2Ver_active, f_checkDuplicateAMZ, f_checkFCST_G_CODE, f_checkG_CODE_ACTIVE, f_checkG_CODE_PO_BALANCE, f_checkStock_G_CODE, f_checkYCSX_EXIST, f_generateNextProdRequestNo, f_getcodelist, f_getcustomerlist, f_getNextP500_IN_NO, f_handleAmazonData, f_insertDMYCSX, f_insertDMYCSX_New, f_insertP500, f_insertP501, f_insertYCSX, f_isBOM_M_CODE_MATCHING, f_isBOMGIA_HAS_MAIN, f_isIDCongViecExist, f_loadPONOList, f_process_lot_no_generate, f_traYCSX, f_updateDMSX_LOSS_KT, f_updateYCSX } from "../utils/kdUtils";
-import { renderBanVe, renderYCSX } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { f_batchDeleteYCSX, f_check_G_NAME_2Ver_active, f_checkDuplicateAMZ, f_checkFCST_G_CODE, f_checkG_CODE_ACTIVE, f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR, f_checkG_CODE_PO_BALANCE, f_checkStock_G_CODE, f_checkYCSX_EXIST, f_generateNextProdRequestNo, f_getcodelist, f_getcustomerlist, f_getNextP500_IN_NO, f_handleAmazonData, f_insertDMYCSX, f_insertDMYCSX_New, f_insertP500, f_insertP501, f_insertYCSX, f_isBOM_M_CODE_MATCHING, f_isBOMGIA_HAS_MAIN, f_isIDCongViecExist, f_loadPONOList, f_process_lot_no_generate, f_traYCSX, f_updateDMSX_LOSS_KT, f_updateYCSX } from "../utils/kdUtils";
+import { f_getCodeInfo, renderBanVe, renderYCSX } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { useLaggy } from "../../../api/useLaggy";
 import { useRenderLag } from "../../../api/userRenderLag";
+import { f_AddMonitoringSample } from "../../rnd/utils/rndUtils";
 const YCSXManager = () => {
   
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -1384,6 +1385,7 @@ const YCSXManager = () => {
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? '');
+      let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && uploadExcelJson[i].CODE_55 !== '04') ?  (await f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(uploadExcelJson[i].G_CODE ?? "")) : true; 
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1392,6 +1394,7 @@ const YCSXManager = () => {
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
       if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !== '04') err_code = 12;
+      if (!isApprovedSampleMonitor) err_code = 13;
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -1418,6 +1421,8 @@ const YCSXManager = () => {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
       } else if (err_code === 12) {
         tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa";
+      } else if (err_code === 13) {
+        tempjson[i].CHECKSTATUS = "NG: Code này chưa được duyệt sample monitor";
       }
     }
     setisLoading(false);
@@ -1434,6 +1439,14 @@ const YCSXManager = () => {
       let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
       let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? "");
+      let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && uploadExcelJson[i].CODE_55 !== '04') ?  (await f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(uploadExcelJson[i].G_CODE ?? "")) : true; 
+      let checkCodInfo = await f_getCodeInfo({
+        G_NAME: uploadExcelJson[i].G_CODE,
+        CNDB: true,
+        ACTIVE_ONLY: true,
+      });
+      let g_name_kd = checkCodInfo[0].G_NAME_KD;
+
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1442,12 +1455,15 @@ const YCSXManager = () => {
       if (codeList.filter((ele: CodeListData, index: number) => ele.G_CODE === uploadExcelJson[i].G_CODE).length = 0) err_code = 8;
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
       if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !== '04') err_code = 12;
+      if (!isApprovedSampleMonitor) err_code = 13;
       if (err_code === 0) {
         let err_code1: number = 0;
         let next_prod_request_no: string = await f_generateNextProdRequestNo();
         let pobalance_tdycsx: POBALANCETDYCSX = await f_checkG_CODE_PO_BALANCE(uploadExcelJson[i].G_CODE ?? "");
         let tonkho_tdycsx: TONKHOTDYCSX = await f_checkStock_G_CODE(uploadExcelJson[i].G_CODE ?? "");
         let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(uploadExcelJson[i].G_CODE ?? "");
+        
+        
         //console.log(await f_process_lot_no_generate(phanloai));
         if (
           uploadExcelJson[i].G_CODE === "" ||
@@ -1520,8 +1536,19 @@ const YCSXManager = () => {
               IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI,
               FL_YN: loaisx === "04" ? "N" : isFL ? "Y" : "N",
             });
+            //console.log('ketquaday',kq)
             if (kq === 'OK') {
               tempjson[i].CHECKSTATUS = "OK: Thêm YCSX mới thành công";
+              if(getCompany() === 'PVN' && uploadExcelJson[i].CODE_55 === '04')
+              {
+                //console.log('la sample, dang add sample monitoring')
+                await f_AddMonitoringSample({
+                  PROD_REQUEST_NO: next_prod_request_no,
+                  G_CODE: uploadExcelJson[i].G_CODE,
+                  G_NAME_KD: g_name_kd,
+                  REQ_ID: 0
+                })
+              }
             }
             else {
               tempjson[i].CHECKSTATUS = "NG: Thêm YCSX mới thất bại" + kq;
@@ -1636,6 +1663,8 @@ const YCSXManager = () => {
         tempjson[i].CHECKSTATUS = "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
       } else if (err_code === 12) {
         tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa";
+      } else if (err_code === 13) {
+        tempjson[i].CHECKSTATUS = "NG: Code này chưa được duyệt sample monitor";
       }
     }
     setisLoading(false);
@@ -1759,7 +1788,15 @@ const YCSXManager = () => {
     let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(selectedCode?.G_CODE ?? "");
     let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
     let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(selectedCode?.G_CODE ?? "");
+    let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && loaisx !== '04') ?  (await f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(selectedCode?.G_CODE ?? "")) : true; 
     //console.log(await f_process_lot_no_generate(phanloai));
+    let checkCodInfo = await f_getCodeInfo({
+        G_NAME: selectedCode?.G_CODE,
+        CNDB: true,
+        ACTIVE_ONLY: true,
+      });
+      let g_name_kd = checkCodInfo[0].G_NAME_KD;
+      
     if (selectedCode?.USE_YN === "N") {
       err_code = 3; // ver bi khoa
     }
@@ -1774,6 +1811,7 @@ const YCSXManager = () => {
     if (!isBOMGiaHasMain) err_code = 10;
     if (!isBOMMatching) err_code = 11;
     if (isTwoVersionExist && loaisx !== '04') err_code = 12;
+    if (!isApprovedSampleMonitor) err_code = 13;
     if (err_code === 0) {
       if (newphanloai === "TT" || newphanloai === "AM") {
         await f_insertDMYCSX({
@@ -1850,6 +1888,16 @@ const YCSXManager = () => {
           if (await f_insert_Notification_Data(newNotification)) {
             getSocket().emit("notification_panel", newNotification);
           }
+          if(getCompany() === 'PVN' && loaisx === '04')
+          {
+            await f_AddMonitoringSample({
+              PROD_REQUEST_NO: next_prod_request_no,
+              G_CODE: selectedCode?.G_CODE,
+              G_NAME_KD: g_name_kd,
+              REQ_ID: 0
+            })
+          }
+          
           Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
         }
         else {
@@ -1972,6 +2020,8 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1", "error");
     } else if (err_code === 12) {
       Swal.fire("Thông báo", "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa", "error");
+    } else if (err_code === 13) {
+      Swal.fire("Thông báo", "NG: Code này chưa được duyệt sample monitor", "error");
     }
   };
   const clearYCSXform = () => {

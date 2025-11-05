@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { generalQuery, getSocket, getUserData } from '../../../api/Api';
+import { generalQuery, getCompany, getSocket, getUserData } from '../../../api/Api';
 import './DiemDanhNhom.scss';
 import Swal from 'sweetalert2';
 import { f_insert_Notification_Data } from '../../../api/GlobalFunction';
@@ -10,7 +10,7 @@ import { RootState } from '../../../redux/store';
 import { NotificationElement } from '../../../components/NotificationPanel/Notification';
 import AGTable from '../../../components/DataTable/AGTable';
 import { DiemDanhNhomData } from '../interfaces/nhansuInterface';
-import { f_getDiemDanhNhom } from '../utils/nhansuUtils';
+import { f_getDiemDanhNhom, f_updateWorkHour } from '../utils/nhansuUtils';
 
 const FullNameCellElement = (params: any) => {
   return <span style={{ fontWeight: 'bold', color: params.data?.ON_OFF === 1 ? 'green' : params.data?.ON_OFF === 0 ? 'red' : '' }}> {params.data?.FULL_NAME} </span>;
@@ -24,7 +24,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<Array<DiemDanhNhomData>>([]);
 
   const columns_diemdanhnhom = useMemo(
-    () => [
+    () => getCompany() === "CMS" ? [
       { field: 'id', headerName: 'STT', width: 30, },
       { field: 'EMPL_NO', headerName: 'EMPL_NO', width: 50, },
       { field: 'CMS_ID', headerName: 'NS_ID', width: 50, },
@@ -331,9 +331,318 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
       { field: 'OVERTIME_INFO', headerName: 'OVERTIME_INFO', width: 80, },
       { field: 'OVERTIME', headerName: 'OVERTIME', width: 80, },
       { field: 'REMARK', headerName: 'REMARK', width: 80, },  
+    ]: [
+      { field: 'id', headerName: 'STT', width: 30, },
+      { field: 'EMPL_NO', headerName: 'EMPL_NO', width: 50, },
+      { field: 'CMS_ID', headerName: 'NS_ID', width: 50, },
+      {
+        field: 'FULL_NAME',
+        headerName: 'FULL_NAME',
+        width: 120,
+        cellRenderer: FullNameCellElement,
+      },
+      {
+        field: 'AVATAR',
+        headerName: 'AVATAR',
+        width: 70,
+        cellRenderer: AvatarCellElement,
+      },
+      {
+        field: 'DIEMDANH',
+        headerName: 'DIEMDANH',
+        width: 150,
+        cellRenderer: (params: any) => {
+          let typeclass: string = params.data?.ON_OFF === 1 ? 'onbt' : params.data?.ON_OFF === 0 ? 'offbt' : '';
+          const dangkynghi_auto = (REASON_CODE: number) => {
+            const insertData = {
+              canghi: 1,
+              reason_code: REASON_CODE,
+              remark_content: 'AUTO',
+              ngaybatdau: moment().format('YYYY-MM-DD'),
+              ngayketthuc: moment().format('YYYY-MM-DD'),
+              EMPL_NO: params.data?.EMPL_NO,
+            };
+            ////console.log(insertData);
+            generalQuery('dangkynghi2_AUTO', insertData)
+              .then((response) => {
+                if (response.data.tk_status === 'OK') {
+                  const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, ON_OFF: 0, REASON_NAME: 'AUTO' } : p));
+                  setDiemDanhNhomTable(newProjects);
+                  Swal.fire('Thông báo', 'Người này nghỉ ko đăng ký, auto đăng ký nghỉ!', 'warning');
+                } else {
+                  Swal.fire('Lỗi', 'Người này nghỉ ko đăng ký, auto chuyển nghỉ, tuy nhiên thao tác thất bại ! ' + response.data.message, 'error');
+                }
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
+          };
+          const xoadangkynghi_auto = () => {
+            const insertData = {
+              EMPL_NO: params.data?.EMPL_NO,
+            };
+            ////console.log(insertData);
+            generalQuery('xoadangkynghi_AUTO', insertData)
+              .then((response) => {
+                //console.log(response.data.tk_status)
+                if (response.data.tk_status === 'OK') {
+                } else {
+                  /*  Swal.fire(
+                          "Lỗi",
+                          "Xóa đăng ký nghỉ AUTO thất bại, hãy chuyển qua xóa thủ công !" +
+                            response.data.message,
+                          "error"
+                        ); */
+                }
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
+          };
+          const onClick = async (type: number, calv?: number) => {
+            let current_team_dayshift: number = -2;
+            /*  await generalQuery("checkcurrentDAYSHIFT",{})
+                    .then((response) => {
+                      //console.log(response.data.tk_status)
+                      if (response.data.tk_status === "OK") {
+                        current_team_dayshift = response.data.data[0].DAYSHIFT;                        
+                      } else {
+                      }
+                    })
+                    .catch((error) => {
+                    }); */
+            if (current_team_dayshift !== -1) {
+              if (type === 1) {
+                if (params.data?.OFF_ID === null || params.data?.REASON_NAME === 'Nửa phép') {
+                  generalQuery('setdiemdanhnhom', {
+                    diemdanhvalue: type,
+                    EMPL_NO: params.data?.EMPL_NO,
+                    CURRENT_TEAM: params.data?.WORK_SHIF_NAME === 'Hành Chính' ? 0 : params.data?.WORK_SHIF_NAME === 'TEAM 1' ? 1 : 2,
+                    CURRENT_CA: params.data?.WORK_SHIF_NAME === 'Hành Chính' ? 0 : calv,
+                  })
+                    .then(async (response) => {
+                      //console.log(response.data);
+                      if (response.data.tk_status === 'OK') {
+                        const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, ON_OFF: type } : p));
+                        setDiemDanhNhomTable(newProjects);
+                      } else {
+                        Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+                      }
+                    })
+                    .catch((error) => {
+                      //console.log(error);
+                    });
+                } else {
+                  Swal.fire('Có lỗi', 'Đã đăng ký nghỉ rồi, không điểm danh được', 'error');
+                }
+              } else if (type === 0) {
+                generalQuery('setdiemdanhnhom', {
+                  diemdanhvalue: type,
+                  EMPL_NO: params.data?.EMPL_NO,
+                  CURRENT_TEAM: params.data?.WORK_SHIF_NAME === 'Hành Chính' ? 0 : params.data?.WORK_SHIF_NAME === 'TEAM 1' ? 1 : 2,
+                  CURRENT_CA: params.data?.WORK_SHIF_NAME === 'Hành Chính' ? 0 : calv,
+                })
+                  .then((response) => {
+                    //console.log(response.data);
+                    if (response.data.tk_status === 'OK') {
+                      const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, ON_OFF: type } : p));
+                      if (params.data?.OFF_ID === null) {
+                        dangkynghi_auto(3);
+                      }
+                      setDiemDanhNhomTable(newProjects);
+                    } else {
+                      Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+                    }
+                  })
+                  .catch((error) => {
+                    //console.log(error);
+                  });
+              } else if (type === 2) {
+                generalQuery('setdiemdanhnhom', {
+                  diemdanhvalue: 0,
+                  EMPL_NO: params.data?.EMPL_NO,
+                  CURRENT_TEAM: params.data?.WORK_SHIF_NAME === 'Hành Chính' ? 0 : params.data?.WORK_SHIF_NAME === 'TEAM 1' ? 1 : 2,
+                  CURRENT_CA: params.data?.WORK_SHIF_NAME === 'Hành Chính' ? 0 : calv,
+                })
+                  .then((response) => {
+                    //console.log(response.data);
+                    if (response.data.tk_status === 'OK') {
+                      const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, ON_OFF: 0 } : p));
+                      if (params.data?.OFF_ID === null) {
+                        dangkynghi_auto(5);
+                      }
+                      setDiemDanhNhomTable(newProjects);
+                    } else {
+                      Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+                    }
+                  })
+                  .catch((error) => {
+                    //console.log(error);
+                  });
+              }
+              let newNotification: NotificationElement = {
+                CTR_CD: '002',
+                NOTI_ID: -1,
+                NOTI_TYPE: 'success',
+                TITLE: 'Điểm danh thủ công',
+                CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã điểm danh thủ công cho ${params.data?.EMPL_NO}_ ${params.data?.MIDLAST_NAME} ${params.data?.FIRST_NAME} ${type === 1 ? 'đi làm' : 'nghỉ'}`,
+                SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? '',
+                MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? '',
+                INS_EMPL: 'NHU1903',
+                INS_DATE: '2024-12-30',
+                UPD_EMPL: 'NHU1903',
+                UPD_DATE: '2024-12-30',
+              };
+              if (await f_insert_Notification_Data(newNotification)) {
+                getSocket().emit('notification_panel', newNotification);
+              }
+            } else {
+            }
+          };
+          const onReset = () => {
+            if (params.data?.REMARK === 'AUTO') {
+              const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, ON_OFF: null, OFF_ID: null, REASON_NAME: null } : p));
+              setDiemDanhNhomTable(newProjects);
+              xoadangkynghi_auto();
+            } else {
+              const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, ON_OFF: null } : p));
+              setDiemDanhNhomTable(newProjects);
+            }
+          };
+          if (params.data?.ON_OFF === null) {
+            return (
+              <div className={`onoffdiv ${typeclass}`}>
+                <button className='onbutton' onClick={() => onClick(1, 1)}>
+                  Làm Ngày
+                </button>{' '}
+                <br></br>
+                <button className='onbutton' onClick={() => onClick(1, 2)}>
+                  Làm Đêm
+                </button>{' '}
+                <br></br>
+                <button className='offbutton' onClick={() => onClick(0, 1)}>
+                  Nghỉ
+                </button>
+                <button className='off50button' onClick={() => onClick(2)}>
+                  50%
+                </button>
+              </div>
+            );
+          }
+          return (
+            <div className='onoffdiv'>
+              <span style={{ color: params.data?.ON_OFF === 1 ? 'green' : 'red' }}>{params.data?.ON_OFF === 1 ? 'Đi làm' : 'Nghỉ làm'}</span>
+              <button className='resetbutton' onClick={() => onReset()}>
+                RESET
+              </button>
+            </div>
+          );
+        },
+      },
+      {
+        field: 'TANGCA',
+        headerName: 'TANGCA',
+        minWidth: 150,
+        flex: 1,
+        cellRenderer: (params: any) => {
+          let typeclass: string = params.data?.OVERTIME === 1 ? 'onbt' : params.data?.OVERTIME === 0 ? 'offbt' : '';
+          const onClick = (overtimeinfo: string) => {
+            //Swal.fire("Thông báo", "Gia tri = " + params.data?.EMPL_NO, "success");
+            generalQuery('dangkytangcanhom', {
+              tangcavalue: overtimeinfo === 'KTC' ? 0 : 1,
+              EMPL_NO: params.data?.EMPL_NO,
+              overtime_info: overtimeinfo,
+            })
+              .then(async (response) => {
+                //console.log(response.data);
+                if (response.data.tk_status === 'OK') {
+                  const newProjects = diemdanhnhomtable.map((p) => p.EMPL_NO === params.data?.EMPL_NO ? { ...p, OVERTIME: overtimeinfo === 'KTC' ? 0 : 1, OVERTIME_INFO: overtimeinfo, } : p );
+                  let newNotification: NotificationElement = {
+                    CTR_CD: '002',
+                    NOTI_ID: -1,
+                    NOTI_TYPE: 'success',
+                    TITLE: 'Đăng ký tăng ca hộ',
+                    CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã đăng ký tăng ca cho ${params.data?.EMPL_NO}_ ${params.data?.MIDLAST_NAME} ${params.data?.FIRST_NAME} ${overtimeinfo}`,
+                    SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? '',
+                    MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? '',
+                    INS_EMPL: 'NHU1903',
+                    INS_DATE: '2024-12-30',
+                    UPD_EMPL: 'NHU1903',
+                    UPD_DATE: '2024-12-30',
+                  };
+                  if (await f_insert_Notification_Data(newNotification)) {
+                    getSocket().emit('notification_panel', newNotification);
+                  }
+                  setDiemDanhNhomTable(newProjects);
+                } else {
+                  Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+                }
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
+          };
+          const onReset = () => {
+            const newProjects = diemdanhnhomtable.map((p) => (p.EMPL_NO === params.data?.EMPL_NO ? { ...p, OVERTIME: null, OVERTIME_INFO: null } : p));
+            ////console.log(newProjects);
+            setDiemDanhNhomTable(newProjects);
+          };
+          if (params.data?.OVERTIME === null) {
+            return (
+              <div className={`onoffdiv ${typeclass}`}>
+                <button className='tcbutton' onClick={() => onClick('KTC')}>
+                  KTC
+                </button>
+                <button className='tcbutton' onClick={() => onClick('0500-0800')}>
+                  05-08
+                </button>
+                <button className='tcbutton' onClick={() => onClick('1700-2000')}>
+                  17-20
+                </button>
+                <button className='tcbutton' onClick={() => onClick('1700-1800')}>
+                  17-18
+                </button>
+                <button className='tcbutton' onClick={() => onClick('1400-1800')}>
+                  14-18
+                </button>
+                <button className='tcbutton' onClick={() => onClick('1600-2000')}>
+                  16-20
+                </button>
+              </div>
+            );
+          }
+          return (
+            <div className='onoffdiv'>
+              <span style={{ color: params.data?.OVERTIME === 1 ? 'green' : 'red' }}>{params.data?.OVERTIME_INFO}</span>
+              <button className='resetbutton' onClick={() => onReset()}>
+                RESET
+              </button>
+            </div>
+          );
+        },
+      },
+      { field: 'WORK_HOUR', headerName: 'WORK_HOUR', width: 80, },
+      { field: 'PHONE_NUMBER', headerName: 'PHONE_NUMBER', width: 80, },
+      { field: 'FACTORY_NAME', headerName: 'FACTORY_NAME', width: 80, },
+      { field: 'JOB_NAME', headerName: 'JOB_NAME', width: 60, },
+      { field: 'WORK_SHIF_NAME', headerName: 'TEAM', width: 60, },
+      { field: 'WORK_POSITION_NAME', headerName: 'VI TRI', width: 60, },
+      { field: 'SUBDEPTNAME', headerName: 'SUBDEPTNAME', width: 80, },
+      { field: 'MAINDEPTNAME', headerName: 'MAINDEPTNAME', width: 80, },
+      { field: 'REQUEST_DATE', headerName: 'REQUEST_DATE', width: 80, },
+      { field: 'APPLY_DATE', headerName: 'APPLY_DATE', width: 80, },
+      { field: 'APPROVAL_STATUS', headerName: 'TT_PHEDUYET', width: 80, },
+      { field: 'REASON_NAME', headerName: 'REASON_NAME', width: 80, },
+      { field: 'OFF_ID', headerName: 'OFF_ID', width: 80, },
+      { field: 'CA_NGHI', headerName: 'CA_NGHI', width: 80, },
+      { field: 'ON_OFF', headerName: 'ON_OFF', width: 80, },
+      { field: 'OVERTIME_INFO', headerName: 'OVERTIME_INFO', width: 80, },
+      { field: 'OVERTIME', headerName: 'OVERTIME', width: 80, },
+      { field: 'REMARK', headerName: 'REMARK', width: 80, },  
     ],
     [diemdanhnhomtable]
   );
+ 
   const onselectionteamhandle = useCallback(
     async (teamnamelist: number) => {
       setWORK_SHIFT_CODE(teamnamelist);
@@ -354,7 +663,16 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
         columns={columns_diemdanhnhom}
         data={diemdanhnhomtable}
         onCellEditingStopped={(e) => {
-          //console.log(e.data)
+          //console.log(e)
+          //console.log(e.column.colId)
+          if (e.column.colId === 'WORK_HOUR') {
+            if(e.data.ON_OFF === 1){
+              f_updateWorkHour(e.data, moment().format('YYYY-MM-DD')) 
+            }
+            else {
+              Swal.fire('Thông báo', 'Nhân viên ' + e.data.EMPL_NO + ' không đi làm, hãy điểm danh đi làm trước', 'warning')
+            }
+          }
         }}
         onRowClick={(e) => {
           //console.log(e.data)

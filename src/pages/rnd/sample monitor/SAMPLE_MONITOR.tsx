@@ -276,6 +276,7 @@ const SAMPLE_MONITOR = () => {
       generalQuery("addMonitoringSample", {      
         PROD_REQUEST_NO: ycsx.PROD_REQUEST_NO,   
         G_NAME_KD: ycsx.G_NAME_KD,
+        G_CODE: ycsx.G_CODE,
         REQ_ID: reqID 
       })
       .then((response) => {
@@ -338,7 +339,7 @@ const SAMPLE_MONITOR = () => {
   }
   const colDefs = [    
     {
-      field: 'SAMPLE_ID', headerName: 'ID', headerCheckboxSelection: true, checkboxSelection: true, width: 50, resizable: true, pinned:'left', floatingFilter: true, /* cellStyle: (params:any) => {     
+      field: 'SAMPLE_ID', headerName: 'ID', headerCheckboxSelection: true, checkboxSelection: true, width: 70, resizable: true, pinned:'left', floatingFilter: true, /* cellStyle: (params:any) => {     
        if (params.data.M_ID%2==0 ) {
         return { backgroundColor: '#d4edda', color: '#155724' };
       } else {
@@ -348,7 +349,7 @@ const SAMPLE_MONITOR = () => {
     {
       headerName:'SAMPLE INFO',
       children: [       
-        { field: 'REQ_ID', headerName: 'REQ_ID', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
+        /* { field: 'REQ_ID', headerName: 'REQ_ID', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false }, */
         { field: 'PROD_REQUEST_NO', headerName: 'YCSX', width: 50, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'CUST_NAME_KD', headerName: 'CUSTOMER', width: 100, resizable: true, floatingFilter: true, filter: true, editable: false },
         { field: 'G_CODE', headerName: 'G_CODE', width: 70, resizable: true, floatingFilter: true, filter: true, editable: false },
@@ -744,7 +745,7 @@ const SAMPLE_MONITOR = () => {
                 ></input>
               </label>
               <span style={{fontSize:'0.8rem', fontWeight:'bold', color:'blueviolet'}}>{ycsxInfo.length>0 && ycsxInfo[0].G_NAME_KD} |  {ycsxInfo.length>0 && ycsxInfo[0].G_NAME}</span>
-              <span style={{fontSize:'0.8rem', fontWeight:'bold'}}>ID YCTK:</span>                
+              {/* <span style={{fontSize:'0.8rem', fontWeight:'bold'}}>ID YCTK:</span>                
                 <input
                   type='number'
                   placeholder='1234'
@@ -752,7 +753,7 @@ const SAMPLE_MONITOR = () => {
                   onChange={(e) => {
                     setReqID(parseInt(e.target.value));                   
                   }}
-                ></input>
+                ></input> */}
             </div>
             
             <IconButton

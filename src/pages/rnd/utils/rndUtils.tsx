@@ -1,5 +1,5 @@
 import { generalQuery } from "../../../api/Api";
-import { COMPONENT_DATA } from "../interfaces/rndInterface";
+import { COMPONENT_DATA, DAOFILM_ERR_DATA } from "../interfaces/rndInterface";
 
 export const f_handleGETBOMAMAZON = async (G_CODE: string) => {
   let kq: COMPONENT_DATA[] = [];
@@ -69,4 +69,38 @@ export const f_updateRndApp = async (DATA: any) => {
     });
   return kq;
 };
+export const f_LoadDaoFilmErr = async (DATA: any) => {
+  let kq: DAOFILM_ERR_DATA[] = [];
+  await generalQuery("load_daofilm_error_chart_data", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: DAOFILM_ERR_DATA[] = response.data.data.map(
+          (element: DAOFILM_ERR_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loadeddata;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
 
+export const f_AddMonitoringSample = (DATA: any) => {
+  let kq: boolean = false;
+  generalQuery("addMonitoringSample", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};

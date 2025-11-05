@@ -2,6 +2,7 @@ import moment from "moment";
 import { generalQuery, getCompany } from "../../../api/Api";
 import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, IQC_FAIL_PENDING, IQC_FAILING_TREND_DATA, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, KHKT_DATA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
 import Swal from "sweetalert2";
+import { LOSS_TIME_DATA_KIEMTRA_THEO_BAN, LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI } from "../inspection/LOSS_TIME_DATA/LOSS_TIME_DATA";
 
 
   export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
@@ -643,4 +644,49 @@ import Swal from "sweetalert2";
     return kq;
 
   }
+  
+  export const f_loadLossTimeKiemTraTheoBan = async (DATA: any) => {
+    let kq: LOSS_TIME_DATA_KIEMTRA_THEO_BAN[] = [];
+    await generalQuery("loadlosstimekiemtratheonguoiban", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+          let loaded_data: LOSS_TIME_DATA_KIEMTRA_THEO_BAN[] = response.data.data.map(
+            (element: LOSS_TIME_DATA_KIEMTRA_THEO_BAN, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+  
+  export const f_loadLossTimeKiemTraTheoNguoi = async (DATA: any) => {
+    let kq: LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI[] = [];
+    await generalQuery("loadlosstimekiemtratheonguoi", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+          let loaded_data: LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI[] = response.data.data.map(
+            (element: LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+  
   

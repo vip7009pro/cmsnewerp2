@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getCompany } from "../../../api/Api";
 import "./RND_REPORT.scss";
 import {
+  DAOFILM_ERR_DATA,
   RND_FILM_SAVING_TREND_DATA,
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
@@ -29,6 +30,8 @@ import RNDDailyFilmSaving from "../../../components/Chart/RND/RNDDailyFilmSaving
 import RNDWeeklyFilmSaving from "../../../components/Chart/RND/RNDWeeklyFilmSaving";
 import RNDMonthlyFilmSaving from "../../../components/Chart/RND/RNDMonthlyFilmSaving";
 import RNDYearlyFilmSaving from "../../../components/Chart/RND/RNDYearlyFilmSaving";
+import { f_LoadDaoFilmErr } from "../utils/rndUtils";
+import FILM_ERR_RATE from "../../../components/Chart/RND/FILM_ERR_RATE";
 const RND_REPORT = () => {
   const [dailynewcode, setDailyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
   const [weeklynewcode, setWeeklyNewCode] = useState<RND_NEWCODE_TREND_DATA[]>([]);
@@ -43,6 +46,7 @@ const RND_REPORT = () => {
   const [filmSavingMonthly, setFilmSavingMonthly] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
   const [filmSavingYearly, setFilmSavingYearly] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
   const [tilefilmbanBackData, setTileFilmBanBackData] = useState<RND_FILM_SAVING_TREND_DATA[]>([]);
+  const [daofilmerr, setDaoFilmErr] = useState<DAOFILM_ERR_DATA[]>([]);
 
 
 
@@ -325,6 +329,16 @@ const RND_REPORT = () => {
       }
     )); 
   }
+  const handle_getDaoFilmErr = async (from_date: string, to_date: string) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    setDaoFilmErr(await f_LoadDaoFilmErr(
+      {
+        FROM_DATE: df ? frd : from_date,
+        TO_DATE: df ? td : to_date,
+      }
+    )); 
+  }
 
 
 
@@ -347,15 +361,16 @@ const RND_REPORT = () => {
       handle_getYearlyNewCodeData("ALL", searchCodeArray),
       handle_newCodeByCustomer(fromdate, todate, searchCodeArray),
       handle_newCodeByProdType(fromdate, todate, searchCodeArray),
-      handle_getYCTKDataDaily(fromdate, todate),
+ /*      handle_getYCTKDataDaily(fromdate, todate),
       handle_getYCTKDataWeekly(fromdate, todate),
       handle_getYCTKDataMonthly(fromdate, todate),
-      handle_getYCTKDataYearly(fromdate, todate),
+      handle_getYCTKDataYearly(fromdate, todate), */
       handle_getFilmSavingDaily(fromdate, todate),
       handle_getFilmSavingWeekly(fromdate, todate),
       handle_getFilmSavingMonthly(fromdate, todate),
       handle_getFilmSavingYearly(fromdate, todate),
       handle_getTileFilmBanBackData(fromdate, todate),
+      handle_getDaoFilmErr(fromdate, todate),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -543,7 +558,7 @@ const RND_REPORT = () => {
               </div>
             </div>
           </div>
-          {getCompany() === "PVN" && <>
+          {getCompany() === "XXX" && <>
           <span className="section_title">3. Design Request Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
@@ -618,7 +633,7 @@ const RND_REPORT = () => {
           </div>
           </>}
           {getCompany() === "PVN" && <>
-          <span className="section_title">4. Film Saving Trending <IconButton
+          <span className="section_title">3. Film Saving Trending <IconButton
                   className='buttonIcon'
                   onClick={() => {
                     SaveExcel(tilefilmbanBackData, "Tile Film Ban Back Data");
@@ -704,8 +719,7 @@ const RND_REPORT = () => {
            
           </div>
           </>}
-          <span className="subsection_title">2.5 New Code By Customer and Prod Type ({fromdate}- {todate})
-          </span>
+          <span className="section_title">4. New Code By Customer and Prod Type ({fromdate}- {todate})</span>
           <div className="defect_trending">
             <div className="dailygraph" style={{ height: '600px' }}>
               <span className="subsection">New Code By Customer <IconButton
@@ -733,6 +747,22 @@ const RND_REPORT = () => {
               </span>
               <RNDNewCodeByProdType data={[...newcodebyprodtype].reverse()} />
             </div>
+          </div>
+          <span className="section_title">5. Tỉ trọng nguyên nhân xuất dao film ({fromdate}- {todate})</span>
+          <div className="defect_trending">
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <span className="subsection">Nguyên nhân xuất dao film <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(daofilmerr, "Dao Film Err");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton>
+              </span>
+              <FILM_ERR_RATE data={[...daofilmerr].reverse()} />
+            </div>            
           </div>
         </div>
       </div>
