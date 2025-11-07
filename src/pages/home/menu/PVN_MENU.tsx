@@ -1,4 +1,5 @@
 import { AccountInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, CAPA_MANAGER, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeamCMS, DTC, EQ_STATUS, EQ_STATUS2, FCSTManager, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOTPNEW, KIEMTRA, KinhDoanhReport, LichSu_New, LICHSUINPUTLIEU, LICHSUTEMLOTSX, MACHINE, OQC, PheDuyetNghiCMS, PLAN_DATATB, PLAN_STATUS, PlanManager, PLANRESULT, POandStockFull, PoManager, PQC, PRODUCT_BARCODE_MANAGER, QCReport, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu_Old, QUICKPLAN2, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, YCSXManager, YCTKManager, WH_REPORT, Information, AddInfo, PostManager, } from "../../../api/lazyPages";
+import BangChamCongTotal from "../../nhansu/BangChamCong/BangChamCongTotal";
 import { getLangSafe } from "../menuConfig";
 
 export const PVN_MENU= (lang?: string) => { 
@@ -56,7 +57,7 @@ export const PVN_MENU= (lang?: string) => {
       {
         MENU_CODE: 'NS9',
         MENU_NAME: getLangSafe('listchamcong', lang),
-        MENU_ITEM: <BANGCHAMCONG />,
+        MENU_ITEM: <BangChamCongTotal />,
       },
       {
         MENU_CODE: 'NS10',

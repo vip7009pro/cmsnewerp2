@@ -1,6 +1,6 @@
 import moment from "moment";
 import { generalQuery, getUserData } from "../../../api/Api";
-import { DiemDanhNhomData, EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
+import { BANG_CONG_DATA, BANG_CONG_THANG_DATA, DiemDanhNhomData, EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
 import { WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
 
 export const f_getEmployeeList = async () => {
@@ -359,6 +359,132 @@ export const f_updateWorkHour = async (DATA: any, APPLY_DATE: string) => {
     .then((response) => {
       if (response.data.tk_status !== "NG") {
         kq = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_insertBangCong = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("insertBangCong",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      } else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_updateBangCong = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("updateBangCong",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_deleteBangCong = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("deleteBangCong",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_loadBangCong = async (DATA: any) => {
+  let kq: BANG_CONG_DATA[] = [];
+  await generalQuery("loadBangCong",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        let loaded_data = response.data.data.map((e: any, index: number) => {
+          return {
+            ...e,
+            INS_DATE:
+              e.INS_DATE !== null
+                ? moment.utc(e.INS_DATE).format('YYYY-MM-DD')
+                : '',
+            UPD_DATE:
+              e.UPD_DATE !== null
+                ? moment.utc(e.UPD_DATE).format('YYYY-MM-DD')
+                : '',
+            APPLY_DATE:
+              e.APPLY_DATE !== null
+                ? moment.utc(e.APPLY_DATE).format('YYYY-MM-DD')
+                : '',      
+            id: index + 1,
+          };
+        });
+        kq = loaded_data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+export const loadBangCongTheoThang = async (DATA: any) => {
+  let kq: BANG_CONG_THANG_DATA[] = [];
+  await generalQuery("loadBangCongTheoThang",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_checkNV = async (DATA: any) => {
+  let kq: Array<any> = [];
+  await generalQuery("checkNVCCID",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};
+
+export const f_syncBangCong = async (DATA: any) => {
+  let kq: string = '';
+  await generalQuery("syncBangCongSangDiemDanh",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        
+      }
+      else {
+        kq = response.data.message;
       }
     })
     .catch((error) => {

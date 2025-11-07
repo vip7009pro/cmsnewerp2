@@ -3,6 +3,7 @@ import { generalQuery, getCompany } from "../../../api/Api";
 import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, IQC_FAIL_PENDING, IQC_FAILING_TREND_DATA, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, KHKT_DATA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
 import Swal from "sweetalert2";
 import { LOSS_TIME_DATA_KIEMTRA_THEO_BAN, LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI } from "../inspection/LOSS_TIME_DATA/LOSS_TIME_DATA";
+import { QTR_DATA } from "../oqc/QTR_DATA";
 
 
   export const f_load_AUDIT_HISTORY_DATA = async (DATA: any) => {
@@ -689,4 +690,25 @@ import { LOSS_TIME_DATA_KIEMTRA_THEO_BAN, LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI } fr
     return kq;
   };
   
-  
+  export const f_loadQTRData = async (DATA: any) => {
+    let kq: QTR_DATA[] = [];
+    await generalQuery("loadQTRData", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+          let loaded_data: QTR_DATA[] = response.data.data.map(
+            (element: QTR_DATA, index: number) => {
+              return {
+                ...element,
+                REGISTERED_DATE: moment(element.REGISTERED_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };

@@ -43,6 +43,7 @@ const LOSS_TIME_DATA = () => {
 
   const columns_loss_time_data_theo_may = [
     { field: "EQ_NAME", headerName: "EQ_NAME", width: 100 },
+    { field: "TOTAL_AVLB_TIME", headerName: "TOTAL_AVLB_TIME", width: 100 },
     { field: "AVLB_TIME", headerName: "AVLB_TIME", width: 100 },
     { field: "TOTAL_SX_TIME", headerName: "TOTAL_SX_TIME", width: 100 },
     { field: "SETTING_TIME", headerName: "SETTING_TIME", width: 100 },
@@ -70,7 +71,8 @@ const LOSS_TIME_DATA = () => {
     { field: "SETTING_TIME", headerName: "SETTING_TIME", width: 100 },
     { field: "TOTAL_LOSS_TIME", headerName: "TOTAL_LOSS_TIME", width: 100 },
     { field: "LOSS_NGOAI", headerName: "LOSS_NGOAI", width: 100 },
-    { field: "LOSS_TRONG_SETTING", headerName: "LOSS_TRONG_SETTING", width: 100 },
+    { field: "LOSS_TRONG_SETTING", headerName: "LOSS_TRONG_SETTING", width: 120 },
+    { field: "LOSS_TRONG_SX", headerName: "LOSS_TRONG_SX", width: 120 },
     { field: "CODE_COUNT", headerName: "CODE_COUNT", width: 100 },
     { field: "TOTAL_EA", headerName: "TOTAL_EA", width: 100, cellRenderer: (params: any) => {
       return (

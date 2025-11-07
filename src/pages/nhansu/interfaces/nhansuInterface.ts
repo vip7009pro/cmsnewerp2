@@ -1,4 +1,4 @@
-//bang chang cong
+
 export interface BANGCHAMCONG_DATA {
     DATE_COLUMN: string;
     WEEKDAY: string;
@@ -514,4 +514,63 @@ export interface BANGCHAMCONG_DATA {
     COUT_OFF: number;
     COUNT_CDD: number;
     ON_RATE: number;
+  }
+
+  export interface BANG_CONG_DATA {
+    CTR_CD: string;
+    BC_ID: number;
+    NV_CCID: number;
+    EMPL_NO: string;
+    EMPL_NAME: string;
+    MAINDEPTNAME: string;
+    SUBDEPTNAME: string;
+    APPLY_DATE: string;
+    WORK_HOUR: number;
+    IN_TIME: string;
+    OUT_TIME: string;
+    L100: number;
+    L150T: number;
+    L150S: number;
+    L130: number;
+    L180: number;
+    L200: number;
+    L210: number;
+    L270: number;
+    L300: number;
+    L390: number;
+    DI_TRE: number;
+    VE_SOM: number;
+    AN_SANG: number;
+    AN_TRUA: number;
+    AN_TOI: number;
+    PHU: number;
+    DI_LAI: number;
+    INS_DATE: string;
+    INS_EMPL: string;
+    UPD_DATE: string;
+    UPD_EMPL: string;
+    CHECKSTATUS: string;
+  }
+
+  export interface BANG_CONG_THANG_DATA {
+    EMPL_NO: string;
+    Year_Month: string;
+    Total_WORK_HOUR: number;
+    Total_L100: number;
+    Total_L150T: number;
+    Total_L150S: number;
+    Total_L130: number;
+    Total_L180: number;
+    Total_L200: number;
+    Total_L210: number;
+    Total_L270: number;
+    Total_L300: number;
+    Total_L390: number;
+    Total_DI_TRE: number;
+    Total_VE_SOM: number;
+    Total_AN_SANG: number;
+    Total_AN_TRUA: number;
+    Total_AN_TOI: number;
+    Total_PHU: number;
+    Total_DI_LAI: number;
   }
