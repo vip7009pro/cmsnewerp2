@@ -1480,6 +1480,7 @@ const BOM_MANAGER = () => {
         if (
           (v === null || v === "") &&
           k !== "REMK" &&
+          k !== "CUST_NAME" &&
           k !== "FACTORY" &&
           k !== "Setting1" &&
           k !== "Setting2" &&
@@ -3083,11 +3084,19 @@ const BOM_MANAGER = () => {
                                 )[0]?.CUST_NAME_KD,
                           }}
                           onChange={(event: any, newValue: any) => {
-                            //console.log(newValue);
+                            console.log(newValue);
                             handleSetCodeInfo(
                               "CUST_CD",
                               newValue === null ? "" : newValue.CUST_CD,
                             );
+                            /* handleSetCodeInfo(
+                              "CUST_NAME_KD",
+                              newValue === null ? "" : newValue.CUST_NAME_KD,
+                            );
+                             handleSetCodeInfo(
+                              "CUST_NAME",
+                              newValue === null ? "" : newValue.CUST_NAME,
+                            ); */
                           }}
                         />
                       </label>

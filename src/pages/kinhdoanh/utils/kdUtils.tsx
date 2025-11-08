@@ -389,8 +389,10 @@ export const f_readUploadFile = (
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const json: any = XLSX.utils.sheet_to_json(worksheet);
+      const json: any = XLSX.utils.sheet_to_json(worksheet,{ defval: null });
+      console.log(json)
       let keys = Object.keys(json[0]);
+      console.log(keys)
       keys.push("CHECKSTATUS");
       let uploadexcelcolumn = keys.map((e, index) => {
         return {
@@ -425,6 +427,7 @@ export const f_readUploadFile = (
           },
         };
       });
+      console.log(uploadexcelcolumn);
       setRow(
         json.map((element: any, index: number) => {
           return { ...element, CHECKSTATUS: "Waiting", id: index };
