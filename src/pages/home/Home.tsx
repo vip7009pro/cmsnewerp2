@@ -100,7 +100,7 @@ function Home() {
     generalQuery("checkWebVer", {})
       .then((response) => {
         if (response?.data?.tk_status !== "NG") {
-          //console.log('webver',response.data.data[0].VERWEB);
+          console.log('webver',response.data.data[0].VERWEB);
           if (current_ver >= response.data.data[0].VERWEB) {
           } else {
             if (intervalID) {

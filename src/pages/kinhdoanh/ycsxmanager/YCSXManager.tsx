@@ -1557,14 +1557,14 @@ const YCSXManager = () => {
             let next_process_lot_no_p501: string = await f_process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
             let isFL: boolean = await isG_CODE_FL(uploadExcelJson[i].G_CODE);
             let kq: string = await f_insertYCSX({
-              PHANLOAI: uploadExcelJson[i].PHANLOAI,
+              PHANLOAI: uploadExcelJson[i].PHANLOAI === 'GD' ? 'TT' : uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
-              REMK: next_process_lot_no_p501 + " REMARK: " + uploadExcelJson[i].REMK,
+              REMK: uploadExcelJson[i].PHANLOAI !== 'GD' ? next_process_lot_no_p501 + " REMARK: " + uploadExcelJson[i].REMK : 'GD: '+ uploadExcelJson[i].REMK,
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               CODE_50: uploadExcelJson[i].CODE_50,
-              CODE_03: "01",
+              CODE_03: uploadExcelJson[i].PHANLOAI === 'GD' ? "09" : "01",
               CODE_55: uploadExcelJson[i].CODE_55,
               RIV_NO: "A",
               PROD_REQUEST_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,
@@ -1610,7 +1610,8 @@ const YCSXManager = () => {
               tempjson[i].CHECKSTATUS = "NG: Thêm YCSX mới thất bại" + kq;
             }
             let next_p500_in_no: string = await f_getNextP500_IN_NO();
-            // them P500
+            if (uploadExcelJson[i].PHANLOAI !== 'GD') {
+              // them P500
             await f_insertP500({
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
@@ -1636,6 +1637,9 @@ const YCSXManager = () => {
               TEMP_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,
               USE_YN: 'X'
             });
+              
+            }
+            
           }
         }
       } else if (err_code === 1) {
@@ -1908,14 +1912,14 @@ const YCSXManager = () => {
         let next_process_lot_no_p501: string = await f_process_lot_no_generate(newphanloai);
         let isFL: boolean = await isG_CODE_FL(selectedCode?.G_CODE ?? "");
         let kq: string = await f_insertYCSX({
-          PHANLOAI: newphanloai,
+          PHANLOAI: newphanloai === 'GD' ? 'TT' : newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
-          REMK: next_process_lot_no_p501 + ' REMARK: ' + newycsxremark,
+          REMK: newphanloai !== 'GD' ? next_process_lot_no_p501 + ' REMARK: ' + newycsxremark : 'GD: '+ newycsxremark,
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
           PROD_REQUEST_NO: next_prod_request_no,
           CODE_50: loaixh,
-          CODE_03: "01",
+          CODE_03: newphanloai === 'GD' ? "09" : "01",
           CODE_55: loaisx,
           RIV_NO: "A",
           PROD_REQUEST_QTY: newycsxqty,
@@ -1979,7 +1983,8 @@ const YCSXManager = () => {
         }
         //get process_in_no P500
         let next_p500_in_no: string = await f_getNextP500_IN_NO();
-        // them P500
+        if (newphanloai !== 'GD') {
+           // them P500
         await f_insertP500({
           in_date: moment().format("YYYYMMDD"),
           next_process_in_no: next_p500_in_no,
@@ -2005,6 +2010,9 @@ const YCSXManager = () => {
           TEMP_QTY: newycsxqty,
           USE_YN: 'X'
         });
+
+        }
+       
       }
     } else if (err_code === 1) {
       //Swal.fire("Thông báo", "NG: Đã tồn tại PO" , "error");
@@ -2554,6 +2562,7 @@ const YCSXManager = () => {
                 <option value='TM'>Hàng Thương Mại (TM)</option>
                 {getCompany() !== 'CMS' && (
                   <>
+                    <option value='GC'>Gia Công Đặc Biệt (GD)</option>
                     <option value='I1'>Hàng In Nhanh 1 (I1)</option>
                     <option value='I2'>Hàng In Nhanh 2 (I2)</option>
                     <option value='I3'>Hàng In Nhanh 3 (I3)</option>
@@ -3168,6 +3177,7 @@ const YCSXManager = () => {
                         <option value='TM'>Hàng Thương Mại (TM)</option>
                         {getCompany() !== 'CMS' && (
                           <>
+                            <option value='GC'>Gia Công Đặc Biệt (GD)</option>
                             <option value='I1'>Hàng In Nhanh 1 (I1)</option>
                             <option value='I2'>Hàng In Nhanh 2 (I2)</option>
                             <option value='I3'>Hàng In Nhanh 3 (I3)</option>
@@ -3316,6 +3326,7 @@ const YCSXManager = () => {
                             <option value='TM'>Hàng Thương Mại (TM)</option>
                             {getCompany() !== 'CMS' && (
                               <>
+                                <option value='GD'>Gia Công Đặc Biệt (GD)</option>
                                 <option value='I1'>Hàng In Nhanh 1 (I1)</option>
                                 <option value='I2'>Hàng In Nhanh 2 (I2)</option>
                                 <option value='I3'>Hàng In Nhanh 3 (I3)</option>
@@ -3563,6 +3574,7 @@ const YCSXManager = () => {
                             <option value='TM'>Hàng Thương Mại (TM)</option>
                             {getCompany() !== 'CMS' && (
                               <>
+                                <option value='GC'>Gia Công Đặc Biệt (GD)</option>
                                 <option value='I1'>Hàng In Nhanh 1 (I1)</option>
                                 <option value='I2'>Hàng In Nhanh 2 (I2)</option>
                                 <option value='I3'>Hàng In Nhanh 3 (I3)</option>
