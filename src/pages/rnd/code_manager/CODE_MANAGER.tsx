@@ -1814,11 +1814,17 @@ const CODE_MANAGER = () => {
     });
     setisLoading(true);
     setColumnDefinition(column_codeinfo);
-    setRows(await f_getCodeInfo({
+    let kq = await f_getCodeInfo({
       G_NAME: codeCMS,
       CNDB: cndb,
       ACTIVE_ONLY: activeOnly
-    }));
+    });
+    Swal.fire(
+      "Thông báo",
+      "Đã load " + kq.length + " dòng",
+      "success"
+    );
+    setRows(kq);
     setisLoading(false);
   };
   const handleSearchCodeKeyDown = (

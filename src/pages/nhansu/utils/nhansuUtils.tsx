@@ -492,3 +492,20 @@ export const f_syncBangCong = async (DATA: any) => {
     });
   return kq;
 };
+
+export const f_checkDoubleNV_CCID = async (DATA: any) => {
+  let kq: Array<any> = [];
+  await generalQuery("checktrungNV_CCID",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        kq = response.data.data;
+      }
+      else {
+        kq = [];
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+};

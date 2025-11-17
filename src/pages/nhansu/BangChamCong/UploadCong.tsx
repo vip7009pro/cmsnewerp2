@@ -7,11 +7,12 @@ import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button, IconButton } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { RxUpdate } from "react-icons/rx";
+import { RxUpdate, RxUpload } from "react-icons/rx";
 import { f_readUploadFile } from "../../kinhdoanh/utils/kdUtils";
 import { BANG_CONG_DATA, BANG_CONG_THANG_DATA } from "../interfaces/nhansuInterface";
-import { f_checkNV, f_insertBangCong, f_loadBangCong, f_syncBangCong, loadBangCongTheoThang } from "../utils/nhansuUtils";
+import { f_checkDoubleNV_CCID, f_checkNV, f_insertBangCong, f_loadBangCong, f_syncBangCong, f_updateBangCong, loadBangCongTheoThang } from "../utils/nhansuUtils";
 import { getUserData } from "../../../api/Api";
+import { checkBP } from "../../../api/GlobalFunction";
 
 const UploadCong = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -318,6 +319,23 @@ const UploadCong = () => {
     }
     return ketqua;
   }
+
+  const checkDoubleNV = async ()=> {    
+    let ketqua = await f_checkDoubleNV_CCID({});
+    if(ketqua.length > 0){
+      Swal.fire({
+        title: 'Trùng mã chấm công',
+        text: 'Có 2 nhân viên trở lên cùng mã chấm công trên hệ thống, rà soát lại tất cả nhân viên trên hệ thống!\n' + ketqua.map((item: any) => item.Employees + ' chung mã:' + item.NV_CCID).join('_______'),
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
   const kpi_detail_ag_table = useMemo(() => {
     return (
       <AGTable
@@ -326,7 +344,7 @@ const UploadCong = () => {
           <IconButton size='small' aria-label='show 4 new mails' color='inherit' onClick={() => {
               handleInsertUpdateBangCong();
             }}>
-              <RxUpdate size={15} color='#ec08ec' /> <span style={{ color: '#ec08ec', fontSize: '0.8rem' }}>Update</span>
+              <RxUpload size={15} color='#0412d6' /> <span style={{ color: '#0412d6', fontSize: '0.8rem' }}>Upload</span>
             </IconButton>
             <input                 
               className='selectfilebutton'
@@ -337,6 +355,20 @@ const UploadCong = () => {
                 loadFile(e);
               }}
             />
+            <IconButton size='small' aria-label='show 4 new mails' color='inherit' onClick={() => {
+               checkBP(getUserData(), ['NHANSU'], ['Leader'], ['ALL'], async () => {
+                 handleUpdateBangCong();
+               });
+            }}>
+              <RxUpdate size={15} color='#ec08ec' /> <span style={{ color: '#ec08ec', fontSize: '0.8rem' }}>Update</span>
+            </IconButton>
+            <IconButton size='small' aria-label='show 4 new mails' color='inherit' onClick={() => {
+               checkBP(getUserData(), ['NHANSU'], ['Leader'], ['ALL'], async () => {
+                 handleSyncBangCong();
+               });
+            }}>
+              <RxUpdate size={15} color='#c4a004' /> <span style={{ color: '#c4a004', fontSize: '0.8rem' }}>Sync</span>
+            </IconButton>
         </div>}
         columns={columnDetail}
         data={bangcongdata}
@@ -345,6 +377,7 @@ const UploadCong = () => {
           //setSelectedRows(params.data)
         }}
         onSelectionChange={(params: any) => {
+          selectedBangCongDetailData.current = params.api.getSelectedRows();
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -361,6 +394,10 @@ const UploadCong = () => {
         confirmButtonText: 'Cập nhật'
       }).then(async (result) => {
         if (result.isConfirmed) {
+          let checkdouble = await checkDoubleNV();
+          if(!checkdouble){
+            return;
+          }
           let kqchecknvid = await checkNV();
           if(kqchecknvid.length > 0 && getUserData()?.EMPL_NO !== "NHU1903"){
             return;
@@ -397,6 +434,30 @@ const UploadCong = () => {
         }
       })
   }
+  const handleUpdateBangCong = async () => {
+    if(selectedBangCongDetailData.current.length === 0){
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để update", "error");
+      return;
+    }
+    let ketqua : string = '';
+    for(let i = 0; i < selectedBangCongDetailData.current.length; i++){
+      
+      let kq: string = await f_updateBangCong(selectedBangCongDetailData.current[i]);
+      if(kq !== ''){
+        ketqua += kq+ "\n";
+      }
+    }
+    if(ketqua !== ''){
+      Swal.fire("Thông báo", "Update thất bại:" + ketqua, "error");
+      return;
+    }
+    Swal.fire("Thông báo", "Update thành công", "success");
+    await f_syncBangCong({
+      FROM_DATE: watch('from_date'),
+      TO_DATE: watch('to_date'),
+    });
+    
+  }
   const kpi_summary_ag_table = useMemo(() => {
     return (
       <AGTable
@@ -415,7 +476,7 @@ const UploadCong = () => {
         }}
         onSelectionChange={(params: any) => {
           //console.log(e!.api.getSelectedRows())
-          selectedBangCongDetailData.current = params.api.getSelectedRows();
+          //selectedBangCongDetailData.current = params.api.getSelectedRows();
         }}
       />
     );
@@ -439,6 +500,14 @@ const UploadCong = () => {
     setBangCongThangData(kq_summary);
     setcolumnDetail(columns_bangcongdetail);
   };
+  const handleSyncBangCong = async () => {
+    await f_syncBangCong({
+      FROM_DATE: watch('from_date'),
+      TO_DATE: watch('to_date'),
+    });
+    Swal.fire("Thông báo", "Đã đồng bộ công sang điểm danh từ ngày " + watch('from_date') + " tới ngày " + watch('to_date'), "success");
+  }
+
 
   useEffect(() => {
     handle_loaddatasx();

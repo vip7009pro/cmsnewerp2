@@ -4055,11 +4055,11 @@ export const f_getCodeInfo = async (DATA: any) => {
           }
         );
         kq = loadeddata;
-        Swal.fire(
+        /* Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
           "success"
-        );
+        ); */
       } else {
         Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         kq = [];

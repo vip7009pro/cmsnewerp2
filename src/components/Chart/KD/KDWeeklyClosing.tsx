@@ -32,6 +32,12 @@ const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
   const labelFormatter = (value: number) => {
     return formatCash(value);
   };
+    const labelFormatterQty = (value: number) => {
+    return new Intl.NumberFormat("en", {
+      notation: "compact",
+      compactDisplay: "short",
+    }).format(value);
+  };
   const CustomTooltip = ({
     active,
     payload,
@@ -188,12 +194,7 @@ const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
             <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
           )}
         />
-        <Line
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='DELIVERY_QTY'
-          stroke='green'
-        />
+       
         <Bar
           yAxisId='right-axis'
           type='monotone'
@@ -202,6 +203,13 @@ const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
           fill='#ff9900'
           label={CustomLabel}
         ></Bar>
+         <Line
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='DELIVERY_QTY'
+          stroke='green'
+          label={{ position: "top", formatter: labelFormatterQty }}
+        />
         <Line
           yAxisId='right-axis'
           type='monotone'
