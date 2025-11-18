@@ -440,8 +440,7 @@ const UploadCong = () => {
       return;
     }
     let ketqua : string = '';
-    for(let i = 0; i < selectedBangCongDetailData.current.length; i++){
-      
+    for(let i = 0; i < selectedBangCongDetailData.current.length; i++){      
       let kq: string = await f_updateBangCong(selectedBangCongDetailData.current[i]);
       if(kq !== ''){
         ketqua += kq+ "\n";

@@ -5886,3 +5886,28 @@ export const f_loadLossTimeTheoNguoi = async (DATA: any) => {
   return kq;
 };
 
+export const f_updateSXDailyKPI = (DATA: any) => {
+  let kq: string = '';
+  generalQuery("updatesxdailykpi", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+      } else {
+        kq += "_" + response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+
+export const f_updateSXDailyKPITheoNguoi = (DATA: any) => {
+  let kq: string = '';
+  generalQuery("upsertNV_KPI", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+      } else {
+        kq += "_" + response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}

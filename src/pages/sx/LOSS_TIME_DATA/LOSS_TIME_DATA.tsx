@@ -6,9 +6,11 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { BiLoader } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 import moment from "moment";
-import { f_loadLossTimeTheoMay, f_loadLossTimeTheoNguoi } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { f_loadLossTimeTheoMay, f_loadLossTimeTheoNguoi, f_updateSXDailyKPI, f_updateSXDailyKPITheoNguoi } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import SX_EQ_KPI_GRAPH from "../../../components/Chart/SX/SX_EQ_KPI_GRAPH";
+import SX_EMPL_KPI_GRAPH from "../../../components/Chart/SX/SX_EMPL_KPI_GRAPH";
 
 export interface LOSS_TIME_DATA_THEO_MAY {
     EQ_NAME: string;
@@ -18,6 +20,8 @@ export interface LOSS_TIME_DATA_THEO_MAY {
     CODE_COUNT: number;
     TOTAL_EA: number;
     TOTAL_SQM: number;
+    TOTAL_KPI: number;
+    DAILY_KPI: number;
 }
 
 export interface LOSS_TIME_DATA_THEO_NGUOI {
@@ -32,10 +36,13 @@ export interface LOSS_TIME_DATA_THEO_NGUOI {
     CODE_COUNT: number;
     TOTAL_EA: number;
     TOTAL_SQM: number;
+    TOTAL_KPI: number;
+    DAILY_KPI: number;
+    LOSS_EA: number;
+    LOSS_SQM: number;
 }
 
 const LOSS_TIME_DATA = () => {
-  const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [option, setOption] = useState(1);
@@ -62,6 +69,20 @@ const LOSS_TIME_DATA = () => {
           </span>
         );
     } },
+    { field: "TOTAL_KPI", headerName: "TOTAL_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} m²
+          </span>
+        );
+    } },
+    { field: "DAILY_KPI", headerName: "DAILY_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} m²
+          </span>
+        );
+    }  },
   ];
   const columns_loss_time_data_theo_nguoi = [
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 100 },
@@ -88,11 +109,39 @@ const LOSS_TIME_DATA = () => {
           </span>
         );
     } },
+    { field: "LOSS_EA", headerName: "LOSS_EA", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "green", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} EA
+          </span>
+        );
+    } },
+    { field: "LOSS_SQM", headerName: "LOSS_SQM", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "blue", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} m²
+          </span>
+        );
+    } },
+    { field: "TOTAL_KPI", headerName: "TOTAL_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} m²
+          </span>
+        );
+    } },
+    { field: "DAILY_KPI", headerName: "DAILY_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} m²
+          </span>
+        );
+    }  },
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(columns_loss_time_data_theo_may);
   const [btpData, setBTPData] = useState<Array<any>>([]);
-  const handleLoadLossTimeTheoMay = async () => {    
+  const handleLoadLossTimeTheoMay = async (showMessage: boolean = true) => {    
     let kq: LOSS_TIME_DATA_THEO_MAY[] = [];
     kq = await f_loadLossTimeTheoMay({
       FROM_DATE: fromdate,
@@ -106,9 +155,9 @@ const LOSS_TIME_DATA = () => {
         };
       })
     );
-    Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
+    if(showMessage) Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
   };
-  const handleLoadLossTimeTheoNguoi = async () => {   
+  const handleLoadLossTimeTheoNguoi = async (showMessage: boolean = true) => {   
     let kq: LOSS_TIME_DATA_THEO_NGUOI[] = [];
     kq = await f_loadLossTimeTheoNguoi({
       FROM_DATE: fromdate,
@@ -122,7 +171,7 @@ const LOSS_TIME_DATA = () => {
         };
       })
     );
-    Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
+    if(showMessage) Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
   };
   const btpDataAG = useMemo(() => {
     return (
@@ -153,8 +202,20 @@ const LOSS_TIME_DATA = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={(e) => {
-          //console.log(e.data)
+        onCellEditingStopped={async (e) => {
+          //console.log(e.column.colId)
+          if(e.column.colId === 'DAILY_KPI'){
+            console.log(e.value)
+            if(option === 1){
+              await f_updateSXDailyKPI(e.data)
+              handleLoadLossTimeTheoMay(false)
+            }
+            if(option === 2){
+              await f_updateSXDailyKPITheoNguoi(e.data)
+              handleLoadLossTimeTheoNguoi(false)
+            }
+            
+          }
         }}
         onRowClick={(e) => {
           //console.log(e.data)
@@ -198,6 +259,7 @@ const LOSS_TIME_DATA = () => {
                   value={option}
                   onChange={(e) => {
                     setOption(Number(e.target.value));
+                    setBTPData([])
                   }}
                 >
                   <option value="1">Theo máy</option>
@@ -209,38 +271,19 @@ const LOSS_TIME_DATA = () => {
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00a54a' }} onClick={() => {
                 if(option === 1){
                   setColumnDefinition(columns_loss_time_data_theo_may);
-                  handleLoadLossTimeTheoMay();
+                  handleLoadLossTimeTheoMay(true);
                 }else{
                   setColumnDefinition(columns_loss_time_data_theo_nguoi);
-                  handleLoadLossTimeTheoNguoi();
+                  handleLoadLossTimeTheoNguoi(true);
                 }
               }}>Load Data</Button>
             </div>       
           </div>        
         </div>
+        {option === 1 && <div className="kpigraph"><SX_EQ_KPI_GRAPH dldata={btpData}/></div>}
+        {option === 2 && <div className="kpigraph"><SX_EMPL_KPI_GRAPH dldata={btpData}/></div>}
         <div className="tracuuPQCTable">{btpDataAG}</div>
       </div>
-      {showGiaoNhan && (
-        <div className="updatenndsform">
-          <Button
-            color={"primary"}
-            variant="contained"
-            size="small"
-            fullWidth={false}
-            sx={{
-              fontSize: "0.7rem",
-              padding: "3px",
-              backgroundColor: "#69b1f5f",
-            }}
-            onClick={() => {
-              setShowGiaoNhan(false);
-            }}
-          >
-            Close
-          </Button>
-          <QLGN />
-        </div>
-      )}
     </div>
   );
 };
