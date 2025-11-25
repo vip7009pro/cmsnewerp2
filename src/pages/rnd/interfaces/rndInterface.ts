@@ -250,6 +250,7 @@ export interface BOM_AMAZON {
   REMARK?: string;
   AMZ_COUNTRY?: string;
   AMZ_PROD_NAME?: string;
+  DOITUONG_NAME2?: string;
 }
 export interface CODEPHOI {
   G_CODE_MAU: string;

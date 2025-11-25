@@ -363,7 +363,7 @@ const ALLDOC = () => {
     { field: 'DOC_CATEGORY', headerName: 'DOC_CATEGORY', width: 150 },
     { field: 'DOC_CATEGORY2', headerName: 'DOC_CATEGORY2', width: 150 },
     { field: 'DOC_NAME', headerName: 'DOC_NAME', width: 200 },
-    { field: 'HSD_YN', headerName: 'HSD_YN', width: 70 },
+    { field: 'HSD_YN', headerName: 'HSD_YN', width: 70},
     { field: 'USE_YN', headerName: 'USE_YN', width: 70 },
     { field: 'INS_DATE', headerName: 'INS_DATE', width: 150 },
     { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 100 },
@@ -429,7 +429,35 @@ const ALLDOC = () => {
     { field: 'DOC_ID', headerName: 'DOC_ID', width: 40 },
     { field: 'CAT_ID', headerName: 'CAT_ID', width: 40 },
     { field: 'DOC_CAT_ID', headerName: 'DOC_CAT_ID', width: 60 },
-    { field: 'HSD_YN', headerName: 'HSD_YN', width: 60 },
+    { field: 'HSD_YN', headerName: 'HSD_YN', width: 60, cellStyle: (params: any) => {
+        if (params.data.HSD_YN === "N") {
+          return (
+            { backgroundColor: "#78eb78", color: "#0905ec", textAlign: "left" }
+          );
+        } else {
+          const today = new Date().toISOString().split('T')[0];
+          const expDate = new Date(params.data.EXP_DATE).toISOString().split('T')[0];
+          const diffTime = Math.abs(new Date(expDate).getTime() - new Date(today).getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 3600 * 24)); 
+          //console.log('diffDays',diffDays,expDate,today)
+          if(diffDays >= 0) {
+            return (
+              { backgroundColor: "#ff0000", color: "#eaeaf0", textAlign: "left" }
+            );
+          }
+          else if(diffDays < 0 && diffDays > -30) {
+            return (
+              { backgroundColor: "#f1950b", color: "#0905ec", textAlign: "left" }
+            );
+          }
+          else if(diffDays <= -30) {
+            return (
+              { backgroundColor: "#78eb78", color: "#0905ec", textAlign: "left" }
+            );
+          }
+          
+        }
+      }},
     { field: 'USE_YN', headerName: 'USE_YN', width: 60 },
     { field: 'INS_DATE', headerName: 'INS_DATE', width: 60 },
     { field: 'INS_EMPL', headerName: 'INS_EMPL', width: 60 },

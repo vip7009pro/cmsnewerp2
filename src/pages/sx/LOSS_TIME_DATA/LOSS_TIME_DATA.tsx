@@ -231,7 +231,7 @@ const LOSS_TIME_DATA = () => {
     //handleLoadLossTimeTheoMay();
   }, []);
   return (
-    <div className="maindefects">
+    <div className="losstimedatasx">
       <div className="tracuuDataPqc">
         <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">

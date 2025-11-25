@@ -334,9 +334,7 @@ const UserManager = () => {
     loadWorkPosition();
   }, []);
 
-  // Load face-api.js models khi component mount
-  useEffect(() => {
-    const loadModels = async () => {
+   const loadModels = async () => {
       try {
         await Promise.all([
           faceapi.nets.ssdMobilenetv1.loadFromUri('/models'), // Model detect mặt
@@ -351,6 +349,9 @@ const UserManager = () => {
         //message.error('Không tải được models!');
       }
     };
+  // Load face-api.js models khi component mount
+  useEffect(() => {
+   
     loadModels();
   }, []);
 
@@ -734,6 +735,7 @@ const UserManager = () => {
               loadEmplInfo();
             }}>Update</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
+              //await loadModels();
               extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg");
             }}>Train Face</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {

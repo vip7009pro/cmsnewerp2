@@ -43,9 +43,6 @@ export interface QTR_DATA {
   QTR_YN: string;
 }
 
-
-
-
 const QTR_DATA = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -59,7 +56,7 @@ const QTR_DATA = () => {
     { field: "PART_CODE", headerName: "PART_CODE", width: 100 },
     { field: "QTR_PPM", headerName: "QTR_PPM", width: 100, cellRenderer: (params: any) => {
       return (
-          <span style={{ color: params.value >=500 && params.data.OCCUR_PLACE === "Main" ? "red" : "green", fontWeight: "normal" }}>
+          <span style={{ color: params.data.WH_OUT_QTY >= 100000 && params.value >=500 && params.data.OCCUR_PLACE === "Main" ? "red" : "green", fontWeight: "normal" }}>
             {params.value?.toLocaleString("en-US")}
           </span>
         );

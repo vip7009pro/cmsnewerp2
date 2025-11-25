@@ -8,7 +8,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { f_loadLossTimeTheoMay, f_loadLossTimeTheoNguoi } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { f_loadLossTimeKiemTraTheoBan, f_loadLossTimeKiemTraTheoNguoi } from "../../utils/qcUtils";
+import { f_insertPhanLoaiBanKiemTraAuto, f_loadLossTimeKiemTraTheoBan, f_loadLossTimeKiemTraTheoNguoi, f_updateKPIBanKiemTra } from "../../utils/qcUtils";
+import Inspect_EMPL_KPI_GRAPH from "../../../../components/Chart/INSPECTION/Inspect_EMPL_KPI_GRAPH";
 
 export interface LOSS_TIME_DATA_KIEMTRA_THEO_BAN {
     EMPL_NO: string;
@@ -17,6 +18,9 @@ export interface LOSS_TIME_DATA_KIEMTRA_THEO_BAN {
     INSPECT_MINUTE: number;
     INSPECT_TOTAL_QTY: number;
     PROD_SQM: number;
+    TOTAL_KPI: number;
+    HOUR_KPI: number;
+    INSPECT_HOUR: number;
 }
 
 export interface LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI {
@@ -26,6 +30,9 @@ export interface LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI {
     INSPECT_MINUTE: number;
     INSPECT_TOTAL_QTY: number;
     PROD_SQM: number;
+    WORK_HOUR: number;
+    TOTAL_KPI: number;
+
 }
 
 const LOSS_TIME_DATA = () => {
@@ -40,6 +47,13 @@ const LOSS_TIME_DATA = () => {
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 100 },
     { field: "CODE_COUNT", headerName: "CODE_COUNT", width: 100 },
     { field: "INSPECT_MINUTE", headerName: "INSPECT_MINUTE", width: 100 },
+    { field: "INSPECT_HOUR", headerName: "INSPECT_HOUR", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "green", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})} h
+          </span>
+        );
+    } },
     { field: "INSPECT_TOTAL_QTY", headerName: "INSPECT_TOTAL_QTY", width: 100, cellRenderer: (params: any) => {
       return (
           <span style={{ color: "green", fontWeight: "normal" }}>
@@ -54,12 +68,41 @@ const LOSS_TIME_DATA = () => {
           </span>
         );
     } },
+    { field: "TOTAL_KPI", headerName: "TOTAL_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} EA
+          </span>
+        );
+    } },
+    { field: "HOUR_KPI", headerName: "HOUR_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} EA
+          </span>
+        );
+    } },
+
   ];
   const columns_loss_time_data_theo_nguoi = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },
     { field: "CODE_COUNT", headerName: "CODE_COUNT", width: 100 },
     { field: "WORK_MINUTE", headerName: "WORK_MINUTE", width: 100 },
     { field: "INSPECT_MINUTE", headerName: "INSPECT_MINUTE", width: 100 },
+    { field: "WORK_HOUR", headerName: "WORK_HOUR", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "green", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})} h
+          </span>
+        );
+    } },
+    { field: "TOTAL_KPI", headerName: "TOTAL_KPI", width: 100, cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "red", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0, maximumFractionDigits: 0})} EA
+          </span>
+        );
+    } },
     { field: "INSPECT_TOTAL_QTY", headerName: "INSPECT_TOTAL_QTY", width: 100, cellRenderer: (params: any) => {
       return (
           <span style={{ color: "green", fontWeight: "normal" }}>
@@ -78,7 +121,7 @@ const LOSS_TIME_DATA = () => {
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(columns_loss_time_data_theo_may);
   const [btpData, setBTPData] = useState<Array<any>>([]);
-  const handleLoadLossTimeTheoMay = async () => {    
+  const handleLoadLossTimeTheoMay = async (showSwal: boolean = true) => {    
     let kq: LOSS_TIME_DATA_KIEMTRA_THEO_BAN[] = [];
     kq = await f_loadLossTimeKiemTraTheoBan({
       FROM_DATE: fromdate,
@@ -92,9 +135,11 @@ const LOSS_TIME_DATA = () => {
         };
       })
     );
-    Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
+    if(showSwal){
+      Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
+    }
   };
-  const handleLoadLossTimeTheoNguoi = async () => {   
+  const handleLoadLossTimeTheoNguoi = async (showSwal: boolean = true) => {   
     let kq: LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI[] = [];
     kq = await f_loadLossTimeKiemTraTheoNguoi({
       FROM_DATE: fromdate,
@@ -108,8 +153,13 @@ const LOSS_TIME_DATA = () => {
         };
       })
     );
-    Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
+    if(showSwal){
+      Swal.fire("Thông báo", "Đã load: " + kq.length + " dòng", "success");
+    }
   };
+  const handleAutoInsertPhanLoai = () => {
+    f_insertPhanLoaiBanKiemTraAuto({});
+  }
   const btpDataAG = useMemo(() => {
     return (
       <AGTable
@@ -139,8 +189,15 @@ const LOSS_TIME_DATA = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={async (e) => {
           //console.log(e.data)
+          if(e.column.colId === 'HOUR_KPI'){
+            console.log(e.value)
+            if(option === 1){
+              await f_updateKPIBanKiemTra(e.data)
+              handleLoadLossTimeTheoMay(false)
+            }
+          }
         }}
         onRowClick={(e) => {
           //console.log(e.data)
@@ -152,11 +209,12 @@ const LOSS_TIME_DATA = () => {
     );
   }, [btpData, columnDefinition, columns_loss_time_data_theo_may, columns_loss_time_data_theo_nguoi]);
   useEffect(() => {
+    handleAutoInsertPhanLoai();
     //handleLoadDefectProcessData();
     //handleLoadLossTimeTheoMay();
   }, []);
   return (
-    <div className="maindefects">
+    <div className="losstimedatakiemtra">
       <div className="tracuuDataPqc">
         <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
@@ -193,17 +251,19 @@ const LOSS_TIME_DATA = () => {
             </div>  
             <div className="btgroup">
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00a54a' }} onClick={() => {
+                handleAutoInsertPhanLoai();
                 if(option === 1){
                   setColumnDefinition(columns_loss_time_data_theo_may);
-                  handleLoadLossTimeTheoMay();
+                  handleLoadLossTimeTheoMay(true);
                 }else{
                   setColumnDefinition(columns_loss_time_data_theo_nguoi);
-                  handleLoadLossTimeTheoNguoi();
+                  handleLoadLossTimeTheoNguoi(true);
                 }
               }}>Load Data</Button>
             </div>       
           </div>        
         </div>
+        <div className = 'kpigraph'><Inspect_EMPL_KPI_GRAPH dldata={btpData} /></div>
         <div className="tracuuPQCTable">{btpDataAG}</div>
       </div>      
     </div>

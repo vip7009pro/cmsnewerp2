@@ -712,3 +712,39 @@ import { QTR_DATA } from "../oqc/QTR_DATA";
       .catch((error) => {});
     return kq;
   };
+
+  export const f_insertPhanLoaiBanKiemTraAuto = async (DATA: any) => {
+    let kq: any = [];
+    await generalQuery("autoInsertPhanLoaiBanKiemTra", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+          let loaded_data: any[] = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  };
+
+  export const f_updateKPIBanKiemTra = (DATA:any) => {
+    let kq: boolean = false;
+    generalQuery("updateKPIBanKiemTra", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+            kq = true;
+        } else {
+          kq = false;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }

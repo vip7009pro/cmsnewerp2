@@ -2,7 +2,7 @@ import { Button, IconButton } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillEdit, AiFillFileExcel, AiFillSave } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_AMAZON.scss";
 import { useSelector } from "react-redux";
@@ -99,6 +99,28 @@ const BOM_AMAZON = () => {
     },
     { field: "GIATRI", headerName: "GIATRI", headerClass: 'super-app-theme--header', width: 100, editable: enableEdit },
     { field: "REMARK", headerName: "REMARK", headerClass: 'super-app-theme--header', width: 100, editable: enableEdit },
+    { field: "DOITUONG_NAME2", headerName: "QR_DOITUONG_NAME2", headerClass: 'super-app-theme--header', width: 100, editable: enableEdit, cellRenderer: (params: any) => {
+      if(params.data.PHANLOAI_DT  ==='QRCODE' || params.data.PHANLOAI_DT  ==='2D MATRIX'){
+        return (
+          <select           
+          value={params.data.DOITUONG_NAME2}
+          onChange={(e) => {
+            if((getUserData()?.EMPL_NO === 'NHU1903' || getUserData()?.EMPL_NO === 'NVD1201') || params.data.DOITUONG_NAME2 === ""){
+              params.data.DOITUONG_NAME2 = e.target.value;
+              params.api.refreshCells();
+            }
+            else {
+              Swal.fire('Cảnh báo','Chỉ thay đổi 1 lần', 'warning')
+            }
+          }}>
+          <option value="">Chọn</option>
+          <option value="QRCODE">QRCODE</option>
+          <option value="2D MATRIX">2D MATRIX</option>
+        </select>
+      );
+    } else {
+      return params.value;
+    }    }}
   ]);
   const handle_saveAMAZONCODEINFO = async () => {
     const { value: pass1 } = await Swal.fire({
@@ -179,6 +201,7 @@ const BOM_AMAZON = () => {
               return {
                 ...element,
                 G_NAME: getAuditMode() == 0 ? element.G_NAME : element.G_NAME?.search('CNDB') == -1 ? element.G_NAME : 'TEM_NOI_BO',
+                DOITUONG_NAME2: element.DOITUONG_NAME2 ?? "",
                 id: index,
               };
             }
@@ -376,6 +399,7 @@ const BOM_AMAZON = () => {
           REMARK: bomamazontable[i].REMARK,
           AMZ_PROD_NAME: amz_prod_name,
           AMZ_COUNTRY: amz_country,
+          DOITUONG_NAME2: bomamazontable[i].DOITUONG_NAME2,
         })
           .then((response) => {
             //console.log(response.data.data);
