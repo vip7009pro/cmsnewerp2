@@ -748,3 +748,17 @@ import { QTR_DATA } from "../oqc/QTR_DATA";
       .catch((error) => {});
     return kq;
   }
+
+    export const f_updateTrueDiemKiemTra = (DATA:any) => {
+    let kq: boolean = false;
+    generalQuery("updateTruDiemKiemTra", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+            kq = true;
+        } else {
+          kq = false;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }

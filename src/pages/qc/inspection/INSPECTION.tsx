@@ -20,7 +20,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
-import { f_loadKHKT_ADUNG, f_loadTemLotKTHistory } from "../utils/qcUtils";
+import { f_loadKHKT_ADUNG, f_loadTemLotKTHistory, f_updateTrueDiemKiemTra } from "../utils/qcUtils";
 const INSPECTION = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -344,6 +344,7 @@ const INSPECTION = () => {
     { field: "ERR31", headerName: "ERR31", width: 60 },
     { field: "ERR32", headerName: "ERR32", width: 60 },
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
+    { field: "TRU_DIEM", headerName: "TRU_DIEM", width: 150 },
   ];
   const column_inspect_balance = [
     {
@@ -2844,8 +2845,13 @@ const INSPECTION = () => {
           }} */
         columns={columnDefinition}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={async (e) => {
           //console.log(e.data)
+           if (e.column.colId === 'TRU_DIEM') {
+             console.log(e.value);
+             await f_updateTrueDiemKiemTra(e.data);
+           }
+
         }} onRowClick={(e) => {
           //console.log(e.data)
         }} onSelectionChange={(e) => {

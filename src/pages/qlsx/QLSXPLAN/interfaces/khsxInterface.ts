@@ -1403,3 +1403,29 @@ export interface SX_KPI_NEW_SUMMARY_DATA {
   KPI: number;
   WORK_HOURS: number;
 }
+
+export interface DM_VITRI_KIEMTRA  {
+  PHANLOAI: string;
+  KPI_VALUE: number;
+}
+
+export interface DM_CODE_SX_KT {
+  G_CODE: string;
+  G_NAME_KD: string;
+  DM_SX: number;
+  DM_KT: number
+}
+
+export interface DM_MACHINE {
+  EQ_NAME: string;
+  DM_EA:number;
+}
+
+export interface KPI_MACHINE_DATA {
+  EQ_SERIES: string;
+  EQ_NAME:string;
+  SX_YEAR:number;
+  SX_MONTH:number;
+  SX_YM:string;
+  TOTAL_EA:number;
+}

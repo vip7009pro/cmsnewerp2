@@ -13,7 +13,11 @@ import {
   DEFECT_PROCESS_DATA,
   DELIVERY_PLAN_CAPA,
   DINHMUC_QSLX,
+  DM_CODE_SX_KT,
+  DM_MACHINE,
+  DM_VITRI_KIEMTRA,
   EQ_STT,
+  KPI_MACHINE_DATA,
   LEADTIME_DATA,
   LICHSUINPUTLIEU_DATA,
   LICHSUNHAPKHOAO,
@@ -56,7 +60,8 @@ import { checkBP, zeroPad } from "../../../../api/GlobalFunction";
 import { f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
 import { BOMSX_DATA, CODE_FULL_INFO } from "../../../rnd/interfaces/rndInterface";
 import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, CNT_GAP_DATA2, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TREND_NGUOI_HANG_DATA, TRUOCHAN_BACK_DATA, TRUOCHAN_BACK_DATA2 } from "../../../qc/interfaces/qcInterface";
-import { LOSS_TIME_DATA_THEO_MAY, LOSS_TIME_DATA_THEO_NGUOI } from "../../../sx/LOSS_TIME_DATA/LOSS_TIME_DATA";
+import { LOSS_TIME_DATA_THEO_MAY, LOSS_TIME_DATA_THEO_NGUOI } from "../../../sx/KPI_NV_NEW2/KPI_NV_NEW2";
+
 export const f_loadTiLeDat = async (
   plan_date: string,
   machine: string,
@@ -5863,6 +5868,48 @@ export const f_loadLossTimeTheoMay = async (DATA: any) => {
     .catch((error) => {});
   return kq;
 };
+export const f_loadLossTimeTheoMayNew_EQ_NAME = async (DATA: any) => {
+  let kq: KPI_MACHINE_DATA[] = [];
+  await generalQuery("kpisx_theomay2_EQ_NAME", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: KPI_MACHINE_DATA[] = response.data.data.map(
+          (element: KPI_MACHINE_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
+export const f_loadLossTimeTheoMayNew_EQ_SERIES = async (DATA: any) => {
+  let kq: KPI_MACHINE_DATA[] = [];
+  await generalQuery("kpisx_theomay2_EQ_SERIES", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: KPI_MACHINE_DATA[] = response.data.data.map(
+          (element: KPI_MACHINE_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+};
 
 export const f_loadLossTimeTheoNguoi = async (DATA: any) => {
   let kq: LOSS_TIME_DATA_THEO_NGUOI[] = [];
@@ -5902,6 +5949,104 @@ export const f_updateSXDailyKPI = (DATA: any) => {
 export const f_updateSXDailyKPITheoNguoi = (DATA: any) => {
   let kq: string = '';
   generalQuery("upsertNV_KPI", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+      } else {
+        kq += "_" + response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+
+export const f_load_KPI_SX_THEONGUOI_NEW = async (DATA:any) => {
+  let kq: LOSS_TIME_DATA_THEO_NGUOI[] = [];
+  await generalQuery("kpisx_theonguoi_2", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: LOSS_TIME_DATA_THEO_NGUOI[] = response.data.data.map(
+          (element: LOSS_TIME_DATA_THEO_NGUOI, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+export const f_loadDinhMucViTriKiemTra = async (DATA:any) => {
+  let kq: DM_VITRI_KIEMTRA[] = [];
+  await generalQuery("loadDinhMucViTriKiemTra", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: DM_VITRI_KIEMTRA[] = response.data.data.map(
+          (element: DM_VITRI_KIEMTRA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+export const f_loadDinhMucCode = async () => {
+  let kq: DM_CODE_SX_KT[] = [];
+  await generalQuery("dinhmucCodePS", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: DM_CODE_SX_KT[] = response.data.data.map(
+          (element: DM_CODE_SX_KT, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+export const f_loadDinhMucMachine = async () => {
+  let kq: DM_MACHINE[] = [];
+  await generalQuery("loadDinhMucMay", {})
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: DM_MACHINE[] = response.data.data.map(
+          (element: DM_MACHINE, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+
+export const f_updateDMCodePS = async (DATA:any)=> {
+  let kq: string = '';
+  generalQuery("updateDMCodePS", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {        
       } else {

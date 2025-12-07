@@ -262,6 +262,7 @@ export const f_loadAllDoc = async (filteredData: any) => {
           return {
              ...element,
              REG_DATE: element.REG_DATE !== null ? moment.utc(element.REG_DATE).format("YYYY-MM-DD") : "",
+             REMAIN_DAYS: element.HSD_YN !== 'N' ? moment.utc(element.EXP_DATE).diff(moment.utc(), 'days') > 0 ?moment.utc(element.EXP_DATE).diff(moment.utc(), 'days'): "" : "",
              EXP_DATE: element.EXP_DATE !== null ? moment.utc(element.EXP_DATE).format("YYYY-MM-DD") : "",
              INS_DATE: element.INS_DATE !== null ? moment.utc(element.INS_DATE).format("YYYY-MM-DD") : "",
              UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD") : "",
@@ -426,6 +427,7 @@ const ALLDOC = () => {
     },
     { field: 'REG_DATE', headerName: 'REG_DATE', width: 60 },
     { field: 'EXP_DATE', headerName: 'EXP_DATE', width: 60 },
+    { field: 'REMAIN_DAYS', headerName: 'REMAIN_DAYS', width: 60 },
     { field: 'DOC_ID', headerName: 'DOC_ID', width: 40 },
     { field: 'CAT_ID', headerName: 'CAT_ID', width: 40 },
     { field: 'DOC_CAT_ID', headerName: 'DOC_CAT_ID', width: 60 },

@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import TestHome from "../home/TestHome";
 import LOSS_TIME_DATA from "./LOSS_TIME_DATA/LOSS_TIME_DATA";
+import KPI_NV_NEW2 from "./KPI_NV_NEW2/KPI_NV_NEW2";
 const KPI_NVSX = lazy(() => import("./KPI_NV/KPI_NVSX"));
 const DATASAMPLESX = lazy(() => import("./DATASAMPLE/DATASAMPLESX"));
 const KPI_NVSX_NEW = lazy(() => import("./KPI_NV_NEW/KPI_NV_NEW"));
@@ -88,6 +89,11 @@ const BAOCAOSXALL = () => {
           {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
             <MyTabs.Tab title="Loss Time New">
               <LOSS_TIME_DATA/>
+            </MyTabs.Tab>
+          )}
+          {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
+            <MyTabs.Tab title="KPI_NEW2">
+              <KPI_NV_NEW2/>
             </MyTabs.Tab>
           )}
         </MyTabs>

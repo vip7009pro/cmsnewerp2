@@ -1570,3 +1570,5 @@ export interface IQC_FAIL_PENDING
   CUST_NAME_KD: string; 
   FAIL_QTY: number;
  }
+
+ 
