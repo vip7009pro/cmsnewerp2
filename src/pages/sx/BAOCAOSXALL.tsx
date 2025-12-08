@@ -20,6 +20,7 @@ import { RootState } from "../../redux/store";
 import TestHome from "../home/TestHome";
 import LOSS_TIME_DATA from "./LOSS_TIME_DATA/LOSS_TIME_DATA";
 import KPI_NV_NEW2 from "./KPI_NV_NEW2/KPI_NV_NEW2";
+import INNHANH_KPI from "./INNHANH_KPI/INNHANH_KPI";
 const KPI_NVSX = lazy(() => import("./KPI_NV/KPI_NVSX"));
 const DATASAMPLESX = lazy(() => import("./DATASAMPLE/DATASAMPLESX"));
 const KPI_NVSX_NEW = lazy(() => import("./KPI_NV_NEW/KPI_NV_NEW"));
@@ -77,23 +78,28 @@ const BAOCAOSXALL = () => {
           {getUserData()?.JOB_NAME !== "Worker" && getCompany() === "CMS" && <MyTabs.Tab title="KPI NV">
             <KPI_NVSX />
           </MyTabs.Tab>}
-          {getUserData()?.JOB_NAME !== "Worker" && getCompany() !== "CMS" &&<MyTabs.Tab title="KPI NEW">
+         {/*  {getUserData()?.JOB_NAME !== "Worker" && getCompany() !== "CMS" &&<MyTabs.Tab title="KPI NEW">
             <KPI_NVSX_NEW />
-          </MyTabs.Tab>}
+          </MyTabs.Tab>} */}
           {getCompany() === "CMS" && <MyTabs.Tab title="Data Sample">
             <DATASAMPLESX />
           </MyTabs.Tab>}
           {/* {<MyTabs.Tab title="Test Home">
             <TestHome />
           </MyTabs.Tab>} */}
-          {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
+         {/*  {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
             <MyTabs.Tab title="Loss Time New">
               <LOSS_TIME_DATA/>
             </MyTabs.Tab>
-          )}
+          )} */}
           {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
             <MyTabs.Tab title="KPI_NEW2">
               <KPI_NV_NEW2/>
+            </MyTabs.Tab>
+          )}
+          {getCompany() === "PVN" && getUserData()?.JOB_NAME !== "Worker" && (
+            <MyTabs.Tab title="IN NHANH KPI">
+              <INNHANH_KPI/>
             </MyTabs.Tab>
           )}
         </MyTabs>

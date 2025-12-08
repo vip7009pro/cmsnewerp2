@@ -1,6 +1,6 @@
 import moment from "moment";
 import { generalQuery, getCompany } from "../../../api/Api";
-import { AUDIT_HISTORY_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, IQC_FAIL_PENDING, IQC_FAILING_TREND_DATA, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, KHKT_DATA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
+import { AUDIT_HISTORY_DATA, DM_VITRI_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, IQC_FAIL_PENDING, IQC_FAILING_TREND_DATA, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, KHKT_DATA, KPI_NV_KIEMTRA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
 import Swal from "sweetalert2";
 import { LOSS_TIME_DATA_KIEMTRA_THEO_BAN, LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI } from "../inspection/LOSS_TIME_DATA/LOSS_TIME_DATA";
 import { QTR_DATA } from "../oqc/QTR_DATA";
@@ -757,6 +757,52 @@ import { QTR_DATA } from "../oqc/QTR_DATA";
             kq = true;
         } else {
           kq = false;
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+
+  
+
+  export const f_loadKPINVKiemtra = async (DATA:any) =>  {
+    let kq: KPI_NV_KIEMTRA[] = [];
+    await generalQuery("loadKpiNV_KiemTra_New2", DATA)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+          let loaded_data: KPI_NV_KIEMTRA[] = response.data.data.map(
+            (element: KPI_NV_KIEMTRA, index: number) => {
+              return {
+                ...element,                
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
+        }
+      })
+      .catch((error) => {});
+    return kq;
+  }
+
+  export const f_loadDinhMucViTriKiemTra = async () => {
+    let kq: DM_VITRI_DATA[] = [];
+    await generalQuery("loadDinhMucViTriKiemTra", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {        
+          let loaded_data: DM_VITRI_DATA[] = response.data.data.map(
+            (element: DM_VITRI_DATA, index: number) => {
+              return {
+                ...element,                
+                id: index,
+              };
+            }
+          );
+          kq = loaded_data;
+        } else {
+          kq = [];
         }
       })
       .catch((error) => {});

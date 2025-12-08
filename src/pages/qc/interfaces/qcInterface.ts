@@ -1571,4 +1571,33 @@ export interface IQC_FAIL_PENDING
   FAIL_QTY: number;
  }
 
+ export interface KPI_NV_KIEMTRA {
+  EMPL_NO: string;
+  CODE_COUNT: number;
+  INSPECT_MINUTE: number;
+  COUNT_TT: number;
+  COUNT_PS: number;
+  INSPECT_QTY_TT: number;
+  INSPECT_QTY_PS: number;
+  DM_VITRI: number;
+  DM_CODE: number;
+  TRU_DIEM: number;
+  INSPECT_TOTAL_QTY: number;
+  PROD_SQM: number;
+  RATE_PS: number;
+  RATE_TT: number;
+  TOTAL_KIEMTRA_KPI: number;
+  DIEM_CON: number;
+  FINAL_KPI: number;  
+ }
+
+ export interface DM_VITRI_DATA {
+   CTR_CD: string;
+   PHANLOAI: string;
+   KPI_VALUE: number;
+   INS_DATE: string;
+   INS_EMPL: string;
+   UPD_DATE: string;
+   UPD_EMPL: string;
+ }
  

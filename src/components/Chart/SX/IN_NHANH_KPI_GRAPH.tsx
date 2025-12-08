@@ -4,12 +4,13 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../../api/GlobalFunction";
-import { KPI_MACHINE_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { LOSS_TIME_DATA_THEO_NGUOI } from "../../../pages/sx/KPI_NV_NEW2/KPI_NV_NEW2";
+import { IN_NHANH_KPI_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 
-const SX_EQ_KPI_GRAPH2 = ({
+const IN_NHANH_KPI_GRAPH = ({
   dldata,
-}: {dldata: KPI_MACHINE_DATA[]}) => {
+}: {dldata: IN_NHANH_KPI_DATA[]}) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
@@ -21,7 +22,7 @@ const SX_EQ_KPI_GRAPH2 = ({
     return (value.toLocaleString('en-US',)); 
   };
   const labelFormatterPercent = (value: number) => {
-    return (value.toLocaleString('en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})) + '%'; 
+    return (value.toLocaleString('en-US', {style:'percent',minimumFractionDigits: 1,maximumFractionDigits: 1})); 
   };
 
   const CustomTooltip = ({
@@ -43,15 +44,9 @@ const SX_EQ_KPI_GRAPH2 = ({
             borderRadius: 5,
           }}
         >
-          <p>Năm_Tháng {label}:</p> 
+          <p>Nhân viên {label}:</p> 
           <p className='label'>
-            TOTAL_EA: {`${(payload[0].payload.TOTAL_EA)?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})}`} EA
-          </p> 
-          <p className='label'>
-            TOTAL_SQM: {`${(payload[0].payload.TOTAL_SQM)?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})}`} m² 
-          </p> 
-          <p className='label'>
-            TOTAL_DM_SQM: {`${(payload[0].payload.TOTAL_DM_SQM)?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})}`} m² 
+            FINAL_KPI: {`${(payload[0].payload.FINAL_KPI)?.toLocaleString("en-US",{style: 'percent',minimumFractionDigits: 0,maximumFractionDigits: 0})}`}
           </p> 
         </div>
       );
@@ -73,13 +68,13 @@ const SX_EQ_KPI_GRAPH2 = ({
         }}
       >
     
-        <XAxis dataKey='SX_YM' height={40} tick={{ fontSize: '0.7rem' }}>
-          <Label value='SX_YM' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
+        <XAxis dataKey='EMPL_NO' height={40} tick={{ fontSize: '0.7rem' }}>
+          <Label value='EMPL_NO' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis      
           yAxisId='left-axis'    
           label={{
-            value: "TOTAL_SQM",
+            value: "FINAL_KPI",
             angle: -90,
             position: "insideLeft",
             fontSize: '0.7rem'
@@ -89,7 +84,7 @@ const SX_EQ_KPI_GRAPH2 = ({
             new Intl.NumberFormat("en", {
               notation: "compact",
               compactDisplay: "short",
-            }).format(value)
+            }).format(value) + '%'
           }
           tickCount={7}
         />
@@ -97,7 +92,7 @@ const SX_EQ_KPI_GRAPH2 = ({
           yAxisId='right-axis'
           orientation='right'
           label={{
-            value: "TOTAL_SQM",
+            value: "FINAL_KPI",
             angle: -90,
             position: "insideRight",
             fontSize: '0.7rem'
@@ -111,15 +106,9 @@ const SX_EQ_KPI_GRAPH2 = ({
           }
           tickCount={7}
         />     
-        <Bar yAxisId='left-axis' stackId='a' dataKey="TOTAL_SQM" stroke="#fffcfc" fill="#5efa3f" label={{ position: "top", fill: 'black', formatter: formatCash, fontSize: '0.7rem', fontWeight: 'bold', color: 'black' }}/>
-       {/*  <Bar yAxisId='right-axis' stackId='a' dataKey="TOTAL_EA" stroke="#fffcfc" fill="#cbf70a" label={{ position: "top", fill: 'black', formatter: formatCash, fontSize: '0.7rem', fontWeight: 'bold', color: 'black' }}/> */}
-        <Line
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='TOTAL_DM_SQM'
-          stroke='#6a7eeb'
-          label={{ position: "top", fill: 'black', formatter: formatCash, fontSize: '0.7rem', fontWeight: 'bold', color: 'black' }}
-        />
+        <Bar yAxisId='left-axis' stackId='a' dataKey="FINAL_KPI" stroke="#fffcfc" fill="#75f023" label={{ position: "top", fill: 'black', formatter: labelFormatterPercent, fontSize: '0.7rem', fontWeight: 'bold', color: 'black' }}/>
+            
+      
         {/* <Line
           yAxisId='left-axis'
           type='monotone'
@@ -148,4 +137,4 @@ const SX_EQ_KPI_GRAPH2 = ({
     </CustomResponsiveContainer>
   );
 };
-export default SX_EQ_KPI_GRAPH2;
+export default IN_NHANH_KPI_GRAPH;

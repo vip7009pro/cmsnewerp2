@@ -67,6 +67,12 @@ export interface LOSS_TIME_DATA_THEO_NGUOI {
     FINAL_KPI: number;
 }
 
+export const columns_dinhmuc_code = [
+  { field: "G_CODE", headerName: "G_CODE", width: 60 },
+  { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
+  { field: "DM_SX", headerName: "DM_SX (EA/H)", width: 60 },
+  { field: "DM_KT", headerName: "DM_KT (EA/H)", width: 60 },
+  ];
 const KPI_NV_NEW2 = () => {
   const [df, setDf] = useState(true)
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -83,10 +89,31 @@ const KPI_NV_NEW2 = () => {
     { field: "SX_YEAR", headerName: "SX_YEAR", width: 100 },
     { field: "SX_MONTH", headerName: "SX_MONTH", width: 100 },
     { field: "SX_YM", headerName: "SX_YM", width: 100 },
+    { field: "TOTAL_RUN_TIME_SX", headerName: "TOTAL_RUN_TIME_SX", width: 100, cellRenderer: (params: any) => {
+     return (
+          <span style={{ color: "green", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})} min
+          </span>
+        );
+    }},
     { field: "TOTAL_EA", headerName: "TOTAL_EA", width: 100, cellRenderer: (params: any) => {
      return (
           <span style={{ color: "green", fontWeight: "normal" }}>
-            {params.value?.toLocaleString("en-US")} EA
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})} EA
+          </span>
+        );
+    }},
+    { field: "TOTAL_SQM", headerName: "TOTAL_SQM", width: 100, cellRenderer: (params: any) => {
+     return (
+          <span style={{ color: "green", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})} m²
+          </span>
+        );
+    }},
+    { field: "TOTAL_DM_SQM", headerName: "TOTAL_DM_SQM", width: 100, cellRenderer: (params: any) => {
+     return (
+          <span style={{ color: "green", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{minimumFractionDigits: 0,maximumFractionDigits: 0})} m²
           </span>
         );
     }},
@@ -241,15 +268,10 @@ const KPI_NV_NEW2 = () => {
     }   },
     
   ];
-  const columns_dinhmuc_code = [
-  { field: "G_CODE", headerName: "G_CODE", width: 60 },
-  { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
-  { field: "DM_SX", headerName: "DM_SX (EA/H)", width: 60 },
-  { field: "DM_KT", headerName: "DM_KT (EA/H)", width: 60 },
-  ];
+
   const columns_dinhmuc_machine = [
   { field: "EQ_NAME", headerName: "EQ_NAME", width: 60 },
-  { field: "DM_EA", headerName: "DM_EA (EA/H)", width: 60 },  
+  { field: "DM_EA", headerName: "DM_SQM (m²/H)", width: 60 },  
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(columns_loss_time_data_theo_may);

@@ -9,6 +9,7 @@ import { getCompany } from "../../../api/Api";
 import INSPECT_REPORT2 from "./INSPECT_REPORT2";
 import MyTabs from "../../../components/MyTab/MyTab";
 import LOSS_TIME_DATA from "./LOSS_TIME_DATA/LOSS_TIME_DATA";
+import INSPECTION_KPI_NV_NEW from "./INSPECTION_KPI_NV_NEW/INSPECTION_KPI_NV_NEW";
 
 const KIEMTRA = () => {
   useEffect(() => {}, []);
@@ -24,7 +25,7 @@ const KIEMTRA = () => {
           </MyTabs.Tab>
           {getCompany() === "PVN" && <MyTabs.Tab title={"Loss Time New"}>
             <div className="trainspection">
-              <LOSS_TIME_DATA />
+              <INSPECTION_KPI_NV_NEW />
             </div>
           </MyTabs.Tab>}
           <MyTabs.Tab title={"Báo cáo"}>

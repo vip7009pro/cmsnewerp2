@@ -17,6 +17,8 @@ import {
   DM_MACHINE,
   DM_VITRI_KIEMTRA,
   EQ_STT,
+  IN_NHANH_DATA,
+  IN_NHANH_KPI_DATA,
   KPI_MACHINE_DATA,
   LEADTIME_DATA,
   LICHSUINPUTLIEU_DATA,
@@ -6047,6 +6049,64 @@ export const f_loadDinhMucMachine = async () => {
 export const f_updateDMCodePS = async (DATA:any)=> {
   let kq: string = '';
   generalQuery("updateDMCodePS", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+      } else {
+        kq += "_" + response.data.message;
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+
+export const f_loadInNhanhData = async(DATA:any)=> {
+  let kq: IN_NHANH_DATA[] = [];
+  await generalQuery("loadINNHANHData", DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: IN_NHANH_DATA[] = response.data.data.map(
+          (element: IN_NHANH_DATA, index: number) => {
+            return {
+              ...element,
+              SX_DATE: moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+
+export const f_loadInNhanhKPI = async(DATA:any)=> {
+  let kq: IN_NHANH_KPI_DATA[] = [];
+  await generalQuery("loadInNhanhKPI",DATA)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {        
+        let loaded_data: IN_NHANH_KPI_DATA[] = response.data.data.map(
+          (element: IN_NHANH_KPI_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+            };
+          }
+        );
+        kq = loaded_data;
+      } else {
+        kq = [];
+      }
+    })
+    .catch((error) => {});
+  return kq;
+}
+
+export const f_updateInNhanhData = async (DATA:any)=> {
+  let kq: string = '';
+  generalQuery("updateINNhanhData", DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {        
       } else {

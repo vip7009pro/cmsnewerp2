@@ -1428,4 +1428,31 @@ export interface KPI_MACHINE_DATA {
   SX_MONTH:number;
   SX_YM:string;
   TOTAL_EA:number;
+  TOTAL_SQM: number;
+  TOTAL_DM_SQM: number;
+}
+
+export interface IN_NHANH_DATA {
+  CTR_CD: string;
+  SX_DATE: string;
+  EMPL_NO: string;
+  CONG_DOAN: string;
+  DON_VI: string;
+  KPI_MUC_TIEU: number;
+  SO_LUONG: number;
+  SO_GIO: number;
+  SOLUONG_MUCTIEU: number;
+  SOLUNG_THUCTE: number;
+  GHI_CHU: string;
+  TRU_DIEM: number;
+}
+
+export interface IN_NHANH_KPI_DATA {
+  EMPL_NO: string;
+  SOLUONG_MUCTIEU: number;
+  SOLUONG_THUCTE: number;
+  HIEU_SUAT: number;
+  TRU_DIEM: number;
+  DIEM_CON: number;
+  FINAL_KPI: number;
 }
