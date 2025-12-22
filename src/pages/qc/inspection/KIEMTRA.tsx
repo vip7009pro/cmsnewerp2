@@ -23,7 +23,7 @@ const KIEMTRA = () => {
               <INSPECTION />
             </div>
           </MyTabs.Tab>
-          {getCompany() === "PVN" && <MyTabs.Tab title={"Loss Time New"}>
+          {getCompany() === "PVN" && <MyTabs.Tab title={"NV KPI NEW2"}>
             <div className="trainspection">
               <INSPECTION_KPI_NV_NEW />
             </div>

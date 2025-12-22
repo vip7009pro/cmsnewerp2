@@ -68,7 +68,7 @@ const SX_EMPL_KPI_GRAPH2 = ({
        <ComposedChart
         width={500}
         height={300}
-        data={dldata.filter((item: LOSS_TIME_DATA_THEO_NGUOI) => item.DAILY_KPI > 0)}
+        data={dldata}
         margin={{
           top: 5,
           right: 30,
