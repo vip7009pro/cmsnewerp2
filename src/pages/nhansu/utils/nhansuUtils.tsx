@@ -2,6 +2,7 @@ import moment from "moment";
 import { generalQuery, getUserData } from "../../../api/Api";
 import { BANG_CONG_DATA, BANG_CONG_THANG_DATA, DiemDanhNhomData, EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
 import { WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
+import { weekdayarray } from "../../../api/GlobalFunction";
 
 export const f_getEmployeeList = async () => {
   let kq: EmployeeTableData[] = [];
@@ -425,6 +426,7 @@ export const f_loadBangCong = async (DATA: any) => {
         let loaded_data = response.data.data.map((e: any, index: number) => {
           return {
             ...e,
+            WEEKDAY: weekdayarray[new Date(e.APPLY_DATE).getDay()],
             INS_DATE:
               e.INS_DATE !== null
                 ? moment.utc(e.INS_DATE).format('YYYY-MM-DD')

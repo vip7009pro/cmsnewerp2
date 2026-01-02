@@ -50,6 +50,19 @@ const UploadCong = () => {
         width: 70,
       },
       {
+        field: 'WEEKDAY',
+        headerName: 'WEEKDAY',
+        width: 50,
+        cellRenderer: (params: any) => {
+          if(params.value === 'Sunday'){
+            return <span style={{color: 'red'}}>{params.value}</span>;
+          }else{
+            return <span style={{color: 'blue'}}>{params.value}</span>;
+          }
+          
+        }        
+      },
+      {
         field: "FULL_NAME",
         headerName: "FULL_NAME",
         width: 100,
