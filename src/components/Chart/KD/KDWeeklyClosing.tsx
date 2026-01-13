@@ -59,22 +59,22 @@ const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
         >
           <p>Tuần {label}:</p>
           <p className='label'>
-            QTY: {`${payload[0]?.value?.toLocaleString("en-US")}`} EA
+            QTY: {`${payload[1]?.value?.toLocaleString("en-US")}`} EA
           </p>
           <p className='label'>
             AMOUNT:{" "}
-            {`${payload[1]?.value?.toLocaleString("en-US", {
+            {`${payload[0]?.value?.toLocaleString("en-US", {
               style: "currency",
               currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
             })}`}
           </p>
            <p className='label'>
-                      KPI:{" "}
-                      {`${payload[2]?.value?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}`}
-                    </p>
+              KPI:{" "}
+              {`${payload[2]?.value?.toLocaleString("en-US", {
+                style: "currency",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              })}`}
+            </p>
         </div>
       );
     }
