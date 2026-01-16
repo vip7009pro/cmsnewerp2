@@ -155,8 +155,43 @@ function Home() {
   }, []);
   //useRenderLag(true, 2500);
   const isPVN = company === "PVN";
+  const didRestoreTabsRef = useRef(false);
   const pvnSidebarRef = useRef<HTMLDivElement | null>(null);
   const pvnToggleRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isPVN) return;
+    if (didRestoreTabsRef.current) return;
+    didRestoreTabsRef.current = true;
+
+    const saveTab: any = localStorage.getItem("tabs")?.toString();
+    if (saveTab !== undefined) {
+      let tempTab: any[] = [];
+      try {
+        tempTab = JSON.parse(saveTab);
+      } catch (e) {
+        tempTab = [];
+      }
+
+      for (let i = 0; i < tempTab.length; i++) {
+        dispatch(
+          addTab({
+            ELE_CODE: tempTab[i].MENU_CODE,
+            ELE_NAME: tempTab[i].MENU_NAME,
+            REACT_ELE: "",
+            PAGE_ID: tempTab[i].PAGE_ID ?? -1,
+          })
+        );
+      }
+      dispatch(settabIndex(0));
+      localStorage.setItem(
+        "tabs",
+        JSON.stringify(
+          tempTab.filter((ele: any) => ele.MENU_CODE !== "-1")
+        )
+      );
+    }
+  }, [dispatch, isPVN]);
 
   useEffect(() => {
     if (!isPVN) return;
