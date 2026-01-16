@@ -94,6 +94,7 @@ const KinhDoanhReport = () => {
   const [columnsweek, setColumnsWeek] = useState<Array<any>>([]);
   const [columnsmonth, setColumnsMonth] = useState<Array<any>>([]);
   const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
+  const [customerNewPOByWeek, setCustomerNewPOByWeek] = useState<Array<any>>([]);
   const [runningPOBalanceData, setRunningPOBalanceData] = useState< Array<RunningPOData> >([]);
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
     useState<WidgetData_POBalanceSummary>({
@@ -1263,6 +1264,34 @@ const KinhDoanhReport = () => {
     })
     return kq;    
   }, [df, fromdate, todate, in_nhanh]);
+  const loadCustomerPoOverWeek = useCallback(async () => {
+  let kq: WeekLyPOData[] = [];
+  await generalQuery("loadCustomerWeeklyPOQty", {
+    FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
+    TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
+    IN_NHANH: in_nhanh,
+  })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: any[] = response.data.data.map(
+          (element: any, index: number) => {
+            return {
+              ...element,
+            };
+          }
+        );
+        kq = loadeddata.reverse();
+        //setWeekLyPOData(loadeddata.reverse());
+        //console.log(loadeddata);
+      } else {
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return kq;
+}, [df, fromdate, todate, in_nhanh]);
   
 
   const initFunction = useCallback(async () => {
@@ -1299,6 +1328,7 @@ const KinhDoanhReport = () => {
         loadPOBalanceSummary(),
         loadPOBalanceDetail(),
         loadPOBalanceCustomerByYear(),
+        loadCustomerPoOverWeek(),
     ]).then((values) => {
       if (values.length > 0) {
         //danh sach khach hang
@@ -1713,6 +1743,12 @@ const KinhDoanhReport = () => {
           setPoBalanceCustomer(values[20]);
         } else {
           setPoBalanceCustomer([]);
+        }
+        //customer po over week
+        if (values[21].length > 0) {
+          setCustomerNewPOByWeek(values[21]);
+        } else {
+          setCustomerNewPOByWeek([]);
         }
       }
       Swal.close();
@@ -2138,6 +2174,15 @@ const KinhDoanhReport = () => {
                 >
                   <AiFillFileExcel color="green" size={15} />
                   Excel
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(customerNewPOByWeek, "WeeklyPO2");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  Excel2
                 </IconButton>
               </span>
               <ChartWeeklyPO data={runningPOData} />
