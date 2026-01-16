@@ -3,6 +3,11 @@
   flex-direction: column;
   width: 100%;
   margin-left: 0px;
+  &.home--pvn {
+    flex-direction: row;
+    height: 100vh;
+    overflow: hidden;
+  }
   
   @media only screen and (max-width: 5000px) {
     .homeContainer {
@@ -11,6 +16,14 @@
       flex-direction: row;
       width: 100%;
       height: fit-content;    
+      .sidebardiv {
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        position: sticky;
+        top: 30px;
+        z-index: 9;
+      }
       .outletdiv {
         display: flex;
         flex-direction: column;
@@ -39,6 +52,133 @@
         right: 2%;
         top: 90vh;
       }
+    }
+  }
+
+  .homeContainer.homeContainer--pvn {
+    flex: 1;
+    height: 100vh;
+    overflow: hidden;
+    .outletdiv {
+      height: 100vh;
+      overflow: auto;
+      position: relative;
+      z-index: 1;
+    }
+    .sidebardiv {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 220px;
+      z-index: 2000000;
+      background: rgba(255, 255, 255, 0.95);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+      transform: translateX(-105%);
+      transition: transform 0.2s ease-in-out;
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+    }
+    .pvnSidebarHeader {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 10px 6px 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      background: transparent;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .pvnSidebarLogo {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .pvnSidebarWebver {
+      font-size: 8pt;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pvnSidebarTools {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      select {
+        font-size: 0.75rem;
+        padding: 4px 6px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: transparent;
+      }
+    }
+    .pvnToolBtn {
+      font-size: 0.75rem;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: transparent;
+      color: #07598f;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: none;
+    }
+    .pvnToolBtn:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .pvnSidebarMenuScroll {
+      flex: 1;
+      overflow: visible;
+      padding-bottom: 12px;
+    }
+
+    .pvnSidebarMenuScrollInner {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: visible;
+    }
+
+    .pvnSidebarFooter {
+      padding: 10px;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      background: transparent;
+    }
+
+    .pvnSidebarToggle {
+      position: fixed;
+      top: 50vh;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 44px;
+      border-radius: 0 10px 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-left: none;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.12);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      z-index: 1000000;
+    }
+    .pvnSidebarToggle.pvnSidebarToggle--open {
+      left: 220px;
+    }
+    .pvnSidebarToggle.pvnSidebarToggle--closed {
+      left: 0;
+    }
+    .sidebardiv.sidebardiv--open {
+      transform: translateX(0);
+    }
+    .sidebardiv.sidebardiv--closed {
+      transform: translateX(-105%);
     }
   }
   @media only screen and (max-width: 768px) {

@@ -29,6 +29,7 @@ interface MENUDATA {
 }
 const NavMenu = () => {
   const [menuData, setMenuData] = useState<MENUDATA[]>([]);
+  const [openPVNMenus, setOpenPVNMenus] = useState<Record<string, boolean>>({});
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -70,19 +71,39 @@ const NavMenu = () => {
   }, []);
   const dispatch = useDispatch();
   const SidebarData: NAVMENUDATA[] = useMemo( () => getNavMenu(company, lang), [company, lang] );
+  const isPVN = company === "PVN";
 
   return (
-    <div className="navmenu">
+    <div className={`navmenu ${company === "PVN" ? "navmenu--vertical" : ""}`}>
       <nav>
         <ul>
           {SidebarData.map((sidebar_element: any, index: number) => {
+            const hasSub = (sidebar_element.subNav?.length ?? 0) > 0;
+            const menuKey: string = `${sidebar_element.path ?? ""}__${sidebar_element.title ?? ""}__${index}`;
+            const isOpen = !!openPVNMenus[menuKey];
             return (
               <li key={index}>
-                <Link to={sidebar_element.path} key={index}>
-                  {sidebar_element.icon}
-                  {sidebar_element.title}
-                </Link>
-                <ul className="submenu">
+                {isPVN && hasSub ? (
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenPVNMenus((prev) => ({
+                        ...prev,
+                        [menuKey]: !prev[menuKey],
+                      }));
+                    }}
+                  >
+                    {sidebar_element.icon}
+                    {sidebar_element.title}
+                  </a>
+                ) : (
+                  <Link to={sidebar_element.path} key={index}>
+                    {sidebar_element.icon}
+                    {sidebar_element.title}
+                  </Link>
+                )}
+                <ul className={`submenu ${isPVN && hasSub && isOpen ? "submenu--open" : ""}`}>
                   {sidebar_element.subNav?.map(
                     (subnav_element: any, index: number) => {
                       return (

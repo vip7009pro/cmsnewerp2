@@ -35,7 +35,7 @@
     nav ul li ul.submenu {
       display: none;
       position: absolute;     
-background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(236, 241, 234) 0%, rgba(208, 248, 244, 0.785) 61%, rgb(169, 240, 247) 100%);
+      background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(236, 241, 234) 0%, rgba(208, 248, 244, 0.785) 61%, rgb(169, 240, 247) 100%);
       /* background: linear-gradient(to bottom, #abebf0, #66ccff); */
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -66,6 +66,39 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(236, 241, 234) 0%, rgb
     nav ul li ul.submenu li a:hover {
       background: linear-gradient(to bottom, #a6ebf0, #99ccff);
       color: #333;
+    }
+  }
+
+  .navmenu.navmenu--vertical {
+    flex-direction: column;
+    nav ul {
+      text-align: left;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      white-space: normal;
+    }
+    nav ul li {
+      display: block;
+      position: relative;
+      width: 100%;
+    }
+    nav ul li a {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    nav ul li ul.submenu {
+      display: none;
+      position: static;
+      min-width: unset;
+      width: 100%;
+    }
+    nav ul li ul.submenu.submenu--open {
+      display: flex;
+      flex-direction: column;
+    }
+    nav ul li ul.submenu li a {
+      padding-left: 18px;
     }
   }
 }
@@ -138,6 +171,27 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(236, 241, 234) 0%, rgb
       justify-content: center;
       background: linear-gradient(to bottom, #66ccff, #99ccff);
       color: #333;
+    }
+  }
+
+  .navmenu.navmenu--vertical {
+    nav ul li ul.submenu {
+      display: none;
+      position: static;
+      min-width: unset;
+      left: unset;
+      top: unset;
+      width: 100%;
+    }
+    nav ul li:hover ul.submenu {
+      display: none;
+    }
+    nav ul li ul.submenu.submenu--open {
+      display: flex;
+      flex-direction: column;
+    }
+    nav ul li ul.submenu li a {
+      padding-left: 18px;
     }
   }
 }

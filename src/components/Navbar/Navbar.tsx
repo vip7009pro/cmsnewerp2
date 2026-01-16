@@ -668,17 +668,23 @@ export default function Navbar() {
             }}
             size={15}
           />
-          {sidebarStatus && ((getUserData()?.EMPL_NO === "NHU1903" && company === "CMS") ? <NavMenuNew/> : <NavMenu/>)}
+          {sidebarStatus &&
+            company !== "PVN" &&
+            ((getUserData()?.EMPL_NO === "NHU1903" && company === "CMS") ? (
+              <NavMenuNew />
+            ) : (
+              <NavMenu />
+            ))}
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>
-            <Link to="/" className="menulink">             
-                <img
-                  alt="companylogo"
-                  src="/companylogo.png"
-                  width={cpnInfo[company].logoWidth}
-                  height={cpnInfo[company].logoHeight}
-                /> 
+            <Link to="/" className="menulink">
+              <img
+                alt="companylogo"
+                src="/companylogo.png"
+                width={cpnInfo[company].logoWidth}
+                height={cpnInfo[company].logoHeight}
+              />
             </Link>
           </div>
           <div className="webver" style={{ fontSize: "8pt" }}>
