@@ -216,7 +216,8 @@ export async function uploadQuery(
   file: any,
   filename: string,
   uploadfoldername: string,
-  filenamelist?: string[]
+  filenamelist?: string[],
+  onUploadProgress?: (progressEvent: any) => void
 ) {
   const formData = new FormData();
   formData.append("uploadedfile", file);
@@ -229,6 +230,8 @@ export async function uploadQuery(
   //console.log("filenamelist", filenamelist);
   //console.log("formData", formData);
   //console.log("token_vendors", cookies.get("token_vendors"));
-  let data = await axios.post(UPLOAD_URL, formData);
+  let data = await axios.post(UPLOAD_URL, formData, {
+    onUploadProgress,
+  });
   return data;
 }

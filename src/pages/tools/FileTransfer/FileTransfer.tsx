@@ -8,8 +8,13 @@ import { DownloadButton } from '../../../components/DownloadButton/DownloadButto
 import './FileTransfer.scss';
 
 interface FileProgress {
+  id: string;
   file: File;
   progress: number;
+  uploadedBytes: number;
+  totalBytes: number;
+  status: 'pending' | 'uploading' | 'done' | 'error';
+  error?: string;
 }
 
 const FileTransfer = () => {
@@ -19,10 +24,36 @@ const FileTransfer = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [overallprogress, setOverallProgress] = useState(0);
 
+  const getFileIcon = (fileName: string) => {
+    const fileExt = String(fileName || '').split('.').pop()?.toLowerCase() || '';
+    if (['doc', 'docx', 'txt', 'rtf'].includes(fileExt)) return <FaFileWord color='green' size={16} />;
+    if (['pdf'].includes(fileExt)) return <FaFilePdf color='red' size={16} />;
+    if (['xls', 'xlsx'].includes(fileExt)) return <FaFileExcel color='green' size={16} />;
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(fileExt)) return <FaFileImage color='skyblue' size={16} />;
+    if (['zip', 'rar', '7z'].includes(fileExt)) return <FaFileZipper color='orange' size={16} />;
+    return <FaFile color='gray' size={16} />;
+  };
+
+  const toKB = (bytes: number) => (bytes / 1024).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  const makeUploadItems = (files: FileList | File[]) => {
+    const arr = Array.isArray(files) ? files : Array.from(files);
+    return arr.map((file, index) => {
+      const id = `${file.name}__${file.size}__${file.lastModified}__${index}`;
+      return {
+        id,
+        file,
+        progress: 0,
+        uploadedBytes: 0,
+        totalBytes: file.size,
+        status: 'pending' as const,
+      };
+    });
+  };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
-    setUploadedFiles(Array.from(files).map(file => ({ file, progress: 0 })));
+    setUploadedFiles(makeUploadItems(files));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -32,7 +63,7 @@ const FileTransfer = () => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setUploadedFiles(Array.from(files).map(file => ({ file, progress: 0 })));
+      setUploadedFiles(makeUploadItems(files));
     }
   };
 
@@ -58,17 +89,69 @@ const FileTransfer = () => {
   const handleUpload = async () => {
     setOverallProgress(0);
     if (uploadedFiles.length > 0) {
+      let completedCount = 0;
       for (let i = 0; i < uploadedFiles.length; i++) {
-        const file = uploadedFiles[i];
+        const item = uploadedFiles[i];
         try {
-          await uploadQuery(file.file, getCtrCd() + '_' + file.file.name, 'globalfiles');
-          await handleUpdateFileNameToDataBase(file.file.name, file.file.size);
-          file.progress = 100;
-          console.log(`File ${file.file.name} uploaded successfully`);
+          setUploadedFiles((prev) =>
+            prev.map((f) =>
+              f.id === item.id
+                ? { ...f, status: 'uploading', progress: 0, uploadedBytes: 0, totalBytes: f.file.size }
+                : f
+            )
+          );
+          await uploadQuery(
+            item.file,
+            getCtrCd() + '_' + item.file.name,
+            'globalfiles',
+            undefined,
+            (progressEvent: any) => {
+              const loaded: number = progressEvent?.loaded ?? 0;
+              const total: number = progressEvent?.total ?? item.file.size;
+              const percent = total > 0 ? Math.min(100, Math.round((loaded / total) * 100)) : 0;
+              setUploadedFiles((prev) =>
+                prev.map((f) =>
+                  f.id === item.id
+                    ? {
+                        ...f,
+                        uploadedBytes: loaded,
+                        totalBytes: total,
+                        progress: percent,
+                        status: 'uploading',
+                      }
+                    : f
+                )
+              );
+            }
+          );
+          await handleUpdateFileNameToDataBase(item.file.name, item.file.size);
+          setUploadedFiles((prev) =>
+            prev.map((f) =>
+              f.id === item.id
+                ? {
+                    ...f,
+                    progress: 100,
+                    uploadedBytes: f.totalBytes,
+                    status: 'done',
+                  }
+                : f
+            )
+          );
+          completedCount++;
         } catch (error) {
-          console.error(`Error uploading file ${file.file.name}:`, error);
+          setUploadedFiles((prev) =>
+            prev.map((f) =>
+              f.id === item.id
+                ? {
+                    ...f,
+                    status: 'error',
+                    error: String(error),
+                  }
+                : f
+            )
+          );
         }
-        setOverallProgress((prevProgress) => prevProgress + (100 / uploadedFiles.length));
+        setOverallProgress(uploadedFiles.length > 0 ? (completedCount / uploadedFiles.length) * 100 : 0);
       }
       Swal.fire({
         title: 'Success',
@@ -92,109 +175,186 @@ const FileTransfer = () => {
   }, []);
 
   return (
-    <div className="file-transfer-container">
-      <div className="upload-section">
-        <div className="file-upload-header">
-          <div className="drag-drop-area" onDrop={handleDrop} onDragOver={handleDragOver}>
-            Drag and drop files here
+    <div className="fileTransfer">
+      <div className="fileTransfer__panel">
+        <div className="fileTransfer__header">
+          <div>
+            <div className="fileTransfer__title">Upload Queue</div>
+            <div className="fileTransfer__subtitle">Drag & drop files or select from your computer</div>
           </div>
-          <input
-            type="file"
-            multiple
-            onChange={handleFileSelect}
-            ref={fileInputRef}
-          />
-          <div className="button-group">
-            <button onClick={() => {
-              setOverallProgress(0);
-              setUploadedFiles([]);
-              fileInputRef.current?.click();
-            }}>
-              Select File
+          <div className="fileTransfer__toolbar">
+            <input
+              type="file"
+              multiple
+              onChange={handleFileSelect}
+              ref={fileInputRef}
+            />
+            <button
+              className="ftBtn ftBtn--primary"
+              onClick={() => {
+                setOverallProgress(0);
+                setUploadedFiles([]);
+                fileInputRef.current?.click();
+              }}
+            >
+              Select Files
             </button>
-            <button onClick={() => {
-              setOverallProgress(0);
-              setUploadedFiles([]);
-            }}>
+            <button
+              className="ftBtn"
+              onClick={() => {
+                setOverallProgress(0);
+                setUploadedFiles([]);
+              }}
+            >
               Clear
             </button>
-            <button onClick={handleUpload}>
+            <button className="ftBtn ftBtn--success" onClick={handleUpload}>
               Upload
             </button>
           </div>
         </div>
-        <div className="overall-progress">
-          <h3>Overall Progress</h3>
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${overallprogress}%` }} />
-          </div>
-          <div className="progress-text">{`${overallprogress.toFixed(0)}%`}</div>
+
+        <div className="fileTransfer__dropzone" onDrop={handleDrop} onDragOver={handleDragOver} onClick={() => fileInputRef.current?.click()}>
+          <div className="fileTransfer__dropzoneTitle">Drop files here</div>
+          <div className="fileTransfer__dropzoneHint">or click to browse</div>
         </div>
-        <div className="file-list">
-          {uploadedFiles.map((file, index) => (
-            <div key={index} className="file-item">
-              <span>{index + 1}. {file.file.name} - {(file.file.size / 1024).toFixed(2)} kB</span>
-              <div className="file-actions">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${file.progress || 0}%` }} />
-                  {file.progress} %
+
+        <div className="fileTransfer__overall">
+          <div className="fileTransfer__overallRow">
+            <div className="fileTransfer__overallLabel">Overall (completed files / total)</div>
+            <div className="fileTransfer__overallValue">{uploadedFiles.filter((f) => f.status === 'done').length}/{uploadedFiles.length}</div>
+          </div>
+          <div className="ftProgress">
+            <div className="ftProgress__fill" style={{ width: `${overallprogress}%` }} />
+          </div>
+          <div className="fileTransfer__overallPercent">{overallprogress.toFixed(0)}%</div>
+        </div>
+
+        <div className="fileTransfer__tableWrap">
+          <div className="fileTransfer__table">
+            <div className="fileTransfer__thead">
+              <div>Name</div>
+              <div>Size</div>
+              <div>Status</div>
+              <div>Progress</div>
+              <div>Actions</div>
+            </div>
+            {uploadedFiles.length === 0 && (
+              <div className="fileTransfer__empty">No files selected</div>
+            )}
+            {uploadedFiles.map((item, index) => (
+              <div key={item.id} className="fileTransfer__row">
+                <div className="fileTransfer__name">
+                  <div className="fileTransfer__nameMain">{index + 1}. {item.file.name}</div>
+                  <div className="fileTransfer__nameSub">{toKB(item.uploadedBytes)} / {toKB(item.totalBytes)} kB</div>
                 </div>
-                <div className="button-group">
-                  <button onClick={() => window.open(`/globalfiles/${getCtrCd()}_${file.file.name}`, '_blank')}>
+                <div>{toKB(item.file.size)} kB</div>
+                <div className={`fileTransfer__status fileTransfer__status--${item.status}`}>{item.status}</div>
+                <div>
+                  <div className="ftProgress ftProgress--sm">
+                    <div className="ftProgress__fill" style={{ width: `${item.progress || 0}%` }} />
+                  </div>
+                  <div className="fileTransfer__percent">{item.progress || 0}%</div>
+                </div>
+                <div className="fileTransfer__actions">
+                  <button
+                    className="ftBtn ftBtn--ghost"
+                    onClick={() => window.open(`/globalfiles/${getCtrCd()}_${item.file.name}`, '_blank')}
+                    disabled={item.status !== 'done'}
+                  >
                     Download
                   </button>
-                  <button onClick={() => handleDeleteFromDatabase(file.file.name)}>
+                  <button
+                    className="ftBtn ftBtn--danger"
+                    onClick={() => handleDeleteFromDatabase(item.file.name)}
+                    disabled={item.status !== 'done'}
+                  >
                     Delete
                   </button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-      <div className="database-files-section">
-        <h3>
-          Files on Server (Total: {fileList.length})
-          <button onClick={handleGetFileListFromDataBase}>Refresh</button>
-        </h3>
-        <div className="file-list">
+
+      <div className="fileTransfer__panel">
+        <div className="fileTransfer__header">
+          <div>
+            <div className="fileTransfer__title">Files on Server</div>
+            <div className="fileTransfer__subtitle">Total: {fileList.length}</div>
+          </div>
+          <div className="fileTransfer__toolbar">
+            <button className="ftBtn" onClick={handleGetFileListFromDataBase}>Refresh</button>
+          </div>
+        </div>
+
+        <div className="fileTransfer__serverList">
           {fileList.map((file, index) => (
-            <div key={index} className="file-item">
-              <div className="file-info">
+            <div key={index} className="fileTransfer__serverRow">
+              <div className="fileTransfer__serverMeta">
                 <div className="avatar">
-                  <img src={`/Picture_NS/NS_${file.INS_EMPL}.jpg`} alt={file.INS_EMPL} onError={(e) => { e.currentTarget.src = '/noimage.webp' }} />
+                  <img
+                    src={`/Picture_NS/NS_${file.INS_EMPL}.jpg`}
+                    alt={file.INS_EMPL}
+                    onError={(e) => {
+                      e.currentTarget.src = '/noimage.webp';
+                    }}
+                  />
                 </div>
-                {(() => {
-                  const fileExt = file.FILE_NAME.split('.').pop().toLowerCase();
-                  if (['doc', 'docx', 'txt', 'rtf'].includes(fileExt)) return <FaFileWord color='green' size={20} />;
-                  if (['pdf'].includes(fileExt)) return <FaFilePdf color='red' size={20} />;
-                  if (['xls', 'xlsx'].includes(fileExt)) return <FaFileExcel color='green' size={20} />;
-                  if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExt)) return <FaFileImage color='skyblue' size={20} />;
-                  if (['zip', 'rar', '7z'].includes(fileExt)) return <FaFileZipper color='orange' size={20} />;
-                  return <FaFile color='gray' size={20} />;
-                })()}
-                <span>
-                  {index + 1}. {moment.utc(file.INS_DATE).format('DD/MM/YYYY HH:mm:ss')} {file.INS_EMPL} - 
-                  <p>{file.FILE_NAME}</p> - {(file.FILE_SIZE / 1024).toLocaleString('en-US', { maximumFractionDigits: 2 })} kB
-                </span>
+                <div className="fileTransfer__serverText">
+                  <span className="fileTransfer__serverIndex">{index + 1}.</span>
+                  <span className="fileTransfer__serverIcon">{getFileIcon(file.FILE_NAME)}</span>
+                  <span className="fileTransfer__serverDate">
+                    {moment.utc(file.INS_DATE).format('DD/MM/YYYY HH:mm:ss')}
+                  </span>
+                  <span className="fileTransfer__serverEmpl">{file.INS_EMPL}</span>
+                  <span className="fileTransfer__serverName">{file.FILE_NAME}</span>
+                  <span className="fileTransfer__serverSize">
+                    ({toKB(Number(file.FILE_SIZE || 0))} kB)
+                  </span>
+                </div>
               </div>
-              <DownloadButton filename={file.FILE_NAME} />
-              <button
-                onClick={() => {
-                  const fullUrl = `${protocol}://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;
-                  //console.log('fullUrl', fullUrl);      
-                  const fileUrl = encodeURI(fullUrl);
-                  if (navigator.clipboard) {
-                    navigator.clipboard.writeText(fileUrl)
-                      .then(() => {
+              <div className="fileTransfer__serverActions">
+                <DownloadButton filename={file.FILE_NAME} />
+
+                <button
+                  onClick={() => {
+                    const fullUrl = `${protocol}://${window.location.host}/globalfiles/${getCtrCd()}_${file.FILE_NAME}`;
+                    const fileUrl = encodeURI(fullUrl);
+                    if (navigator.clipboard) {
+                      navigator.clipboard.writeText(fileUrl)
+                        .then(() => {
+                          Swal.fire({
+                            title: 'Success',
+                            text: 'Link copied to clipboard',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                          });
+                        })
+                        .catch(err => {
+                          console.error('Failed to copy: ', err);
+                          Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to copy link to clipboard',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                          });
+                        });
+                    } else {
+                      const textArea = document.createElement("textarea");
+                      textArea.value = fileUrl;
+                      document.body.appendChild(textArea);
+                      textArea.select();
+                      try {
+                        document.execCommand('copy');
                         Swal.fire({
                           title: 'Success',
                           text: 'Link copied to clipboard',
                           icon: 'success',
                           confirmButtonText: 'OK'
                         });
-                      })
-                      .catch(err => {
+                      } catch (err) {
                         console.error('Failed to copy: ', err);
                         Swal.fire({
                           title: 'Error',
@@ -202,48 +362,18 @@ const FileTransfer = () => {
                           icon: 'error',
                           confirmButtonText: 'OK'
                         });
-                      });
-                  } else {
-                    // Fallback for browsers that don't support clipboard API
-                    const textArea = document.createElement("textarea");
-                    textArea.value = fileUrl;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                      document.execCommand('copy');
-                      Swal.fire({
-                        title: 'Success',
-                        text: 'Link copied to clipboard',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                      });
-                    } catch (err) {
-                      console.error('Failed to copy: ', err);
-                      Swal.fire({
-                        title: 'Error',
-                        text: 'Failed to copy link to clipboard',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                      });
+                      }
+                      document.body.removeChild(textArea);
                     }
-                    document.body.removeChild(textArea);
-                  }
-                }}
-                style={{
-                  padding: '5px 10px',
-                  backgroundColor: '#2196F3',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  marginRight: '5px'
-                }}
-              >
-                Copy Link
-              </button>
-              <button onClick={() => handleDeleteFromDatabase(file.FILE_NAME)}>
-                Delete
-              </button>
+                  }}
+                  className="ftBtn ftBtn--primary"
+                >
+                  Copy Link
+                </button>
+                <button className="ftBtn ftBtn--danger" onClick={() => handleDeleteFromDatabase(file.FILE_NAME)}>
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
