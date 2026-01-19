@@ -26,12 +26,68 @@ interface ELE_ARRAY {
   ELE_CODE: string;
   PAGE_ID?: number;
 }
-export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
-  // Tùy chỉnh kiểu cho tab tại đây
-  color: "gray", // Ví dụ: đặt màu chữ là màu xanh
-  fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
-  // Thêm các kiểu tùy chỉnh khác tại đây...
+
+export const CustomTab = styled((props: TabProps) => <Tab disableRipple {...props} />)(
+  {
+    minHeight: 28,
+    padding: 0,
+    textTransform: "none",
+    color: "rgba(0,0,0,0.65)",
+    fontWeight: 500,
+    minWidth: 0,
+  }
+);
+
+const CustomTabs = styled(Tabs)({
+  minHeight: 28,
+  padding: "0 2px",
+  borderRadius: 8,
+  '& .MuiTabs-flexContainer': {
+    gap: 4,
+  },
+  '& .MuiTabs-indicator': {
+    height: 2,
+    borderRadius: 2,
+  },
+  '& .MuiTabs-scrollButtons': {
+    opacity: 0.85,
+    '&.Mui-disabled': {
+      opacity: 0.25,
+    },
+  },
 });
+
+const CustomTabLabel = styled(Typography)({
+  fontWeight: 500,
+  fontSize: "0.7rem",
+  display: "flex",
+  whiteSpace: "nowrap",
+  alignItems: "center",
+});
+
+const TabLabelRoot = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
+  height: 24,
+  padding: "0 8px",
+  borderRadius: 999,
+  cursor: "pointer",
+  userSelect: "none",
+  transition: "background-color 120ms ease, box-shadow 120ms ease",
+});
+
+const TabTitle = styled("span")({
+  display: "inline-flex",
+  alignItems: "center",
+  lineHeight: 1,
+});
+
+const CloseIconButton = styled(IconButton)({
+  padding: 1,
+  marginLeft: 0,
+});
+
 function Home() {
   const cookies = new Cookies();
   const { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData } =
@@ -62,10 +118,6 @@ function Home() {
         console.log(error);
       });
   }, []);
-  const CustomTabLabel = styled(Typography)({
-    fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
-    // Thêm các kiểu tùy chỉnh khác tại đây...
-  });
   const getchamcong = useCallback(() => {
     generalQuery("checkMYCHAMCONG", {})
       .then((response) => {
@@ -372,7 +424,7 @@ function Home() {
                   ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
               ).length > 0 && (
                 <div className="tabsdiv">
-                  <Tabs
+                  <CustomTabs
                     value={tabIndex}
                     onChange={(
                       event: React.SyntheticEvent,
@@ -392,11 +444,8 @@ function Home() {
                           : theme.PVN.backgroundImage
                       }`,
                       border: "none",
-                      minHeight: "2px",
                       boxSizing: "border-box",
-                      borderRadius: "2px",
-                      overflow: "scroll",
-                      height: "fit-content",
+                      overflow: "hidden",
                     }}
                   >
                     {tabs.map((ele: ELE_ARRAY, index: number) => {
@@ -406,65 +455,46 @@ function Home() {
                             <CustomTab
                               key={index}
                               label={
-                                <div
-                                  className="tabdiv"
-                                  style={{                                    
-                                    display: "flex",
-                                    fontSize: "0.8rem",
-                                    justifyContent: "center",
-                                    alignContent: "center",
-                                    padding: '5px 5px 5px 5px',
-                                    color: "black",
-                                    borderRadius: "25px",
-                                    margin: "2px",
-                                    cursor: "pointer",
-                                    backgroundColor: tabIndex === index ? "#1976d23e" : "transparent",                                    
-                                  }}
-                                 
+                                <TabLabelRoot
+                                  className={
+                                    tabIndex === index
+                                      ? "erpTabLabel erpTabLabel--active"
+                                      : "erpTabLabel"
+                                  }
                                 >
-                                  <CustomTabLabel
-                                    style={{
-                                      fontSize: "0.7rem",
-                                      display: "flex",
-                                      whiteSpace: "nowrap",
-                                      alignItems: "center",
-                                    }}
-                                    
-                                  >
-                                    <span style={{ marginRight: "5px" }} onClick={() => {
-                                      dispatch(settabIndex(index));
-                                    }}>
-                                      {index + 1}.{ele.ELE_NAME}
-                                    </span>
-                                    <IconButton
-                                      key={index + "A"}
-                                      onClick={() => {
-                                        dispatch(closeTab(index));
+                                  <CustomTabLabel>
+                                    <TabTitle
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        dispatch(settabIndex(index));
                                       }}
                                     >
-                                      <AiOutlineCloseCircle
-                                        color={
-                                          tabIndex === index ? `blue` : `gray`
-                                        }
-                                        size={15}
-                                      />
-                                    </IconButton>
+                                      {index + 1}.{ele.ELE_NAME}
+                                    </TabTitle>
                                   </CustomTabLabel>
-                                </div>
+                                  <CloseIconButton
+                                    key={index + "A"}
+                                    className="erpTabClose"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      dispatch(closeTab(index));
+                                    }}
+                                  >
+                                    <AiOutlineCloseCircle
+                                      color={tabIndex === index ? `#0b5ed7` : `rgba(0,0,0,0.45)`}
+                                      size={12}
+                                    />
+                                  </CloseIconButton>
+                                </TabLabelRoot>
                               }
                               value={index}
-                              style={{
-                                minHeight: "2px",
-                                height: "5px",
-                                boxSizing: "border-box",
-                                borderRadius: "3px",
-                              }}
+                              className={tabIndex === index ? "erpTab erpTab--active" : "erpTab"}
                             ></CustomTab>
                           </div>
                         );
                       }
                     })}
-                  </Tabs>
+                  </CustomTabs>
                 </div>
               )}
             {tabModeSwap &&
