@@ -1,0 +1,344 @@
+.buttonIcon {
+  font-size: 13px !important;
+  color: rgb(59, 45, 182) !important;
+}
+
+@media only screen and (max-width: 5000px) {
+  .newpo {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;    
+    gap: 5px;
+
+    .batchnewpo {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 100%;
+      max-width: 1400px;
+      box-sizing: border-box;
+      align-items: center;
+      justify-items: center;
+
+      h3 {
+        width: 100%;
+        margin: 0;
+        padding: 5px 0px;
+       
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        font-size: 14px;
+        font-weight: 800;
+        color: rgba(0, 0, 0, 0.78);
+      }
+
+      &.batchnewpo--full {
+        width: 100%;
+        max-width: none;
+        align-items: stretch;
+      }
+
+      .newpoHeader {
+        width: 100%;
+
+        h3 {
+          text-align: center;
+          background: var(--poadd-header-bg, rgba(255, 255, 255, 0.72));
+        }
+      }
+
+      .formupload {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        padding-top: 5px;
+        padding-bottom: 5px;    
+        background: rgba(163, 216, 16, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+
+        &.formupload--full {
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: nowrap;
+        }
+
+        .uploadLeft {
+          display: flex;
+          flex: 1;
+          min-width: 260px;
+        }
+
+        .poAddActionBtn {
+          min-width: 80px;
+          min-height: 15px;       
+        }
+      }
+
+      .selectfilebutton {
+        width: 100%;
+        font-size: 12px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .insertPOTable {
+        display: flex;
+        box-sizing: border-box;
+        height: calc(100vh - 210px);
+        width: 100%;            
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+
+        &.insertPOTable--full {
+          width: 100%;
+          height: calc(100vh - 210px);
+        }
+
+        .datatb {
+          justify-items: center;
+          width: 99%;
+          height: 100%;
+          padding: 5px;
+
+          .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            background-color: orange;
+            color: unset;
+          }
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+            font-size: 0.7rem;
+          }
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-weight: bold;
+            font-size: 0.7rem;
+          }
+          .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+          .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
+        }
+      }
+    }
+  }
+
+  .pivottable1 {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    position: absolute;
+    top: 1vh;
+    left: 1%;
+    width: 95%;
+    height: 85vh;
+    overflow: scroll;
+    padding: 10px;
+
+    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+    z-index: 100;
+
+    * {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .newpo {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+
+    .batchnewpo {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-sizing: border-box;
+
+      &.batchnewpo--full {
+        width: 100%;
+        max-width: none;
+        align-items: stretch;
+      }
+
+      h3 {
+        width: 100%;
+        margin: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: var(--poadd-header-bg, rgba(255, 255, 255, 0.72));
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        font-size: 13px;
+        font-weight: 800;
+        color: rgba(0, 0, 0, 0.78);
+        text-align: center;
+      }
+
+      .formupload {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+        justify-content: center;
+
+        &.formupload--full {
+          justify-content: stretch;
+          flex-wrap: wrap;
+        }
+
+        .uploadLeft {
+          width: 100%;
+        }
+
+        .poAddActionBtn {
+          width: 100%;
+          min-height: 34px;
+        }
+      }
+
+      .selectfilebutton {
+        width: 100%;
+        font-size: 12px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .insertPOTable {
+        display: flex;
+        width: 100%;
+        height: calc(100vh - 210px);
+        margin-top: 10px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+
+        &.insertPOTable--full {
+          width: 100%;
+          height: calc(100vh - 260px);
+        }
+
+        .datatb {
+          justify-items: center;
+          width: 99%;
+          height: 100%;
+          padding: 5px;
+
+          .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            background-color: orange;
+            color: unset;
+          }
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+            font-size: 0.7rem;
+          }
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-weight: bold;
+            font-size: 0.7rem;
+          }
+          .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+          .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 320px) {
+}

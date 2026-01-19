@@ -7,7 +7,7 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import getsentence from "../../String/String";
-import { Button, IconButton } from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Chip, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, Stack, TextField } from "@mui/material";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,6 +56,8 @@ export default function AccountInfo() {
   const dispatch = useDispatch();
   const [logoutID, setLogOutID] = useState("");
   const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>();
+  const [showAdminTools, setShowAdminTools] = useState(false);
+  const [openChangePw, setOpenChangePw] = useState(false);
   const lang: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.lang
   );
@@ -265,337 +267,447 @@ export default function AccountInfo() {
       return "2021-12-16";
     }
   };
+  const isAdmin = userdata?.EMPL_NO === "NHU1903";
+  const cardBg = `${company === "CMS" ? theme.CMS.backgroundImage : theme.PVN.backgroundImage}`;
   return (
     <div
       className='accountinfo'
       style={{
-        backgroundImage: `${company === "CMS"
-          ? theme.CMS.backgroundImage
-          : theme.PVN.backgroundImage
-          }`,
+        backgroundImage: cardBg,
+        ...( { ["--ai-card-bg" as any]: cardBg } as any ),
       }}
     >
-      <h1 className='text-3xl'>
-        {/* Thông tin của bạn */}
-        {getsentence(17, lang ?? "en")}
-      </h1>
-      <div className='panelhome'>
-        <div className={`cot0 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
-          {userdata?.EMPL_IMAGE === "Y" && (
-            <img
-              width={240}
-              height={340}
-              src={"/Picture_NS/NS_" + userdata?.EMPL_NO + ".jpg"}
-              alt={userdata?.EMPL_NO}
-            ></img>
-          )}
+      <div className="aiContainer">
+        <div className="aiTitleRow">
+          <h1 className='text-3xl'>
+            {/* Thông tin của bạn */}
+            {getsentence(17, lang ?? "en")}
+          </h1>
+          <div className="aiTitleChips">
+            <Chip size="small" label={userdata?.EMPL_NO ?? ""} />
+            <Chip size="small" variant="outlined" label={userdata?.JOB_NAME ?? ""} />
+          </div>
         </div>
-        <div className={`cot1 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
-          <h5 className='text-3xl'>
-            {/* Thông tin nhân viên */}
-            {getsentence(18, lang ?? "en")}:
-          </h5>
-          <ul>
-            <div className='diemdanhinfo'>
-              <div className='chamcongtitle'>
-                Check in-out: {moment().format("YYYY-MM-DD")}
-              </div>
-              <div className='chamconginfo'>
-                <div
-                  className='chamcongmin'
-                  style={{
-                    backgroundImage: `${company === "CMS"
-                      ? theme.CMS.backgroundImage
-                      : theme.PVN.backgroundImage
-                      }`,
-                  }}
-                >
-                  {mychamcong?.MIN_TIME !== null
-                    ? mychamcong?.MIN_TIME
-                    : "Chưa chấm"}
+
+        <Card className="aiCard aiHeaderCard">
+          <CardContent>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} md={3}>
+                <div className="aiAvatarBlock">
+                  <div className="aiAvatarFrame">
+                    {userdata?.EMPL_IMAGE === "Y" ? (
+                      <img
+                        className="aiAvatar"
+                        src={"/Picture_NS/NS_" + userdata?.EMPL_NO + ".jpg"}
+                        alt={userdata?.EMPL_NO}
+                      ></img>
+                    ) : (
+                      <div className="aiAvatarFallback">
+                        {(userdata?.FIRST_NAME ?? "?").slice(0, 1)}
+                      </div>
+                    )}
+                  </div>
+                  {userdata?.EMPL_IMAGE !== "Y" && (
+                    <div className="aiAvatarUpload">
+                      <input
+                        id="aiAvatarInput"
+                        accept='.jpg'
+                        type='file'
+                        onChange={(e: any) => {
+                          setFile(e.target.files[0]);
+                          console.log(e.target.files[0]);
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={uploadFile2}
+                        startIcon={<AiOutlineCloudUpload size={16} />}
+                      >
+                        Upload
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <div
-                  className='chamcongmax'
-                  style={{
-                    backgroundImage: `${company === "CMS"
-                      ? theme.CMS.backgroundImage
-                      : theme.PVN.backgroundImage
-                      }`,
-                  }}
-                >
-                  {mychamcong?.MAX_TIME !== null
-                    ? mychamcong?.MAX_TIME
-                    : "Chưa chấm"}
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Stack spacing={0.75}>
+                  <div className="aiName">
+                    {/*  Họ và tên */}
+                    {userdata?.MIDLAST_NAME} {userdata?.FIRST_NAME}
+                  </div>
+                  <div className="aiSub">
+                    {/* Bộ phận chính */}
+                    {userdata?.MAINDEPTNAME}
+                  </div>
+                  <div className="aiSub">
+                    {/* Bộ phận phụ */}
+                    {userdata?.SUBDEPTNAME}
+                  </div>
+                  <div className="aiMetaRow">
+                    <span>
+                      {/* Mã nhân sự */}
+                      {getsentence(20, lang ?? "en")}: <b>{userdata?.CMS_ID}</b>
+                    </span>
+                    <span>
+                      {/* Mã ERP */}
+                      {getsentence(21, lang ?? "en")}: <b>{userdata?.EMPL_NO}</b>
+                    </span>
+                  </div>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} md={3}>
+                <div className="aiCheckinCard">
+                  <div className='chamcongtitle'>
+                    Check in-out: {moment().format("YYYY-MM-DD")}
+                  </div>
+                  <div className="aiCheckGrid">
+                    <div className="aiCheckPill aiCheckPill--in">
+                      <div className="aiCheckLabel">IN</div>
+                      <div className="aiCheckTime">
+                        {mychamcong?.MIN_TIME !== null
+                          ? mychamcong?.MIN_TIME
+                          : "Chưa chấm"}
+                      </div>
+                    </div>
+                    <div className="aiCheckPill aiCheckPill--out">
+                      <div className="aiCheckLabel">OUT</div>
+                      <div className="aiCheckTime">
+                        {mychamcong?.MAX_TIME !== null
+                          ? mychamcong?.MAX_TIME
+                          : "Chưa chấm"}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <li className='emplInfoList'>
-              {" "}
-              {/*  Họ và tên */}
-              {getsentence(19, lang ?? "en")}: {userdata?.MIDLAST_NAME}{" "}
-              {userdata?.FIRST_NAME}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Mã nhân sự */}
-              {getsentence(20, lang ?? "en")}: {userdata?.CMS_ID}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Mã ERP */}
-              {getsentence(21, lang ?? "en")}: {userdata?.EMPL_NO}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Ngày tháng năm sinh */}
-              {getsentence(22, lang ?? "en")}: {DOB().slice(0, 10)}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Quê quán */}
-              {getsentence(23, lang ?? "en")}: {userdata?.HOMETOWN}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Địa chỉ */}
-              {getsentence(24, lang ?? "en")}: {userdata?.ADD_VILLAGE}-
-              {userdata?.ADD_COMMUNE}-{userdata?.ADD_DISTRICT}-
-              {userdata?.ADD_PROVINCE}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Bộ phận chính */}
-              {getsentence(25, lang ?? "en")}: {userdata?.MAINDEPTNAME}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Bộ phận phụ */}
-              {getsentence(26, lang ?? "en")}: {userdata?.SUBDEPTNAME}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/*  Vị trí làm việc */}
-              {getsentence(27, lang ?? "en")}: {userdata?.WORK_POSITION_NAME}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Nhóm điểm danh */}
-              {getsentence(28, lang ?? "en")}: {userdata?.ATT_GROUP_CODE}
-            </li>
-            <li className='emplInfoList'>
-              {" "}
-              {/* Chức vụ */}
-              {getsentence(29, lang ?? "en")}: {userdata?.JOB_NAME}
-            </li>
-            {userdata?.EMPL_IMAGE !== "Y" && (
-              <li className='emplInfoList'>
-                {" "}
-                <div className='uploadfile'>
-                  {" "}
-                  Avatar:
-                  <IconButton className='buttonIcon' onClick={uploadFile2}>
-                    <AiOutlineCloudUpload color='yellow' size={15} />
-                    Upload
-                  </IconButton>
-                  <input
-                    accept='.jpg'
-                    type='file'
-                    onChange={(e: any) => {
-                      setFile(e.target.files[0]);
-                      console.log(e.target.files[0]);
-                    }}
-                  />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Card className="aiCard">
+              <CardHeader
+                title={
+                  <div>
+                    {/* Thông tin nhân viên */}
+                    {getsentence(18, lang ?? "en")}
+                  </div>
+                }
+              />
+              <CardContent>
+                <div className="aiInfoGrid">
+                  <div className="aiInfoRow">
+                    <div className="aiLabel">
+                      {/* Ngày tháng năm sinh */}
+                      {getsentence(22, lang ?? "en")}
+                    </div>
+                    <div className="aiValue">{DOB().slice(0, 10)}</div>
+                  </div>
+                  <div className="aiInfoRow">
+                    <div className="aiLabel">
+                      {/* Quê quán */}
+                      {getsentence(23, lang ?? "en")}
+                    </div>
+                    <div className="aiValue">{userdata?.HOMETOWN}</div>
+                  </div>
+                  <div className="aiInfoRow">
+                    <div className="aiLabel">
+                      {/* Địa chỉ */}
+                      {getsentence(24, lang ?? "en")}
+                    </div>
+                    <div className="aiValue">
+                      {userdata?.ADD_VILLAGE}-{userdata?.ADD_COMMUNE}-{userdata?.ADD_DISTRICT}-{userdata?.ADD_PROVINCE}
+                    </div>
+                  </div>
+                  <div className="aiInfoRow">
+                    <div className="aiLabel">
+                      {/*  Vị trí làm việc */}
+                      {getsentence(27, lang ?? "en")}
+                    </div>
+                    <div className="aiValue">{userdata?.WORK_POSITION_NAME}</div>
+                  </div>
+                  <div className="aiInfoRow">
+                    <div className="aiLabel">
+                      {/* Nhóm điểm danh */}
+                      {getsentence(28, lang ?? "en")}
+                    </div>
+                    <div className="aiValue">{userdata?.ATT_GROUP_CODE}</div>
+                  </div>
+                  <div className="aiInfoRow">
+                    <div className="aiLabel">
+                      {/* Chức vụ */}
+                      {getsentence(29, lang ?? "en")}
+                    </div>
+                    <div className="aiValue">{userdata?.JOB_NAME}</div>
+                  </div>
                 </div>
-              </li>
-            )}
-          </ul>
-        </div>
-        <div className={`cot2 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
-          <h3 className='h3h3' style={{ color: "#cc33ff" }}>
-            1. {/* Từ đầu năm đến giờ có */}
-            {getsentence(30, lang ?? "en")} : {Math.floor(days)} {/* ngày */}{" "}
-            {getsentence(31, lang ?? "en")}
-          </h3>{" "}
-          <br></br>
-          {workday} / {Math.floor(days)}
-          <Box sx={{ width: "100%" }}>
-            <LinearProgressWithLabel
-              value={(workday / Math.floor(days)) * 100}
-            />
-          </Box>
-          <h3 className='h3h3' style={{ color: "purple" }}>
-            2. {/* Số ngày bạn đi làm */} {getsentence(32, lang ?? "en")}: {workday}{" "}
-            {/* ngày */}
-            {getsentence(31, lang ?? "en")}
-          </h3>{" "}
-          <br></br>
-          {overtimeday} / {Math.floor(workday)}
-          <Box sx={{ width: "100%" }}>
-            <LinearProgressWithLabel
-              value={Math.floor((overtimeday / workday) * 100)}
-            />
-          </Box>
-          <h3 className='h3h3' style={{ color: "blue" }}>
-            3. {/*Số ngày bạn tăng ca*/}
-            {getsentence(33, lang ?? "en")} : {overtimeday} {/* ngày */}
-            {getsentence(31, lang ?? "en")}
-          </h3>{" "}
-          <br></br>
-          <Box sx={{ width: "100%" }}>
-            <LinearProgressWithLabel
-              value={Math.floor((countxacnhan / workday) * 100)}
-            />
-          </Box>
-          <h3 className='h3h3' style={{ color: "rgb(121 38 222)" }}>
-            4. {/*Số ngày quên chấm công */}
-            {getsentence(34, lang ?? "en")} : {countxacnhan} {/* ngày */}
-            {getsentence(31, lang ?? "en")}
-          </h3>{" "}
-          <br></br>
-          <h3 className='h3h3' style={{ color: "red" }}>
-            5. {/* Số ngày bạn đăng ký nghỉ (ko tính chủ nhật và nửa phép) */}
-            {getsentence(35, lang ?? "en")}: {nghiday} {/* ngày */}{" "}
-            {getsentence(31, lang ?? "en")}
-          </h3>{" "}
-          <br></br>
-          <h3 className='h3h3' style={{ color: "black" }}>
-            6. {/* Thưởng phạt: Khen thưởng */} {getsentence(36, lang ?? "en")}:{" "}
-            {/*Khen thuong*/}
-            {getsentence(37, lang ?? "en")} {thuongphat.count_thuong} , {/* Kỷ luật */}
-            {getsentence(38, lang ?? "en")}: {thuongphat.count_phat}
-          </h3>{" "}
-          <form>
-            <h3 className='h3h3' style={{ color: "black" }}>
-              {userdata?.EMPL_NO === "NHU1903" && (
-                <input
-                  type='text'
-                  value={logoutID}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Card className="aiCard">
+              <CardHeader title="Summary" />
+              <CardContent>
+                <div className="aiStatBlock">
+                  <div className="aiStatTitle">
+                    1. {/* Từ đầu năm đến giờ có */}
+                    {getsentence(30, lang ?? "en")} : {Math.floor(days)} {/* ngày */}{" "}
+                    {getsentence(31, lang ?? "en")}
+                  </div>
+                  <div className="aiStatValue">{workday} / {Math.floor(days)}</div>
+                  <Box sx={{ width: "100%" }}>
+                    <LinearProgressWithLabel value={(workday / Math.floor(days)) * 100} />
+                  </Box>
+                </div>
+
+                <Divider className="aiDivider" />
+
+                <div className="aiStatBlock">
+                  <div className="aiStatTitle">
+                    2. {/* Số ngày bạn đi làm */} {getsentence(32, lang ?? "en")}: {workday}{" "}
+                    {/* ngày */}
+                    {getsentence(31, lang ?? "en")}
+                  </div>
+                  <div className="aiStatValue">{overtimeday} / {Math.floor(workday)}</div>
+                  <Box sx={{ width: "100%" }}>
+                    <LinearProgressWithLabel value={workday === 0 ? 0 : Math.floor((overtimeday / workday) * 100)} />
+                  </Box>
+                </div>
+
+                <Divider className="aiDivider" />
+
+                <div className="aiStatBlock">
+                  <div className="aiStatTitle">
+                    3. {/*Số ngày bạn tăng ca*/}
+                    {getsentence(33, lang ?? "en")} : {overtimeday} {/* ngày */}
+                    {getsentence(31, lang ?? "en")}
+                  </div>
+                  <Box sx={{ width: "100%" }}>
+                    <LinearProgressWithLabel value={workday === 0 ? 0 : Math.floor((countxacnhan / workday) * 100)} />
+                  </Box>
+                </div>
+
+                <Divider className="aiDivider" />
+
+                <div className="aiStatBlock">
+                  <div className="aiStatTitle">
+                    4. {/*Số ngày quên chấm công */}
+                    {getsentence(34, lang ?? "en")} : {countxacnhan} {/* ngày */}
+                    {getsentence(31, lang ?? "en")}
+                  </div>
+                </div>
+
+                <Divider className="aiDivider" />
+
+                <div className="aiStatBlock">
+                  <div className="aiStatTitle">
+                    5. {/* Số ngày bạn đăng ký nghỉ (ko tính chủ nhật và nửa phép) */}
+                    {getsentence(35, lang ?? "en")}: {nghiday} {/* ngày */}{" "}
+                    {getsentence(31, lang ?? "en")}
+                  </div>
+                </div>
+
+                <Divider className="aiDivider" />
+
+                <div className="aiStatBlock">
+                  <div className="aiStatTitle">
+                    6. {/* Thưởng phạt: Khen thưởng */} {getsentence(36, lang ?? "en")}:{" "}
+                    {/*Khen thuong*/}
+                    {getsentence(37, lang ?? "en")} {thuongphat.count_thuong} , {/* Kỷ luật */}
+                    {getsentence(38, lang ?? "en")}: {thuongphat.count_phat}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card className="aiCard">
+              <CardHeader title="Security" />
+              <CardContent>
+                <div className="aiSecurityRow">
+                  <Button
+                    variant="contained"
+                    onClick={() => setOpenChangePw(true)}
+                  >
+                    Change Password
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Dialog open={openChangePw} onClose={() => setOpenChangePw(false)} maxWidth="xs" fullWidth>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogContent>
+              <div className="aiDialogForm">
+                <TextField
+                  label="Pass hiện tại"
+                  type="password"
+                  size="small"
+                  value={currentPW}
                   onChange={(e) => {
-                    setLogOutID(e.target.value);
+                    setCurrentPW(e.target.value);
                   }}
-                ></input>
-              )}
-              {userdata?.EMPL_NO === "NHU1903" && (
-                <Button
-                  onClick={() => {
-                    dispatch(
-                      update_socket({
-                        event: "notification",
-                        data: {
-                          command: "logout",
-                          EMPL_NO: logoutID,
-                        },
-                      })
-                    );
-                  }}
-                >
-                  X
-                </Button>
-              )}
-              {userdata?.EMPL_NO === "NHU1903" && (
-                <input
-                  type='text'
-                  value={webver}
+                />
+                <TextField
+                  label="Pass mới"
+                  type="password"
+                  size="small"
+                  value={newPW}
                   onChange={(e) => {
-                    setwebver(Number(e.target.value));
+                    setNewPW(e.target.value);
                   }}
-                ></input>
-              )}
-              {userdata?.EMPL_NO === "NHU1903" && (
-                <Button
-                  onClick={() => {
-                    if (webver !== 0) {
-                      setWebVer(webver);
-                    } else {
-                      Swal.fire("Thông báo", "Không setver =0 ", "warning");
-                    }
-                  }}
-                >
-                  Upver
-                </Button>
-              )}
-              {
-                userdata?.EMPL_NO === 'NHU1903' && (
-                  <label>
-                    Chọn Server:
-                    <select
-                      name="select_server"
-                      value={server_string}
-                      onChange={(e) => {
-                        setServer_String(e.target.value);
-                      }}
-                    >
-                      <option value={"https://cmsvina4285.com:" + 5013}>NET_SERVER</option>
-                      <option value={"https://cmsvina4285.com:" + 3007}>SUBNET_SERVER</option>
-                    </select>
-                  </label>
-                )
-              }
-              {userdata?.EMPL_NO === "NHU1903" && (
-                <Button
-                  onClick={() => {
-                    getSocket().emit("changeServer", { server: server_string, empl_no: logoutID });
-                  }}
-                >
-                  Set Server
-                </Button>
-              )}
-              Pass hiện tại:
-              <input
-                type='password'
-                value={currentPW}
-                onChange={(e) => {
-                  setCurrentPW(e.target.value);
-                }}
-              ></input>
-              Pass mới:
-              <input
-                type='password'
-                value={newPW}
-                onChange={(e) => {
-                  setNewPW(e.target.value);
-                }}
-              ></input>
+                />
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="outlined" onClick={() => setOpenChangePw(false)}>
+                Cancel
+              </Button>
               <Button
+                variant="contained"
                 onClick={() => {
                   handleChangePassWord();
+                  setOpenChangePw(false);
                 }}
               >
-                Change Pass
+                Confirm
               </Button>
-              <input type="file" onChange={(e) => {
-                setFile(e.target.files?.[0]);
-              }} />
-              <Button
-                onClick={() => {
-                  if (file) {                 
-                    uploadQuery(file, 'updatebe.exe', 'backend')
-                      .then(async (response) => {                        
-                        if(response.data.tk_status !== "NG"){
-                          Swal.fire("Thông báo", "Upload thành công", "success");
-                          window.open("http://192.168.1.192:5005/api/test/updatebackend", "_blank");
-                          //window.open("http://192.168.1.192:3005/update-be", "_blank");
-                        }
-                        else{
-                          Swal.fire("Thông báo", "Upload thất bại: " + response.data.message, "error");
-                        }
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                        Swal.fire("Thông báo", "Upload thất bại", "error");
-                      });
-                  } else {
-                    Swal.fire("Thông báo", "Chưa chọn file", "warning");
-                  }
-                }}
-              >
-                Update backend
-              </Button>
+            </DialogActions>
+          </Dialog>
 
-            </h3>{" "}
-          </form>
-          <br></br>
-        </div>
+          {isAdmin && (
+            <Grid item xs={12}>
+              <Card className="aiCard aiAdminCard">
+                <CardHeader
+                  title="Admin tools"
+                  action={
+                    <Button
+                      variant={showAdminTools ? "contained" : "outlined"}
+                      size="small"
+                      onClick={() => setShowAdminTools(!showAdminTools)}
+                    >
+                      {showAdminTools ? "Hide" : "Show"}
+                    </Button>
+                  }
+                />
+                <Collapse in={showAdminTools} timeout="auto" unmountOnExit>
+                  <CardContent>
+                    <div className="aiAdminGrid">
+                      <TextField
+                        label="Logout EMPL_NO"
+                        size="small"
+                        value={logoutID}
+                        onChange={(e) => {
+                          setLogOutID(e.target.value);
+                        }}
+                      />
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          dispatch(
+                            update_socket({
+                              event: "notification",
+                              data: {
+                                command: "logout",
+                                EMPL_NO: logoutID,
+                              },
+                            })
+                          );
+                        }}
+                      >
+                        X
+                      </Button>
+                      <TextField
+                        label="Web ver"
+                        size="small"
+                        value={webver}
+                        onChange={(e) => {
+                          setwebver(Number(e.target.value));
+                        }}
+                      />
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          if (webver !== 0) {
+                            setWebVer(webver);
+                          } else {
+                            Swal.fire("Thông báo", "Không setver =0 ", "warning");
+                          }
+                        }}
+                      >
+                        Upver
+                      </Button>
+                      <div className="aiAdminSelect">
+                        <label>
+                          Chọn Server:
+                          <select
+                            name="select_server"
+                            value={server_string}
+                            onChange={(e) => {
+                              setServer_String(e.target.value);
+                            }}
+                          >
+                            <option value={"https://cmsvina4285.com:" + 5013}>NET_SERVER</option>
+                            <option value={"https://cmsvina4285.com:" + 3007}>SUBNET_SERVER</option>
+                          </select>
+                        </label>
+                      </div>
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          getSocket().emit("changeServer", { server: server_string, empl_no: logoutID });
+                        }}
+                      >
+                        Set Server
+                      </Button>
+                      <div className="aiAdminFile">
+                        <input
+                          id="aiUpdateBe"
+                          type="file"
+                          onChange={(e) => {
+                            setFile(e.target.files?.[0]);
+                          }}
+                        />
+                      </div>
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          if (file) {
+                            uploadQuery(file, 'updatebe.exe', 'backend')
+                              .then(async (response) => {
+                                if (response.data.tk_status !== "NG") {
+                                  Swal.fire("Thông báo", "Upload thành công", "success");
+                                  window.open("http://192.168.1.192:5005/api/test/updatebackend", "_blank");
+                                }
+                                else {
+                                  Swal.fire("Thông báo", "Upload thất bại: " + response.data.message, "error");
+                                }
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                                Swal.fire("Thông báo", "Upload thất bại", "error");
+                              });
+                          } else {
+                            Swal.fire("Thông báo", "Chưa chọn file", "warning");
+                          }
+                        }}
+                      >
+                        Update backend
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Collapse>
+              </Card>
+            </Grid>
+          )}
+        </Grid>
       </div>
     </div>
   );
