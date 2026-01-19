@@ -1194,6 +1194,7 @@ const PoManagerManageTab: React.FC = () => {
         isOpen={openNewPODialog}
         onClose={handleCloseNewPODialog}
         title="Thêm PO mới"
+        dialogClassName="poManagePoDialog--compact"
         content={
           <>
             <div className="dangkyinput">
@@ -1304,28 +1305,30 @@ const PoManagerManageTab: React.FC = () => {
                 </label>
                 <label>
                   <b>Price:</b>{" "}
-                  <TextField
-                    style={{ width: "150px" }}
-                    value={newpoprice}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPoPrice(e.target.value)}
-                    size="small"
-                    color="success"
-                    className="autocomplete"
-                    id="outlined-basic"
-                    label="Price"
-                    variant="outlined"
-                  />
-                  <TextField
-                    style={{ width: "150px" }}
-                    value={newpoBEP}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPoBEP(e.target.value)}
-                    size="small"
-                    color="success"
-                    className="autocomplete"
-                    id="outlined-basic"
-                    label="BEP"
-                    variant="outlined"
-                  />
+                  <div className="poPriceBepRow">
+                    <TextField
+                      style={{ width: "150px" }}
+                      value={newpoprice}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPoPrice(e.target.value)}
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Price"
+                      variant="outlined"
+                    />
+                    <TextField
+                      style={{ width: "150px" }}
+                      value={newpoBEP}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPoBEP(e.target.value)}
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="BEP"
+                      variant="outlined"
+                    />
+                  </div>
                 </label>
                 <label>
                   <b>Remark:</b>{" "}

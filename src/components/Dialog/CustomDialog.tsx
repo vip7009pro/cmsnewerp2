@@ -9,15 +9,20 @@ interface CustomDialogProps {
   title: React.ReactNode;
   content: React.ReactNode;
   actions: React.ReactNode;
+  dialogClassName?: string;
 }
 
-const CustomDialog: React.FC<CustomDialogProps> = ({ isOpen, onClose, title, content, actions }) => {
+const CustomDialog: React.FC<CustomDialogProps> = ({ isOpen, onClose, title, content, actions, dialogClassName }) => {
   if (!isOpen) return null;
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
 
   return (
     <div className="custom-dialog-overlay" onClick={onClose}>
-      <div className="custom-dialog" onClick={(e) => e.stopPropagation()} style={{ backgroundImage: theme.CMS.backgroundImage }}>
+      <div
+        className={`custom-dialog${dialogClassName ? ` ${dialogClassName}` : ""}`}
+        onClick={(e) => e.stopPropagation()}
+        style={{ backgroundImage: theme.CMS.backgroundImage }}
+      >
         <div className="custom-dialog-title">
           {title}
         </div>

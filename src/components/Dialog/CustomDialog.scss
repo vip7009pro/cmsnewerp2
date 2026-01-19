@@ -186,3 +186,155 @@
     }
   }
 }
+
+.custom-dialog.poManagePoDialog--compact {
+  width: min(820px, 96vw);
+  max-width: 820px;
+  max-height: 86vh;
+  padding: 8px;
+
+  .custom-dialog-title {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .custom-dialog-content {
+    padding: 10px 12px;
+
+    .MuiFormControl-root {
+      width: 100%;
+    }
+
+    .MuiInputLabel-root {
+      font-size: 0.78rem;
+      line-height: 1;
+    }
+
+    .MuiOutlinedInput-root {
+      min-height: 28px;
+
+      .MuiOutlinedInput-input {
+        padding: 4px 8px;
+        font-size: 0.82rem;
+        line-height: 1.2;
+      }
+    }
+
+    .MuiAutocomplete-root {
+      width: 100%;
+    }
+
+    .MuiAutocomplete-inputRoot {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .dangkyinput {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+      align-items: start;
+      justify-content: unset;
+      text-align: left;
+
+      .dangkyinputbox {
+        width: 100%;
+        align-items: stretch;
+        gap: 8px;
+
+        label {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 120px 1fr;
+          gap: 8px;
+          align-items: center;
+
+          b {
+            font-size: 0.85rem;
+            line-height: 1.1;
+          }
+        }
+
+        .autocomplete {
+          width: 100%;
+          margin-left: 0;
+        }
+
+        .inputdata {
+          width: 100%;
+          height: 28px;
+          font-size: 0.82rem;
+          margin-left: 0;
+        }
+
+        .poPriceBepRow {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-wrap: nowrap;
+
+          .MuiFormControl-root {
+            width: auto;
+          }
+
+          .autocomplete {
+            width: auto;
+          }
+        }
+      }
+    }
+  }
+
+  .custom-dialog-actions {
+    padding: 10px 12px;
+
+    .dangkybutton {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      justify-content: unset;
+
+      .thembutton,
+      .suabutton,
+      .closebutton,
+      .xoabutton {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+        -webkit-box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+        -moz-box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .custom-dialog.poManagePoDialog--compact {
+    width: 96vw;
+    max-width: 96vw;
+
+    .custom-dialog-content {
+      .dangkyinput {
+        grid-template-columns: 1fr;
+
+        .dangkyinputbox {
+          label {
+            grid-template-columns: 1fr;
+            gap: 4px;
+            align-items: stretch;
+          }
+        }
+      }
+    }
+
+    .custom-dialog-actions {
+      .dangkybutton {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  }
+}
