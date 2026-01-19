@@ -28,11 +28,12 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        flex: 10;
+        flex: 1;
         box-sizing: border-box;
         .animated_div {
           display: flex;
           flex-direction: column;
+          height: fit-content;
           .component_element {
             position: absolute;
             /* top: 35px; */

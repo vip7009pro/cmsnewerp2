@@ -1,19 +1,11 @@
-.buttonIcon {
-  font-size: 13px !important;
-  color: rgb(59, 45, 182) !important;
-}
-
 @media only screen and (max-width: 5000px) {
   .newpo {
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;    
-    gap: 5px;
-
+    box-sizing: border-box; 
     .batchnewpo {
       display: flex;
-      flex-direction: column;
-      gap: 5px;
+      flex-direction: column;      
       width: 100%;
       max-width: 1400px;
       box-sizing: border-box;
@@ -100,7 +92,7 @@
 
         &.insertPOTable--full {
           width: 100%;
-          height: calc(100vh - 210px);
+          height: calc(100vh - 165px);
         }
 
         .datatb {
@@ -272,7 +264,7 @@
 
         &.insertPOTable--full {
           width: 100%;
-          height: calc(100vh - 260px);
+          height: calc(100vh - 165px);
         }
 
         .datatb {

@@ -10,7 +10,6 @@ import { getCompany, getSocket, getUserData } from "../../../api/Api";
 import { autoGetProdPrice, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
-import PivotTable from "../../../components/PivotChart/PivotChart";
 import {
   f_checkG_CODE_USE_YN,
   f_checkPOExist,
@@ -207,31 +206,13 @@ const PoManagerAddTab: React.FC = () => {
     });
   };
 
-  const dataSource = new PivotGridDataSource({
-    fields: [
-      { caption: "CUST_CD", dataField: "CUST_CD", dataType: "string", area: "row" },
-      { caption: "G_CODE", dataField: "G_CODE", dataType: "string", area: "row" },
-      { caption: "PO_NO", dataField: "PO_NO", dataType: "string", area: "row" },
-      { caption: "PO_QTY", dataField: "PO_QTY", dataType: "number", summaryType: "sum", area: "data" },
-    ],
-    store: uploadExcelJson,
-  });
 
   const excelDataAGTable = useMemo(
     () => (
       <AGTable
         showFilter={true}
         toolbar={
-          <div>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(!showhidePivotTable);
-              }}
-            >
-              <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-              Pivot
-            </IconButton>
+          <div>          
           </div>
         }
         columns={columnsExcel}
@@ -297,22 +278,7 @@ const PoManagerAddTab: React.FC = () => {
             Up PO
           </Button>
         </div>
-
         <div className="insertPOTable insertPOTable--full">{excelDataAGTable}</div>
-
-        {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              Close
-            </IconButton>
-            <PivotTable datasource={dataSource} tableID="potablepivot_add" />
-          </div>
-        )}
       </div>
     </div>
   );

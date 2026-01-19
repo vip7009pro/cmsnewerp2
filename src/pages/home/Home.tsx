@@ -413,8 +413,7 @@ function Home() {
           <animated.div
             className="animated_div"
             style={{
-              width: "100%",
-              height: "100vh",
+              width: "100%",              
               borderRadius: 8,
             }}
           >
