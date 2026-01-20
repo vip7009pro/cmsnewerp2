@@ -1,0 +1,200 @@
+@media only screen and (max-width: 5000px) {
+  .planAdd {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 10px;
+    gap: 10px;
+
+    .batchnewplan {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 1400px;
+      box-sizing: border-box;
+      align-items: center;
+      justify-items: center;
+
+      &.batchnewplan--full {
+        width: 100%;
+        max-width: none;
+        align-items: stretch;
+      }
+
+      h3 {
+        width: 100%;
+        margin: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        font-size: 14px;
+        font-weight: 800;
+        color: rgba(0, 0, 0, 0.78);
+        text-align: center;
+      }
+
+      .planAddHeader {
+        width: 100%;
+
+        h3 {
+          background: var(--planadd-header-bg, rgba(255, 255, 255, 0.72));
+        }
+      }
+
+      .formupload {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+
+        &.formupload--full {
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: nowrap;
+        }
+
+        .uploadLeft {
+          display: flex;
+          flex: 1;
+          min-width: 260px;
+        }
+
+        .planAddActionBtn {
+          min-width: 120px;
+          min-height: 32px;
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+      }
+
+      .selectfilebutton {
+        width: 100%;
+        font-size: 12px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .insertPlanTable {
+        display: flex;
+        box-sizing: border-box;
+        height: calc(100vh - 210px);
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+
+        &.insertPlanTable--full {
+          width: 100%;
+          height: calc(100vh - 210px);
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .planAdd {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+
+    .batchnewplan {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-sizing: border-box;
+
+      &.batchnewplan--full {
+        width: 100%;
+        max-width: none;
+        align-items: stretch;
+      }
+
+      h3 {
+        width: 100%;
+        margin: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: var(--planadd-header-bg, rgba(255, 255, 255, 0.72));
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        font-size: 13px;
+        font-weight: 800;
+        color: rgba(0, 0, 0, 0.78);
+        text-align: center;
+      }
+
+      .formupload {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+        justify-content: center;
+
+        &.formupload--full {
+          justify-content: stretch;
+          flex-wrap: wrap;
+        }
+
+        .uploadLeft {
+          width: 100%;
+        }
+
+        .planAddActionBtn {
+          width: 100%;
+          min-height: 34px;
+        }
+      }
+
+      .selectfilebutton {
+        width: 100%;
+        font-size: 12px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .insertPlanTable {
+        display: flex;
+        width: 100%;
+        height: calc(100vh - 210px);
+        margin-top: 10px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+
+        &.insertPlanTable--full {
+          width: 100%;
+          height: calc(100vh - 260px);
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 320px) {
+}

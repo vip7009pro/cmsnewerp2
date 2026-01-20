@@ -1,0 +1,113 @@
+@media only screen and (max-width: 5000px) {
+  .planStatusTab {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+
+    .planStatusForm {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .planStatusHeader {
+      width: 100%;
+
+      h3 {
+        margin: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        font-size: 14px;
+        font-weight: 800;
+        color: rgba(0, 0, 0, 0.78);
+        text-align: center;
+      }
+    }
+
+    .planStatusControls {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 8px;
+      flex-wrap: wrap;
+
+      label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .selectfilebutton {
+        font-size: 12px;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .checkPlanBtn {
+        min-width: 120px;
+        min-height: 32px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.75);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+      }
+    }
+
+    .planStatusTable {
+      display: flex;
+      width: 100%;
+      height: calc(100vh - 240px);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .planStatusTab {
+    padding: 10px;
+
+    .planStatusControls {
+      flex-direction: column;
+      align-items: stretch;
+
+      label {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .selectfilebutton {
+        width: 100%;
+      }
+
+      .checkPlanBtn {
+        width: 100%;
+        min-height: 34px;
+      }
+    }
+
+    .planStatusTable {
+      height: calc(100vh - 300px);
+    }
+  }
+}
+
+@media only screen and (max-width: 320px) {
+}
