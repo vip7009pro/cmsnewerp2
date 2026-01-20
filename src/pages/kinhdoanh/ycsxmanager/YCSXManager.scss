@@ -5,30 +5,8 @@
 @media only screen and (max-width: 5000px) {
   .ycsxmanager {
     width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    .mininavbar {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      margin-bottom: 5px;
-      margin-top: 5px;
-      .mininavitem {
-        padding: 5px;
-        background-color: rgb(100, 240, 95);
-        margin-left: 5px;
-        border-radius: 5px;
-        font-size: 0.7rem;
-        padding: 5px;
-        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
-        &:hover {
-          background-color: rgb(127, 219, 255);
-          cursor: pointer;
-        }
-      }
-    }
+    height: fit-content;
+    display: flex; 
     .newycsx {
       display: flex;
       flex-direction: column;
@@ -113,7 +91,7 @@
         .insertYCSXTable {
           display: flex;
           width: 100%;
-          height: 75vh;
+          height: calc(100vh - 305px);
           background-image: linear-gradient(0deg, #afd3d1, #b0e954);
           border-radius: 5px;
         }
@@ -125,13 +103,10 @@
       .amazonInputform {
         display: flex;
         flex-direction: row;
-        align-items: center;
-        margin-bottom: 10px;
+        align-items: center;       
         background-image: linear-gradient(0deg, #afd3d1, #f1c489);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        border-radius: 8px;
-        padding: 5px;
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);       
         &:hover {
           background-image: linear-gradient(0deg, #afd3d1, #eaec67);
         }
@@ -191,72 +166,15 @@
       }
       .batchnewycsx {
         display: flex;
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: column;        
         .formupload {
           display: flex;
-          gap: 20px;
-          .checkpobutton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: fit-content;
-            height: 15px;
-            background-color: #99f86d;
-            outline: none;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            &:hover {
-              background-color: rgb(127, 219, 255);
-              cursor: pointer;
-            }
-          }
-          .uppobutton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: fit-content;
-            height: 15px;
-            background-color: #ee1010;
-            color: white;
-            outline: none;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            &:hover {
-              background-color: rgb(127, 219, 255);
-              cursor: pointer;
-            }
-          }
-          .clearobutton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: fit-content;
-            height: 15px;
-            background-color: #14f1d4;
-            color: rgb(0, 0, 0);
-            outline: none;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            &:hover {
-              background-color: rgb(127, 219, 255);
-              cursor: pointer;
-            }
-          }
+          gap: 20px;         
         }
         .insertYCSXTable {
           display: flex;
           width: 100%;
-          height: 80vh;
+          height: calc(100vh - 170px);
           background-image: linear-gradient(0deg, #afd3d1, #d3c7ee);
           border-radius: 2px;
         }
@@ -264,19 +182,18 @@
     }
     .tracuuYCSX {
       width: 100%;
-      height: 92vh;
+      height: calc(100vh - 85px);
       display: flex;
       .tracuuYCSXform {
         display: flex;
         width: 250px;
-        height: 99%;
+        height: 100%;
         flex-direction: column;
         align-items: center;
         background-image: linear-gradient(0deg, #afd3d1, #86cfff);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        border-radius: 8px;
-        padding: 5px;
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);       
+        padding-right: 5px;
         span {
           padding: 10px;
           font-size: 20px;
