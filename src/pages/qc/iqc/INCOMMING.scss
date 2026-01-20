@@ -1,7 +1,7 @@
 @media only screen and (max-width: 5000px) {
   .incomming {
     width: 100%;
-    height: 92vh;
+    height: calc(100vh - 85px);
     display: flex;
     flex-direction: column;
 
@@ -9,15 +9,13 @@
       width: 100%;
       height: 100%;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      flex-direction: column;     
       align-items: flex-start;
       justify-items: flex-start;
       justify-content: flex-start;
       .maintable {
         display: flex;
-        flex-direction: row;
-        gap: 5px;
+        flex-direction: row;       
         height: 100%;
         width: 100%;
         .tracuuDataInspectionform {
@@ -29,9 +27,7 @@
           justify-items: flex-start;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          border-radius: 3px;
-          
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);         
           height: 100%;
           font-size: 0.8rem;
 

@@ -750,7 +750,7 @@ const BLOCK = () => {
     ///handletraFailingData();
   }, []);
   return (
-    <div className="failing">
+    <div className="blocking">
       <div className="tracuuDataInspection">
         <div className="maintable">
           <div

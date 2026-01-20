@@ -1,9 +1,8 @@
 @media only screen and (max-width: 5000px) {
-  .failing {
+  .blocking {
     width: 100%;
-    height: 90vh;
+    height: calc(100vh - 85px);
     display: flex;
-    flex-direction: column;
     .tracuuDataInspection {
       display: flex;
       flex-direction: row;
@@ -22,10 +21,9 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
-          padding: 5px;
-          font-size: 0.7rem;
-          flex:1;
-          height: 89vh;
+          padding-right: 5px;
+          font-size: 0.7rem;          
+          height: 100%;
           .forminput {
             display: flex;
             flex-direction: column;
@@ -74,151 +72,21 @@
           }
         }
         .tracuuYCSXTable {
-          display: flex;
-          margin-top: 2px;
+          display: flex;    
+          flex:1;      
           height: 100%;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          border-radius: 3px;
-          flex: 9;
-          .datatb {
-            justify-items: center;
-            width: 100%;
-            font-size: 0.8rem;
-            height: 100%;
-            .menubar {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
-              background-color: orange;
-              color: unset;
-            }
-            .dx-datagrid-borders>.dx-datagrid-header-panel {
-              border-bottom: 0;
-              background-color: #b5f398;
-            }
-            .dx-toolbar .dx-toolbar-items-container {
-              height: 25px;
-              overflow: visible;
-              background-color: #b5f398;
-            }
-            //toan bo bang
-            .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
-              display: -ms-flexbox;
-              display: flex;
-              background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
-              font-size: 0.7rem;
-            }
-            .dx-datagrid-borders>.dx-datagrid-filter-panel,
-            .dx-datagrid-borders>.dx-datagrid-headers {
-              border-top: 1px solid #ddd;
-              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
-              color: black;
-              font-weight: bold;
-              font-size: 0.7rem;
-            }
-            //filter row input
-            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
-            .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
-              padding-left: 32px;
-              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
-              color: black;
-              height: 10px;
-            }
-            .dx-editor-cell .dx-texteditor,
-            .dx-editor-cell .dx-texteditor .dx-texteditor-input {
-              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
-            }
-            .dx-searchbox .dx-placeholder::before,
-            .dx-searchbox .dx-texteditor-input {
-              padding-left: 34px;
-              background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
-            }
-            .dx-button-mode-contained {
-              background-color: #a0f87e;
-              border-color: #cacafa;
-              color: #430fff;
-            }
-            .dx-datagrid-total-footer>.dx-datagrid-content {
-              padding-top: 0px;
-              padding-bottom: 0px;
-            }
-          }
+          border-radius: 3px;                 
         }
-        .tracuuDataInspectionform2 {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          border-radius: 3px;
-          padding: 5px;
-          font-size: 0.7rem;
-          flex: 1;
-          height: 100%;
-          span {
-            padding: 10px;
-            font-size: 20px;
-            margin: auto;
-          }
-          .forminput {
-            display: flex;
-            gap: 5px;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: flex-end;
-            padding: 2px;
-            width: 100%;
-            .forminputcolumn {
-              display: flex;
-              flex-direction: column;
-              gap: 10px;
-              align-items: flex-end;
-              justify-content: flex-end;
-              flex-wrap: wrap;
-              input {
-                width: 140px;
-                height: 16px;
-                font-size: 0.8rem;
-                outline: none;
-                border-radius: 5px;
-                border: none;
-                padding: 5px;
-                margin-left: 5px;
-                background-image: linear-gradient(0deg, #ececec, #9dee95);
-              }
-              select {
-                width: 150px;
-                height: 25px;
-                font-size: 0.8rem;
-                outline: none;
-                border-radius: 5px;
-                border: none;
-                padding: 5px;
-                margin-left: 5px;
-                background-image: linear-gradient(0deg, #ececec, #9dee95);
-              }
-            }
-          }
-          .formbutton {
-            display: flex;                   
-            width: 100%;
-            margin-top: 10px;
-            align-items: center;
-            justify-content: space-around;
-            flex-wrap: wrap;
-          }
-        }
+       
       }
     }
   }
 }
 @media only screen and (max-width: 768px) {
-  .failing {
+  .blocking {
     width: 100%;
     height: 1000px;
     display: flex;

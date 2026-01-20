@@ -3,7 +3,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 90vh;
+  height: calc(100vh - 85px);
 
   .testtable-left,
   .testtable-right {

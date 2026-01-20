@@ -1,4 +1,6 @@
 import { Button, Checkbox, FormControlLabel, IconButton, Typography } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DoneIcon from "@mui/icons-material/Done";
 import moment from "moment";
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Swal from "sweetalert2";
@@ -45,6 +47,7 @@ const DKDTC = () => {
   const [lotncc, setLotNCC] = useState("");
   const isLotCMSScanning= useRef(true);
   const [isScanning, setIsScanning] = useState(false);
+  const [showTestItemList, setShowTestItemList] = useState(false);
 
   const dtcdatacolumn = [
     { field: "DTC_ID", headerName: "DTC_ID", resizable: true, width: 50 },
@@ -606,7 +609,7 @@ const DKDTC = () => {
                   </div>
                   <div style={{display:'flex'}}>
                   <input
-                    style={{width:'280px'}}
+                    style={{width:'250px'}}
                     type="text"
                     placeholder={checkNVL ? "202304190123" : "1F80008/13AB19S5"}
                     value={inputno}
@@ -660,7 +663,7 @@ const DKDTC = () => {
                   </div>
                   <div style={{display:'flex'}}>
                   <input
-                    style={{width:'280px'}}
+                    style={{width:'250px'}}
                     type="text"
                     placeholder={checkNVL ? "abcxyz123" : ""}
                     value={lotncc}
@@ -714,8 +717,37 @@ const DKDTC = () => {
                 </span>
               </div>
               <div className="forminputcolumn">
-                <b>Hạng mục test</b>
-                <label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                  }}
+                >
+                  <b>Hạng mục test</b>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setShowTestItemList((prev) => !prev);
+                      }}
+                    >
+                      <AddCircleOutlineIcon fontSize="small" />
+                    </IconButton>
+                    {showTestItemList && (
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setShowTestItemList(false);
+                        }}
+                      >
+                        <DoneIcon fontSize="small" />
+                      </IconButton>
+                    )}
+                  </div>
+                </div>
+                {showTestItemList && (
                   <div className="checkboxarray">
                     {testList.map((element: TestListTable, index: number) => {
                       //console.log('element',element)
@@ -744,18 +776,12 @@ const DKDTC = () => {
                               name={element.TEST_CODE.toString()}
                               key={element.TEST_CODE}
                               checked={element.SELECTED}
-                              onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                              ) => {
+                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 let selected_test: CheckAddedSPECDATA[] =
                                   addedSpec.filter(
-                                    (
-                                      element: CheckAddedSPECDATA,
-                                      index: number
-                                    ) => {
+                                    (element: CheckAddedSPECDATA, index: number) => {
                                       return (
-                                        element.TEST_CODE.toString() ===
-                                        event.target.name
+                                        element.TEST_CODE.toString() === event.target.name
                                       );
                                     }
                                   );
@@ -774,8 +800,7 @@ const DKDTC = () => {
                                   let temp_testList = testList.map(
                                     (element: TestListTable, index: number) => {
                                       if (
-                                        element.TEST_CODE.toString() ===
-                                        event.target.name
+                                        element.TEST_CODE.toString() === event.target.name
                                       ) {
                                         return {
                                           ...element,
@@ -797,7 +822,20 @@ const DKDTC = () => {
                       );
                     })}
                   </div>
-                </label>
+                )}
+
+                <div style={{ marginTop: 6 }}>
+                  {testList
+                    .filter((t) => t.SELECTED)
+                    .map((t) => (
+                      <Typography
+                        key={t.TEST_CODE}
+                        style={{ fontSize: 13, fontWeight: "bold", color: "blue" }}
+                      >
+                        {t.TEST_NAME}
+                      </Typography>
+                    ))}
+                </div>
               </div>
               <div className="forminputcolumn">
                 {showdkbs && (

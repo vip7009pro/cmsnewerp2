@@ -16,9 +16,7 @@
         align-items: center;
         background-image: linear-gradient(0deg, #afd3d1, #86cfff);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        border-radius: 3px;
-        padding: 1px;
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);      
         font-size: 0.8rem;
         width: 100%;
         span {
@@ -68,41 +66,13 @@
         }
         .formbutton {
           display: flex;
-          align-items: center;
-          
-         
-        }
-        .formsummary {
-          display: flex;
-          flex-direction: row;
-          background-image: linear-gradient(0deg, #ececec, #99f86d);
-          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          gap: 20px;
-          border-radius: 5px;
-          margin-top: 5px;
-
-          .summarygroup {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-items: flex-start;
-            gap: 10px;
-            .summaryvalue {
-              display: flex;
-              font-size: 16px;
-              justify-self: flex-end;
-              align-self: flex-end;
-              padding: 5px;
-              color: rgb(83, 36, 255);
-            }
-          }
-        }
+          align-items: center;         
+        }       
       }
       .tracuuYCSXTable {
         display: flex;
         margin-top: 2px;
-        height: 87vh;
+        height: calc(100vh - 115px);
         background-image: linear-gradient(0deg, #afd3d1, #86cfff);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
