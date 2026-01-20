@@ -3,16 +3,24 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 94vh;
+    height: calc(100vh - 60px);
+    box-sizing: border-box;
+    overflow: hidden;
     .left {
       display: flex;
       width: 350px;
       flex-direction: column;
       height: 100%;
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
       .tracuuFcst {
         display: flex;
         flex-direction: column;
         height: 100%;
+        min-height: 0;
+        overflow: hidden;
         .tracuuFcstform {
           display: flex;
           flex-direction: column;
@@ -22,7 +30,7 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
-          padding: 5px;
+          padding-right: 5px;
           font-size: 0.8rem;
           span {
             padding: 10px;
@@ -117,6 +125,8 @@
           display: flex;
           margin-top: 5px;
           height: 100%;
+          min-height: 0;
+          overflow: auto;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -145,17 +155,19 @@
       display: flex;
       flex-direction: column;
       flex: 5;
-      gap: 5px;
+      gap: 1px;
       height: 100%;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
       .codeinfobig {
         display: flex;
         gap: 20px;
-        padding: 5px;
+        padding: 2px;
         background-image: linear-gradient(0deg, #7ae2f5, #5565f2);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
-        color: rgb(0, 0, 0);
-        border-radius: 5px;
+        color: rgb(0, 0, 0);        
         margin-left: 5px;
         margin-right: 5px;
         justify-content: center;
@@ -176,22 +188,21 @@
         display: flex;
         flex: 10;
         height: 100%;
+        min-height: 0;
+        overflow: auto;
         .bomsx {
           display: flex;
           flex-direction: column;
           width: 300px;
           justify-content: center;
-          justify-self: center;
-          gap: 10px;
+          justify-self: center;        
           margin-left: 5px;
           margin-right: 5px;
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
-          border-radius: 5px;
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);         
           .listamazontable {
             display: flex;
-            width: 100%;
-            border-radius: 5px;
+            width: 100%;            
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -214,9 +225,7 @@
         .bomgia {
           display: flex;
           background-color: rgb(94, 221, 221);
-          gap: 10px;
-          margin-left: 5px;
-          margin-right: 5px;
+          flex: 1;
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
           border-radius: 5px;
@@ -238,16 +247,14 @@
             display: flex;
             align-self: center;
             background-color: rgb(224, 198, 198);
-            border-radius: 5px;
-            gap: 70px;
+            border-radius: 5px;            
           }
         }
         .product_infor {
           display: flex;
           flex-direction: column;
           background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-          margin-left: 5px;
-          margin-right: 5px;
+          width: 400px;
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.17);
           border-radius: 5px;
@@ -318,6 +325,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: calc(100vh - 85px);
+    box-sizing: border-box;
+    overflow: hidden;
     .mininavbar {
       display: flex;
       flex-direction: row;
@@ -457,7 +467,9 @@
             .codeinfotable {
               display: flex;
               margin-top: 5px;
-              height: 70vh;
+              height: 100%;
+              min-height: 0;
+              overflow: auto;
               background-image: linear-gradient(0deg, #75ddac, #4ecde4);
               -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -500,6 +512,9 @@
         flex-direction: column;
         flex: 4;
         gap: 15px;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
         .codeinfobig {
           display: flex;
           gap: 20px;
@@ -529,7 +544,9 @@
           display: flex;
           flex-direction: column;
           width: 100%;
-          height: 110vh;
+          height: 100%;
+          min-height: 0;
+          overflow: auto;
           .bomsx {
             display: flex;
             flex-direction: column;

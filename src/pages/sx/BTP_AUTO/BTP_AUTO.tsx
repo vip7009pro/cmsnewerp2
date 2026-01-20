@@ -259,7 +259,7 @@ const BTP_AUTO = () => {
     //handleLoadBTPAutoData();
   }, []);
   return (
-    <div className="maindefects">
+    <div className="btpauto">
       <div className="tracuuDataPqc">
         {/* <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">

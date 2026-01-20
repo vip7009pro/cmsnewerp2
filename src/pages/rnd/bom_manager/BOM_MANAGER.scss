@@ -4,11 +4,15 @@
     flex-direction: column;
     width: 100%; 
     overflow-x: hidden;
+    box-sizing: border-box;
     .bom_manager_wrapper {
       display: flex;
       width: 100%;
       height: calc(100vh - 85px);
       gap: 2px;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
       .left {
         display: flex;
         flex-direction: column;
@@ -18,9 +22,12 @@
             
         .codemanager {
           width: 100%;
-          height: fit-content;
+          height: 100%;
           display: flex;        
           flex: 4;
+          min-width: 0;
+          min-height: 0;
+          overflow: hidden;
           .tracuuFcst {
             width: 100%;
             .tracuuFcstform {
@@ -143,7 +150,9 @@
             .codeinfotable {
               display: flex;
               margin-top: 5px;
-              height: 40vh;             
+              height: 100%;
+              min-height: 0;
+              overflow: auto;
               background-image: linear-gradient(0deg, #75ddac, #81c981);
               -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -174,7 +183,9 @@
           display: flex;
           flex: 4;
           background-color: rgb(116, 117, 118);
-          overflow: scroll;
+          min-width: 0;
+          min-height: 0;
+          overflow: auto;
           .banve {
             display: flex;
             flex-direction: row;
@@ -223,7 +234,9 @@
         .up {
           display: flex;
           width: 100%;
-          height: 45vh;
+          flex: 1;
+          min-height: 0;
+          overflow: auto;
           gap: 5px;
           .bomsx {
             display: flex;
@@ -309,7 +322,9 @@
         .down {
           display: flex;
           width: 100%;
-          height: 40vh;
+          flex: 1;
+          min-height: 0;
+          overflow: auto;
           flex-direction: column;
           justify-items: flex-start;
           background-image: linear-gradient(0deg, #afd3d1, #72cf34);
@@ -561,7 +576,7 @@
       flex-direction: column;
       position: absolute;
       width: 90%;
-      height: 90vh;
+      height: calc(100vh - 110px);
       left: 5%;
       background-image: linear-gradient(0deg, #aff5a1, #7bb3e7);
       box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -578,6 +593,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: calc(100vh - 85px);
+    box-sizing: border-box;
+    overflow: hidden;
     .mininavbar {
       display: flex;
       flex-direction: row;
@@ -603,22 +621,33 @@
     .bom_manager_wrapper {
       display: flex;
       flex-direction: column;
-      height: fit-content;
+      height: 100%;
       gap: 100px;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
       .left {
         display: flex;
         flex-direction: column;        
-        height: 1000px;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
         .codemanager {
           width: 100%;
-          height: 500px;
+          height: 100%;
           display: flex;
           flex-direction: column;          
+          min-width: 0;
+          min-height: 0;
+          overflow: hidden;
           .tracuuFcst {
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 500px;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
             .tracuuFcstform {
               display: flex;
               flex-direction: column;
@@ -732,7 +761,9 @@
               display: flex;
               margin-top: 5px;
               width: 100%;
-              height: 40vh;
+              height: 100%;
+              min-height: 0;
+              overflow: auto;
               background-image: linear-gradient(0deg, #75ddac, #81c981);
               -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -765,7 +796,7 @@
           flex-direction: column;
           height: 500px;
           background-color: rgb(116, 117, 118);
-          overflow: scroll;
+          overflow: auto;
           width: 100%;          
           .banve {
             display: flex;
@@ -815,7 +846,9 @@
           display: flex;
           flex-direction: column;
           width: 100%;
-          height: 120vh;
+          height: 100%;
+          min-height: 0;
+          overflow: auto;
           .bomsx {
             display: flex;
             flex-direction: column;
@@ -902,7 +935,9 @@
         .down {
           display: flex;
           width: 100%;
-          height: 160vh;
+          height: 100%;
+          min-height: 0;
+          overflow: auto;
           flex-direction: column;
           justify-items: flex-start;
           background-image: linear-gradient(0deg, #afd3d1, #72cf34);

@@ -153,8 +153,14 @@ const OQC_DATA_TB = () => {
   useEffect(() => {
   }, []);
   return (
-    <DataDiv>
-      <QueryFormDiv style={{ backgroundImage: theme.CMS.backgroundImage }}>
+    <DataDiv style={{ height: "calc(100vh - 85px)", overflow: "hidden" }}>
+      <QueryFormDiv
+        style={{
+          backgroundImage: theme.CMS.backgroundImage,
+          height: "100%",
+          overflow: "auto",
+        }}
+      >
         <FromInputDiv>
           <FromInputColumn >
             <label>
@@ -239,7 +245,7 @@ const OQC_DATA_TB = () => {
           }}>Load</Button>
         </FormButtonColumn>
       </QueryFormDiv>
-      <DataTBDiv>
+      <DataTBDiv style={{ flex: 1, minWidth: 0, minHeight: 0, overflow: "auto" }}>
         {oqc_data_ag_table}
       </DataTBDiv>      
     </DataDiv>

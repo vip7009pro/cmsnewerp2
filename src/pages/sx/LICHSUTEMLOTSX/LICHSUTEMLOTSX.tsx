@@ -338,7 +338,7 @@ const LICHSUTEMLOTSX = () => {
     loadLabelDesign();
     }, []);
   return (
-    <DataDiv>
+    <DataDiv style={{ height: 'calc(100vh - 85px)', overflow: 'hidden', boxSizing: 'border-box', minHeight: 0, minWidth: 0 }}>
       <QueryFormDiv style={{ backgroundImage: theme.CMS.backgroundImage }}>
         <FromInputDiv>
           <FromInputColumn>
@@ -438,7 +438,7 @@ const LICHSUTEMLOTSX = () => {
           }}>Load Data</Button>
         </FormButtonColumn>
       </QueryFormDiv>
-      <DataTBDiv>
+      <DataTBDiv style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'auto' }}>
         {audit_list_data_ag_table}
       </DataTBDiv>      
       {showhideTemLot && 
