@@ -848,9 +848,9 @@ const FCSTManagerManageTab = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="tracuuFcst">
+    <div className="tracuuPlan">
       {showhidesearchdiv && (
-        <div className="tracuuFcstform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+        <div className="tracuuPlanform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
             <div className="forminputcolumn">
               <label>
@@ -1032,7 +1032,7 @@ const FCSTManagerManageTab = () => {
           </div>
         </div>
       )}
-      <div className="tracuuFcstTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+      <div className="tracuuPlanTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
         {fcstDataAGTable}
       </div>
     </div>

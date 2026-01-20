@@ -1,11 +1,4 @@
-import {
-  DataGrid,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import { Button } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
@@ -15,13 +8,13 @@ import { SaveExcel } from "../../../api/GlobalFunction";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 import "./ShortageKDAddTab.scss";
 
 const ShortageKDAddTab = () => {
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
 
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
-  const [isLoading, setisLoading] = useState(false);
 
   const column_excel_shortage = useMemo(
     () => [
@@ -47,24 +40,24 @@ const ShortageKDAddTab = () => {
     [uploadExcelJson],
   );
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className="saveexcelbutton"
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded Plan");
-          }}
-        >
-          Save Excel
-        </button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
+  const excelAGTable = useMemo(
+    () => (
+      <AGTable
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>            
+          </div>
+        }
+        columns={column_excel_shortage}
+        data={uploadExcelJson}
+        onCellEditingStopped={(params: any) => {}}
+        onRowClick={(params: any) => {}}
+        onSelectionChange={(params: any) => {}}
+      />
+    ),
+    [uploadExcelJson],
+  );
 
   const readUploadFile = (e: any) => {
     e.preventDefault();
@@ -105,7 +98,6 @@ const ShortageKDAddTab = () => {
   };
 
   const handle_checkShortageHangLoat = async () => {
-    setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
@@ -158,13 +150,11 @@ const ShortageKDAddTab = () => {
         tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
       }
     }
-    setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };
 
   const handle_upShortageHangLoat = async () => {
-    setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
@@ -250,7 +240,6 @@ const ShortageKDAddTab = () => {
         tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
       }
     }
-    setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };
@@ -292,57 +281,53 @@ const ShortageKDAddTab = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="newplan">
-      <div className="batchnewplan">
-        <h3>Thêm Shortage Hàng Loạt</h3>
-        <form className="formupload">
-          <label htmlFor="upload">
-            <b>Chọn file Excel: </b>
-            <input
-              className="selectfilebutton"
-              type="file"
-              name="upload"
-              id="upload"
-              onChange={(e: any) => {
-                readUploadFile(e);
-              }}
-            />
-          </label>
-          <div
-            className="checkpobutton"
+    <div className="planAdd">
+      <div className="batchnewplan batchnewplan--full">
+        <div className="planAddHeader">
+          <h3>Thêm Shortage Hàng Loạt</h3>
+        </div>
+
+        <form className="formupload formupload--full">
+          <div className="uploadLeft">
+            <label htmlFor="upload">
+           
+              <input
+                className="selectfilebutton"
+                type="file"
+                name="upload"
+                id="upload"
+                onChange={(e: any) => {
+                  readUploadFile(e);
+                }}
+              />
+            </label>
+          </div>
+
+          <Button
+            variant="contained"
+            color="info"
+            className="planAddActionBtn"
             onClick={(e) => {
               e.preventDefault();
               confirmCheckShortageHangLoat();
             }}
           >
             Check
-          </div>
-          <div
-            className="uppobutton"
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            className="planAddActionBtn"
             onClick={(e) => {
               e.preventDefault();
               confirmUpShortageHangLoat();
             }}
           >
             Up Shortage
-          </div>
+          </Button>
         </form>
-        <div className="insertPlanTable">
-          {true && (
-            <DataGrid
-              sx={{ fontSize: "0.7rem" }}
-              slots={{
-                toolbar: CustomToolbar,
-              }}
-              loading={isLoading}
-              rowHeight={35}
-              rows={uploadExcelJson}
-              columns={column_excel_shortage}
-              pageSizeOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 100000]}
-              editMode="row"
-            />
-          )}
-        </div>
+
+        <div className="insertPlanTable insertPlanTable--full">{excelAGTable}</div>
       </div>
     </div>
   );

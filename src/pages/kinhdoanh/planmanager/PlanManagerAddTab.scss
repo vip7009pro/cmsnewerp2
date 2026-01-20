@@ -3,16 +3,16 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    padding: 10px;
-    gap: 10px;
-
+    width: 100%;
+    overflow-x: hidden;
     .batchnewplan {
       display: flex;
       flex-direction: column;
-      gap: 10px;
       width: 100%;
       max-width: 1400px;
       box-sizing: border-box;
+      max-width: 100%;
+      overflow-x: hidden;
       align-items: center;
       justify-items: center;
 
@@ -25,21 +25,20 @@
       h3 {
         width: 100%;
         margin: 0;
-        padding: 8px 10px;
-        border-radius: 10px;
+        padding: 5px 0px;
         background: rgba(255, 255, 255, 0.72);
         border: 1px solid rgba(0, 0, 0, 0.08);
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
         font-size: 14px;
         font-weight: 800;
         color: rgba(0, 0, 0, 0.78);
-        text-align: center;
       }
 
       .planAddHeader {
         width: 100%;
 
         h3 {
+          text-align: center;
           background: var(--planadd-header-bg, rgba(255, 255, 255, 0.72));
         }
       }
@@ -48,11 +47,13 @@
         display: flex;
         gap: 10px;
         width: 100%;
+        box-sizing: border-box;
+        max-width: 100%;
         align-items: center;
         justify-content: center;
-        padding: 10px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.7);
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background: rgba(163, 216, 16, 0.7);
         border: 1px solid rgba(0, 0, 0, 0.08);
         box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
         flex-wrap: wrap;
@@ -60,25 +61,26 @@
         &.formupload--full {
           justify-content: space-between;
           align-items: center;
-          flex-wrap: nowrap;
+          flex-wrap: wrap;
         }
 
         .uploadLeft {
           display: flex;
           flex: 1;
           min-width: 260px;
+          max-width: 100%;
+          min-width: 0;
         }
 
         .planAddActionBtn {
-          min-width: 120px;
-          min-height: 32px;
-          padding-left: 10px;
-          padding-right: 10px;
+          min-width: 80px;
+          min-height: 15px;
         }
       }
 
       .selectfilebutton {
         width: 100%;
+        box-sizing: border-box;
         font-size: 12px;
         padding: 6px;
         border-radius: 10px;
@@ -91,8 +93,8 @@
         box-sizing: border-box;
         height: calc(100vh - 210px);
         width: 100%;
-        margin-top: 10px;
-        border-radius: 12px;
+        max-width: 100%;
+        min-width: 0;
         overflow: hidden;
         background: rgba(255, 255, 255, 0.7);
         border: 1px solid rgba(0, 0, 0, 0.08);
@@ -100,7 +102,68 @@
 
         &.insertPlanTable--full {
           width: 100%;
-          height: calc(100vh - 210px);
+          height: calc(100vh - 162px);
+        }
+
+        .datatb {
+          justify-items: center;
+          width: 99%;
+          height: 100%;
+          padding: 5px;
+
+          .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            background-color: orange;
+            color: unset;
+          }
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+            font-size: 0.7rem;
+          }
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-weight: bold;
+            font-size: 0.7rem;
+          }
+          .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+          .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
         }
       }
     }
@@ -169,6 +232,7 @@
 
       .selectfilebutton {
         width: 100%;
+        box-sizing: border-box;
         font-size: 12px;
         padding: 6px;
         border-radius: 10px;

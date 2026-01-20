@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
@@ -322,42 +322,52 @@ const FCSTManagerAddTab = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="newfcst">
-      <div className="batchnewplan">
-        <h3>Thêm FCST Hàng Loạt</h3>
-        <form className="formupload">
-          <label htmlFor="upload">
-            <b>Chọn file Excel: </b>
-            <input
-              className="selectfilebutton"
-              type="file"
-              name="upload"
-              id="upload"
-              onChange={(e: any) => {
-                readUploadFile(e);
-              }}
-            />
-          </label>
-          <div
-            className="checkpobutton"
+    <div className="planAdd">
+      <div className="batchnewplan batchnewplan--full">
+        <div className="planAddHeader">
+          <h3>Thêm FCST Hàng Loạt</h3>
+        </div>
+
+        <form className="formupload formupload--full">
+          <div className="uploadLeft">
+            <label htmlFor="upload">     
+              <input
+                className="selectfilebutton"
+                type="file"
+                name="upload"
+                id="upload"
+                onChange={(e: any) => {
+                  readUploadFile(e);
+                }}
+              />
+            </label>
+          </div>
+
+          <Button
+            variant="contained"
+            color="info"
+            className="planAddActionBtn"
             onClick={(e) => {
               e.preventDefault();
               confirmCheckFcstHangLoat();
             }}
           >
             Check FCST
-          </div>
-          <div
-            className="uppobutton"
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            className="planAddActionBtn"
             onClick={(e) => {
               e.preventDefault();
               confirmUpFcstHangLoat();
             }}
           >
             Up FCST
-          </div>
+          </Button>
         </form>
-        <div className="insertPlanTable">{fcstDataAGTableExcel}</div>
+
+        <div className="insertPlanTable insertPlanTable--full">{fcstDataAGTableExcel}</div>
       </div>
     </div>
   );

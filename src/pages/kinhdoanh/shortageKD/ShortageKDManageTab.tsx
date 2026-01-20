@@ -1,15 +1,6 @@
 import { IconButton } from "@mui/material";
-import {
-  DataGrid,
-  GridRowSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -19,6 +10,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 import { ShortageData } from "../interfaces/kdInterface";
 import "./ShortageKDManageTab.scss";
 
@@ -26,7 +18,6 @@ const ShortageKDManageTab = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
 
-  const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -42,7 +33,7 @@ const ShortageKDManageTab = () => {
   const [invoice_no, setInvoice_No] = useState("");
 
   const [shortagedatatable, setShortageDataTable] = useState<Array<ShortageData>>([]);
-  const [shortagedatatablefilter, setShortageDataTableFilter] = useState<Array<ShortageData>>([]);
+  const shortagedatatablefilter = useRef<Array<ShortageData>>([]);
 
   const column_shortage = useMemo(
     () => [
@@ -272,45 +263,6 @@ const ShortageKDManageTab = () => {
     [shortagedatatable],
   );
 
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(shortagedatatable, "Shortage Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleConfirmDeletePlan);
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA PLAN
-        </IconButton>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-
-  const handleShortageSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = shortagedatatable.filter((element: any) => selectedID.has(element.ST_ID));
-    if (datafilter.length > 0) {
-      setShortageDataTableFilter(datafilter);
-    } else {
-      setShortageDataTableFilter([]);
-    }
-  };
-
   const handletraShortage = () => {
     generalQuery("traShortageKD", {
       ALLTIME: alltime,
@@ -338,11 +290,9 @@ const ShortageKDManageTab = () => {
             };
           });
           setShortageDataTable(loadeddata);
-          setisLoading(false);
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
       .catch((error) => {
@@ -351,11 +301,11 @@ const ShortageKDManageTab = () => {
   };
 
   const deletePlan = async () => {
-    if (shortagedatatablefilter.length >= 1) {
+    if (shortagedatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < shortagedatatablefilter.length; i++) {
+      for (let i = 0; i < shortagedatatablefilter.current.length; i++) {
         await generalQuery("delete_shortage", {
-          ST_ID: shortagedatatablefilter[i].ST_ID,
+          ST_ID: shortagedatatablefilter.current[i].ST_ID,
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -396,6 +346,46 @@ const ShortageKDManageTab = () => {
   };
 
   useEffect(() => {}, []);
+
+  const shortageAGTable = useMemo(
+    () => (
+      <AGTable
+        suppressRowClickSelection={false}
+        showFilter={true}
+        toolbar={
+          <div>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                SaveExcel(shortagedatatable, "Shortage Table");
+              }}
+            >
+              <AiFillFileExcel color="green" size={15} />
+              SAVE
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleConfirmDeletePlan);
+              }}
+            >
+              <MdOutlineDelete color="red" size={15} />
+              XÓA SHORTAGE
+            </IconButton>
+          </div>
+        }
+        columns={column_shortage}
+        data={shortagedatatable}
+        onCellEditingStopped={(params: any) => {}}
+        onRowClick={(params: any) => {}
+        }
+        onSelectionChange={(params: any) => {
+          shortagedatatablefilter.current = params!.api.getSelectedRows();
+        }}
+      />
+    ),
+    [shortagedatatable],
+  );
 
   return (
     <div className="tracuuPlan">
@@ -479,24 +469,7 @@ const ShortageKDManageTab = () => {
         </div>
       </div>
       <div className="tracuuPlanTable" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-        <DataGrid
-          slots={{
-            toolbar: CustomToolbarPOTable,
-          }}
-          sx={{ fontSize: "0.7rem" }}
-          loading={isLoading}
-          rowHeight={30}
-          rows={shortagedatatable}
-          columns={column_shortage}
-          pageSizeOptions={[5, 10, 50, 100, 500, 1000, 5000, 10000, 100000]}
-          editMode="row"
-          getRowId={(row) => row.ST_ID}
-          checkboxSelection
-          disableRowSelectionOnClick
-          onRowSelectionModelChange={(ids) => {
-            handleShortageSelectionforUpdate(ids);
-          }}
-        />
+        {shortageAGTable}
       </div>
     </div>
   );

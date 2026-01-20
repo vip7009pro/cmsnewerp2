@@ -9,7 +9,7 @@ import { NotificationElement } from "../../../components/NotificationPanel/Notif
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import "../pomanager/PoManagerAddTab.scss";
+import "./PlanManagerAddTab.scss";
 
 const PlanManagerAddTab = () => {
   const userData = useSelector((state: RootState) => state.totalSlice.userData);
@@ -17,7 +17,231 @@ const PlanManagerAddTab = () => {
   const company: string = useSelector((state: RootState) => state.totalSlice.company);
 
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
-  const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
+  const [columnsExcel, setColumnsExcel] = useState<Array<any>>([
+
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 100, checkboxSelection: true, headerCheckboxSelection: true },
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 100 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 100 },
+    { field: "G_CODE", headerName: "G_CODE", width: 70 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 120,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.data.G_NAME}</b>
+          </span>
+        );
+      },
+    },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 60 },
+    {
+      field: "PROD_MAIN_MATERIAL",
+      headerName: "PROD_MAIN_MATERIAL",
+      width: 120,
+    },
+    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 50 },
+    {
+      field: "D1",
+      type: "number",
+      headerName: "D1",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D1?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D2",
+      type: "number",
+      headerName: "D2",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D2?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D3",
+      type: "number",
+      headerName: "D3",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D3?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D4",
+      type: "number",
+      headerName: "D4",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D4?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D5",
+      type: "number",
+      headerName: "D5",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D5?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D6",
+      type: "number",
+      headerName: "D6",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D6?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D7",
+      type: "number",
+      headerName: "D7",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D7?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D8",
+      type: "number",
+      headerName: "D8",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D8?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D9",
+      type: "number",
+      headerName: "D9",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D9?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D10",
+      type: "number",
+      headerName: "D10",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D10?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D11",
+      type: "number",
+      headerName: "D11",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D11?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D12",
+      type: "number",
+      headerName: "D12",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D12?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D13",
+      type: "number",
+      headerName: "D13",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D13?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D14",
+      type: "number",
+      headerName: "D14",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D14?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D15",
+      type: "number",
+      headerName: "D15",
+      width: 50,
+      cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.data.D15?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+  
+
+  ]);
   const [trigger, setTrigger] = useState(true);
   const excelSelected = useRef<any[]>([]);
 
@@ -217,7 +441,7 @@ const PlanManagerAddTab = () => {
       } else if (err_code === 4) {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       } else if (err_code === 5) {
-        tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
+        tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn đơn hàng";
       }
     }
 
@@ -295,14 +519,14 @@ const PlanManagerAddTab = () => {
   );
 
   return (
-    <div className="newpo">
+    <div className="planAdd">
       <div
-        className="batchnewpo batchnewpo--full"
+        className="batchnewplan batchnewplan--full"
         style={{
-          ["--poadd-header-bg" as any]: theme?.[company]?.backgroundImage ?? theme?.CMS?.backgroundImage ?? "",
+          ["--planadd-header-bg" as any]: theme?.[company]?.backgroundImage ?? theme?.CMS?.backgroundImage ?? "",
         }}
       >
-        <div className="newpoHeader">
+        <div className="planAddHeader">
           <h3>Thêm Plan Hàng Loạt</h3>
         </div>
 
@@ -319,15 +543,21 @@ const PlanManagerAddTab = () => {
             />
           </div>
 
-          <Button className="poAddActionBtn" variant="contained" size="small" onClick={confirmCheckPlanHangLoat}>
+          <Button className="planAddActionBtn" variant="contained" size="small" onClick={confirmCheckPlanHangLoat}>
             Check Plan
           </Button>
-          <Button className="poAddActionBtn" variant="contained" size="small" color="success" onClick={confirmUpPlanHangLoat}>
+          <Button
+            className="planAddActionBtn"
+            variant="contained"
+            size="small"
+            color="success"
+            onClick={confirmUpPlanHangLoat}
+          >
             Up Plan
           </Button>
         </div>
 
-        <div className="insertPOTable insertPOTable--full">{planDataAGTableExcel}</div>
+        <div className="insertPlanTable insertPlanTable--full">{planDataAGTableExcel}</div>
       </div>
     </div>
   );
