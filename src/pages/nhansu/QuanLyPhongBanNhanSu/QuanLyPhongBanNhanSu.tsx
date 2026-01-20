@@ -7,7 +7,7 @@ const QuanLyPhongBanNhanSu = () => {
   useEffect(() => {   
   }, []);
   return (
-    <div className="quanlyphongbannhansu">
+    <div className="quanlyphongbannhansunew">
       <MyTabs defaultActiveTab={0}>
         <MyTabs.Tab title="Quản lý Nhân Sự">
           <UserManager/>

@@ -27,7 +27,7 @@
     
     width: 100%;
     border-radius: 5px;
-    height: 90vh;
+    height: calc(100vh - 85px);
     background-image: linear-gradient(0deg, #afd3d1, #f18de1);
 
     .onoffdiv {
