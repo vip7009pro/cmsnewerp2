@@ -8,7 +8,7 @@ import LinearProgress, {
 import Typography from "@mui/material/Typography";
 import getsentence from "../../String/String";
 import { Button, Card, CardContent, CardHeader, Chip, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, Stack, TextField } from "@mui/material";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineBarChart, AiOutlineIdcard, AiOutlineTool, AiOutlineUnlock } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -218,8 +218,13 @@ export default function AccountInfo() {
   }
   const [file, setFile] = useState<any>(null);
   //let file:any = null;
-  const uploadFile2 = async (e: any) => {
-    uploadQuery(file, "NS_" + userdata?.EMPL_NO + ".jpg", "Picture_NS")
+  const uploadFile2 = async (selectedFile?: File) => {
+    const fileToUpload = selectedFile ?? file;
+    if (!fileToUpload) {
+      Swal.fire("Thông báo", "Chưa chọn file", "warning");
+      return;
+    }
+    uploadQuery(fileToUpload, "NS_" + userdata?.EMPL_NO + ".jpg", "Picture_NS")
       .then((response) => {
         console.log("resopone upload:", response.data);
         if (response.data.tk_status !== "NG") {
@@ -250,6 +255,7 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
+  const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     getData();
     getchamcong();
@@ -294,7 +300,12 @@ export default function AccountInfo() {
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={3}>
                 <div className="aiAvatarBlock">
-                  <div className="aiAvatarFrame">
+                  <div
+                    className="aiAvatarFrame aiAvatarFrame--click"
+                    onClick={() => {
+                      avatarInputRef.current?.click();
+                    }}
+                  >
                     {userdata?.EMPL_IMAGE === "Y" ? (
                       <img
                         className="aiAvatar"
@@ -307,27 +318,20 @@ export default function AccountInfo() {
                       </div>
                     )}
                   </div>
-                  {userdata?.EMPL_IMAGE !== "Y" && (
-                    <div className="aiAvatarUpload">
-                      <input
-                        id="aiAvatarInput"
-                        accept='.jpg'
-                        type='file'
-                        onChange={(e: any) => {
-                          setFile(e.target.files[0]);
-                          console.log(e.target.files[0]);
-                        }}
-                      />
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={uploadFile2}
-                        startIcon={<AiOutlineCloudUpload size={16} />}
-                      >
-                        Upload
-                      </Button>
-                    </div>
-                  )}
+                  <input
+                    ref={avatarInputRef}
+                    id="aiAvatarInput"
+                    accept='.jpg'
+                    type='file'
+                    style={{ display: "none" }}
+                    onChange={(e: any) => {
+                      const selectedFile = e.target.files?.[0];
+                      if (!selectedFile) return;
+                      setFile(selectedFile);
+                      uploadFile2(selectedFile);
+                      e.target.value = "";
+                    }}
+                  />
                 </div>
               </Grid>
 
@@ -339,11 +343,11 @@ export default function AccountInfo() {
                   </div>
                   <div className="aiSub">
                     {/* Bộ phận chính */}
-                    {userdata?.MAINDEPTNAME}
+                    Main Department: {userdata?.MAINDEPTNAME}
                   </div>
                   <div className="aiSub">
                     {/* Bộ phận phụ */}
-                    {userdata?.SUBDEPTNAME}
+                    Sub Department: {userdata?.SUBDEPTNAME}
                   </div>
                   <div className="aiMetaRow">
                     <span>
@@ -360,8 +364,8 @@ export default function AccountInfo() {
 
               <Grid item xs={12} md={3}>
                 <div className="aiCheckinCard">
-                  <div className='chamcongtitle'>
-                    Check in-out: {moment().format("YYYY-MM-DD")}
+                  <div className='chamcongtitle' style={{ fontSize: "15px" }}>
+                    IN/OUT: {moment().format("YYYY-MM-DD")}
                   </div>
                   <div className="aiCheckGrid">
                     <div className="aiCheckPill aiCheckPill--in">
@@ -392,9 +396,12 @@ export default function AccountInfo() {
             <Card className="aiCard">
               <CardHeader
                 title={
-                  <div>
-                    {/* Thông tin nhân viên */}
-                    {getsentence(18, lang ?? "en")}
+                  <div className="aiCardTitle">
+                    <AiOutlineIdcard size={18} />
+                    <span>
+                      {/* Thông tin nhân viên */}
+                      {getsentence(18, lang ?? "en")}
+                    </span>
                   </div>
                 }
               />
@@ -444,6 +451,21 @@ export default function AccountInfo() {
                     </div>
                     <div className="aiValue">{userdata?.JOB_NAME}</div>
                   </div>
+                  <div className="aiInfoRow aiActionRow">
+                    <div className="aiLabel">
+                    </div>
+                    <div className="aiValue aiActionValue">
+                      <Button
+                        className="aiChangePwBtn"
+                        variant="contained"
+                        size="small"
+                        onClick={() => setOpenChangePw(true)}
+                        startIcon={<AiOutlineUnlock size={16} />}
+                      >
+                        Change password
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -451,7 +473,14 @@ export default function AccountInfo() {
 
           <Grid item xs={12} md={6}>
             <Card className="aiCard">
-              <CardHeader title="Summary" />
+              <CardHeader
+                title={
+                  <div className="aiCardTitle">
+                    <AiOutlineBarChart size={18} />
+                    <span>Summary</span>
+                  </div>
+                }
+              />
               <CardContent>
                 <div className="aiStatBlock">
                   <div className="aiStatTitle">
@@ -526,22 +555,6 @@ export default function AccountInfo() {
             </Card>
           </Grid>
 
-          <Grid item xs={12}>
-            <Card className="aiCard">
-              <CardHeader title="Security" />
-              <CardContent>
-                <div className="aiSecurityRow">
-                  <Button
-                    variant="contained"
-                    onClick={() => setOpenChangePw(true)}
-                  >
-                    Change Password
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
-
           <Dialog open={openChangePw} onClose={() => setOpenChangePw(false)} maxWidth="xs" fullWidth>
             <DialogTitle>Change Password</DialogTitle>
             <DialogContent>
@@ -586,7 +599,12 @@ export default function AccountInfo() {
             <Grid item xs={12}>
               <Card className="aiCard aiAdminCard">
                 <CardHeader
-                  title="Admin tools"
+                  title={
+                    <div className="aiCardTitle">
+                      <AiOutlineTool size={18} />
+                      <span>Admin tools</span>
+                    </div>
+                  }
                   action={
                     <Button
                       variant={showAdminTools ? "contained" : "outlined"}
