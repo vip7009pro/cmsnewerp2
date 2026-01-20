@@ -1,140 +1,19 @@
 @media only screen and (max-width: 5000px) {
   .qlvl {
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
     .tracuuDataInspection {
       width: 100%;
       display: flex;
-      gap: 5px;
-      .tracuuDataInspectionform {        
-        display: flex;
-        flex-direction: column;
-        width: 0%;
-        align-items: center;
-        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-        border-radius: 3px;        
-        font-size: 0.8rem;
-        span {
-          padding: 10px;
-          font-size: 20px;
-          margin: auto;
-        }
-        .forminput {
-          display: flex;
-          flex-direction: row;          
-          gap: 5px;
-          flex-wrap: wrap;
-          align-items: flex-start;
-          justify-content: space-around;
-          padding: 2px;
-          font-size: 0.6rem;
-          .left, .right{
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            align-items: flex-end;
-            justify-content: center;
-            flex-wrap: wrap;
-            .forminputcolumn {
-              display: flex;
-              flex-direction: column;
-              gap: 5px;
-              align-items: flex-end;
-              justify-content: center;
-              flex-wrap: wrap;
-              input {
-                width: 150px;
-                height: 15px;
-                font-size: 0.6rem;
-                outline: none;
-                border-radius: 5px;
-                border: none;
-                padding: 5px;
-                margin-left: 5px;
-                background-image: linear-gradient(0deg, #ececec, #9dee95);
-              }
-              select {
-                width: 160px;
-                height: 25px;
-                font-size: 0.6rem;
-                outline: none;
-                border-radius: 5px;
-                border: none;
-                padding: 5px;
-                margin-left: 5px;
-                background-image: linear-gradient(0deg, #ececec, #9dee95);
-              }
-              .autocomplete {
-                background-color: rgba(255, 255, 255, 0);
-                position: relative;
-                * {
-                  font-size: 0.8rem;
-                  background-color: rgba(255, 255, 255, 0);
-                  margin: 0;
-                  padding: 1.5px;
-                }
-                input {
-                  background-color: white;
-                  z-index: 1;
-                  height: 23px;
-                  width: 150px;
-                }
-              }
-            }
-          } 
-          
-        }
-        .formbutton {
-          display: flex;
-          flex-direction: row;
-          font-size: 0.6rem;
-          gap: 20px;
-          .checkboxdiv {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            align-self: center;
-            align-content: center;
-            justify-content: center;
-            justify-items: center;
-            justify-self: center;
-            font-size: 0.6rem;
-          }
-        }
-        .formsummary {
-          display: flex;
-          flex-direction: row;
-          background-image: linear-gradient(0deg, #ececec, #99f86d);
-          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          gap: 20px;
-          border-radius: 5px;
-          .summarygroup {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-items: flex-start;
-            gap: 10px;
-            .summaryvalue {
-              display: flex;
-              font-size: 16px;
-              justify-self: flex-end;
-              align-self: flex-end;
-              padding: 5px;
-              color: rgb(83, 36, 255);
-            }
-          }
-        }
-      }
+      flex-direction: column;
+      height: 100%;   
       .tracuuYCSXTable {
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 94vh;
+        height: 100%;
         background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
