@@ -17,8 +17,6 @@ const TINH_HINH_CHOT = () => {
   >([]);
   const [loadingCount, setLoadingCount] = useState(0);
   const isLoading = loadingCount > 0;
-  const [quickFilterNM1, setQuickFilterNM1] = useState("");
-  const [quickFilterNM2, setQuickFilterNM2] = useState("");
   const nm1Ref = React.useRef<any>(null);
   const nm2Ref = React.useRef<any>(null);
 
