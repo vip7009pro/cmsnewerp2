@@ -6,6 +6,7 @@ import { FaFile, FaFileExcel, FaFileImage, FaFilePdf, FaFileWord } from 'react-i
 import { FaFileZipper } from 'react-icons/fa6';
 import { DownloadButton } from '../../../components/DownloadButton/DownloadButton';
 import './FileTransfer.scss';
+import axios from 'axios';
 
 interface FileProgress {
   id: string;
@@ -90,6 +91,7 @@ const FileTransfer = () => {
     setOverallProgress(0);
     if (uploadedFiles.length > 0) {
       let completedCount = 0;
+      let failedCount = 0;
       for (let i = 0; i < uploadedFiles.length; i++) {
         const item = uploadedFiles[i];
         try {
@@ -139,26 +141,63 @@ const FileTransfer = () => {
           );
           completedCount++;
         } catch (error) {
+          let errorMessage = 'Upload failed';
+          if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const statusText = error.response?.statusText;
+            const serverMessage = (error.response?.data as any)?.message;
+            const tkStatus = (error.response?.data as any)?.tk_status;
+            errorMessage = [
+              status ? `HTTP ${status}` : undefined,
+              statusText,
+              tkStatus ? `tk_status: ${tkStatus}` : undefined,
+              serverMessage ? `message: ${serverMessage}` : undefined,
+              error.message,
+            ]
+              .filter(Boolean)
+              .join(' | ');
+          } else {
+            errorMessage = String(error);
+          }
+
           setUploadedFiles((prev) =>
             prev.map((f) =>
               f.id === item.id
                 ? {
                     ...f,
                     status: 'error',
-                    error: String(error),
+                    error: errorMessage,
                   }
                 : f
             )
           );
+          failedCount++;
         }
         setOverallProgress(uploadedFiles.length > 0 ? (completedCount / uploadedFiles.length) * 100 : 0);
       }
-      Swal.fire({
-        title: 'Success',
-        text: 'File uploaded successfully',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      });
+
+      if (failedCount === 0) {
+        Swal.fire({
+          title: 'Success',
+          text: 'File uploaded successfully',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      } else if (completedCount === 0) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Upload failed. Please check server limits/logs.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      } else {
+        Swal.fire({
+          title: 'Warning',
+          text: `Uploaded: ${completedCount}, Failed: ${failedCount}. Click the failed row to see error details.`,
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+      }
       await handleGetFileListFromDataBase();
     } else {
       console.log('No files to upload');
@@ -255,6 +294,9 @@ const FileTransfer = () => {
                     <div className="ftProgress__fill" style={{ width: `${item.progress || 0}%` }} />
                   </div>
                   <div className="fileTransfer__percent">{item.progress || 0}%</div>
+                  {item.status === 'error' && item.error && (
+                    <div className="fileTransfer__errorText" title={item.error}>{item.error}</div>
+                  )}
                 </div>
                 <div className="fileTransfer__actions">
                   <button
