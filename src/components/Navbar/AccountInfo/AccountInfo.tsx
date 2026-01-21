@@ -20,6 +20,15 @@ import Cookies from "universal-cookie";
 import { UserData } from "../../../api/GlobalInterface";
 import Box from "@mui/material/Box";
 import axios from "axios";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 interface MYCHAMCONG {
   MIN_TIME: string;
   MAX_TIME: string;
@@ -65,10 +74,20 @@ export default function AccountInfo() {
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
   const [countxacnhan, setCountXacNhan] = useState(0);
+  const [attendanceTimeline, setAttendanceTimeline] = useState<Array<{ day: number; hours: number }>>([]);
+  const [attendanceTimelineLoading, setAttendanceTimelineLoading] = useState(false);
+  const [attendanceTimelineError, setAttendanceTimelineError] = useState<string | null>(null);
   const [thuongphat, setThuongPhat] = useState({
     count_thuong: 0,
     count_phat: 0,
   });
+  const todayDay = moment().date();
+  const attendanceChartData: Array<{ day: number; hours: number; hoursPast: number | null; hoursFuture: number | null }> =
+    attendanceTimeline.map((d) => ({
+      ...d,
+      hoursPast: d.day < todayDay ? d.hours : null,
+      hoursFuture: d.day >= todayDay ? d.hours : null,
+    }));
   const startOfYear = moment().year() + "-01-01";
   //console.log(moment().startOf('year').format('YYYY-MM-DD'));
   const now = moment(new Date());
@@ -106,6 +125,74 @@ export default function AccountInfo() {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const fetchAttendanceTimeline = async () => {
+    try {
+      setAttendanceTimelineLoading(true);
+      setAttendanceTimelineError(null);
+
+      const monthStart = moment().startOf("month");
+      const monthEnd = moment().endOf("month");
+      const daysInMonth = monthEnd.date();
+
+      const baseData: Array<{ day: number; hours: number }> = Array.from(
+        { length: daysInMonth },
+        (_, idx) => ({ day: idx + 1, hours: 0 })
+      );
+
+      const response = await generalQuery("mydiemdanhnhom", {
+        from_date: monthStart.format("YYYY-MM-DD"),
+        to_date: monthEnd.format("YYYY-MM-DD"),
+      });
+
+      if (response.data.tk_status === "NG") {
+        setAttendanceTimeline(baseData);
+        setAttendanceTimelineError(response.data.message || "Load failed");
+        return;
+      }
+
+      const rows: any[] = response.data.data || [];
+
+      const parseTime = (dateStr: string, timeStr: string) => {
+        const clean = String(timeStr || "").trim();
+        if (!clean || clean === "OFF") return null;
+        return moment(
+          `${dateStr} ${clean}`,
+          [
+            "YYYY-MM-DD HH:mm",
+            "YYYY-MM-DD HH:mm:ss",
+            "YYYY-MM-DD H:mm",
+            "YYYY-MM-DD H:mm:ss",
+          ],
+          true
+        );
+      };
+
+      const toHours = (mins: number) => Math.round((mins / 60) * 100) / 100;
+
+      for (const row of rows) {
+        const dateStr = moment(row.DATE_COLUMN).utc().format("YYYY-MM-DD");
+        const day = Number(moment(dateStr, "YYYY-MM-DD").format("D"));
+        if (!day || day < 1 || day > daysInMonth) continue;
+
+        const inMoment = parseTime(dateStr, row.IN_TIME);
+        const outMomentRaw = parseTime(dateStr, row.OUT_TIME);
+        if (!inMoment || !outMomentRaw || !inMoment.isValid() || !outMomentRaw.isValid()) {
+          continue;
+        }
+
+        const outMoment = outMomentRaw.isBefore(inMoment) ? outMomentRaw.clone().add(1, "day") : outMomentRaw;
+        const diffMinutes = Math.max(0, outMoment.diff(inMoment, "minutes"));
+        const workingMinutes = Math.max(0, diffMinutes - 60);
+        baseData[day - 1] = { day, hours: toHours(workingMinutes) };
+      }
+      setAttendanceTimeline(baseData);
+    } catch (e: any) {
+      setAttendanceTimelineError(String(e?.message || e));
+    } finally {
+      setAttendanceTimelineLoading(false);
+    }
   };
   const getData = () => {
     let insertData = {};
@@ -259,6 +346,7 @@ export default function AccountInfo() {
   useEffect(() => {
     getData();
     getchamcong();
+    fetchAttendanceTimeline();
     let intervalID2 = window.setInterval(() => {
       getchamcong();
     }, 5000);
@@ -550,6 +638,71 @@ export default function AccountInfo() {
                     {getsentence(37, lang ?? "en")} {thuongphat.count_thuong} , {/* Kỷ luật */}
                     {getsentence(38, lang ?? "en")}: {thuongphat.count_phat}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card className="aiCard">
+              <CardHeader
+                title={
+                  <div className="aiCardTitle">
+                    <AiOutlineBarChart size={18} />
+                    <span>Time line đi làm (Tháng {moment().format("MM")})</span>
+                  </div>
+                }
+                action={
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      fetchAttendanceTimeline();
+                    }}
+                  >
+                    Refresh
+                  </Button>
+                }
+              />
+              <CardContent>
+                {attendanceTimelineError && (
+                  <div style={{ color: "#c62828", marginBottom: 8 }}>{attendanceTimelineError}</div>
+                )}
+                {attendanceTimelineLoading && (
+                  <Box sx={{ width: "100%", mb: 1 }}>
+                    <LinearProgress />
+                  </Box>
+                )}
+                <div style={{ width: "100%", height: 220 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={attendanceChartData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} domain={[0, 12]} />
+                      <Tooltip
+                        content={({ active, payload, label }: any) => {
+                          if (!active || !payload || payload.length === 0) return null;
+                          const item = payload.find((p: any) => p?.value != null);
+                          if (!item) return null;
+                          return (
+                            <div
+                              style={{
+                                background: "white",
+                                border: "1px solid rgba(0,0,0,0.15)",
+                                padding: 8,
+                                borderRadius: 8,
+                              }}
+                            >
+                              <div style={{ fontWeight: 700, marginBottom: 4 }}>{`Ngày ${label}`}</div>
+                              <div>{`${item.value} giờ`}</div>
+                            </div>
+                          );
+                        }}
+                      />
+                      <Line type="monotone" dataKey="hoursPast" stroke="#2e7d32" strokeWidth={2} dot={false} isAnimationActive={!attendanceTimelineLoading} />
+                      <Line type="monotone" dataKey="hoursFuture" stroke="#d32f2f" strokeWidth={2} dot={false} isAnimationActive={!attendanceTimelineLoading} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
