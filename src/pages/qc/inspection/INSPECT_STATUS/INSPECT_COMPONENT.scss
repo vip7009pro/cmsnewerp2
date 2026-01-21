@@ -1,32 +1,52 @@
 .inspect_component {
   width: 130px;
-  height: 65px;
-  background-image: linear-gradient(0deg, #cbeea3, #1ee4b9);
-  border-radius: 5px;
-  box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-  -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  height: 70px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  -webkit-box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+    -webkit-box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+  }
+
   .tieude {
     display: flex;
     flex-direction: column;
     flex: 1;
-    background-color: bisque;
+    background-color: transparent;
     width: 100%;
     align-self: center;
     justify-content: center;
     font-weight: bold;
     font-size: 0.8rem;
     align-items: center;
+    padding: 2px 4px;
   }
   .machineplan {
     display: flex;
-    overflow-x: inherit;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
     flex: 0;
+    padding: 2px 6px 4px 6px;
     .codename {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
-    .username {
-      font-size: 0.6rem;
+    .user {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(15, 23, 42, 0.75);
     }
   }
 }

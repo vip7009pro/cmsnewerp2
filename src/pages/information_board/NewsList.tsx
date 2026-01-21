@@ -4,27 +4,28 @@ import { POST_DATA } from "./interfaces/infoInterface";
 
 interface NewsListProps {
   newsItems: POST_DATA[];
+  selectedPostId?: number;
   onNewsClick: (newsItem: POST_DATA) => void;
 }
 
-const NewsList: React.FC<NewsListProps> = ({ newsItems, onNewsClick }) => {
+const NewsList: React.FC<NewsListProps> = ({ newsItems, selectedPostId, onNewsClick }) => {
   return (
     <div className="news-list">
       {newsItems.map((item, index) => (
         <div
-          className="news-item"
-          key={index}
-          onClick={() => onNewsClick(item)} // Gọi hàm khi click vào tin
+          className={`news-item ${selectedPostId === item.POST_ID ? 'isSelected' : ''}`}
+          key={item.POST_ID ?? index}
+          onClick={() => onNewsClick(item)}
         >
-          <div className="thumbnail" style={{ fontSize: "1.0rem" }}>
+          <div className="news-item__thumb">
             <img src={encodeURI(`/informationboard/${item.FILE_NAME}`)} alt={`Thumbnail ${index + 1}`} />
-            <div className="deptinfo" style={{ fontSize: "0.7rem" }}>
-              <span style={{ fontSize: "0.7rem", color: "#09a9b4" }}>{item.SUBDEPT}</span>
-              <span style={{ fontSize: "0.7rem" }}> {` `}{moment.utc(item.INS_DATE).format('YYYY-MM-DD')}</span>
-            </div>
           </div>
-          <div className="news-imagelist-footer" style={{ fontSize: "0.8rem", height: "100%" }}>
-            <div className="element_title" style={{ fontSize: "1.2rem", overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+          <div className="news-item__body">
+            <div className="news-item__meta">
+              <span className="news-item__dept">{item.SUBDEPT}</span>
+              <span className="news-item__date">{moment.utc(item.INS_DATE).format('YYYY-MM-DD')}</span>
+            </div>
+            <div className="news-item__title">
               {item.TITLE}
             </div>
           </div>

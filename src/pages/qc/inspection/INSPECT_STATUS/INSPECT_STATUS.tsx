@@ -84,56 +84,89 @@ const INSPECT_STATUS = () => {
 
   return (
     <div className="ins_status">
-      <div className="ins_summary">
-        <div className="selectform">
-          <div className="label">Select Factory</div>
+      <div className="ins_header">
+        <div className="ins_header__left">
+          <div className="ins_header__title">Inspection Status</div>
+          <div className="ins_header__subtitle">Realtime overview (auto refresh 3s)</div>
+        </div>
+        <div className="ins_header__right">
           <Select
             value={selectedFactory}
-            label="Select Factory"
             onChange={(e) => {
               setSelectedFactory(Number(e.target.value));
             }}
-            style={{ width: "200px", height: "40px" }}
-            placeholder="Chọn nhà máy"
+            size="small"
           >
             <MenuItem value={0}>ALL</MenuItem>
             <MenuItem value={1}>NM1</MenuItem>
             <MenuItem value={2}>NM2</MenuItem>
           </Select>
           <TextField
-            placeholder="Search Code"
+            size="small"
+            label="Search"
             value={searchString}
             onChange={(e) => {
               setSearchString(e.target.value);
             }}
           />
         </div>
-        {/* <INS_SUMMARY INS_DATA={ins_status_data}/>
-        <INS_SUMMARY INS_DATA={ins_status_data}/> */}
       </div>
-      <div className="ins_div">
+
+      <div className="ins_kpis">
+        <div className="ins_kpi ins_kpi--blue">
+          <div className="ins_kpi__label">NM1 (A+B)</div>
+          <div className="ins_kpi__value">
+            {inspectionsummary.totalSheetA + inspectionsummary.totalRollB}
+          </div>
+        </div>
+        <div className="ins_kpi ins_kpi--teal">
+          <div className="ins_kpi__label">Xưởng A</div>
+          <div className="ins_kpi__value">{inspectionsummary.totalSheetA}</div>
+        </div>
+        <div className="ins_kpi ins_kpi--cyan">
+          <div className="ins_kpi__label">Xưởng B</div>
+          <div className="ins_kpi__value">{inspectionsummary.totalRollB}</div>
+        </div>
+        <div className="ins_kpi ins_kpi--amber">
+          <div className="ins_kpi__label">NM2 (N+O+U)</div>
+          <div className="ins_kpi__value">
+            {inspectionsummary.totalNormal +
+              inspectionsummary.totalOLED +
+              inspectionsummary.totalUV}
+          </div>
+        </div>
+        <div className="ins_kpi ins_kpi--purple">
+          <div className="ins_kpi__label">OLED</div>
+          <div className="ins_kpi__value">{inspectionsummary.totalOLED}</div>
+        </div>
+        <div className="ins_kpi ins_kpi--green">
+          <div className="ins_kpi__label">UV</div>
+          <div className="ins_kpi__value">{inspectionsummary.totalUV}</div>
+        </div>
+      </div>
+
+      <div className="ins_content">
         {(selectedFactory === 0 || selectedFactory === 1) && (
-          <div className="NM1">
-            <div className="title">
-              NM1 INSPECTION STATUS (
-              {inspectionsummary.totalSheetA + inspectionsummary.totalRollB}{" "}
-              người)
+          <section className="ins_panel">
+            <div className="ins_panel__header">
+              <div className="ins_panel__title">NM1</div>
+              <div className="ins_panel__meta">
+                {inspectionsummary.totalSheetA + inspectionsummary.totalRollB} người
+              </div>
             </div>
-            <div className="table">
-              <div className="xuongA">
-                <div className="subtitle">
-                  <b>
-                    Xưởng A: ({inspectionsummary.totalSheetA} người đang kiểm
-                    tra)
-                  </b>
+            <div className="ins_panel__body ins_panel__body--grid2">
+              <div className="ins_area">
+                <div className="ins_area__header">
+                  <span className="ins_area__name">Xưởng A</span>
+                  <span className="ins_area__count">{inspectionsummary.totalSheetA} người</span>
                 </div>
-                <div className="submachine">
+                <div className="ins_area__grid">
                   {ins_status_data
                     .filter((element: INS_STATUS) => element.KHUVUC === "A")
                     .map((element: INS_STATUS, index: number) => {
                       return (
                         <INSPECT_COMPONENT
-                          key={index}
+                          key={element.EQ_NAME ?? index}
                           INS_DATA={{
                             SEARCH_STRING: searchString,
                             FACTORY: element.FACTORY,
@@ -156,20 +189,18 @@ const INSPECT_STATUS = () => {
                     })}
                 </div>
               </div>
-              <div className="xuongB">
-                <div className="subtitle">
-                  <b>
-                    Xưởng B: ({inspectionsummary.totalRollB} người đang kiểm
-                    tra)
-                  </b>
+              <div className="ins_area">
+                <div className="ins_area__header">
+                  <span className="ins_area__name">Xưởng B</span>
+                  <span className="ins_area__count">{inspectionsummary.totalRollB} người</span>
                 </div>
-                <div className="submachine">
+                <div className="ins_area__grid">
                   {ins_status_data
                     .filter((element: INS_STATUS) => element.KHUVUC === "B")
                     .map((element: INS_STATUS, index: number) => {
                       return (
                         <INSPECT_COMPONENT
-                          key={index}
+                          key={element.EQ_NAME ?? index}
                           INS_DATA={{
                             SEARCH_STRING: searchString,
                             FACTORY: element.FACTORY,
@@ -193,32 +224,32 @@ const INSPECT_STATUS = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         )}
+
         {(selectedFactory === 0 || selectedFactory === 2) && (
-          <div className="NM2">
-            <div className="title">
-              NM2 INSPECTION STATUS (
-              {inspectionsummary.totalNormal +
-                inspectionsummary.totalOLED +
-                inspectionsummary.totalUV}{" "}
-              người)
+          <section className="ins_panel">
+            <div className="ins_panel__header">
+              <div className="ins_panel__title">NM2</div>
+              <div className="ins_panel__meta">
+                {inspectionsummary.totalNormal +
+                  inspectionsummary.totalOLED +
+                  inspectionsummary.totalUV} người
+              </div>
             </div>
-            <div className="table">
-              <div className="normal">
-                <div className="subtitle">
-                  <b>
-                    Hàng Thường: ({inspectionsummary.totalNormal} người đang
-                    kiểm tra)
-                  </b>
+            <div className="ins_panel__body">
+              <div className="ins_area">
+                <div className="ins_area__header">
+                  <span className="ins_area__name">Hàng Thường</span>
+                  <span className="ins_area__count">{inspectionsummary.totalNormal} người</span>
                 </div>
-                <div className="submachine">
+                <div className="ins_area__grid">
                   {ins_status_data
                     .filter((element: INS_STATUS) => element.KHUVUC === "N")
                     .map((element: INS_STATUS, index: number) => {
                       return (
                         <INSPECT_COMPONENT
-                          key={index}
+                          key={element.EQ_NAME ?? index}
                           INS_DATA={{
                             SEARCH_STRING: searchString,
                             FACTORY: element.FACTORY,
@@ -241,19 +272,19 @@ const INSPECT_STATUS = () => {
                     })}
                 </div>
               </div>
-              <div className="oled">
-                <div className="subtitle">
-                  <b>
-                    OLED: ({inspectionsummary.totalOLED} người đang kiểm tra)
-                  </b>
+
+              <div className="ins_area">
+                <div className="ins_area__header">
+                  <span className="ins_area__name">OLED</span>
+                  <span className="ins_area__count">{inspectionsummary.totalOLED} người</span>
                 </div>
-                <div className="submachine">
+                <div className="ins_area__grid">
                   {ins_status_data
                     .filter((element: INS_STATUS) => element.KHUVUC === "O")
                     .map((element: INS_STATUS, index: number) => {
                       return (
                         <INSPECT_COMPONENT
-                          key={index}
+                          key={element.EQ_NAME ?? index}
                           INS_DATA={{
                             SEARCH_STRING: searchString,
                             FACTORY: element.FACTORY,
@@ -276,17 +307,19 @@ const INSPECT_STATUS = () => {
                     })}
                 </div>
               </div>
-              <div className="uv">
-                <div className="subtitle">
-                  <b>UV: ({inspectionsummary.totalUV} người đang kiểm tra)</b>
+
+              <div className="ins_area">
+                <div className="ins_area__header">
+                  <span className="ins_area__name">UV</span>
+                  <span className="ins_area__count">{inspectionsummary.totalUV} người</span>
                 </div>
-                <div className="submachine">
+                <div className="ins_area__grid">
                   {ins_status_data
                     .filter((element: INS_STATUS) => element.KHUVUC === "U")
                     .map((element: INS_STATUS, index: number) => {
                       return (
                         <INSPECT_COMPONENT
-                          key={index}
+                          key={element.EQ_NAME ?? index}
                           INS_DATA={{
                             SEARCH_STRING: searchString,
                             FACTORY: element.FACTORY,
@@ -310,7 +343,7 @@ const INSPECT_STATUS = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>

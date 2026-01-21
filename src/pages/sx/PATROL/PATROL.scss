@@ -1,118 +1,163 @@
 @media only screen and (max-width: 5000px) {
   .patrol {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: white;  
-    width: 100%;
-    
-    .header {
-      display: flex;
-      flex-direction: row;     
+    box-sizing: border-box;
+    padding: 0px;
+    gap: 3px;
+
+    background: linear-gradient(180deg, rgba(238, 244, 255, 0.75), rgba(245, 247, 250, 0.75));
+
+    .patrol_header {
       width: 100%;
+      display: flex;
       align-items: center;
-      justify-content: center;      
-      background-image: linear-gradient(0deg, #ffffff, #7ef0fa);
-     
-      .control {
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 6px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      min-width: 0;
+
+      .patrol_header__left {
         display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        margin-top: 5px;
+        flex-direction: column;
+        min-width: 0;
+        .patrol_header__title {
+          font-size: 1.1rem;
+          font-weight: 900;
+          color: #0f172a;
+        }
+        .patrol_header__subtitle {
+          font-size: 0.8rem;
+          color: rgba(15, 23, 42, 0.65);
+        }
       }
-      .forminputcolumn {
-        display: flex;        
-        flex-direction: row;       
+
+      .patrol_header__right {
+        display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
+        gap: 10px;
         flex-wrap: wrap;
-      
+        min-width: 0;
+      }
+
+      .patrol_header__dates {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        label {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
         input {
           width: 150px;
-          height: 15px;
-          font-size: 0.6rem;
+          height: 30px;
+          font-size: 0.75rem;
           outline: none;
-          border-radius: 5px;
-          border: none;
-          padding: 5px;
-          margin-left: 5px;
-          background-image: linear-gradient(0deg, #ececec, #4bd5ee);
-        }
-      
-        select {
-          width: 160px;
-          height: 25px;
-          font-size: 0.6rem;
-          outline: none;
-          border-radius: 5px;
-          border: none;
-          padding: 5px;
-          margin-left: 5px;
-          background-image: linear-gradient(0deg, #ececec, #9dee95);
+          border-radius: 8px;
+          border: 1px solid rgba(15, 23, 42, 0.12);
+          padding: 4px 8px;
+          background: rgba(255, 255, 255, 0.9);
+          box-sizing: border-box;
         }
       }
     }
-    .row {
-      display: inline-flex; /* Use inline-flex for seamless looping */
-      animation: marquee var(--speed) linear infinite;
-      gap: 10px;    
-      flex-direction: row;
-      padding: 5px;    
-      margin-bottom: 20px;
+
+    .patrol_content {
       width: 100%;
-      justify-content: space-around;      
-      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
-      //animation: marquee 100s linear infinite;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
-    @keyframes marquee {
-      0% {
-        transform: translateX(100%);
+
+    .patrol_lane {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+
+      .patrol_lane__header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 6px 10px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+
+        .patrol_lane__title {
+          font-size: 0.85rem;
+          font-weight: 900;
+          color: #0b5fff;
+        }
+        .patrol_lane__subtitle {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.7rem;
+          color: rgba(15, 23, 42, 0.65);
+
+          .patrol_lane__count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 18px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.12);
+            color: #0b5fff;
+            font-weight: 900;
+            font-size: 0.7rem;
+          }
+        }
       }
-      100% {
-        transform: translateX(-100%);
+
+      .patrol_lane__body {
+        min-width: 0;
+        overflow: visible;
+        padding: 8px 10px;
+      }
+
+      .patrol_lane__track {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 10px;
+        align-items: stretch;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 4px;
       }
     }
   }
-  
-  
 }
 
 @media only screen and (max-width: 768px) {
   .patrol {
-    display: flex;
-    flex-direction: column;
-    background-color: white;  
-    width: 100%;
-    gap: 10px;
-    .header {
-      display: flex;
-      flex-direction: column;     
-      width: 100%;
-      align-items: center;
-      justify-content: center;
-      margin-top: 5px;
-      overflow: scroll;
-    }
-    .row {
-      display: inline-flex; /* Use inline-flex for seamless looping */
-      animation: marquee var(--speed) linear infinite;
+    padding: 8px;
+    .patrol_header {
       flex-direction: column;
-      gap: 10px; 
-      padding: 5px;    
-      margin-bottom: 20px;
-      width: 100%;
-      justify-content: space-around;      
-      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
-      //animation: marquee 100s linear infinite;
-    }
-    @keyframes marquee {
-      0% {
-        transform: translateX(100%);
+      align-items: stretch;
+      .patrol_header__right {
+        justify-content: flex-start;
       }
-      100% {
-        transform: translateX(-100%);
+    }
+    .patrol_lane {
+      .patrol_lane__body {
+        padding: 8px;
       }
     }
   }

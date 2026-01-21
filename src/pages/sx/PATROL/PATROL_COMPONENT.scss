@@ -1,17 +1,30 @@
 .patrolcomponent {
-  background-image: linear-gradient(0deg, #ffffff, #7ef0fa);
+  background: rgba(255, 255, 255, 0.92);
   display: flex;
   justify-content: start;
   flex-direction: column;
   padding: 5px;
-  height: 430px;
-  width: 600px;
-  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-  box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+  height: 420px;
+  width: 520px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  -webkit-box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+    -webkit-box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+  }
+
   .imagediv {
     display: flex;
     justify-content: center;
     align-self: center;
+    width: 100%;
+    flex: 1;
     .empl_image {
       position: relative;
       img {
@@ -40,12 +53,15 @@
   .infodiv {
     display: flex;
     width: 100%;
-    height: 150px;
+    height: 160px;
     flex-direction: row;
     justify-content: space-around;
     gap: 10px;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 0.95rem;
+    padding: 10px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.10), rgba(255, 255, 255, 0.0));
     .timeinfo {
       display: flex;
       flex: 1;
@@ -53,7 +69,8 @@
       flex-direction: column;
       .title {
         display: flex;
-        color: rgb(0, 0, 0);
+        color: #0f172a;
+        font-weight: 900;
       }
     }
     .eqinfo {
@@ -63,11 +80,11 @@
       flex-direction: column;
       .eq {
         display: flex;
-        color: rgb(255, 131, 15);
+        color: #f97316;
       }
       .factory {
         display: flex;
-        color: rgb(173, 6, 215);
+        color: #7c3aed;
       }
     }
     .codeinfo {
@@ -77,11 +94,17 @@
       flex-direction: column;
       .codename {
         display: flex;
-        color: blue;
+        color: #0b5fff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .khachhang {
         display: flex;
-        color: rgb(250, 28, 165);
+        color: #db2777;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     .thongtinloi {
@@ -91,11 +114,15 @@
       flex-direction: column;
       .defect {
         display: flex;
-        color: green;
+        color: #15803d;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .ngrate {
         display: flex;
-        color: red;
+        color: #b91c1c;
+        font-size: 0.85rem;
       }
     }
   }
@@ -104,6 +131,7 @@
     flex-direction: column;
   }
 }
+
 .patrolcomponent2 {
   background-image: linear-gradient(0deg, #ffffff, #7ef0fa);
   display: flex;
@@ -112,6 +140,7 @@
   padding: 5px;
   height: fit-content;
   width: 600px;
+
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
   box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
   .imagediv {

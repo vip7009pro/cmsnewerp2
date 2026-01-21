@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { getCompany, getUserData } from "../../../../api/Api";
 import MACHINE_COMPONENT3 from "../Machine/MACHINE_COMPONENT3";
 import EQ_SUMMARY from "./EQ_SUMMARY";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import "./EQ_STATUS2.scss";
 import { checkBP} from "../../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
@@ -187,6 +187,93 @@ const EQ_STATUS2 = () => {
       />
     )
   }, [eq_status_manager_data])
+
+  const renderFactoryPanel = (factoryCode: string) => {
+    const eqDataByFactory = eq_status.filter(
+      (element: EQ_STT) => element.FACTORY === factoryCode,
+    );
+
+    return (
+      <section className="eqs_panel">
+        <div className="eqs_panel__header">
+          <div className="eqs_panel__title">
+            <span className="eqs_panel__factory">{factoryCode}</span>
+            <span className="eqs_panel__count">{eqDataByFactory.length} machines</span>
+          </div>
+          <div className="eqs_panel__summary">
+            <EQ_SUMMARY EQ_DATA={eqDataByFactory} />
+          </div>
+        </div>
+
+        <div className="eqs_panel__body">
+          {eq_series.map((ele_series: string, index: number) => {
+            const seriesMachines = eq_status.filter(
+              (element: EQ_STT) =>
+                element.FACTORY === factoryCode &&
+                element?.EQ_NAME?.substring(0, 2) === ele_series,
+            );
+            if (seriesMachines.length === 0) return null;
+
+            const runningCount = seriesMachines.filter(
+              (m) => m.EQ_STATUS === "MASS",
+            ).length;
+            const settingCount = seriesMachines.filter(
+              (m) => m.EQ_STATUS === "SETTING",
+            ).length;
+            const stopCount = seriesMachines.filter((m) => m.EQ_STATUS === "STOP").length;
+
+            return (
+              <div className="eqs_series" key={factoryCode + ele_series + index}>
+                <div className="eqs_series__header">
+                  <div className="eqs_series__name">{ele_series}</div>
+                  <div className="eqs_series__meta">
+                    <span className="eqs_badge eqs_badge--success">RUN {runningCount}</span>
+                    <span className="eqs_badge eqs_badge--warning">SET {settingCount}</span>
+                    <span className="eqs_badge eqs_badge--danger">STOP {stopCount}</span>
+                  </div>
+                </div>
+                <div className="eqs_series__grid">
+                  {seriesMachines.map((element: EQ_STT, idx: number) => {
+                    return (
+                      <MACHINE_COMPONENT3
+                        search_string={searchString}
+                        key={element.EQ_CODE ?? idx}
+                        factory={element.FACTORY}
+                        machine_name={element.EQ_NAME}
+                        eq_status={element.EQ_STATUS}
+                        current_g_name={element.G_NAME_KD}
+                        current_plan_id={element.CURR_PLAN_ID}
+                        current_step={element.STEP}
+                        run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                        upd_time={element.UPD_DATE}
+                        upd_empl={element.UPD_EMPL}
+                        machine_data={element}
+                        eq_active={element.EQ_ACTIVE}
+                        eq_code={element.EQ_CODE}
+                        onClick={() => { }}
+                        onMouseEnter={() => { }}
+                        onMouseLeave={() => { }}
+                        onDoubleClick={(e: any) => {
+                          console.log(e)
+                          if (e.eq_active === "OK") {
+                            handleToggleMachineActiveStatus(e.eq_code ?? "", "NG");
+                          }
+                          else {
+                            handleToggleMachineActiveStatus(e.eq_code ?? "", "OK");
+                          }
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  };
+
   useEffect(() => {
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
@@ -198,150 +285,56 @@ const EQ_STATUS2 = () => {
   }, []);
   return (
     <div className="eq_status2">
-      <div className="searchcode">
-        <input type='text' placeholder="Search Code" value={searchString} onChange={(e) => {
-          setSearchString(e.target.value);
-        }}>
-        </input>
-        { getUserData()?.EMPL_NO === "NHU1903" && <IconButton
-          className="buttonIcon"
-          onClick={
-            () => {
-              checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
-                setEQ_STATUS_MANAGER_DATA(eq_status);
-                openDialogEQManager();
-              })
-            }
-          }
-        >
-          <AiOutlineSetting color="green" size={15} />
-          EQ Manager
-        </IconButton>}
-      </div>
-      <div className="machinelist">
-        <div className="eqlist">
-          <div className="NM1">
-            <span className="machine_title">NM1</span>
-            <EQ_SUMMARY
-              EQ_DATA={eq_status.filter(
-                (element: EQ_STT, index: number) => element.FACTORY === "NM1",
-              )}
-            />
-            {eq_series.map((ele_series: string, index: number) => {
-              return (
-                <div className="FRlist" key={index}>
-                  {eq_status
-                    .filter(
-                      (element: EQ_STT, index: number) =>
-                        element.FACTORY === "NM1" &&
-                        element?.EQ_NAME?.substring(0, 2) === ele_series,
-                    )
-                    .map((element: EQ_STT, index: number) => {
-                      return (
-                        <MACHINE_COMPONENT3
-                          search_string={searchString}
-                          key={index}
-                          factory={element.FACTORY}
-                          machine_name={element.EQ_NAME}
-                          eq_status={element.EQ_STATUS}
-                          current_g_name={element.G_NAME_KD}
-                          current_plan_id={element.CURR_PLAN_ID}
-                          current_step={element.STEP}
-                          run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                          upd_time={element.UPD_DATE}
-                          upd_empl={element.UPD_EMPL}
-                          machine_data={element}
-                          eq_active={element.EQ_ACTIVE}
-                          eq_code={element.EQ_CODE}
-                          onClick={() => { }}
-                          onMouseEnter={() => { }}
-                          onMouseLeave={() => { }}
-                          onDoubleClick={(e: any) => {
-                            console.log(e)
-                            if (e.eq_active === "OK") {
-                              handleToggleMachineActiveStatus(e.eq_code ?? "", "NG");
-                            }
-                            else {
-                              handleToggleMachineActiveStatus(e.eq_code ?? "", "OK");
-                            }
-                          }}
-                        />
-                      );
-                    })}
-                </div>
-              );
-            })}
-          </div>
+      <div className="eqs_header">
+        <div className="eqs_header__left">
+          <div className="eqs_header__title">Equipment Status</div>
+          <div className="eqs_header__subtitle">Realtime overview (auto refresh 3s)</div>
         </div>
-        {getCompany() === "CMS" && (
-          <div className="eqinfo">
-            <div className="NM2">
-              <span className="machine_title">NM2</span>
-              <EQ_SUMMARY
-                EQ_DATA={eq_status.filter(
-                  (element: EQ_STT, index: number) => element.FACTORY === "NM2",
-                )}
-              />
-              {eq_series.map((ele_series: string, index: number) => {
-                return (
-                  <div className="FRlist" key={index}>
-                    {eq_status
-                      .filter(
-                        (element: EQ_STT, index: number) =>
-                          element.FACTORY === "NM2" &&
-                          element?.EQ_NAME?.substring(0, 2) === ele_series,
-                      )
-                      .map((element: EQ_STT, index: number) => {
-                        return (
-                          <MACHINE_COMPONENT3
-                            search_string={searchString}
-                            key={index}
-                            factory={element.FACTORY}
-                            machine_name={element.EQ_NAME}
-                            eq_status={element.EQ_STATUS}
-                            current_g_name={element.G_NAME_KD}
-                            current_plan_id={element.CURR_PLAN_ID}
-                            current_step={element.STEP}
-                            run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                            upd_time={element.UPD_DATE}
-                            upd_empl={element.UPD_EMPL}
-                            eq_active={element.EQ_ACTIVE}
-                            eq_code={element.EQ_CODE}
-                            onClick={() => { }}
-                            onMouseEnter={() => { }}
-                            onMouseLeave={() => { }}
-                            onDoubleClick={(e: MachineInterface2) => {
-                              console.log(e)
-                              if (e.eq_active === "OK") {
-                                handleToggleMachineActiveStatus(e.eq_code ?? "", "NG");
-                              }
-                              else {
-                                handleToggleMachineActiveStatus(e.eq_code ?? "", "OK");
-                              }
-                            }}
-                          />
-                        );
-                      })}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-      {showHideEQManager &&
-        <div className="eq_manager" >
-          <div className="eq_manager_title">
-            <span>EQ Manager</span>
+        <div className="eqs_header__right">
+          <TextField
+            size="small"
+            label="Search plan / G-name"
+            value={searchString}
+            onChange={(e) => {
+              setSearchString(e.target.value);
+            }}
+          />
+          {getUserData()?.EMPL_NO === "NHU1903" && (
             <IconButton
               className="buttonIcon"
-              onClick={closeDialogEQManager}
+              onClick={() => {
+                checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
+                  setEQ_STATUS_MANAGER_DATA(eq_status);
+                  openDialogEQManager();
+                })
+              }}
             >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
+              <AiOutlineSetting color="#0b8a4a" size={15} />
+              EQ Manager
             </IconButton>
+          )}
+        </div>
+      </div>
+
+      <div className="eqs_content">
+        {renderFactoryPanel("NM1")}
+        {getCompany() === "CMS" && renderFactoryPanel("NM2")}
+      </div>
+      {showHideEQManager &&
+        <div className="eq_manager_overlay" onMouseDown={closeDialogEQManager}>
+          <div className="eq_manager" onMouseDown={(e) => e.stopPropagation()}>
+            <div className="eq_manager_title">
+              <span>EQ Manager</span>
+              <IconButton
+                className="buttonIcon"
+                onClick={closeDialogEQManager}
+              >
+                <AiFillCloseCircle color="blue" size={15} />
+                Close
+              </IconButton>
+            </div>
+            <div className="eq_manager_content">{eq_data_table}</div>
           </div>
-          {eq_data_table}
         </div>}
       <CustomDialog
         isOpen={showAddMachineDialog}
