@@ -6,9 +6,10 @@
     align-content: center;
     align-self: center;
     justify-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     justify-self: center;
     width: 100%;    
+    height: fit-content;
     
     .filterform {
       display: flex;
@@ -61,8 +62,15 @@
       gap: 10px; 
       width: 100%;
       border-radius: 5px;
-      height: calc(100vh - 89px);
+      height: calc(100vh - 355px);
       background-image: linear-gradient(0deg, #afd3d1, #78d4f0);
+    }
+
+    .lichsu_new_timeline {
+      width: 100%;
+      border-radius: 5px;
+      margin-top: 4px;
+      margin-bottom: 4px;
     }
   }
 }
@@ -74,11 +82,12 @@
     align-content: center;
     align-self: center;
     justify-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     justify-self: center;
     width: 100%;
     gap: 2px;
     margin-top: 3px;
+    height: 100vh;
     .filterform {
       display: flex;
       flex-direction: row;
@@ -123,14 +132,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       justify-self: center;
       align-self: center;
       padding: 5px;
       width: 100%;
       border-radius: 5px;
-      height: 87vh;
+      flex: 1;
+      min-height: 0;
       background-image: linear-gradient(0deg, #afd3d1, #78d4f0);
+    }
+
+    .lichsu_new_timeline {
+      width: 100%;
+      border-radius: 5px;
     }
   }
 }

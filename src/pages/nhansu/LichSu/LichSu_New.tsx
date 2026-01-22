@@ -9,13 +9,22 @@ import { useSelector } from "react-redux";
 import {UserData } from "../../../api/GlobalInterface";
 import { DiemDanhLichSuData, DiemDanhNhomData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { IconButton } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, IconButton, LinearProgress } from "@mui/material";
 import { BiLoaderCircle } from "react-icons/bi";
 import { calculateOvertime, OvertimeInput } from "../BangChamCong/OverTimeUtils";
 import {  calculateWorkMinutesByPercentage, CalculationOptions } from "../BangChamCong/OverTimeUtils2";
 import { calcMinutesByRate, calculatePersonalIncomeTax } from "../BangChamCong/OverTimeUtils3";
 import PhieuLuongBang, { PhieuLuong } from "../BangChamCong/PhieuLuong";
 import { useForm } from "react-hook-form";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 
 
@@ -24,6 +33,10 @@ const LichSu_New = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+
+  const [attendanceTimeline, setAttendanceTimeline] = useState<Array<{ day: number; hours: number }>>([]);
+  const [attendanceTimelineLoading, setAttendanceTimelineLoading] = useState(false);
+  const [attendanceTimelineError, setAttendanceTimelineError] = useState<string | null>(null);
 
   const [totalTime, setTotalTime] = useState( {
     overtime: 0,
@@ -688,6 +701,75 @@ const LichSu_New = () => {
   });
   const [phieuLuong, setPhieuLuong] = useState<PhieuLuong | null>(null);
 
+  const fetchAttendanceTimeline = async () => {
+    try {
+      setAttendanceTimelineLoading(true);
+      setAttendanceTimelineError(null);
+
+      const monthStart = moment().startOf("month");
+      const monthEnd = moment().endOf("month");
+      const daysInMonth = monthEnd.date();
+
+      const baseData: Array<{ day: number; hours: number }> = Array.from(
+        { length: daysInMonth },
+        (_, idx) => ({ day: idx + 1, hours: 0 })
+      );
+
+      const response = await generalQuery("mydiemdanhnhom", {
+        from_date: monthStart.format("YYYY-MM-DD"),
+        to_date: monthEnd.format("YYYY-MM-DD"),
+      });
+
+      if (response.data.tk_status === "NG") {
+        setAttendanceTimeline(baseData);
+        setAttendanceTimelineError(response.data.message || "Load failed");
+        return;
+      }
+
+      const rows: any[] = response.data.data || [];
+
+      const parseTime = (dateStr: string, timeStr: string) => {
+        const clean = String(timeStr || "").trim();
+        if (!clean || clean === "OFF") return null;
+        return moment(
+          `${dateStr} ${clean}`,
+          [
+            "YYYY-MM-DD HH:mm",
+            "YYYY-MM-DD HH:mm:ss",
+            "YYYY-MM-DD H:mm",
+            "YYYY-MM-DD H:mm:ss",
+          ],
+          true
+        );
+      };
+
+      const toHours = (mins: number) => Math.round((mins / 60) * 100) / 100;
+
+      for (const row of rows) {
+        const dateStr = moment(row.DATE_COLUMN).utc().format("YYYY-MM-DD");
+        const day = Number(moment(dateStr, "YYYY-MM-DD").format("D"));
+        if (!day || day < 1 || day > daysInMonth) continue;
+
+        const inMoment = parseTime(dateStr, row.IN_TIME);
+        const outMomentRaw = parseTime(dateStr, row.OUT_TIME);
+        if (!inMoment || !outMomentRaw || !inMoment.isValid() || !outMomentRaw.isValid()) {
+          continue;
+        }
+
+        const outMoment = outMomentRaw.isBefore(inMoment) ? outMomentRaw.clone().add(1, "day") : outMomentRaw;
+        const diffMinutes = Math.max(0, outMoment.diff(inMoment, "minutes"));
+        const workingMinutes = Math.max(0, diffMinutes - 60);
+        baseData[day - 1] = { day, hours: toHours(workingMinutes) };
+      }
+
+      setAttendanceTimeline(baseData);
+    } catch (e: any) {
+      setAttendanceTimelineError(String(e?.message || e));
+    } finally {
+      setAttendanceTimelineLoading(false);
+    }
+  };
+
   const tinhLuong = (data : DiemDanhLichSuData[]) => {
     const luong_co_ban = parseInt(watch('luong_co_ban'));
     const luong_dong_bao_hiem = parseInt(watch('luong_dong_bao_hiem'));
@@ -875,7 +957,37 @@ const LichSu_New = () => {
 
   useEffect(() => {
     handleSearch();
+    fetchAttendanceTimeline();
   }, []);
+
+  const todayDay = moment().date();
+  const attendanceChartData: Array<{ day: number; hours: number; hoursPast: number | null; hoursFuture: number | null }> =
+    attendanceTimeline.map((d) => ({
+      ...d,
+      hoursPast: d.day < todayDay ? d.hours : null,
+      hoursFuture: d.day >= todayDay ? d.hours : null,
+    }));
+
+  const getWeekdayLabel = (day: number) => {
+    const dow = moment().startOf("month").date(day).day();
+    if (dow === 0) return "CN";
+    return `T${dow + 1}`;
+  };
+
+  const AttendanceXAxisTick = (props: any) => {
+    const { x, y, payload } = props;
+    const day = Number(payload?.value);
+    const dow = moment().startOf("month").date(day).day();
+    const isSunday = dow === 0;
+    const label = `${day} (${getWeekdayLabel(day)})`;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} textAnchor="middle" fill={isSunday ? "#d32f2f" : "#666"} fontSize={11}>
+          {label}
+        </text>
+      </g>
+    );
+  };
   return (
     <div className='lichsu_new'>
       <div className='filterform'>
@@ -895,6 +1007,68 @@ const LichSu_New = () => {
           Search
         </button>
       </div>
+
+      <Card className="lichsu_new_timeline">
+        <CardHeader
+          title={
+            <div style={{ fontSize: "0.85rem", fontWeight: 700 }}>
+              Time line đi làm (Tháng {moment().format("MM")})
+            </div>
+          }
+          action={
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                fetchAttendanceTimeline();
+              }}
+            >
+              Refresh
+            </Button>
+          }
+        />
+        <CardContent>
+          {attendanceTimelineError && (
+            <div style={{ color: "#c62828", marginBottom: 6, fontSize: "0.8rem" }}>{attendanceTimelineError}</div>
+          )}
+          {attendanceTimelineLoading && (
+            <Box sx={{ width: "100%", mb: 1 }}>
+              <LinearProgress />
+            </Box>
+          )}
+          <div style={{ width: "100%", height: 160 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={attendanceChartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" tick={AttendanceXAxisTick} />
+                <YAxis tick={{ fontSize: 11 }} domain={[0, 12]} />
+                <Tooltip
+                  content={({ active, payload, label }: any) => {
+                    if (!active || !payload || payload.length === 0) return null;
+                    const item = payload.find((p: any) => p?.value != null);
+                    if (!item) return null;
+                    return (
+                      <div
+                        style={{
+                          background: "white",
+                          border: "1px solid rgba(0,0,0,0.15)",
+                          padding: 8,
+                          borderRadius: 8,
+                        }}
+                      >
+                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{`Ngày ${label}`}</div>
+                        <div>{`${item.value} giờ`}</div>
+                      </div>
+                    );
+                  }}
+                />
+                <Line type="monotone" dataKey="hoursPast" stroke="#2e7d32" strokeWidth={2} dot={false} isAnimationActive={!attendanceTimelineLoading} />
+                <Line type="monotone" dataKey="hoursFuture" stroke="#d32f2f" strokeWidth={2} dot={false} isAnimationActive={!attendanceTimelineLoading} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
       {/* {getCompany() === 'CMS' && (
         <div className='filterform'>
           <label>
@@ -951,18 +1125,6 @@ const LichSu_New = () => {
           </label>
           <label>
             <b>PC ngôn ngữ chuyên môn:</b>
-            <input {...register('phu_cap_ngonngu_chuyenmon')} style={{ width: '65px' }} type='number' defaultValue={getLocalStorageLuongInfo()?.phu_cap_ngonngu_chuyenmon || 0} onChange={(e) => setLocalStorageLuongInfo({ ...getLocalStorageLuongInfo(), phu_cap_ngonngu_chuyenmon: parseInt(e.target.value) })}></input> (VNĐ)
-          </label>          
-        </div>
-      )}
-      {false && getCompany() === 'CMS' && (
-        <div className='filterform'>          
-          <label>
-            <b>PC chức vụ:</b>
-            <input {...register('phu_cap_chuc_vu')} style={{ width: '65px' }} type='number' defaultValue={getLocalStorageLuongInfo()?.phu_cap_chuc_vu || 0} onChange={(e) => setLocalStorageLuongInfo({ ...getLocalStorageLuongInfo(), phu_cap_chuc_vu: parseInt(e.target.value) })}></input> (VNĐ)
-          </label>
-          <label>
-            <b>TC đánh giá:</b>
             <input {...register('tro_cap_danh_gia')} style={{ width: '65px' }} type='number' defaultValue={getLocalStorageLuongInfo()?.tro_cap_danh_gia || 0} onChange={(e) => setLocalStorageLuongInfo({ ...getLocalStorageLuongInfo(), tro_cap_danh_gia: parseInt(e.target.value) })}></input> (VNĐ)
           </label>
           <label>

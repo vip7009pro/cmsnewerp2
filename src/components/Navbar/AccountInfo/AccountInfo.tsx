@@ -88,6 +88,27 @@ export default function AccountInfo() {
       hoursPast: d.day < todayDay ? d.hours : null,
       hoursFuture: d.day >= todayDay ? d.hours : null,
     }));
+
+  const getWeekdayLabel = (day: number) => {
+    const dow = moment().startOf("month").date(day).day();
+    if (dow === 0) return "CN";
+    return `T${dow + 1}`;
+  };
+
+  const AttendanceXAxisTick = (props: any) => {
+    const { x, y, payload } = props;
+    const day = Number(payload?.value);
+    const dow = moment().startOf("month").date(day).day();
+    const isSunday = dow === 0;
+    const label = `${day} (${getWeekdayLabel(day)})`;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} textAnchor="middle" fill={isSunday ? "#d32f2f" : "#666"} fontSize={12}>
+          {label}
+        </text>
+      </g>
+    );
+  };
   const startOfYear = moment().year() + "-01-01";
   //console.log(moment().startOf('year').format('YYYY-MM-DD'));
   const now = moment(new Date());
@@ -677,7 +698,7 @@ export default function AccountInfo() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={attendanceChartData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                      <XAxis dataKey="day" tick={AttendanceXAxisTick} />
                       <YAxis tick={{ fontSize: 12 }} domain={[0, 12]} />
                       <Tooltip
                         content={({ active, payload, label }: any) => {
