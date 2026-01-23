@@ -374,21 +374,22 @@ function App() {
 
   useEffect(() => {
     let timer: any = null;
-    const root = document.body;
 
-    const onScroll = () => {
-      root.classList.add("is-scrolling");
-      if (timer) window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        root.classList.remove("is-scrolling");
-      }, 900);
+    const onScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth)) {
+        target.classList.add("is-scrolling");
+        if (timer) window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          target.classList.remove("is-scrolling");
+        }, 900);
+      }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true, capture: true } as any);
     return () => {
       if (timer) window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll, { capture: true } as any);
-      root.classList.remove("is-scrolling");
     };
   }, []);
   return (
