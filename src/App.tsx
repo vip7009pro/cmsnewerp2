@@ -312,7 +312,7 @@ function App() {
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(
             "BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE" // Thay bằng public VAPID key của đại ca
-          ),
+          ) as any,
         });
       // Gửi subscription đến server
       const response = await generalQuery("addSubscription", {
@@ -371,6 +371,26 @@ function App() {
       socket.off("notification_panel", (data: any) => {});
     };
   }, [globalLoginState]);
+
+  useEffect(() => {
+    let timer: any = null;
+    const root = document.body;
+
+    const onScroll = () => {
+      root.classList.add("is-scrolling");
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        root.classList.remove("is-scrolling");
+      }, 900);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true } as any);
+    return () => {
+      if (timer) window.clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll, { capture: true } as any);
+      root.classList.remove("is-scrolling");
+    };
+  }, []);
   return (
     <>
       {globalLoginState && (
