@@ -23,12 +23,20 @@
   /* width */
   ::-webkit-scrollbar {
     width: 0px;
-    height: 0px;
+  }
+
+  ::-webkit-scrollbar:horizontal {
+    height: 8px;
   }
   
   /* Track */
   ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 0px transparent; 
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-track:horizontal {
+    box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
   }
    
@@ -37,12 +45,21 @@
     background: transparent; 
     border-radius: 10px;
   }
+
+  ::-webkit-scrollbar-thumb:horizontal {
+    background: rgb(149, 145, 245);
+    border-radius: 10px;
+  }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: transparent; 
   }
 
+  ::-webkit-scrollbar-thumb:hover:horizontal {
+    background: #b30000;
+  }
+  
   body {
     scrollbar-width: none;
   }
@@ -54,6 +71,9 @@
 
   .is-scrolling::-webkit-scrollbar {
     width: 8px;
+  }
+
+  .is-scrolling::-webkit-scrollbar:horizontal {
     height: 8px;
   }
   

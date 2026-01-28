@@ -377,7 +377,7 @@ function App() {
 
     const onScroll = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target && (target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth)) {
+      if (target && target.scrollHeight > target.clientHeight) {
         target.classList.add("is-scrolling");
         if (timer) window.clearTimeout(timer);
         timer = window.setTimeout(() => {
