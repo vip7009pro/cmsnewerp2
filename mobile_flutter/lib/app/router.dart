@@ -21,6 +21,8 @@ import '../features/kinhdoanh/presentation/menu_code_placeholder_page.dart';
 import '../features/kinhdoanh/presentation/invoice_manager_page.dart';
 import '../features/kinhdoanh/presentation/plan_manager_page.dart';
 import '../features/kinhdoanh/presentation/shortage_manager_page.dart';
+import '../features/kinhdoanh/presentation/fcst_manager_page.dart';
+import '../features/kinhdoanh/presentation/ycsx_manager_page.dart';
 import '../features/kinhdoanh/presentation/po_manager_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
@@ -166,19 +168,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/fcstmanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý FCST',
-          menuCode: 'KD5',
-          description: 'Web component: FCSTManager',
-        ),
+        builder: (context, state) => const FcstManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/ycsxmanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý YCSX',
-          menuCode: 'KD6',
-          description: 'Web component: YCSXManager',
-        ),
+        builder: (context, state) => const YcsxManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/poandstockfull',
