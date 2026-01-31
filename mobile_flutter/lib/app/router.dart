@@ -17,6 +17,7 @@ import '../features/hr/presentation/bao_cao_nhan_su_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_ns_page.dart';
 import '../features/home/presentation/home_page.dart';
+import '../features/kinhdoanh/presentation/menu_code_placeholder_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -140,6 +141,128 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings/theme',
         builder: (context, state) => const ThemeSettingsPage(),
+      ),
+
+      // Kinh doanh routes (menu reference: NavMenuCMS.tsx + CMS_MENU.tsx)
+      GoRoute(
+        path: '/kinhdoanh/pomanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý PO',
+          menuCode: 'KD1',
+          description: 'Web component: PoManager',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/invoicemanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý Invoice',
+          menuCode: 'KD2',
+          description: 'Web component: InvoiceManager',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/planmanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý Plan',
+          menuCode: 'KD3',
+          description: 'Web component: PlanManager',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/shortage',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Shortage',
+          menuCode: 'KD4',
+          description: 'Web component: ShortageKD',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/fcstmanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý FCST',
+          menuCode: 'KD5',
+          description: 'Web component: FCSTManager',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/ycsxmanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý YCSX',
+          menuCode: 'KD6',
+          description: 'Web component: YCSXManager',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/poandstockfull',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'PO & Stock (Full)',
+          menuCode: 'KD7',
+          description: 'Web component: POandStockFull',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/codeinfo',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Thông tin sản phẩm',
+          menuCode: 'KD8',
+          description: 'Web component: CODE_MANAGER',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/quanlycodebom',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý Code BOM',
+          menuCode: 'KD9',
+          description: 'Web component: BOM_MANAGER',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/customermanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý khách hàng',
+          menuCode: 'KD10',
+          description: 'Web component: CUST_MANAGER',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/eqstatus',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'EQ Status',
+          menuCode: 'KD11',
+          description: 'Web component: EQ_STATUS2',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/ins_status',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Inspect Status',
+          menuCode: 'KD12',
+          description: 'Web component: INSPECT_STATUS',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/kinhdoanhreport',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Báo cáo Kinh doanh',
+          menuCode: 'KD13',
+          description: 'Web component: KinhDoanhReport',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/quotationmanager',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Quản lý giá sản phẩm',
+          menuCode: 'KD14',
+          description: 'Web component: QuotationTotal',
+        ),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/overmonitor',
+        builder: (context, state) => const MenuCodePlaceholderPage(
+          title: 'Over Monitor',
+          menuCode: 'KD15',
+          description: 'Web component: OVER_MONITOR',
+        ),
       ),
     ],
   );

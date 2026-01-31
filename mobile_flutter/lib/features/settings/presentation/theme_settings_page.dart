@@ -12,6 +12,7 @@ class ThemeSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(themeControllerProvider);
     final ctrl = ref.read(themeControllerProvider.notifier);
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Theme settings')),
@@ -27,27 +28,27 @@ class ThemeSettingsPage extends ConsumerWidget {
                 children: [
                   Text('Theme mode', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
-                  InputDecorator(
+                  DropdownButtonFormField<ThemeMode>(
+                    key: ValueKey(settings.mode),
+                    initialValue: settings.mode,
+                    isDense: true,
                     decoration: const InputDecoration(
                       isDense: true,
                       labelText: 'Mode',
                       border: OutlineInputBorder(),
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<ThemeMode>(
-                        isDense: true,
-                        value: settings.mode,
-                        items: const [
-                          DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
-                          DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
-                          DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
-                        ],
-                        onChanged: (v) {
-                          if (v == null) return;
-                          ctrl.setMode(v);
-                        },
-                      ),
-                    ),
+                    dropdownColor: scheme.surface,
+                    style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w600),
+                    iconEnabledColor: scheme.onSurfaceVariant,
+                    items: const [
+                      DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
+                      DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+                      DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
+                    ],
+                    onChanged: (v) {
+                      if (v == null) return;
+                      ctrl.setMode(v);
+                    },
                   ),
                 ],
               ),
@@ -62,38 +63,38 @@ class ThemeSettingsPage extends ConsumerWidget {
                 children: [
                   Text('Theme style', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
-                  InputDecorator(
+                  DropdownButtonFormField<AppThemeId>(
+                    key: ValueKey(settings.themeId),
+                    initialValue: settings.themeId,
+                    isDense: true,
                     decoration: const InputDecoration(
                       isDense: true,
                       labelText: 'Theme',
                       border: OutlineInputBorder(),
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<AppThemeId>(
-                        isDense: true,
-                        value: settings.themeId,
-                        items: const [
-                          DropdownMenuItem(value: AppThemeId.compactBlue, child: Text('Compact Blue (recommended)')),
-                          DropdownMenuItem(value: AppThemeId.defaultBlue, child: Text('Default Blue')),
-                          DropdownMenuItem(value: AppThemeId.green, child: Text('Green')),
-                          DropdownMenuItem(value: AppThemeId.purple, child: Text('Purple')),
-                          DropdownMenuItem(value: AppThemeId.orange, child: Text('Orange')),
-                          DropdownMenuItem(value: AppThemeId.teal, child: Text('Teal')),
-                          DropdownMenuItem(value: AppThemeId.indigo, child: Text('Indigo')),
-                          DropdownMenuItem(value: AppThemeId.amber, child: Text('Amber')),
-                          DropdownMenuItem(value: AppThemeId.lime, child: Text('Lime')),
-                        ],
-                        onChanged: (v) {
-                          if (v == null) return;
-                          ctrl.setThemeId(v);
-                        },
-                      ),
-                    ),
+                    dropdownColor: scheme.surface,
+                    style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w600),
+                    iconEnabledColor: scheme.onSurfaceVariant,
+                    items: const [
+                      DropdownMenuItem(value: AppThemeId.compactBlue, child: Text('Compact Blue (recommended)')),
+                      DropdownMenuItem(value: AppThemeId.defaultBlue, child: Text('Default Blue')),
+                      DropdownMenuItem(value: AppThemeId.green, child: Text('Green')),
+                      DropdownMenuItem(value: AppThemeId.purple, child: Text('Purple')),
+                      DropdownMenuItem(value: AppThemeId.orange, child: Text('Orange')),
+                      DropdownMenuItem(value: AppThemeId.teal, child: Text('Teal')),
+                      DropdownMenuItem(value: AppThemeId.indigo, child: Text('Indigo')),
+                      DropdownMenuItem(value: AppThemeId.amber, child: Text('Amber')),
+                      DropdownMenuItem(value: AppThemeId.lime, child: Text('Lime')),
+                    ],
+                    onChanged: (v) {
+                      if (v == null) return;
+                      ctrl.setThemeId(v);
+                    },
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'Theme is saved automatically and will be restored on next app launch.',
-                    style: TextStyle(color: Colors.black54),
+                    style: TextStyle(color: scheme.onSurfaceVariant),
                   ),
                 ],
               ),
