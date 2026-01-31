@@ -567,6 +567,23 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
     next += '001';
     return next;
   }
+
+  Future<String> _getNextP500InNo() async {
+    final api = ref.read(apiClientProvider);
+    final res = await api.postCommand('checkProcessInNoP500', data: {});
+    final body = res.data;
+    if (body is Map<String, dynamic> &&
+        (body['tk_status'] ?? '').toString().toUpperCase() != 'NG') {
+      final data = body['data'];
+      if (data is List && data.isNotEmpty && data.first is Map) {
+        final first = data.first as Map;
+        final raw = (first['PROCESS_IN_NO'] ?? '0').toString();
+        final n = int.tryParse(raw) ?? 0;
+        return _zeroPad(n + 1, 3);
+      }
+    }
+    return '001';
+  }
   Future<void> _openAddYcsxForm() async {
     final authState = ref.read(authNotifierProvider);
     final emplNo = authState is AuthAuthenticated
@@ -1102,6 +1119,64 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
                             data: payload,
                             throwOnNg: true,
                           );
+
+                          if (newphanloai != 'TT' &&
+                              newphanloai != 'AM' &&
+                              newphanloai != 'GD') {
+                            try {
+                              final nextP500InNo = await _getNextP500InNo();
+                              final inDate = _ymdNoDash(DateTime.now());
+                              final planId = '${nextNo}A';
+                              final nextProcessLotNoP501 =
+                                  await _processLotNoGenerate(newphanloai);
+                              final nextProcessPrtSeq =
+                                  nextProcessLotNoP501.length >= 8
+                                      ? nextProcessLotNoP501.substring(5, 8)
+                                      : '';
+
+                              await _postCommandChecked(
+                                'insert_p500',
+                                data: {
+                                  'in_date': inDate,
+                                  'next_process_in_no': nextP500InNo,
+                                  'PROD_REQUEST_DATE': inDate,
+                                  'PROD_REQUEST_NO': nextNo,
+                                  'G_CODE': gCode,
+                                  'EMPL_NO': emplNo,
+                                  'phanloai': newphanloai,
+                                  'PLAN_ID': planId,
+                                  'PR_NB': 0,
+                                },
+                              );
+                              await _postCommandChecked(
+                                'insert_p501',
+                                data: {
+                                  'in_date': inDate,
+                                  'next_process_in_no': nextP500InNo,
+                                  'EMPL_NO': emplNo,
+                                  'next_process_lot_no': nextProcessLotNoP501,
+                                  'next_process_prt_seq': nextProcessPrtSeq,
+                                  'PROD_REQUEST_DATE': inDate,
+                                  'PROD_REQUEST_NO': nextNo,
+                                  'PLAN_ID': planId,
+                                  'PROCESS_NUMBER': 0,
+                                  'TEMP_QTY': qty,
+                                  'USE_YN': 'X',
+                                },
+                              );
+                            } catch (e) {
+                              if (mounted) {
+                                await _showAwesome(
+                                  context,
+                                  type: DialogType.warning,
+                                  title: 'Cảnh báo',
+                                  message:
+                                      'Đã thêm YCSX nhưng lỗi insert P500/P501: $e',
+                                );
+                              }
+                            }
+                          }
+
                           if (!mounted) return;
                           nav.pop();
                           await _showAwesome(
