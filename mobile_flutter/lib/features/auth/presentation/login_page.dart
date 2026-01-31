@@ -74,7 +74,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.8),
+              Theme.of(context).colorScheme.primary.withAlpha((0.8 * 255).round()),
               Theme.of(context).colorScheme.primary,
             ],
           ),
@@ -108,7 +108,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     Text(
                       'Đăng nhập hệ thống',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        color: Theme.of(context).colorScheme.onSurface.withAlpha((0.7 * 255).round()),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -200,7 +200,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     Text(
                       'CMS ERP System',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withAlpha((0.6 * 255).round()),
                       ),
                     ),
                   ],

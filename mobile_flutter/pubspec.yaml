@@ -45,6 +45,7 @@ dependencies:
   share_plus: ^10.1.4
   shared_preferences: ^2.3.2
   image_picker: ^1.1.2
+  awesome_dialog: ^3.2.1
 
 dev_dependencies:
   flutter_test:
