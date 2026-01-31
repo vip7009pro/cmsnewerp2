@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/providers.dart';
 import '../application/auth_notifier.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -13,6 +14,26 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _usernameCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  bool _obscurePassword = true;
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final secureStore = ref.read(secureKvStoreProvider);
+    final username = await secureStore.getUsername();
+    final password = await secureStore.getPassword();
+    if (mounted) {
+      setState(() {
+        _usernameCtrl.text = username ?? '';
+        _passwordCtrl.text = password ?? '';
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -32,8 +53,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       return;
     }
 
+    setState(() => _loading = true);
     final ok = await ref.read(authNotifierProvider.notifier).login(username, password);
     if (!mounted) return;
+    setState(() => _loading = false);
 
     if (!ok) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,30 +68,146 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ERP Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _usernameCtrl,
-              decoration: const InputDecoration(labelText: 'Username'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _passwordCtrl,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _onLogin,
-                child: const Text('Login'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primary.withOpacity(0.8),
+              Theme.of(context).colorScheme.primary,
+            ],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(32),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Logo or Title
+                    Icon(
+                      Icons.business,
+                      size: 80,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'ERP Mobile',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Đăng nhập hệ thống',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Username Field
+                    TextFormField(
+                      controller: _usernameCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        hintText: 'Nhập username',
+                        prefixIcon: const Icon(Icons.person_outline),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Password Field
+                    TextFormField(
+                      controller: _passwordCtrl,
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        hintText: 'Nhập password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() => _obscurePassword = !_obscurePassword);
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => _onLogin(),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Login Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        onPressed: _loading ? null : _onLogin,
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: _loading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Đăng nhập',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Footer
+                    Text(
+                      'CMS ERP System',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

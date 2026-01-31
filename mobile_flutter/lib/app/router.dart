@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/application/auth_notifier.dart';
 import '../features/auth/application/auth_state.dart';
 import '../features/auth/presentation/login_page.dart';
+import '../features/hr/presentation/hr_employee_edit_page.dart';
 import '../features/hr/presentation/hr_department_employee_page.dart';
 import '../features/hr/presentation/diemdanh_nhom_page.dart';
 import '../features/hr/presentation/dieu_chuyen_team_page.dart';
@@ -15,6 +16,7 @@ import '../features/hr/presentation/list_cham_cong_page.dart';
 import '../features/hr/presentation/bao_cao_nhan_su_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_ns_page.dart';
+import '../features/home/presentation/home_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -23,7 +25,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     refreshListenable: _GoRouterRefresh(ref),
-    redirect: (context, state) {
+    redirect: (context, state) async {
       final authState = ref.read(authNotifierProvider);
 
       final isSplash = state.matchedLocation == '/splash';
@@ -38,7 +40,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       if (authState is AuthAuthenticated) {
-        return isLogin || isSplash ? '/menu' : null;
+        return isLogin || isSplash ? '/home' : null;
       }
 
       return null;
@@ -53,12 +55,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
+        path: '/home',
+        builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
         path: '/menu',
         builder: (context, state) => const MenuPage(),
       ),
       GoRoute(
         path: '/nhansu/quanlyphongbannhanvien',
         builder: (context, state) => const HrDepartmentEmployeePage(),
+      ),
+      GoRoute(
+        path: '/nhansu/edit',
+        builder: (context, state) {
+          final employee = state.extra as Map<String, dynamic>?;
+          return HrEmployeeEditPage(employee: employee);
+        },
       ),
       GoRoute(
         path: '/nhansu/diemdanhnhom',

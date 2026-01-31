@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:mobile_flutter/core/config/app_config.dart';
 
 import '../network/api_client.dart';
 import '../storage/secure_kv_store.dart';
@@ -34,16 +35,16 @@ class AuthRepository {
 
   Future<bool> login({required String username, required String password}) async {
     final res = await _apiClient.postRaw(
-      '/api',
+      '${AppConfig.baseUrl}/api',
       body: {
         'secureContext': false,
         'command': 'login',
         'user': username,
         'pass': password,
-        'ctr_cd': '002',
+        'ctr_cd': AppConfig.ctrCd,
         'DATA': {
-          'CTR_CD': '002',
-          'COMPANY': 'CMS',
+          'CTR_CD': AppConfig.ctrCd,
+          'COMPANY': AppConfig.company,
           'USER': username,
           'PASS': password,
         },
@@ -57,6 +58,7 @@ class AuthRepository {
         final token = (body['token_content'] ?? '').toString();
         if (token.isNotEmpty) {
           await _secureStore.setToken(token);
+          await _secureStore.setCredentials(username, password);
           return true;
         }
       } else {

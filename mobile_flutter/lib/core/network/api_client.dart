@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-
+import 'dart:io';
 import '../config/app_config.dart';
 import '../storage/secure_kv_store.dart';
 
@@ -14,6 +14,7 @@ class ApiClient {
             receiveTimeout: const Duration(seconds: 30),
             headers: {
               'Content-Type': 'application/json',
+              'User-Agent': 'Flutter-ERP-App',
             },
           ),
         );
@@ -54,5 +55,21 @@ class ApiClient {
     }
 
     return _dio.post('/api', data: payload);
+  }
+
+  Future<Response<dynamic>> uploadFile({
+    required File file,
+    required String filename,
+    required String uploadFolderName,
+  }) async {
+    final token = await _secureStore.getToken();
+    final form = FormData.fromMap({
+      'uploadedfile': await MultipartFile.fromFile(file.path, filename: filename),
+      'filename': filename,
+      'uploadfoldername': uploadFolderName,
+      'token_string': token ?? '',
+      'CTR_CD': AppConfig.ctrCd,
+    });
+    return _dio.post('${AppConfig.baseUrl}/uploadfile', data: form);
   }
 }
