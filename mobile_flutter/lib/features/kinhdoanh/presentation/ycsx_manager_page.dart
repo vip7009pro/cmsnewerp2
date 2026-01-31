@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../app/app_drawer.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/providers.dart';
 import '../../auth/application/auth_notifier.dart';
 import '../../auth/application/auth_state.dart';
@@ -243,6 +245,30 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
       dismissOnTouchOutside: true,
       btnOkOnPress: () {},
     ).show();
+  }
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      if (!mounted) return;
+      await _showAwesome(
+        context,
+        type: DialogType.error,
+        title: 'Không hợp lệ',
+        message: 'URL không hợp lệ: $url',
+      );
+      return;
+    }
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok) {
+      if (!mounted) return;
+      await _showAwesome(
+        context,
+        type: DialogType.error,
+        title: 'Thất bại',
+        message: 'Không mở được link: $url',
+      );
+    }
   }
   Future<Map<String, dynamic>?> _pickFromList({
     required String title,
@@ -2041,6 +2067,7 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
     final pduyet = _toInt(r['PDUYET']);
     final materialYn = (r['MATERIAL_YN'] ?? '').toString().toUpperCase();
     final useYn = (r['USE_YN'] ?? '').toString().toUpperCase();
+    final banve = (r['BANVE'] ?? r['BAN_VE'] ?? '').toString().toUpperCase();
     final pdbv = _toInt(r['PDBV']);
     final setvl = _toInt(r['SETVL']);
     final dachithi = _toInt(r['DACHITHI']);
@@ -2346,6 +2373,21 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
                   }),
                 ),
               ),
+
+              if (banve == 'Y') ...[
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      final url = '${AppConfig.imageBaseUrl}/banve/$gCode.pdf?v=${DateTime.now().millisecondsSinceEpoch}';
+                      _openUrl(url);
+                    },
+                    icon: const Icon(Icons.picture_as_pdf),
+                    label: const Text('Bản vẽ'),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

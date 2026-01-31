@@ -24,6 +24,8 @@ import '../features/kinhdoanh/presentation/shortage_manager_page.dart';
 import '../features/kinhdoanh/presentation/fcst_manager_page.dart';
 import '../features/kinhdoanh/presentation/ycsx_manager_page.dart';
 import '../features/kinhdoanh/presentation/po_manager_page.dart';
+import '../features/kinhdoanh/presentation/po_and_stock_full_page.dart';
+import '../features/kinhdoanh/presentation/thong_tin_san_pham_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -176,19 +178,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/poandstockfull',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'PO & Stock (Full)',
-          menuCode: 'KD7',
-          description: 'Web component: POandStockFull',
-        ),
+        builder: (context, state) => const PoAndStockFullPage(),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/thongtinsanpham',
+        builder: (context, state) => const ThongTinSanPhamPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/codeinfo',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Thông tin sản phẩm',
-          menuCode: 'KD8',
-          description: 'Web component: CODE_MANAGER',
-        ),
+        builder: (context, state) => const ThongTinSanPhamPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/quanlycodebom',
