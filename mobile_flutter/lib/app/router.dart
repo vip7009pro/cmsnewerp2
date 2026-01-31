@@ -18,6 +18,10 @@ import '../features/hr/presentation/quan_ly_cap_cao_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_ns_page.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/kinhdoanh/presentation/menu_code_placeholder_page.dart';
+import '../features/kinhdoanh/presentation/invoice_manager_page.dart';
+import '../features/kinhdoanh/presentation/plan_manager_page.dart';
+import '../features/kinhdoanh/presentation/shortage_manager_page.dart';
+import '../features/kinhdoanh/presentation/po_manager_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -146,35 +150,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Kinh doanh routes (menu reference: NavMenuCMS.tsx + CMS_MENU.tsx)
       GoRoute(
         path: '/kinhdoanh/pomanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý PO',
-          menuCode: 'KD1',
-          description: 'Web component: PoManager',
-        ),
+        builder: (context, state) => const PoManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/invoicemanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý Invoice',
-          menuCode: 'KD2',
-          description: 'Web component: InvoiceManager',
-        ),
+        builder: (context, state) => const InvoiceManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/planmanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý Plan',
-          menuCode: 'KD3',
-          description: 'Web component: PlanManager',
-        ),
+        builder: (context, state) => const PlanManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/shortage',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Shortage',
-          menuCode: 'KD4',
-          description: 'Web component: ShortageKD',
-        ),
+        builder: (context, state) => const ShortageManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/fcstmanager',
