@@ -26,6 +26,7 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
   bool _cndb = false;
   bool _activeOnly = true;
   bool _showFilter = true;
+  bool _gridView = true;
 
   bool _loading = false;
   List<Map<String, dynamic>> _rows = const [];
@@ -132,11 +133,35 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
       'G_NAME_KD',
       'CUST_NAME_KD',
       'CUST_NAME',
+      'CUST_CD',
+      'CODE_12',
+      'PROD_TYPE',
+      'PROD_PROJECT',
       'PROD_MODEL',
+      'PROD_MAIN_MATERIAL',
       'G_WIDTH',
       'G_LENGTH',
       'PD',
+      'G_C',
+      'G_C_R',
+      'G_CG',
+      'G_LG',
+      'G_SG_L',
+      'G_SG_R',
       'CAVITY',
+      'PACK_DRT',
+      'KNIFE_TYPE',
+      'KNIFE_LIFECYCLE',
+      'KNIFE_PRICE',
+      'CODE_33',
+      'ROLE_EA_QTY',
+      'PROCESS_TYPE',
+      'EQ1',
+      'EQ2',
+      'EQ3',
+      'EQ4',
+      'PROD_DIECUT_STEP',
+      'PROD_PRINT_TIMES',
       'BANVE',
       'APPSHEET',
       'NO_INSPECTION',
@@ -149,6 +174,10 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
       'FSC_CODE',
       'PO_TYPE',
       'PROD_DVT',
+      'APPROVED_YN',
+      'UPD_DATE',
+      'UPD_EMPL',
+      'UPD_COUNT',
     ];
 
     final out = <String>[];
@@ -260,6 +289,105 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
     );
   }
 
+  Widget _listItem(ColorScheme scheme, Map<String, dynamic> r) {
+    final gCode = (r['G_CODE'] ?? '').toString();
+    final gName = (r['G_NAME'] ?? '').toString();
+    final gNameKd = (r['G_NAME_KD'] ?? '').toString();
+    final cust = (r['CUST_NAME_KD'] ?? r['CUST_NAME'] ?? '').toString();
+    final model = (r['PROD_MODEL'] ?? '').toString();
+    final prodType = (r['PROD_TYPE'] ?? '').toString();
+    final code12 = (r['CODE_12'] ?? '').toString();
+    final poType = (r['PO_TYPE'] ?? '').toString();
+    final fsc = (r['FSC'] ?? '').toString();
+    final qlHsd = (r['QL_HSD'] ?? '').toString();
+    final expDate = (r['EXP_DATE'] ?? '').toString();
+    final width = _fmtNum(r['G_WIDTH']);
+    final length = _fmtNum(r['G_LENGTH']);
+    final pd = _fmtNum(r['PD']);
+    final cavity = _fmtNum(r['CAVITY']);
+
+    final banveUrl = _resolveBanVeUrl(gCode: gCode, rawValue: r['BANVE']);
+    final appsheetUrl = _resolveAppsheetUrl(gCode: gCode, rawValue: r['APPSHEET']);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    gCode,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (banveUrl != null)
+                  _miniButton(label: 'PDF', onTap: () => _openUrl(banveUrl)),
+                if (appsheetUrl != null)
+                  _miniButton(label: 'DOCX', onTap: () => _openUrl(appsheetUrl)),
+              ],
+            ),
+            const SizedBox(height: 2),
+            if (gNameKd.isNotEmpty || gName.isNotEmpty)
+              Text(
+                gNameKd.isNotEmpty ? gNameKd : gName,
+                style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            if (cust.isNotEmpty)
+              Text(
+                cust,
+                style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant, fontWeight: FontWeight.w700),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                if (code12.isNotEmpty)
+                  Text('C12: $code12', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (prodType.isNotEmpty)
+                  Text('TYPE: $prodType', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (model.isNotEmpty)
+                  Text('MODEL: $model', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (width.isNotEmpty)
+                  Text('W: $width', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (length.isNotEmpty)
+                  Text('L: $length', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (pd.isNotEmpty)
+                  Text('PD: $pd', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (cavity.isNotEmpty)
+                  Text('CAV: $cavity', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (poType.isNotEmpty)
+                  Text('PO: $poType', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (fsc.isNotEmpty)
+                  Text('FSC: $fsc', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (qlHsd.isNotEmpty)
+                  Text('HSD: $qlHsd', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                if (expDate.isNotEmpty && expDate != '0')
+                  Text('EXP: $expDate', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildList(ColorScheme scheme) {
+    return ListView.builder(
+      itemCount: _rows.length,
+      itemBuilder: (ctx, i) => _listItem(scheme, _rows[i]),
+    );
+  }
+
   Future<void> _search() async {
     if (mounted) {
       setState(() {
@@ -344,17 +472,29 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
       'CUST_NAME_KD',
       'CUST_NAME',
       'CUST_CD',
+      'CODE_12',
+      'PROD_TYPE',
       'PROD_MODEL',
       'PROD_PROJECT',
+      'PROD_MAIN_MATERIAL',
       'G_WIDTH',
       'G_LENGTH',
       'PD',
       'CAVITY',
       'G_C',
+      'G_C_R',
+      'G_CG',
+      'G_LG',
       'BANVE',
       'APPSHEET',
       'USE_YN',
       'PDBV',
+      'QL_HSD',
+      'EXP_DATE',
+      'FSC',
+      'FSC_CODE',
+      'PO_TYPE',
+      'PROD_DVT',
       'UPD_DATE',
       'UPD_EMPL',
       'UPD_COUNT',
@@ -370,17 +510,29 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
         xls.TextCellValue((r['CUST_NAME_KD'] ?? '').toString()),
         xls.TextCellValue((r['CUST_NAME'] ?? '').toString()),
         xls.TextCellValue((r['CUST_CD'] ?? '').toString()),
+        xls.TextCellValue((r['CODE_12'] ?? '').toString()),
+        xls.TextCellValue((r['PROD_TYPE'] ?? '').toString()),
         xls.TextCellValue((r['PROD_MODEL'] ?? '').toString()),
         xls.TextCellValue((r['PROD_PROJECT'] ?? '').toString()),
+        xls.TextCellValue((r['PROD_MAIN_MATERIAL'] ?? '').toString()),
         xls.TextCellValue(_fmtNum(r['G_WIDTH'])),
         xls.TextCellValue(_fmtNum(r['G_LENGTH'])),
         xls.TextCellValue(_fmtNum(r['PD'])),
         xls.TextCellValue(_fmtNum(r['CAVITY'])),
         xls.TextCellValue(_fmtNum(r['G_C'])),
+        xls.TextCellValue(_fmtNum(r['G_C_R'])),
+        xls.TextCellValue(_fmtNum(r['G_CG'])),
+        xls.TextCellValue(_fmtNum(r['G_LG'])),
         xls.TextCellValue((r['BANVE'] ?? '').toString()),
         xls.TextCellValue((r['APPSHEET'] ?? '').toString()),
         xls.TextCellValue((r['USE_YN'] ?? '').toString()),
         xls.TextCellValue((r['PDBV'] ?? '').toString()),
+        xls.TextCellValue((r['QL_HSD'] ?? '').toString()),
+        xls.TextCellValue((r['EXP_DATE'] ?? '').toString()),
+        xls.TextCellValue((r['FSC'] ?? '').toString()),
+        xls.TextCellValue((r['FSC_CODE'] ?? '').toString()),
+        xls.TextCellValue((r['PO_TYPE'] ?? '').toString()),
+        xls.TextCellValue((r['PROD_DVT'] ?? '').toString()),
         xls.TextCellValue((r['UPD_DATE'] ?? '').toString()),
         xls.TextCellValue((r['UPD_EMPL'] ?? '').toString()),
         xls.IntCellValue(_toInt(r['UPD_COUNT'])),
@@ -440,6 +592,13 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
       appBar: AppBar(
         title: const Text('Thông tin sản phẩm'),
         actions: [
+          IconButton(
+            onPressed: () {
+              setState(() => _gridView = !_gridView);
+            },
+            icon: Icon(_gridView ? Icons.view_agenda : Icons.grid_on),
+            tooltip: _gridView ? 'List view' : 'Grid view',
+          ),
           PopupMenuButton<String>(
             onSelected: (v) {
               if (v == 'excel') _exportExcel();
@@ -520,7 +679,7 @@ class _ThongTinSanPhamPageState extends ConsumerState<ThongTinSanPhamPage> {
                               style: TextStyle(color: scheme.onSurfaceVariant),
                             ),
                           )
-                        : _buildGrid(scheme),
+                        : (_gridView ? _buildGrid(scheme) : _buildList(scheme)),
               ),
             ],
           ),

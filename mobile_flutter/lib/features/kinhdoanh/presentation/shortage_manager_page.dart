@@ -4,6 +4,7 @@ import 'package:excel/excel.dart' as xls;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/app_drawer.dart';
@@ -34,6 +35,11 @@ class _ShortageManagerPageState extends ConsumerState<ShortageManagerPage> {
 
   bool _loading = false;
   List<Map<String, dynamic>> _rows = const [];
+
+  bool _gridView = false;
+  List<PlutoColumn> _gridColumns = const [];
+  List<PlutoRow> _gridRows = const [];
+  PlutoGridStateManager? _gridSm;
 
   final Set<int> _selectedIds = <int>{};
 
@@ -91,7 +97,169 @@ class _ShortageManagerPageState extends ConsumerState<ShortageManagerPage> {
       } else {
         _selectedIds.clear();
       }
+
+      if (_gridColumns.isNotEmpty) {
+        _gridRows = _buildPlutoRows(_rows, _gridColumns);
+      }
     });
+  }
+
+  List<String> _prioritizedFields(List<Map<String, dynamic>> rows) {
+    final keys = <String>{};
+    for (final r in rows) {
+      keys.addAll(r.keys);
+    }
+
+    final preferred = <String>[
+      'ST_ID',
+      'PLAN_DATE',
+      'PRIORITY',
+      'CUST_NAME_KD',
+      'G_CODE',
+      'G_NAME',
+      'PO_BALANCE',
+      'TON_TP',
+      'BTP',
+      'TONG_TON_KIEM',
+      'TODAY_TOTAL',
+      'TODAY_THIEU',
+      'D1_9H',
+      'D1_13H',
+      'D1_19H',
+      'D1_21H',
+      'D1_23H',
+      'D1_OTHER',
+      'D2_9H',
+      'D2_13H',
+      'D2_21H',
+      'D3_SANG',
+      'D3_CHIEU',
+      'D4_SANG',
+      'D4_CHIEU',
+    ];
+
+    final out = <String>[];
+    for (final f in preferred) {
+      if (keys.contains(f)) out.add(f);
+    }
+    final remain = keys.difference(out.toSet()).toList()..sort();
+    out.addAll(remain);
+    return out;
+  }
+
+  List<PlutoColumn> _buildPlutoColumns(List<Map<String, dynamic>> rows) {
+    final fields = _prioritizedFields(rows);
+
+    PlutoColumn col(String field) {
+      final compactNum = RegExp(r'^(D\d|TODAY_|PO_|TON_|BTP|TONG_|PRIORITY)').hasMatch(field);
+      return PlutoColumn(
+        title: field,
+        field: field,
+        type: PlutoColumnType.text(),
+        enableContextMenu: false,
+        enableSorting: true,
+        enableFilterMenuItem: true,
+        width: compactNum ? 90 : 120,
+        minWidth: compactNum ? 70 : 90,
+        renderer: (ctx) {
+          final v = (ctx.cell.value ?? '').toString();
+          return Text(
+            v,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 11),
+          );
+        },
+      );
+    }
+
+    return [
+      PlutoColumn(
+        title: '',
+        field: '__raw__',
+        type: PlutoColumnType.text(),
+        width: 0,
+        hide: true,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+      ),
+      PlutoColumn(
+        title: '✓',
+        field: '__check__',
+        type: PlutoColumnType.text(),
+        width: 44,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+        enableRowChecked: true,
+      ),
+      for (final f in fields) col(f),
+    ];
+  }
+
+  List<PlutoRow> _buildPlutoRows(
+    List<Map<String, dynamic>> rows,
+    List<PlutoColumn> columns,
+  ) {
+    Object? val(Map<String, dynamic> it, String field) {
+      if (field == '__raw__') return it;
+      if (field == '__check__') return '';
+      return (it[field] ?? '').toString();
+    }
+
+    return [
+      for (final it in rows)
+        PlutoRow(
+          checked: _selectedIds.contains(_toInt(it['ST_ID'])),
+          cells: {
+            for (final c in columns) c.field: PlutoCell(value: val(it, c.field)),
+          },
+        ),
+    ];
+  }
+
+  void _syncSelectedFromGrid(PlutoGridStateManager sm) {
+    final checked = sm.checkedRows;
+    setState(() {
+      _selectedIds
+        ..clear()
+        ..addAll(
+          checked
+              .map((r) => r.cells['__raw__']?.value)
+              .whereType<Map<String, dynamic>>()
+              .map((raw) => _toInt(raw['ST_ID'])),
+        );
+    });
+  }
+
+  Widget _buildGrid(ColorScheme scheme) {
+    if (_gridColumns.isEmpty) return const SizedBox.shrink();
+    return PlutoGrid(
+      columns: _gridColumns,
+      rows: _gridRows,
+      onLoaded: (e) {
+        _gridSm = e.stateManager;
+        e.stateManager.setSelectingMode(PlutoGridSelectingMode.row);
+        e.stateManager.setShowColumnFilter(true);
+      },
+      onRowChecked: (_) {
+        final sm = _gridSm;
+        if (sm == null) return;
+        _syncSelectedFromGrid(sm);
+      },
+      configuration: const PlutoGridConfiguration(
+        columnSize: PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.scale),
+        style: PlutoGridStyleConfig(
+          enableCellBorderVertical: true,
+          enableCellBorderHorizontal: true,
+          rowHeight: 28,
+          columnHeight: 28,
+          cellTextStyle: TextStyle(fontSize: 11),
+          columnTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+        ),
+      ),
+    );
   }
 
   Future<void> _pickDate({required bool from}) async {
@@ -159,6 +327,8 @@ class _ShortageManagerPageState extends ConsumerState<ShortageManagerPage> {
       if (!mounted) return;
       setState(() {
         _rows = list;
+        _gridColumns = _buildPlutoColumns(list);
+        _gridRows = _buildPlutoRows(list, _gridColumns);
         _loading = false;
       });
     } catch (e) {
@@ -447,6 +617,13 @@ class _ShortageManagerPageState extends ConsumerState<ShortageManagerPage> {
             icon: Icon(_showFilter ? Icons.filter_alt_off : Icons.filter_alt),
             tooltip: _showFilter ? 'Ẩn bộ lọc' : 'Hiện bộ lọc',
           ),
+          IconButton(
+            onPressed: () {
+              setState(() => _gridView = !_gridView);
+            },
+            icon: Icon(_gridView ? Icons.view_agenda : Icons.grid_on),
+            tooltip: _gridView ? 'List view' : 'Grid view',
+          ),
           PopupMenuButton<String>(
             onSelected: (v) async {
               if (v == 'search') {
@@ -587,12 +764,18 @@ class _ShortageManagerPageState extends ConsumerState<ShortageManagerPage> {
                 ],
               ),
               const SizedBox(height: 8),
+            if (_gridView)
+              SizedBox(
+                height: 520,
+                child: _buildGrid(scheme),
+              )
+            else
               for (final r in _rows) _shortageCard(context, scheme, r),
-              if (_rows.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Center(child: Text('Chưa có dữ liệu')),
-                ),
+            if (_rows.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(24),
+                child: Center(child: Text('Chưa có dữ liệu')),
+              ),
             ],
           ],
         ),

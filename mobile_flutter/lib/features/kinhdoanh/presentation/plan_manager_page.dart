@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/app_drawer.dart';
@@ -41,6 +42,11 @@ class _PlanManagerPageState extends ConsumerState<PlanManagerPage> {
   bool _loading = false;
   List<Map<String, dynamic>> _rows = const [];
 
+  bool _gridView = false;
+  List<PlutoColumn> _gridColumns = const [];
+  List<PlutoRow> _gridRows = const [];
+  PlutoGridStateManager? _gridSm;
+
   final Set<int> _selectedPlanIds = <int>{};
 
   List<Map<String, dynamic>>? _customerCache;
@@ -73,7 +79,158 @@ class _PlanManagerPageState extends ConsumerState<PlanManagerPage> {
       } else {
         _selectedPlanIds.clear();
       }
+
+      if (_gridColumns.isNotEmpty) {
+        _gridRows = _buildPlutoRows(_rows, _gridColumns);
+      }
     });
+  }
+
+  List<String> _prioritizedFields(List<Map<String, dynamic>> rows) {
+    final keys = <String>{};
+    for (final r in rows) {
+      keys.addAll(r.keys);
+    }
+
+    final preferred = <String>[
+      'PLAN_ID',
+      'PLAN_DATE',
+      'STATUS',
+      'CUST_NAME_KD',
+      'CUST_CD',
+      'G_CODE',
+      'G_NAME_KD',
+      'G_NAME',
+      'PO_NO',
+      'PROD_TYPE',
+      'PROD_MAIN_MATERIAL',
+      'EMPL_NAME',
+      'EMPL_NO',
+      for (var i = 1; i <= 15; i++) 'D$i',
+      'REMARK',
+    ];
+
+    final out = <String>[];
+    for (final f in preferred) {
+      if (keys.contains(f)) out.add(f);
+    }
+    final remain = keys.difference(out.toSet()).toList()..sort();
+    out.addAll(remain);
+    return out;
+  }
+
+  List<PlutoColumn> _buildPlutoColumns(List<Map<String, dynamic>> rows) {
+    final fields = _prioritizedFields(rows);
+
+    PlutoColumn col(String field) {
+      return PlutoColumn(
+        title: field,
+        field: field,
+        type: PlutoColumnType.text(),
+        enableContextMenu: false,
+        enableSorting: true,
+        enableFilterMenuItem: true,
+        width: field.startsWith('D') ? 70 : 120,
+        minWidth: field.startsWith('D') ? 60 : 90,
+        renderer: (ctx) {
+          final v = (ctx.cell.value ?? '').toString();
+          return Text(
+            v,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 11),
+          );
+        },
+      );
+    }
+
+    return [
+      PlutoColumn(
+        title: '',
+        field: '__raw__',
+        type: PlutoColumnType.text(),
+        width: 0,
+        hide: true,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+      ),
+      PlutoColumn(
+        title: '✓',
+        field: '__check__',
+        type: PlutoColumnType.text(),
+        width: 44,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+        enableRowChecked: true,
+      ),
+      for (final f in fields) col(f),
+    ];
+  }
+
+  List<PlutoRow> _buildPlutoRows(
+    List<Map<String, dynamic>> rows,
+    List<PlutoColumn> columns,
+  ) {
+    Object? val(Map<String, dynamic> it, String field) {
+      if (field == '__raw__') return it;
+      if (field == '__check__') return '';
+      return (it[field] ?? '').toString();
+    }
+
+    return [
+      for (final it in rows)
+        PlutoRow(
+          checked: _selectedPlanIds.contains(_toInt(it['PLAN_ID'])),
+          cells: {
+            for (final c in columns) c.field: PlutoCell(value: val(it, c.field)),
+          },
+        ),
+    ];
+  }
+
+  void _syncSelectedFromGrid(PlutoGridStateManager sm) {
+    final checked = sm.checkedRows;
+    setState(() {
+      _selectedPlanIds
+        ..clear()
+        ..addAll(
+          checked
+              .map((r) => r.cells['__raw__']?.value)
+              .whereType<Map<String, dynamic>>()
+              .map((raw) => _toInt(raw['PLAN_ID'])),
+        );
+    });
+  }
+
+  Widget _buildGrid(ColorScheme scheme) {
+    if (_gridColumns.isEmpty) return const SizedBox.shrink();
+    return PlutoGrid(
+      columns: _gridColumns,
+      rows: _gridRows,
+      onLoaded: (e) {
+        _gridSm = e.stateManager;
+        e.stateManager.setSelectingMode(PlutoGridSelectingMode.row);
+        e.stateManager.setShowColumnFilter(true);
+      },
+      onRowChecked: (_) {
+        final sm = _gridSm;
+        if (sm == null) return;
+        _syncSelectedFromGrid(sm);
+      },
+      configuration: const PlutoGridConfiguration(
+        columnSize: PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.scale),
+        style: PlutoGridStyleConfig(
+          enableCellBorderVertical: true,
+          enableCellBorderHorizontal: true,
+          rowHeight: 28,
+          columnHeight: 28,
+          cellTextStyle: TextStyle(fontSize: 11),
+          columnTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+        ),
+      ),
+    );
   }
 
   String _ymd(DateTime d) {
@@ -464,6 +621,8 @@ class _PlanManagerPageState extends ConsumerState<PlanManagerPage> {
       if (!mounted) return;
       setState(() {
         _rows = list;
+        _gridColumns = _buildPlutoColumns(list);
+        _gridRows = _buildPlutoRows(list, _gridColumns);
         _loading = false;
       });
     } catch (e) {
@@ -987,6 +1146,13 @@ class _PlanManagerPageState extends ConsumerState<PlanManagerPage> {
             icon: Icon(_showFilter ? Icons.filter_alt_off : Icons.filter_alt),
             tooltip: _showFilter ? 'Ẩn bộ lọc' : 'Hiện bộ lọc',
           ),
+          IconButton(
+            onPressed: () {
+              setState(() => _gridView = !_gridView);
+            },
+            icon: Icon(_gridView ? Icons.view_agenda : Icons.grid_on),
+            tooltip: _gridView ? 'List view' : 'Grid view',
+          ),
           PopupMenuButton<String>(
             onSelected: (v) async {
               if (v == 'search') {
@@ -1194,7 +1360,13 @@ class _PlanManagerPageState extends ConsumerState<PlanManagerPage> {
                 ],
               ),
               const SizedBox(height: 8),
-              for (final r in _rows) _planCard(context, scheme, r),
+              if (_gridView)
+                SizedBox(
+                  height: 520,
+                  child: _buildGrid(scheme),
+                )
+              else
+                for (final r in _rows) _planCard(context, scheme, r),
               if (_rows.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(24),

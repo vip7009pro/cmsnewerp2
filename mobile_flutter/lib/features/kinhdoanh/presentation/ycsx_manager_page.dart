@@ -5,6 +5,7 @@ import 'package:excel/excel.dart' as xls;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../app/app_drawer.dart';
@@ -43,6 +44,11 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
   bool _loading = false;
   List<Map<String, dynamic>> _rows = const [];
   final Set<String> _selectedIds = <String>{};
+
+  bool _gridView = false;
+  List<PlutoColumn> _gridColumns = const [];
+  List<PlutoRow> _gridRows = const [];
+  PlutoGridStateManager? _gridSm;
   @override
   void dispose() {
     _codeKdCtrl.dispose();
@@ -1575,7 +1581,175 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
       } else {
         _selectedIds.clear();
       }
+
+      if (_gridColumns.isNotEmpty) {
+        _gridRows = _buildPlutoRows(_rows, _gridColumns);
+      }
     });
+  }
+
+  List<String> _prioritizedFields(List<Map<String, dynamic>> rows) {
+    final keys = <String>{};
+    for (final r in rows) {
+      keys.addAll(r.keys);
+    }
+
+    final preferred = <String>[
+      'PROD_REQUEST_NO',
+      'PROD_REQUEST_DATE',
+      'DELIVERY_DT',
+      'CUST_NAME_KD',
+      'CUST_CD',
+      'G_CODE',
+      'G_NAME_KD',
+      'G_NAME',
+      'PROD_TYPE',
+      'PROD_MAIN_MATERIAL',
+      'PHANLOAI',
+      'PHANLOAIHANG',
+      'IS_TAM_THOI',
+      'USE_YN',
+      'PDUYET',
+      'PENDING',
+      'MATERIAL_YN',
+      'REMARK',
+      'QTY',
+      'PO',
+      'TONKHO',
+      'BTP',
+      'CK',
+      'BLOCK',
+      'FCST',
+      'BANVE',
+      for (var i = 1; i <= 8; i++) 'W$i',
+    ];
+
+    final out = <String>[];
+    for (final f in preferred) {
+      if (keys.contains(f)) out.add(f);
+    }
+    final remain = keys.difference(out.toSet()).toList()..sort();
+    out.addAll(remain);
+    return out;
+  }
+
+  List<PlutoColumn> _buildPlutoColumns(List<Map<String, dynamic>> rows) {
+    final fields = _prioritizedFields(rows);
+
+    PlutoColumn col(String field) {
+      final isWeek = RegExp(r'^W[1-8]$').hasMatch(field);
+      return PlutoColumn(
+        title: field,
+        field: field,
+        type: PlutoColumnType.text(),
+        enableContextMenu: false,
+        enableSorting: true,
+        enableFilterMenuItem: true,
+        width: isWeek ? 70 : 120,
+        minWidth: isWeek ? 60 : 90,
+        renderer: (ctx) {
+          final v = (ctx.cell.value ?? '').toString();
+          return Text(
+            v,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 11),
+          );
+        },
+      );
+    }
+
+    return [
+      PlutoColumn(
+        title: '',
+        field: '__raw__',
+        type: PlutoColumnType.text(),
+        width: 0,
+        hide: true,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+      ),
+      PlutoColumn(
+        title: '✓',
+        field: '__check__',
+        type: PlutoColumnType.text(),
+        width: 44,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+        enableRowChecked: true,
+      ),
+      for (final f in fields) col(f),
+    ];
+  }
+
+  List<PlutoRow> _buildPlutoRows(
+    List<Map<String, dynamic>> rows,
+    List<PlutoColumn> columns,
+  ) {
+    Object? val(Map<String, dynamic> it, String field) {
+      if (field == '__raw__') return it;
+      if (field == '__check__') return '';
+      return (it[field] ?? '').toString();
+    }
+
+    String prNo(Map<String, dynamic> it) {
+      return (it['PROD_REQUEST_NO'] ?? '').toString();
+    }
+
+    return [
+      for (final it in rows)
+        PlutoRow(
+          checked: _selectedIds.contains(prNo(it)),
+          cells: {
+            for (final c in columns) c.field: PlutoCell(value: val(it, c.field)),
+          },
+        ),
+    ];
+  }
+
+  void _syncSelectedFromGrid(PlutoGridStateManager sm) {
+    final checked = sm.checkedRows;
+    setState(() {
+      _selectedIds
+        ..clear()
+        ..addAll(
+          checked
+              .map((r) => r.cells['__raw__']?.value)
+              .whereType<Map<String, dynamic>>()
+              .map((raw) => (raw['PROD_REQUEST_NO'] ?? '').toString()),
+        );
+    });
+  }
+
+  Widget _buildGrid(ColorScheme scheme) {
+    if (_gridColumns.isEmpty) return const SizedBox.shrink();
+    return PlutoGrid(
+      columns: _gridColumns,
+      rows: _gridRows,
+      onLoaded: (e) {
+        _gridSm = e.stateManager;
+        e.stateManager.setSelectingMode(PlutoGridSelectingMode.row);
+        e.stateManager.setShowColumnFilter(true);
+      },
+      onRowChecked: (_) {
+        final sm = _gridSm;
+        if (sm == null) return;
+        _syncSelectedFromGrid(sm);
+      },
+      configuration: const PlutoGridConfiguration(
+        columnSize: PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.scale),
+        style: PlutoGridStyleConfig(
+          enableCellBorderVertical: true,
+          enableCellBorderHorizontal: true,
+          rowHeight: 28,
+          columnHeight: 28,
+          cellTextStyle: TextStyle(fontSize: 11),
+          columnTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+        ),
+      ),
+    );
   }
   Future<void> _pickDate({required bool from}) async {
     final initial = from ? _fromDate : _toDate;
@@ -1648,6 +1822,8 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
       if (!mounted) return;
       setState(() {
         _rows = list;
+        _gridColumns = _buildPlutoColumns(list);
+        _gridRows = _buildPlutoRows(list, _gridColumns);
         _loading = false;
       });
     } catch (e) {
@@ -2409,6 +2585,13 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
             icon: Icon(_showFilter ? Icons.filter_alt_off : Icons.filter_alt),
             tooltip: _showFilter ? 'Ẩn bộ lọc' : 'Hiện bộ lọc',
           ),
+          IconButton(
+            onPressed: () {
+              setState(() => _gridView = !_gridView);
+            },
+            icon: Icon(_gridView ? Icons.view_agenda : Icons.grid_on),
+            tooltip: _gridView ? 'List view' : 'Grid view',
+          ),
           PopupMenuButton<String>(
             onSelected: (v) async {
               if (v == 'search') {
@@ -2867,7 +3050,13 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
                 ],
               ),
               const SizedBox(height: 8),
-              for (final r in _rows) _ycsxCard(context, scheme, r),
+              if (_gridView)
+                SizedBox(
+                  height: 520,
+                  child: _buildGrid(scheme),
+                )
+              else
+                for (final r in _rows) _ycsxCard(context, scheme, r),
               if (_rows.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(24),

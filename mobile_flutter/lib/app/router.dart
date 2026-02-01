@@ -26,6 +26,7 @@ import '../features/kinhdoanh/presentation/ycsx_manager_page.dart';
 import '../features/kinhdoanh/presentation/po_manager_page.dart';
 import '../features/kinhdoanh/presentation/po_and_stock_full_page.dart';
 import '../features/kinhdoanh/presentation/thong_tin_san_pham_page.dart';
+import '../features/kinhdoanh/presentation/code_bom_manager_list_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -190,11 +191,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/quanlycodebom',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý Code BOM',
-          menuCode: 'KD9',
-          description: 'Web component: BOM_MANAGER',
-        ),
+        builder: (context, state) => const CodeBomManagerListPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/customermanager',
