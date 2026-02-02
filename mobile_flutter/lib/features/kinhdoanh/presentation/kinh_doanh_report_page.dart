@@ -375,6 +375,24 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
     return v.toStringAsFixed(0);
   }
 
+  String _fmtDDMMFromIso(String s) {
+    // expects YYYY-MM-DD or ISO-ish; fallback to original.
+    final dt = DateTime.tryParse(s);
+    if (dt == null) return s;
+    return DateFormat('dd/MM').format(dt);
+  }
+
+  List<Map<String, dynamic>> _withFormattedDate(List<Map<String, dynamic>> rows, String srcKey, String dstKey) {
+    if (rows.isEmpty) return const [];
+    return rows
+        .map((e) {
+          final m = Map<String, dynamic>.from(e);
+          m[dstKey] = _fmtDDMMFromIso(_s(m[srcKey]));
+          return m;
+        })
+        .toList();
+  }
+
   Future<List<Map<String, dynamic>>> _loadList(String cmd, Map<String, dynamic> payload) async {
     final body = await _post(cmd, payload);
     if (_isNg(body)) return const [];
@@ -791,7 +809,6 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(
                   title: AxisTitle(text: xLabel),
-                  labelRotation: 45,
                 ),
                 primaryYAxis: NumericAxis(
                   title: AxisTitle(text: leftLabel),
@@ -1401,8 +1418,8 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                 _sectionTitle('Closing charts'),
                 _comboChart(
                   'Daily Closing',
-                  _dailyClosingWidget,
-                  xKey: 'DELIVERY_DATE',
+                  _withFormattedDate(_dailyClosingWidget, 'DELIVERY_DATE', 'DELIVERY_DATE_FMT'),
+                  xKey: 'DELIVERY_DATE_FMT',
                   qtyKey: 'DELIVERY_QTY',
                   amountKey: 'DELIVERED_AMOUNT',
                   kpiKey: 'KPI_VALUE',
