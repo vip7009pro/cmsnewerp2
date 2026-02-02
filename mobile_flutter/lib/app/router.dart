@@ -33,6 +33,8 @@ import '../features/kinhdoanh/presentation/ins_status_page.dart';
 import '../features/kinhdoanh/presentation/over_monitor_page.dart';
 import '../features/kinhdoanh/presentation/kinh_doanh_report_page.dart';
 import '../features/muahang/presentation/quan_ly_vat_lieu_page.dart';
+import '../features/muahang/presentation/mrp_page.dart';
+import '../features/qc/presentation/dtc_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -232,6 +234,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/phongmuahang/quanlyvatlieu',
         builder: (context, state) => const QuanLyVatLieuPage(),
+      ),
+      GoRoute(
+        path: '/phongmuahang/mrp',
+        builder: (context, state) => const MrpPage(),
+      ),
+
+      // QC routes
+      GoRoute(
+        path: '/qc/dtc',
+        builder: (context, state) => const DtcPage(),
       ),
     ],
   );

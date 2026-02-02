@@ -757,6 +757,9 @@ class _MaterialEditDialogState extends State<_MaterialEditDialog> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final fillColor = scheme.surfaceContainerHighest;
+    final dropdownBg = scheme.surface;
+    final dropdownText = scheme.onSurface;
+    final dropdownIcon = scheme.onSurface;
 
     DropdownMenuItem<String> vItem(Map<String, dynamic> v) {
       final cd = _s(v['CUST_CD']);
@@ -802,6 +805,9 @@ class _MaterialEditDialogState extends State<_MaterialEditDialog> {
                 onChanged: (v) => setState(() => _custCd = v ?? ''),
                 decoration: dec('Vendor (CUST_CD)'),
                 isExpanded: true,
+                dropdownColor: dropdownBg,
+                style: TextStyle(color: dropdownText),
+                iconEnabledColor: dropdownIcon,
               ),
               const SizedBox(height: 8),
               TextField(controller: _descrCtrl, decoration: dec('DESCR')),
@@ -835,6 +841,9 @@ class _MaterialEditDialogState extends State<_MaterialEditDialog> {
                       },
                       decoration: dec('FSC'),
                       isExpanded: true,
+                      dropdownColor: dropdownBg,
+                      style: TextStyle(color: dropdownText),
+                      iconEnabledColor: dropdownIcon,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -846,6 +855,9 @@ class _MaterialEditDialogState extends State<_MaterialEditDialog> {
                       onChanged: _fscYn == 'N' ? null : (v) => setState(() => _fscCode = v ?? '01'),
                       decoration: dec('FSC_CODE'),
                       isExpanded: true,
+                      dropdownColor: dropdownBg,
+                      style: TextStyle(color: dropdownText),
+                      iconEnabledColor: dropdownIcon,
                     ),
                   ),
                 ],
