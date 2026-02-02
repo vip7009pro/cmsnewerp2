@@ -12,8 +12,119 @@ class TestTableDtcTab extends ConsumerStatefulWidget {
   ConsumerState<TestTableDtcTab> createState() => _TestTableDtcTabState();
 }
 
+class _AddTestItemDialog extends StatefulWidget {
+  const _AddTestItemDialog();
+
+  @override
+  State<_AddTestItemDialog> createState() => _AddTestItemDialogState();
+}
+
+class _AddTestItemDialogState extends State<_AddTestItemDialog> {
+  final TextEditingController _testNameCtrl = TextEditingController();
+  final TextEditingController _testCodeCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _testNameCtrl.dispose();
+    _testCodeCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add Test Item'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _testCodeCtrl,
+            decoration: const InputDecoration(labelText: 'TEST_CODE'),
+            keyboardType: TextInputType.number,
+          ),
+          TextField(
+            controller: _testNameCtrl,
+            decoration: const InputDecoration(labelText: 'TEST_NAME'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            Navigator.of(context).pop({
+              'TEST_CODE': _testCodeCtrl.text.trim(),
+              'TEST_NAME': _testNameCtrl.text.trim(),
+            });
+          },
+          child: const Text('Add'),
+        ),
+      ],
+    );
+  }
+}
+
+class _AddTestPointDialog extends StatefulWidget {
+  const _AddTestPointDialog({required this.testCode, required this.testName});
+
+  final int testCode;
+  final String testName;
+
+  @override
+  State<_AddTestPointDialog> createState() => _AddTestPointDialogState();
+}
+
+class _AddTestPointDialogState extends State<_AddTestPointDialog> {
+  final TextEditingController _pointCodeCtrl = TextEditingController();
+  final TextEditingController _pointNameCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _pointCodeCtrl.dispose();
+    _pointNameCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add Test Point'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('TEST: ${widget.testName} (${widget.testCode})'),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _pointCodeCtrl,
+            decoration: const InputDecoration(labelText: 'POINT_CODE'),
+            keyboardType: TextInputType.number,
+          ),
+          TextField(
+            controller: _pointNameCtrl,
+            decoration: const InputDecoration(labelText: 'POINT_NAME'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+        FilledButton(
+          onPressed: () {
+            Navigator.of(context).pop({
+              'POINT_CODE': _pointCodeCtrl.text.trim(),
+              'POINT_NAME': _pointNameCtrl.text.trim(),
+            });
+          },
+          child: const Text('Add'),
+        ),
+      ],
+    );
+  }
+}
+
 class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
   bool _loading = false;
+
+  int? _loadingPointForTestCode;
 
   Map<String, dynamic>? _selectedTest;
 
@@ -32,6 +143,18 @@ class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
     final body = res.data;
     if (body is Map<String, dynamic>) return body;
     return <String, dynamic>{'tk_status': 'NG', 'message': 'Bad response'};
+  }
+
+  Future<void> _selectTestAndLoadPoints({required int testCode, Map<String, dynamic>? raw}) async {
+    if (testCode <= 0) return;
+    if (_loadingPointForTestCode == testCode && _loading) return;
+    _loadingPointForTestCode = testCode;
+    setState(() {
+      if (raw != null) _selectedTest = raw;
+      _pointCols = const [];
+      _pointRows = const [];
+    });
+    await _loadPointList(testCode);
   }
 
   bool _isNg(Map<String, dynamic> body) => (body['tk_status'] ?? '').toString().toUpperCase() == 'NG';
@@ -165,50 +288,22 @@ class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
   }
 
   Future<void> _openAddTestItem() async {
-    final testNameCtrl = TextEditingController();
-    final testCodeCtrl = TextEditingController();
-
-    final ok = await showDialog<bool>(
+    final res = await showDialog<Map<String, dynamic>>(
       context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text('Add Test Item'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: testCodeCtrl,
-                decoration: const InputDecoration(labelText: 'TEST_CODE'),
-                keyboardType: TextInputType.number,
-                enabled: AppConfig.company != 'CMS',
-              ),
-              TextField(
-                controller: testNameCtrl,
-                decoration: const InputDecoration(labelText: 'TEST_NAME'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
-            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Add')),
-          ],
-        );
-      },
+      builder: (ctx) => const _AddTestItemDialog(),
     );
+    if (res == null) return;
 
-    if (ok != true) {
-      testNameCtrl.dispose();
-      testCodeCtrl.dispose();
-      return;
-    }
-
-    final name = testNameCtrl.text.trim();
-    final code = int.tryParse(testCodeCtrl.text.trim()) ?? 0;
-    testNameCtrl.dispose();
-    testCodeCtrl.dispose();
+    final name = _s(res['TEST_NAME']).trim();
+    final code = _i(res['TEST_CODE']);
 
     if (name.isEmpty) {
       _snack('Thiếu TEST_NAME');
+      return;
+    }
+
+    if (AppConfig.company != 'CMS' && code <= 0) {
+      _snack('Thiếu TEST_CODE');
       return;
     }
 
@@ -237,48 +332,17 @@ class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
       return;
     }
 
-    final pointCodeCtrl = TextEditingController();
-    final pointNameCtrl = TextEditingController();
-
-    final ok = await showDialog<bool>(
+    final res = await showDialog<Map<String, dynamic>>(
       context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text('Add Test Point'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('TEST: ${_s(_selectedTest?['TEST_NAME'])} (${_s(_selectedTest?['TEST_CODE'])})'),
-              const SizedBox(height: 8),
-              TextField(
-                controller: pointCodeCtrl,
-                decoration: const InputDecoration(labelText: 'POINT_CODE'),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: pointNameCtrl,
-                decoration: const InputDecoration(labelText: 'POINT_NAME'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
-            FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Add')),
-          ],
-        );
-      },
+      builder: (ctx) => _AddTestPointDialog(
+        testCode: _i(_selectedTest?['TEST_CODE']),
+        testName: _s(_selectedTest?['TEST_NAME']),
+      ),
     );
+    if (res == null) return;
 
-    if (ok != true) {
-      pointCodeCtrl.dispose();
-      pointNameCtrl.dispose();
-      return;
-    }
-
-    final pointCode = int.tryParse(pointCodeCtrl.text.trim()) ?? 0;
-    final pointName = pointNameCtrl.text.trim();
-    pointCodeCtrl.dispose();
-    pointNameCtrl.dispose();
+    final pointCode = _i(res['POINT_CODE']);
+    final pointName = _s(res['POINT_NAME']).trim();
 
     final testCode = _i(_selectedTest?['TEST_CODE']);
     if (testCode <= 0 || pointCode <= 0 || pointName.isEmpty) {
@@ -341,7 +405,7 @@ class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final leftH = constraints.maxHeight * 0.45;
-                final rightH = constraints.maxHeight * 0.55;
+                // bottom uses Expanded to avoid RenderFlex overflow
 
                 return Column(
                   children: [
@@ -356,18 +420,24 @@ class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
                                 e.stateManager.setSelectingMode(PlutoGridSelectingMode.row);
                               },
                               onRowDoubleTap: (event) async {
+                                final testCode = _i(event.row.cells['TEST_CODE']?.value);
+                                if (testCode <= 0) return;
                                 final raw = event.row.cells['__raw__']?.value;
-                                if (raw is Map<String, dynamic>) {
-                                  setState(() => _selectedTest = raw);
-                                  await _loadPointList(_i(raw['TEST_CODE']));
-                                }
+                                await _selectTestAndLoadPoints(
+                                  testCode: testCode,
+                                  raw: (raw is Map<String, dynamic>) ? raw : null,
+                                );
                               },
                               onSelected: (event) async {
-                                final raw = event.row?.cells['__raw__']?.value;
-                                if (raw is Map<String, dynamic>) {
-                                  setState(() => _selectedTest = raw);
-                                  await _loadPointList(_i(raw['TEST_CODE']));
-                                }
+                                final row = event.row;
+                                if (row == null) return;
+                                final testCode = _i(row.cells['TEST_CODE']?.value);
+                                if (testCode <= 0) return;
+                                final raw = row.cells['__raw__']?.value;
+                                await _selectTestAndLoadPoints(
+                                  testCode: testCode,
+                                  raw: (raw is Map<String, dynamic>) ? raw : null,
+                                );
                               },
                               configuration: const PlutoGridConfiguration(
                                 columnSize: PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.scale),
@@ -408,8 +478,7 @@ class _TestTableDtcTabState extends ConsumerState<TestTableDtcTab> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: rightH - 44,
+                    Expanded(
                       child: _loading && _pointCols.isEmpty
                           ? const Center(child: CircularProgressIndicator())
                           : PlutoGrid(

@@ -25,6 +25,8 @@ class _DkDtcTabState extends ConsumerState<DkDtcTab> {
   final _requestEmplCtrl = TextEditingController();
   final _remarkCtrl = TextEditingController();
 
+  final _lotNccCtrl = TextEditingController();
+
   String _emplName = '';
   String _reqDeptCode = '';
 
@@ -85,6 +87,7 @@ class _DkDtcTabState extends ConsumerState<DkDtcTab> {
     _inputNoCtrl.dispose();
     _requestEmplCtrl.dispose();
     _remarkCtrl.dispose();
+    _lotNccCtrl.dispose();
     super.dispose();
   }
 
@@ -275,6 +278,7 @@ class _DkDtcTabState extends ConsumerState<DkDtcTab> {
       _mCode = _s(list.first['M_CODE']);
       _custCd = _s(list.first['CUST_CD']);
       _lotNcc = _s(list.first['LOTNCC']);
+      _lotNccCtrl.text = _lotNcc;
     });
     await _checkAddedSpec(mCode: _mCode, gCode: '');
     await _getTestedCodeByMCode(_mCode);
@@ -364,7 +368,7 @@ class _DkDtcTabState extends ConsumerState<DkDtcTab> {
       'M_CODE': _mCode,
       'M_LOT_NO': _inputNoCtrl.text.trim(),
       'LOT_CMS': _inputNoCtrl.text.trim().length >= 6 ? _inputNoCtrl.text.trim().substring(0, 6) : _inputNoCtrl.text.trim(),
-      'LOT_VENDOR': _lotNcc,
+      'LOT_VENDOR': _lotNccCtrl.text.trim().isNotEmpty ? _lotNccCtrl.text.trim() : _lotNcc,
       'CUST_CD': _custCd,
       'EXP_DATE': '',
       'INPUT_LENGTH': 0,
@@ -576,6 +580,33 @@ class _DkDtcTabState extends ConsumerState<DkDtcTab> {
                           ),
                         ],
                       ),
+                      if (_checkNvl) ...[
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _lotNccCtrl,
+                                decoration: const InputDecoration(labelText: 'LOT NCC (LOT_VENDOR)'),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              onPressed: _loading
+                                  ? null
+                                  : () async {
+                                      final raw = await Navigator.of(context).push<String>(
+                                        MaterialPageRoute(builder: (_) => const DtcScanPage(title: 'Scan Lot NCC')),
+                                      );
+                                      if (raw == null || raw.trim().isEmpty) return;
+                                      if (!mounted) return;
+                                      _lotNccCtrl.text = raw.trim();
+                                    },
+                              icon: const Icon(Icons.qr_code_scanner),
+                            ),
+                          ],
+                        ),
+                      ],
                       const SizedBox(height: 10),
                       TextField(
                         controller: _requestEmplCtrl,
@@ -600,9 +631,10 @@ class _DkDtcTabState extends ConsumerState<DkDtcTab> {
                         iconEnabledColor: scheme.onSurface,
                         decoration: const InputDecoration(labelText: 'TEST TYPE'),
                         items: const [
-                          DropdownMenuItem(value: '3', child: Text('3')),
-                          DropdownMenuItem(value: '1', child: Text('1')),
-                          DropdownMenuItem(value: '2', child: Text('2')),
+                          DropdownMenuItem(value: '1', child: Text('FIRST_LOT')),
+                          DropdownMenuItem(value: '2', child: Text('ECN')),
+                          DropdownMenuItem(value: '3', child: Text('MASS PRODUCTION')),
+                          DropdownMenuItem(value: '4', child: Text('SAMPLE')),
                         ],
                         onChanged: (v) => setState(() => _testType = v ?? '3'),
                       ),

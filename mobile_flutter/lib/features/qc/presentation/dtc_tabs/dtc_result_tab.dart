@@ -21,6 +21,7 @@ class _DtcResultTabState extends ConsumerState<DtcResultTab> {
   String _dtcId = '';
 
   List<Map<String, dynamic>> _testList = const [];
+  Set<String> _registeredTestCodes = <String>{};
   String _selectedTestCode = '';
 
   List<Map<String, dynamic>> _rows = const [];
@@ -81,6 +82,7 @@ class _DtcResultTabState extends ConsumerState<DtcResultTab> {
     if (!mounted) return;
     setState(() {
       _testList = list;
+      _registeredTestCodes = <String>{};
       if (_selectedTestCode.isEmpty && list.isNotEmpty) {
         _selectedTestCode = _s(list.first['TEST_CODE']);
       }
@@ -113,6 +115,10 @@ class _DtcResultTabState extends ConsumerState<DtcResultTab> {
     final body = await _post('checkRegisterdDTCTEST', {'DTC_ID': dtcId});
     if (_isNg(body)) {
       _snack('Chưa có test đăng ký cho ID này');
+      if (!mounted) return;
+      setState(() {
+        _registeredTestCodes = <String>{};
+      });
       return;
     }
     final data = body['data'];
@@ -120,11 +126,30 @@ class _DtcResultTabState extends ConsumerState<DtcResultTab> {
         .map((e) => e is Map ? Map<String, dynamic>.from(e) : <String, dynamic>{})
         .toList();
     if (!mounted) return;
+    bool isAdded(Map<String, dynamic> e) {
+      final v = e['CHECKADDED'];
+      if (v == null) return false;
+      if (v is bool) return v;
+      final s = _s(v).trim().toUpperCase();
+      if (s.isEmpty || s == 'NULL') return false;
+      final n = int.tryParse(s);
+      if (n != null) return n != 0;
+      return s == 'Y' || s == 'YES' || s == 'TRUE';
+    }
+
+    final codes = <String>{};
+    for (final e in list) {
+      final c = _s(e['TEST_CODE']);
+      if (c.isEmpty) continue;
+      if (isAdded(e)) codes.add(c);
+    }
     setState(() {
-      // Prefer registered list (often already filtered by DTC_ID)
-      _testList = list.isNotEmpty ? list : _testList;
-      if (_testList.isNotEmpty) {
+      _registeredTestCodes = codes;
+      if (_selectedTestCode.isEmpty && _testList.isNotEmpty) {
         _selectedTestCode = _s(_testList.first['TEST_CODE']);
+      }
+      if (_selectedTestCode.isNotEmpty && !_testList.any((e) => _s(e['TEST_CODE']) == _selectedTestCode)) {
+        _selectedTestCode = _testList.isNotEmpty ? _s(_testList.first['TEST_CODE']) : '';
       }
     });
   }
@@ -398,10 +423,22 @@ class _DtcResultTabState extends ConsumerState<DtcResultTab> {
                         iconEnabledColor: scheme.onSurface,
                         decoration: const InputDecoration(labelText: 'TEST'),
                         items: _testList
-                            .map((e) => DropdownMenuItem(
-                                  value: _s(e['TEST_CODE']),
-                                  child: Text('${_s(e['TEST_NAME'])} (${_s(e['TEST_CODE'])})', overflow: TextOverflow.ellipsis),
-                                ))
+                            .map((e) {
+                              final code = _s(e['TEST_CODE']);
+                              final isReg = _registeredTestCodes.contains(code);
+                              final text = '${_s(e['TEST_NAME'])} ($code)';
+                              return DropdownMenuItem(
+                                value: code,
+                                child: Text(
+                                  text,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: isReg ? scheme.primary : scheme.onSurface,
+                                    fontWeight: isReg ? FontWeight.w900 : FontWeight.w400,
+                                  ),
+                                ),
+                              );
+                            })
                             .toList(),
                         onChanged: (v) {
                           setState(() {
