@@ -27,6 +27,11 @@ import '../features/kinhdoanh/presentation/po_manager_page.dart';
 import '../features/kinhdoanh/presentation/po_and_stock_full_page.dart';
 import '../features/kinhdoanh/presentation/thong_tin_san_pham_page.dart';
 import '../features/kinhdoanh/presentation/code_bom_manager_list_page.dart';
+import '../features/kinhdoanh/presentation/customer_manager_page.dart';
+import '../features/kinhdoanh/presentation/eq_status_page.dart';
+import '../features/kinhdoanh/presentation/ins_status_page.dart';
+import '../features/kinhdoanh/presentation/over_monitor_page.dart';
+import '../features/kinhdoanh/presentation/kinh_doanh_report_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -195,35 +200,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/customermanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý khách hàng',
-          menuCode: 'KD10',
-          description: 'Web component: CUST_MANAGER',
-        ),
+        builder: (context, state) => const CustomerManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/eqstatus',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'EQ Status',
-          menuCode: 'KD11',
-          description: 'Web component: EQ_STATUS2',
-        ),
+        builder: (context, state) => const EqStatusPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/ins_status',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Inspect Status',
-          menuCode: 'KD12',
-          description: 'Web component: INSPECT_STATUS',
-        ),
+        builder: (context, state) => const InsStatusPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/kinhdoanhreport',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Báo cáo Kinh doanh',
-          menuCode: 'KD13',
-          description: 'Web component: KinhDoanhReport',
-        ),
+        builder: (context, state) => const KinhDoanhReportPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/quotationmanager',
@@ -235,11 +224,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/overmonitor',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Over Monitor',
-          menuCode: 'KD15',
-          description: 'Web component: OVER_MONITOR',
-        ),
+        builder: (context, state) => const OverMonitorPage(),
       ),
     ],
   );

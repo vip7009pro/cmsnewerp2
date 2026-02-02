@@ -487,6 +487,20 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx2, setLocal) {
+            final scheme = Theme.of(ctx2).colorScheme;
+            final fillColor = scheme.surfaceContainerHighest;
+            const fieldPad = EdgeInsets.only(bottom: 12);
+            const contentPad = EdgeInsets.symmetric(horizontal: 12, vertical: 12);
+
+            Widget field(Widget child) => Padding(padding: fieldPad, child: child);
+
+            InputDecoration dec(String label) => InputDecoration(
+                  labelText: label,
+                  filled: true,
+                  fillColor: fillColor,
+                  contentPadding: contentPad,
+                );
+
             String vStr(String key, {required String fallback}) {
               final v = (ctrls[key]?.text ?? '').trim();
               return v.isEmpty ? fallback : v;
@@ -505,9 +519,28 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
               bool enabled = true,
               void Function(String)? onChanged,
             }) {
+              final seen = <String>{};
+              final dedupItems = <DropdownMenuItem<String>>[
+                for (final it in items)
+                  if (it.value != null && seen.add(it.value!))
+                    DropdownMenuItem<String>(
+                      value: it.value,
+                      enabled: it.enabled,
+                      alignment: it.alignment,
+                      onTap: it.onTap,
+                      child: it.child,
+                    ),
+              ];
+
+              final wanted = vStr(key, fallback: fallback);
+              final hasExactlyOne = dedupItems.where((it) => it.value == wanted).length == 1;
+
               return DropdownButtonFormField<String>(
-                initialValue: vStr(key, fallback: fallback),
-                items: items,
+                initialValue: hasExactlyOne ? wanted : null,
+                items: dedupItems,
+                style: TextStyle(color: scheme.onSurface),
+                dropdownColor: scheme.surface,
+                iconEnabledColor: scheme.onSurface,
                 onChanged: !enabled
                     ? null
                     : (nv) {
@@ -516,7 +549,7 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
                         onChanged?.call(v);
                         setLocal(() {});
                       },
-                decoration: InputDecoration(labelText: label),
+                decoration: dec(label),
               );
             }
 
@@ -529,12 +562,25 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
               return DropdownButtonFormField<int>(
                 initialValue: vInt(key, fallback: fallback),
                 items: items,
+                style: TextStyle(color: scheme.onSurface),
+                dropdownColor: scheme.surface,
+                iconEnabledColor: scheme.onSurface,
                 onChanged: (nv) {
                   final v = nv ?? fallback;
                   ctrls[key]?.text = v.toString();
                   setLocal(() {});
                 },
-                decoration: InputDecoration(labelText: label),
+                decoration: dec(label),
+              );
+            }
+
+            Widget tf(String key, String label,
+                {TextInputType? keyboardType, int maxLines = 1}) {
+              return TextField(
+                controller: ctrls[key],
+                decoration: dec(label),
+                keyboardType: keyboardType,
+                maxLines: maxLines,
               );
             }
 
@@ -546,352 +592,411 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                  ddStr(
-                    key: 'CODE_12',
-                    label: 'Đặc tính sản phẩm (CODE_12)',
-                    fallback: '7',
-                    items: [
-                      for (final e in code12Options.entries)
-                        DropdownMenuItem(value: e.key, child: Text(e.value)),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'PROD_TYPE',
-                    label: 'Phân loại sản phẩm (PROD_TYPE)',
-                    fallback: _company() == 'CMS' ? 'TSP' : 'LABEL',
-                    items: [
-                      for (final v in prodTypeOptions)
-                        DropdownMenuItem(value: v, child: Text(v)),
-                    ],
-                  ),
-                  TextField(controller: ctrls['G_NAME_KD'], decoration: const InputDecoration(labelText: 'G_NAME_KD')),
-                  TextField(controller: ctrls['G_NAME'], decoration: const InputDecoration(labelText: 'G_NAME')),
-                  TextField(controller: ctrls['DESCR'], decoration: const InputDecoration(labelText: 'DESCR')),
-                  const SizedBox(height: 6),
-                  TextField(controller: ctrls['CUST_CD'], decoration: const InputDecoration(labelText: 'CUST_CD')),
-                  TextField(controller: ctrls['CUST_NAME'], decoration: const InputDecoration(labelText: 'CUST_NAME')),
-                  ddStr(
-                    key: 'USE_YN',
-                    label: 'Mở/Khóa (USE_YN)',
-                    fallback: 'Y',
-                    items: [
-                      for (final e in ynOptions.entries)
-                        DropdownMenuItem(value: e.key, child: Text(e.value)),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  TextField(controller: ctrls['PROD_PROJECT'], decoration: const InputDecoration(labelText: 'PROD_PROJECT')),
-                  TextField(controller: ctrls['PROD_MODEL'], decoration: const InputDecoration(labelText: 'PROD_MODEL')),
-                  TextField(controller: ctrls['PROD_MAIN_MATERIAL'], decoration: const InputDecoration(labelText: 'PROD_MAIN_MATERIAL')),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_LENGTH'],
-                          decoration: const InputDecoration(labelText: 'G_LENGTH'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_WIDTH'],
-                          decoration: const InputDecoration(labelText: 'G_WIDTH'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextField(
-                    controller: ctrls['PD'],
-                    decoration: const InputDecoration(labelText: 'PD'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_C'],
-                          decoration: const InputDecoration(labelText: 'G_C'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_C_R'],
-                          decoration: const InputDecoration(labelText: 'G_C_R'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_CG'],
-                          decoration: const InputDecoration(labelText: 'G_CG'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_LG'],
-                          decoration: const InputDecoration(labelText: 'G_LG'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_SG_L'],
-                          decoration: const InputDecoration(labelText: 'G_SG_L'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['G_SG_R'],
-                          decoration: const InputDecoration(labelText: 'G_SG_R'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  ddStr(
-                    key: 'PACK_DRT',
-                    label: 'Hướng cuộn (PACK_DRT)',
-                    fallback: '1',
-                    items: [
-                      for (final e in packDrtOptions.entries)
-                        DropdownMenuItem(value: e.key, child: Text(e.value)),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ddInt(
-                          key: 'KNIFE_TYPE',
-                          label: 'Loại dao (KNIFE_TYPE)',
-                          fallback: 0,
+                      field(
+                        ddStr(
+                          key: 'CODE_12',
+                          label: 'Đặc tính sản phẩm (CODE_12)',
+                          fallback: '7',
                           items: [
-                            for (final e in knifeTypeOptions.entries)
+                            for (final e in code12Options.entries)
                               DropdownMenuItem(value: e.key, child: Text(e.value)),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['KNIFE_LIFECYCLE'],
-                          decoration: const InputDecoration(labelText: 'KNIFE_LIFECYCLE'),
+                      field(
+                        ddStr(
+                          key: 'PROD_TYPE',
+                          label: 'Phân loại sản phẩm (PROD_TYPE)',
+                          fallback: _company() == 'CMS' ? 'TSP' : 'LABEL',
+                          items: [
+                            for (final v in prodTypeOptions)
+                              DropdownMenuItem(value: v, child: Text(v)),
+                          ],
+                        ),
+                      ),
+                      field(tf('G_NAME_KD', 'G_NAME_KD')),
+                      field(tf('G_NAME', 'G_NAME')),
+                      field(tf('DESCR', 'DESCR')),
+                      field(tf('CUST_CD', 'CUST_CD')),
+                      field(tf('CUST_NAME', 'CUST_NAME')),
+                      field(
+                        ddStr(
+                          key: 'USE_YN',
+                          label: 'Mở/Khóa (USE_YN)',
+                          fallback: 'Y',
+                          items: [
+                            for (final e in ynOptions.entries)
+                              DropdownMenuItem(value: e.key, child: Text(e.value)),
+                          ],
+                        ),
+                      ),
+                      field(tf('PROD_PROJECT', 'PROD_PROJECT')),
+                      field(tf('PROD_MODEL', 'PROD_MODEL')),
+                      field(tf('PROD_MAIN_MATERIAL', 'PROD_MAIN_MATERIAL')),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: tf(
+                                'G_LENGTH',
+                                'G_LENGTH',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'G_WIDTH',
+                                'G_WIDTH',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        tf(
+                          'PD',
+                          'PD',
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         ),
                       ),
-                    ],
-                  ),
-                  TextField(
-                    controller: ctrls['KNIFE_PRICE'],
-                    decoration: const InputDecoration(labelText: 'KNIFE_PRICE'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['ROLE_EA_QTY'],
-                          decoration: const InputDecoration(labelText: 'ROLE_EA_QTY'),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: tf(
+                                'G_C',
+                                'G_C',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'G_C_R',
+                                'G_C_R',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: tf(
+                                'G_CG',
+                                'G_CG',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'G_LG',
+                                'G_LG',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: tf(
+                                'G_SG_L',
+                                'G_SG_L',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'G_SG_R',
+                                'G_SG_R',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'PACK_DRT',
+                          label: 'Hướng cuộn (PACK_DRT)',
+                          fallback: '1',
+                          items: [
+                            for (final e in packDrtOptions.entries)
+                              DropdownMenuItem(value: e.key, child: Text(e.value)),
+                          ],
+                        ),
+                      ),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ddInt(
+                                key: 'KNIFE_TYPE',
+                                label: 'Loại dao (KNIFE_TYPE)',
+                                fallback: 0,
+                                items: [
+                                  for (final e in knifeTypeOptions.entries)
+                                    DropdownMenuItem(value: e.key, child: Text(e.value)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'KNIFE_LIFECYCLE',
+                                'KNIFE_LIFECYCLE',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        tf(
+                          'KNIFE_PRICE',
+                          'KNIFE_PRICE',
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['RPM'],
-                          decoration: const InputDecoration(labelText: 'RPM'),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: tf(
+                                'ROLE_EA_QTY',
+                                'ROLE_EA_QTY',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'RPM',
+                                'RPM',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        tf(
+                          'PIN_DISTANCE',
+                          'PIN_DISTANCE',
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         ),
                       ),
-                    ],
-                  ),
-                  TextField(
-                    controller: ctrls['PIN_DISTANCE'],
-                    decoration: const InputDecoration(labelText: 'PIN_DISTANCE'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  ),
-                  const SizedBox(height: 6),
-                  TextField(controller: ctrls['PROCESS_TYPE'], decoration: const InputDecoration(labelText: 'PROCESS_TYPE')),
-                  ddStr(
-                    key: 'EQ1',
-                    label: 'Máy 1 (EQ1)',
-                    fallback: 'NA',
-                    items: [
-                      for (final it in _machineList)
-                        DropdownMenuItem(
-                          value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
-                          child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
-                        ),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'EQ2',
-                    label: 'Máy 2 (EQ2)',
-                    fallback: 'NA',
-                    items: [
-                      for (final it in _machineList)
-                        DropdownMenuItem(
-                          value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
-                          child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
-                        ),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'EQ3',
-                    label: 'Máy 3 (EQ3)',
-                    fallback: 'NA',
-                    items: [
-                      for (final it in _machineList)
-                        DropdownMenuItem(
-                          value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
-                          child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
-                        ),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'EQ4',
-                    label: 'Máy 4 (EQ4)',
-                    fallback: 'NA',
-                    items: [
-                      for (final it in _machineList)
-                        DropdownMenuItem(
-                          value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
-                          child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['PROD_DIECUT_STEP'],
-                          decoration: const InputDecoration(labelText: 'PROD_DIECUT_STEP'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      field(tf('PROCESS_TYPE', 'PROCESS_TYPE')),
+                      field(
+                        ddStr(
+                          key: 'EQ1',
+                          label: 'Máy 1 (EQ1)',
+                          fallback: 'NA',
+                          items: [
+                            for (final it in _machineList)
+                              DropdownMenuItem(
+                                value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
+                                child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
+                              ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: ctrls['PROD_PRINT_TIMES'],
-                          decoration: const InputDecoration(labelText: 'PROD_PRINT_TIMES'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      field(
+                        ddStr(
+                          key: 'EQ2',
+                          label: 'Máy 2 (EQ2)',
+                          fallback: 'NA',
+                          items: [
+                            for (final it in _machineList)
+                              DropdownMenuItem(
+                                value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
+                                child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
+                              ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  ddStr(
-                    key: 'CODE_33',
-                    label: 'Packing Type (CODE_33)',
-                    fallback: '03',
-                    items: [
-                      for (final e in code33Options.entries)
-                        DropdownMenuItem(value: e.key, child: Text(e.value)),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'PROD_DVT',
-                    label: 'Đơn vị (PROD_DVT)',
-                    fallback: '01',
-                    items: [
-                      for (final e in prodDvtOptions.entries)
-                        DropdownMenuItem(value: e.key, child: Text(e.value)),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'PO_TYPE',
-                    label: 'PO TYPE (PO_TYPE)',
-                    fallback: 'E1',
-                    items: [
-                      for (final v in poTypeOptions)
-                        DropdownMenuItem(value: v, child: Text(v)),
-                    ],
-                  ),
-                  ddStr(
-                    key: 'FSC',
-                    label: 'FSC',
-                    fallback: 'N',
-                    items: [
-                      for (final e in ynOptions.entries)
-                        DropdownMenuItem(value: e.key, child: Text(e.value)),
-                    ],
-                    onChanged: (v) {
-                      if (v == 'N') {
-                        ctrls['FSC_CODE']?.text = '01';
-                      }
-                    },
-                  ),
-                  ddStr(
-                    key: 'FSC_CODE',
-                    label: 'Loại FSC (FSC_CODE)',
-                    fallback: '01',
-                    enabled: (ctrls['FSC']?.text ?? '').trim().toUpperCase() != 'N',
-                    items: [
-                      for (final it in _fscList)
-                        DropdownMenuItem(
-                          value: _s(it['FSC_CODE']).isEmpty ? '01' : _s(it['FSC_CODE']),
-                          child: Text(_s(it['FSC_NAME']).isEmpty ? _s(it['FSC_CODE']) : _s(it['FSC_NAME'])),
+                      field(
+                        ddStr(
+                          key: 'EQ3',
+                          label: 'Máy 3 (EQ3)',
+                          fallback: 'NA',
+                          items: [
+                            for (final it in _machineList)
+                              DropdownMenuItem(
+                                value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
+                                child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
-                  if (_company() == 'CMS')
-                    ddStr(
-                      key: 'QL_HSD',
-                      label: 'QL_HSD',
-                      fallback: 'N',
-                      items: [
-                        for (final e in ynOptions.entries)
-                          DropdownMenuItem(value: e.key, child: Text(e.value)),
-                      ],
-                    )
-                  else
-                    TextField(controller: ctrls['QL_HSD'], decoration: const InputDecoration(labelText: 'QL_HSD')),
-                  if (_company() == 'CMS')
-                    ddStr(
-                      key: 'EXP_DATE',
-                      label: 'HSD (EXP_DATE)',
-                      fallback: '0',
-                      items: [
-                        for (final e in expDateOptions.entries)
-                          DropdownMenuItem(value: e.key, child: Text(e.value)),
-                      ],
-                    )
-                  else
-                    TextField(controller: ctrls['EXP_DATE'], decoration: const InputDecoration(labelText: 'EXP_DATE')),
-                  if (_company() == 'CMS')
-                    ddStr(
-                      key: 'APPROVED_YN',
-                      label: 'PHE_DUYET (APPROVED_YN)',
-                      fallback: 'N',
-                      items: [
-                        for (final e in ynOptions.entries)
-                          DropdownMenuItem(value: e.key, child: Text(e.value)),
-                      ],
-                    )
-                  else
-                    TextField(controller: ctrls['APPROVED_YN'], decoration: const InputDecoration(labelText: 'APPROVED_YN')),
-                  TextField(controller: ctrls['NO_INSPECTION'], decoration: const InputDecoration(labelText: 'NO_INSPECTION')),
-                  const SizedBox(height: 6),
-                  TextField(controller: ctrls['REMK'], decoration: const InputDecoration(labelText: 'REMK')),
-                  TextField(controller: ctrls['NOTE'], decoration: const InputDecoration(labelText: 'NOTE')),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'EQ4',
+                          label: 'Máy 4 (EQ4)',
+                          fallback: 'NA',
+                          items: [
+                            for (final it in _machineList)
+                              DropdownMenuItem(
+                                value: _s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME']),
+                                child: Text(_s(it['EQ_NAME']).isEmpty ? 'NA' : _s(it['EQ_NAME'])),
+                              ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: tf(
+                                'PROD_DIECUT_STEP',
+                                'PROD_DIECUT_STEP',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: tf(
+                                'PROD_PRINT_TIMES',
+                                'PROD_PRINT_TIMES',
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'CODE_33',
+                          label: 'Packing Type (CODE_33)',
+                          fallback: '03',
+                          items: [
+                            for (final e in code33Options.entries)
+                              DropdownMenuItem(value: e.key, child: Text(e.value)),
+                          ],
+                        ),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'PROD_DVT',
+                          label: 'Đơn vị (PROD_DVT)',
+                          fallback: '01',
+                          items: [
+                            for (final e in prodDvtOptions.entries)
+                              DropdownMenuItem(value: e.key, child: Text(e.value)),
+                          ],
+                        ),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'PO_TYPE',
+                          label: 'PO TYPE (PO_TYPE)',
+                          fallback: 'E1',
+                          items: [
+                            for (final v in poTypeOptions)
+                              DropdownMenuItem(value: v, child: Text(v)),
+                          ],
+                        ),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'FSC',
+                          label: 'FSC',
+                          fallback: 'N',
+                          items: [
+                            for (final e in ynOptions.entries)
+                              DropdownMenuItem(value: e.key, child: Text(e.value)),
+                          ],
+                          onChanged: (v) {
+                            if (v == 'N') {
+                              ctrls['FSC_CODE']?.text = '01';
+                            }
+                          },
+                        ),
+                      ),
+                      field(
+                        ddStr(
+                          key: 'FSC_CODE',
+                          label: 'Loại FSC (FSC_CODE)',
+                          fallback: '01',
+                          enabled: (ctrls['FSC']?.text ?? '').trim().toUpperCase() != 'N',
+                          items: [
+                            ...() {
+                              final seen = <String>{};
+                              final out = <DropdownMenuItem<String>>[];
+                              for (final it in _fscList) {
+                                final code = _s(it['FSC_CODE']).trim();
+                                if (code.isEmpty) continue;
+                                if (!seen.add(code)) continue;
+                                final name = _s(it['FSC_NAME']).trim();
+                                out.add(
+                                  DropdownMenuItem(
+                                    value: code,
+                                    child: Text(name.isEmpty ? code : name),
+                                  ),
+                                );
+                              }
+                              if (!seen.contains('01')) {
+                                out.insert(0, const DropdownMenuItem(value: '01', child: Text('01')));
+                              }
+                              return out;
+                            }(),
+                          ],
+                        ),
+                      ),
+                      if (_company() == 'CMS')
+                        field(
+                          ddStr(
+                            key: 'QL_HSD',
+                            label: 'QL_HSD',
+                            fallback: 'N',
+                            items: [
+                              for (final e in ynOptions.entries)
+                                DropdownMenuItem(value: e.key, child: Text(e.value)),
+                            ],
+                          ),
+                        )
+                      else
+                        field(tf('QL_HSD', 'QL_HSD')),
+                      if (_company() == 'CMS')
+                        field(
+                          ddStr(
+                            key: 'EXP_DATE',
+                            label: 'HSD (EXP_DATE)',
+                            fallback: '0',
+                            items: [
+                              for (final e in expDateOptions.entries)
+                                DropdownMenuItem(value: e.key, child: Text(e.value)),
+                            ],
+                          ),
+                        )
+                      else
+                        field(tf('EXP_DATE', 'EXP_DATE')),
+                      if (_company() == 'CMS')
+                        field(
+                          ddStr(
+                            key: 'APPROVED_YN',
+                            label: 'PHE_DUYET (APPROVED_YN)',
+                            fallback: 'N',
+                            items: [
+                              for (final e in ynOptions.entries)
+                                DropdownMenuItem(value: e.key, child: Text(e.value)),
+                            ],
+                          ),
+                        )
+                      else
+                        field(tf('APPROVED_YN', 'APPROVED_YN')),
+                      field(tf('NO_INSPECTION', 'NO_INSPECTION')),
+                      field(tf('REMK', 'REMK')),
+                      field(tf('NOTE', 'NOTE')),
                     ],
                   ),
                 ),
@@ -930,12 +1035,22 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
         updated[f] = v;
       }
     }
+
+    if (_company() == 'CMS') {
+      final expRaw = (ctrls['EXP_DATE']?.text ?? '').trim();
+      updated['EXP_DATE'] = int.tryParse(expRaw) ?? 0;
+    }
+
     for (final f in numberFields) {
       final raw = (ctrls[f]?.text ?? '').trim();
       final num = double.tryParse(raw);
       if (num != null) {
         updated[f] = num;
       }
+    }
+
+    if (updated['KNIFE_PRICE'] == null) {
+      updated['KNIFE_PRICE'] = 0.0;
     }
 
     if (!mounted) return;
@@ -1113,17 +1228,62 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
         minWidth: 80,
         renderer: (ctx) {
           final v = (ctx.cell.value ?? '').toString();
-          return Text(
-            v,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 11),
+          final raw = ctx.row.cells['__raw__']?.value;
+          final it = raw is Map<String, dynamic> ? raw : null;
+
+          bool invalid = false;
+          if (it != null) {
+            final cust = _s(it['CUST_CD']).trim();
+            final usage = _s(it['USAGE']).trim();
+            final mw = _d(it['MAT_MASTER_WIDTH']);
+            final rl = _d(it['MAT_ROLL_LENGTH']);
+            if (field == 'CUST_CD' && cust.isEmpty) invalid = true;
+            if (field == 'USAGE' && usage.isEmpty) invalid = true;
+            if (field == 'MAT_MASTER_WIDTH' && mw == 0) invalid = true;
+            if (field == 'MAT_ROLL_LENGTH' && rl == 0) invalid = true;
+          }
+
+          final bg = invalid ? Colors.red.withValues(alpha: 0.22) : null;
+          return Container(
+            color: bg,
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              v,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 11),
+            ),
           );
         },
       );
     }
 
     return [
+      PlutoColumn(
+        title: 'DEL',
+        field: '__DEL__',
+        type: PlutoColumnType.text(),
+        width: 60,
+        minWidth: 60,
+        enableContextMenu: false,
+        enableSorting: false,
+        enableFilterMenuItem: false,
+        enableEditingMode: false,
+        renderer: (ctx) {
+          final v = ctx.cell.value;
+          final checked = v == true || v == 1 || v == '1' || v == 'Y';
+          return Center(
+            child: Checkbox(
+              value: checked,
+              onChanged: (nv) {
+                ctx.stateManager.changeCellValue(ctx.cell, nv == true);
+              },
+              visualDensity: VisualDensity.compact,
+            ),
+          );
+        },
+      ),
       PlutoColumn(
         title: '',
         field: '__raw__',
@@ -1274,6 +1434,10 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
       final next = await _getNextGCode(code12: code12, code27: code27);
       final tempInfo = Map<String, dynamic>.from(info);
       tempInfo['G_CODE'] = next.nextGCode;
+      tempInfo['KNIFE_PRICE'] = _d(tempInfo['KNIFE_PRICE']);
+      if (_company() == 'CMS') {
+        tempInfo['EXP_DATE'] = _i(tempInfo['EXP_DATE']);
+      }
 
       final body = await _post('insertM100', {
         'G_CODE': next.nextGCode,
@@ -1286,7 +1450,8 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
         _snack('Lỗi: ${(body['message'] ?? 'NG').toString()}');
         return;
       }
-      _snack('Code mới: ${next.nextGCode}. Hãy tra cứu lại.');
+      _snack('Code mới: ${next.nextGCode}');
+      await _selectCode({'G_CODE': next.nextGCode});
     } catch (e) {
       setState(() => _loading = false);
       _snack('Lỗi: $e');
@@ -1344,19 +1509,25 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
 
     setState(() => _loading = true);
     try {
+      final tempInfo = Map<String, dynamic>.from(info)..['G_CODE'] = newGCode;
+      tempInfo['KNIFE_PRICE'] = _d(tempInfo['KNIFE_PRICE']);
+      if (_company() == 'CMS') {
+        tempInfo['EXP_DATE'] = _i(tempInfo['EXP_DATE']);
+      }
       final body = await _post('insertM100_AddVer', {
         'G_CODE': newGCode,
         'CODE_27': code27,
         'NEXT_SEQ_NO': nextSeqNo,
         'REV_NO': nextRevNo,
-        'CODE_FULL_INFO': Map<String, dynamic>.from(info)..['G_CODE'] = newGCode,
+        'CODE_FULL_INFO': tempInfo,
       });
       setState(() => _loading = false);
       if (_isNg(body)) {
         _snack('Lỗi: ${(body['message'] ?? 'NG').toString()}');
         return;
       }
-      _snack('Ver mới: $newGCode. Hãy tra cứu lại.');
+      _snack('Ver mới: $newGCode');
+      await _selectCode({'G_CODE': newGCode});
     } catch (e) {
       setState(() => _loading = false);
       _snack('Lỗi: $e');
@@ -1398,6 +1569,10 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
     final temp = Map<String, dynamic>.from(info);
     temp['UPDATE_REASON'] = reason;
     temp['UPD_EMPL'] = empl;
+    temp['KNIFE_PRICE'] = _d(temp['KNIFE_PRICE']);
+    if (_company() == 'CMS') {
+      temp['EXP_DATE'] = _i(temp['EXP_DATE']);
+    }
 
     setState(() => _loading = true);
     try {
@@ -1926,20 +2101,6 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
                 await _addVer();
               } else if (v == 'update_code') {
                 await _updateCode();
-              } else if (v == 'add_bomsx_line') {
-                await _addBomSxLine();
-              } else if (v == 'delete_bomsx_marked') {
-                _deleteMarkedBomSxLines();
-              } else if (v == 'save_bomsx') {
-                await _saveBomSx();
-              } else if (v == 'add_bomgia_line') {
-                await _addBomGiaLine();
-              } else if (v == 'delete_bomgia_marked') {
-                _deleteMarkedBomGiaLines();
-              } else if (v == 'save_bomgia') {
-                await _saveBomGia();
-              } else if (v == 'clone_bomsx_bomgia') {
-                _cloneBomSxToBomGia();
               }
             },
             itemBuilder: (ctx) => [
@@ -1948,15 +2109,6 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
               const PopupMenuItem(value: 'add_code', child: Text('Thêm code (insertM100)')),
               const PopupMenuItem(value: 'add_ver', child: Text('Thêm ver (insertM100_AddVer)')),
               const PopupMenuItem(value: 'update_code', child: Text('Update code (updateM100)')),
-              const PopupMenuDivider(),
-              const PopupMenuItem(value: 'add_bomsx_line', child: Text('Thêm dòng BOM NVL')),
-              const PopupMenuItem(value: 'delete_bomsx_marked', child: Text('Xóa dòng BOM NVL (đã tick DEL)')),
-              const PopupMenuItem(value: 'save_bomsx', child: Text('Lưu BOM NVL')),
-              const PopupMenuDivider(),
-              const PopupMenuItem(value: 'add_bomgia_line', child: Text('Thêm dòng BOM giá')),
-              const PopupMenuItem(value: 'delete_bomgia_marked', child: Text('Xóa dòng BOM giá (đã tick DEL)')),
-              const PopupMenuItem(value: 'save_bomgia', child: Text('Lưu BOM giá')),
-              const PopupMenuItem(value: 'clone_bomsx_bomgia', child: Text('Clone BOM NVL -> BOM giá')),
             ],
           ),
         ],
@@ -2040,42 +2192,117 @@ class _CodeBomManagerPageState extends ConsumerState<CodeBomManagerPage> {
                                 Expanded(
                                   child: TabBarView(
                                     children: [
-                                      _bomSx.isEmpty
-                                          ? Padding(
-                                              padding: const EdgeInsets.all(12),
-                                              child: Text(
-                                                'Chưa có BOM NVL',
-                                                style: TextStyle(color: scheme.onSurfaceVariant),
-                                              ),
-                                            )
-                                          : _buildBomGrid(
-                                              cols: _bomSxCols,
-                                              rows: _bomSxRows,
-                                              onChanged: (e) {
-                                                final raw = e.row.cells['__raw__']?.value;
-                                                if (raw is Map<String, dynamic>) {
-                                                  raw[e.column.field] = e.value;
-                                                }
-                                              },
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                            child: Row(
+                                              children: [
+                                                Tooltip(
+                                                  message: 'Thêm dòng BOM NVL',
+                                                  child: IconButton(
+                                                    onPressed: _gCodeCtrl.text.trim().isEmpty ? null : () => _addBomSxLine(),
+                                                    icon: const Icon(Icons.add),
+                                                  ),
+                                                ),
+                                                Tooltip(
+                                                  message: 'Xóa dòng BOM NVL (đã tick DEL)',
+                                                  child: IconButton(
+                                                    onPressed: _bomSx.isEmpty ? null : _deleteMarkedBomSxLines,
+                                                    icon: const Icon(Icons.delete_outline),
+                                                  ),
+                                                ),
+                                                Tooltip(
+                                                  message: 'Lưu BOM NVL',
+                                                  child: IconButton(
+                                                    onPressed: _gCodeCtrl.text.trim().isEmpty ? null : () => _saveBomSx(),
+                                                    icon: const Icon(Icons.save),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                      _bomGia.isEmpty
-                                          ? Padding(
-                                              padding: const EdgeInsets.all(12),
-                                              child: Text(
-                                                'Chưa có BOM giá',
-                                                style: TextStyle(color: scheme.onSurfaceVariant),
-                                              ),
-                                            )
-                                          : _buildBomGrid(
-                                              cols: _bomGiaCols,
-                                              rows: _bomGiaRows,
-                                              onChanged: (e) {
-                                                final raw = e.row.cells['__raw__']?.value;
-                                                if (raw is Map<String, dynamic>) {
-                                                  raw[e.column.field] = e.value;
-                                                }
-                                              },
+                                          ),
+                                          Expanded(
+                                            child: _bomSx.isEmpty
+                                                ? Padding(
+                                                    padding: const EdgeInsets.all(12),
+                                                    child: Text(
+                                                      'Chưa có BOM NVL',
+                                                      style: TextStyle(color: scheme.onSurfaceVariant),
+                                                    ),
+                                                  )
+                                                : _buildBomGrid(
+                                                    cols: _bomSxCols,
+                                                    rows: _bomSxRows,
+                                                    onChanged: (e) {
+                                                      final raw = e.row.cells['__raw__']?.value;
+                                                      if (raw is Map<String, dynamic>) {
+                                                        raw[e.column.field] = e.value;
+                                                      }
+                                                    },
+                                                  ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                            child: Row(
+                                              children: [
+                                                Tooltip(
+                                                  message: 'Thêm dòng BOM giá',
+                                                  child: IconButton(
+                                                    onPressed: _gCodeCtrl.text.trim().isEmpty ? null : () => _addBomGiaLine(),
+                                                    icon: const Icon(Icons.add),
+                                                  ),
+                                                ),
+                                                Tooltip(
+                                                  message: 'Xóa dòng BOM giá (đã tick DEL)',
+                                                  child: IconButton(
+                                                    onPressed: _bomGia.isEmpty ? null : _deleteMarkedBomGiaLines,
+                                                    icon: const Icon(Icons.delete_outline),
+                                                  ),
+                                                ),
+                                                Tooltip(
+                                                  message: 'Lưu BOM giá',
+                                                  child: IconButton(
+                                                    onPressed: _gCodeCtrl.text.trim().isEmpty ? null : () => _saveBomGia(),
+                                                    icon: const Icon(Icons.save),
+                                                  ),
+                                                ),
+                                                Tooltip(
+                                                  message: 'Clone BOM NVL -> BOM giá',
+                                                  child: IconButton(
+                                                    onPressed: _gCodeCtrl.text.trim().isEmpty ? null : _cloneBomSxToBomGia,
+                                                    icon: const Icon(Icons.copy),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
+                                          ),
+                                          Expanded(
+                                            child: _bomGia.isEmpty
+                                                ? Padding(
+                                                    padding: const EdgeInsets.all(12),
+                                                    child: Text(
+                                                      'Chưa có BOM giá',
+                                                      style: TextStyle(color: scheme.onSurfaceVariant),
+                                                    ),
+                                                  )
+                                                : _buildBomGrid(
+                                                    cols: _bomGiaCols,
+                                                    rows: _bomGiaRows,
+                                                    onChanged: (e) {
+                                                      final raw = e.row.cells['__raw__']?.value;
+                                                      if (raw is Map<String, dynamic>) {
+                                                        raw[e.column.field] = e.value;
+                                                      }
+                                                    },
+                                                  ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),

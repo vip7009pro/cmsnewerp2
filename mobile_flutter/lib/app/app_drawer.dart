@@ -52,8 +52,9 @@ class AppDrawer extends ConsumerWidget {
                                 title: Text(item.subText.isNotEmpty ? item.subText : item.subLink),
                                 subtitle: Text(item.subLink),
                                 onTap: () {
-                                  final route = item.subLink;
+                                  var route = item.subLink.trim();
                                   if (route.isEmpty) return;
+                                  if (!route.startsWith('/')) route = '/$route';
                                   Navigator.of(context).pop();
                                   context.push(route);
                                 },
