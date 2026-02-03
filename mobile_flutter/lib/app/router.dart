@@ -17,7 +17,6 @@ import '../features/hr/presentation/bao_cao_nhan_su_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_ns_page.dart';
 import '../features/home/presentation/home_page.dart';
-import '../features/kinhdoanh/presentation/menu_code_placeholder_page.dart';
 import '../features/kinhdoanh/presentation/invoice_manager_page.dart';
 import '../features/kinhdoanh/presentation/plan_manager_page.dart';
 import '../features/kinhdoanh/presentation/shortage_manager_page.dart';
@@ -32,9 +31,14 @@ import '../features/kinhdoanh/presentation/eq_status_page.dart';
 import '../features/kinhdoanh/presentation/ins_status_page.dart';
 import '../features/kinhdoanh/presentation/over_monitor_page.dart';
 import '../features/kinhdoanh/presentation/kinh_doanh_report_page.dart';
+import '../features/kinhdoanh/presentation/quotation_manager_page.dart';
+import '../features/kho/presentation/nhap_xuat_ton_lieu_page.dart';
+import '../features/kho/presentation/nhap_xuat_ton_tp_page.dart';
 import '../features/muahang/presentation/quan_ly_vat_lieu_page.dart';
 import '../features/muahang/presentation/mrp_page.dart';
 import '../features/qc/presentation/dtc_page.dart';
+import '../features/qc/presentation/iqc/iqc_page.dart';
+import '../features/tools/presentation/file_transfer_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
@@ -219,15 +223,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/quotationmanager',
-        builder: (context, state) => const MenuCodePlaceholderPage(
-          title: 'Quản lý giá sản phẩm',
-          menuCode: 'KD14',
-          description: 'Web component: QuotationTotal',
-        ),
+        builder: (context, state) => const QuotationManagerPage(),
       ),
       GoRoute(
         path: '/kinhdoanh/overmonitor',
         builder: (context, state) => const OverMonitorPage(),
+      ),
+      GoRoute(
+        path: '/bophankho/nhapxuattonlieu',
+        builder: (context, state) => const NhapXuatTonLieuPage(),
+      ),
+      GoRoute(
+        path: '/bophankho/nhapxuattontp',
+        builder: (context, state) => const NhapXuatTonTpPage(),
       ),
 
       // Mua hang routes
@@ -244,6 +252,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/qc/dtc',
         builder: (context, state) => const DtcPage(),
+      ),
+      GoRoute(
+        path: '/qc/iqc',
+        builder: (context, state) => const IqcPage(),
+      ),
+
+      // Tools routes
+      GoRoute(
+        path: '/tool/filetransfer',
+        builder: (context, state) => const FileTransferPage(),
       ),
     ],
   );

@@ -61,6 +61,7 @@ class ApiClient {
     required File file,
     required String filename,
     required String uploadFolderName,
+    ProgressCallback? onSendProgress,
   }) async {
     final token = await _secureStore.getToken();
     final form = FormData.fromMap({
@@ -70,6 +71,10 @@ class ApiClient {
       'token_string': token ?? '',
       'CTR_CD': AppConfig.ctrCd,
     });
-    return _dio.post('${AppConfig.baseUrl}/uploadfile', data: form);
+    return _dio.post(
+      '${AppConfig.baseUrl}/uploadfile',
+      data: form,
+      onSendProgress: onSendProgress,
+    );
   }
 }

@@ -9,6 +9,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../app/app_drawer.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/providers.dart';
+import '../../../core/utils/excel_exporter.dart';
 
 class KinhDoanhReportPage extends ConsumerStatefulWidget {
   const KinhDoanhReportPage({super.key});
@@ -90,7 +91,11 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
 
   String _ymd(DateTime d) => '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-  TooltipBehavior _tooltip() => TooltipBehavior(enable: false, animationDuration: 0);
+  TooltipBehavior _tooltip() => TooltipBehavior(enable: true, animationDuration: 300);
+
+  Future<void> _exportExcel(List<Map<String, dynamic>> rows, String name) async {
+    await ExcelExporter.shareAsXlsx(fileName: '$name.xlsx', rows: rows);
+  }
 
   int _isoWeekNumber(DateTime date) {
     // ISO week date algorithm (week starts Monday).
@@ -798,13 +803,22 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Row(
+              children: [
+                Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w900))),
+                IconButton(
+                  onPressed: () => _exportExcel(data, title.replaceAll(' ', '_')),
+                  icon: const Icon(Icons.table_view),
+                  tooltip: 'Export Excel',
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             SizedBox(
               height: 300,
               child: SfCartesianChart(
                 key: ValueKey<String>('combo_$title'),
-                enableAxisAnimation: false,
+                enableAxisAnimation: true,
                 legend: const Legend(isVisible: true, position: LegendPosition.top, toggleSeriesVisibility: false),
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(
@@ -828,7 +842,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                       name: amountKey,
                       color: amountColor,
                       yAxisName: 'right',
-                      animationDuration: 0,
+                      animationDuration: 800,
                       dataSource: data,
                       xValueMapper: (d, _) => _s(d[xKey]),
                       yValueMapper: (d, _) => _d(d[amountKey]),
@@ -846,7 +860,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     LineSeries<Map<String, dynamic>, String>(
                       name: qtyKey,
                       color: qtyColor,
-                      animationDuration: 0,
+                      animationDuration: 800,
                       dataSource: data,
                       xValueMapper: (d, _) => _s(d[xKey]),
                       yValueMapper: (d, _) => _d(d[qtyKey]),
@@ -858,7 +872,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                       name: kpiKey,
                       color: kpiColor,
                       yAxisName: 'right',
-                      animationDuration: 0,
+                      animationDuration: 800,
                       dataSource: data,
                       xValueMapper: (d, _) => _s(d[xKey]),
                       yValueMapper: (d, _) => _d(d[kpiKey]),
@@ -882,7 +896,16 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Row(
+              children: [
+                Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w900))),
+                IconButton(
+                  onPressed: () => _exportExcel(data, title.replaceAll(' ', '_')),
+                  icon: const Icon(Icons.table_view),
+                  tooltip: 'Export Excel',
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             SizedBox(
               height: 340,
@@ -897,7 +920,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                 tooltipBehavior: _tooltip(),
                 series: <CircularSeries<Map<String, dynamic>, String>>[
                   PieSeries<Map<String, dynamic>, String>(
-                    animationDuration: 0,
+                    animationDuration: 800,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[labelKey]),
                     yValueMapper: (d, _) => _d(d[valueKey]),
@@ -922,13 +945,22 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
+            Row(
+              children: [
+                Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w900))),
+                IconButton(
+                  onPressed: () => _exportExcel(data, title.replaceAll(' ', '_')),
+                  icon: const Icon(Icons.table_view),
+                  tooltip: 'Export Excel',
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             SizedBox(
               height: 300,
               child: SfCartesianChart(
                 key: ValueKey<String>('overdue_$title'),
-                enableAxisAnimation: false,
+                enableAxisAnimation: true,
                 legend: const Legend(isVisible: true, position: LegendPosition.top, toggleSeriesVisibility: false),
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(labelRotation: 45),
@@ -946,7 +978,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                 series: <CartesianSeries<Map<String, dynamic>, String>>[
                   StackedColumnSeries<Map<String, dynamic>, String>(
                     name: 'OK_IV',
-                    animationDuration: 0,
+                    animationDuration: 800,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[xKey]),
                     yValueMapper: (d, _) => _d(d['OK_IV']),
@@ -954,7 +986,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                   ),
                   StackedColumnSeries<Map<String, dynamic>, String>(
                     name: 'OVER_IV',
-                    animationDuration: 0,
+                    animationDuration: 800,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[xKey]),
                     yValueMapper: (d, _) => _d(d['OVER_IV']),
@@ -963,7 +995,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                   LineSeries<Map<String, dynamic>, String>(
                     name: 'OK_RATE',
                     yAxisName: 'rate',
-                    animationDuration: 0,
+                    animationDuration: 800,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[xKey]),
                     yValueMapper: (d, _) => _d(d['OK_RATE']),
@@ -987,13 +1019,22 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Current PO Balance Summary By Year', style: TextStyle(fontWeight: FontWeight.w900)),
+            Row(
+              children: [
+                const Expanded(child: Text('Current PO Balance Summary By Year', style: TextStyle(fontWeight: FontWeight.w900))),
+                IconButton(
+                  onPressed: () => _exportExcel(_poBalanceSummaryByYear, 'Current_PO_Balance_Summary_By_Year'),
+                  icon: const Icon(Icons.table_view),
+                  tooltip: 'Export Excel',
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             SizedBox(
               height: 300,
               child: SfCartesianChart(
                 key: const ValueKey<String>('pobal_year'),
-                enableAxisAnimation: false,
+                enableAxisAnimation: true,
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(),
                 primaryYAxis: NumericAxis(numberFormat: NumberFormat.compact()),
@@ -1012,7 +1053,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     xValueMapper: (d, _) => _s(d['PO_YEAR']),
                     yValueMapper: (d, _) => _d(d['PO_BALANCE']),
                     color: const Color(0xFF37B46B),
-                    animationDuration: 0,
+                    animationDuration: 800,
                     dataLabelSettings: DataLabelSettings(
                       isVisible: true,
                       builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
@@ -1040,13 +1081,22 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Current PO Balance Summary By Week', style: TextStyle(fontWeight: FontWeight.w900)),
+            Row(
+              children: [
+                const Expanded(child: Text('Current PO Balance Summary By Week', style: TextStyle(fontWeight: FontWeight.w900))),
+                IconButton(
+                  onPressed: () => _exportExcel(_poBalanceDetail, 'Current_PO_Balance_Summary_By_Week'),
+                  icon: const Icon(Icons.table_view),
+                  tooltip: 'Export Excel',
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             SizedBox(
               height: 300,
               child: SfCartesianChart(
                 key: const ValueKey<String>('pobal_week'),
-                enableAxisAnimation: false,
+                enableAxisAnimation: true,
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(labelRotation: 45),
                 primaryYAxis: NumericAxis(numberFormat: NumberFormat.compact()),
@@ -1066,7 +1116,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     xValueMapper: (d, _) => _s(d['PO_YW']),
                     yValueMapper: (d, _) => _d(d['PO_BALANCE']),
                     color: const Color(0xFF37B46B),
-                    animationDuration: 0,
+                    animationDuration: 800,
                   ),
                 ],
               ),
@@ -1133,13 +1183,22 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('SamSung ForeCast (So sánh FCST 2 tuần liền kề)', style: TextStyle(fontWeight: FontWeight.w900)),
+                  Row(
+                    children: [
+                      const Expanded(child: Text('SamSung ForeCast (So sánh FCST 2 tuần liền kề)', style: TextStyle(fontWeight: FontWeight.w900))),
+                      IconButton(
+                        onPressed: () => _exportExcel(_samsungFcst, 'SamSung_FCST'),
+                        icon: const Icon(Icons.table_view),
+                        tooltip: 'Export Excel',
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 10),
                   SizedBox(
                     height: 320,
                     child: SfCartesianChart(
                       key: const ValueKey<String>('fcst_ss'),
-                      enableAxisAnimation: false,
+                      enableAxisAnimation: true,
                       legend: const Legend(isVisible: true, position: LegendPosition.top, toggleSeriesVisibility: false),
                       tooltipBehavior: _tooltip(),
                       primaryXAxis: CategoryAxis(title: AxisTitle(text: 'Tuần'), labelRotation: 45),
@@ -1148,7 +1207,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss1',
                           name: 'SEVT1',
-                          animationDuration: 0,
+                          animationDuration: 800,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEVT1']),
@@ -1157,7 +1216,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss1',
                           name: 'SEV1',
-                          animationDuration: 0,
+                          animationDuration: 800,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEV1']),
@@ -1166,7 +1225,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss1',
                           name: 'SAMSUNG_ASIA1',
-                          animationDuration: 0,
+                          animationDuration: 800,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SAMSUNG_ASIA1']),
@@ -1175,7 +1234,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss2',
                           name: 'SEVT2',
-                          animationDuration: 0,
+                          animationDuration: 800,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEVT2']),
@@ -1184,7 +1243,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss2',
                           name: 'SEV2',
-                          animationDuration: 0,
+                          animationDuration: 800,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEV2']),
@@ -1193,7 +1252,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss2',
                           name: 'SAMSUNG_ASIA2',
-                          animationDuration: 0,
+                          animationDuration: 800,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SAMSUNG_ASIA2']),

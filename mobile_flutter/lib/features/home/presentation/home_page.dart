@@ -139,7 +139,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                           children: [
                             Text(
                               '${user?.midlastName ?? ''} ${user?.firstName ?? ''}'.trim(),
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
                             ),
                             const SizedBox(height: 4),
                             Text('Main Dept: ${user?.mainDeptName ?? '-'}'),
