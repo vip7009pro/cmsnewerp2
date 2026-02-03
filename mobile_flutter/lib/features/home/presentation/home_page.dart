@@ -198,7 +198,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   const SizedBox(height: 4),
                                   Text(
                                     _myChamCong?['MIN_TIME'] ?? 'Chưa chấm',
-                                    style: TextStyle(color: Colors.green.shade800),
+                                    style: TextStyle(color: Colors.green.shade800, fontSize: 20),                                   
                                   ),
                                 ],
                               ),
@@ -218,7 +218,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   const SizedBox(height: 4),
                                   Text(
                                     _myChamCong?['MAX_TIME'] ?? 'Chưa chấm',
-                                    style: TextStyle(color: Colors.red.shade800),
+                                    style: TextStyle(color: Colors.red.shade800, fontSize: 20),
                                   ),
                                 ],
                               ),
