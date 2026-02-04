@@ -38,6 +38,7 @@ import '../features/muahang/presentation/quan_ly_vat_lieu_page.dart';
 import '../features/muahang/presentation/mrp_page.dart';
 import '../features/qc/presentation/dtc_page.dart';
 import '../features/qc/presentation/iqc/iqc_page.dart';
+import '../features/qc/presentation/pqc/pqc_page.dart';
 import '../features/tools/presentation/file_transfer_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
@@ -256,6 +257,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/qc/iqc',
         builder: (context, state) => const IqcPage(),
+      ),
+      GoRoute(
+        path: '/qc/pqc',
+        builder: (context, state) => const PqcPage(),
       ),
 
       // Tools routes

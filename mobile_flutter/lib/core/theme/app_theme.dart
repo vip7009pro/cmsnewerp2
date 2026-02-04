@@ -124,6 +124,17 @@ class AppThemes {
           borderSide: BorderSide(color: scheme.primary, width: 1.6),
         ),
       ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w700),
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll<Color>(scheme.surface),
+          surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+          elevation: const WidgetStatePropertyAll<double>(6),
+          shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+      ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           elevation: 0,

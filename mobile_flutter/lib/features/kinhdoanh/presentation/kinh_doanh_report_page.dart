@@ -22,6 +22,9 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
   bool _loading = false;
   bool _showFilters = true;
 
+  static const _axisLabelStyle = TextStyle(fontSize: 10, fontWeight: FontWeight.w700);
+  static const _axisTitleStyle = TextStyle(fontSize: 11, fontWeight: FontWeight.w900);
+
   bool _df = true;
   bool _inNhanh = false;
 
@@ -91,7 +94,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
 
   String _ymd(DateTime d) => '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-  TooltipBehavior _tooltip() => TooltipBehavior(enable: true, animationDuration: 300);
+  TooltipBehavior _tooltip() => TooltipBehavior(enable: true, animationDuration: 0);
 
   Future<void> _exportExcel(List<Map<String, dynamic>> rows, String name) async {
     await ExcelExporter.shareAsXlsx(fileName: '$name.xlsx', rows: rows);
@@ -818,22 +821,28 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
               height: 300,
               child: SfCartesianChart(
                 key: ValueKey<String>('combo_$title'),
-                enableAxisAnimation: true,
+                enableAxisAnimation: false,
                 legend: const Legend(isVisible: true, position: LegendPosition.top, toggleSeriesVisibility: false),
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(
-                  title: AxisTitle(text: xLabel),
+                  labelStyle: _axisLabelStyle,
+                  title: AxisTitle(text: xLabel, textStyle: _axisTitleStyle),
                 ),
                 primaryYAxis: NumericAxis(
-                  title: AxisTitle(text: leftLabel),
+                  labelStyle: _axisLabelStyle,
+                  title: AxisTitle(text: leftLabel, textStyle: _axisTitleStyle),
                   numberFormat: NumberFormat.compact(),
                 ),
                 axes: <ChartAxis>[
                   NumericAxis(
                     name: 'right',
                     opposedPosition: true,
-                    title: AxisTitle(text: rightLabel),
-                    numberFormat: rightAxisMoney ? _nfMoney() : NumberFormat.compact(),
+                    labelStyle: _axisLabelStyle,
+                    title: AxisTitle(text: rightLabel, textStyle: _axisTitleStyle),
+                    numberFormat: NumberFormat.compact(),
+                    axisLabelFormatter: rightAxisMoney
+                        ? (v) => ChartAxisLabel(_fmtCompact(v.value), v.textStyle)
+                        : null,
                   ),
                 ],
                 series: <CartesianSeries<Map<String, dynamic>, String>>[
@@ -842,7 +851,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                       name: amountKey,
                       color: amountColor,
                       yAxisName: 'right',
-                      animationDuration: 800,
+                      animationDuration: 0,
                       dataSource: data,
                       xValueMapper: (d, _) => _s(d[xKey]),
                       yValueMapper: (d, _) => _d(d[amountKey]),
@@ -860,7 +869,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     LineSeries<Map<String, dynamic>, String>(
                       name: qtyKey,
                       color: qtyColor,
-                      animationDuration: 800,
+                      animationDuration: 0,
                       dataSource: data,
                       xValueMapper: (d, _) => _s(d[xKey]),
                       yValueMapper: (d, _) => _d(d[qtyKey]),
@@ -872,7 +881,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                       name: kpiKey,
                       color: kpiColor,
                       yAxisName: 'right',
-                      animationDuration: 800,
+                      animationDuration: 0,
                       dataSource: data,
                       xValueMapper: (d, _) => _s(d[xKey]),
                       yValueMapper: (d, _) => _d(d[kpiKey]),
@@ -920,7 +929,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                 tooltipBehavior: _tooltip(),
                 series: <CircularSeries<Map<String, dynamic>, String>>[
                   PieSeries<Map<String, dynamic>, String>(
-                    animationDuration: 800,
+                    animationDuration: 0,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[labelKey]),
                     yValueMapper: (d, _) => _d(d[valueKey]),
@@ -960,7 +969,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
               height: 300,
               child: SfCartesianChart(
                 key: ValueKey<String>('overdue_$title'),
-                enableAxisAnimation: true,
+                enableAxisAnimation: false,
                 legend: const Legend(isVisible: true, position: LegendPosition.top, toggleSeriesVisibility: false),
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(labelRotation: 45),
@@ -978,7 +987,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                 series: <CartesianSeries<Map<String, dynamic>, String>>[
                   StackedColumnSeries<Map<String, dynamic>, String>(
                     name: 'OK_IV',
-                    animationDuration: 800,
+                    animationDuration: 0,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[xKey]),
                     yValueMapper: (d, _) => _d(d['OK_IV']),
@@ -986,7 +995,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                   ),
                   StackedColumnSeries<Map<String, dynamic>, String>(
                     name: 'OVER_IV',
-                    animationDuration: 800,
+                    animationDuration: 0,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[xKey]),
                     yValueMapper: (d, _) => _d(d['OVER_IV']),
@@ -995,7 +1004,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                   LineSeries<Map<String, dynamic>, String>(
                     name: 'OK_RATE',
                     yAxisName: 'rate',
-                    animationDuration: 800,
+                    animationDuration: 0,
                     dataSource: data,
                     xValueMapper: (d, _) => _s(d[xKey]),
                     yValueMapper: (d, _) => _d(d['OK_RATE']),
@@ -1034,7 +1043,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
               height: 300,
               child: SfCartesianChart(
                 key: const ValueKey<String>('pobal_year'),
-                enableAxisAnimation: true,
+                enableAxisAnimation: false,
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(),
                 primaryYAxis: NumericAxis(numberFormat: NumberFormat.compact()),
@@ -1053,7 +1062,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     xValueMapper: (d, _) => _s(d['PO_YEAR']),
                     yValueMapper: (d, _) => _d(d['PO_BALANCE']),
                     color: const Color(0xFF37B46B),
-                    animationDuration: 800,
+                    animationDuration: 0,
                     dataLabelSettings: DataLabelSettings(
                       isVisible: true,
                       builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
@@ -1096,7 +1105,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
               height: 300,
               child: SfCartesianChart(
                 key: const ValueKey<String>('pobal_week'),
-                enableAxisAnimation: true,
+                enableAxisAnimation: false,
                 tooltipBehavior: _tooltip(),
                 primaryXAxis: CategoryAxis(labelRotation: 45),
                 primaryYAxis: NumericAxis(numberFormat: NumberFormat.compact()),
@@ -1116,7 +1125,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     xValueMapper: (d, _) => _s(d['PO_YW']),
                     yValueMapper: (d, _) => _d(d['PO_BALANCE']),
                     color: const Color(0xFF37B46B),
-                    animationDuration: 800,
+                    animationDuration: 0,
                   ),
                 ],
               ),
@@ -1198,7 +1207,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                     height: 320,
                     child: SfCartesianChart(
                       key: const ValueKey<String>('fcst_ss'),
-                      enableAxisAnimation: true,
+                      enableAxisAnimation: false,
                       legend: const Legend(isVisible: true, position: LegendPosition.top, toggleSeriesVisibility: false),
                       tooltipBehavior: _tooltip(),
                       primaryXAxis: CategoryAxis(title: AxisTitle(text: 'Tuần'), labelRotation: 45),
@@ -1207,7 +1216,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss1',
                           name: 'SEVT1',
-                          animationDuration: 800,
+                          animationDuration: 0,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEVT1']),
@@ -1216,7 +1225,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss1',
                           name: 'SEV1',
-                          animationDuration: 800,
+                          animationDuration: 0,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEV1']),
@@ -1225,7 +1234,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss1',
                           name: 'SAMSUNG_ASIA1',
-                          animationDuration: 800,
+                          animationDuration: 0,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SAMSUNG_ASIA1']),
@@ -1234,7 +1243,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss2',
                           name: 'SEVT2',
-                          animationDuration: 800,
+                          animationDuration: 0,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEVT2']),
@@ -1243,7 +1252,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss2',
                           name: 'SEV2',
-                          animationDuration: 800,
+                          animationDuration: 0,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SEV2']),
@@ -1252,7 +1261,7 @@ class _KinhDoanhReportPageState extends ConsumerState<KinhDoanhReportPage> {
                         StackedColumnSeries<Map<String, dynamic>, String>(
                           groupName: 'ss2',
                           name: 'SAMSUNG_ASIA2',
-                          animationDuration: 800,
+                          animationDuration: 0,
                           dataSource: _samsungFcst,
                           xValueMapper: (d, _) => _s(d['WEEKNO']),
                           yValueMapper: (d, _) => _d(d['SAMSUNG_ASIA2']),

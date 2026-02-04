@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../../../app/app_drawer.dart';
+import '../../../app/drawer_state_provider.dart';
 import '../../../core/config/app_config.dart';
 import '../../auth/application/auth_notifier.dart';
 import '../../auth/application/auth_state.dart';
@@ -21,6 +22,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   Map<String, dynamic>? _summaryData;
   bool _loading = false;
   bool _uploadingAvatar = false;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -90,9 +93,27 @@ class _HomePageState extends ConsumerState<HomePage> {
     final session = authState is AuthAuthenticated ? authState.session : null;
     final user = session?.user;
 
+    final shouldOpenDrawer = ref.watch(openDrawerOnHomeProvider);
+    if (shouldOpenDrawer) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final state = _scaffoldKey.currentState;
+        if (state == null) return;
+        if (state.isDrawerOpen) return;
+        state.openDrawer();
+        ref.read(openDrawerOnHomeProvider.notifier).state = false;
+      });
+    }
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('ERP'),
+        title: Image.asset(
+          'assets/companylogo.png',
+          height: 28,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => const Text('ERP'),
+        ),
         actions: [
           IconButton(
             onPressed: () => ref.read(authNotifierProvider.notifier).logout(),

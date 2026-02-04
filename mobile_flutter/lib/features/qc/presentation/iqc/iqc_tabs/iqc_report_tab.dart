@@ -19,6 +19,11 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
   bool _loading = false;
   bool _showFilter = true;
 
+  ScaffoldMessengerState? _messenger;
+
+  static const _axisLabelStyle = TextStyle(fontSize: 10, fontWeight: FontWeight.w700);
+  static const _axisTitleStyle = TextStyle(fontSize: 11, fontWeight: FontWeight.w900);
+
   bool _df = true;
   DateTime _fromDate = DateTime.now().subtract(const Duration(days: 14));
   DateTime _toDate = DateTime.now();
@@ -212,7 +217,8 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
   }
 
   Future<void> _loadAll() async {
-    final messenger = ScaffoldMessenger.of(context);
+    final messenger = _messenger;
+    if (!mounted) return;
 
     setState(() {
       _loading = true;
@@ -375,12 +381,18 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
 
       if (!mounted) return;
       setState(() => _loading = false);
-      messenger.showSnackBar(const SnackBar(content: Text('Đã load xong IQC REPORT')));
+      messenger?.showSnackBar(const SnackBar(content: Text('Đã load xong IQC REPORT')));
     } catch (e) {
       if (!mounted) return;
       setState(() => _loading = false);
-      messenger.showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+      messenger?.showSnackBar(SnackBar(content: Text('Lỗi: $e')));
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _messenger = ScaffoldMessenger.maybeOf(context);
   }
 
   @override
@@ -396,7 +408,7 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
     super.dispose();
   }
 
-  TooltipBehavior _tooltip() => TooltipBehavior(enable: true);
+  TooltipBehavior _tooltip() => TooltipBehavior(enable: true, animationDuration: 0);
 
   Widget _sectionTitle(String t) {
     final scheme = Theme.of(context).colorScheme;
@@ -739,22 +751,33 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
               SizedBox(
                 height: 260,
                 child: SfCartesianChart(
+                  enableAxisAnimation: false,
                   tooltipBehavior: _tooltip(),
                   legend: const Legend(isVisible: true, position: LegendPosition.top),
-                  primaryXAxis: CategoryAxis(labelRotation: -45, title: AxisTitle(text: xLabel)),
-                  primaryYAxis: NumericAxis(numberFormat: NumberFormat.compact(), title: AxisTitle(text: 'LOT QTY')),
+                  primaryXAxis: CategoryAxis(
+                    labelRotation: -45,
+                    labelStyle: _axisLabelStyle,
+                    title: AxisTitle(text: xLabel, textStyle: _axisTitleStyle),
+                  ),
+                  primaryYAxis: NumericAxis(
+                    numberFormat: NumberFormat.compact(),
+                    labelStyle: _axisLabelStyle,
+                    title: AxisTitle(text: 'LOT QTY', textStyle: _axisTitleStyle),
+                  ),
                   axes: <ChartAxis>[
                     NumericAxis(
                       name: 'rate',
                       opposedPosition: true,
                       numberFormat: NumberFormat.compact(),
-                      title: AxisTitle(text: 'NG Rate (%)'),
+                      labelStyle: _axisLabelStyle,
+                      title: AxisTitle(text: 'NG Rate (%)', textStyle: _axisTitleStyle),
                       axisLabelFormatter: (v) => ChartAxisLabel('${v.value.toStringAsFixed(0)}%', v.textStyle),
                     ),
                   ],
                   series: <CartesianSeries<Map<String, dynamic>, String>>[
                     StackedColumnSeries<Map<String, dynamic>, String>(
                       name: 'OK_CNT',
+                      animationDuration: 0,
                       dataSource: pts,
                       xValueMapper: (p, _) => x(p),
                       yValueMapper: (p, _) => _d(p['OK_CNT']),
@@ -762,6 +785,7 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
                     ),
                     StackedColumnSeries<Map<String, dynamic>, String>(
                       name: 'NG_CNT',
+                      animationDuration: 0,
                       dataSource: pts,
                       xValueMapper: (p, _) => x(p),
                       yValueMapper: (p, _) => _d(p['NG_CNT']),
@@ -769,6 +793,7 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
                     ),
                     StackedColumnSeries<Map<String, dynamic>, String>(
                       name: 'PD_CNT',
+                      animationDuration: 0,
                       dataSource: pts,
                       xValueMapper: (p, _) => x(p),
                       yValueMapper: (p, _) => _d(p['PD_CNT']),
@@ -776,6 +801,7 @@ class _IqcReportTabState extends ConsumerState<IqcReportTab> {
                     ),
                     LineSeries<Map<String, dynamic>, String>(
                       name: 'NG_RATE',
+                      animationDuration: 0,
                       dataSource: pts,
                       xValueMapper: (p, _) => x(p),
                       yValueMapper: (p, _) => _d(p['NG_RATE']) * 100,

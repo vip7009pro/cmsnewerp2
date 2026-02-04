@@ -91,10 +91,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Logo or Title
-                    Icon(
-                      Icons.business,
-                      size: 80,
-                      color: Theme.of(context).colorScheme.primary,
+                    Image.asset(
+                      'assets/companylogo.png',
+                      height: 80,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Icon(
+                        Icons.business,
+                        size: 80,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(

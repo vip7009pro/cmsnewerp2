@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'drawer_state_provider.dart';
 import '../features/auth/application/auth_notifier.dart';
 import '../features/menu/application/menu_notifier.dart';
 
@@ -18,11 +19,26 @@ class AppDrawer extends ConsumerWidget {
       child: SafeArea(
         child: Column(
           children: [
-            ListTile(
-              title: Text(title ?? 'ERP'),
-              trailing: IconButton(
-                onPressed: () => ref.read(authNotifierProvider.notifier).logout(),
-                icon: const Icon(Icons.logout),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      'assets/companylogo.png',
+                      width: 144,
+                      height: 36,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.business),
+                    ),
+                  ),  
+                  const Spacer(),               
+                  IconButton(
+                    onPressed: () => ref.read(authNotifierProvider.notifier).logout(),
+                    icon: const Icon(Icons.logout),
+                  ),
+                ],
               ),
             ),
             ListTile(
@@ -55,6 +71,7 @@ class AppDrawer extends ConsumerWidget {
                                   var route = item.subLink.trim();
                                   if (route.isEmpty) return;
                                   if (!route.startsWith('/')) route = '/$route';
+                                  ref.read(openDrawerOnHomeProvider.notifier).state = true;
                                   Navigator.of(context).pop();
                                   context.push(route);
                                 },
