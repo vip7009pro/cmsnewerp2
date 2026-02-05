@@ -7,23 +7,28 @@
   overflow: hidden;
   .design_control {
     display: flex;
-    width: fit-content;
+    width: 40%;
     background-color: antiquewhite;
     height: 100%;
     gap: 5px;
     min-width: 0;
     min-height: 0;
     overflow: hidden;
+    font-size: 12px;
     .codelist {
       display: flex;
-      width: fit-content;
-      height: fit-content;
+      width: 50%;
+      height: 100%;
       flex-direction: column;
       align-items: center;
       min-width: 0;
       min-height: 0;
       overflow: hidden;
       .tracuuFcst {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        height: 100%;
         .tracuuFcstform {
           display: flex;
           flex-direction: column;
@@ -143,9 +148,20 @@
         }
       }
     }
+
+    .componentSide {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      gap: 5px;
+    }
+
     .componentList {
       display: flex;
-      width: fit-content;
+      width: 100%;
       flex-direction: column;
       align-items: center;
       justify-items: center;
@@ -155,6 +171,8 @@
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       min-width: 0;
       min-height: 0;
+      max-height: 40%;
+      font-size: 12px;
       .title {
         display: flex;
         flex-direction: row;
@@ -169,13 +187,17 @@
     }
     .componentProps {
       display: flex;
-      width: fit-content;
+      width: 100%;
       flex-direction: column;
       align-items: center;
       justify-items: flex-start;
       background-image: linear-gradient(0deg, #dce6e5, #82b0ec);
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      overflow: auto;
+      min-height: 0;
+      flex: 1;
+      font-size: 12px;
       .propsform {
         display: flex;
         width: fit-content;
@@ -216,8 +238,8 @@
               }
             }
             input {
-              width: 200px;
-              height: 20px;
+              width: 160px;
+              height: 18px;
               outline: none;
               border-radius: 5px;
               border: none;
@@ -226,8 +248,8 @@
               background-image: linear-gradient(0deg, #ececec, #9dee95);
             }
             select {
-              width: 200px;
-              height: 30px;
+              width: 160px;
+              height: 24px;
               outline: none;
               border-radius: 5px;
               border: none;
@@ -347,7 +369,7 @@
   .design_panel {
     display: flex;
     flex-direction: column;
-    flex: 3;
+    width: 60%;
     background-color: rgba(179, 179, 179, 0.473);
     height: 100%;
     min-width: 0;
@@ -382,12 +404,7 @@
         h1 {
           font-size: 18px; /* Customize heading size */
         }
-      
-        p {
-          font-size: 12px; /* Customize paragraph size */
-        }
       }
-
     }
   }
 }
