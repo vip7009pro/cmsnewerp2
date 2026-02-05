@@ -38,11 +38,19 @@ import '../features/muahang/presentation/quan_ly_vat_lieu_page.dart';
 import '../features/muahang/presentation/mrp_page.dart';
 import '../features/qc/presentation/dtc_page.dart';
 import '../features/qc/presentation/iqc/iqc_page.dart';
+import '../features/qc/presentation/inspection/inspection_page.dart';
+import '../features/qc/presentation/oqc/oqc_page.dart';
 import '../features/qc/presentation/pqc/pqc_page.dart';
-import '../features/tools/presentation/file_transfer_page.dart';
+import '../features/qc/presentation/cs/cs_page.dart';
+import '../features/qc/presentation/iso/iso_page.dart';
+import '../features/qc/presentation/qcreport/qc_report_page.dart';
+import '../features/rnd/presentation/bom_amazon/bom_amazon_page.dart';
+import '../features/rnd/presentation/product_barcode_manager/product_barcode_manager_page.dart';
+import '../features/rnd/presentation/sample_monitor/sample_monitor_page.dart';
 import '../features/menu/presentation/menu_page.dart';
 import '../features/settings/presentation/theme_settings_page.dart';
 import '../features/splash/presentation/splash_page.dart';
+import '../features/tools/presentation/file_transfer_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -255,12 +263,61 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const DtcPage(),
       ),
       GoRoute(
+        path: '/qc/ycsxmanager',
+        builder: (context, state) => const YcsxManagerPage(),
+      ),
+      GoRoute(
+        path: '/qc/codeinfo',
+        builder: (context, state) => const ThongTinSanPhamPage(),
+      ),
+      GoRoute(
         path: '/qc/iqc',
         builder: (context, state) => const IqcPage(),
       ),
       GoRoute(
         path: '/qc/pqc',
         builder: (context, state) => const PqcPage(),
+      ),
+      GoRoute(
+        path: '/qc/oqc',
+        builder: (context, state) => const OqcPage(),
+      ),
+      GoRoute(
+        path: '/qc/inspection',
+        builder: (context, state) => const InspectionPage(),
+      ),
+      GoRoute(
+        path: '/qc/cs',
+        builder: (context, state) => const CsPage(),
+      ),
+      GoRoute(
+        path: '/qc/iso',
+        builder: (context, state) => const IsoPage(),
+      ),
+      GoRoute(
+        path: '/qc/qcreport',
+        builder: (context, state) => const QcReportPage(),
+      ),
+
+      GoRoute(
+        path: '/rnd/thembomamazon',
+        builder: (context, state) => const BomAmazonPage(),
+      ),
+      GoRoute(
+        path: '/rnd/samplemonitor',
+        builder: (context, state) => const SampleMonitorPage(),
+      ),
+      GoRoute(
+        path: '/rnd/productbarcodemanager',
+        builder: (context, state) => const ProductBarcodeManagerPage(),
+      ),
+      GoRoute(
+        path: '/rnd/quanlycodebom',
+        builder: (context, state) => const CodeBomManagerListPage(),
+      ),
+      GoRoute(
+        path: '/rnd/ycsxmanager',
+        builder: (context, state) => const YcsxManagerPage(),
       ),
 
       // Tools routes

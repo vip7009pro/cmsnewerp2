@@ -301,6 +301,15 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
                 <button className='tcbutton' onClick={() => onClick('1600-2000')}>
                   16-20
                 </button>
+                <button className='tcbutton' onClick={() => onClick('0200-0600')}>
+                  02-06
+                </button>
+                <button className='tcbutton' onClick={() => onClick('0200-0800')}>
+                  02-08
+                </button>
+                <button className='tcbutton' onClick={() => onClick('1400-2000')}>
+                  14-20
+                </button>
               </div>
             );
           }
@@ -657,7 +666,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
   const diemdanhnhomAGTable = useMemo(() => {
     return (
       <AGTable
-        rowHeight={80}
+        rowHeight={100}
         suppressRowClickSelection={false}
         toolbar={<></>}
         columns={columns_diemdanhnhom}

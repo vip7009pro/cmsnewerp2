@@ -220,7 +220,7 @@ class _PqcPatrolTabState extends ConsumerState<PqcPatrolTab> {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 170,
+              height: 210,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: items.length,
@@ -261,6 +261,7 @@ class _PqcPatrolTabState extends ConsumerState<PqcPatrolTab> {
             border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -300,7 +301,7 @@ class _PqcPatrolTabState extends ConsumerState<PqcPatrolTab> {
               Text(gName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.blue)),
               const SizedBox(height: 6),
               Text('$cust • $factory • $eq', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.black54)),
-              const Spacer(),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(child: Text(time, style: const TextStyle(fontWeight: FontWeight.w800, color: Colors.black87))),

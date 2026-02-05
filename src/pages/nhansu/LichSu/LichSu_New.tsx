@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import {UserData } from "../../../api/GlobalInterface";
 import { DiemDanhLichSuData, DiemDanhNhomData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { Box, Button, Card, CardContent, CardHeader, IconButton, LinearProgress } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Checkbox, FormControlLabel, IconButton, LinearProgress } from "@mui/material";
 import { BiLoaderCircle } from "react-icons/bi";
 import { calculateOvertime, OvertimeInput } from "../BangChamCong/OverTimeUtils";
 import {  calculateWorkMinutesByPercentage, CalculationOptions } from "../BangChamCong/OverTimeUtils2";
@@ -34,9 +34,10 @@ const LichSu_New = () => {
     (state: RootState) => state.totalSlice.userData
   );
 
-  const [attendanceTimeline, setAttendanceTimeline] = useState<Array<{ day: number; hours: number }>>([]);
+  const [attendanceTimeline, setAttendanceTimeline] = useState<Array<{ date: string; label: string; hours: number }>>([]);
   const [attendanceTimelineLoading, setAttendanceTimelineLoading] = useState(false);
   const [attendanceTimelineError, setAttendanceTimelineError] = useState<string | null>(null);
+  const [attendanceTimelineDefaultMonth, setAttendanceTimelineDefaultMonth] = useState(true);
 
   const [totalTime, setTotalTime] = useState( {
     overtime: 0,
@@ -565,8 +566,10 @@ const LichSu_New = () => {
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120,headerClass: 'super-app-theme--header' },
   ]; 
-  const handleSearch = () => {
-    generalQuery("mydiemdanhnhom", { from_date: watch("fromdate"), to_date: watch("todate") })
+  const handleSearch = (fromDate?: string, toDate?: string) => {
+    const from = fromDate ?? watch("fromdate");
+    const to = toDate ?? watch("todate");
+    generalQuery("mydiemdanhnhom", { from_date: from, to_date: to })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -682,7 +685,7 @@ const LichSu_New = () => {
   const setLocalStorageLuongInfo = (luongInfo: any) => {
     localStorage.setItem('luongInfo', JSON.stringify(luongInfo));
   };
-  const {register,handleSubmit,watch, formState:{errors}} = useForm( {
+  const {register,handleSubmit,watch,setValue, formState:{errors}} = useForm( {
     defaultValues:{
       fromdate:moment().format("YYYY-MM-01"),
       todate:moment().format("YYYY-MM-DD"),       
@@ -701,23 +704,41 @@ const LichSu_New = () => {
   });
   const [phieuLuong, setPhieuLuong] = useState<PhieuLuong | null>(null);
 
-  const fetchAttendanceTimeline = async () => {
+  const _rangeDays = (fromYmd: string, toYmd: string) => {
+    const start = moment(fromYmd, 'YYYY-MM-DD', true);
+    const end = moment(toYmd, 'YYYY-MM-DD', true);
+    if (!start.isValid() || !end.isValid()) return [] as moment.Moment[];
+
+    const s = start.isAfter(end) ? end.clone() : start.clone();
+    const e = start.isAfter(end) ? start.clone() : end.clone();
+    const days: moment.Moment[] = [];
+
+    const cur = s.clone();
+    while (cur.isSameOrBefore(e, 'day')) {
+      days.push(cur.clone());
+      cur.add(1, 'day');
+    }
+    return days;
+  };
+
+  const fetchAttendanceTimeline = async (fromYmd?: string, toYmd?: string) => {
     try {
       setAttendanceTimelineLoading(true);
       setAttendanceTimelineError(null);
 
-      const monthStart = moment().startOf("month");
-      const monthEnd = moment().endOf("month");
-      const daysInMonth = monthEnd.date();
+      const fromDate = fromYmd && String(fromYmd).trim().length === 10 ? String(fromYmd).trim() : moment().startOf('month').format('YYYY-MM-DD');
+      const toDate = toYmd && String(toYmd).trim().length === 10 ? String(toYmd).trim() : moment().endOf('month').format('YYYY-MM-DD');
 
-      const baseData: Array<{ day: number; hours: number }> = Array.from(
-        { length: daysInMonth },
-        (_, idx) => ({ day: idx + 1, hours: 0 })
-      );
+      const days = _rangeDays(fromDate, toDate);
+      const baseData: Array<{ date: string; label: string; hours: number }> = days.map((d) => ({
+        date: d.format('YYYY-MM-DD'),
+        label: d.format('DD/MM'),
+        hours: 0,
+      }));
 
       const response = await generalQuery("mydiemdanhnhom", {
-        from_date: monthStart.format("YYYY-MM-DD"),
-        to_date: monthEnd.format("YYYY-MM-DD"),
+        from_date: fromDate,
+        to_date: toDate,
       });
 
       if (response.data.tk_status === "NG") {
@@ -745,10 +766,15 @@ const LichSu_New = () => {
 
       const toHours = (mins: number) => Math.round((mins / 60) * 100) / 100;
 
+      const idxByDate = new Map<string, number>();
+      for (let i = 0; i < baseData.length; i++) {
+        idxByDate.set(baseData[i].date, i);
+      }
+
       for (const row of rows) {
         const dateStr = moment(row.DATE_COLUMN).utc().format("YYYY-MM-DD");
-        const day = Number(moment(dateStr, "YYYY-MM-DD").format("D"));
-        if (!day || day < 1 || day > daysInMonth) continue;
+        const idx = idxByDate.get(dateStr);
+        if (idx === undefined) continue;
 
         const inMoment = parseTime(dateStr, row.IN_TIME);
         const outMomentRaw = parseTime(dateStr, row.OUT_TIME);
@@ -759,7 +785,7 @@ const LichSu_New = () => {
         const outMoment = outMomentRaw.isBefore(inMoment) ? outMomentRaw.clone().add(1, "day") : outMomentRaw;
         const diffMinutes = Math.max(0, outMoment.diff(inMoment, "minutes"));
         const workingMinutes = Math.max(0, diffMinutes - 60);
-        baseData[day - 1] = { day, hours: toHours(workingMinutes) };
+        baseData[idx] = { ...baseData[idx], hours: toHours(workingMinutes) };
       }
 
       setAttendanceTimeline(baseData);
@@ -769,6 +795,10 @@ const LichSu_New = () => {
       setAttendanceTimelineLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchAttendanceTimeline(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
+  }, []);
 
   const tinhLuong = (data : DiemDanhLichSuData[]) => {
     const luong_co_ban = parseInt(watch('luong_co_ban'));
@@ -957,32 +987,29 @@ const LichSu_New = () => {
 
   useEffect(() => {
     handleSearch();
-    fetchAttendanceTimeline();
   }, []);
 
-  const todayDay = moment().date();
-  const attendanceChartData: Array<{ day: number; hours: number; hoursPast: number | null; hoursFuture: number | null }> =
-    attendanceTimeline.map((d) => ({
+  const todayYmd = moment().format('YYYY-MM-DD');
+  const attendanceChartData: Array<{ x: number; label: string; date: string; hours: number; hoursPast: number | null; hoursFuture: number | null }> =
+    attendanceTimeline.map((d, idx) => ({
+      x: idx + 1,
       ...d,
-      hoursPast: d.day < todayDay ? d.hours : null,
-      hoursFuture: d.day >= todayDay ? d.hours : null,
+      hoursPast: d.date < todayYmd ? d.hours : null,
+      hoursFuture: d.date >= todayYmd ? d.hours : null,
     }));
-
-  const getWeekdayLabel = (day: number) => {
-    const dow = moment().startOf("month").date(day).day();
-    if (dow === 0) return "CN";
-    return `T${dow + 1}`;
-  };
 
   const AttendanceXAxisTick = (props: any) => {
     const { x, y, payload } = props;
-    const day = Number(payload?.value);
-    const dow = moment().startOf("month").date(day).day();
-    const isSunday = dow === 0;
-    const label = `${day} (${getWeekdayLabel(day)})`;
+    const label = String(payload?.payload?.label ?? payload?.value ?? '');
+    const v = Number(payload?.value);
+    const base = attendanceTimelineDefaultMonth
+      ? moment().startOf('month')
+      : moment(String(watch('fromdate') || ''), 'YYYY-MM-DD', true);
+    const d = v && base.isValid() ? base.clone().add(v - 1, 'day') : null;
+    const isSunday = d != null ? d.day() === 0 : false;
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} textAnchor="middle" fill={isSunday ? "#d32f2f" : "#666"} fontSize={11}>
+        <text x={0} y={0} dy={16} textAnchor="middle" fill={isSunday ? "#b71c1c" : "#666"} fontSize={11} fontWeight={isSunday ? 800 : 500}>
           {label}
         </text>
       </g>
@@ -998,10 +1025,42 @@ const LichSu_New = () => {
         <label>
           <b>To Date:</b> <input {...register('todate')} type='date' value={watch('todate')}></input>
         </label>
+        <FormControlLabel
+          label="Default"
+          control={
+            <Checkbox
+              checked={attendanceTimelineDefaultMonth}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setAttendanceTimelineDefaultMonth(checked);
+                if (checked) {
+                  const m1 = moment().startOf('month').format('YYYY-MM-DD');
+                  const m2Today = moment().format('YYYY-MM-DD');
+                  setValue('fromdate', m1);
+                  setValue('todate', m2Today);
+                  handleSearch(m1, m2Today);
+
+                  const m2Chart = moment().endOf('month').format('YYYY-MM-DD');
+                  fetchAttendanceTimeline(m1, m2Chart);
+                }
+              }}
+            />
+          }
+        />
         <button
           className='searchbutton'
           onClick={() => {
-            handleSearch();
+            if (attendanceTimelineDefaultMonth) {
+              const m1 = moment().startOf('month').format('YYYY-MM-DD');
+              const m2Today = moment().format('YYYY-MM-DD');
+              handleSearch(m1, m2Today);
+
+              const m2Chart = moment().endOf('month').format('YYYY-MM-DD');
+              fetchAttendanceTimeline(m1, m2Chart);
+            } else {
+              handleSearch();
+              fetchAttendanceTimeline(watch('fromdate'), watch('todate'));
+            }
           }}
         >
           Search
@@ -1012,7 +1071,9 @@ const LichSu_New = () => {
         <CardHeader
           title={
             <div style={{ fontSize: "0.85rem", fontWeight: 700 }}>
-              Time line đi làm (Tháng {moment().format("MM")})
+              {attendanceTimelineDefaultMonth
+                ? `Time line đi làm (Tháng ${moment().format("MM")})`
+                : `Time line đi làm (${moment(watch('fromdate')).format('DD/MM')} - ${moment(watch('todate')).format('DD/MM')})`}
             </div>
           }
           action={
@@ -1020,7 +1081,11 @@ const LichSu_New = () => {
               size="small"
               variant="outlined"
               onClick={() => {
-                fetchAttendanceTimeline();
+                if (attendanceTimelineDefaultMonth) {
+                  fetchAttendanceTimeline(moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD'));
+                } else {
+                  fetchAttendanceTimeline(watch('fromdate'), watch('todate'));
+                }
               }}
             >
               Refresh
@@ -1040,13 +1105,14 @@ const LichSu_New = () => {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={attendanceChartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" tick={AttendanceXAxisTick} />
+                <XAxis dataKey="x" tick={AttendanceXAxisTick} interval={0} minTickGap={6} />
                 <YAxis tick={{ fontSize: 11 }} domain={[0, 12]} />
                 <Tooltip
                   content={({ active, payload, label }: any) => {
                     if (!active || !payload || payload.length === 0) return null;
                     const item = payload.find((p: any) => p?.value != null);
                     if (!item) return null;
+                    const l = String(item?.payload?.label ?? label);
                     return (
                       <div
                         style={{
@@ -1056,7 +1122,7 @@ const LichSu_New = () => {
                           borderRadius: 8,
                         }}
                       >
-                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{`Ngày ${label}`}</div>
+                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{`${l}`}</div>
                         <div>{`${item.value} giờ`}</div>
                       </div>
                     );

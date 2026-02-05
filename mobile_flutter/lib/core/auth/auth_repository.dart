@@ -77,6 +77,6 @@ class AuthRepository {
     } catch (_) {
       // ignore
     }
-    await _secureStore.clearToken();
+    await _secureStore.clearAll();
   }
 }

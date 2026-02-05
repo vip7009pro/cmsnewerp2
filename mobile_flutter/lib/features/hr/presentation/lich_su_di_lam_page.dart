@@ -16,6 +16,10 @@ class LichSuDiLamPage extends ConsumerStatefulWidget {
 class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
   late DateTime _fromDate;
   late DateTime _toDate;
+  bool _defaultMonth = true;
+
+  late DateTime _chartFrom;
+  late DateTime _chartTo;
 
   List<FlSpot> _timelinePast = const [];
   List<FlSpot> _timelineFuture = const [];
@@ -29,6 +33,9 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
     _fromDate = DateTime(now.year, now.month, 1);
     _toDate = DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
 
+    _chartFrom = DateTime(now.year, now.month, 1);
+    _chartTo = DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
+
     Future.microtask(_loadTimeline);
   }
 
@@ -41,22 +48,29 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
     try {
       final repo = ref.read(hrRepositoryProvider);
       final now = DateTime.now();
+      final todayDate = DateTime(now.year, now.month, now.day);
       final monthStart = DateTime(now.year, now.month, 1);
       final monthEnd = DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
+      final rawFrom = _defaultMonth ? monthStart : _chartFrom;
+      final rawTo = _defaultMonth ? monthEnd : _chartTo;
+      final from = rawTo.isBefore(rawFrom) ? rawTo : rawFrom;
+      final to = rawTo.isBefore(rawFrom) ? rawFrom : rawTo;
 
-      final rows = await repo.getLichSuDiLam(fromDate: AppDateUtils.ymd(monthStart), toDate: AppDateUtils.ymd(monthEnd));
+      final rows = await repo.getLichSuDiLam(fromDate: AppDateUtils.ymd(from), toDate: AppDateUtils.ymd(to));
       if (!mounted) return;
 
-      final daysInMonth = monthEnd.day;
-      final todayDay = now.day;
+      final daysInRange = (to.difference(from).inDays + 1).clamp(1, 3660);
       final byDay = <int, double>{};
 
       for (final row in rows) {
         final dateStr = AppDateUtils.ymdFromValue(row['DATE_COLUMN']);
         if (dateStr.length != 10) continue;
 
-        final day = int.tryParse(dateStr.substring(8, 10));
-        if (day == null || day < 1 || day > daysInMonth) continue;
+        final dt = DateTime.tryParse(dateStr);
+        if (dt == null) continue;
+        final delta = dt.difference(DateTime(from.year, from.month, from.day)).inDays;
+        final idx = delta + 1;
+        if (idx < 1 || idx > daysInRange) continue;
 
         final inTime = (row['IN_TIME'] ?? '').toString().trim();
         final outTime = (row['OUT_TIME'] ?? '').toString().trim();
@@ -74,19 +88,19 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
 
         final workingMinutes = (diffMinutes - 60).clamp(0, 24 * 60);
         final hours = (workingMinutes / 60.0);
-        byDay[day] = hours;
+        byDay[idx] = hours;
       }
 
       final past = <FlSpot>[];
       final future = <FlSpot>[];
-      for (var d = 1; d <= daysInMonth; d++) {
-        final h = byDay[d] ?? 0.0;
-        if (d < todayDay) {
-          past.add(FlSpot(d.toDouble(), h));
-          future.add(FlSpot(d.toDouble(), double.nan));
+
+      for (var i = 1; i <= daysInRange; i++) {
+        final h = byDay[i] ?? 0.0;
+        final d = DateTime(from.year, from.month, from.day).add(Duration(days: i - 1));
+        if (d.isBefore(todayDate)) {
+          past.add(FlSpot(i.toDouble(), h));
         } else {
-          past.add(FlSpot(d.toDouble(), double.nan));
-          future.add(FlSpot(d.toDouble(), h));
+          future.add(FlSpot(i.toDouble(), h));
         }
       }
 
@@ -133,6 +147,10 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
     setState(() {
       _fromDate = picked;
       if (_toDate.isBefore(_fromDate)) _toDate = _fromDate;
+      if (!_defaultMonth) {
+        _chartFrom = _fromDate;
+        _chartTo = _toDate;
+      }
     });
   }
 
@@ -144,12 +162,28 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
       lastDate: DateTime(2100),
     );
     if (picked == null) return;
-    setState(() => _toDate = picked);
+    setState(() {
+      _toDate = picked;
+      if (!_defaultMonth) {
+        _chartFrom = _fromDate;
+        _chartTo = _toDate;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final key = (AppDateUtils.ymd(_fromDate), AppDateUtils.ymd(_toDate));
+    final now = DateTime.now();
+    final todayDate = DateTime(now.year, now.month, now.day);
+    final monthStart = DateTime(now.year, now.month, 1);
+    final monthEnd = DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
+
+    final listFrom = _defaultMonth ? monthStart : _fromDate;
+    final listTo = _defaultMonth ? todayDate : _toDate;
+    final chartFrom = _defaultMonth ? monthStart : _chartFrom;
+    final chartTo = _defaultMonth ? monthEnd : _chartTo;
+
+    final key = (AppDateUtils.ymd(listFrom), AppDateUtils.ymd(listTo));
     final dataAsync = ref.watch(lichSuDiLamProvider(key));
 
     return Scaffold(
@@ -169,7 +203,9 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Time line đi làm (Tháng ${DateTime.now().month.toString().padLeft(2, '0')})',
+                            _defaultMonth
+                                ? 'Time line đi làm (Tháng ${DateTime.now().month.toString().padLeft(2, '0')})'
+                                : 'Time line đi làm (${AppDateUtils.ymd(chartFrom)} - ${AppDateUtils.ymd(chartTo)})',
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -194,9 +230,10 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
                     child: LineChart(
                       LineChartData(
                         minX: 1,
-                        maxX: DateTime(DateTime.now().year, DateTime.now().month + 1, 1)
-                            .subtract(const Duration(days: 1))
-                            .day
+                        maxX: (chartTo.isBefore(chartFrom)
+                                ? (chartFrom.difference(chartTo).inDays + 1)
+                                : (chartTo.difference(chartFrom).inDays + 1))
+                            .clamp(1, 3660)
                             .toDouble(),
                         minY: 0,
                         maxY: 12,
@@ -221,9 +258,20 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
                               interval: 2,
                               getTitlesWidget: (value, meta) {
                                 final v = value.toInt();
+                                final d = chartFrom.add(Duration(days: v - 1));
+                                final dd = d.day.toString().padLeft(2, '0');
+                                final mm = d.month.toString().padLeft(2, '0');
+                                final isSunday = d.weekday == DateTime.sunday;
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 4),
-                                  child: Text(v.toString(), style: const TextStyle(fontSize: 10)),
+                                  child: Text(
+                                    '$dd/$mm',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: isSunday ? FontWeight.w800 : FontWeight.w400,
+                                      color: isSunday ? const Color(0xFFB71C1C) : const Color(0xFF666666),
+                                    ),
+                                  ),
                                 );
                               },
                             ),
@@ -257,26 +305,62 @@ class _LichSuDiLamPageState extends ConsumerState<LichSuDiLamPage> {
             padding: const EdgeInsets.all(8),
             child: Row(
               children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _pickFrom,
-                    icon: const Icon(Icons.date_range),
-                    label: Text('From: ${key.$1}'),
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Default', style: TextStyle(fontSize: 12)),
+                    value: _defaultMonth,
+                    onChanged: (v) {
+                      if (v == null) return;
+                      setState(() => _defaultMonth = v);
+                      if (v) {
+                        final n = DateTime.now();
+                        _fromDate = DateTime(n.year, n.month, 1);
+                        _toDate = DateTime(n.year, n.month, n.day);
+
+                        _chartFrom = DateTime(n.year, n.month, 1);
+                        _chartTo = _toDate;
+                      } else {
+                        _chartFrom = _fromDate;
+                        _chartTo = _toDate;
+                      }
+                      Future.microtask(_loadTimeline);
+                      ref.invalidate(lichSuDiLamProvider(key));
+                    },
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: _pickTo,
+                    onPressed: _defaultMonth ? null : _pickFrom,
                     icon: const Icon(Icons.date_range),
-                    label: Text('To: ${key.$2}'),
+                    label: Text(key.$1),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _defaultMonth ? null : _pickTo,
+                    icon: const Icon(Icons.date_range),
+                    label: Text(key.$2),
                   ),
                 ),
                 const SizedBox(width: 8),
                 FilledButton.icon(
-                  onPressed: () => ref.invalidate(lichSuDiLamProvider(key)),
+                  onPressed: () {
+                    setState(() {
+                      if (!_defaultMonth) {
+                        _chartFrom = _fromDate;
+                        _chartTo = _toDate;
+                      }
+                    });
+                    ref.invalidate(lichSuDiLamProvider(key));
+                    _loadTimeline();
+                  },
                   icon: const Icon(Icons.search),
-                  label: const Text('Search'),
+                  label: const Text(''),
                 ),
               ],
             ),
@@ -336,18 +420,9 @@ class _LichSuRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = AppDateUtils.ymdFromValue(item['DATE_COLUMN']);
-    final weekday = _s('WEEKDAY');
     final onOff = int.tryParse(_s('ON_OFF'));
-    final check1 = _hm(_s('CHECK1'));
-    final check2 = _hm(_s('CHECK2'));
-    final check3 = _hm(_s('CHECK3'));
-    final lateIn = _s('LATE_IN_MINUTES');
-    final earlyOut = _s('EARLY_OUT_MINUTES');
-    final overtime = _s('OVERTIME_MINUTES');
-    final work = _s('WORKING_MINUTES');
-    final approval = int.tryParse(_s('APPROVAL_STATUS'));
-    final reason = _s('REASON_NAME');
-    final remark = _s('REMARK');
+    final inTime = _hm(_s('CHECK1'));
+    final outTime = _hm(_s('CHECK2'));
 
     String statusText;
     Color statusColor;
@@ -362,61 +437,45 @@ class _LichSuRow extends StatelessWidget {
       statusColor = Colors.deepPurple;
     }
 
-    String approvalText = '';
-    if (approval == 1) approvalText = 'Phê duyệt';
-    if (approval == 0) approvalText = 'Từ chối';
-    if (approval == 2) approvalText = 'Chờ duyệt';
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '$date  $weekday',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Text(statusText, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold)),
-            ],
+          Expanded(
+            flex: 4,
+            child: Text(
+              date,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  check1,
-                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  check2,
-                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  check3,
-                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            ],
+          Expanded(
+            flex: 3,
+            child: Text(
+              inTime,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          const SizedBox(height: 2),
-          Text('Late: $lateIn | Early: $earlyOut'),
-          Text('Work: $work | OT: $overtime${approvalText.isEmpty ? '' : ' | $approvalText'}'),
-          if (reason.isNotEmpty || remark.isNotEmpty) Text('Lý do: $reason | Remark: $remark'),
+          Expanded(
+            flex: 3,
+            child: Text(
+              outTime,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Text(
+              statusText,
+              textAlign: TextAlign.right,
+              style: TextStyle(color: statusColor, fontWeight: FontWeight.w800),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
