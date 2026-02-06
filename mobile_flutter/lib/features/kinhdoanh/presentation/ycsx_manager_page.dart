@@ -14,7 +14,9 @@ import '../../../core/providers.dart';
 import '../../auth/application/auth_notifier.dart';
 import '../../auth/application/auth_state.dart';
 class YcsxManagerPage extends ConsumerStatefulWidget {
-  const YcsxManagerPage({super.key});
+  const YcsxManagerPage({super.key, this.embedded = false});
+
+  final bool embedded;
   @override
   ConsumerState<YcsxManagerPage> createState() => _YcsxManagerPageState();
 }
@@ -2574,117 +2576,113 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final selectedCount = _selectedIds.length;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quản lý YCSX'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              setState(() => _showFilter = !_showFilter);
-            },
-            icon: Icon(_showFilter ? Icons.filter_alt_off : Icons.filter_alt),
-            tooltip: _showFilter ? 'Ẩn bộ lọc' : 'Hiện bộ lọc',
+    final actions = [
+      IconButton(
+        onPressed: () {
+          setState(() => _showFilter = !_showFilter);
+        },
+        icon: Icon(_showFilter ? Icons.filter_alt_off : Icons.filter_alt),
+        tooltip: _showFilter ? 'Ẩn bộ lọc' : 'Hiện bộ lọc',
+      ),
+      IconButton(
+        onPressed: () {
+          setState(() => _gridView = !_gridView);
+        },
+        icon: Icon(_gridView ? Icons.view_agenda : Icons.grid_on),
+        tooltip: _gridView ? 'List view' : 'Grid view',
+      ),
+      PopupMenuButton<String>(
+        onSelected: (v) async {
+          if (v == 'search') {
+            await _search();
+          } else if (v == 'add') {
+            await _openAddYcsxForm();
+          } else if (v == 'edit') {
+            await _openEditYcsxForm();
+          } else if (v == 'delete') {
+            await _deleteSelected();
+          } else if (v == 'export') {
+            await _exportExcel();
+          } else if (v == 'approve_1') {
+            await _setPheDuyet(1);
+          } else if (v == 'approve_0') {
+            await _setPheDuyet(0);
+          } else if (v == 'material_y') {
+            await _setMaterialYn('Y');
+          } else if (v == 'material_n') {
+            await _setMaterialYn('N');
+          } else if (v == 'pending_1') {
+            await _setPending(1);
+          } else if (v == 'pending_0') {
+            await _setPending(0);
+          } else if (v == 'open_y') {
+            await _setOpen('Y');
+          } else if (v == 'open_n') {
+            await _setOpen('N');
+          }
+        },
+        itemBuilder: (ctx) => [
+          const PopupMenuItem(value: 'search', child: Text('Tra cứu')),
+          const PopupMenuDivider(),
+          const PopupMenuItem(value: 'add', child: Text('Thêm YCSX')),
+          PopupMenuItem(
+            value: 'edit',
+            enabled: selectedCount == 1,
+            child: const Text('Sửa YCSX'),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() => _gridView = !_gridView);
-            },
-            icon: Icon(_gridView ? Icons.view_agenda : Icons.grid_on),
-            tooltip: _gridView ? 'List view' : 'Grid view',
+          PopupMenuItem(
+            value: 'delete',
+            enabled: selectedCount >= 1,
+            child: const Text('Xóa YCSX'),
           ),
-          PopupMenuButton<String>(
-            onSelected: (v) async {
-              if (v == 'search') {
-                await _search();
-              } else if (v == 'add') {
-                await _openAddYcsxForm();
-              } else if (v == 'edit') {
-                await _openEditYcsxForm();
-              } else if (v == 'delete') {
-                await _deleteSelected();
-              } else if (v == 'export') {
-                await _exportExcel();
-              } else if (v == 'approve_1') {
-                await _setPheDuyet(1);
-              } else if (v == 'approve_0') {
-                await _setPheDuyet(0);
-              } else if (v == 'material_y') {
-                await _setMaterialYn('Y');
-              } else if (v == 'material_n') {
-                await _setMaterialYn('N');
-              } else if (v == 'pending_1') {
-                await _setPending(1);
-              } else if (v == 'pending_0') {
-                await _setPending(0);
-              } else if (v == 'open_y') {
-                await _setOpen('Y');
-              } else if (v == 'open_n') {
-                await _setOpen('N');
-              }
-            },
-            itemBuilder: (ctx) => [
-              const PopupMenuItem(value: 'search', child: Text('Tra cứu')),
-              const PopupMenuDivider(),
-              const PopupMenuItem(value: 'add', child: Text('Thêm YCSX')),
-              PopupMenuItem(
-                value: 'edit',
-                enabled: selectedCount == 1,
-                child: const Text('Sửa YCSX'),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                enabled: selectedCount >= 1,
-                child: const Text('Xóa YCSX'),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem(
-                value: 'approve_1',
-                enabled: selectedCount >= 1,
-                child: const Text('Phê duyệt (PDUYET=1)'),
-              ),
-              PopupMenuItem(
-                value: 'approve_0',
-                enabled: selectedCount >= 1,
-                child: const Text('Bỏ phê duyệt (PDUYET=0)'),
-              ),
-              PopupMenuItem(
-                value: 'material_y',
-                enabled: selectedCount >= 1,
-                child: const Text('Material lock (Y)'),
-              ),
-              PopupMenuItem(
-                value: 'material_n',
-                enabled: selectedCount >= 1,
-                child: const Text('Material unlock (N)'),
-              ),
-              PopupMenuItem(
-                value: 'pending_1',
-                enabled: selectedCount >= 1,
-                child: const Text('Set pending (1)'),
-              ),
-              PopupMenuItem(
-                value: 'pending_0',
-                enabled: selectedCount >= 1,
-                child: const Text('Unset pending (0)'),
-              ),
-              PopupMenuItem(
-                value: 'open_y',
-                enabled: selectedCount >= 1,
-                child: const Text('Open (USE_YN=Y)'),
-              ),
-              PopupMenuItem(
-                value: 'open_n',
-                enabled: selectedCount >= 1,
-                child: const Text('Close (USE_YN=N)'),
-              ),
-              const PopupMenuDivider(),
-              const PopupMenuItem(value: 'export', child: Text('Xuất Excel')),
-            ],
+          const PopupMenuDivider(),
+          PopupMenuItem(
+            value: 'approve_1',
+            enabled: selectedCount >= 1,
+            child: const Text('Phê duyệt (PDUYET=1)'),
           ),
+          PopupMenuItem(
+            value: 'approve_0',
+            enabled: selectedCount >= 1,
+            child: const Text('Bỏ phê duyệt (PDUYET=0)'),
+          ),
+          PopupMenuItem(
+            value: 'material_y',
+            enabled: selectedCount >= 1,
+            child: const Text('Material lock (Y)'),
+          ),
+          PopupMenuItem(
+            value: 'material_n',
+            enabled: selectedCount >= 1,
+            child: const Text('Material unlock (N)'),
+          ),
+          PopupMenuItem(
+            value: 'pending_1',
+            enabled: selectedCount >= 1,
+            child: const Text('Set pending (1)'),
+          ),
+          PopupMenuItem(
+            value: 'pending_0',
+            enabled: selectedCount >= 1,
+            child: const Text('Unset pending (0)'),
+          ),
+          PopupMenuItem(
+            value: 'open_y',
+            enabled: selectedCount >= 1,
+            child: const Text('Open (USE_YN=Y)'),
+          ),
+          PopupMenuItem(
+            value: 'open_n',
+            enabled: selectedCount >= 1,
+            child: const Text('Close (USE_YN=N)'),
+          ),
+          const PopupMenuDivider(),
+          const PopupMenuItem(value: 'export', child: Text('Xuất Excel')),
         ],
       ),
-      drawer: const AppDrawer(title: 'ERP'),
-      body: RefreshIndicator(
+    ];
+
+    final content = RefreshIndicator(
         onRefresh: _search,
         child: ListView(
           padding: const EdgeInsets.all(12),
@@ -3065,7 +3063,31 @@ class _YcsxManagerPageState extends ConsumerState<YcsxManagerPage> {
             ],
           ],
         ),
+      );
+
+    if (widget.embedded) {
+      return Column(
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: actions,
+            ),
+          ),
+          const Divider(height: 1),
+          Expanded(child: content),
+        ],
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quản lý YCSX'),
+        actions: actions,
       ),
+      drawer: const AppDrawer(title: 'ERP'),
+      body: content,
     );
   }
 }

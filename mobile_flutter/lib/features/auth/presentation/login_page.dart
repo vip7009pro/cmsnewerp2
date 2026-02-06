@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers.dart';
+import '../../../core/config/app_config.dart';
 import '../application/auth_notifier.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -17,10 +18,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _obscurePassword = true;
   bool _loading = false;
 
+  String _serverId = AppConfig.serverId;
+
   @override
   void initState() {
     super.initState();
     _loadSavedCredentials();
+    _serverId = AppConfig.serverId;
   }
 
   Future<void> _loadSavedCredentials() async {
@@ -117,6 +121,40 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
+
+                    DropdownButtonFormField<String>(
+                      value: _serverId,
+                      decoration: InputDecoration(
+                        labelText: 'Server',
+                        prefixIcon: const Icon(Icons.cloud_outlined),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      items: AppConfig.servers
+                          .map(
+                            (s) => DropdownMenuItem<String>(
+                              value: s.id,
+                              child: Text(s.name, style: TextStyle(color: Theme.of(context).colorScheme.onSurface),),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: _loading
+                          ? null
+                          : (value) async {
+                              if (value == null) return;
+                              setState(() => _serverId = value);
+                              await AppConfig.setServer(value);
+                            },
+                    ),
+                    const SizedBox(height: 16),
 
                     // Username Field
                     TextFormField(

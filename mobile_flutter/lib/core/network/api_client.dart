@@ -23,10 +23,17 @@ class ApiClient {
   final Dio _dio;
   final SecureKvStore _secureStore;
 
+  void _syncBaseUrl() {
+    if (_dio.options.baseUrl != AppConfig.baseUrl) {
+      _dio.options.baseUrl = AppConfig.baseUrl;
+    }
+  }
+
   Future<Response<dynamic>> postRaw(
     String path, {
     required Map<String, dynamic> body,
   }) async {
+    _syncBaseUrl();
     return _dio.post(path, data: body);
   }
 
@@ -35,6 +42,7 @@ class ApiClient {
     Map<String, dynamic>? data,
     bool attachAuth = true,
   }) async {
+    _syncBaseUrl();
     if (kDebugMode) {
       debugPrint('command: $command');
     }
@@ -64,6 +72,7 @@ class ApiClient {
     required String uploadFolderName,
     ProgressCallback? onSendProgress,
   }) async {
+    _syncBaseUrl();
     final token = await _secureStore.getToken();
     final form = FormData.fromMap({
       'uploadedfile': await MultipartFile.fromFile(file.path, filename: filename),

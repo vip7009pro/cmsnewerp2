@@ -22,6 +22,8 @@ import '../features/kinhdoanh/presentation/plan_manager_page.dart';
 import '../features/kinhdoanh/presentation/shortage_manager_page.dart';
 import '../features/kinhdoanh/presentation/fcst_manager_page.dart';
 import '../features/kinhdoanh/presentation/ycsx_manager_page.dart';
+import '../features/kinhdoanh/presentation/ycsx_manager_tabs_page.dart';
+import '../features/kinhdoanh/presentation/tra_amz_preview_page.dart';
 import '../features/kinhdoanh/presentation/po_manager_page.dart';
 import '../features/kinhdoanh/presentation/po_and_stock_full_page.dart';
 import '../features/kinhdoanh/presentation/thong_tin_san_pham_page.dart';
@@ -196,7 +198,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/kinhdoanh/ycsxmanager',
-        builder: (context, state) => const YcsxManagerPage(),
+        builder: (context, state) => const YcsxManagerTabsPage(),
+      ),
+      GoRoute(
+        path: '/kinhdoanh/traamz/preview',
+        builder: (context, state) {
+          final rows = state.extra as List<Map<String, dynamic>>?;
+          return TraAmzPreviewPage(rows: rows ?? const []);
+        },
       ),
       GoRoute(
         path: '/kinhdoanh/poandstockfull',
