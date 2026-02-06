@@ -1,18 +1,19 @@
-import { Button, IconButton, LinearProgress } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BiPrinter } from "react-icons/bi";
+import { useReactToPrint } from "react-to-print";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
-import { SaveExcel } from "../../../../api/GlobalFunction";
 
 import "./TraAMZ.scss";
-import { TbLogout } from "react-icons/tb";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { AMAZON_DATA } from "../../interfaces/kdInterface";
+import { COMPONENT_DATA } from "../../../rnd/interfaces/rndInterface";
+import { renderElement } from "../../../../api/GlobalFunction";
+import { renderToStaticMarkup } from "react-dom/server";
 
 const TraAMZ = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -30,6 +31,66 @@ const TraAMZ = () => {
   const [amzdatatable, setAMZDataTable] = useState<Array<any>>(
     [],
   );
+  const [selectedRows, setSelectedRows] = useState<AMAZON_DATA[]>([]);
+  const [openPrintModal, setOpenPrintModal] = useState(false);
+  const [printData, setPrintData] = useState<Array<{ design: COMPONENT_DATA[], dataRow: AMAZON_DATA }>>([]);
+
+  const labelprintref = useRef(null);
+
+  const handlePrint = async () => {
+    setisLoading(true);
+    // Create a hidden iframe or new window for printing
+    const printWindow = window.open('', '', 'height=600,width=800');
+    if (!printWindow) {
+      alert("Please allow popups for printing"); 
+      setisLoading(false);
+      return;
+    }
+
+    const htmlContent = printData.map((item) => {
+      let max_W = 0;
+      let max_H = 0;
+      item.design.forEach((d) => {
+        const right = Number(d.POS_X) + Number(d.SIZE_W);
+        const bottom = Number(d.POS_Y) + Number(d.SIZE_H);
+        if (right > max_W) max_W = right;
+        if (bottom > max_H) max_H = bottom;
+      });
+
+      const elementHtml = renderToStaticMarkup(
+        <div className="print-label-item" style={{ position: 'relative', width: max_W + 'mm', height: max_H + 'mm', border: 'none', pageBreakAfter: 'always', breakAfter: 'page' }}>
+           {renderElement(item.design)}
+        </div>
+      );
+      return elementHtml;
+    }).join("");
+
+    printWindow.document.write('<html><head><title>Print Labels</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write(`
+      @media print {
+        @page { size: auto; margin: 0mm; }
+        body { margin: 0mm; }
+        .print-label-item { break-after: page; page-break-after: always; }
+      }
+      .print-label-item { position: relative; }
+    `);
+    // Copy necessary styles for inner components (barcodes, etc) if they rely on global CSS? 
+    // Usually renderElement produces inline styles or standard elements, but if we need font definitions or specific classes:
+    printWindow.document.write('</style></head><body>');
+    printWindow.document.write(htmlContent);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    // Give time for images/barcodes to "render" or browser to process
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+        setisLoading(false);
+    }, 1000);
+  };
 
   const column_amz_data = [
     { field: "G_NAME", headerName: "G_NAME", minWidth: 80, flex: 2, checkboxSelection: true, headerCheckboxSelection: true },
@@ -55,54 +116,9 @@ const TraAMZ = () => {
     { field: "INS_DATE", headerName: "INS_DATE", minWidth: 80, flex: 1.2 },
     { field: "INS_EMPL", headerName: "INS_EMPL", minWidth: 80, flex: 1 },
   ];
-  const amzDataTableAG = useMemo(() => {
-    return (
-      <AGTable    
-        showFilter={true}
-        toolbar={
-          <>
-          </>         }
-        columns={column_amz_data}
-        data={amzdatatable}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onCellClick={(params: any) => {          
-          //console.log(params)
-        }} onSelectionChange={(params: any) => {
-          //setYcsxDataTableFilter(params!.api.getSelectedRows());          
-          //console.log(e!.api.getSelectedRows())
-        }} />
-    )
-  }, [amzdatatable, isLoading])
 
-  function CustomToolbarLICHSUINPUTSX() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHideSearchDiv(!showhidesearchdiv);
-          }}
-        >
-          <TbLogout color="green" size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(amzdatatable, "LICHSU DATA AMZ");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
-          Bảng quản lý Data AMZ
-        </div>
-      </GridToolbarContainer>
-    );
-  }
+
+
   const handle_traAMZ = () => {
     generalQuery("traDataAMZ", {
       ALLTIME: alltime,
@@ -144,6 +160,224 @@ const TraAMZ = () => {
         console.log(error);
       });
   };
+
+  const DEFAULT_COMPONENT_LIST: COMPONENT_DATA[] = [
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Rectangle",
+      PHANLOAI_DT: "CONTAINER",
+      DOITUONG_STT: "A6",
+      CAVITY_PRINT: 2,
+      GIATRI: "AZ:4Z99ADOEBRABHKDMAG5UZUWF5Y",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 0,
+      POS_Y: 0,
+      SIZE_W: 23,
+      SIZE_H: 28.6,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 0,
+      DOITUONG_NAME: "Code name",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A0",
+      CAVITY_PRINT: 2,
+      GIATRI: "GH68-54619A",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 20.53,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 1,
+      DOITUONG_NAME: "Model",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A1",
+      CAVITY_PRINT: 2,
+      GIATRI: "SM-R910NZAAXJP",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 15.36,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 1,
+      DOITUONG_NAME: "EAN No 1",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A2",
+      CAVITY_PRINT: 2,
+      GIATRI: "4986773220257",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 17.97,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 4,
+      DOITUONG_NAME: "Logo AMZ 1",
+      PHANLOAI_DT: "IMAGE",
+      DOITUONG_STT: "A3",
+      CAVITY_PRINT: 2,
+      GIATRI: `${window.location.protocol.startsWith("https") ? "https" : "http"}://cmsvina4285.com/images/logoAMAZON.png`,
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.28,
+      POS_Y: 2.58,
+      SIZE_W: 7.11,
+      SIZE_H: 7,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Barcode 1",
+      PHANLOAI_DT: "1D BARCODE",
+      DOITUONG_STT: "A4",
+      CAVITY_PRINT: 2,
+      GIATRI: "GH68-55104A",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 1.97,
+      POS_Y: 23.57,
+      SIZE_W: 19.05,
+      SIZE_H: 3.55,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Matrix 1",
+      PHANLOAI_DT: "2D MATRIX",
+      DOITUONG_STT: "A5",
+      CAVITY_PRINT: 2,
+      GIATRI: "AZ:4Z99ADOEBRABHKDMAG5UZUWF5Y",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 12,
+      POS_Y: 2,
+      SIZE_W: 9,
+      SIZE_H: 9,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+  ];
+
+  const handleGETAMAZON_DESIGN = async (G_CODE: string): Promise<COMPONENT_DATA[]> => {
+    try {
+      const response = await generalQuery("getAMAZON_DESIGN", { G_CODE: G_CODE });
+      if (response.data.tk_status !== "NG" && response.data.data.length > 0) {
+        return response.data.data.map((element: COMPONENT_DATA, index: number) => ({
+          ...element,
+          id: index,
+        }));
+      }
+      return DEFAULT_COMPONENT_LIST;
+    } catch (error) {
+      console.log(error);
+      return DEFAULT_COMPONENT_LIST;
+    }
+  };
+
+  const handlePreparePrint = async () => {
+    if (selectedRows.length === 0) {
+      Swal.fire("Lỗi", "Chưa chọn dòng nào để in", "error");
+      return;
+    }
+
+    setisLoading(true);
+    const uniqueGCodes = [...new Set(selectedRows.map(row => row.G_CODE_MAU))];
+    const designMap: { [key: string]: COMPONENT_DATA[] } = {};
+    console.log('uniqueGCodes', uniqueGCodes)
+
+    for (const g_code of uniqueGCodes) {
+      if (g_code) {
+        let tempDesign = await handleGETAMAZON_DESIGN(g_code);
+        console.log('tempDesign', tempDesign)
+        designMap[g_code] = tempDesign;
+      }
+    }
+    console.log('designMap', designMap)
+
+    const newPrintData = selectedRows.map(row => {
+      const design = designMap[row.G_CODE_MAU!] ? designMap[row.G_CODE_MAU!].map(comp => ({ ...comp })) : [];
+      console.log('design', design)
+      
+      // Update data into design
+      const matrices = design.filter(d => d.PHANLOAI_DT === "2D MATRIX");
+      
+      if (matrices.length > 0) {
+        matrices[0].GIATRI = row.DATA_1 ?? "";
+      }
+      if (matrices.length > 1) {
+        matrices[1].GIATRI = row.DATA_2 ?? "";
+      }
+
+      return {
+        design: design,
+        dataRow: row
+      };
+    });
+    console.log(newPrintData);
+
+    setPrintData(newPrintData);
+    setisLoading(false);
+    setOpenPrintModal(true);
+  };
+
+  const amzDataTableAG = useMemo(() => {
+    return (
+      <AGTable    
+        showFilter={true}
+        toolbar={
+          <>
+            <IconButton
+              className="buttonIcon"
+              disabled={selectedRows.length === 0}
+              onClick={handlePreparePrint}
+            >
+              <BiPrinter color={selectedRows.length > 0 ? "blue" : "gray"} size={15} />
+              Preview AMZ
+            </IconButton>
+          </>         }
+        columns={column_amz_data}
+        data={amzdatatable}
+        onCellEditingStopped={(params: any) => {
+          //console.log(e.data)
+        }} onCellClick={(params: any) => {          
+          //console.log(params)
+        }} onSelectionChange={(params: any) => {
+          setSelectedRows(params.api.getSelectedRows());
+        }} />
+    )
+  }, [amzdatatable, isLoading, selectedRows]);
 
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
@@ -245,6 +479,45 @@ const TraAMZ = () => {
           {amzDataTableAG}
         </div>
       </div>
+      <Dialog
+        open={openPrintModal}
+        onClose={() => setOpenPrintModal(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>Print Preview ({printData.length} labels)</DialogTitle>
+        <DialogContent>
+          <div ref={labelprintref} className="print-content" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+            {printData.slice(0, 50).map((item, index) => {
+              let max_W = 0;
+              let max_H = 0;
+              item.design.forEach((d) => {
+                const right = Number(d.POS_X) + Number(d.SIZE_W);
+                const bottom = Number(d.POS_Y) + Number(d.SIZE_H);
+                if (right > max_W) max_W = right;
+                if (bottom > max_H) max_H = bottom;
+              });
+
+              return (
+                <div key={index} className="print-label-item" style={{ position: 'relative', width: max_W + 'mm', height: max_H + 'mm', border: '1px solid #ccc' }}>
+                  {renderElement(item.design)}
+                </div>
+              );
+            })}
+            {printData.length > 50 && (
+                <div style={{ padding: '20px', textAlign: 'center', color: 'gray' }}>
+                    ... and {printData.length - 50} more labels. Click Print to print all.
+                </div>
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenPrintModal(false)}>Close</Button>
+          <Button onClick={handlePrint} variant="contained" color="primary">
+            Print
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>)
   );
 };

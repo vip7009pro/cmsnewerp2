@@ -450,6 +450,7 @@ export interface POTableData {
   export interface AMAZON_DATA {
     G_NAME: string;
     G_CODE: string;
+    G_CODE_MAU: string;
     PROD_REQUEST_NO: string;
     NO_IN: string;
     ROW_NO: number;
