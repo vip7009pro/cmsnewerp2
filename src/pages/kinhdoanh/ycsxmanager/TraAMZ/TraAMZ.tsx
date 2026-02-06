@@ -13,7 +13,17 @@ import { RootState } from "../../../../redux/store";
 import { AMAZON_DATA } from "../../interfaces/kdInterface";
 import { COMPONENT_DATA } from "../../../rnd/interfaces/rndInterface";
 import { renderElement } from "../../../../api/GlobalFunction";
-import { renderToStaticMarkup } from "react-dom/server";
+import { createPortal } from "react-dom";
+
+const PrintTrigger = ({ onPrint }: { onPrint: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onPrint();
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [onPrint]);
+  return null;
+};
 
 const TraAMZ = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
@@ -37,63 +47,55 @@ const TraAMZ = () => {
 
   const labelprintref = useRef(null);
 
-  const handlePrint = async () => {
-    setisLoading(true);
-    // Create a hidden iframe or new window for printing
-    const printWindow = window.open('', '', 'height=600,width=800');
-    if (!printWindow) {
-      alert("Please allow popups for printing"); 
-      setisLoading(false);
-      return;
-    }
+  /* Logic for printing via Portal */
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [printWindowContainer, setPrintWindowContainer] = useState<HTMLElement | null>(null);
+  const printWindowRef = useRef<Window | null>(null);
 
-    const htmlContent = printData.map((item) => {
-      let max_W = 0;
-      let max_H = 0;
-      item.design.forEach((d) => {
-        const right = Number(d.POS_X) + Number(d.SIZE_W);
-        const bottom = Number(d.POS_Y) + Number(d.SIZE_H);
-        if (right > max_W) max_W = right;
-        if (bottom > max_H) max_H = bottom;
-      });
-
-      const elementHtml = renderToStaticMarkup(
-        <div className="print-label-item" style={{ position: 'relative', width: max_W + 'mm', height: max_H + 'mm', border: 'none', pageBreakAfter: 'always', breakAfter: 'page' }}>
-           {renderElement(item.design)}
-        </div>
-      );
-      return elementHtml;
-    }).join("");
-
-    printWindow.document.write('<html><head><title>Print Labels</title>');
-    printWindow.document.write('<style>');
-    printWindow.document.write(`
-      @media print {
-        @page { size: auto; margin: 0mm; }
-        body { margin: 0mm; }
-        .print-label-item { break-after: page; page-break-after: always; }
-      }
-      .print-label-item { position: relative; }
-    `);
-    // Copy necessary styles for inner components (barcodes, etc) if they rely on global CSS? 
-    // Usually renderElement produces inline styles or standard elements, but if we need font definitions or specific classes:
-    printWindow.document.write('</style></head><body>');
-    printWindow.document.write(htmlContent);
-    printWindow.document.write('</body></html>');
-
-    printWindow.document.close();
-    printWindow.focus();
-
-    // Give time for images/barcodes to "render" or browser to process
-    setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-        setisLoading(false);
-    }, 1000);
+  const handlePrint = () => {
+     setIsPrinting(true);
   };
 
+  useEffect(() => {
+    if (isPrinting) {
+      const pWin = window.open('', '', 'height=600,width=800');
+      if (pWin) {
+         printWindowRef.current = pWin;
+         pWin.document.write('<html><head><title>Print Labels</title></head><body><div id="print-root"></div></body></html>');
+         pWin.document.write(`<style>
+            @media print {
+                @page { size: auto; margin: 0mm; }
+                body { margin: 0mm; }
+                .print-label-item { break-after: page; page-break-after: always; }
+            }
+            .print-label-item { position: relative; }
+         </style>`);
+         pWin.document.close();
+         setPrintWindowContainer(pWin.document.getElementById('print-root'));
+      } else {
+        alert("Please allow popups for printing");
+        setIsPrinting(false);
+      }
+    } else {
+        // Cleanup if printing stopped
+        if (printWindowRef.current) {
+            printWindowRef.current.close();
+            printWindowRef.current = null;
+            setPrintWindowContainer(null);
+        }
+    }
+  }, [isPrinting]);
+
+  // Effect to trigger print once content is mounted? 
+  // We can just rely on the user clicking print in the new window? 
+  // Or auto-print after a delay. Using a side-effect in the render content is better.
+
+
+
+
   const column_amz_data = [
-    { field: "G_NAME", headerName: "G_NAME", minWidth: 80, flex: 2, checkboxSelection: true, headerCheckboxSelection: true },
+    { field: "ROW_NO", headerName: "ROW_NO", minWidth: 80, flex: 1, checkboxSelection: true, headerCheckboxSelection: true },
+    { field: "G_NAME", headerName: "G_NAME", minWidth: 80, flex: 2 },
     { field: "G_CODE", headerName: "G_CODE", minWidth: 80, flex: 1 },
     {
       field: "PROD_REQUEST_NO",
@@ -101,8 +103,7 @@ const TraAMZ = () => {
       minWidth: 80,
       flex: 0.8,
     },
-    { field: "NO_IN", headerName: "NO_IN", minWidth: 80, flex: 2 },
-    { field: "ROW_NO", headerName: "ROW_NO", minWidth: 80, flex: 1 },
+    { field: "NO_IN", headerName: "NO_IN", minWidth: 80, flex: 2 },    
     { field: "DATA_1", headerName: "DATA_1", minWidth: 80, flex: 3 },
     { field: "DATA_2", headerName: "DATA_2", minWidth: 80, flex: 3 },
     {
@@ -113,11 +114,10 @@ const TraAMZ = () => {
     },
     { field: "INLAI_COUNT", headerName: "INLAI_COUNT", minWidth: 80, flex: 1 },
     { field: "REMARK", headerName: "REMARK", minWidth: 80, flex: 1 },
+    { field: "G_CODE_MAU", headerName: "G_CODE_MAU", minWidth: 80, flex: 1 },
     { field: "INS_DATE", headerName: "INS_DATE", minWidth: 80, flex: 1.2 },
     { field: "INS_EMPL", headerName: "INS_EMPL", minWidth: 80, flex: 1 },
   ];
-
-
 
   const handle_traAMZ = () => {
     generalQuery("traDataAMZ", {
@@ -518,6 +518,31 @@ const TraAMZ = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      {isPrinting && printWindowContainer && createPortal(
+        <div style={{ width: '100%', height: '100%' }}>
+            {printData.map((item, index) => {
+              let max_W = 0;
+              let max_H = 0;
+              item.design.forEach((d) => {
+                const right = Number(d.POS_X) + Number(d.SIZE_W);
+                const bottom = Number(d.POS_Y) + Number(d.SIZE_H);
+                if (right > max_W) max_W = right;
+                if (bottom > max_H) max_H = bottom;
+              });
+              
+              return (
+                <div key={index} className="print-label-item" style={{ position: 'relative', width: max_W + 'mm', height: max_H + 'mm', border: 'none', pageBreakAfter: 'always', breakAfter: 'page' }}>
+                  {renderElement(item.design)}
+                </div>
+              );
+            })}
+            <PrintTrigger onPrint={() => {
+                printWindowRef.current?.print();
+                setIsPrinting(false);
+            }} />
+        </div>,
+        printWindowContainer
+      )}
     </div>)
   );
 };
