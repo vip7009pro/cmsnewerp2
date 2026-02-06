@@ -45,10 +45,13 @@ const TraAMZ = () => {
   const [openPrintModal, setOpenPrintModal] = useState(false);
   const [printData, setPrintData] = useState<Array<{ design: COMPONENT_DATA[], dataRow: AMAZON_DATA }>>([]);
 
-
   const [printOffsetX, setPrintOffsetX] = useState(Number(localStorage.getItem('AMZ_PrintOffsetX')) || 0);
   const [printOffsetY, setPrintOffsetY] = useState(Number(localStorage.getItem('AMZ_PrintOffsetY')) || 0);
   const labelprintref = useRef(null);
+
+  /* Confirm Print State */
+  const [confirmPrintOpen, setConfirmPrintOpen] = useState(false);
+  const [printSuccessCount, setPrintSuccessCount] = useState(0);
 
   useEffect(() => {
     localStorage.setItem('AMZ_PrintOffsetX', printOffsetX.toString());
@@ -63,9 +66,30 @@ const TraAMZ = () => {
   const handlePrint = () => {
      setIsPrinting(true);
   };
+  
+  const handleUpdatePrintStatus = async () => {
+    if (printSuccessCount <= 0) {
+      Swal.fire("Thông báo", "Số lượng in phải lớn hơn 0", "warning");
+      return;
+    }
+    
+    // Slice the data based on success count
+    const printedRows = selectedRows.slice(0, printSuccessCount);
+   
+
+    // Mock API Call - Replace with real API
+    // await generalQuery("updatePrintStatus", { G_CODES: printedGCODES });
+    console.log("Updating print status for:", printedRows);
+    Swal.fire("Thành công", `Đã cập nhật trạng thái in cho ${printSuccessCount} tem!`, "success");
+    
+    setConfirmPrintOpen(false);
+    setOpenPrintModal(false);
+  };
 
   useEffect(() => {
     if (isPrinting) {
+      // Set initial count to total
+      setPrintSuccessCount(printData.length);
       const pWin = window.open('', '', 'height=600,width=800');
       if (pWin) {
          printWindowRef.current = pWin;
@@ -565,10 +589,33 @@ const TraAMZ = () => {
             <PrintTrigger onPrint={() => {
                 printWindowRef.current?.print();
                 setIsPrinting(false);
+                setConfirmPrintOpen(true);
             }} />
         </div>,
         printWindowContainer
       )}
+      <Dialog open={confirmPrintOpen} onClose={() => setConfirmPrintOpen(false)}>
+        <DialogTitle>Xác nhận in</DialogTitle>
+        <DialogContent>
+          <div style={{ padding: '10px' }}>
+            <p>Bạn đã gửi lệnh in <b>{printData.length}</b> tem.</p>
+            <p>Vui lòng nhập số lượng tem thực tế đã in thành công:</p>
+            <p>{` `}</p>
+            <TextField
+              type="number"
+              label="Số lượng in thành công"
+              value={printSuccessCount}
+              onChange={(e) => setPrintSuccessCount(Number(e.target.value))}
+              fullWidth
+              inputProps={{ min: 0, max: printData.length }}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmPrintOpen(false)} color="error">Hủy</Button>
+          <Button onClick={handleUpdatePrintStatus} variant="contained" color="success">Xác nhận Update</Button>
+        </DialogActions>
+      </Dialog>
     </div>)
   );
 };
