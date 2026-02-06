@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BiPrinter } from "react-icons/bi";
@@ -45,7 +45,15 @@ const TraAMZ = () => {
   const [openPrintModal, setOpenPrintModal] = useState(false);
   const [printData, setPrintData] = useState<Array<{ design: COMPONENT_DATA[], dataRow: AMAZON_DATA }>>([]);
 
+
+  const [printOffsetX, setPrintOffsetX] = useState(Number(localStorage.getItem('AMZ_PrintOffsetX')) || 0);
+  const [printOffsetY, setPrintOffsetY] = useState(Number(localStorage.getItem('AMZ_PrintOffsetY')) || 0);
   const labelprintref = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem('AMZ_PrintOffsetX', printOffsetX.toString());
+    localStorage.setItem('AMZ_PrintOffsetY', printOffsetY.toString());
+  }, [printOffsetX, printOffsetY]);
 
   /* Logic for printing via Portal */
   const [isPrinting, setIsPrinting] = useState(false);
@@ -487,6 +495,24 @@ const TraAMZ = () => {
       >
         <DialogTitle>Print Preview ({printData.length} labels)</DialogTitle>
         <DialogContent>
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center', height: '50px' }}>
+             <TextField 
+                label="Offset X (mm)" 
+                type="number" 
+                size="small" 
+                value={printOffsetX} 
+                onChange={(e) => setPrintOffsetX(Number(e.target.value))} 
+                inputProps={{ step: "0.01" }}
+             />
+             <TextField 
+                label="Offset Y (mm)" 
+                type="number" 
+                size="small" 
+                value={printOffsetY} 
+                onChange={(e) => setPrintOffsetY(Number(e.target.value))} 
+                inputProps={{ step: "0.01" }}
+             />
+          </div>
           <div ref={labelprintref} className="print-content" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
             {printData.slice(0, 50).map((item, index) => {
               let max_W = 0;
@@ -531,7 +557,7 @@ const TraAMZ = () => {
               });
               
               return (
-                <div key={index} className="print-label-item" style={{ position: 'relative', width: max_W + 'mm', height: max_H + 'mm', border: 'none', pageBreakAfter: 'always', breakAfter: 'page' }}>
+                <div key={index} className="print-label-item" style={{ position: 'relative', width: max_W + 'mm', height: max_H + 'mm', border: 'none', pageBreakAfter: 'always', breakAfter: 'page', left: `${printOffsetX}mm`, top: `${printOffsetY}mm` }}>
                   {renderElement(item.design)}
                 </div>
               );
