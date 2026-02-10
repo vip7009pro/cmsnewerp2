@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import "./DESIGN_AMAZON.scss";
 import {
@@ -14,7 +14,7 @@ import { FcDeleteRow } from "react-icons/fc";
 import { TbComponents } from "react-icons/tb";
 import Swal from "sweetalert2";
 import { GrAdd } from "react-icons/gr";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { generalQuery, getAuditMode, getCtrCd, uploadQuery } from "../../../api/Api";
 import { SaveExcel, checkBP, renderElement } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import { BiMagnet, BiPrinter, BiSave, BiShow } from "react-icons/bi";
@@ -348,13 +348,62 @@ const DESIGN_AMAZON = () => {
       setCodeDataTableFilter([]);
     }
   };
-  const addComponent = () => {
+
+  const pickAndUploadImage = async (): Promise<string | null> => {
+    const file: File | null = await new Promise((resolve) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/png,image/jpeg';
+      input.onchange = () => {
+        resolve((input.files && input.files.length > 0 ? input.files[0] : null) as File | null);
+      };
+      input.oncancel = () => resolve(null);
+      input.click();
+    });
+
+    if (!file) return null;
+
+    const ext = (() => {
+      const n = (file.name || '').toLowerCase();
+      if (n.endsWith('.png')) return 'png';
+      if (n.endsWith('.jpg')) return 'jpg';
+      if (n.endsWith('.jpeg')) return 'jpeg';
+      return 'png';
+    })();
+
+    const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const filename = `${getCtrCd()}_${unique}.${ext}`;
+
+    try {
+      const response: any = await uploadQuery(file, filename, 'images');
+      if (response?.data?.tk_status === 'NG') {
+        Swal.fire('Thông báo', 'Upload file thất bại: ' + response?.data?.message, 'error');
+        return null;
+      }
+
+      return `/images/${filename}`;
+    } catch (err: any) {
+      console.log(err);
+      Swal.fire('Thông báo', 'Upload file thất bại', 'error');
+      return null;
+    }
+  };
+
+  const addComponent = async () => {
     if (codedatatablefilter.length > 0) {
       let max_dt_no: number = 0;
       for (let i = 0; i < componentList.length; i++) {
         if (max_dt_no < componentList[i].DOITUONG_NO)
           max_dt_no = componentList[i].DOITUONG_NO;
       }
+
+      let giatri = "1234";
+      if (newComponent === 'IMAGE') {
+        const uploadedUrl = await pickAndUploadImage();
+        if (!uploadedUrl) return;
+        giatri = uploadedUrl;
+      }
+
       let temp_compList: COMPONENT_DATA = {
         G_CODE_MAU: codedatatablefilter[0].G_CODE,
         DOITUONG_NO: max_dt_no + 1,
@@ -362,7 +411,7 @@ const DESIGN_AMAZON = () => {
         PHANLOAI_DT: newComponent,
         DOITUONG_STT: "A" + (max_dt_no + 1),
         CAVITY_PRINT: 2,
-        GIATRI: "1234",
+        GIATRI: giatri,
         FONT_NAME: "Arial",
         FONT_SIZE: 6,
         FONT_STYLE: "B",
@@ -380,7 +429,7 @@ const DESIGN_AMAZON = () => {
     }
   };
 
-  const createComponentAt = (type: string, mmX: number, mmY: number) => {
+  const createComponentAt = async (type: string, mmX: number, mmY: number) => {
     if (codedatatablefilter.length <= 0) {
       Swal.fire("Thông báo", "Chọn code phôi trước", "error");
       return;
@@ -402,6 +451,13 @@ const DESIGN_AMAZON = () => {
       return { w: 10, h: 10 };
     })();
 
+    let giatri = t === 'TEXT' ? 'TEXT' : '1234';
+    if (t === 'IMAGE') {
+      const uploadedUrl = await pickAndUploadImage();
+      if (!uploadedUrl) return;
+      giatri = uploadedUrl;
+    }
+
     const temp_compList: COMPONENT_DATA = {
       G_CODE_MAU: codedatatablefilter[0].G_CODE,
       DOITUONG_NO: max_dt_no + 1,
@@ -409,7 +465,7 @@ const DESIGN_AMAZON = () => {
       PHANLOAI_DT: t,
       DOITUONG_STT: "A" + (max_dt_no + 1),
       CAVITY_PRINT: 2,
-      GIATRI: t === 'TEXT' ? 'TEXT' : '1234',
+      GIATRI: giatri,
       FONT_NAME: "Arial",
       FONT_SIZE: 6,
       FONT_STYLE: "B",
@@ -627,6 +683,18 @@ const handleListPrinters = async () => {
 
   useEffect(() => { }, [trigger]);
 
+  const deleteSelectedComponent = useCallback((idx?: number) => {
+    const targetIdx = idx ?? currentComponent;
+    if (targetIdx < 0 || targetIdx >= latestComponentListRef.current.length) return;
+    const old: COMPONENT_DATA[] = latestComponentListRef.current.filter((_: COMPONENT_DATA, index1: number) => index1 !== targetIdx);
+    commitComponentList(old);
+    if (old.length === 0) {
+      setCurrentComponent(-1);
+    } else {
+      setCurrentComponent((prev) => Math.max(0, Math.min(prev, old.length - 1)));
+    }
+  }, [commitComponentList, currentComponent]);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Control') setIsCtrlDown(true);
@@ -768,7 +836,7 @@ const handleListPrinters = async () => {
   }, [rotateResizeDrag, x, y, scale, componentList, activeHandleBox, commitComponentList]);
 
   useEffect(() => {
-    const isArrow = (k: string) => k === 'ArrowUp' || k === 'ArrowDown' || k === 'ArrowLeft' || k === 'ArrowRight';
+    const isArrow = (k: string) => ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(k);
 
     const computeDir = (k: string) => {
       if (k === 'ArrowLeft') return { dx: -1, dy: 0 };
@@ -847,6 +915,14 @@ const handleListPrinters = async () => {
       return false;
     };
 
+    const onDeleteKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+      if (isTypingTarget(e.target)) return;
+      if (currentComponent < 0 || currentComponent >= latestComponentListRef.current.length) return;
+      e.preventDefault();
+      deleteSelectedComponent();
+    };
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (!isArrow(e.key)) return;
       if (isTypingTarget(e.target)) return;
@@ -887,12 +963,14 @@ const handleListPrinters = async () => {
 
     window.addEventListener('keydown', onKeyDown, true);
     window.addEventListener('keyup', onKeyUp, true);
+    window.addEventListener('keydown', onDeleteKeyDown, true);
     return () => {
       window.removeEventListener('keydown', onKeyDown, true as any);
       window.removeEventListener('keyup', onKeyUp, true as any);
+      window.removeEventListener('keydown', onDeleteKeyDown, true as any);
       stopNudge();
     };
-  }, [currentComponent, commitComponentList]);
+  }, [currentComponent, commitComponentList, deleteSelectedComponent]);
 
   useEffect(() => {
     if (!isGroupDragging) return;
@@ -1612,7 +1690,7 @@ const handleListPrinters = async () => {
 
   return (
     (<div className="design_window">
-      <div className="design_control" id="dsg_ctrl">
+      <div className="design_control" id="dsg_ctrl" style={{ width: showhidecodelist ? '40%' : '20%' }}>
         {showhidecodelist && (
           <div className="codelist">
             <span style={{ color: "blue", fontWeight: "bold", fontSize: 20 }}>
@@ -1649,7 +1727,7 @@ const handleListPrinters = async () => {
             </div>
           </div>
         )}
-        <div className="componentSide">
+        <div className="componentSide" style={{ width: showhidecodelist ? '50%' : '100%' }}>
           <div className="componentList">
             <div className="title">
               <div style={{ color: "blue", fontWeight: "bold", fontSize: 20 }}>
@@ -1677,8 +1755,8 @@ const handleListPrinters = async () => {
                 </label>
                 <IconButton
                   className="buttonIcon"
-                  onClick={() => {
-                    addComponent();
+                  onClick={async () => {
+                    await addComponent();
                   }}
                 >
                   <GrAdd color="white" size={15} />
@@ -1715,15 +1793,7 @@ const handleListPrinters = async () => {
                           size="small"
                           sx={{ padding: 0.5 }}
                           onClick={() => {
-                            let old: COMPONENT_DATA[] = componentList.filter(
-                              (ele: COMPONENT_DATA, index1: number) => {
-                                return index1 !== index;
-                              },
-                            );
-                            commitComponentList(old);
-                            setCurrentComponent((prev) =>
-                              Math.max(0, Math.min(prev, old.length - 1)),
-                            );
+                            deleteSelectedComponent(index);
                           }}
                         >
                           <FcDeleteRow />
@@ -2041,7 +2111,7 @@ const handleListPrinters = async () => {
           </div>
         </div>
       </div>
-      <div className="design_panel">
+      <div className="design_panel" style={{ width: showhidecodelist ? '60%' : '80%' }}>
         <div className="design_toolbar">
           <IconButton
             className="buttonIcon"
@@ -2123,7 +2193,7 @@ const handleListPrinters = async () => {
               </div>
             ))}
           </div>
-          X:
+         {/*  X:
           <input
             type="number"
             step={0.01}
@@ -2145,7 +2215,7 @@ const handleListPrinters = async () => {
             }}
             style={{ width: "80px" }}
           ></input>{" "}
-          (mm)
+          (mm) */}
         </div>
         <div
           id="10a"
@@ -2155,7 +2225,7 @@ const handleListPrinters = async () => {
           onDragOver={(e) => {
             e.preventDefault();
           }}
-          onDrop={(e) => {
+          onDrop={async (e) => {
             e.preventDefault();
             const t = e.dataTransfer.getData('amz/newComponentType');
             if (!t) return;
@@ -2166,7 +2236,7 @@ const handleListPrinters = async () => {
             const worldY = (my - y) / scale;
             const mmX = worldX * PX_TO_MM;
             const mmY = worldY * PX_TO_MM;
-            createComponentAt(t, mmX, mmY);
+            await createComponentAt(t, mmX, mmY);
           }}
           onMouseDown={(e) => {
             if (e.ctrlKey && e.target === e.currentTarget) {
