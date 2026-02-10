@@ -19,7 +19,7 @@ import { useRenderLag } from "../../api/userRenderLag";
 import NavMenu from "../../components/NavMenu/NavMenu";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
-export const current_ver: number = getCompany() === "CMS" ? 2653 : 438;
+export const current_ver: number = getCompany() === "CMS" ? 2654 : 438;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;

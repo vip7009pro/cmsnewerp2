@@ -52,6 +52,26 @@ const DESIGN_AMAZON = () => {
   const [gridMm, setGridMm] = useState(5);
   const [designViewSize, setDesignViewSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
+  const MIN_SCALE = 0.2;
+  const MAX_SCALE = 10;
+
+  const zoomPresets = useMemo(() => {
+    return [
+      0.25,
+      0.5,
+      0.75,
+      1,
+      1.25,
+      1.5,
+      2,
+      3,
+      4,
+      5,
+      8,
+      10,
+    ].filter((z) => z >= MIN_SCALE && z <= MAX_SCALE);
+  }, [MAX_SCALE, MIN_SCALE]);
+
   const [rotateDrag, setRotateDrag] = useState<
     | { idx: number; centerX: number; centerY: number; startMouseAngle: number; startRotate: number }
     | null
@@ -1048,7 +1068,7 @@ const handleListPrinters = async () => {
       const delta = e.deltaY;
       setScale((prev) => {
         const next = delta < 0 ? prev * 1.1 : prev / 1.1;
-        return Math.max(0.2, Math.min(5, next));
+        return Math.max(MIN_SCALE, Math.min(MAX_SCALE, next));
       });
     };
 
@@ -1056,7 +1076,7 @@ const handleListPrinters = async () => {
     return () => {
       el.removeEventListener('wheel', onWheel as any);
     };
-  }, []);
+  }, [MAX_SCALE, MIN_SCALE]);
 
   useEffect(() => {
     const el = designRef.current;
@@ -2174,7 +2194,23 @@ const handleListPrinters = async () => {
             <option value={2}>2mm</option>
             <option value={1}>1mm</option>
           </select>
-          <span style={{ fontSize: 12, paddingLeft: 8 }}>Zoom: {(scale * 100).toFixed(0)}%</span>
+          <span style={{ fontSize: 12, paddingLeft: 8 }}>Zoom:</span>
+          <select
+            value={scale}
+            onChange={(e) => {
+              const next = Number(e.target.value);
+              if (!Number.isFinite(next)) return;
+              setScale(Math.max(MIN_SCALE, Math.min(MAX_SCALE, next)));
+            }}
+            style={{ height: 26, marginLeft: 6 }}
+          >
+            {zoomPresets.map((z) => (
+              <option key={z} value={z}>
+                {Math.round(z * 100)}%
+              </option>
+            ))}
+          </select>
+          <span style={{ fontSize: 12, paddingLeft: 8 }}>({(scale * 100).toFixed(0)}%)</span>
 
           <div style={{ display: 'flex', flexDirection: 'row', gap: 6, marginLeft: 12, alignItems: 'center' }}>
             {paletteItems.map((it) => (
