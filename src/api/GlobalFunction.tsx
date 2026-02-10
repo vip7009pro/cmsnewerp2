@@ -18,6 +18,7 @@ import {
   CODE_FULL_INFO,
   COMPONENT_DATA,
 } from "../pages/rnd/interfaces/rndInterface";
+import BARCODE2 from "../pages/rnd/design_amazon/design_components/BARCODE2";
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
 export const SaveExcel = (data: any, title: string) => {
@@ -432,7 +433,7 @@ export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
     } else if (ele.PHANLOAI_DT === "2D MATRIX") {
       return <DATAMATRIX key={index} DATA={ele} />;
     } else if (ele.PHANLOAI_DT === "1D BARCODE") {
-      return <BARCODE key={index} DATA={ele} />;
+      return <BARCODE2 key={index} DATA={ele} />;
     } else if (ele.PHANLOAI_DT === "IMAGE") {
       return <IMAGE key={index} DATA={ele} />;
     } else if (ele.PHANLOAI_DT === "QRCODE") {

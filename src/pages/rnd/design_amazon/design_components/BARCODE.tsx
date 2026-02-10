@@ -123,6 +123,7 @@ const BARCODE = ({ DATA }: { DATA: COMPONENT_DATA }) => {
           value={DATA.GIATRI}
           format="CODE128"
           width={moduleW}
+          height={DATA.SIZE_H}
           displayValue={false}
           background="#fff"
           lineColor="black"

@@ -45,6 +45,18 @@ const DESIGN_AMAZON = () => {
   const [isShiftDown, setIsShiftDown] = useState(false);
   const [scale, setScale] = useState(1);
 
+  const RULER_TOP = 20;
+  const RULER_LEFT = 30;
+
+  const [showGrid, setShowGrid] = useState(false);
+  const [gridMm, setGridMm] = useState(5);
+  const [designViewSize, setDesignViewSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+
+  const [rotateDrag, setRotateDrag] = useState<
+    | { idx: number; centerX: number; centerY: number; startMouseAngle: number; startRotate: number }
+    | null
+  >(null);
+
   const [liveOverlay, setLiveOverlay] = useState<
     | { type: 'drag'; xMm: number; yMm: number }
     | { type: 'resize'; wMm: number; hMm: number }
@@ -208,6 +220,18 @@ const DESIGN_AMAZON = () => {
     w: number;
     h: number;
   } | null>(null);
+
+  const [rotateResizeDrag, setRotateResizeDrag] = useState<{
+    idx: number;
+    handle: 'tl' | 'tr' | 'bl' | 'br';
+    startMouseWorldX: number;
+    startMouseWorldY: number;
+    startWorldX: number;
+    startWorldY: number;
+    startWorldW: number;
+    startWorldH: number;
+  } | null>(null);
+
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(0);
   const [newComponent, setNewComponent] = useState("TEXT");
@@ -354,6 +378,51 @@ const DESIGN_AMAZON = () => {
     } else {
       Swal.fire("Thông báo", "Chọn code phôi trước", "error");
     }
+  };
+
+  const createComponentAt = (type: string, mmX: number, mmY: number) => {
+    if (codedatatablefilter.length <= 0) {
+      Swal.fire("Thông báo", "Chọn code phôi trước", "error");
+      return;
+    }
+
+    let max_dt_no: number = 0;
+    for (let i = 0; i < componentList.length; i++) {
+      if (max_dt_no < componentList[i].DOITUONG_NO) max_dt_no = componentList[i].DOITUONG_NO;
+    }
+
+    const t = type;
+    const defaultSize = (() => {
+      if (t === 'TEXT') return { w: 10, h: 3 };
+      if (t === 'IMAGE') return { w: 10, h: 10 };
+      if (t === '1D BARCODE') return { w: 25, h: 8 };
+      if (t === '2D MATRIX') return { w: 10, h: 10 };
+      if (t === 'QRCODE') return { w: 10, h: 10 };
+      if (t === 'CONTAINER') return { w: 30, h: 20 };
+      return { w: 10, h: 10 };
+    })();
+
+    const temp_compList: COMPONENT_DATA = {
+      G_CODE_MAU: codedatatablefilter[0].G_CODE,
+      DOITUONG_NO: max_dt_no + 1,
+      DOITUONG_NAME: t,
+      PHANLOAI_DT: t,
+      DOITUONG_STT: "A" + (max_dt_no + 1),
+      CAVITY_PRINT: 2,
+      GIATRI: t === 'TEXT' ? 'TEXT' : '1234',
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: Math.max(0, Math.round(mmX * 100) / 100),
+      POS_Y: Math.max(0, Math.round(mmY * 100) / 100),
+      SIZE_W: defaultSize.w,
+      SIZE_H: defaultSize.h,
+      ROTATE: 0,
+      REMARK: "",
+    };
+
+    commitComponentList([...componentList, temp_compList]);
+    setCurrentComponent(componentList.length);
   };
   const handleCODEINFO = () => {
     setisLoading(true);
@@ -559,10 +628,10 @@ const handleListPrinters = async () => {
   useEffect(() => { }, [trigger]);
 
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "Control") setIsCtrlDown(true);
-      if (e.key === "Shift") setIsShiftDown(true);
-
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Control') setIsCtrlDown(true);
+      if (e.key === 'Shift') setIsShiftDown(true);
+ 
       if (!e.ctrlKey) return;
 
       const key = e.key.toLowerCase();
@@ -576,17 +645,127 @@ const handleListPrinters = async () => {
         redo();
       }
     };
-    const up = (e: KeyboardEvent) => {
+    const onKeyUp = (e: KeyboardEvent) => {
       if (e.key === "Control") setIsCtrlDown(false);
       if (e.key === "Shift") setIsShiftDown(false);
     };
-    window.addEventListener("keydown", down);
-    window.addEventListener("keyup", up);
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
     return () => {
-      window.removeEventListener("keydown", down);
-      window.removeEventListener("keyup", up);
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
     };
-  }, [undo, redo]);
+  }, []);
+
+  useEffect(() => {
+    if (!rotateResizeDrag) return;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = designRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const worldX = (mouseX - (x + RULER_LEFT)) / scale;
+      const worldY = (mouseY - (y + RULER_TOP)) / scale;
+
+      const c = componentList[rotateResizeDrag.idx];
+      if (!c) return;
+      const rotDeg = (c.ROTATE ?? 0);
+      const rotRad = (rotDeg * Math.PI) / 180;
+      const cos = Math.cos(rotRad);
+      const sin = Math.sin(rotRad);
+
+      const dWorldX = worldX - rotateResizeDrag.startMouseWorldX;
+      const dWorldY = worldY - rotateResizeDrag.startMouseWorldY;
+
+      // Rotate delta into local axes (component space)
+      const dLocalX = dWorldX * cos + dWorldY * sin;
+      const dLocalY = -dWorldX * sin + dWorldY * cos;
+
+      let newWorldX = rotateResizeDrag.startWorldX;
+      let newWorldY = rotateResizeDrag.startWorldY;
+      let newWorldW = rotateResizeDrag.startWorldW;
+      let newWorldH = rotateResizeDrag.startWorldH;
+
+      if (rotateResizeDrag.handle === 'br') {
+        newWorldW = rotateResizeDrag.startWorldW + dLocalX;
+        newWorldH = rotateResizeDrag.startWorldH + dLocalY;
+      } else if (rotateResizeDrag.handle === 'tr') {
+        newWorldW = rotateResizeDrag.startWorldW + dLocalX;
+        newWorldY = rotateResizeDrag.startWorldY + dLocalY;
+        newWorldH = rotateResizeDrag.startWorldH - dLocalY;
+      } else if (rotateResizeDrag.handle === 'bl') {
+        newWorldX = rotateResizeDrag.startWorldX + dLocalX;
+        newWorldW = rotateResizeDrag.startWorldW - dLocalX;
+        newWorldH = rotateResizeDrag.startWorldH + dLocalY;
+      } else {
+        // tl
+        newWorldX = rotateResizeDrag.startWorldX + dLocalX;
+        newWorldY = rotateResizeDrag.startWorldY + dLocalY;
+        newWorldW = rotateResizeDrag.startWorldW - dLocalX;
+        newWorldH = rotateResizeDrag.startWorldH - dLocalY;
+      }
+
+      const minWorld = 1;
+      if (newWorldW < minWorld) {
+        const diff = minWorld - newWorldW;
+        if (rotateResizeDrag.handle === 'tl' || rotateResizeDrag.handle === 'bl') newWorldX -= diff;
+        newWorldW = minWorld;
+      }
+      if (newWorldH < minWorld) {
+        const diff = minWorld - newWorldH;
+        if (rotateResizeDrag.handle === 'tl' || rotateResizeDrag.handle === 'tr') newWorldY -= diff;
+        newWorldH = minWorld;
+      }
+
+      const screenX = (x + RULER_LEFT) + newWorldX * scale;
+      const screenY = (y + RULER_TOP) + newWorldY * scale;
+      const screenW = newWorldW * scale;
+      const screenH = newWorldH * scale;
+
+      setActiveHandleIdx(rotateResizeDrag.idx);
+      setActiveHandleBox({ x: screenX, y: screenY, w: screenW, h: screenH });
+      setLiveOverlay({ type: 'resize', wMm: newWorldW * PX_TO_MM, hMm: newWorldH * PX_TO_MM });
+    };
+
+    const onUp = () => {
+      const idx = rotateResizeDrag.idx;
+      const box = activeHandleBox;
+      if (!box) {
+        setRotateResizeDrag(null);
+        return;
+      }
+
+      const worldX = (box.x - (x + RULER_LEFT)) / scale;
+      const worldY = (box.y - (y + RULER_TOP)) / scale;
+      const worldW = box.w / scale;
+      const worldH = box.h / scale;
+
+      const mmX = Math.round((worldX * PX_TO_MM) * 100) / 100;
+      const mmY = Math.round((worldY * PX_TO_MM) * 100) / 100;
+      const mmW = Math.round((worldW * PX_TO_MM) * 100) / 100;
+      const mmH = Math.round((worldH * PX_TO_MM) * 100) / 100;
+
+      setLiveOverlay(null);
+      setActiveHandleIdx(null);
+      setActiveHandleBox(null);
+      setRotateResizeDrag(null);
+
+      commitComponentList(
+        latestComponentListRef.current.map((p: COMPONENT_DATA, i: number) =>
+          i === idx ? { ...p, POS_X: mmX, POS_Y: mmY, SIZE_W: mmW, SIZE_H: mmH } : p,
+        ),
+      );
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [rotateResizeDrag, x, y, scale, componentList, activeHandleBox, commitComponentList]);
 
   useEffect(() => {
     const isArrow = (k: string) => k === 'ArrowUp' || k === 'ArrowDown' || k === 'ArrowLeft' || k === 'ArrowRight';
@@ -801,6 +980,80 @@ const handleListPrinters = async () => {
     };
   }, []);
 
+  useEffect(() => {
+    const el = designRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      const r = el.getBoundingClientRect();
+      setDesignViewSize({ w: r.width, h: r.height });
+    });
+    ro.observe(el);
+    const r = el.getBoundingClientRect();
+    setDesignViewSize({ w: r.width, h: r.height });
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!rotateDrag) return;
+
+    const onMove = (e: MouseEvent) => {
+      const a = Math.atan2(e.clientY - rotateDrag.centerY, e.clientX - rotateDrag.centerX) * 180 / Math.PI;
+      const delta = a - rotateDrag.startMouseAngle;
+      const next = rotateDrag.startRotate + delta;
+      updateComponentAt(rotateDrag.idx, { ROTATE: next }, false);
+    };
+
+    const onUp = () => {
+      const idx = rotateDrag.idx;
+      const nextList = componentList.map((p, i) => (i === idx ? { ...p, ROTATE: componentList[i].ROTATE } : p));
+      commitComponentList(nextList);
+      setRotateDrag(null);
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [rotateDrag, componentList, commitComponentList]);
+
+  const paletteItems = useMemo(() => {
+    return [
+      { type: 'TEXT', label: 'TEXT' },
+      { type: 'IMAGE', label: 'IMAGE' },
+      { type: '1D BARCODE', label: '1D' },
+      { type: '2D MATRIX', label: '2D' },
+      { type: 'QRCODE', label: 'QR' },
+      { type: 'CONTAINER', label: 'BOX' },
+    ];
+  }, []);
+
+  const gridBackground = useMemo(() => {
+    const stepPx = Math.max(1, gridMm * MM_TO_PX);
+    const thin = 'rgba(0,0,0,0.08)';
+    return `repeating-linear-gradient(0deg, ${thin} 0, ${thin} 1px, transparent 1px, transparent ${stepPx}px), repeating-linear-gradient(90deg, ${thin} 0, ${thin} 1px, transparent 1px, transparent ${stepPx}px)`;
+  }, [gridMm]);
+
+  const rulerTicks = useMemo(() => {
+    const w = designViewSize.w;
+    const h = designViewSize.h;
+    if (w <= 0 || h <= 0) return { x: [] as number[], y: [] as number[] };
+
+    // Ruler origin must be at the intersection corner (RULER_LEFT, RULER_TOP).
+    // We measure in viewport coordinates and scale tick spacing with zoom.
+    const stepPxScreen = Math.max(1, gridMm * MM_TO_PX * scale);
+    const usableW = Math.max(0, w - RULER_LEFT);
+    const usableH = Math.max(0, h - RULER_TOP);
+
+    const xs: number[] = [];
+    for (let s = 0; s <= usableW; s += stepPxScreen) xs.push(s);
+    const ys: number[] = [];
+    for (let s = 0; s <= usableH; s += stepPxScreen) ys.push(s);
+
+    return { x: xs, y: ys };
+  }, [designViewSize, scale, gridMm, RULER_LEFT, RULER_TOP]);
+
   const codeInfoColumns = useMemo(() => {
     return [
       { field: 'id', headerName: 'ID', width: 60 },
@@ -856,8 +1109,8 @@ const handleListPrinters = async () => {
       const pxW = Math.max(1, (c.SIZE_W ?? 1) * MM_TO_PX);
       const pxH = Math.max(1, (c.SIZE_H ?? 1) * MM_TO_PX);
 
-      const screenX = x + pxX * scale;
-      const screenY = y + pxY * scale;
+      const screenX = RULER_LEFT + x + pxX * scale;
+      const screenY = RULER_TOP + y + pxY * scale;
       const screenW = pxW * scale;
       const screenH = pxH * scale;
 
@@ -870,6 +1123,7 @@ const handleListPrinters = async () => {
       const usedH = isActive ? activeHandleBox!.h : screenH;
 
       const selected = idx === currentComponent;
+      const rot = (c.ROTATE ?? 0);
 
       return (
         <Rnd
@@ -879,7 +1133,7 @@ const handleListPrinters = async () => {
           scale={1}
           minWidth={1}
           minHeight={1}
-          enableResizing={isCtrlDown && selected}
+          enableResizing={false}
           disableDragging={!isCtrlDown || !selected}
           resizeHandleStyles={{
             top: { height: 12 },
@@ -950,8 +1204,8 @@ const handleListPrinters = async () => {
             // Find all components that contain (mouseX, mouseY)
             const matches: number[] = [];
             componentList.forEach((c, i) => {
-               const cx = (c.POS_X ?? 0) * MM_TO_PX * scale + x;
-               const cy = (c.POS_Y ?? 0) * MM_TO_PX * scale + y;
+               const cx = (c.POS_X ?? 0) * MM_TO_PX * scale + x + RULER_LEFT;
+               const cy = (c.POS_Y ?? 0) * MM_TO_PX * scale + y + RULER_TOP;
                const cw = Math.max(16, (c.SIZE_W ?? 1) * MM_TO_PX * scale);
                const ch = Math.max(16, (c.SIZE_H ?? 1) * MM_TO_PX * scale);
                
@@ -1016,8 +1270,8 @@ const handleListPrinters = async () => {
                  const otherPxW = Math.max(1, (c.SIZE_W ?? 1) * MM_TO_PX);
                  const otherPxH = Math.max(1, (c.SIZE_H ?? 1) * MM_TO_PX);
                  
-                 const otherScreenX = x + otherPxX * scale;
-                 const otherScreenY = y + otherPxY * scale;
+                 const otherScreenX = RULER_LEFT + x + otherPxX * scale;
+                 const otherScreenY = RULER_TOP + y + otherPxY * scale;
                  const otherScreenW = otherPxW * scale;
                  const otherScreenH = otherPxH * scale;
 
@@ -1062,8 +1316,8 @@ const handleListPrinters = async () => {
                 h: prev?.h ?? usedH,
               }));
             }
-            const unscaledX = (newX - x) / scale;
-            const unscaledY = (newY - y) / scale;
+            const unscaledX = (newX - (x + RULER_LEFT)) / scale;
+            const unscaledY = (newY - (y + RULER_TOP)) / scale;
             const mmX = unscaledX * PX_TO_MM;
             const mmY = unscaledY * PX_TO_MM;
             // REMOVE HEAVY UPDATE: Don't update componentList state during drag
@@ -1083,8 +1337,8 @@ const handleListPrinters = async () => {
                 finalY = activeHandleBox.y;
             }
 
-            const unscaledX = (finalX - x) / scale;
-            const unscaledY = (finalY - y) / scale;
+            const unscaledX = (finalX - (x + RULER_LEFT)) / scale;
+            const unscaledY = (finalY - (y + RULER_TOP)) / scale;
             const mmX = Math.round((unscaledX * PX_TO_MM) * 100) / 100;
             const mmY = Math.round((unscaledY * PX_TO_MM) * 100) / 100;
             setLiveOverlay(null);
@@ -1126,8 +1380,8 @@ const handleListPrinters = async () => {
                  const otherPxW = Math.max(1, (c.SIZE_W ?? 1) * MM_TO_PX);
                  const otherPxH = Math.max(1, (c.SIZE_H ?? 1) * MM_TO_PX);
                  
-                 const otherScreenX = x + otherPxX * scale;
-                 const otherScreenY = y + otherPxY * scale;
+                 const otherScreenX = RULER_LEFT + x + otherPxX * scale;
+                 const otherScreenY = RULER_TOP + y + otherPxY * scale;
                  const otherScreenW = otherPxW * scale;
                  const otherScreenH = otherPxH * scale;
 
@@ -1199,8 +1453,8 @@ const handleListPrinters = async () => {
             }
             const w = newW / scale;
             const h = newH / scale;
-            const unscaledX = (newX - x) / scale;
-            const unscaledY = (newY - y) / scale;
+            const unscaledX = (newX - (x + RULER_LEFT)) / scale;
+            const unscaledY = (newY - (y + RULER_TOP)) / scale;
             const mmW = w * PX_TO_MM;
             const mmH = h * PX_TO_MM;
             const mmX = unscaledX * PX_TO_MM;
@@ -1226,8 +1480,8 @@ const handleListPrinters = async () => {
             
             const w = finalW / scale;
             const h = finalH / scale;
-            const unscaledX = (finalX - x) / scale;
-            const unscaledY = (finalY - y) / scale;
+            const unscaledX = (finalX - (x + RULER_LEFT)) / scale;
+            const unscaledY = (finalY - (y + RULER_TOP)) / scale;
             const mmW = Math.round((w * PX_TO_MM) * 100) / 100;
             const mmH = Math.round((h * PX_TO_MM) * 100) / 100;
             const mmX = Math.round((unscaledX * PX_TO_MM) * 100) / 100;
@@ -1242,15 +1496,118 @@ const handleListPrinters = async () => {
             );
           }}
           style={{
-            border: selected ? '2px solid #1976d2' : '1px dashed rgba(0,0,0,0.35)',
-            background: selected ? 'rgba(25, 118, 210, 0.05)' : 'transparent',
+            border: '2px solid transparent',
+            background: 'transparent',
             boxSizing: 'border-box',
             zIndex: selected ? 200 : 10,
             pointerEvents: 'auto', // Allow clicking even if not selected, so we can capture click to cycle
           }}
-        />
+        >
+          {selected && (
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                border: '2px solid rgba(25,118,210,0.9)',
+                background: 'rgba(25, 118, 210, 0.05)',
+                boxSizing: 'border-box',
+                transform: rot ? `rotate(${rot}deg)` : undefined,
+                transformOrigin: 'top left',
+                pointerEvents: 'none',
+              }}
+            />
+          )}
+        </Rnd>
       );
     });
+  };
+
+  const renderRotatedResizeHandles = () => {
+    if (!isCtrlDown) return null;
+    const idx = currentComponent;
+    if (idx < 0) return null;
+    const c = componentList[idx];
+    if (!c) return null;
+    if (rotateResizeDrag && rotateResizeDrag.idx !== idx) return null;
+
+    const pxX = (c.POS_X ?? 0) * MM_TO_PX;
+    const pxY = (c.POS_Y ?? 0) * MM_TO_PX;
+    const pxW = Math.max(1, (c.SIZE_W ?? 1) * MM_TO_PX);
+    const pxH = Math.max(1, (c.SIZE_H ?? 1) * MM_TO_PX);
+
+    // If resizing, prefer activeHandleBox for live position/size
+    const baseScreenX = activeHandleIdx === idx && activeHandleBox ? activeHandleBox.x : (RULER_LEFT + x + pxX * scale);
+    const baseScreenY = activeHandleIdx === idx && activeHandleBox ? activeHandleBox.y : (RULER_TOP + y + pxY * scale);
+    const baseScreenW = activeHandleIdx === idx && activeHandleBox ? activeHandleBox.w : (pxW * scale);
+    const baseScreenH = activeHandleIdx === idx && activeHandleBox ? activeHandleBox.h : (pxH * scale);
+
+    const rotDeg = (c.ROTATE ?? 0);
+    const rotRad = (rotDeg * Math.PI) / 180;
+    const cos = Math.cos(rotRad);
+    const sin = Math.sin(rotRad);
+
+    const tl = { x: baseScreenX, y: baseScreenY };
+    const tr = { x: baseScreenX + baseScreenW * cos, y: baseScreenY + baseScreenW * sin };
+    const bl = { x: baseScreenX - baseScreenH * sin, y: baseScreenY + baseScreenH * cos };
+    const br = { x: tr.x - baseScreenH * sin, y: tr.y + baseScreenH * cos };
+
+    const hs = 10;
+    const half = hs / 2;
+
+    const begin = (handle: 'tl' | 'tr' | 'bl' | 'br') => (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const rect = designRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const startMouseWorldX = (mouseX - (x + RULER_LEFT)) / scale;
+      const startMouseWorldY = (mouseY - (y + RULER_TOP)) / scale;
+
+      const startWorldX = activeHandleIdx === idx && activeHandleBox ? (activeHandleBox.x - (x + RULER_LEFT)) / scale : pxX;
+      const startWorldY = activeHandleIdx === idx && activeHandleBox ? (activeHandleBox.y - (y + RULER_TOP)) / scale : pxY;
+      const startWorldW = activeHandleIdx === idx && activeHandleBox ? activeHandleBox.w / scale : pxW;
+      const startWorldH = activeHandleIdx === idx && activeHandleBox ? activeHandleBox.h / scale : pxH;
+
+      setRotateResizeDrag({
+        idx,
+        handle,
+        startMouseWorldX,
+        startMouseWorldY,
+        startWorldX,
+        startWorldY,
+        startWorldW,
+        startWorldH,
+      });
+      setActiveHandleIdx(idx);
+      setActiveHandleBox({ x: baseScreenX, y: baseScreenY, w: baseScreenW, h: baseScreenH });
+    };
+
+    const dotStyle = (cursor: string) => ({
+      position: 'absolute' as const,
+      width: hs,
+      height: hs,
+      borderRadius: 2,
+      background: '#fff',
+      border: '2px solid #1976d2',
+      zIndex: 260,
+      cursor,
+      pointerEvents: 'auto' as const,
+      boxSizing: 'border-box' as const,
+    });
+
+    return (
+      <>
+        <div style={{ ...dotStyle('nwse-resize'), left: tl.x - half, top: tl.y - half }} onMouseDown={begin('tl')} />
+        <div style={{ ...dotStyle('nesw-resize'), left: tr.x - half, top: tr.y - half }} onMouseDown={begin('tr')} />
+        <div style={{ ...dotStyle('nesw-resize'), left: bl.x - half, top: bl.y - half }} onMouseDown={begin('bl')} />
+        <div style={{ ...dotStyle('nwse-resize'), left: br.x - half, top: br.y - half }} onMouseDown={begin('br')} />
+      </>
+    );
   };
 
   return (
@@ -1379,7 +1736,7 @@ const handleListPrinters = async () => {
                           setCurrentComponent(index);
                         }}
                         dense
-                        sx={{ py: 0, minHeight: 32 }}
+                        sx={{ py: 0, minHeight: 32, backgroundColor: index === currentComponent ? 'rgba(25, 118, 210, 0.12)' : 'transparent' }}
                       >
                         <ListItemAvatar sx={{ minWidth: 30 }}>
                           <Avatar
@@ -1738,6 +2095,34 @@ const handleListPrinters = async () => {
             <BiMagnet color={enableSnap ? "blue" : "black"} size={15} />
             Snap
           </IconButton>
+          <IconButton className="buttonIcon" onClick={() => setShowGrid((p) => !p)} style={showGrid ? { backgroundColor: '#e0e0e0' } : {}}>
+            Grid
+          </IconButton>
+          <select value={gridMm} onChange={(e) => setGridMm(Number(e.target.value))} style={{ height: 26 }}>
+            <option value={10}>10mm</option>
+            <option value={5}>5mm</option>
+            <option value={2}>2mm</option>
+            <option value={1}>1mm</option>
+          </select>
+          <span style={{ fontSize: 12, paddingLeft: 8 }}>Zoom: {(scale * 100).toFixed(0)}%</span>
+
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 6, marginLeft: 12, alignItems: 'center' }}>
+            {paletteItems.map((it) => (
+              <div
+                key={it.type}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('amz/newComponentType', it.type);
+                  e.dataTransfer.effectAllowed = 'copy';
+                }}
+                style={{ width: 40, height: 28, border: '1px solid rgba(0,0,0,0.2)', borderRadius: 6, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', cursor: 'grab', userSelect: 'none', background: '#fff' }}
+                title={it.type}
+              >
+                <TbComponents size={14} />
+                <div style={{ fontSize: 10, fontWeight: 700, paddingLeft: 4 }}>{it.label}</div>
+              </div>
+            ))}
+          </div>
           X:
           <input
             type="number"
@@ -1767,12 +2152,51 @@ const handleListPrinters = async () => {
           className="designAmazon"
           ref={designRef}
           style={{ position: "relative", flex: 1, width: '100%', height: '100%', overflow: 'hidden' }}
+          onDragOver={(e) => {
+            e.preventDefault();
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const t = e.dataTransfer.getData('amz/newComponentType');
+            if (!t) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const mx = e.clientX - rect.left - RULER_LEFT;
+            const my = e.clientY - rect.top - RULER_TOP;
+            const worldX = (mx - x) / scale;
+            const worldY = (my - y) / scale;
+            const mmX = worldX * PX_TO_MM;
+            const mmY = worldY * PX_TO_MM;
+            createComponentAt(t, mmX, mmY);
+          }}
           onMouseDown={(e) => {
             if (e.ctrlKey && e.target === e.currentTarget) {
               setCurrentComponent(-1);
             }
           }}
         >
+          <div style={{ position: 'absolute', left: RULER_LEFT, top: 0, right: 0, height: RULER_TOP, zIndex: 30, pointerEvents: 'none', background: 'rgba(255,255,255,0.92)', borderBottom: '1px solid rgba(0,0,0,0.15)' }}>
+            {rulerTicks.x.map((s) => {
+              const sx = s;
+              const mm = (s / scale) * PX_TO_MM;
+              return (
+                <div key={`rx_${s}`} style={{ position: 'absolute', left: sx, top: 0, height: 20, width: 1, background: 'rgba(0,0,0,0.35)' }}>
+                  <div style={{ position: 'absolute', top: 8, left: 2, fontSize: 10, color: 'rgba(0,0,0,0.7)', whiteSpace: 'nowrap' }}>{Math.round(mm)}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{ position: 'absolute', left: 0, top: RULER_TOP, bottom: 0, width: RULER_LEFT, zIndex: 30, pointerEvents: 'none', background: 'rgba(255,255,255,0.92)', borderRight: '1px solid rgba(0,0,0,0.15)' }}>
+            {rulerTicks.y.map((s) => {
+              const sy = s;
+              const mm = (s / scale) * PX_TO_MM;
+              return (
+                <div key={`ry_${s}`} style={{ position: 'absolute', left: 0, top: sy, width: 30, height: 1, background: 'rgba(0,0,0,0.35)' }}>
+                  <div style={{ position: 'absolute', left: 2, top: 2, fontSize: 10, color: 'rgba(0,0,0,0.7)', whiteSpace: 'nowrap' }}>{Math.round(mm)}</div>
+                </div>
+              );
+            })}
+          </div>
           {snapLines.map((line, i) => (
              <div key={i} style={{
                 position: 'absolute',
@@ -1827,8 +2251,8 @@ const handleListPrinters = async () => {
             className="designZoomStage"
             style={{
               position: "absolute",
-              left: x,
-              top: y,
+              left: RULER_LEFT + x,
+              top: RULER_TOP + y,
               transform: `scale(${scale})`,
               transformOrigin: "top left",
             }}
@@ -1841,6 +2265,18 @@ const handleListPrinters = async () => {
                 height: stageSizePx.height,
               }}
             >
+              {showGrid && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    zIndex: 1,
+                    pointerEvents: 'none',
+                    backgroundImage: gridBackground,
+                    backgroundSize: `${Math.max(1, gridMm * MM_TO_PX)}px ${Math.max(1, gridMm * MM_TO_PX)}px`,
+                  }}
+                />
+              )}
               <div
                 style={{
                   position: "absolute",
@@ -1887,10 +2323,10 @@ const handleListPrinters = async () => {
                        
                        // Derived from activeHandleBox (screen px) back to MM
                        // This calculation must match exactly what onDrag does but we do it here for render
-                       const unscaledX = (activeHandleBox.x - x) / scale;
-                       const unscaledY = (activeHandleBox.y - y) / scale;
-                       const mmX = unscaledX * PX_TO_MM;
-                       const mmY = unscaledY * PX_TO_MM;
+                      const unscaledX = (activeHandleBox.x - (x + RULER_LEFT)) / scale;
+                      const unscaledY = (activeHandleBox.y - (y + RULER_TOP)) / scale;
+                      const mmX = unscaledX * PX_TO_MM;
+                      const mmY = unscaledY * PX_TO_MM;
                        
                        // For resize
                        const w = activeHandleBox.w / scale;
@@ -1915,6 +2351,52 @@ const handleListPrinters = async () => {
 
           <div style={{ position: 'absolute', inset: 0, zIndex: 40 }}>
             {renderHandles()}
+            {renderRotatedResizeHandles()}
+            {(() => {
+              const idx = currentComponent;
+              if (idx < 0) return null;
+              const c = componentList[idx];
+              if (!c) return null;
+              const pxX = (c.POS_X ?? 0) * MM_TO_PX;
+              const pxY = (c.POS_Y ?? 0) * MM_TO_PX;
+              const pxW = Math.max(1, (c.SIZE_W ?? 1) * MM_TO_PX);
+              const pxH = Math.max(1, (c.SIZE_H ?? 1) * MM_TO_PX);
+              const screenX = RULER_LEFT + x + pxX * scale;
+              const screenY = RULER_TOP + y + pxY * scale;
+              const screenW = pxW * scale;
+              const screenH = pxH * scale;
+
+              const rotDeg = (c.ROTATE ?? 0);
+              const rotRad = (rotDeg * Math.PI) / 180;
+              const cos = Math.cos(rotRad);
+              const sin = Math.sin(rotRad);
+
+              // Component rotates around top-left (screenX, screenY)
+              const trX = screenX + screenW * cos;
+              const trY = screenY + screenW * sin;
+
+              // Offset the handle slightly outward relative to the rotated top edge
+              const offLocalX = 10;
+              const offLocalY = -10;
+              const handleX = trX + offLocalX * cos - offLocalY * sin;
+              const handleY = trY + offLocalX * sin + offLocalY * cos;
+
+              // Use rotated center for rotation gesture calculations
+              const centerX = screenX + (screenW / 2) * cos - (screenH / 2) * sin;
+              const centerY = screenY + (screenW / 2) * sin + (screenH / 2) * cos;
+              return (
+                <div
+                  style={{ position: 'absolute', left: handleX, top: handleY, width: 16, height: 16, borderRadius: 16, background: '#fff', border: '2px solid #ff9800', zIndex: 300, cursor: 'grab' }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+                    setRotateDrag({ idx, centerX, centerY, startMouseAngle: startAngle, startRotate: rotDeg });
+                  }}
+                  title="Rotate"
+                />
+              );
+            })()}
           </div>
         </div>
       </div>

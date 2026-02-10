@@ -13,6 +13,7 @@ const DATAMATRIX = ({ DATA }: { DATA: COMPONENT_DATA }) => {
         width: `${DATA.SIZE_W}mm`,
         height: `${DATA.SIZE_H}mm`,
         transform: `rotate(${DATA.ROTATE}deg)`,
+        transformOrigin: "top left",
       }}
     >
       <DataMatrix

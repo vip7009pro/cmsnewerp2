@@ -28,6 +28,7 @@
     "face-api.js": "^0.22.2",
     "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
+    "jsbarcode": "^3.11.6",
     "jquery": "^3.7.1",
     "material-react-table": "^2.13.0",
     "moment": "^2.29.4",
