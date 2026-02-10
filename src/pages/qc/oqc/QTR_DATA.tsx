@@ -168,7 +168,7 @@ const QTR_DATA = () => {
     //handleLoadQTRData();
   }, []);
   return (
-    <div className="maindefects">
+    <div className="qtrdata">
       <div className="tracuuDataPqc">
         <div className="tracuuDataPQCform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
           <div className="forminput">
