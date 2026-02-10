@@ -856,13 +856,10 @@ const handleListPrinters = async () => {
       const pxW = Math.max(1, (c.SIZE_W ?? 1) * MM_TO_PX);
       const pxH = Math.max(1, (c.SIZE_H ?? 1) * MM_TO_PX);
 
-      const hitW = Math.max(pxW, 16);
-      const hitH = Math.max(pxH, 16);
-
       const screenX = x + pxX * scale;
       const screenY = y + pxY * scale;
-      const screenW = hitW * scale;
-      const screenH = hitH * scale;
+      const screenW = pxW * scale;
+      const screenH = pxH * scale;
 
       const isActive = activeHandleIdx === idx && activeHandleBox != null;
       // RESTORE DRAG using activeHandleBox to act as local state for immediate feedback
@@ -880,6 +877,8 @@ const handleListPrinters = async () => {
           size={{ width: usedW, height: usedH }}
           position={{ x: usedX, y: usedY }}
           scale={1}
+          minWidth={1}
+          minHeight={1}
           enableResizing={isCtrlDown && selected}
           disableDragging={!isCtrlDown || !selected}
           resizeHandleStyles={{
@@ -953,7 +952,7 @@ const handleListPrinters = async () => {
             componentList.forEach((c, i) => {
                const cx = (c.POS_X ?? 0) * MM_TO_PX * scale + x;
                const cy = (c.POS_Y ?? 0) * MM_TO_PX * scale + y;
-               const cw = Math.max(16, (c.SIZE_W ?? 1) * MM_TO_PX * scale); 
+               const cw = Math.max(16, (c.SIZE_W ?? 1) * MM_TO_PX * scale);
                const ch = Math.max(16, (c.SIZE_H ?? 1) * MM_TO_PX * scale);
                
                if (mouseX >= cx && mouseX <= cx + cw && mouseY >= cy && mouseY <= cy + ch) {

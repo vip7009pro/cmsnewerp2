@@ -63,8 +63,19 @@ const TraAMZ = () => {
   const [printWindowContainer, setPrintWindowContainer] = useState<HTMLElement | null>(null);
   const printWindowRef = useRef<Window | null>(null);
 
-  const handlePrint = () => {
-     setIsPrinting(true);
+  const handlePrint = async () => {
+    const password = prompt('Nhập mật khẩu để in:');
+    if (password === null) {
+      return;
+    }
+
+    const auth = await generalQuery('checkpassAMZ', { PASSAMZ: password });
+    if (auth.data.tk_status !== 'ok') {    
+      Swal.fire('Thông báo', 'Mật khẩu không chính xác', 'warning');
+      return;
+    }
+
+    setIsPrinting(true);
   };
   
   const handleUpdatePrintStatus = async () => {
@@ -338,7 +349,8 @@ const TraAMZ = () => {
     }
   };
 
-  const handlePreparePrint = async () => {
+  const handlePreparePrint = async () => { 
+    
     if (selectedRows.length === 0) {
       Swal.fire("Lỗi", "Chưa chọn dòng nào để in", "error");
       return;
@@ -382,6 +394,7 @@ const TraAMZ = () => {
     setPrintData(newPrintData);
     setisLoading(false);
     setOpenPrintModal(true);
+  
   };
 
   const amzDataTableAG = useMemo(() => {

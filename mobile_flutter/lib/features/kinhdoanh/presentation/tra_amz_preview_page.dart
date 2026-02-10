@@ -37,6 +37,75 @@ class _RasterComp extends StatelessWidget {
   double _d(dynamic v) => double.tryParse((v ?? '').toString()) ?? 0;
   String _s(dynamic v) => (v ?? '').toString();
 
+  String _imageUrl(String src) {
+    final s = src.trim();
+    if (s.isEmpty) return '';
+    if (s.startsWith('http://') || s.startsWith('https://')) return s;
+    return '${AppConfig.imageBaseUrl}/$s';
+  }
+
+  Widget _barcodeFill(Barcode barcode, String data) {
+    if (data.isEmpty) return const SizedBox.shrink();
+    return ClipRect(
+      child: FittedBox(
+        fit: BoxFit.fill,
+        alignment: Alignment.topLeft,
+        child: BarcodeWidget(
+          barcode: barcode,
+          data: data,
+          drawText: false,
+          padding: EdgeInsets.zero,
+          backgroundColor: Colors.transparent,
+          errorBuilder: (_, __) => const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+
+  Widget _dataMatrixSquare(String data) {
+    if (data.isEmpty) return const SizedBox.shrink();
+    return LayoutBuilder(
+      builder: (ctx, cs) {
+        final w = cs.maxWidth.isFinite ? cs.maxWidth : 0.0;
+        final h = cs.maxHeight.isFinite ? cs.maxHeight : 0.0;
+        final side = math.max(1.0, math.min(w, h));
+        return Center(
+          child: SizedBox(
+            width: side,
+            height: side,
+            child: BarcodeWidget(
+              barcode: Barcode.dataMatrix(),
+              data: data,
+              drawText: false,
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+              errorBuilder: (_, __) => const SizedBox.shrink(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _rectangleWidget() {
+    final raw = _s(comp['COLOR']).trim();
+    Color color = Colors.white;
+    if (raw.isNotEmpty) {
+      final v = raw.toUpperCase();
+      if (v == 'WHITE') color = Colors.white;
+      if (v == 'BLACK') color = Colors.black;
+      if (v == 'RED') color = Colors.red;
+      if (v == 'GREEN') color = Colors.green;
+      if (v == 'BLUE') color = Colors.blue;
+      if (v.startsWith('#')) {
+        final hex = v.substring(1);
+        final parsed = int.tryParse(hex.length == 6 ? 'FF$hex' : hex, radix: 16);
+        if (parsed != null) color = Color(parsed);
+      }
+    }
+    return ColoredBox(color: color);
+  }
+
   @override
   Widget build(BuildContext context) {
     final type = _s(comp['PHANLOAI_DT']).toUpperCase();
@@ -49,54 +118,59 @@ class _RasterComp extends StatelessWidget {
     Widget child;
     if (type == 'TEXT') {
       final value = _s(comp['GIATRI']);
+      final isMultiline = value.contains('\n');
       final fontPt = _d(comp['FONT_SIZE']);
       final styleFlag = _s(comp['FONT_STYLE']).toUpperCase();
+      final remark = _s(comp['REMARK']).toUpperCase().trim();
       final bold = styleFlag.contains('B');
       final italic = styleFlag.contains('I');
       final underline = styleFlag.contains('U');
       final fontSizePx = fontPt <= 0 ? 18.0 : fontPt * (dotsPerMm * 0.3527777778); // pt->mm->dots
+
+      final highlight = remark == 'HIGHTLIGHT';
+      final bg = highlight ? Colors.black : Colors.white;
+      final fg = highlight ? Colors.white : Colors.black;
       child = Align(
         alignment: Alignment.topLeft,
-        child: Text(
-          value,
-          style: TextStyle(
-            fontSize: fontSizePx,
-            fontWeight: bold ? FontWeight.bold : FontWeight.normal,
-            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-            decoration: underline ? TextDecoration.underline : TextDecoration.none,
-            color: Colors.black,
+        child: ColoredBox(
+          color: bg,
+          child: Text(
+            value,
+            softWrap: isMultiline,
+            maxLines: isMultiline ? null : 1,
+            overflow: TextOverflow.visible,
+            style: TextStyle(
+              fontSize: fontSizePx,
+              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+              fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+              decoration: underline ? TextDecoration.underline : TextDecoration.none,
+              color: fg,
+            ),
           ),
         ),
       );
     } else if (type == '1D BARCODE') {
-      final data = _s(comp['GIATRI']);
-      child = BarcodeWidget(
-        barcode: Barcode.code128(),
-        data: data,
-        drawText: false,
-        backgroundColor: Colors.transparent,
-        errorBuilder: (_, __) => const SizedBox.shrink(),
-      );
+      child = _barcodeFill(Barcode.code128(), _s(comp['GIATRI']));
     } else if (type == '2D MATRIX') {
-      final data = _s(comp['GIATRI']);
-      child = BarcodeWidget(
-        barcode: Barcode.dataMatrix(),
-        data: data,
-        drawText: false,
-        backgroundColor: Colors.transparent,
-        errorBuilder: (_, __) => const SizedBox.shrink(),
-      );
+      child = _dataMatrixSquare(_s(comp['GIATRI']));
     } else if (type == 'QRCODE') {
-      final data = _s(comp['GIATRI']);
-      child = BarcodeWidget(
-        barcode: Barcode.qrCode(),
-        data: data,
-        drawText: false,
-        backgroundColor: Colors.transparent,
-        errorBuilder: (_, __) => const SizedBox.shrink(),
-      );
+      child = _barcodeFill(Barcode.qrCode(), _s(comp['GIATRI']));
+    } else if (type == 'IMAGE') {
+      final url = _imageUrl(_s(comp['GIATRI']));
+      if (url.isEmpty) {
+        child = const SizedBox.shrink();
+      } else {
+        child = Image(
+          image: NetworkImage(url),
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.none,
+          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+        );
+      }
+    } else if (type == 'RECTANGLE') {
+      child = _rectangleWidget();
     } else {
-      // IMAGE + others: skip in raster for now.
+      // Others: skip.
       child = const SizedBox.shrink();
     }
 
@@ -164,6 +238,34 @@ class _TraAmzPreviewPageState extends ConsumerState<TraAmzPreviewPage> {
 
   double _d(dynamic v) => double.tryParse((v ?? '').toString()) ?? 0;
 
+  Size _measureTextSizeDots(Map<String, dynamic> comp) {
+    final value = _s(comp['GIATRI']);
+    final isMultiline = value.contains('\n');
+    final fontPt = _d(comp['FONT_SIZE']);
+    final styleFlag = _s(comp['FONT_STYLE']).toUpperCase();
+
+    final bold = styleFlag.contains('B');
+    final italic = styleFlag.contains('I');
+
+    final fontSizeDots = fontPt <= 0 ? 18.0 : fontPt * (_dotsPerMm * 0.3527777778);
+
+    final tp = TextPainter(
+      text: TextSpan(
+        text: value,
+        style: TextStyle(
+          fontSize: fontSizeDots,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+          fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+          color: Colors.black,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: isMultiline ? null : 1,
+    );
+    tp.layout();
+    return tp.size;
+  }
+
   Future<void> _prepare() async {
     if (widget.rows.isEmpty) return;
     setState(() => _loading = true);
@@ -208,6 +310,28 @@ class _TraAmzPreviewPageState extends ConsumerState<TraAmzPreviewPage> {
         }
 
         items.add(_LabelItem(row: r, design: base));
+      }
+
+      // Preload all images to improve raster print fidelity.
+      final urls = <String>{};
+      for (final it in items) {
+        for (final c in it.design) {
+          final type = _s(c['PHANLOAI_DT']).toUpperCase();
+          if (type != 'IMAGE') continue;
+          final src = _s(c['GIATRI']).trim();
+          if (src.isEmpty) continue;
+          final url = src.startsWith('http://') || src.startsWith('https://')
+              ? src
+              : '${AppConfig.imageBaseUrl}/$src';
+          urls.add(url);
+        }
+      }
+      for (final u in urls) {
+        try {
+          await precacheImage(NetworkImage(u), context);
+        } catch (_) {
+          // ignore: keep printing even if some images fail
+        }
       }
 
       if (!mounted) return;
@@ -287,20 +411,53 @@ class _TraAmzPreviewPageState extends ConsumerState<TraAmzPreviewPage> {
   }
 
   Future<void> _updatePrintedStatus(Map<String, dynamic> row) async {
-    // Placeholder: implement your backend command here once confirmed.
-    // For example:
-    // await ref.read(apiClientProvider).postCommand('updatePrintStatusAMZ', data: {...});
+    final prodRequestNo = _s(row['PROD_REQUEST_NO']).trim();
+    final rowNo = int.tryParse(_s(row['ROW_NO']).trim()) ?? 0;
+    final currentInlai = int.tryParse(_s(row['INLAI_COUNT']).trim()) ?? 0;
+    final payload = <String, dynamic>{
+      'PROD_REQUEST_NO': prodRequestNo,
+      'ROW_NO': rowNo,
+      'PRINT_STATUS': 'OK',
+      'INLAI_COUNT': currentInlai + 1,
+    };
+
+    final api = ref.read(apiClientProvider);
+    final res = await api.postCommand('updatePrintStatus', data: payload);
+    final body = res.data;
+    if (_isNg(body)) {
+      throw Exception('Update PRINT_STATUS failed: ${_s(body is Map<String, dynamic> ? body['message'] : '')}');
+    }
+
+    row['PRINT_STATUS'] = 'OK';
+    row['INLAI_COUNT'] = currentInlai + 1;
+    if (mounted) setState(() {});
   }
 
   Future<String> _renderLabelToZpl(List<Map<String, dynamic>> design) async {
     var maxWmm = 0.0;
     var maxHmm = 0.0;
     for (final d in design) {
-      final right = _d(d['POS_X']) + _d(d['SIZE_W']) + _offsetXmm;
-      final bottom = _d(d['POS_Y']) + _d(d['SIZE_H']) + _offsetYmm;
+      final type = _s(d['PHANLOAI_DT']).toUpperCase();
+      final posX = _d(d['POS_X']);
+      final posY = _d(d['POS_Y']);
+
+      var wMm = _d(d['SIZE_W']);
+      var hMm = _d(d['SIZE_H']);
+
+      if (type == 'TEXT') {
+        final szDots = _measureTextSizeDots(d);
+        wMm = math.max(wMm, szDots.width / _dotsPerMm);
+        hMm = math.max(hMm, szDots.height / _dotsPerMm);
+      }
+
+      final right = posX + wMm + _offsetXmm;
+      final bottom = posY + hMm + _offsetYmm;
       maxWmm = math.max(maxWmm, right);
       maxHmm = math.max(maxHmm, bottom);
     }
+
+    maxWmm += 1.0;
+    maxHmm += 1.0;
 
     final wDots = math.max(1, (maxWmm * _dotsPerMm).round());
     final hDots = math.max(1, (maxHmm * _dotsPerMm).round());
@@ -534,19 +691,34 @@ class _TraAmzPreviewPageState extends ConsumerState<TraAmzPreviewPage> {
                 final meta = '${_s(item.row['G_CODE'])} | ${_s(item.row['PROD_REQUEST_NO'])} | ROW ${_s(item.row['ROW_NO'])}';
 
                 return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(meta, style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 8),
-                        _LabelPreview(
-                          design: item.design,
-                          offsetXmm: _offsetXmm,
-                          offsetYmm: _offsetYmm,
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => _TraAmzLabelPreviewDetailPage(
+                            title: meta,
+                            design: item.design,
+                            offsetXmm: _offsetXmm,
+                            offsetYmm: _offsetYmm,
+                          ),
                         ),
-                      ],
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(meta, style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 8),
+                          _LabelPreview(
+                            design: item.design,
+                            offsetXmm: _offsetXmm,
+                            offsetYmm: _offsetYmm,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -582,6 +754,37 @@ class _LabelPreview extends StatelessWidget {
   double _d(dynamic v) => double.tryParse((v ?? '').toString()) ?? 0;
   String _s(dynamic v) => (v ?? '').toString();
 
+  static Size measureTextSizeMm(Map<String, dynamic> c) {
+    double d(dynamic v) => double.tryParse((v ?? '').toString()) ?? 0;
+    String s(dynamic v) => (v ?? '').toString();
+
+    final value = s(c['GIATRI']);
+    final isMultiline = value.contains('\n');
+    final fontPt = d(c['FONT_SIZE']);
+    final styleFlag = s(c['FONT_STYLE']).toUpperCase();
+
+    final bold = styleFlag.contains('B');
+    final italic = styleFlag.contains('I');
+
+    final fontSizePx = fontPt <= 0 ? 12.0 : fontPt * 1.333;
+
+    final tp = TextPainter(
+      text: TextSpan(
+        text: value,
+        style: TextStyle(
+          fontSize: fontSizePx,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+          fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+          color: Colors.black,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: isMultiline ? null : 1,
+    );
+    tp.layout();
+    return Size(tp.size.width / _mmToPx, tp.size.height / _mmToPx);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (design.isEmpty) {
@@ -591,11 +794,27 @@ class _LabelPreview extends StatelessWidget {
     var maxWmm = 0.0;
     var maxHmm = 0.0;
     for (final d in design) {
-      final right = _d(d['POS_X']) + _d(d['SIZE_W']);
-      final bottom = _d(d['POS_Y']) + _d(d['SIZE_H']);
+      final type = _s(d['PHANLOAI_DT']).toUpperCase();
+      final posX = _d(d['POS_X']);
+      final posY = _d(d['POS_Y']);
+
+      var wMm = _d(d['SIZE_W']);
+      var hMm = _d(d['SIZE_H']);
+
+      if (type == 'TEXT') {
+        final szMm = measureTextSizeMm(d);
+        wMm = math.max(wMm, szMm.width);
+        hMm = math.max(hMm, szMm.height);
+      }
+
+      final right = posX + wMm;
+      final bottom = posY + hMm;
       maxWmm = math.max(maxWmm, right);
       maxHmm = math.max(maxHmm, bottom);
     }
+
+    maxWmm += 1.0;
+    maxHmm += 1.0;
 
     final wPx = maxWmm * _mmToPx;
     final hPx = maxHmm * _mmToPx;
@@ -603,24 +822,12 @@ class _LabelPreview extends StatelessWidget {
     return InteractiveViewer(
       minScale: 0.5,
       maxScale: 5,
-      child: Container(
-        color: Colors.white,
-        width: wPx,
-        height: hPx,
-        child: Stack(
-          children: [
-            for (final comp in design) _buildComp(context, comp),
-            // offset indicator
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Text(
-                'Offset: ${offsetXmm.toStringAsFixed(2)} / ${offsetYmm.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 10, color: Colors.black54),
-              ),
-            ),
-          ],
-        ),
+      child: _LabelCanvas(
+        design: design,
+        offsetXmm: offsetXmm,
+        offsetYmm: offsetYmm,
+        wPx: wPx,
+        hPx: hPx,
       ),
     );
   }
@@ -640,6 +847,7 @@ class _LabelPreview extends StatelessWidget {
       '1D BARCODE' => _barcodeWidget(c, is2d: false),
       '2D MATRIX' => _barcodeWidget(c, is2d: true),
       'QRCODE' => _qrWidget(c),
+      'RECTANGLE' => _rectangleWidget(c),
       _ => _unknownWidget(c),
     };
 
@@ -656,8 +864,10 @@ class _LabelPreview extends StatelessWidget {
 
   Widget _textWidget(Map<String, dynamic> c) {
     final value = _s(c['GIATRI']);
+    final isMultiline = value.contains('\n');
     final fontPt = _d(c['FONT_SIZE']);
     final styleFlag = _s(c['FONT_STYLE']).toUpperCase();
+    final remark = _s(c['REMARK']).toUpperCase().trim();
 
     final bold = styleFlag.contains('B');
     final italic = styleFlag.contains('I');
@@ -665,18 +875,36 @@ class _LabelPreview extends StatelessWidget {
 
     final fontSize = fontPt <= 0 ? 12.0 : fontPt * 1.333;
 
+    final highlight = remark == 'HIGHTLIGHT';
+    final bg = highlight ? Colors.black : Colors.white;
+    final fg = highlight ? Colors.white : Colors.black;
+
     return Align(
       alignment: Alignment.topLeft,
-      child: Text(
-        value,
-        maxLines: 10,
-        overflow: TextOverflow.visible,
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
-          fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-          decoration: underline ? TextDecoration.underline : TextDecoration.none,
-          color: Colors.black,
+      child: ColoredBox(
+        color: bg,
+        child: Text(
+          value,
+          softWrap: isMultiline,
+          maxLines: isMultiline ? null : 1,
+          overflow: TextOverflow.visible,
+          textHeightBehavior: const TextHeightBehavior(
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+          ),
+          strutStyle: StrutStyle(
+            fontSize: fontSize,
+            height: 1.0,
+            forceStrutHeight: true,
+          ),
+          style: TextStyle(
+            fontSize: fontSize,
+            height: 1.0,
+            fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+            fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+            decoration: underline ? TextDecoration.underline : TextDecoration.none,
+            color: fg,
+          ),
         ),
       ),
     );
@@ -697,13 +925,43 @@ class _LabelPreview extends StatelessWidget {
     final data = _s(c['GIATRI']);
     if (data.isEmpty) return const SizedBox.shrink();
 
-    final barcode = is2d ? Barcode.dataMatrix() : Barcode.code128();
-    return BarcodeWidget(
-      barcode: barcode,
-      data: data,
-      drawText: false,
-      backgroundColor: Colors.transparent,
-      errorBuilder: (_, __) => const SizedBox.shrink(),
+    if (is2d) {
+      return LayoutBuilder(
+        builder: (ctx, cs) {
+          final w = cs.maxWidth.isFinite ? cs.maxWidth : 0.0;
+          final h = cs.maxHeight.isFinite ? cs.maxHeight : 0.0;
+          final side = math.max(1.0, math.min(w, h));
+          return Center(
+            child: SizedBox(
+              width: side,
+              height: side,
+              child: BarcodeWidget(
+                barcode: Barcode.dataMatrix(),
+                data: data,
+                drawText: false,
+                padding: EdgeInsets.zero,
+                backgroundColor: Colors.transparent,
+                errorBuilder: (_, __) => const SizedBox.shrink(),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return ClipRect(
+      child: FittedBox(
+        fit: BoxFit.fill,
+        alignment: Alignment.topLeft,
+        child: BarcodeWidget(
+          barcode: Barcode.code128(),
+          data: data,
+          drawText: false,
+          padding: EdgeInsets.zero,
+          backgroundColor: Colors.transparent,
+          errorBuilder: (_, __) => const SizedBox.shrink(),
+        ),
+      ),
     );
   }
 
@@ -711,16 +969,338 @@ class _LabelPreview extends StatelessWidget {
     final data = _s(c['GIATRI']);
     if (data.isEmpty) return const SizedBox.shrink();
 
-    return BarcodeWidget(
-      barcode: Barcode.qrCode(),
-      data: data,
-      drawText: false,
-      backgroundColor: Colors.transparent,
-      errorBuilder: (_, __) => const SizedBox.shrink(),
+    return LayoutBuilder(
+      builder: (ctx, cs) {
+        final w = cs.maxWidth.isFinite ? cs.maxWidth : 0.0;
+        final h = cs.maxHeight.isFinite ? cs.maxHeight : 0.0;
+        final side = math.max(1.0, math.min(w, h));
+        return Center(
+          child: SizedBox(
+            width: side,
+            height: side,
+            child: BarcodeWidget(
+              barcode: Barcode.qrCode(),
+              data: data,
+              drawText: false,
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+              errorBuilder: (_, __) => const SizedBox.shrink(),
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Widget _rectangleWidget(Map<String, dynamic> c) {
+    final raw = _s(c['COLOR']).trim();
+    Color color = Colors.white;
+    if (raw.isNotEmpty) {
+      final v = raw.toUpperCase();
+      if (v == 'WHITE') color = Colors.white;
+      if (v == 'BLACK') color = Colors.black;
+      if (v == 'RED') color = Colors.red;
+      if (v == 'GREEN') color = Colors.green;
+      if (v == 'BLUE') color = Colors.blue;
+      if (v.startsWith('#')) {
+        final hex = v.substring(1);
+        final parsed = int.tryParse(hex.length == 6 ? 'FF$hex' : hex, radix: 16);
+        if (parsed != null) color = Color(parsed);
+      }
+    }
+    return ColoredBox(color: color);
   }
 
   Widget _unknownWidget(Map<String, dynamic> c) {
     return const SizedBox.shrink();
+  }
+}
+
+class _TraAmzLabelPreviewDetailPage extends StatefulWidget {
+  const _TraAmzLabelPreviewDetailPage({
+    required this.title,
+    required this.design,
+    required this.offsetXmm,
+    required this.offsetYmm,
+  });
+
+  final String title;
+  final List<Map<String, dynamic>> design;
+  final double offsetXmm;
+  final double offsetYmm;
+
+  @override
+  State<_TraAmzLabelPreviewDetailPage> createState() => _TraAmzLabelPreviewDetailPageState();
+}
+
+class _TraAmzLabelPreviewDetailPageState extends State<_TraAmzLabelPreviewDetailPage> {
+  static const _mmToPx = 96 / 25.4;
+
+  final TransformationController _tc = TransformationController();
+
+  double _d(dynamic v) => double.tryParse((v ?? '').toString()) ?? 0;
+
+  @override
+  void dispose() {
+    _tc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var maxWmm = 0.0;
+    var maxHmm = 0.0;
+    for (final d in widget.design) {
+      final type = (d['PHANLOAI_DT'] ?? '').toString().toUpperCase();
+      final posX = _d(d['POS_X']);
+      final posY = _d(d['POS_Y']);
+
+      var wMm = _d(d['SIZE_W']);
+      var hMm = _d(d['SIZE_H']);
+
+      if (type == 'TEXT') {
+        final szMm = _LabelPreview.measureTextSizeMm(d);
+        wMm = math.max(wMm, szMm.width);
+        hMm = math.max(hMm, szMm.height);
+      }
+
+      final right = posX + wMm;
+      final bottom = posY + hMm;
+      maxWmm = math.max(maxWmm, right);
+      maxHmm = math.max(maxHmm, bottom);
+    }
+
+    maxWmm += 1.0;
+    maxHmm += 1.0;
+
+    final wPx = maxWmm * _mmToPx;
+    final hPx = maxHmm * _mmToPx;
+
+    const rulerThickness = 26.0;
+
+    final viewer = InteractiveViewer(
+      transformationController: _tc,
+      constrained: false,
+      boundaryMargin: const EdgeInsets.all(2000),
+      minScale: 0.2,
+      maxScale: 10,
+      child: _LabelCanvas(
+        design: widget.design,
+        offsetXmm: widget.offsetXmm,
+        offsetYmm: widget.offsetYmm,
+        wPx: wPx,
+        hPx: hPx,
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: LayoutBuilder(
+        builder: (context, cs) {
+          return AnimatedBuilder(
+            animation: _tc,
+            builder: (context, _) {
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: rulerThickness, top: rulerThickness),
+                    child: SizedBox.expand(child: viewer),
+                  ),
+                  Positioned(
+                    left: rulerThickness,
+                    right: 0,
+                    top: 0,
+                    height: rulerThickness,
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: _MmRulerPainter(
+                          axis: Axis.horizontal,
+                          tcValue: _tc.value,
+                          mmToPx: _mmToPx,
+                          thickness: rulerThickness,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: rulerThickness,
+                    bottom: 0,
+                    width: rulerThickness,
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: _MmRulerPainter(
+                          axis: Axis.vertical,
+                          tcValue: _tc.value,
+                          mmToPx: _mmToPx,
+                          thickness: rulerThickness,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Positioned(
+                    left: 0,
+                    top: 0,
+                    width: rulerThickness,
+                    height: rulerThickness,
+                    child: IgnorePointer(
+                      child: ColoredBox(color: Color(0xFFF3F3F3)),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+}
+
+class _LabelCanvas extends StatelessWidget {
+  const _LabelCanvas({
+    required this.design,
+    required this.offsetXmm,
+    required this.offsetYmm,
+    required this.wPx,
+    required this.hPx,
+  });
+
+  final List<Map<String, dynamic>> design;
+  final double offsetXmm;
+  final double offsetYmm;
+  final double wPx;
+  final double hPx;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      width: wPx,
+      height: hPx,
+      child: Stack(
+        children: [
+          for (final comp in design)
+            _LabelPreview(
+              design: const [],
+              offsetXmm: offsetXmm,
+              offsetYmm: offsetYmm,
+            )._buildComp(context, comp),
+        ],
+      ),
+    );
+  }
+}
+
+class _MmRulerPainter extends CustomPainter {
+  _MmRulerPainter({
+    required this.axis,
+    required this.tcValue,
+    required this.mmToPx,
+    required this.thickness,
+  });
+
+  final Axis axis;
+  final Matrix4 tcValue;
+  final double mmToPx;
+  final double thickness;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final posBg = Paint()..color = Colors.white;
+    canvas.drawRect(Offset.zero & size, posBg);
+
+    final negBg = Paint()..color = const Color(0xFFE3E3E3);
+    final zero = MatrixUtils.transformPoint(tcValue, const Offset(0, 0));
+    if (axis == Axis.horizontal) {
+      final x0 = zero.dx;
+      if (x0 > 0) {
+        canvas.drawRect(Rect.fromLTWH(0, 0, x0.clamp(0, size.width), size.height), negBg);
+      }
+    } else {
+      final y0 = zero.dy;
+      if (y0 > 0) {
+        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, y0.clamp(0, size.height)), negBg);
+      }
+    }
+
+    final border = Paint()
+      ..color = const Color(0xFFBDBDBD)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawRect(Offset.zero & size, border);
+
+    final scale = tcValue.getMaxScaleOnAxis();
+    final mmToScreen = mmToPx * (scale.isFinite && scale > 0 ? scale : 1.0);
+
+    var stepMm = 1.0;
+    if (mmToScreen < 6) stepMm = 10.0;
+    if (mmToScreen >= 6 && mmToScreen < 12) stepMm = 5.0;
+
+    double screenPosForMm(double mm) {
+      final designPx = mm * mmToPx;
+      final p = axis == Axis.horizontal ? Offset(designPx, 0) : Offset(0, designPx);
+      final sp = MatrixUtils.transformPoint(tcValue, p);
+      return axis == Axis.horizontal ? sp.dx : sp.dy;
+    }
+
+    double mmForScreenPos(double screen) {
+      final inv = Matrix4.inverted(tcValue);
+      final p = axis == Axis.horizontal ? Offset(screen, 0) : Offset(0, screen);
+      final dp = MatrixUtils.transformPoint(inv, p);
+      final design = axis == Axis.horizontal ? dp.dx : dp.dy;
+      return design / mmToPx;
+    }
+
+    final visibleStartMm = mmForScreenPos(0);
+    final visibleEndMm = mmForScreenPos(axis == Axis.horizontal ? size.width : size.height);
+    final startMm = math.min(visibleStartMm, visibleEndMm);
+    final endMm = math.max(visibleStartMm, visibleEndMm);
+
+    final first = (startMm / stepMm).floorToDouble() * stepMm;
+    final last = (endMm / stepMm).ceilToDouble() * stepMm;
+
+    final tickPaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 1;
+
+    for (var m = first; m <= last; m += stepMm) {
+      final sp = screenPosForMm(m);
+      final isMajor10 = (m.round() % 10 == 0);
+      final isMajor5 = !isMajor10 && (m.round() % 5 == 0);
+      final tickLen = isMajor10
+          ? thickness * 0.8
+          : isMajor5
+              ? thickness * 0.55
+              : thickness * 0.35;
+
+      if (axis == Axis.horizontal) {
+        canvas.drawLine(Offset(sp, thickness), Offset(sp, thickness - tickLen), tickPaint);
+      } else {
+        canvas.drawLine(Offset(thickness, sp), Offset(thickness - tickLen, sp), tickPaint);
+      }
+
+      if (isMajor10) {
+        final text = TextSpan(
+          text: m.round().toString(),
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.black),
+        );
+        final tp = TextPainter(text: text, textDirection: TextDirection.ltr);
+        tp.layout();
+        if (axis == Axis.horizontal) {
+          tp.paint(canvas, Offset(sp + 2, 2));
+        } else {
+          tp.paint(canvas, Offset(2, sp - tp.height / 2));
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _MmRulerPainter oldDelegate) {
+    return oldDelegate.tcValue != tcValue || oldDelegate.axis != axis;
   }
 }

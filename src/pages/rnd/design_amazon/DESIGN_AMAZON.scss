@@ -6,6 +6,18 @@
   box-sizing: border-box;
   overflow: hidden;
 
+ .amz_barcode {
+  svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    object-fit: fill !important;
+    preserveAspectRatio: none !important;
+  }
+}
+
   .design_control {
     display: flex;
     width: 40%;
@@ -260,7 +272,7 @@
             }
 
             input {
-              width: 90px;
+              width: 140px;
               height: 18px;
               outline: none;
               border-radius: 5px;
@@ -271,7 +283,7 @@
             }
 
             select {
-              width: 90px;
+              width: 150px;
               height: 24px;
               outline: none;
               border-radius: 5px;
