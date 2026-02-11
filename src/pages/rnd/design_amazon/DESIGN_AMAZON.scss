@@ -14,7 +14,6 @@
     margin: 0 !important;
     padding: 0 !important;
     object-fit: fill !important;
-    preserveAspectRatio: none !important;
   }
 }
 
@@ -191,7 +190,7 @@
       align-items: center;
       justify-items: center;
       background-image: linear-gradient(0deg, #dce6e5, #30d160);
-      overflow: auto;
+      overflow: hidden;
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       min-width: 0;
@@ -210,6 +209,10 @@
       .componentdiv {
         display: flex;
         flex-direction: column;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
       }
     }
 
@@ -414,6 +417,74 @@
     }
   }
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    overflow: auto;
+
+    .design_control {
+      width: 100% !important;
+      height: 520px;
+      flex-direction: column;
+      overflow: hidden;
+
+      .codelist {
+        width: 100%;
+        height: 280px;
+        min-height: 280px;
+        max-height: 280px;
+        overflow: auto;
+
+        .tracuuFcst {
+          height: auto;
+          min-height: 0;
+          overflow: hidden;
+
+          .codeinfotable {
+            height: auto;
+            min-height: 200px;
+            max-height: 35vh;
+            overflow: auto;
+          }
+        }
+      }
+
+      .componentSide {
+        width: 100% !important;
+        height: 240px;
+        min-height: 240px;
+        max-height: 240px;
+        overflow: hidden;
+      }
+
+      .componentList {
+        height: 170px;
+        min-height: 170px;
+        max-height: 170px;
+        overflow: auto;
+      }
+
+      .componentProps {
+        height: 70px;
+        min-height: 70px;
+        max-height: 70px;
+        overflow: auto;
+      }
+    }
+
+    .design_panel {
+      width: 100% !important;
+      height: 520px;
+      min-height: 0;
+      margin-top: 5px;
+
+      .designAmazon {
+        flex: 1;
+        min-height: 0;
+      }
+    }
+  }
+
   .design_panel {
     display: flex;
     flex-direction: column;
@@ -432,6 +503,21 @@
       width: 100%;
       background-color: #30d160;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px;
+      box-sizing: border-box;
+      overflow-x: auto;
+
+      select {
+        color: #111;
+        background: #fff;
+      }
+
+      option {
+        color: #111;
+        background: #fff;
+      }
     }
 
     .designAmazon {

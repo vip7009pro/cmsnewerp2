@@ -25,6 +25,8 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
 
   PlutoGridStateManager? _sm;
 
+  late final List<PlutoColumn> _cols = _buildColumns();
+
   String _s(dynamic v) => (v ?? '').toString();
 
   AuthAuthenticated? _auth() {
@@ -96,9 +98,6 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
         _rows = list;
         _loading = false;
       });
-
-      _sm?.removeAllRows();
-      _sm?.appendRows(_buildGridRows(list));
     } catch (e) {
       if (!mounted) return;
       setState(() => _loading = false);
@@ -269,6 +268,7 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
   List<PlutoColumn> _buildColumns() {
     PlutoColumn text(
       String field, {
+      required String title,
       double width = 120,
       bool editable = false,
       PlutoColumnFrozen frozen = PlutoColumnFrozen.none,
@@ -276,7 +276,7 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
       Widget Function(PlutoColumnRendererContext ctx)? renderer,
     }) {
       return PlutoColumn(
-        title: field,
+        title: title,
         field: field,
         type: PlutoColumnType.text(),
         width: width,
@@ -320,6 +320,8 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
               child: DropdownButton<String>(
                 isExpanded: true,
                 value: (v == 'Y' || v == 'N') ? v : 'P',
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.black),
+                dropdownColor: Colors.white,
                 onChanged: !canEdit
                     ? null
                     : (nv) {
@@ -358,24 +360,30 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
               : (v == 'Y' ? 'COMPLETED' : 'PENDING');
 
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             color: bgc,
-            child: Row(
-              children: [
-                SizedBox(width: 40, child: FittedBox(fit: BoxFit.scaleDown, child: inner)),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    txt,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: ThemeData.estimateBrightnessForColor(bgc) == Brightness.dark ? Colors.white : Colors.black,
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: width,
+              height: 30,
+              child: Row(
+                children: [
+                  SizedBox(width: 82, child: inner),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      txt,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: ThemeData.estimateBrightnessForColor(bgc) == Brightness.dark ? Colors.white : Colors.black,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -440,12 +448,12 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
         title: '✓',
         field: '__check__',
         type: PlutoColumnType.text(),
-        width: 44,
+        width: 62,
         enableRowChecked: true,
         enableSorting: false,
         enableFilterMenuItem: false,
         enableColumnDrag: false,
-        frozen: PlutoColumnFrozen.start,
+        frozen: PlutoColumnFrozen.none,
       ),
       PlutoColumn(
         title: '',
@@ -455,17 +463,18 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
         hide: true,
         enableContextMenu: false,
       ),
-      text('SAMPLE_ID', width: 80, frozen: PlutoColumnFrozen.start),
-      text('PROD_REQUEST_NO', width: 90),
-      text('CUST_NAME_KD', width: 120),
-      text('G_CODE', width: 90),
-      text('G_NAME_KD', width: 160),
-      text('G_NAME', width: 160),
-      text('G_WIDTH', width: 90, align: PlutoColumnTextAlign.right),
-      text('G_LENGTH', width: 90, align: PlutoColumnTextAlign.right),
-      text('DELIVERY_DT', width: 110),
+      text('SAMPLE_ID', title: 'ID', width: 70, frozen: PlutoColumnFrozen.none),
+      text('PROD_REQUEST_NO', title: 'YCSX', width: 90),
+      text('CUST_NAME_KD', title: 'CUSTOMER', width: 140),
+      text('G_CODE', title: 'G_CODE', width: 90),
+      text('G_NAME_KD', title: 'G_NAME_KD', width: 160),
+      text('G_NAME', title: 'G_NAME', width: 160),
+      text('G_WIDTH', title: 'G_WIDTH', width: 90, align: PlutoColumnTextAlign.right),
+      text('G_LENGTH', title: 'G_LENGTH', width: 90, align: PlutoColumnTextAlign.right),
+      text('DELIVERY_DT', title: 'DELIVERY_DT', width: 110),
       text(
         'PROD_REQUEST_QTY',
+        title: 'SAMPLE_QTY',
         width: 110,
         align: PlutoColumnTextAlign.right,
         renderer: (ctx) {
@@ -480,7 +489,7 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
       statusToggle('FILE_MAKET', title: 'FILE_MAKET', bg: ynColor, editable: _mainDeptTag() == 'RND', width: 150),
       statusToggle('FILM_FILE', title: 'FILM_FILE', bg: ynColor, editable: _mainDeptTag() == 'RND', width: 150),
       statusToggle('KNIFE_STATUS', title: 'KNIFE_STATUS', bg: ynColor, editable: _mainDeptTag() == 'RND', width: 150),
-      text('KNIFE_CODE', width: 120, editable: _mainDeptTag() == 'RND'),
+      text('KNIFE_CODE', title: 'KNIFE_CODE', width: 120, editable: _mainDeptTag() == 'RND'),
       statusToggle('FILM', title: 'FILM', bg: ynColor, editable: _mainDeptTag() == 'RND', width: 150),
       statusToggle('MATERIAL_STATUS', title: 'MATERIAL_STATUS', bg: ynColor, editable: _mainDeptTag() == 'MUA' || _mainDeptTag() == 'KHO', width: 160),
       statusToggle('PRINT_STATUS', title: 'PRINT_STATUS', bg: ynColor, editable: _mainDeptTag() == 'SX', width: 150),
@@ -488,22 +497,23 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
       statusToggle('QC_STATUS', title: 'QC_STATUS', bg: qcColor, editable: _mainDeptTag() == 'QC', width: 170, isRadioTri: true),
       totalStatus(),
       statusToggle('APPROVE_STATUS', title: 'APPROVE_STATUS', bg: approveColor, editable: _mainDeptTag() == 'KD', width: 190, isRadioTri: true),
-      text('APPROVE_DATE', width: 110),
-      text('REMARK', width: 180, editable: _mainDeptTag() == 'KD'),
+      text('APPROVE_DATE', title: 'APPROVE_DATE', width: 110),
+      text('REMARK', title: 'REMARK', width: 180, editable: _mainDeptTag() == 'KD'),
       statusToggle('USE_YN', title: 'USE_YN', bg: (v) => v == 'Y' ? const Color(0xFF06D436) : const Color(0xFFFF0000), editable: _mainDeptTag() == 'KD', width: 120, isRadioTri: true),
-      text('INS_DATE', width: 110),
-      text('INS_EMPL', width: 120),
+      text('INS_DATE', title: 'INS_DATE', width: 110),
+      text('INS_EMPL', title: 'INS_EMPL', width: 120),
     ];
   }
 
-  List<PlutoRow> _buildGridRows(List<Map<String, dynamic>> rows) {
+  List<PlutoRow> _buildGridRows(List<Map<String, dynamic>> rows, List<PlutoColumn> cols) {
     return [
       for (final r in rows)
         PlutoRow(
           cells: {
             '__check__': PlutoCell(value: ''),
             '__raw__': PlutoCell(value: r),
-            for (final k in r.keys) k: PlutoCell(value: r[k]),
+            for (final c in cols)
+              if (c.field != '__check__' && c.field != '__raw__') c.field: PlutoCell(value: r[c.field] ?? ''),
           },
         ),
     ];
@@ -511,8 +521,7 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final cols = _buildColumns();
-    final gridRows = _buildGridRows(_rows);
+    final gridRows = _buildGridRows(_rows, _cols);
 
     return Scaffold(
       appBar: AppBar(
@@ -585,35 +594,50 @@ class _SampleMonitorPageState extends ConsumerState<SampleMonitorPage> {
             const SizedBox(height: 12),
             Expanded(
               child: ClipRect(
-                child: PlutoGrid(
-                  columns: cols,
-                  rows: gridRows,
-                  onLoaded: (e) {
-                    _sm = e.stateManager;
-                    e.stateManager.setShowColumnFilter(true);
-                    e.stateManager.setSelectingMode(PlutoGridSelectingMode.row);
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final gridWidth = constraints.maxWidth.isFinite
+                        ? (constraints.maxWidth < 1100 ? 1100.0 : constraints.maxWidth)
+                        : 1100.0;
+
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: gridWidth,
+                        child: PlutoGrid(
+                          key: ValueKey('sm_${_loading ? 1 : 0}_${_rows.length}'),
+                          columns: _cols,
+                          rows: gridRows,
+                          onLoaded: (e) {
+                            _sm = e.stateManager;
+                            e.stateManager.setShowColumnFilter(true);
+                            e.stateManager.setSelectingMode(PlutoGridSelectingMode.row);
+                          },
+                          onRowChecked: (_) {
+                            setState(() {});
+                          },
+                          onChanged: (e) {
+                            final idx = _rows.indexWhere((x) => _s(x['SAMPLE_ID']) == _s(e.row.cells['SAMPLE_ID']?.value));
+                            if (idx < 0) return;
+                            setState(() {
+                              _rows[idx][e.column.field] = e.value;
+                            });
+                          },
+                          configuration: const PlutoGridConfiguration(
+                            columnSize: PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.none),
+                            style: PlutoGridStyleConfig(
+                              rowHeight: 34,
+                              columnHeight: 34,
+                              cellTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                              columnTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                              defaultCellPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  onRowChecked: (_) {
-                    setState(() {});
-                  },
-                  onChanged: (e) {
-                    final idx = _rows.indexWhere((x) => _s(x['SAMPLE_ID']) == _s(e.row.cells['SAMPLE_ID']?.value));
-                    if (idx < 0) return;
-                    setState(() {
-                      _rows[idx][e.column.field] = e.value;
-                    });
-                  },
-                  configuration: const PlutoGridConfiguration(
-                    columnSize: PlutoGridColumnSizeConfig(autoSizeMode: PlutoAutoSizeMode.none),
-                    style: PlutoGridStyleConfig(
-                      rowHeight: 34,
-                      columnHeight: 34,
-                      cellTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
-                      columnTextStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
-                      defaultCellPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                    ),
-                  ),
-                ),
+                )
               ),
             ),
           ],

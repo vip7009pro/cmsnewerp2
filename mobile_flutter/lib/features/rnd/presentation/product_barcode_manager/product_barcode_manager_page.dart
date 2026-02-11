@@ -19,6 +19,8 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
   List<Map<String, dynamic>> _codeList = const [];
   String _selectedGCode = '6A00001B';
 
+  final TextEditingController _codeSearchCtrl = TextEditingController();
+
   List<Map<String, dynamic>> _rows = const [];
   Map<String, dynamic> _selectedRow = {
     'G_CODE': '',
@@ -49,6 +51,7 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
 
   @override
   void dispose() {
+    _codeSearchCtrl.dispose();
     _barcodeSttCtrl.dispose();
     _barcodeRndCtrl.dispose();
     _barcodeReliCtrl.dispose();
@@ -73,7 +76,6 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
 
   Future<void> _init() async {
     await Future.wait([
-      _loadCodeList(''),
       _loadBarcodeTable(),
     ]);
   }
@@ -89,8 +91,22 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
       if (!mounted) return;
       setState(() {
         _codeList = list;
+
+        final codes = _codeList.map((e) => _s(e['G_CODE'])).where((x) => x.isNotEmpty).toSet();
+        if (_selectedGCode.isEmpty || !codes.contains(_selectedGCode)) {
+          _selectedGCode = codes.isNotEmpty ? codes.first : '';
+        }
       });
     } catch (_) {}
+  }
+
+  Future<void> _searchCodes() async {
+    final kw = _s(_codeSearchCtrl.text).trim();
+    if (kw.isEmpty) {
+      setState(() => _codeList = const []);
+      return;
+    }
+    await _loadCodeList(kw);
   }
 
   Future<void> _loadBarcodeTable() async {
@@ -313,6 +329,45 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
     final cols = _buildColumns();
     final gridRows = _buildGridRows(_rows, cols);
 
+    final codeItems = _codeList
+        .map((e) => {
+              'G_CODE': _s(e['G_CODE']),
+              'G_NAME': _s(e['G_NAME']),
+            })
+        .where((e) => (e['G_CODE'] ?? '').toString().isNotEmpty)
+        .fold<Map<String, Map<String, String>>>({}, (acc, e) {
+          // Deduplicate by G_CODE to satisfy DropdownButton assertion.
+          acc.putIfAbsent(e['G_CODE']!, () => {'G_CODE': e['G_CODE']!, 'G_NAME': e['G_NAME']!});
+          return acc;
+        })
+        .values
+        .toList(growable: false);
+
+    final String? selectedGCodeValue = (() {
+      if (_selectedGCode.isEmpty) {
+        return codeItems.isNotEmpty ? _s(codeItems.first['G_CODE']) : null;
+      }
+
+      final matchCount = codeItems.where((e) => _s(e['G_CODE']) == _selectedGCode).length;
+      if (matchCount == 1) return _selectedGCode;
+
+      // If 0 match (or somehow >1), do not provide a value to DropdownButton.
+      // This prevents runtime assertion.
+      return codeItems.isNotEmpty ? _s(codeItems.first['G_CODE']) : null;
+    })();
+
+    // Keep state consistent to avoid DropdownButton holding a value that is not in the menu.
+    if (selectedGCodeValue != null && selectedGCodeValue != _selectedGCode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (_selectedGCode == selectedGCodeValue) return;
+        setState(() {
+          _selectedGCode = selectedGCodeValue;
+          _selectedRow['G_CODE'] = selectedGCodeValue;
+        });
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('RND / PRODUCT BARCODE MANAGER'),
@@ -337,12 +392,27 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
                   runSpacing: 8,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
+                    SizedBox(
+                      width: 200,
+                      child: TextField(
+                        controller: _codeSearchCtrl,
+                        decoration: const InputDecoration(labelText: 'Tìm G_NAME', hintText: 'nhập từ khóa'),
+                        onSubmitted: (_) => _searchCodes(),
+                      ),
+                    ),
+                    FilledButton.icon(
+                      onPressed: _loading ? null : _searchCodes,
+                      icon: const Icon(Icons.search),
+                      label: const Text('Search'),
+                    ),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 280),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           isExpanded: true,
-                          value: _selectedGCode,
+                          value: selectedGCodeValue,
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+                          dropdownColor: Colors.white,
                           onChanged: _loading
                               ? null
                               : (v) {
@@ -352,14 +422,14 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
                                     _selectedRow['G_CODE'] = v;
                                   });
                                 },
-                          items: _codeList
+                          items: codeItems
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: _s(e['G_CODE']),
                                   child: Text('${_s(e['G_CODE'])}: ${_s(e['G_NAME'])}', overflow: TextOverflow.ellipsis),
                                 ),
                               )
-                              .toList(),
+                              .toList(growable: false),
                         ),
                       ),
                     ),
@@ -377,6 +447,8 @@ class _ProductBarcodeManagerPageState extends ConsumerState<ProductBarcodeManage
                         child: DropdownButton<String>(
                           isExpanded: true,
                           value: _s(_selectedRow['BARCODE_TYPE']).isEmpty ? '1D' : _s(_selectedRow['BARCODE_TYPE']),
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+                          dropdownColor: Colors.white,
                           onChanged: _loading
                               ? null
                               : (v) {

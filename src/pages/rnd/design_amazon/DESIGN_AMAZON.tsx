@@ -50,6 +50,7 @@ const DESIGN_AMAZON = () => {
 
   const [showGrid, setShowGrid] = useState(false);
   const [gridMm, setGridMm] = useState(5);
+  const [gridStyle, setGridStyle] = useState<'solid' | 'dashed'>('dashed');
   const [designViewSize, setDesignViewSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
   const MIN_SCALE = 0.2;
@@ -1129,9 +1130,18 @@ const handleListPrinters = async () => {
 
   const gridBackground = useMemo(() => {
     const stepPx = Math.max(1, gridMm * MM_TO_PX);
-    const thin = 'rgba(0,0,0,0.08)';
-    return `repeating-linear-gradient(0deg, ${thin} 0, ${thin} 1px, transparent 1px, transparent ${stepPx}px), repeating-linear-gradient(90deg, ${thin} 0, ${thin} 1px, transparent 1px, transparent ${stepPx}px)`;
-  }, [gridMm]);
+    const stroke = 'rgba(0,0,0,0.18)';
+    const lineW = 0.5;
+
+    if (gridStyle === 'solid') {
+      return `repeating-linear-gradient(0deg, ${stroke} 0, ${stroke} ${lineW}px, transparent ${lineW}px, transparent ${stepPx}px), repeating-linear-gradient(90deg, ${stroke} 0, ${stroke} ${lineW}px, transparent ${lineW}px, transparent ${stepPx}px)`;
+    }
+
+    const dash = 3;
+    const gap = 3;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${stepPx}" height="${stepPx}" viewBox="0 0 ${stepPx} ${stepPx}" shape-rendering="crispEdges"><path d="M0 0H${stepPx} M0 0V${stepPx}" fill="none" stroke="${stroke}" stroke-width="${lineW}" stroke-dasharray="${dash} ${gap}"/></svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  }, [gridMm, gridStyle]);
 
   const rulerTicks = useMemo(() => {
     const w = designViewSize.w;
@@ -2194,6 +2204,10 @@ const handleListPrinters = async () => {
             <option value={2}>2mm</option>
             <option value={1}>1mm</option>
           </select>
+          <select value={gridStyle} onChange={(e) => setGridStyle(e.target.value as any)} style={{ height: 26, marginLeft: 6 }}>
+            <option value={'dashed'}>Dashed</option>
+            <option value={'solid'}>Solid</option>
+          </select>
           <span style={{ fontSize: 12, paddingLeft: 8 }}>Zoom:</span>
           <select
             value={scale}
@@ -2380,6 +2394,7 @@ const handleListPrinters = async () => {
                     pointerEvents: 'none',
                     backgroundImage: gridBackground,
                     backgroundSize: `${Math.max(1, gridMm * MM_TO_PX)}px ${Math.max(1, gridMm * MM_TO_PX)}px`,
+                    backgroundRepeat: 'repeat',
                   }}
                 />
               )}
