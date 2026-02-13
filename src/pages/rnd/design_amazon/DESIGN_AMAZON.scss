@@ -19,7 +19,7 @@
 
   .design_control {
     display: flex;
-    width: 40%;
+    width: 0%;
     background-color: antiquewhite;
     height: 100%;
     gap: 5px;
@@ -30,10 +30,10 @@
 
     .codelist {
       display: flex;
-      width: 50%;
+      width: 100%;
       height: 100%;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       min-width: 0;
       min-height: 0;
       overflow: hidden;
@@ -173,6 +173,7 @@
       }
     }
 
+    /*
     .componentSide {
       display: flex;
       flex-direction: column;
@@ -415,7 +416,10 @@
         }
       }
     }
+    */
+
   }
+  
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -449,6 +453,7 @@
         }
       }
 
+      /*
       .componentSide {
         width: 100% !important;
         height: 240px;
@@ -470,6 +475,7 @@
         max-height: 70px;
         overflow: auto;
       }
+      */
     }
 
     .design_panel {
@@ -494,9 +500,24 @@
     min-width: 0;
     min-height: 0;
     overflow: hidden;
-    align-items: flex-start;
+    align-items: stretch;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+
+    .agtable {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .agtable .ag-theme-quartz {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+    }
 
     .design_toolbar {
       display: flex;
@@ -523,6 +544,13 @@
     .designAmazon {
       display: flex;
       position: relative;
+      flex: 1;
+      overflow: hidden;
+
+      .ag-theme-balham {
+        height: 100%;
+        width: 100%;
+      }
 
       @media print {
         @page {

@@ -2,15 +2,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Rnd } from "react-rnd";
 import "./DESIGN_AMAZON.scss";
 import {
-  Avatar,
   IconButton,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { FcDeleteRow } from "react-icons/fc";
 import { TbComponents } from "react-icons/tb";
 import Swal from "sweetalert2";
 import { GrAdd } from "react-icons/gr";
@@ -27,7 +24,6 @@ import {
 import { BOM_AMAZON, CODE_INFO, COMPONENT_DATA, POINT_DATA } from "../interfaces/rndInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 
-
 const DESIGN_AMAZON = () => {
   const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
   const userData: UserData | undefined = useSelector(
@@ -35,8 +31,17 @@ const DESIGN_AMAZON = () => {
   );
   const labelprintref = useRef(null);
   const designRef = useRef<HTMLDivElement | null>(null);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const PRINT_OFFSET_LS_KEY = 'amz_print_offset_mm_v1';
+  const [printOffsetMm, setPrintOffsetMm] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const handlePrint = useReactToPrint({
     content: () => labelprintref.current,
+    onBeforeGetContent: async () => {
+      setIsPrinting(true);
+    },
+    onAfterPrint: () => {
+      setIsPrinting(false);
+    },
   });
   const [showhidecodelist, setShowHideCodeList] = useState(true);
   const [x, setX] = useState(0);
@@ -92,6 +97,7 @@ const DESIGN_AMAZON = () => {
   const [G_CODE_MAU, setG_CODE_MAU] = useState("7A07994A");
   const [componentList, setComponentList] = useState<COMPONENT_DATA[]>([
     {
+      id: 0,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 5,
       DOITUONG_NAME: "Rectangle",
@@ -110,6 +116,7 @@ const DESIGN_AMAZON = () => {
       REMARK: "remark",
     },
     {
+      id: 1,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 0,
       DOITUONG_NAME: "Code name",
@@ -128,6 +135,7 @@ const DESIGN_AMAZON = () => {
       REMARK: "remark",
     },
     {
+      id: 2,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 1,
       DOITUONG_NAME: "Model",
@@ -146,6 +154,7 @@ const DESIGN_AMAZON = () => {
       REMARK: "remark",
     },
     {
+      id: 3,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 1,
       DOITUONG_NAME: "EAN No 1",
@@ -164,6 +173,7 @@ const DESIGN_AMAZON = () => {
       REMARK: "remark",
     },
     {
+      id: 4,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 4,
       DOITUONG_NAME: "Logo AMZ 1",
@@ -182,6 +192,7 @@ const DESIGN_AMAZON = () => {
       REMARK: "remark",
     },
     {
+      id: 5,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 5,
       DOITUONG_NAME: "Barcode 1",
@@ -200,6 +211,7 @@ const DESIGN_AMAZON = () => {
       REMARK: "remark",
     },
     {
+      id: 6,
       G_CODE_MAU: "123456",
       DOITUONG_NO: 5,
       DOITUONG_NAME: "Matrix 1",
@@ -253,8 +265,6 @@ const DESIGN_AMAZON = () => {
     startWorldH: number;
   } | null>(null);
 
-  const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(0);
   const [newComponent, setNewComponent] = useState("TEXT");
   const [currentComponent, setCurrentComponent] = useState(0);
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
@@ -269,6 +279,39 @@ const DESIGN_AMAZON = () => {
 
   const MM_TO_PX = 96 / 25.4;
   const PX_TO_MM = 25.4 / 96;
+
+  const getNextComponentId = useCallback(() => {
+    const cur = latestComponentListRef.current;
+    let maxId = -1;
+    for (let i = 0; i < cur.length; i++) {
+      const v = Number((cur[i] as any)?.id);
+      if (Number.isFinite(v) && v > maxId) maxId = v;
+    }
+    return maxId + 1;
+  }, []);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(PRINT_OFFSET_LS_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      const nx = Number(parsed?.x);
+      const ny = Number(parsed?.y);
+      if (!Number.isFinite(nx) || !Number.isFinite(ny)) return;
+      setPrintOffsetMm({ x: nx, y: ny });
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const setAndPersistPrintOffset = useCallback((next: { x: number; y: number }) => {
+    setPrintOffsetMm(next);
+    try {
+      localStorage.setItem(PRINT_OFFSET_LS_KEY, JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const cloneList = (list: COMPONENT_DATA[]) =>
     list.map((e) => ({ ...e }));
@@ -426,6 +469,7 @@ const DESIGN_AMAZON = () => {
       }
 
       let temp_compList: COMPONENT_DATA = {
+        id: getNextComponentId(),
         G_CODE_MAU: codedatatablefilter[0].G_CODE,
         DOITUONG_NO: max_dt_no + 1,
         DOITUONG_NAME: newComponent,
@@ -449,6 +493,149 @@ const DESIGN_AMAZON = () => {
       Swal.fire("Thông báo", "Chọn code phôi trước", "error");
     }
   };
+
+  const addComponentRef = useRef<(() => Promise<void>) | null>(null);
+  useEffect(() => {
+    addComponentRef.current = addComponent;
+  }, [addComponent]);
+
+  const agColumns = useMemo(
+    () =>
+      [
+        { field: 'DOITUONG_STT', headerName: 'STT', width: 70, resizable: true, floatingFilter: true, rowDrag: true },
+        { field: 'DOITUONG_NO', headerName: 'NO', width: 60, resizable: true, floatingFilter: true },
+        { field: 'DOITUONG_NAME', headerName: 'NAME', width: 140, resizable: true, floatingFilter: true },
+        {
+          field: 'PHANLOAI_DT',
+          headerName: 'TYPE',
+          width: 110,
+          resizable: true,
+          floatingFilter: true,
+          cellEditor: 'agSelectCellEditor',
+          cellEditorParams: {
+            values: ['TEXT', 'IMAGE', '1D BARCODE', '2D MATRIX', 'QRCODE', 'CONTAINER'],
+          },
+        },
+        { field: 'POS_X', headerName: 'X', width: 80, resizable: true, floatingFilter: true },
+        { field: 'POS_Y', headerName: 'Y', width: 80, resizable: true, floatingFilter: true },
+        { field: 'SIZE_W', headerName: 'W', width: 80, resizable: true, floatingFilter: true },
+        { field: 'SIZE_H', headerName: 'H', width: 80, resizable: true, floatingFilter: true },
+        { field: 'ROTATE', headerName: 'ROT', width: 80, resizable: true, floatingFilter: true },
+        { field: 'FONT_NAME', headerName: 'FONT', width: 100, resizable: true, floatingFilter: true },
+        { field: 'FONT_SIZE', headerName: 'F.SIZE', width: 80, resizable: true, floatingFilter: true },
+        {
+          field: 'FONT_STYLE',
+          headerName: 'F.STYLE',
+          width: 90,
+          resizable: true,
+          floatingFilter: true,
+          cellEditor: 'agSelectCellEditor',
+          cellEditorParams: {
+            values: ['R', 'B', 'I', 'BI'],
+          },
+        },
+        { field: 'GIATRI', headerName: 'VALUE', width: 260, resizable: true, floatingFilter: true },
+        { field: 'REMARK', headerName: 'REMARK', width: 150, resizable: true, floatingFilter: true },
+      ] as any,
+    [],
+  );
+
+  const onAgCellClick = useCallback((params: any) => {
+    const clickedId = params?.data?.id;
+    const idx = latestComponentListRef.current.findIndex((x: any) => x?.id === clickedId);
+    if (idx >= 0) setCurrentComponent(idx);
+  }, []);
+
+  const onAgCellEditingStopped = useCallback(
+    (e: any) => {
+      const row = e?.data;
+      if (!row) return;
+
+      const id = row?.id;
+      const field = e?.colDef?.field;
+      if (!field) return;
+
+      const numericFields = new Set([
+        'POS_X',
+        'POS_Y',
+        'SIZE_W',
+        'SIZE_H',
+        'ROTATE',
+        'FONT_SIZE',
+        'DOITUONG_NO',
+        'CAVITY_PRINT',
+      ]);
+      const raw = row[field];
+      const nextValue = numericFields.has(field) ? (Number.isFinite(Number(raw)) ? Number(raw) : 0) : raw;
+
+      const next = latestComponentListRef.current.map((x: any) => {
+        if (x?.id !== id) return x;
+        return { ...x, [field]: nextValue };
+      });
+      commitComponentList(next);
+
+      const curSel = latestComponentListRef.current[currentComponent] as any;
+      if (curSel) {
+        const nextIdx = next.findIndex((x: any) => x?.id === curSel?.id);
+        if (nextIdx >= 0) setCurrentComponent(nextIdx);
+      }
+    },
+    [commitComponentList, currentComponent],
+  );
+
+  const onAgRowDragEnd = useCallback(
+    (params: any) => {
+      const curList = latestComponentListRef.current;
+      const next: COMPONENT_DATA[] = [];
+      params.api.forEachNode((node: any) => {
+        if (node?.data) next.push(node.data);
+      });
+      if (next.length !== curList.length) return;
+
+      const curSel = curList[currentComponent];
+      commitComponentList(next.map((x) => ({ ...x })));
+      if (curSel) {
+        const nextIdx = next.findIndex((x: any) => x?.id === (curSel as any)?.id);
+        if (nextIdx >= 0) setCurrentComponent(nextIdx);
+      }
+    },
+    [commitComponentList, currentComponent],
+  );
+
+  const agToolbar = useMemo(
+    () => (
+      <div>
+        <label style={{ marginRight: 8 }}>
+          New Component:
+          <select
+            name="newcomponent"
+            value={newComponent}
+            onChange={(e) => {
+              setNewComponent(e.target.value);
+            }}
+            style={{ height: 26, marginLeft: 6 }}
+          >
+            <option value="TEXT">TEXT</option>
+            <option value="IMAGE">IMAGE</option>
+            <option value="1D BARCODE">1D BARCODE</option>
+            <option value="2D MATRIX">2D MATRIX</option>
+            <option value="QRCODE">QRCODE</option>
+            <option value="CONTAINER">CONTAINER</option>
+          </select>
+        </label>
+        <IconButton
+          className="buttonIcon"
+          onClick={async () => {
+            await addComponentRef.current?.();
+          }}
+        >
+          <GrAdd color="white" size={15} />
+          Add
+        </IconButton>
+      </div>
+    ),
+    [newComponent],
+  );
 
   const createComponentAt = async (type: string, mmX: number, mmY: number) => {
     if (codedatatablefilter.length <= 0) {
@@ -480,6 +667,7 @@ const DESIGN_AMAZON = () => {
     }
 
     const temp_compList: COMPONENT_DATA = {
+      id: getNextComponentId(),
       G_CODE_MAU: codedatatablefilter[0].G_CODE,
       DOITUONG_NO: max_dt_no + 1,
       DOITUONG_NAME: t,
@@ -859,6 +1047,15 @@ const handleListPrinters = async () => {
   useEffect(() => {
     const isArrow = (k: string) => ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(k);
 
+    const isAgGridTarget = (t: EventTarget | null) => {
+      const el = t as any;
+      if (!el) return false;
+      if (typeof (el as any).closest === 'function') {
+        return Boolean((el as HTMLElement).closest('.ag-theme-quartz'));
+      }
+      return false;
+    };
+
     const computeDir = (k: string) => {
       if (k === 'ArrowLeft') return { dx: -1, dy: 0 };
       if (k === 'ArrowRight') return { dx: 1, dy: 0 };
@@ -947,6 +1144,7 @@ const handleListPrinters = async () => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (!isArrow(e.key)) return;
       if (isTypingTarget(e.target)) return;
+      if (isAgGridTarget(e.target)) return;
       if (currentComponent < 0 || currentComponent >= latestComponentListRef.current.length) return;
 
       e.preventDefault();
@@ -1720,7 +1918,7 @@ const handleListPrinters = async () => {
 
   return (
     (<div className="design_window">
-      <div className="design_control" id="dsg_ctrl" style={{ width: showhidecodelist ? '40%' : '20%' }}>
+      <div className="design_control" id="dsg_ctrl" style={{ width: showhidecodelist ? '20%' : '0%', overflow: 'hidden' }}>
         {showhidecodelist && (
           <div className="codelist">
             <span style={{ color: "blue", fontWeight: "bold", fontSize: 20 }}>
@@ -1757,6 +1955,7 @@ const handleListPrinters = async () => {
             </div>
           </div>
         )}
+        {/*
         <div className="componentSide" style={{ width: showhidecodelist ? '50%' : '100%' }}>
           <div className="componentList">
             <div className="title">
@@ -1797,38 +1996,7 @@ const handleListPrinters = async () => {
                 {componentList.map((ele: COMPONENT_DATA, index: number) => {
                   return (
                     <ListItem
-                      onDragEnter={(e) => {
-                        setEndIndex(index);
-                      }}
-                      onDragEnd={(e) => {
-                        console.log(startIndex + "|" + endIndex);
-                        const next = componentList.map((x) => ({ ...x }));
-                        const tmp = next[startIndex];
-                        next[startIndex] = next[endIndex];
-                        next[endIndex] = tmp;
-                        commitComponentList(next);
-                      }}
-                      /* onDragExit={(e)=> {console.log(e)}} */
-                      /* onDragOver={(e)=> {console.log(e)}} */
-                      onDragStart={(e) => {
-                        setStartIndex(index);
-                      }}
-                      draggable={true}
                       key={index}
-                      secondaryAction={
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          style={{ backgroundColor: "transparent" }}
-                          size="small"
-                          sx={{ padding: 0.5 }}
-                          onClick={() => {
-                            deleteSelectedComponent(index);
-                          }}
-                        >
-                          <FcDeleteRow />
-                        </IconButton>
-                      }
                     >
                       <ListItemButton
                         role={undefined}
@@ -1838,14 +2006,6 @@ const handleListPrinters = async () => {
                         dense
                         sx={{ py: 0, minHeight: 32, backgroundColor: index === currentComponent ? 'rgba(25, 118, 210, 0.12)' : 'transparent' }}
                       >
-                        <ListItemAvatar sx={{ minWidth: 30 }}>
-                          <Avatar
-                            style={{ backgroundColor: "transparent" }}
-                            sx={{ width: 20, height: 20 }}
-                          >
-                            <TbComponents size={16} />
-                          </Avatar>
-                        </ListItemAvatar>
                         <ListItemText
                           primaryTypographyProps={{ fontSize: '0.75rem', fontWeight: 'bold' }}
                           secondaryTypographyProps={{ fontSize: '0.65rem' }}
@@ -2140,8 +2300,9 @@ const handleListPrinters = async () => {
             )}
           </div>
         </div>
+        */}
       </div>
-      <div className="design_panel" style={{ width: showhidecodelist ? '60%' : '80%' }}>
+      <div className="design_panel" style={{ width: showhidecodelist ? '80%' : '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="design_toolbar">
           <IconButton
             className="buttonIcon"
@@ -2178,6 +2339,28 @@ const handleListPrinters = async () => {
             <BiPrinter color="black" size={15} />
             Print
           </IconButton>
+          <span style={{ fontSize: 12, paddingLeft: 8 }}>Offset X (mm):</span>
+          <input
+            type="number"
+            step={0.01}
+            value={Number.isFinite(printOffsetMm.x) ? printOffsetMm.x : 0}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setAndPersistPrintOffset({ x: Number.isFinite(v) ? v : 0, y: printOffsetMm.y });
+            }}
+            style={{ width: 80, height: 26, marginLeft: 6 }}
+          />
+          <span style={{ fontSize: 12, paddingLeft: 8 }}>Offset Y (mm):</span>
+          <input
+            type="number"
+            step={0.01}
+            value={Number.isFinite(printOffsetMm.y) ? printOffsetMm.y : 0}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setAndPersistPrintOffset({ x: printOffsetMm.x, y: Number.isFinite(v) ? v : 0 });
+            }}
+            style={{ width: 80, height: 26, marginLeft: 6 }}
+          />
           <IconButton
             className="buttonIcon"
             onClick={() => {
@@ -2267,11 +2450,12 @@ const handleListPrinters = async () => {
           ></input>{" "}
           (mm) */}
         </div>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
         <div
           id="10a"
           className="designAmazon"
           ref={designRef}
-          style={{ position: "relative", flex: 1, width: '100%', height: '100%', overflow: 'hidden' }}
+          style={{ position: "relative", flex: 7, width: '100%', minHeight: 0, overflow: 'hidden' }}
           onDragOver={(e) => {
             e.preventDefault();
           }}
@@ -2435,37 +2619,50 @@ const handleListPrinters = async () => {
                    Actually simpler: renderElement takes componentList. 
                    We want to override the ONE component being dragged.
                 */}
-                {(() => {
-                   let renderList = componentList;
-                   // If dragging, we want to visually update the content too, BUT without updating componentList state to avoid heavy re-render.
-                   // We can override the specific item in a temp array.
-                   if (activeHandleIdx !== null && activeHandleBox !== null) {
-                       const idx = activeHandleIdx;
-                       
-                       // Derived from activeHandleBox (screen px) back to MM
-                       // This calculation must match exactly what onDrag does but we do it here for render
+                <div
+                  style={
+                    isPrinting
+                      ? {
+                          transform: `translate(${printOffsetMm.x * MM_TO_PX}px, ${printOffsetMm.y * MM_TO_PX}px)`,
+                          transformOrigin: 'top left',
+                        }
+                      : undefined
+                  }
+                >
+                  {(() => {
+                    let renderList = componentList;
+                    // If dragging, we want to visually update the content too, BUT without updating componentList state to avoid heavy re-render.
+                    // We can override the specific item in a temp array.
+                    if (activeHandleIdx !== null && activeHandleBox !== null) {
+                      const idx = activeHandleIdx;
+
+                      // Derived from activeHandleBox (screen px) back to MM
+                      // This calculation must match exactly what onDrag does but we do it here for render
                       const unscaledX = (activeHandleBox.x - (x + RULER_LEFT)) / scale;
                       const unscaledY = (activeHandleBox.y - (y + RULER_TOP)) / scale;
                       const mmX = unscaledX * PX_TO_MM;
                       const mmY = unscaledY * PX_TO_MM;
-                       
-                       // For resize
-                       const w = activeHandleBox.w / scale;
-                       const h = activeHandleBox.h / scale;
-                       const mmW = w * PX_TO_MM;
-                       const mmH = h * PX_TO_MM;
 
-                       renderList = componentList.map((p, i) => {
-                          if (i !== idx) return p;
-                          return { 
-                             ...p, 
-                             POS_X: mmX, POS_Y: mmY,
-                             SIZE_W: mmW, SIZE_H: mmH 
-                          };
-                       });
-                   }
-                   return renderElement(renderList);
-                })()}
+                      // For resize
+                      const w = activeHandleBox.w / scale;
+                      const h = activeHandleBox.h / scale;
+                      const mmW = w * PX_TO_MM;
+                      const mmH = h * PX_TO_MM;
+
+                      renderList = componentList.map((p, i) => {
+                        if (i !== idx) return p;
+                        return {
+                          ...p,
+                          POS_X: mmX,
+                          POS_Y: mmY,
+                          SIZE_W: mmW,
+                          SIZE_H: mmH,
+                        };
+                      });
+                    }
+                    return renderElement(renderList);
+                  })()}
+                </div>
               </div>
             </div>
           </div>
@@ -2519,6 +2716,20 @@ const handleListPrinters = async () => {
               );
             })()}
           </div>
+        </div>
+        <div style={{ flex: 5, minHeight: 0, overflow: 'hidden' }}>
+          <AGTable
+            suppressRowClickSelection={false}
+            showFilter={true}
+            toolbar={agToolbar}
+            columns={agColumns}
+            data={componentList}
+            onCellEditingStopped={onAgCellEditingStopped}
+            onCellClick={onAgCellClick}
+            onSelectionChange={() => {}}
+            onRowDragEnd={onAgRowDragEnd}
+          />
+        </div>
         </div>
       </div>
       <div className="historyPanel" style={{ width: '200px', display: 'flex', flexDirection: 'column', borderLeft: '1px solid #ccc', background: '#f5f5f5', height: '100%', overflow: 'hidden' }}>

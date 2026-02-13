@@ -1,12 +1,14 @@
 import {
   forwardRef,
   ReactElement,
+  memo,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
+
 import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
@@ -18,11 +20,13 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import PivotTable from '../PivotChart/PivotChart';
 import PivotGridDataSource, { PivotGridDataType } from 'devextreme/ui/pivot_grid/data_source';
 import { MdOutlinePivotTableChart } from 'react-icons/md';
+
 interface AGInterface {
   data: Array<any>,
   columns?: Array<any>,
   toolbar?: ReactElement,
   showFilter?: boolean,
+
   suppressRowClickSelection?: boolean,
   rowHeight?: number,
   columnWidth?: number,
@@ -34,17 +38,20 @@ interface AGInterface {
   onRowDragEnd?: (e: any) => void,
   getRowStyle?: (e: any) => any
 }
-const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
+
+const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [selectedrow, setSelectedrow] = useState(0);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
     return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
   };
+
   const onRowdoubleClick = (params: any) => {
   }
   const onRowDragEnd = (params: any) => {
   }
+
   const gridRefDefault = useRef<AgGridReact<any>>(null);
   const tableSelectionChange = useCallback(() => {
     if (gridRef !== null) {
@@ -56,20 +63,16 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
       setSelectedrow(selectedrows);
     }
   }, []);
-  /*   function setIdText(id: string, value: string | number | undefined) {
-      document.getElementById(id)!.textContent =
-        value == undefined ? "undefined" : value + "";
-    } */
+
   const setHeaderHeight = useCallback((value?: number) => {
     if (gridRef !== null) {
       gridRef.current!.api.setGridOption("headerHeight", value);
-      //setIdText("headerHeight", value);
     }
     else {
       gridRefDefault.current!.api.setGridOption("headerHeight", value);
-      //setIdText("headerHeight", value);
     }
   }, []);
+
   const defaultColDef = useMemo(() => {
     return {
       initialWidth: ag_data.columnWidth ?? 100,
@@ -81,31 +84,27 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
       headerCheckboxSelectionFilteredOnly: true,
     };
   }, []);
+
   const defaultColumns = useMemo(() => {
-    if(ag_data.data.length > 0){
-      let keys = Object.keys(ag_data.data[0]);    
-      return keys.map((key) => {        
-        return {field: key,
-          headerName: key,
-          width: ag_data.columnWidth ?? 100}        
+    if (ag_data.data.length > 0) {
+      let keys = Object.keys(ag_data.data[0]);
+      return keys.map((key) => {
+        return { field: key, headerName: key, width: ag_data.columnWidth ?? 100 }
       })
-    }  
-    else return []  
-  },[ag_data.data])
-
-
- 
+    }
+    else return []
+  }, [ag_data.data])
 
   const pivotDatasourcefiels = useMemo(() => {
-    if(ag_data.data.length > 0){
-      let keys = Object.keys(ag_data.data[0]);    
-      return keys.map((key) => {        
+    if (ag_data.data.length > 0) {
+      let keys = Object.keys(ag_data.data[0]);
+      return keys.map((key) => {
         return {
           caption: key,
           width: 80,
           dataField: key,
           allowSorting: true,
-          allowFiltering: true,          
+          allowFiltering: true,
           summaryType: "sum",
           format: "fixedPoint",
           headerFilter: {
@@ -113,20 +112,18 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
             height: 500,
             width: 300,
           },
-        }        
+        }
       })
-    } 
+    }
     else {
-      return [] 
-    } 
-  },[ag_data.data])
+      return []
+    }
+  }, [ag_data.data])
 
-
- let pvdts =  new PivotGridDataSource({
+  let pvdts = new PivotGridDataSource({
     fields: pivotDatasourcefiels,
     store: ag_data.data,
   })
-
 
   const onExportClick = () => {
     if (gridRef !== null) {
@@ -136,7 +133,7 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
       gridRefDefault.current!.api.exportDataAsCsv();
     }
   };
-  // Định nghĩa kiểu dữ liệu đầu vào
+
   interface RowData {
     name: string;
     age: number;
@@ -177,9 +174,11 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
     });
     return filteredRows;
   };
+
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => {
   }, [])
+
   return (
     <div className='agtable'>
       {ag_data.toolbar !== undefined && <div className="toolbar" style={{ backgroundImage: theme.CMS.backgroundImage }}>
@@ -267,23 +266,26 @@ const AGTable = forwardRef((ag_data: AGInterface, gridRef: any) => {
         </div>
       </div>
       {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
-            </IconButton>
-            <PivotTable
-              datasource={pvdts}
-              tableID="datasxtablepivot"
-            />
-          </div>
-        )}       
+        <div className="pivottable1">
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color="blue" size={15} />
+            Close
+          </IconButton>
+          <PivotTable
+            datasource={pvdts}
+            tableID="datasxtablepivot"
+          />
+        </div>
+      )}
     </div>
   )
 });
+
+const AGTable = memo(AGTableInner as any) as any;
+
 export default AGTable

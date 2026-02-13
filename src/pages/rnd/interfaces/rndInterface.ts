@@ -59,6 +59,7 @@ export interface M_NAME_LIST {
   M_NAME: string;
 }
 export interface COMPONENT_DATA {
+  id?: number | string;
   G_CODE_MAU: string;
   DOITUONG_NO: number;
   DOITUONG_NAME: string;
