@@ -236,6 +236,8 @@ const DESIGN_AMAZON = () => {
     latestComponentListRef.current = componentList;
   }, [componentList]);
 
+  const agTableRef = useRef<any>(null);
+
   const nudgeStateRef = useRef<{
     active: boolean;
     startMs: number;
@@ -531,10 +533,12 @@ const DESIGN_AMAZON = () => {
           floatingFilter: true,
           cellEditor: 'agSelectCellEditor',
           cellEditorParams: {
-            values: ['R', 'B', 'I', 'BI'],
+            values: ['R', 'B', 'I', 'U'],
           },
         },
-        { field: 'GIATRI', headerName: 'VALUE', width: 260, resizable: true, floatingFilter: true },
+        { field: 'GIATRI', headerName: 'GIATRI', width: 260, resizable: true, floatingFilter: true, cellRenderer: (params: any)=> {
+          return <span style={{color:'blue'}}>{params.value}</span>
+        } },
         { field: 'REMARK', headerName: 'REMARK', width: 150, resizable: true, floatingFilter: true },
       ] as any,
     [],
@@ -637,6 +641,42 @@ const DESIGN_AMAZON = () => {
     [newComponent],
   );
 
+  const selectedComponentId = useMemo(() => {
+    const cur = latestComponentListRef.current;
+    const c = cur?.[currentComponent] as any;
+    return c?.id ?? null;
+  }, [currentComponent, componentList]);
+
+  useEffect(() => {
+    const api = agTableRef.current?.api;
+    if (!api) return;
+    if (selectedComponentId == null) {
+      api.deselectAll();
+      return;
+    }
+    api.deselectAll();
+    const node = api.getRowNode(selectedComponentId?.toString?.() ?? String(selectedComponentId));
+    if (node) node.setSelected(true, true);
+  }, [selectedComponentId]);
+
+  const agGetRowStyle = useCallback(
+    (params: any) => {
+      const rowId = params?.data?.id ?? null;
+      if (selectedComponentId == null || rowId == null) return undefined;
+      if (rowId !== selectedComponentId) return  {
+        backgroundColor: 'transparent',
+        fontWeight: 400,
+        fontSize: '0.7rem'
+      };
+      return {
+        backgroundColor: '#7fee00',
+        fontWeight: 700,
+        fontSize: '0.8rem'
+      };
+    },
+    [selectedComponentId],
+  );
+
   const createComponentAt = async (type: string, mmX: number, mmY: number) => {
     if (codedatatablefilter.length <= 0) {
       Swal.fire("Thông báo", "Chọn code phôi trước", "error");
@@ -659,7 +699,7 @@ const DESIGN_AMAZON = () => {
       return { w: 10, h: 10 };
     })();
 
-    let giatri = t === 'TEXT' ? 'TEXT' : '1234';
+    let giatri = t === 'TEXT' ? 'TEXT' : 'sample text';
     if (t === 'IMAGE') {
       const uploadedUrl = await pickAndUploadImage();
       if (!uploadedUrl) return;
@@ -2719,11 +2759,13 @@ const handleListPrinters = async () => {
         </div>
         <div style={{ flex: 5, minHeight: 0, overflow: 'hidden' }}>
           <AGTable
+            ref={agTableRef}
             suppressRowClickSelection={false}
             showFilter={true}
             toolbar={agToolbar}
             columns={agColumns}
             data={componentList}
+            getRowStyle={agGetRowStyle}
             onCellEditingStopped={onAgCellEditingStopped}
             onCellClick={onAgCellClick}
             onSelectionChange={() => {}}
