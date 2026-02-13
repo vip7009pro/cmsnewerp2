@@ -189,6 +189,90 @@
     }
   }
 }
+
+.custom-dialog.qlvlMaterialDialog {
+  width: min(920px, 96vw);
+  max-width: 920px;
+
+  .custom-dialog-content {
+    text-align: left;
+  }
+
+  .forminput {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    width: 100%;
+    align-items: start;
+  }
+
+  .forminput .left,
+  .forminput .right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .forminputcolumn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .forminputcolumn > label {
+    display: grid;
+    grid-template-columns: 130px minmax(180px, 1fr);
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .forminputcolumn > label > b {
+    justify-self: end;
+    white-space: nowrap;
+  }
+
+  .forminputcolumn input[type='text'],
+  .forminputcolumn input[type='number'],
+  .forminputcolumn input:not([type]),
+  .forminputcolumn select {
+    width: 100%;
+    height: 28px;
+    box-sizing: border-box;
+  }
+
+  .forminputcolumn input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    justify-self: start;
+  }
+
+  .forminputcolumn .MuiAutocomplete-root {
+    width: 100% !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    background-color: transparent !important;
+  }
+
+  .forminputcolumn .MuiFormControl-root,
+  .forminputcolumn .MuiInputBase-root {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .forminputcolumn .MuiInputBase-root {
+    height: 28px;
+  }
+
+  .forminputcolumn > .forminputcolumn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
 @media only screen and (max-width: 768px) {
   .qlvl {
     width: 100%;

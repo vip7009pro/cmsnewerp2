@@ -10,7 +10,7 @@ import { f_load_P_Stock_By_Month, f_load_P_Stock_By_Month_Detail } from '../../u
 import AGTable from '../../../../components/DataTable/AGTable';
 import { getUserData } from '../../../../api/Api';
 import PSTOCK_BY_MONTH_CHART from '../../../../components/Chart/WH/PSTOCK_BY_MONTH_CHART';
-const KHOTP_REPORT = () => {
+const KHOTP_REPORT_CMS = () => {
   const [stockpopularmonth, setStockPopularMonth] = useState<P_STOCK_BY_MONTH_DATA[]>([]);
   const [stockpopularmonthdetailA, setStockPopularMonthDetailA] = useState<P_STOCK_BY_MONTH_DETAIL_DATA[]>([]);
   const [stockpopularmonthdetailB, setStockPopularMonthDetailB] = useState<P_STOCK_BY_MONTH_DETAIL_DATA[]>([]);
@@ -248,4 +248,4 @@ const KHOTP_REPORT = () => {
     </div>
   );
 };
-export default KHOTP_REPORT
+export default KHOTP_REPORT_CMS

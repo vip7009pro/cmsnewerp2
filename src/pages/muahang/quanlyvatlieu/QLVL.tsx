@@ -1255,6 +1255,7 @@ const QLVL = () => {
             isOpen={showdialog}
             onClose={handleCloseDialog}
             title={`Add/Update Material (M_ID: ${clickedRows?.M_ID})`}
+            dialogClassName="qlvlMaterialDialog"
             content={
               <div className="forminput" >
                 <div className="left">

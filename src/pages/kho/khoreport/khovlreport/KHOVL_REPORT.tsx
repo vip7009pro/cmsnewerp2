@@ -403,7 +403,7 @@ const KHOVL_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className='graph'>
-          <span className='section_title'>2. Tình hình tồn liệu dài hạn</span>{(getUserData()?.EMPL_NO === "NHU1903" || getUserData()?.EMPL_NO === "none") && <div style={{ display: 'flex', alignItems: 'center' }}>Mốc 1: <input type="number" value={moc1} style={{width: '50px'}} onChange={(e) => setMoc1(Number(e.target.value))} /> Mốc 2: <input type="number" value={moc2} style={{width: '50px'}} onChange={(e) => setMoc2(Number(e.target.value))}/>
+          <span className='section_title'>2. Tình hình tồn liệu dài hạn</span>{<div style={{ display: 'flex', alignItems: 'center' }}>Mốc 1: <input type="number" value={moc1} style={{width: '50px'}} onChange={(e) => setMoc1(Number(e.target.value))} /> Mốc 2: <input type="number" value={moc2} style={{width: '50px'}} onChange={(e) => setMoc2(Number(e.target.value))}/>
           <button
             className='searchbutton'
             onClick={() => {
