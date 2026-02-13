@@ -230,6 +230,11 @@
     width: 100%;
   }
 
+  .forminputcolumn > label > :not(b) {
+    min-width: 0;
+    justify-self: stretch;
+  }
+
   .forminputcolumn > label > b {
     justify-self: end;
     white-space: nowrap;
@@ -252,9 +257,40 @@
 
   .forminputcolumn .MuiAutocomplete-root {
     width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
     margin-bottom: 0 !important;
-    background-color: transparent !important;
+    background-color: #ffffff !important;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .forminputcolumn .MuiAutocomplete-root .MuiOutlinedInput-root {
+    height: 28px;
+    min-height: 28px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    background-color: #ffffff !important;
+    box-sizing: border-box;
+    align-items: center;
+  }
+
+  .forminputcolumn .MuiAutocomplete-root .MuiOutlinedInput-root {
+    padding-right: 6px !important;
+  }
+
+  .forminputcolumn .MuiAutocomplete-root .MuiAutocomplete-endAdornment {
+    right: 2px;
+  }
+
+  .forminputcolumn .MuiAutocomplete-root .MuiAutocomplete-input {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .forminputcolumn .MuiAutocomplete-root .MuiAutocomplete-endAdornment {
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .forminputcolumn .MuiFormControl-root,

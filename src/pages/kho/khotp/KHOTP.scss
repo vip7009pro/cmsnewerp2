@@ -1,7 +1,7 @@
 @media only screen and (max-width: 5000px) {
   .khotp {
     width: 100%;
-    height: calc(100vh - 85px);
+    height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
     .tracuuDataWH {
@@ -12,6 +12,7 @@
       .tracuuDataWHform {
         display: flex;
         width: 250px;
+        height: 100%;
         flex-direction: column;
         align-items: center;
         background-image: linear-gradient(0deg, #afd3d1, #86cfff);

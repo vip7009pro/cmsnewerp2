@@ -1269,19 +1269,16 @@ const QLVL = () => {
                         onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
                       ></input>
                     </label>
-                    <label style={{ display: "flex", alignItems: "center" }}>
+                    <label>
                       <b>Vendor:</b>{" "}
                       <Autocomplete
                         sx={{
-                          height: 10,
-                          width: "160px",
                           margin: "1px",
                           fontSize: "0.7rem",
-                          marginBottom: "20px",
-                          backgroundColor: "white",
                         }}
                         size="small"
                         disablePortal
+                        disableClearable
                         options={customerList}
                         className="autocomplete"
                         filterOptions={filterOptions1}
@@ -1293,7 +1290,7 @@ const QLVL = () => {
                           }`
                         }
                         renderInput={(params) => (
-                          <TextField {...params} style={{ height: "10px" }} />
+                          <TextField {...params} style={{ fontSize: "0.7rem" }} />
                         )}
                         defaultValue={{
                           CUST_CD: getCompany() === "CMS" ? "0049" : "KH000",

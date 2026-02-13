@@ -1576,11 +1576,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>}
         columns={columnDefinition}
         data={whdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
