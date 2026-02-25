@@ -587,6 +587,16 @@ const DESIGN_AMAZON = () => {
     [commitComponentList, currentComponent],
   );
 
+  const isAgCellEditingRef = useRef(false);
+
+  const onAgCellEditingStarted = useCallback(() => {
+    isAgCellEditingRef.current = true;
+  }, []);
+
+  const onAgCellEditingEnded = useCallback(() => {
+    isAgCellEditingRef.current = false;
+  }, []);
+
   const onAgRowDragEnd = useCallback(
     (params: any) => {
       const curList = latestComponentListRef.current;
@@ -946,6 +956,7 @@ const handleListPrinters = async () => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (isAgCellEditingRef.current) return;
       if (e.key === 'Control') setIsCtrlDown(true);
       if (e.key === 'Shift') setIsShiftDown(true);
  
@@ -963,6 +974,7 @@ const handleListPrinters = async () => {
       }
     };
     const onKeyUp = (e: KeyboardEvent) => {
+      if (isAgCellEditingRef.current) return;
       if (e.key === "Control") setIsCtrlDown(false);
       if (e.key === "Shift") setIsShiftDown(false);
     };
@@ -1176,6 +1188,7 @@ const handleListPrinters = async () => {
     const onDeleteKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Delete' && e.key !== 'Backspace') return;
       if (isTypingTarget(e.target)) return;
+      if (isAgCellEditingRef.current) return;
       if (currentComponent < 0 || currentComponent >= latestComponentListRef.current.length) return;
       e.preventDefault();
       deleteSelectedComponent();
@@ -1185,6 +1198,7 @@ const handleListPrinters = async () => {
       if (!isArrow(e.key)) return;
       if (isTypingTarget(e.target)) return;
       if (isAgGridTarget(e.target)) return;
+      if (isAgCellEditingRef.current) return;
       if (currentComponent < 0 || currentComponent >= latestComponentListRef.current.length) return;
 
       e.preventDefault();
@@ -2766,7 +2780,11 @@ const handleListPrinters = async () => {
             columns={agColumns}
             data={componentList}
             getRowStyle={agGetRowStyle}
-            onCellEditingStopped={onAgCellEditingStopped}
+            onCellEditingStarted={onAgCellEditingStarted}
+            onCellEditingStopped={(e: any) => {
+              onAgCellEditingEnded();
+              onAgCellEditingStopped(e);
+            }}
             onCellClick={onAgCellClick}
             onSelectionChange={() => {}}
             onRowDragEnd={onAgRowDragEnd}

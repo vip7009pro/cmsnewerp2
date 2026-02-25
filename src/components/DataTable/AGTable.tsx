@@ -34,6 +34,7 @@ interface AGInterface {
   onCellClick?: (e: any) => void,
   onRowDoubleClick?: (e: any) => void,
   onSelectionChange: (e: any) => void,
+  onCellEditingStarted?: (e: any) => void,
   onCellEditingStopped?: (e: any) => void,
   onRowDragEnd?: (e: any) => void,
   getRowStyle?: (e: any) => any
@@ -249,6 +250,7 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
           onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
           onRowDragMove={(e) => { }}
           onRowDragEnd={ag_data.onRowDragEnd ?? onRowDragEnd}
+          onCellEditingStarted={ag_data.onCellEditingStarted}
           onCellEditingStopped={ag_data.onCellEditingStopped}
           onCellClicked={ag_data.onCellClick}
         />

@@ -23,6 +23,8 @@ const TEXT = ({ DATA }: { DATA: COMPONENT_DATA }) => {
         color: `${
           DATA.REMARK.toUpperCase() === "HIGHTLIGHT" ? "white" : "black"
         }`,
+        backgroundColor:'transparent',
+        padding: 0
       }}
     >
       {DATA.GIATRI}
