@@ -112,6 +112,20 @@ export const defaultDinhMuc = [
     ],
   },
   {
+    machine: "FO",
+    setting: 60,
+    unit: "DAP",
+    UPH: 7000,
+    number_of_color: [
+      { value: 0, loss: 5, when_under_500m: 50, when_over_500m: 30 },
+      { value: 1, loss: 7, when_under_500m: 120, when_over_500m: 80 },
+      { value: 2, loss: 7, when_under_500m: 120, when_over_500m: 80 },
+      { value: 3, loss: 7, when_under_500m: 120, when_over_500m: 80 },
+      { value: 4, loss: 10, when_under_500m: 150, when_over_500m: 100 },
+      { value: 5, loss: 115, when_under_500m: 200, when_over_500m: 150 },
+    ],
+  },
+  {
     machine: "DC",
     setting: 45,
     unit: "DAP",
@@ -154,6 +168,20 @@ export const defaultDinhMuc = [
     ],
   },
   {
+    machine: "DC09",
+    setting: 45,
+    unit: "DAP",
+    UPH: 18000,
+    number_of_color: [
+      { value: 0, loss: 5, when_under_500m: 50, when_over_500m: 30 },
+      { value: 1, loss: 1, when_under_500m: 1, when_over_500m: 1 },
+      { value: 2, loss: 1, when_under_500m: 1, when_over_500m: 1 },
+      { value: 3, loss: 1, when_under_500m: 1, when_over_500m: 1 },
+      { value: 4, loss: 1, when_under_500m: 1, when_over_500m: 1 },
+      { value: 5, loss: 1, when_under_500m: 1, when_over_500m: 1 },
+    ],
+  },
+  {
     machine: "DC03",
     setting: 45,
     unit: "DAP",
@@ -183,7 +211,7 @@ export const defaultDinhMuc = [
   },
 ];
 export const getDefaulDinhMucJson = (machine: string) => {
-  if (["DC01", "DC02", "DC03", "DC04"].includes(machine)) {
+  if (["DC01", "DC02", "DC03", "DC04","DC09"].includes(machine)) {
     return defaultDinhMuc.find((item) => item.machine === machine);
   } else {
     return defaultDinhMuc.find(
