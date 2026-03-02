@@ -30,6 +30,7 @@
     "html5-qrcode": "^2.3.8",
     "jsbarcode": "^3.11.6",
     "jquery": "^3.7.1",
+    "jszip": "^3.10.1",
     "material-react-table": "^2.13.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.45",

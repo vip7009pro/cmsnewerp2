@@ -11,6 +11,8 @@ import MenuManager from "./MenuManager/MenuManager";
 import PagesManager from "./components/PagesManager/PagesManager";
 import RelationshipsManager from "./components/RelationshipsManager/RelationshipsManager";
 import ProcessManager from "./ProcessManager/ProcessManager";
+import ExcelAITranslator from "./ExcelAITranslator";
+
 
 const  NOCODELOWCODE = () => {
   useEffect(() => { }, []);
@@ -43,6 +45,9 @@ const  NOCODELOWCODE = () => {
         </MyTabs.Tab>
         <MyTabs.Tab title={"Process Manager"}>
           <ProcessManager/>         
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"Excel Translator AI"}>
+          <ExcelAITranslator/>
         </MyTabs.Tab>
       </MyTabs>
     </div>
