@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
-import { Button, MenuItem, TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
 
-type SlideTextItem = {
+type TextBoxTextItem = {
   path: string;
-  i: number;
+  box: number;
   text: string;
 };
 
@@ -16,11 +16,19 @@ type PromptPayload = {
     to: string;
     total: number;
   };
-  slideTexts: SlideTextItem[];
+  textboxTexts: TextBoxTextItem[];
 };
 
 type TranslationPayload = {
-  slideTexts: SlideTextItem[];
+  textboxTexts: TextBoxTextItem[];
+};
+
+const getTxBodiesInDocumentOrder = (doc: Document) => {
+  const all = Array.from(doc.getElementsByTagName('*')) as Element[];
+  return all.filter((el) => {
+    const tag = (el.tagName || '').toLowerCase();
+    return tag === 'p:txbody' || tag === 'a:txbody' || tag.endsWith(':txbody');
+  });
 };
 
 const PowerPointAITranslator = () => {
@@ -31,7 +39,7 @@ const PowerPointAITranslator = () => {
   const [backendTemperature, setBackendTemperature] = useState<number>(0.2);
   const [backendTranslating, setBackendTranslating] = useState<boolean>(false);
 
-  const [slideTexts, setSlideTexts] = useState<SlideTextItem[]>([]);
+  const [textboxTexts, setTextboxTexts] = useState<TextBoxTextItem[]>([]);
   const [promptText, setPromptText] = useState<string>('');
   const [aiResponseText, setAiResponseText] = useState<string>('');
 
@@ -47,23 +55,32 @@ const PowerPointAITranslator = () => {
     });
   };
 
-  const extractSlideTextsFromXml = useCallback((path: string, xml: string) => {
+  const extractTextBoxesFromXml = useCallback((path: string, xml: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xml, 'application/xml');
-    const out: SlideTextItem[] = [];
-    let idx = 0;
+    const out: TextBoxTextItem[] = [];
 
-    const aTNodes = Array.from(doc.getElementsByTagName('a:t'));
-    for (const t of aTNodes) {
-      const text = (t.textContent ?? '').replace(/\r\n/g, '\n');
-      out.push({ path, i: idx, text });
-      idx++;
+    const bodies = getTxBodiesInDocumentOrder(doc);
+
+    for (let box = 0; box < bodies.length; box++) {
+      const body = bodies[box];
+      const paragraphs = Array.from(body.getElementsByTagName('a:p'));
+
+      const lines: string[] = [];
+      for (const p of paragraphs) {
+        const tNodes = Array.from(p.getElementsByTagName('a:t'));
+        const line = tNodes.map((t) => t.textContent ?? '').join('');
+        lines.push(line);
+      }
+
+      const text = lines.join('\n').replace(/\r\n/g, '\n');
+      out.push({ path, box, text });
     }
 
     return out;
   }, []);
 
-  const buildPrompt = useCallback((items: SlideTextItem[], fn: string, from: string, to: string) => {
+  const buildPrompt = useCallback((items: TextBoxTextItem[], fn: string, from: string, to: string) => {
     const payload: PromptPayload = {
       meta: {
         fileName: fn,
@@ -71,11 +88,11 @@ const PowerPointAITranslator = () => {
         to,
         total: items.length,
       },
-      slideTexts: items,
+      textboxTexts: items,
     };
 
     const schema: any = {
-      slideTexts: [{ path: 'ppt/slides/slide1.xml', i: 0, text: 'translated text' }],
+      textboxTexts: [{ path: 'ppt/slides/slide1.xml', box: 0, text: 'translated text (use \\n for line breaks)' }],
     };
 
     return [
@@ -85,9 +102,10 @@ const PowerPointAITranslator = () => {
       `Rules:`,
       `- Keep the SAME number of items as input.`,
       `- Keep each path exactly the same.`,
-      `- Keep each i exactly the same for each path.`,
+      `- Keep each box exactly the same for each path.`,
       `- Preserve placeholders like {0}, {name}, %s.`,
       `- Do not reorder items.`,
+      `- Keep line breaks (\\n) to preserve slide paragraph breaks as much as possible.`,
       `Input JSON:`,
       JSON.stringify(payload, null, 2),
     ].join('\n');
@@ -96,7 +114,7 @@ const PowerPointAITranslator = () => {
   const onUpload = useCallback(
     async (file: File) => {
       setFileName(file.name);
-      setSlideTexts([]);
+      setTextboxTexts([]);
       setPromptText('');
       setAiResponseText('');
       uploadedFileRef.current = file;
@@ -108,35 +126,37 @@ const PowerPointAITranslator = () => {
       const slidePaths = Object.keys(zip.files).filter((p) => /^ppt\/slides\/slide\d+\.xml$/i.test(p));
       slidePaths.sort((a, b) => a.localeCompare(b));
 
-      let items: SlideTextItem[] = [];
+      let items: TextBoxTextItem[] = [];
       for (const p of slidePaths) {
         const f = zip.file(p);
         if (!f) continue;
         const xml = await f.async('text');
-        items = items.concat(extractSlideTextsFromXml(p, xml));
+        items = items.concat(extractTextBoxesFromXml(p, xml));
       }
 
-      setSlideTexts(items);
+      setTextboxTexts(items);
       const prompt = buildPrompt(items, file.name, fromLang, toLang);
       setPromptText(prompt);
     },
-    [buildPrompt, extractSlideTextsFromXml, fromLang, toLang],
+    [buildPrompt, extractTextBoxesFromXml, fromLang, toLang],
   );
 
   const applyTranslationPayloadToZip = useCallback(async (payload: TranslationPayload) => {
     const zip = zipRef.current;
     if (!zip) throw new Error('No pptx loaded');
 
-    if (!payload?.slideTexts || !Array.isArray(payload.slideTexts)) {
-      throw new Error('Missing slideTexts array');
+    if (!payload?.textboxTexts || !Array.isArray(payload.textboxTexts)) {
+      throw new Error('Missing textboxTexts array');
     }
 
-    if (payload.slideTexts.length !== slideTexts.length) {
-      throw new Error(`Length mismatch: expected ${slideTexts.length} items, got ${payload.slideTexts.length}`);
+    if (payload.textboxTexts.length !== textboxTexts.length) {
+      throw new Error(
+        `Length mismatch: expected ${textboxTexts.length} items, got ${payload.textboxTexts.length}`,
+      );
     }
 
-    const byPath = new Map<string, SlideTextItem[]>();
-    for (const it of payload.slideTexts) {
+    const byPath = new Map<string, TextBoxTextItem[]>();
+    for (const it of payload.textboxTexts) {
       if (!it || typeof it.path !== 'string') continue;
       const cur = byPath.get(it.path) ?? [];
       cur.push(it);
@@ -149,19 +169,39 @@ const PowerPointAITranslator = () => {
       const xml = await f.async('text');
       const parser = new DOMParser();
       const doc = parser.parseFromString(xml, 'application/xml');
-      const tNodes = Array.from(doc.getElementsByTagName('a:t'));
 
-      items.sort((a, b) => a.i - b.i);
+      const bodies = getTxBodiesInDocumentOrder(doc);
+
+      items.sort((a, b) => a.box - b.box);
       for (const it of items) {
-        const node = tNodes[it.i] as Element | undefined;
-        if (!node) continue;
-        node.textContent = (it.text ?? '').replace(/\r\n/g, '\n');
+        const body = bodies[it.box];
+        if (!body) continue;
+
+        const paragraphs = Array.from(body.getElementsByTagName('a:p'));
+        const translatedText = String(it.text ?? '').replace(/\r\n/g, '\n');
+        const lines = translatedText.split('\n');
+
+        for (let pi = 0; pi < paragraphs.length; pi++) {
+          const pNode = paragraphs[pi];
+          const tNodes = Array.from(pNode.getElementsByTagName('a:t'));
+          if (tNodes.length === 0) continue;
+
+          let line = lines[pi] ?? '';
+          if (pi === paragraphs.length - 1 && lines.length > paragraphs.length) {
+            line = [line, ...lines.slice(paragraphs.length)].filter((x) => x !== '').join('\n');
+          }
+
+          (tNodes[0] as Element).textContent = line;
+          for (let ti = 1; ti < tNodes.length; ti++) {
+            (tNodes[ti] as Element).textContent = '';
+          }
+        }
       }
 
       const serializer = new XMLSerializer();
       zip.file(p, serializer.serializeToString(doc));
     }
-  }, [slideTexts.length]);
+  }, [textboxTexts.length]);
 
   const applyTranslationsAndZip = useCallback(async () => {
     const zip = zipRef.current;
@@ -195,7 +235,9 @@ const PowerPointAITranslator = () => {
 
     setBackendTranslating(true);
     try {
-      const prompt = promptText.trim() ? promptText : buildPrompt(slideTexts, fileName || f.name, fromLang, toLang);
+      const prompt = promptText.trim()
+        ? promptText
+        : buildPrompt(textboxTexts, fileName || f.name, fromLang, toLang);
 
       const resp: any = await generalQuery('gemini_prompt', {
         prompt,
@@ -229,8 +271,8 @@ const PowerPointAITranslator = () => {
         throw new Error('Backend response is not a JSON object');
       }
 
-      if (!translated.slideTexts) {
-        throw new Error('Backend JSON missing slideTexts');
+      if (!translated.textboxTexts) {
+        throw new Error('Backend JSON missing textboxTexts');
       }
 
       setAiResponseText(JSON.stringify(translated, null, 2));
@@ -260,15 +302,15 @@ const PowerPointAITranslator = () => {
     fileName,
     fromLang,
     promptText,
-    slideTexts,
+    textboxTexts,
     toLang,
   ]);
 
   const stats = useMemo(() => {
-    const total = slideTexts.length;
-    const nonEmpty = slideTexts.filter((x) => (x.text ?? '').trim() !== '').length;
+    const total = textboxTexts.length;
+    const nonEmpty = textboxTexts.filter((x) => (x.text ?? '').trim() !== '').length;
     return { total, nonEmpty };
-  }, [slideTexts]);
+  }, [textboxTexts]);
 
   return (
     <div
@@ -338,10 +380,10 @@ const PowerPointAITranslator = () => {
         <Button
           variant="outlined"
           onClick={() => {
-            if (!slideTexts.length) return;
-            setPromptText(buildPrompt(slideTexts, fileName || 'slides.pptx', fromLang, toLang));
+            if (!textboxTexts.length) return;
+            setPromptText(buildPrompt(textboxTexts, fileName || 'slides.pptx', fromLang, toLang));
           }}
-          disabled={!slideTexts.length}
+          disabled={!textboxTexts.length}
         >
           Rebuild Prompt
         </Button>
