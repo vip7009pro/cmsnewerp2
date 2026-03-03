@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
-import { Button, MenuItem, TextField } from '@mui/material';
+import { Button, Checkbox, ListItemText, MenuItem, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
 
 type SharedStringItem = {
@@ -42,11 +42,26 @@ type TranslationPayload = {
 
 type TranslationMode = 'sharedStrings' | 'all';
 
+type SheetInfo = {
+  name: string;
+  path: string;
+};
+
+type FilteredTranslationData = {
+  sharedStrings: SharedStringItem[];
+  inlineStrings: InlineStringItem[];
+};
+
+type OutputMode = 'replace_in_original' | 'only_selected_sheets';
+
 const ExcelAITranslator = () => {
   const [fileName, setFileName] = useState<string>('');
-  const [fromLang, setFromLang] = useState<string>('vi');
-  const [toLang, setToLang] = useState<string>('en');
+  const [fromLang, setFromLang] = useState<string>(() => localStorage.getItem('excel_ai_translator_from') || 'vi');
+  const [toLang, setToLang] = useState<string>(() => localStorage.getItem('excel_ai_translator_to') || 'en');
   const [mode, setMode] = useState<TranslationMode>('sharedStrings');
+  const [sheets, setSheets] = useState<SheetInfo[]>([]);
+  const [selectedSheetPaths, setSelectedSheetPaths] = useState<string[]>(['__ALL__']);
+  const [outputMode, setOutputMode] = useState<OutputMode>('replace_in_original');
   const [backendModel, setBackendModel] = useState<string>('gemini-2.5-flash');
   const [backendTemperature, setBackendTemperature] = useState<number>(0.2);
   const [backendTranslating, setBackendTranslating] = useState<boolean>(false);
@@ -62,6 +77,14 @@ const ExcelAITranslator = () => {
 
   const sheetXmlCacheRef = useRef<Map<string, string>>(new Map());
   const uploadedFileRef = useRef<File | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('excel_ai_translator_from', fromLang);
+  }, [fromLang]);
+
+  useEffect(() => {
+    localStorage.setItem('excel_ai_translator_to', toLang);
+  }, [toLang]);
 
   const readFileAsArrayBuffer = (file: File) => {
     return new Promise<ArrayBuffer>((resolve, reject) => {
@@ -156,6 +179,176 @@ const ExcelAITranslator = () => {
     return { doc, out };
   }, []);
 
+  const readSheetList = useCallback(async (zip: JSZip) => {
+    const wbFile = zip.file('xl/workbook.xml');
+    const relsFile = zip.file('xl/_rels/workbook.xml.rels');
+    if (!wbFile || !relsFile) return [] as SheetInfo[];
+
+    const [wbXml, relsXml] = await Promise.all([wbFile.async('text'), relsFile.async('text')]);
+    const parser = new DOMParser();
+    const wbDoc = parser.parseFromString(wbXml, 'application/xml');
+    const relsDoc = parser.parseFromString(relsXml, 'application/xml');
+
+    const relNodes = Array.from(relsDoc.getElementsByTagName('Relationship')) as Element[];
+    const relMap = new Map<string, string>();
+    for (const r of relNodes) {
+      const id = r.getAttribute('Id') ?? '';
+      const target = r.getAttribute('Target') ?? '';
+      if (id && target) relMap.set(id, target);
+    }
+
+    const sheetNodes = Array.from(wbDoc.getElementsByTagName('sheet')) as Element[];
+    const list: SheetInfo[] = [];
+    for (const s of sheetNodes) {
+      const name = s.getAttribute('name') ?? '';
+      const rid = s.getAttribute('r:id') ?? s.getAttribute('id') ?? '';
+      const target = rid ? relMap.get(rid) : undefined;
+      if (!name || !target) continue;
+
+      const normalized = target.startsWith('/') ? target.slice(1) : target;
+      const fullPath = normalized.startsWith('xl/') ? normalized : `xl/${normalized}`;
+      list.push({ name, path: fullPath });
+    }
+    return list;
+  }, []);
+
+  const collectSharedStringIndexesForSheets = useCallback(async (zip: JSZip, sheetPaths: string[]) => {
+    const parser = new DOMParser();
+    const indexes = new Set<number>();
+
+    for (const p of sheetPaths) {
+      const sheetFile = zip.file(p);
+      if (!sheetFile) continue;
+      const sheetXml = sheetXmlCacheRef.current.get(p) ?? (await sheetFile.async('text'));
+      sheetXmlCacheRef.current.set(p, sheetXml);
+      const doc = parser.parseFromString(sheetXml, 'application/xml');
+      const cNodes = Array.from(doc.getElementsByTagName('c')) as Element[];
+      for (const c of cNodes) {
+        if (c.getAttribute('t') !== 's') continue;
+        const v = c.getElementsByTagName('v')[0];
+        const raw = (v?.textContent ?? '').trim();
+        if (!raw) continue;
+        const n = Number(raw);
+        if (Number.isFinite(n) && n >= 0) indexes.add(n);
+      }
+    }
+
+    return Array.from(indexes).sort((a, b) => a - b);
+  }, []);
+
+  const getFilteredDataForSelection = useCallback(async (): Promise<FilteredTranslationData> => {
+    const zip = zipRef.current;
+    if (!zip) {
+      return { sharedStrings, inlineStrings };
+    }
+
+    if (selectedSheetPaths.length === 0 || selectedSheetPaths.includes('__ALL__')) {
+      return { sharedStrings, inlineStrings };
+    }
+
+    const sheetPaths = selectedSheetPaths.map(String);
+    const indexes = await collectSharedStringIndexesForSheets(zip, sheetPaths);
+    const filteredSharedStrings = indexes.map((i) => ({ i, text: sharedStrings[i]?.text ?? '' }));
+
+    const filteredInlineStrings = inlineStrings.filter((x) => sheetPaths.includes(x.sheet));
+    return { sharedStrings: filteredSharedStrings, inlineStrings: filteredInlineStrings };
+  }, [collectSharedStringIndexesForSheets, inlineStrings, selectedSheetPaths, sharedStrings]);
+
+  const pruneWorkbookToSelectedSheets = useCallback(async (zip: JSZip, keepSheetPaths: string[]) => {
+    const keepSet = new Set(keepSheetPaths.map((p) => p.replace(/\\/g, '/')));
+    if (keepSet.size === 0) return;
+
+    const wbPath = 'xl/workbook.xml';
+    const wbRelsPath = 'xl/_rels/workbook.xml.rels';
+    const contentTypesPath = '[Content_Types].xml';
+
+    const wbFile = zip.file(wbPath);
+    const relsFile = zip.file(wbRelsPath);
+    if (!wbFile || !relsFile) return;
+
+    const parser = new DOMParser();
+    const serializer = new XMLSerializer();
+
+    const wbXml = await wbFile.async('text');
+    const wbDoc = parser.parseFromString(wbXml, 'application/xml');
+
+    const relsXml = await relsFile.async('text');
+    const relsDoc = parser.parseFromString(relsXml, 'application/xml');
+
+    const relNodes = Array.from(relsDoc.getElementsByTagName('Relationship')) as Element[];
+    const sheetRelById = new Map<string, string>();
+    for (const r of relNodes) {
+      const type = r.getAttribute('Type') ?? '';
+      if (!type.toLowerCase().includes('/worksheet')) continue;
+      const id = r.getAttribute('Id') ?? '';
+      const target = r.getAttribute('Target') ?? '';
+      if (!id || !target) continue;
+      const normalizedTarget = target.startsWith('/') ? target.slice(1) : target;
+      const full = normalizedTarget.startsWith('xl/') ? normalizedTarget : `xl/${normalizedTarget}`;
+      sheetRelById.set(id, full.replace(/\\/g, '/'));
+    }
+
+    const sheetNodes = Array.from(wbDoc.getElementsByTagName('sheet')) as Element[];
+    const removedSheetPaths: string[] = [];
+    const removedRelIds = new Set<string>();
+
+    for (const s of sheetNodes) {
+      const relId = s.getAttribute('r:id') ?? s.getAttribute('id') ?? '';
+      const path = relId ? sheetRelById.get(relId) : undefined;
+      if (!path) continue;
+      if (!keepSet.has(path)) {
+        removedSheetPaths.push(path);
+        if (relId) removedRelIds.add(relId);
+        s.parentNode?.removeChild(s);
+      }
+    }
+
+    for (const r of relNodes) {
+      const id = r.getAttribute('Id') ?? '';
+      if (id && removedRelIds.has(id)) {
+        r.parentNode?.removeChild(r);
+      }
+    }
+
+    zip.file(wbPath, serializer.serializeToString(wbDoc));
+    zip.file(wbRelsPath, serializer.serializeToString(relsDoc));
+
+    const ctFile = zip.file(contentTypesPath);
+    if (ctFile) {
+      const ctXml = await ctFile.async('text');
+      const ctDoc = parser.parseFromString(ctXml, 'application/xml');
+      const overrides = Array.from(ctDoc.getElementsByTagName('Override')) as Element[];
+      for (const p of removedSheetPaths) {
+        const partName = `/${p.replace(/\\/g, '/')}`;
+        for (const ov of overrides) {
+          if ((ov.getAttribute('PartName') ?? '') === partName) {
+            ov.parentNode?.removeChild(ov);
+          }
+        }
+      }
+      zip.file(contentTypesPath, serializer.serializeToString(ctDoc));
+    }
+
+    for (const p of removedSheetPaths) {
+      zip.remove(p);
+      zip.remove(p.replace('xl/worksheets/', 'xl/worksheets/_rels/') + '.rels');
+    }
+  }, []);
+
+  const downloadTranslatedWorkbook = useCallback(
+    async (translatedBlob: Blob, baseName: string) => {
+      const url = URL.createObjectURL(translatedBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = baseName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    },
+    [],
+  );
+
   const buildPrompt = useCallback(
     (
       items: SharedStringItem[],
@@ -192,7 +385,7 @@ const ExcelAITranslator = () => {
         JSON.stringify(schema, null, 2),
         `Rules:`,
         `- Keep the SAME number of items as input.`,
-        `- Keep each i exactly the same.`,
+        `- Keep each i exactly the same. (i is the sharedStrings index in sharedStrings.xml)`,
         `- Preserve placeholders like {0}, {name}, %s, and Excel-like tokens.`,
         `- Do not reorder items.`,
         `Input JSON:`,
@@ -210,6 +403,8 @@ const ExcelAITranslator = () => {
       setShapeTexts([]);
       setPromptText('');
       setAiResponseText('');
+      setSheets([]);
+      setSelectedSheetPaths(['__ALL__']);
       sheetXmlCacheRef.current = new Map();
       uploadedFileRef.current = file;
 
@@ -226,6 +421,9 @@ const ExcelAITranslator = () => {
       const ssXml = await ssFile.async('text');
       const { out } = extractSharedStrings(ssXml);
       setSharedStrings(out);
+
+      const sheetList = await readSheetList(zip);
+      setSheets(sheetList);
 
       let inline: InlineStringItem[] = [];
       let shapes: ShapeTextItem[] = [];
@@ -261,6 +459,7 @@ const ExcelAITranslator = () => {
     },
     [
       buildPrompt,
+      readSheetList,
       extractInlineStringsFromSheet,
       extractShapeTextsFromXml,
       extractSharedStrings,
@@ -286,17 +485,17 @@ const ExcelAITranslator = () => {
       const ssXml = await ssFile.async('text');
       const { doc, siNodes, out: current } = extractSharedStrings(ssXml);
 
-      if (payload.sharedStrings.length !== current.length) {
-        throw new Error(`Length mismatch: expected ${current.length} items, got ${payload.sharedStrings.length}`);
-      }
-
-      for (let i = 0; i < payload.sharedStrings.length; i++) {
-        const item = payload.sharedStrings[i];
-        if (item?.i !== i) {
-          throw new Error(`Index mismatch at position ${i}. Expected i=${i} but got i=${item?.i}`);
+      for (const item of payload.sharedStrings) {
+        const i = item?.i;
+        if (i === undefined || i === null || !Number.isFinite(Number(i))) {
+          throw new Error('Invalid sharedStrings item: missing i');
+        }
+        const idx = Number(i);
+        if (idx < 0 || idx >= siNodes.length) {
+          throw new Error(`Invalid sharedStrings index i=${idx}`);
         }
 
-        const si = siNodes[i];
+        const si = siNodes[idx];
         const tNodes = Array.from(si.getElementsByTagName('t'));
         const nextText = (item.text ?? '').replace(/\r\n/g, '\n');
 
@@ -425,18 +624,20 @@ const ExcelAITranslator = () => {
 
     await applyTranslationPayloadToZip(parsed);
 
-    const outBuf = await zip.generateAsync({ type: 'blob' });
-    const outName = fileName ? fileName.replace(/\.xlsx$/i, '') + `_translated.xlsx` : 'translated.xlsx';
+    if (outputMode === 'only_selected_sheets' && !selectedSheetPaths.includes('__ALL__')) {
+      await pruneWorkbookToSelectedSheets(zip, selectedSheetPaths);
+    }
 
-    const url = URL.createObjectURL(outBuf);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = outName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }, [aiResponseText, applyTranslationPayloadToZip, fileName]);
+    const outBuf = await zip.generateAsync({ type: 'blob' });
+    const outName =
+      outputMode === 'only_selected_sheets' && !selectedSheetPaths.includes('__ALL__')
+        ? (fileName ? fileName.replace(/\.xlsx$/i, '') + `_translated_only_selected_sheets.xlsx` : 'translated_only_selected_sheets.xlsx')
+        : fileName
+          ? fileName.replace(/\.xlsx$/i, '') + `_translated.xlsx`
+          : 'translated.xlsx';
+
+    await downloadTranslatedWorkbook(outBuf, outName);
+  }, [aiResponseText, applyTranslationPayloadToZip, downloadTranslatedWorkbook, fileName, outputMode, pruneWorkbookToSelectedSheets, selectedSheetPaths]);
 
   const translateViaBackendAndDownload = useCallback(async () => {
     const f = uploadedFileRef.current;
@@ -444,9 +645,10 @@ const ExcelAITranslator = () => {
 
     setBackendTranslating(true);
     try {
+      const { sharedStrings: filteredShared, inlineStrings: filteredInline } = await getFilteredDataForSelection();
       const prompt = promptText.trim()
         ? promptText
-        : buildPrompt(sharedStrings, inlineStrings, shapeTexts, fileName || f.name, fromLang, toLang, mode);
+        : buildPrompt(filteredShared, filteredInline, shapeTexts, fileName || f.name, fromLang, toLang, mode);
 
       const resp: any = await generalQuery('gemini_prompt', {
         prompt,
@@ -490,19 +692,23 @@ const ExcelAITranslator = () => {
       setAiResponseText(JSON.stringify(translated, null, 2));
       await applyTranslationPayloadToZip(translated as TranslationPayload);
 
+      if (outputMode === 'only_selected_sheets' && !selectedSheetPaths.includes('__ALL__')) {
+        const zip = zipRef.current;
+        if (!zip) throw new Error('No workbook loaded');
+        await pruneWorkbookToSelectedSheets(zip, selectedSheetPaths);
+      }
+
       const zip = zipRef.current;
       if (!zip) throw new Error('No workbook loaded');
       const outBuf = await zip.generateAsync({ type: 'blob' });
-      const outName = fileName ? fileName.replace(/\.xlsx$/i, '') + `_translated.xlsx` : 'translated.xlsx';
+      const outName =
+        outputMode === 'only_selected_sheets' && !selectedSheetPaths.includes('__ALL__')
+          ? (fileName ? fileName.replace(/\.xlsx$/i, '') + `_translated_only_selected_sheets.xlsx` : 'translated_only_selected_sheets.xlsx')
+          : fileName
+            ? fileName.replace(/\.xlsx$/i, '') + `_translated.xlsx`
+            : 'translated.xlsx';
 
-      const url = URL.createObjectURL(outBuf);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = outName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      await downloadTranslatedWorkbook(outBuf, outName);
     } finally {
       setBackendTranslating(false);
     }
@@ -513,11 +719,16 @@ const ExcelAITranslator = () => {
     buildPrompt,
     fileName,
     fromLang,
+    getFilteredDataForSelection,
     inlineStrings,
     mode,
+    outputMode,
     promptText,
+    pruneWorkbookToSelectedSheets,
     shapeTexts,
     sharedStrings,
+    downloadTranslatedWorkbook,
+    selectedSheetPaths,
     toLang,
   ]);
 
@@ -530,6 +741,35 @@ const ExcelAITranslator = () => {
     const shapeNonEmpty = shapeTexts.filter((x) => (x.text ?? '').trim() !== '').length;
     return { total, nonEmpty, inlineTotal, inlineNonEmpty, shapeTotal, shapeNonEmpty };
   }, [inlineStrings, shapeTexts, sharedStrings]);
+
+  const rebuildPromptForSelection = useCallback(async () => {
+    const { sharedStrings: filteredShared, inlineStrings: filteredInline } = await getFilteredDataForSelection();
+    setPromptText(
+      buildPrompt(filteredShared, filteredInline, shapeTexts, fileName || 'workbook.xlsx', fromLang, toLang, mode),
+    );
+  }, [buildPrompt, fileName, fromLang, getFilteredDataForSelection, mode, shapeTexts, toLang]);
+
+  useEffect(() => {
+    if (!sharedStrings.length) return;
+    if (!zipRef.current) return;
+    if (backendTranslating) return;
+
+    const t = setTimeout(() => {
+      rebuildPromptForSelection().catch(() => {
+        // ignore auto-rebuild errors; user can still click Rebuild Prompt to see errors
+      });
+    }, 250);
+
+    return () => clearTimeout(t);
+  }, [
+    backendTranslating,
+    fromLang,
+    mode,
+    rebuildPromptForSelection,
+    selectedSheetPaths,
+    sharedStrings.length,
+    toLang,
+  ]);
 
   return (
     <div
@@ -589,6 +829,60 @@ const ExcelAITranslator = () => {
         </TextField>
 
         <TextField
+          select
+          label="Sheet"
+          size="small"
+          value={selectedSheetPaths}
+          SelectProps={{
+            multiple: true,
+            renderValue: (selected) => {
+              const arr = Array.isArray(selected) ? (selected as string[]) : [String(selected)];
+              if (arr.includes('__ALL__')) return 'All';
+              const names = sheets.filter((s) => arr.includes(s.path)).map((s) => s.name);
+              return names.join(', ');
+            },
+          }}
+          onChange={(e) => {
+            const value = e.target.value;
+            const next = Array.isArray(value) ? (value as string[]) : [String(value)];
+            if (next.includes('__ALL__') && next.length > 1) {
+              setSelectedSheetPaths(next.filter((x) => x !== '__ALL__'));
+              return;
+            }
+            if (next.includes('__ALL__')) {
+              setSelectedSheetPaths(['__ALL__']);
+              return;
+            }
+            setSelectedSheetPaths(next);
+          }}
+          style={{ width: 280 }}
+          disabled={!sheets.length}
+        >
+          <MenuItem value={'__ALL__'}>
+            <Checkbox checked={selectedSheetPaths.includes('__ALL__')} />
+            <ListItemText primary={'All'} />
+          </MenuItem>
+          {sheets.map((s) => (
+            <MenuItem key={s.path} value={s.path}>
+              <Checkbox checked={selectedSheetPaths.includes(s.path)} />
+              <ListItemText primary={s.name} />
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          label="Output"
+          size="small"
+          value={outputMode}
+          onChange={(e) => setOutputMode(e.target.value as OutputMode)}
+          style={{ width: 260 }}
+        >
+          <MenuItem value={'replace_in_original'}>Save translated workbook (keep all sheets)</MenuItem>
+          <MenuItem value={'only_selected_sheets'}>Save only selected sheets</MenuItem>
+        </TextField>
+
+        <TextField
           label="Backend model"
           size="small"
           value={backendModel}
@@ -617,11 +911,13 @@ const ExcelAITranslator = () => {
 
         <Button
           variant="outlined"
-          onClick={() => {
-            if (!sharedStrings.length) return;
-            setPromptText(
-              buildPrompt(sharedStrings, inlineStrings, shapeTexts, fileName || 'workbook.xlsx', fromLang, toLang, mode),
-            );
+          onClick={async () => {
+            try {
+              if (!sharedStrings.length) return;
+              await rebuildPromptForSelection();
+            } catch (err: any) {
+              alert(err?.message ?? String(err));
+            }
           }}
           disabled={!sharedStrings.length}
         >
