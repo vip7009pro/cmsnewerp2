@@ -11,8 +11,8 @@ import MenuManager from "./MenuManager/MenuManager";
 import PagesManager from "./components/PagesManager/PagesManager";
 import RelationshipsManager from "./components/RelationshipsManager/RelationshipsManager";
 import ProcessManager from "./ProcessManager/ProcessManager";
-import ExcelAITranslator from "./ExcelAITranslator";
-import PowerPointAITranslator from "./PowerPointAITranslator";
+import ExcelAITranslator from "./AI/ExcelAITranslator";
+import PowerPointAITranslator from "./AI/PowerPointAITranslator";
 
 const  NOCODELOWCODE = () => {
   useEffect(() => { }, []);

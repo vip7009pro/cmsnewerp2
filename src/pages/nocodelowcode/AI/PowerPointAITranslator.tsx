@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { Button, MenuItem, TextField } from '@mui/material';
-import { generalQuery } from '../../api/Api';
+import { generalQuery } from '../../../api/Api';
 
 type SlideTextItem = {
   path: string;
