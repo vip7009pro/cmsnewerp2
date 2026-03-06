@@ -30,14 +30,14 @@ type PromptPayload = {
     mode: 'sharedStrings' | 'all';
   };
   sharedStrings: SharedStringItem[];
+  shapeTexts: ShapeTextItem[];
   inlineStrings?: InlineStringItem[];
-  shapeTexts?: ShapeTextItem[];
 };
 
 type TranslationPayload = {
   sharedStrings: SharedStringItem[];
+  shapeTexts: ShapeTextItem[];
   inlineStrings?: InlineStringItem[];
-  shapeTexts?: ShapeTextItem[];
 };
 
 type TranslationMode = 'sharedStrings' | 'all';
@@ -50,6 +50,7 @@ type SheetInfo = {
 type FilteredTranslationData = {
   sharedStrings: SharedStringItem[];
   inlineStrings: InlineStringItem[];
+  shapeTexts: ShapeTextItem[];
 };
 
 type OutputMode = 'replace_in_original' | 'only_selected_sheets';
@@ -239,11 +240,11 @@ const ExcelAITranslator = () => {
   const getFilteredDataForSelection = useCallback(async (): Promise<FilteredTranslationData> => {
     const zip = zipRef.current;
     if (!zip) {
-      return { sharedStrings, inlineStrings };
+      return { sharedStrings, inlineStrings, shapeTexts };
     }
 
     if (selectedSheetPaths.length === 0 || selectedSheetPaths.includes('__ALL__')) {
-      return { sharedStrings, inlineStrings };
+      return { sharedStrings, inlineStrings, shapeTexts };
     }
 
     const sheetPaths = selectedSheetPaths.map(String);
@@ -251,8 +252,42 @@ const ExcelAITranslator = () => {
     const filteredSharedStrings = indexes.map((i) => ({ i, text: sharedStrings[i]?.text ?? '' }));
 
     const filteredInlineStrings = inlineStrings.filter((x) => sheetPaths.includes(x.sheet));
-    return { sharedStrings: filteredSharedStrings, inlineStrings: filteredInlineStrings };
-  }, [collectSharedStringIndexesForSheets, inlineStrings, selectedSheetPaths, sharedStrings]);
+
+    const parser = new DOMParser();
+    const relatedShapePaths = new Set<string>();
+    for (const sheetPath of sheetPaths) {
+      const relPath = sheetPath.replace('xl/worksheets/', 'xl/worksheets/_rels/') + '.rels';
+      const relFile = zip.file(relPath);
+      if (!relFile) continue;
+      const relXml = await relFile.async('text');
+      const relDoc = parser.parseFromString(relXml, 'application/xml');
+      const relNodes = Array.from(relDoc.getElementsByTagName('Relationship')) as Element[];
+      for (const r of relNodes) {
+        const type = (r.getAttribute('Type') ?? '').toLowerCase();
+        if (!type.includes('/drawing') && !type.includes('/vmldrawing')) continue;
+        const target = r.getAttribute('Target') ?? '';
+        if (!target) continue;
+        const normalizedTarget = target.startsWith('/') ? target.slice(1) : target;
+        let full = normalizedTarget;
+        if (!full.startsWith('xl/')) {
+          if (full.startsWith('../')) {
+            full = 'xl/' + full.replace(/^\.\.\//, '');
+          } else {
+            full = `xl/${full}`;
+          }
+        }
+        relatedShapePaths.add(full.replace(/\\/g, '/'));
+      }
+    }
+
+    const filteredShapeTexts = shapeTexts.filter((s) => relatedShapePaths.has(s.path));
+
+    return {
+      sharedStrings: filteredSharedStrings,
+      inlineStrings: filteredInlineStrings,
+      shapeTexts: filteredShapeTexts,
+    };
+  }, [collectSharedStringIndexesForSheets, inlineStrings, selectedSheetPaths, sharedStrings, shapeTexts]);
 
   const pruneWorkbookToSelectedSheets = useCallback(async (zip: JSZip, keepSheetPaths: string[]) => {
     const keepSet = new Set(keepSheetPaths.map((p) => p.replace(/\\/g, '/')));
@@ -368,15 +403,16 @@ const ExcelAITranslator = () => {
           mode: m,
         },
         sharedStrings: items,
-        ...(m === 'all' ? { inlineStrings: inline, shapeTexts: shapes } : {}),
+        shapeTexts: shapes,
+        ...(m === 'all' ? { inlineStrings: inline } : {}),
       };
 
       const schema: any = {
         sharedStrings: [{ i: 0, text: 'translated text' }],
+        shapeTexts: [{ path: 'xl/drawings/drawing1.xml', i: 0, text: 'translated text' }],
       };
       if (m === 'all') {
         schema.inlineStrings = [{ sheet: 'xl/worksheets/sheet1.xml', cell: 'A1', i: 0, text: 'translated text' }];
-        schema.shapeTexts = [{ path: 'xl/drawings/drawing1.xml', i: 0, text: 'translated text' }];
       }
 
       return [
@@ -438,17 +474,17 @@ const ExcelAITranslator = () => {
           const { out: list } = extractInlineStringsFromSheet(p, sheetXml);
           inline = inline.concat(list);
         }
+      }
 
-        const shapePaths = Object.keys(zip.files).filter(
-          (p) => /^xl\/drawings\/drawing\d+\.xml$/i.test(p) || /^xl\/drawings\/vmlDrawing\d+\.vml$/i.test(p),
-        );
-        shapePaths.sort((a, b) => a.localeCompare(b));
-        for (const p of shapePaths) {
-          const f = zip.file(p);
-          if (!f) continue;
-          const xml = await f.async('text');
-          shapes = shapes.concat(extractShapeTextsFromXml(p, xml));
-        }
+      const shapePaths = Object.keys(zip.files).filter(
+        (p) => /^xl\/drawings\/drawing\d+\.xml$/i.test(p) || /^xl\/drawings\/vmlDrawing\d+\.vml$/i.test(p),
+      );
+      shapePaths.sort((a, b) => a.localeCompare(b));
+      for (const p of shapePaths) {
+        const f = zip.file(p);
+        if (!f) continue;
+        const xml = await f.async('text');
+        shapes = shapes.concat(extractShapeTextsFromXml(p, xml));
       }
       setInlineStrings(inline);
 
@@ -513,6 +549,38 @@ const ExcelAITranslator = () => {
       const newXml = serializer.serializeToString(doc);
       zip.file(path, newXml);
 
+      const shapeItems = payload.shapeTexts;
+      if (shapeItems && Array.isArray(shapeItems) && shapeItems.length > 0) {
+        const byPath = new Map<string, ShapeTextItem[]>();
+        for (const it of shapeItems) {
+          if (!it || typeof it.path !== 'string') continue;
+          const cur = byPath.get(it.path) ?? [];
+          cur.push(it);
+          byPath.set(it.path, cur);
+        }
+
+        for (const [p, items] of byPath.entries()) {
+          const f = zip.file(p);
+          if (!f) continue;
+          const xml = await f.async('text');
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(xml, 'application/xml');
+
+          const isVml = /vmlDrawing\d+\.vml$/i.test(p);
+          const tNodes = isVml ? Array.from(doc.getElementsByTagName('w:t')) : Array.from(doc.getElementsByTagName('a:t'));
+
+          items.sort((a, b) => a.i - b.i);
+          for (const it of items) {
+            const node = tNodes[it.i] as Element | undefined;
+            if (!node) continue;
+            node.textContent = (it.text ?? '').replace(/\r\n/g, '\n');
+          }
+
+          const serializer = new XMLSerializer();
+          zip.file(p, serializer.serializeToString(doc));
+        }
+      }
+
       if (mode === 'all') {
         const inline = payload.inlineStrings;
         if (!inline || !Array.isArray(inline)) {
@@ -568,40 +636,6 @@ const ExcelAITranslator = () => {
           const newSheetXml = serializer.serializeToString(sheetDoc);
           zip.file(sheetPath, newSheetXml);
         }
-
-        const shapeItems = payload.shapeTexts;
-        if (shapeItems && Array.isArray(shapeItems) && shapeItems.length > 0) {
-          const byPath = new Map<string, ShapeTextItem[]>();
-          for (const it of shapeItems) {
-            if (!it || typeof it.path !== 'string') continue;
-            const cur = byPath.get(it.path) ?? [];
-            cur.push(it);
-            byPath.set(it.path, cur);
-          }
-
-          for (const [p, items] of byPath.entries()) {
-            const f = zip.file(p);
-            if (!f) continue;
-            const xml = await f.async('text');
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(xml, 'application/xml');
-
-            const isVml = /vmlDrawing\d+\.vml$/i.test(p);
-            const tNodes = isVml
-              ? Array.from(doc.getElementsByTagName('w:t'))
-              : Array.from(doc.getElementsByTagName('a:t'));
-
-            items.sort((a, b) => a.i - b.i);
-            for (const it of items) {
-              const node = tNodes[it.i] as Element | undefined;
-              if (!node) continue;
-              node.textContent = (it.text ?? '').replace(/\r\n/g, '\n');
-            }
-
-            const serializer = new XMLSerializer();
-            zip.file(p, serializer.serializeToString(doc));
-          }
-        }
       }
     },
     [extractSharedStrings, mode],
@@ -645,10 +679,14 @@ const ExcelAITranslator = () => {
 
     setBackendTranslating(true);
     try {
-      const { sharedStrings: filteredShared, inlineStrings: filteredInline } = await getFilteredDataForSelection();
+      const {
+        sharedStrings: filteredShared,
+        inlineStrings: filteredInline,
+        shapeTexts: filteredShapes,
+      } = await getFilteredDataForSelection();
       const prompt = promptText.trim()
         ? promptText
-        : buildPrompt(filteredShared, filteredInline, shapeTexts, fileName || f.name, fromLang, toLang, mode);
+        : buildPrompt(filteredShared, filteredInline, filteredShapes, fileName || f.name, fromLang, toLang, mode);
 
       const resp: any = await generalQuery('gemini_prompt', {
         prompt,
@@ -725,7 +763,6 @@ const ExcelAITranslator = () => {
     outputMode,
     promptText,
     pruneWorkbookToSelectedSheets,
-    shapeTexts,
     sharedStrings,
     downloadTranslatedWorkbook,
     selectedSheetPaths,
@@ -743,11 +780,12 @@ const ExcelAITranslator = () => {
   }, [inlineStrings, shapeTexts, sharedStrings]);
 
   const rebuildPromptForSelection = useCallback(async () => {
-    const { sharedStrings: filteredShared, inlineStrings: filteredInline } = await getFilteredDataForSelection();
+    const { sharedStrings: filteredShared, inlineStrings: filteredInline, shapeTexts: filteredShapes } =
+      await getFilteredDataForSelection();
     setPromptText(
-      buildPrompt(filteredShared, filteredInline, shapeTexts, fileName || 'workbook.xlsx', fromLang, toLang, mode),
+      buildPrompt(filteredShared, filteredInline, filteredShapes, fileName || 'workbook.xlsx', fromLang, toLang, mode),
     );
-  }, [buildPrompt, fileName, fromLang, getFilteredDataForSelection, mode, shapeTexts, toLang]);
+  }, [buildPrompt, fileName, fromLang, getFilteredDataForSelection, mode, toLang]);
 
   useEffect(() => {
     if (!sharedStrings.length) return;
