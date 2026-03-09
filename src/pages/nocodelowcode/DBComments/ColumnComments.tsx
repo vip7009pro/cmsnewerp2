@@ -37,6 +37,7 @@ const ColumnComments = () => {
   const [items, setItems] = useState<ColumnItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [savingKey, setSavingKey] = useState<string>('');
+  const [rebuilding, setRebuilding] = useState<boolean>(false);
 
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(total / pageSize));
@@ -113,6 +114,26 @@ const ColumnComments = () => {
     [],
   );
 
+  const rebuildSchemaIndex = useCallback(async () => {
+    setRebuilding(true);
+    try {
+      const resp = await generalQuery('rebuild_schema_index', {});
+      const data = resp?.data;
+      if (data?.tk_status?.toUpperCase() !== 'OK') {
+        Swal.fire('Thông báo', data?.message ? String(data.message) : 'Rebuild failed', 'error');
+        return;
+      }
+
+      const ms = data?.data?.ms;
+      const tables = data?.data?.tables;
+      Swal.fire('Thông báo', `Đã học lại schema/index. Tables=${tables ?? ''} (${ms ?? ''}ms)`, 'success');
+    } catch (e: any) {
+      Swal.fire('Thông báo', e?.message ? String(e.message) : String(e), 'error');
+    } finally {
+      setRebuilding(false);
+    }
+  }, []);
+
   return (
     <Box sx={{ p: 2 }}>
       <Paper variant="outlined" sx={{ p: 2, borderColor: '#e5e7eb', bgcolor: '#ffffff' }}>
@@ -125,6 +146,9 @@ const ColumnComments = () => {
           </Box>
 
           <Stack direction="row" spacing={1.25} alignItems="center">
+            <Button variant="contained" onClick={rebuildSchemaIndex} disabled={loading || rebuilding}>
+              Rebuild schema/index
+            </Button>
             <TextField
               value={search}
               onChange={(e) => setSearch(e.target.value)}

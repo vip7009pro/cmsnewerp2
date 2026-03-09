@@ -18,6 +18,8 @@ import {
   Typography,
 } from '@mui/material';
 import { aiExecuteSql, aiQuery } from '../../../api/Api';
+import * as XLSX from 'xlsx';
+import AGTable from '../../../components/DataTable/AGTable';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -32,6 +34,14 @@ const formatPreview = (t: string, max = 180) => {
   const s = String(t || '').trim();
   if (s.length <= max) return s;
   return s.slice(0, max) + '...';
+};
+
+const downloadRowsAsExcel = (rows: any[], fileName: string) => {
+  const safeName = String(fileName || 'erp_chat').replace(/[\\/:*?"<>|]+/g, '_');
+  const ws = XLSX.utils.json_to_sheet(Array.isArray(rows) ? rows : []);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+  XLSX.writeFile(wb, `${safeName}.xlsx`);
 };
 
 const ERPChat = () => {
@@ -273,6 +283,48 @@ const ERPChat = () => {
                     }}
                   >
                     <Typography sx={{ fontSize: 13.5, lineHeight: 1.55 }}>{m.text}</Typography>
+                    {m.role === 'assistant' && Array.isArray(m.rows) && m.rows.length > 0 ? (
+                      <Box sx={{ mt: 1 }}>
+                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                          <Typography sx={{ fontSize: 12, opacity: 0.85 }}>
+                            Rows: {m.rows.length}
+                          </Typography>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            onClick={() => {
+                              const ts = new Date();
+                              const stamp = `${ts.getFullYear()}${String(ts.getMonth() + 1).padStart(2, '0')}${String(ts.getDate()).padStart(2, '0')}_${String(ts.getHours()).padStart(2, '0')}${String(ts.getMinutes()).padStart(2, '0')}${String(ts.getSeconds()).padStart(2, '0')}`;
+                              downloadRowsAsExcel(m.rows || [], `erp_chat_${stamp}`);
+                            }}
+                          >
+                            Tải Excel
+                          </Button>
+                        </Stack>
+
+                        <Box
+                          sx={{
+                            mt: 1,
+                            height: 280,
+                            width: '100%',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 1,
+                            overflow: 'hidden',
+                            bgcolor: '#ffffff',
+                          }}
+                        >
+                          <AGTable
+                            toolbar={<></>}
+                            data={m.rows}
+                            showFilter={true}
+                            rowHeight={22}
+                            columnWidth={140}
+                            suppressRowClickSelection={true}
+                            onSelectionChange={() => {}}
+                          />
+                        </Box>
+                      </Box>
+                    ) : null}
                     {showSql && m.sql ? (
                       <Typography sx={{ fontSize: 12, mt: 1, opacity: 0.9, whiteSpace: 'pre-wrap' }}>
                         SQL:\n{m.sql}
