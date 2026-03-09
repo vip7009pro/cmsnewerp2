@@ -222,6 +222,55 @@ export async function checkLogin() {
   });
   return data;
 }
+export async function aiQuery(question: string, options?: { explain?: boolean }) {
+  const CURRENT_AI_URL = getSever() + "/ai/query";
+  let publicKey = localStorage.getItem("publicKey");
+
+  let DATA = {
+    question,
+    explain: Boolean(options?.explain),
+    token_string: cookies.get("token"),
+    CTR_CD: getCtrCd(),
+    COMPANY: getCompany(),
+  };
+
+  let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey ?? "", DATA);
+  let data = await axios.post(
+    CURRENT_AI_URL,
+    {
+      secureContext: window.isSecureContext,
+      DATA: encryptedData,
+    },
+    {
+      withCredentials: true,
+    },
+  );
+  return data;
+}
+export async function aiExecuteSql(sql: string) {
+  const CURRENT_AI_URL = getSever() + "/ai/query";
+  let publicKey = localStorage.getItem("publicKey");
+
+  let DATA = {
+    sql_override: sql,
+    token_string: cookies.get("token"),
+    CTR_CD: getCtrCd(),
+    COMPANY: getCompany(),
+  };
+
+  let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey ?? "", DATA);
+  let data = await axios.post(
+    CURRENT_AI_URL,
+    {
+      secureContext: window.isSecureContext,
+      DATA: encryptedData,
+    },
+    {
+      withCredentials: true,
+    },
+  );
+  return data;
+}
 export async function generalQuery(command: string, queryData: any) {
   const CURRENT_API_URL = getSever() + "/api";
   // console.log('API URL', CURRENT_API_URL);
@@ -241,7 +290,7 @@ export async function generalQuery(command: string, queryData: any) {
     command: command,
     DATA: encryptedData,
   });
-  //delay 1s
+//delay 1s
  /*  if(getCompany() === "CMS"){
     await new Promise((resolve) => setTimeout(resolve, 2000));
   } */
