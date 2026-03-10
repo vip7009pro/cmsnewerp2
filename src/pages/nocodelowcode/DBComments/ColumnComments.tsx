@@ -274,14 +274,14 @@ const ColumnComments = () => {
       }
 
       const rows: BulkExcelRow[] = [
-        ...allTables.map((t) => ({
+        ...allTables.map<BulkExcelRow>((t) => ({
           level: 'TABLE',
           schema: t.schema,
           table: t.table,
           column: '',
           description: t.description || '',
         })),
-        ...allColumns.map((c) => ({
+        ...allColumns.map<BulkExcelRow>((c) => ({
           level: 'COLUMN',
           schema: c.schema,
           table: c.table,
