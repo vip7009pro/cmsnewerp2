@@ -222,13 +222,21 @@ export async function checkLogin() {
   });
   return data;
 }
-export async function aiQuery(question: string, options?: { explain?: boolean }) {
+export async function aiQuery(question: string, options?: { 
+  explain?: boolean, 
+  chat_history?: any, 
+  chat_summary?: any, 
+  session_id?: any 
+}) {
   const CURRENT_AI_URL = getSever() + "/ai/query";
   let publicKey = localStorage.getItem("publicKey");
 
   let DATA = {
     question,
     explain: Boolean(options?.explain),
+    chat_history: options?.chat_history,
+    chat_summary: options?.chat_summary,
+    session_id: options?.session_id,
     token_string: cookies.get("token"),
     CTR_CD: getCtrCd(),
     COMPANY: getCompany(),

@@ -51,7 +51,31 @@ const ERPChat = () => {
   const [showSql, setShowSql] = useState<boolean>(true);
   const [manualSql, setManualSql] = useState<string>('');
   const [runningSql, setRunningSql] = useState<boolean>(false);
+  const [chatSummary, setChatSummary] = useState<string>('');
   const lastRequestIdRef = useRef<number>(0);
+  const sessionIdRef = useRef<string>(`${Date.now()}_${Math.random().toString(16).slice(2)}`);
+
+  const buildChatHistoryForRequest = useCallback(
+    (userQuestion: string) => {
+      const pairs: Array<{ user: string; assistant: string }> = [];
+      let pendingUser: string | null = null;
+      for (const m of messages) {
+        if (m.role === 'user') {
+          pendingUser = String(m.text || '');
+        } else if (m.role === 'assistant') {
+          if (pendingUser) {
+            pairs.push({ user: pendingUser, assistant: String(m.text || '') });
+            pendingUser = null;
+          }
+        }
+      }
+      // add the new question as last turn without answer yet (helps model resolve ellipsis)
+      pairs.push({ user: String(userQuestion || ''), assistant: '' });
+      const windowed = pairs.slice(Math.max(0, pairs.length - 6));
+      return windowed;
+    },
+    [messages],
+  );
 
   const send = useCallback(async () => {
     const q = input.trim();
@@ -60,12 +84,16 @@ const ERPChat = () => {
     setInput('');
     setMessages((prev) => [...prev, { role: 'user', text: q }]);
 
+    const chat_history = buildChatHistoryForRequest(q);
+    const session_id = sessionIdRef.current;
+    const chat_summary = chatSummary;
+
     const reqId = Date.now();
     lastRequestIdRef.current = reqId;
 
     setSending(true);
     try {
-      const resp = await aiQuery(q, { explain: true });
+      const resp = await aiQuery(q, { explain: true, chat_history, chat_summary, session_id });
 
       if (lastRequestIdRef.current !== reqId) return;
 
@@ -95,6 +123,10 @@ const ERPChat = () => {
           rows: Array.isArray(out?.data) ? out.data : [],
         },
       ]);
+
+      if (out?.chat_summary !== undefined) {
+        setChatSummary(String(out.chat_summary || ''));
+      }
     } catch (e: any) {
       if (lastRequestIdRef.current !== reqId) return;
       setMessages((prev) => [
@@ -108,7 +140,7 @@ const ERPChat = () => {
     } finally {
       if (lastRequestIdRef.current === reqId) setSending(false);
     }
-  }, [input]);
+  }, [input, buildChatHistoryForRequest, chatSummary]);
 
   const runManualSql = useCallback(async () => {
     const sql = String(manualSql || '').trim();
