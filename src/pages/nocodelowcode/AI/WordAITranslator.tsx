@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { Button, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
@@ -33,13 +33,21 @@ const getParagraphsInDocumentOrder = (doc: Document) => {
 
 const WordAITranslator = () => {
   const [fileName, setFileName] = useState<string>('');
-  const [fromLang, setFromLang] = useState<string>('vi');
-  const [toLang, setToLang] = useState<string>('en');
+  const [fromLang, setFromLang] = useState<string>(() => localStorage.getItem('word_ai_translator_from') || 'korean');
+  const [toLang, setToLang] = useState<string>(() => localStorage.getItem('word_ai_translator_to') || 'vietnamese');
   const [backendModel, setBackendModel] = useState<string>('gemini-2.5-flash');
   const [backendTemperature, setBackendTemperature] = useState<number>(0.2);
   const [backendTranslating, setBackendTranslating] = useState<boolean>(false);
   const [chunkSize, setChunkSize] = useState<number>(120);
   const [maxPromptChars, setMaxPromptChars] = useState<number>(28000);
+
+  useEffect(() => {
+    localStorage.setItem('word_ai_translator_from', fromLang);
+  }, [fromLang]);
+
+  useEffect(() => {
+    localStorage.setItem('word_ai_translator_to', toLang);
+  }, [toLang]);
 
   const [paragraphs, setParagraphs] = useState<ParagraphTextItem[]>([]);
   const [promptText, setPromptText] = useState<string>('');
