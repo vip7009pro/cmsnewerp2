@@ -13,6 +13,7 @@ import RelationshipsManager from "./components/RelationshipsManager/Relationship
 import ProcessManager from "./ProcessManager/ProcessManager";
 import ExcelAITranslator from "./AI/ExcelAITranslator";
 import PowerPointAITranslator from "./AI/PowerPointAITranslator";
+import WordAITranslator from "./AI/WordAITranslator";
 import ERPChat from "./AI/ERPChat";
 import ColumnComments from "./DBComments/ColumnComments";
 
@@ -47,12 +48,15 @@ const  NOCODELOWCODE = () => {
         </MyTabs.Tab>
         <MyTabs.Tab title={"Process Manager"}>
           <ProcessManager/>         
-        </MyTabs.Tab>
+        </MyTabs.Tab>      
         <MyTabs.Tab title={"Excel Translator AI"}>
           <ExcelAITranslator/>
         </MyTabs.Tab>
         <MyTabs.Tab title={"PowerPoint Translator AI"}>
           <PowerPointAITranslator/>
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"Word Translator AI"}>
+          <WordAITranslator/>
         </MyTabs.Tab>
         <MyTabs.Tab title={"ERP Chat"}>
           <ERPChat/>
@@ -60,6 +64,7 @@ const  NOCODELOWCODE = () => {
         <MyTabs.Tab title={"DB Column Comments"}>
           <ColumnComments/>
         </MyTabs.Tab>
+        
       </MyTabs>
     </div>
   );
