@@ -1395,6 +1395,9 @@ const YCSXManager = () => {
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
       if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !== '04') err_code = 12;
       if (!isApprovedSampleMonitor) err_code = 13;
+      if (moment(uploadExcelJson[i].DELIVERY_DT,'YYYYMMDD').isBefore(moment(), 'day')) {
+        err_code = 14; // ngày giao hàng dự kiến không được trước ngày hôm nay
+      }
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -1423,6 +1426,9 @@ const YCSXManager = () => {
         tempjson[i].CHECKSTATUS = "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa";
       } else if (err_code === 13) {
         tempjson[i].CHECKSTATUS = "NG: Code này chưa được duyệt sample monitor";
+      }
+       else if (err_code === 14) {
+        tempjson[i].CHECKSTATUS = "NG: Ngày giao hàng dự kiến không được trước ngày hôm nay";
       }
     }
     setisLoading(false);
@@ -1456,6 +1462,9 @@ const YCSXManager = () => {
       if (uploadExcelJson[i].PHANLOAI === undefined) err_code = 9;
       if (isTwoVersionExist && uploadExcelJson[i].CODE_55 !== '04') err_code = 12;
       if (!isApprovedSampleMonitor) err_code = 13;
+      if (moment(uploadExcelJson[i].DELIVERY_DT,'YYYYMMDD').isBefore(moment(), 'day')) {
+        err_code = 14; // ngày giao hàng dự kiến không được trước ngày hôm nay
+      }
       if (err_code === 0) {
         let err_code1: number = 0;
         let next_prod_request_no: string = await f_generateNextProdRequestNo();
@@ -1670,6 +1679,9 @@ const YCSXManager = () => {
       } else if (err_code === 13) {
         tempjson[i].CHECKSTATUS = "NG: Code này chưa được duyệt sample monitor";
       }
+       else if (err_code === 14) {
+        tempjson[i].CHECKSTATUS = "NG: Ngày giao hàng dự kiến không được trước ngày hôm nay";
+      }
     }
     setisLoading(false);
     let newNotification: NotificationElement = {
@@ -1816,6 +1828,9 @@ const YCSXManager = () => {
     if (!isBOMMatching) err_code = 11;
     if (isTwoVersionExist && loaisx !== '04') err_code = 12;
     if (!isApprovedSampleMonitor) err_code = 13;
+    if (moment(deliverydate).isBefore(moment(), 'day')) {
+      err_code = 14; // ngày giao hàng dự kiến không được trước ngày hôm nay
+    }
     if (err_code === 0) {
       if (newphanloai === "TT" || newphanloai === "AM") {
         await f_insertDMYCSX({
@@ -2030,6 +2045,8 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa", "error");
     } else if (err_code === 13) {
       Swal.fire("Thông báo", "NG: Code này chưa được duyệt sample monitor", "error");
+    } else if (err_code === 14) {
+      Swal.fire("Thông báo", "NG: Ngày giao hàng dự kiến không được trước ngày hôm nay", "error");
     }
   };
   const clearYCSXform = () => {
