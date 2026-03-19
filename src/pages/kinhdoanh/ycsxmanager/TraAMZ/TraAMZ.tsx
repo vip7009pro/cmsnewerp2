@@ -53,6 +53,8 @@ const TraAMZ = () => {
   const [confirmPrintOpen, setConfirmPrintOpen] = useState(false);
   const [printSuccessCount, setPrintSuccessCount] = useState(0);
 
+  const escapeSingleQuote = (s: string) => s.replace(/'/g, "''");
+
   useEffect(() => {
     localStorage.setItem('AMZ_PrintOffsetX', printOffsetX.toString());
     localStorage.setItem('AMZ_PrintOffsetY', printOffsetY.toString());
@@ -171,7 +173,7 @@ const TraAMZ = () => {
       NO_IN: plan_id,
       G_NAME: codeKD,
       G_CODE: codeCMS,
-      DATA_AMZ: dataAMZ
+      DATA_AMZ: escapeSingleQuote(dataAMZ)
     })
       .then((response) => {
         //console.log(response.data.data);
