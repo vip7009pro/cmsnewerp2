@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 import '../../../core/providers.dart';
+import 'tra_amz_scan_page.dart';
 
 class TraAmzPage extends ConsumerStatefulWidget {
   const TraAmzPage({super.key});
@@ -242,6 +243,22 @@ class _TraAmzPageState extends ConsumerState<TraAmzPage> {
     context.push('/kinhdoanh/traamz/preview', extra: selected);
   }
 
+  Future<void> _openScanAmz() async {
+    if (!mounted) return;
+    final res = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => const AmzScanPage()),
+    );
+
+    if (!mounted) return;
+    if (res == null || res.trim().isEmpty) return;
+
+    setState(() {
+      _dataAmzCtrl.text = res;
+    });
+
+    _snack('Đã quét: ${res.length} ký tự');
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -317,26 +334,40 @@ class _TraAmzPageState extends ConsumerState<TraAmzPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: CheckboxListTile(
-                          contentPadding: EdgeInsets.zero,
-                          value: _allTime,
-                          onChanged: _loading ? null : (v) => setState(() => _allTime = v ?? false),
-                          title: const Text('All time'),
+                      CheckboxListTile(
+                        contentPadding: EdgeInsets.zero,
+                        value: _allTime,
+                        onChanged: _loading ? null : (v) => setState(() => _allTime = v ?? false),
+                        title: const Text('All time'),
+                      ),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          FilledButton.icon(
+                            onPressed: _loading ? null : _search,
+                            icon: const Icon(Icons.search),
+                            label: const Text('Tra AMZ'),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: _loading ? null : _openPreview,
+                            icon: const Icon(Icons.print_outlined),
+                            label: const Text('Preview AMZ'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: FilledButton.icon(
+                          onPressed: _loading ? null : _openScanAmz,
+                          icon: const Icon(Icons.qr_code_scanner),
+                          label: const Text('Scan AMZ'),
                         ),
-                      ),
-                      FilledButton.icon(
-                        onPressed: _loading ? null : _search,
-                        icon: const Icon(Icons.search),
-                        label: const Text('Tra AMZ'),
-                      ),
-                      const SizedBox(width: 8),
-                      OutlinedButton.icon(
-                        onPressed: _loading ? null : _openPreview,
-                        icon: const Icon(Icons.print_outlined),
-                        label: const Text('Preview AMZ'),
                       ),
                     ],
                   ),
