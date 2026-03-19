@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile_flutter/features/auth/application/auth_notifier.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../core/providers.dart';
@@ -569,12 +570,20 @@ class _AmzScanPageState extends ConsumerState<AmzScanPage> {
                                 label: const Text('Dùng mã này'),
                               ),
                             ),
-                            const SizedBox(width: 10),
+                           /*  const SizedBox(width: 10),
                             Expanded(
                               child: OutlinedButton.icon(
                                 onPressed: () => Navigator.of(context).pop<String>(null),
                                 icon: const Icon(Icons.close),
                                 label: const Text('Đóng'),
+                              ),
+                            ), */
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () => ref.read(authNotifierProvider.notifier).logout(),
+                                icon: const Icon(Icons.close),
+                                label: const Text('Logout'),
                               ),
                             ),
                           ],

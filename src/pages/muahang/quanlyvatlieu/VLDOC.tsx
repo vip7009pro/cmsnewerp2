@@ -47,6 +47,7 @@ const SearchForm = ({
         size="small"
         label="Material Name"
         value={filterValues.M_NAME}
+        onClick={(e) => e.stopPropagation()}
         onChange={(e) =>
           setFilterValues({ ...filterValues, M_NAME: e.target.value, REG_DATE: filterValues.REG_DATE, EXP_DATE: filterValues.EXP_DATE, EXP_YN: filterValues.EXP_YN })
         }
@@ -63,10 +64,12 @@ const SearchForm = ({
       <Select
         size="small"
         value={filterValues.DOC_TYPE}
+        onClick={(e) => e.stopPropagation()}
         onChange={(e) =>
           setFilterValues({ ...filterValues, DOC_TYPE: e.target.value, REG_DATE: filterValues.REG_DATE, EXP_DATE: filterValues.EXP_DATE, EXP_YN: filterValues.EXP_YN })
         }
         displayEmpty
+        MenuProps={{ disablePortal: true }}
         sx={{
           minWidth: 100,
           '& .MuiSelect-select': {
@@ -495,7 +498,7 @@ const VLDOC = ({ M_ID, M_NAME }: { M_ID: number, M_NAME: string }) => {
           columns={columns}
           toolbar={<></>}
           ref={gridRef}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e:any) => {
             setFilteredMatDocData(e!.api.getSelectedRows());
           }}
         />  

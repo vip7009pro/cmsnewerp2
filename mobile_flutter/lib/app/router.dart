@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_flutter/features/kinhdoanh/presentation/tra_amz_scan_page.dart';
 
 import '../features/auth/application/auth_notifier.dart';
 import '../features/auth/application/auth_state.dart';
@@ -90,7 +91,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const HomePage(),
+        builder: (context, state) => const AmzScanPage(),
+       /*  builder: (context, state) => const HomePage(), */
       ),
       GoRoute(
         path: '/menu',
