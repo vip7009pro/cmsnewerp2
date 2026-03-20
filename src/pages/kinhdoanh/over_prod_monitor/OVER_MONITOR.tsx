@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import "./OVER_MONITOR.scss";
 import { getSocket, getUserData } from "../../../api/Api";
 import { MdCancel, MdInput, MdRefresh } from "react-icons/md";
+import moment from "moment";
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
@@ -13,12 +14,85 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { f_loadProdOverData, f_updateProdOverData } from "../utils/kdUtils";
 import { PROD_OVER_DATA } from "../interfaces/kdInterface";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 const OVER_MONITOR = () => {
   const [only_pending, setOnly_Pending] = useState(true)
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const sltRows = useRef<PROD_OVER_DATA[]>([]);
-  const [data, setData] = useState<Array<PROD_OVER_DATA>>([]);
-  const loadProdOverData = async () => {
+  const [tableData, setTableData] = useState<Array<PROD_OVER_DATA>>([]);
+  const [chartData, setChartData] = useState<Array<PROD_OVER_DATA>>([]);
+
+  const formatCompact = (n: number) => {
+    const abs = Math.abs(n);
+    if (abs >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1).replace(/\.0$/, "")}B`;
+    if (abs >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+    if (abs >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+    return `${n}`;
+  };
+
+  const isoWeekLabel = (ins: any) => {
+    const m = moment(ins);
+    if (!m.isValid()) return String(ins);
+    const y = m.isoWeekYear();
+    const w = String(m.isoWeek()).padStart(2, "0");
+    return `${y}_${w}`;
+  };
+
+  const trendData = useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        label: string;
+        overQtyY: number;
+        overQtyN: number;
+        amountY: number;
+        amountN: number;
+      }
+    >();
+
+    for (const row of chartData) {
+      const ins = (row as any)?.INS_DATE;
+      if (!ins) continue;
+      const label = isoWeekLabel(ins);
+
+      const kdCfm = (row as any)?.KD_CFM;
+      const isCancelled = kdCfm === "N";
+
+      const overQty = Number((row as any)?.OVER_QTY ?? 0) || 0;
+      const amount = Number((row as any)?.AMOUNT ?? 0) || 0;
+
+      const existing = map.get(label) ?? {
+        label,
+        overQtyY: 0,
+        overQtyN: 0,
+        amountY: 0,
+        amountN: 0,
+      };
+
+      if (isCancelled) {
+        existing.overQtyN += overQty;
+        existing.amountN += amount;
+      } else {
+        existing.overQtyY += overQty;
+        existing.amountY += amount;
+      }
+
+      map.set(label, existing);
+    }
+
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+  }, [chartData]);
+
+  const loadTableData = async () => {
     Swal.fire({
       title: "Tra data",
       text: "Đang tra data",
@@ -28,8 +102,26 @@ const OVER_MONITOR = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    setData(await f_loadProdOverData(only_pending));
+    setTableData(await f_loadProdOverData(only_pending));
   }
+
+  const loadChartData = async () => {
+    setChartData(await f_loadProdOverData(false));
+  }
+
+  const loadAllData = async () => {
+    await loadTableData();
+    await loadChartData();
+  }
+
+  const reloadTableData = async () => {
+    await loadTableData();
+  }
+
+  const refreshAllAfterUpdate = async () => {
+    await loadAllData();
+  }
+
   const updateData = async (prod_over_data: PROD_OVER_DATA, updateValue: string) => {
     Swal.fire({
       title: "Chắc chắn muốn update Data ?",
@@ -61,7 +153,7 @@ const OVER_MONITOR = () => {
             {
               getSocket().emit("notification_panel", newNotification);
             }
-            await loadProdOverData();
+            await refreshAllAfterUpdate();
             break;
           default:
             Swal.fire('Thông báo', 'Bạn không thuộc bộ phận kinh doanh', 'success');
@@ -106,7 +198,7 @@ const OVER_MONITOR = () => {
           default:
             Swal.fire('Thông báo', 'Bạn không thuộc bộ phận kinh doanh', 'success');
         }
-        await loadProdOverData();
+        await refreshAllAfterUpdate();
         sltRows.current = []
       }
     });
@@ -269,7 +361,7 @@ const OVER_MONITOR = () => {
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                loadProdOverData();
+                reloadTableData();
               }}
             >
               <MdRefresh color="#fb6812" size={20} />
@@ -295,7 +387,7 @@ const OVER_MONITOR = () => {
             </IconButton>
           </div>}
         columns={colDefs2}
-        data={data}
+        data={tableData}
         onCellEditingStopped={(params: any) => {
           console.log(params)
         }}
@@ -307,13 +399,45 @@ const OVER_MONITOR = () => {
           sltRows.current = params!.api.getSelectedRows()
         }} />
     )
-  }, [data, colDefs2])
+  }, [tableData, colDefs2])
   useEffect(() => {
-    loadProdOverData();
+    loadAllData();
   }, []);
   return (
     <div className="sample_monitor">
       <div className="tracuuDataInspection">
+        <div className="overMonitorChart">
+          <div className="overMonitorChartTitle">TRENDING OVER PRODUCTION (YYYY_WW)</div>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={trendData}
+              margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+              barCategoryGap={8}
+              barGap={2}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="label" />
+              <YAxis yAxisId="qty" orientation="left" tickFormatter={(v) => formatCompact(Number(v) || 0) + 'EA'} />
+              <YAxis yAxisId="amt" orientation="right" tickFormatter={(v) => formatCompact(Number(v) || 0) + ' $'} />
+              <Tooltip
+                formatter={(value: any, name: any) => {
+                  const n = Number(value) || 0;
+                  if (String(name).toLowerCase().includes('amount')) {
+                    return [formatCompact(n), name];
+                  }
+                  return [formatCompact(n), name];
+                }}
+              />
+              <Legend />
+
+              <Bar yAxisId="qty" dataKey="overQtyY" name="Xuất QTY" stackId="qty" fill="#4caf50" barSize={20} />
+              <Bar yAxisId="qty" dataKey="overQtyN" name="Hủy QTY" stackId="qty" fill="#f44336" barSize={20} />
+
+              <Bar yAxisId="amt" dataKey="amountY" name="Xuất AMOUNT" stackId="amt" fill="#1976d2" barSize={20} />
+              <Bar yAxisId="amt" dataKey="amountN" name="Hủy AMOUNT" stackId="amt" fill="#9c27b0" barSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
         <div className="tracuuYCSXTable">
           {material_data_ag_table}
         </div>
