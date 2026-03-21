@@ -169,7 +169,8 @@ export function login(user: string, pass: string) {
                   store.dispatch(loginSlice(true));
                 }, 1000);
               } else {
-                Swal.fire(
+                cookies.set("token", "", { path: "/" });        
+                Swal.fire(                  
                   "Thông báo",
                   "Nghỉ việc rồi không truy cập được!",
                   "error"
