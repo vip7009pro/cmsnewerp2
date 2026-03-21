@@ -6,6 +6,8 @@ class SecureKvStore {
   static const _kToken = 'token';
   static const _kUsername = 'username';
   static const _kPassword = 'password';
+  static const _kSubActiveUntil = 'subscription_active_until';
+  static const _kSubLifetime = 'subscription_lifetime';
 
   Future<void> setToken(String token) async {
     await _storage.write(key: _kToken, value: token);
@@ -40,5 +42,32 @@ class SecureKvStore {
   Future<void> clearAll() async {
     await clearToken();
     await clearCredentials();
+  }
+
+  Future<void> setSubscriptionActiveUntil(DateTime? dt) async {
+    await _storage.write(key: _kSubActiveUntil, value: dt?.toIso8601String());
+  }
+
+  Future<DateTime?> getSubscriptionActiveUntil() async {
+    final v = await _storage.read(key: _kSubActiveUntil);
+    if (v == null || v.isEmpty) return null;
+    return DateTime.tryParse(v);
+  }
+
+  Future<void> clearSubscriptionActiveUntil() async {
+    await _storage.delete(key: _kSubActiveUntil);
+  }
+
+  Future<void> setSubscriptionLifetime(bool lifetime) async {
+    await _storage.write(key: _kSubLifetime, value: lifetime ? 'true' : 'false');
+  }
+
+  Future<bool> getSubscriptionLifetime() async {
+    final v = await _storage.read(key: _kSubLifetime);
+    return v == 'true';
+  }
+
+  Future<void> clearSubscriptionLifetime() async {
+    await _storage.delete(key: _kSubLifetime);
   }
 }

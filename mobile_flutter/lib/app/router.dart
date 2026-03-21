@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_flutter/features/kinhdoanh/presentation/tra_amz_scan_page.dart';
+import 'package:mobile_flutter/features/subscription/presentation/subscription_gate_page.dart';
 
 import '../features/auth/application/auth_notifier.dart';
 import '../features/auth/application/auth_state.dart';
@@ -17,7 +17,6 @@ import '../features/hr/presentation/list_cham_cong_page.dart';
 import '../features/hr/presentation/bao_cao_nhan_su_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_page.dart';
 import '../features/hr/presentation/quan_ly_cap_cao_ns_page.dart';
-import '../features/home/presentation/home_page.dart';
 import '../features/kinhdoanh/presentation/invoice_manager_page.dart';
 import '../features/kinhdoanh/presentation/plan_manager_page.dart';
 import '../features/kinhdoanh/presentation/shortage_manager_page.dart';
@@ -91,7 +90,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const AmzScanPage(),
+        builder: (context, state) => const SubscriptionGatePage(),
        /*  builder: (context, state) => const HomePage(), */
       ),
       GoRoute(

@@ -95,7 +95,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Logo or Title
-                    Image.asset(
+                    /* Image.asset(
                       'assets/companylogo.png',
                       height: 80,
                       fit: BoxFit.contain,
@@ -113,7 +113,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 8), */
                     Text(
                       'Đăng nhập hệ thống',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -240,12 +240,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     const SizedBox(height: 16),
 
                     // Footer
-                    Text(
+                   /*  Text(
                       'CMS ERP System',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface.withAlpha((0.6 * 255).round()),
                       ),
-                    ),
+                    ), */
                   ],
                 ),
               ),

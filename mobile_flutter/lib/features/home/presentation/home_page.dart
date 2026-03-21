@@ -101,7 +101,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         if (state == null) return;
         if (state.isDrawerOpen) return;
         state.openDrawer();
-        ref.read(openDrawerOnHomeProvider.notifier).state = false;
+        ref.read(openDrawerOnHomeProvider.notifier).setOpen(false);
       });
     }
 

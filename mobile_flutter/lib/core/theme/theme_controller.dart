@@ -19,13 +19,20 @@ class ThemeSettings {
   }
 }
 
-class ThemeController extends StateNotifier<ThemeSettings> {
-  ThemeController() : super(const ThemeSettings(themeId: AppThemeId.compactBlue, mode: ThemeMode.light)) {
-    _load();
-  }
+class ThemeController extends Notifier<ThemeSettings> {
+  bool _loaded = false;
 
   static const _kThemeId = 'theme_id';
   static const _kThemeMode = 'theme_mode';
+
+  @override
+  ThemeSettings build() {
+    if (!_loaded) {
+      _loaded = true;
+      Future<void>.microtask(_load);
+    }
+    return const ThemeSettings(themeId: AppThemeId.compactBlue, mode: ThemeMode.light);
+  }
 
   Future<void> _load() async {
     try {
@@ -42,9 +49,7 @@ class ThemeController extends StateNotifier<ThemeSettings> {
         orElse: () => state.mode,
       );
 
-      if (mounted) {
-        state = state.copyWith(themeId: id, mode: mode);
-      }
+      state = state.copyWith(themeId: id, mode: mode);
     } catch (_) {
       // Ignore load errors; keep defaults.
     }
@@ -73,6 +78,4 @@ class ThemeController extends StateNotifier<ThemeSettings> {
   }
 }
 
-final themeControllerProvider = StateNotifierProvider<ThemeController, ThemeSettings>((ref) {
-  return ThemeController();
-});
+final themeControllerProvider = NotifierProvider<ThemeController, ThemeSettings>(ThemeController.new);

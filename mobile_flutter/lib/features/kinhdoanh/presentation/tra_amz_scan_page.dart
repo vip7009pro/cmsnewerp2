@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mobile_flutter/features/auth/application/auth_notifier.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../core/providers.dart';
+import '../../subscription/application/subscription_controller.dart';
+import '../../subscription/application/subscription_state.dart';
 
 class AmzScanPage extends ConsumerStatefulWidget {
   const AmzScanPage({super.key});
@@ -25,6 +28,17 @@ class _AmzScanPageState extends ConsumerState<AmzScanPage> {
 
   String _escapeSingleQuote(String s) => s.replaceAll("'", "''");
 
+  String _formatRemaining(Duration d) {
+    if (d.isNegative) return '0';
+    final totalMinutes = d.inMinutes;
+    final days = totalMinutes ~/ (60 * 24);
+    final hours = (totalMinutes % (60 * 24)) ~/ 60;
+    final minutes = totalMinutes % 60;
+    if (days > 0) return '${days}d ${hours}h';
+    if (hours > 0) return '${hours}h ${minutes}m';
+    return '${minutes}m';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +46,10 @@ class _AmzScanPageState extends ConsumerState<AmzScanPage> {
       facing: CameraFacing.back,
       detectionSpeed: DetectionSpeed.noDuplicates,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(subscriptionControllerProvider.notifier).refreshFromServer();
+    });
   }
 
   @override
@@ -207,6 +225,43 @@ class _AmzScanPageState extends ConsumerState<AmzScanPage> {
     final value = _value;
     final counts = value == null ? null : _countChars(value);
 
+    final subStatus = ref.watch(subscriptionControllerProvider);
+    final now = DateTime.now();
+    final unlocked = switch (subStatus) {
+      SubscriptionActive(:final snapshot) => snapshot.lifetime || snapshot.activeUntil == null || snapshot.activeUntil!.isAfter(now),
+      _ => false,
+    };
+
+    final snapshot = switch (subStatus) {
+      SubscriptionActive(:final snapshot) => snapshot,
+      SubscriptionInactive(:final snapshot) => snapshot,
+      _ => null,
+    };
+
+    ref.listen(subscriptionControllerProvider, (prev, next) {
+      if (!mounted) return;
+      if (next is SubscriptionError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.message)),
+        );
+      }
+
+      final wasUnlocked = switch (prev) {
+        SubscriptionActive(:final snapshot) => snapshot.lifetime || snapshot.activeUntil == null || snapshot.activeUntil!.isAfter(DateTime.now()),
+        _ => false,
+      };
+      final isUnlocked = switch (next) {
+        SubscriptionActive(:final snapshot) => snapshot.lifetime || snapshot.activeUntil == null || snapshot.activeUntil!.isAfter(DateTime.now()),
+        _ => false,
+      };
+
+      if (wasUnlocked && !isUnlocked) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Hết hạn. Vui lòng mua để tiếp tục sử dụng.')),
+        );
+      }
+    });
+
     Widget infoTile({required String label, required String value, IconData? icon}) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -240,22 +295,131 @@ class _AmzScanPageState extends ConsumerState<AmzScanPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CMSVina Scan AMZ'),
+        title: const Text('Scanner Pro'),
         actions: [
           IconButton(
             tooltip: 'Bật/Tắt flash',
-            onPressed: () => _controller.toggleTorch(),
+            onPressed: unlocked ? () => _controller.toggleTorch() : null,
             icon: const Icon(Icons.flash_on),
           ),
           IconButton(
             tooltip: 'Đổi camera',
-            onPressed: () => _controller.switchCamera(),
+            onPressed: unlocked ? () => _controller.switchCamera() : null,
             icon: const Icon(Icons.cameraswitch),
           ),
         ],
       ),
       body: Column(
         children: [
+          if (snapshot != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      Icon(
+                        snapshot.lifetime ? Icons.verified : (unlocked ? Icons.schedule : Icons.lock_outline),
+                        color: snapshot.lifetime ? Colors.green.shade700 : (unlocked ? scheme.primary : Colors.red.shade700),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Builder(
+                          builder: (_) {
+                            if (snapshot.lifetime) {
+                              return const Text('Trạng thái: Đã mua (Vĩnh viễn)', style: TextStyle(fontWeight: FontWeight.w800));
+                            }
+
+                            final until = snapshot.activeUntil;
+                            if (until == null) {
+                              return const Text('Trạng thái: Chưa kích hoạt', style: TextStyle(fontWeight: FontWeight.w800));
+                            }
+
+                            final remaining = until.difference(now);
+                            final isTrial = snapshot.trialStart != null && (snapshot.productId == null || snapshot.productId!.isEmpty);
+                            final label = isTrial ? 'Trial' : 'Đã mua';
+                            final remainText = remaining.isNegative ? 'Hết hạn' : 'Còn ${_formatRemaining(remaining)}';
+                            return Text(
+                              'Trạng thái: $label - $remainText',
+                              style: const TextStyle(fontWeight: FontWeight.w800),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          if (!unlocked)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Hết hạn sử dụng / chưa kích hoạt.',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Vui lòng mua để tiếp tục quét mã.',
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      if (subStatus is SubscriptionInactive)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            FilledButton(
+                              onPressed: subStatus.purchasing
+                                  ? null
+                                  : () {
+                                      ProductDetails? p;
+                                      for (final item in subStatus.products) {
+                                        if (item.id == SubscriptionController.lifetimeProductId) {
+                                          p = item;
+                                          break;
+                                        }
+                                      }
+                                      if (p != null) {
+                                        ref.read(subscriptionControllerProvider.notifier).buy(p);
+                                      }
+                                    },
+                              child: const Text('Mua ngay (Vĩnh viễn)'),
+                            ),
+                            const SizedBox(height: 8),
+                            OutlinedButton(
+                              onPressed: () => ref.read(subscriptionControllerProvider.notifier).restore(),
+                              child: const Text('Restore Purchase'),
+                            ),
+                            const SizedBox(height: 8),
+                            OutlinedButton(
+                              onPressed: () => ref.read(subscriptionControllerProvider.notifier).refreshFromServer(),
+                              child: const Text('Kiểm tra lại trạng thái'),
+                            ),
+                          ],
+                        )
+                      else if (subStatus is SubscriptionLoading)
+                        const LinearProgressIndicator()
+                      else if (subStatus is SubscriptionError)
+                        Text(
+                          subStatus.message,
+                          style: TextStyle(color: Colors.red.shade700, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        )
+                      else
+                        const SizedBox.shrink(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           if (!_scanned)
             AspectRatio(
               aspectRatio: 1.2,
@@ -264,23 +428,30 @@ class _AmzScanPageState extends ConsumerState<AmzScanPage> {
                 clipBehavior: Clip.antiAlias,
                 child: Stack(
                   children: [
-                    MobileScanner(
-                      controller: _controller,
-                      onDetect: (capture) async {
-                        if (_scanned) return;
-                        final barcode = capture.barcodes.isNotEmpty ? capture.barcodes.first : null;
-                        final raw = barcode?.rawValue;
-                        if (raw == null || raw.isEmpty) return;
+                    if (unlocked)
+                      MobileScanner(
+                        controller: _controller,
+                        onDetect: (capture) async {
+                          if (_scanned) return;
+                          final barcode = capture.barcodes.isNotEmpty ? capture.barcodes.first : null;
+                          final raw = barcode?.rawValue;
+                          if (raw == null || raw.isEmpty) return;
 
-                        setState(() {
-                          _scanned = true;
-                          _value = raw;
-                        });
+                          setState(() {
+                            _scanned = true;
+                            _value = raw;
+                          });
 
-                        await _controller.stop();
-                        await _searchByScannedValue(raw);
-                      },
-                    ),
+                          await _controller.stop();
+                          await _searchByScannedValue(raw);
+                        },
+                      )
+                    else
+                      Container(
+                        color: scheme.surfaceContainerHighest,
+                        alignment: Alignment.center,
+                        child: const Text('Đang khóa. Vui lòng mua để sử dụng.'),
+                      ),
                     Positioned(
                       left: 12,
                       right: 12,

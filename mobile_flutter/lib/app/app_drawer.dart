@@ -71,7 +71,7 @@ class AppDrawer extends ConsumerWidget {
                                   var route = item.subLink.trim();
                                   if (route.isEmpty) return;
                                   if (!route.startsWith('/')) route = '/$route';
-                                  ref.read(openDrawerOnHomeProvider.notifier).state = true;
+                                  ref.read(openDrawerOnHomeProvider.notifier).setOpen(true);
                                   Navigator.of(context).pop();
                                   context.push(route);
                                 },
