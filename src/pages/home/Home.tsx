@@ -6,9 +6,8 @@ import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import { addTab, changeGLBLanguage, closeTab, resetTab, setTabModeSwap, settabIndex, toggleSidebar } from "../../redux/slices/globalSlice";
+import { addTab, closeTab, resetTab, setTabIndex, setTabModeSwap } from "../../redux/slices/tabsSlice";
+import { setLanguage, toggleSidebar } from "../../redux/slices/uiSlice";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
@@ -19,6 +18,18 @@ import { useRenderLag } from "../../api/userRenderLag";
 import NavMenu from "../../components/NavMenu/NavMenu";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import {
+  selectCompany,
+  selectCompanyInfo,
+  selectCtrCd,
+  selectLang,
+  selectSelectedServer,
+  selectSidebarMenu,
+  selectTheme,
+} from "../../redux/selectors/uiSelectors";
+import { selectTabIndex, selectTabModeSwap, selectTabs } from "../../redux/selectors/tabsSelectors";
 export const current_ver: number = getCompany() === "CMS" ? 2656 : 438;
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -90,22 +101,19 @@ const CloseIconButton = styled(IconButton)({
 
 function Home() {
   const cookies = new Cookies();
-  const { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData } =
-    useSelector((state: RootState) => ({
-      theme: state.totalSlice.theme,
-      lang: state.totalSlice.lang,
-      company: state.totalSlice.company,
-      tabIndex: state.totalSlice.tabIndex,
-      tabModeSwap: state.totalSlice.tabModeSwap,
-      sidebarStatus: state.totalSlice.sidebarmenu,
-      cpnInfo: state.totalSlice.cpnInfo,
-      selectedServer: state.totalSlice.selectedServer,
-      userData: state.totalSlice.userData,
-      tabs: state.totalSlice.tabs,
-    }));
+  const theme = useAppSelector(selectTheme);
+  const tabs = useAppSelector(selectTabs);
+  const lang = useAppSelector(selectLang);
+  const company = useAppSelector(selectCompany);
+  const tabIndex = useAppSelector(selectTabIndex);
+  const tabModeSwap = useAppSelector(selectTabModeSwap);
+  const sidebarStatus = useAppSelector(selectSidebarMenu);
+  const cpnInfo = useAppSelector(selectCompanyInfo);
+  const selectedServer = useAppSelector(selectSelectedServer);
+  const userData = useAppSelector(selectUserData);
   console.log("company", company);
   const menulist: MENU_LIST_DATA[] = useMemo( () => getMenuList(company, lang), [company, lang] );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = useCallback(() => {
     generalQuery("updatechamcongdiemdanhauto", {})
@@ -235,7 +243,7 @@ function Home() {
           })
         );
       }
-      dispatch(settabIndex(0));
+      dispatch(setTabIndex(0));
       localStorage.setItem(
         "tabs",
         JSON.stringify(
@@ -254,7 +262,7 @@ function Home() {
       if (!target) return;
       if (pvnSidebarRef.current?.contains(target)) return;
       if (pvnToggleRef.current?.contains(target)) return;
-      dispatch(toggleSidebar("2"));
+      dispatch(toggleSidebar());
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -272,7 +280,7 @@ function Home() {
       if (isTypingTarget) return;
 
       e.preventDefault();
-      dispatch(toggleSidebar("2"));
+      dispatch(toggleSidebar());
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -323,7 +331,7 @@ function Home() {
                 <select
                   value={lang}
                   onChange={(e) => {
-                    dispatch(changeGLBLanguage(e.target.value));
+                    dispatch(setLanguage(e.target.value));
                     localStorage.setItem("lang", e.target.value);
                   }}
                 >
@@ -335,7 +343,7 @@ function Home() {
                   className="pvnToolBtn"
                   onClick={() => {
                     if (!tabModeSwap) {
-                      dispatch(resetTab(0));
+                      dispatch(resetTab());
                       dispatch(
                         addTab({
                           ELE_CODE: "NS0",
@@ -365,7 +373,7 @@ function Home() {
                         let ele_code_array: string[] = tabs.map((ele: ELE_ARRAY) => ele.ELE_CODE);
                         let tIndex: number = ele_code_array.indexOf("ST01");
                         if (tIndex !== -1) {
-                          dispatch(settabIndex(tIndex));
+                          dispatch(setTabIndex(tIndex));
                         } else {
                           dispatch(
                             addTab({
@@ -375,7 +383,7 @@ function Home() {
                               PAGE_ID: -1,
                             })
                           );
-                          dispatch(settabIndex(tabs.length));
+                          dispatch(setTabIndex(tabs.length));
                         }
                       } else {
                         Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
@@ -388,7 +396,7 @@ function Home() {
                 <div
                   className="pvnToolBtn"
                   onClick={() => {
-                    dispatch(resetTab(0));
+                    dispatch(resetTab());
                     logout();
                   }}
                 >
@@ -403,7 +411,7 @@ function Home() {
             ref={pvnToggleRef}
             className={`pvnSidebarToggle ${sidebarStatus ? "pvnSidebarToggle--open" : "pvnSidebarToggle--closed"}`}
             onClick={() => {
-              dispatch(toggleSidebar("2"));
+              dispatch(toggleSidebar());
             }}
           >
             {sidebarStatus ? <MdChevronLeft size={16} /> : <MdChevronRight size={16} />}
@@ -429,7 +437,7 @@ function Home() {
                       event: React.SyntheticEvent,
                       newValue: number
                     ) => {
-                      dispatch(settabIndex(newValue));
+                      dispatch(setTabIndex(newValue));
                     }}
                     variant="scrollable"
                     aria-label="ERP TABS"
@@ -465,7 +473,7 @@ function Home() {
                                     <TabTitle
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        dispatch(settabIndex(index));
+                                        dispatch(setTabIndex(index));
                                       }}
                                     >
                                       {index + 1}.{ele.ELE_NAME}

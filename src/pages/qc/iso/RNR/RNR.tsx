@@ -4,12 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./RNR.scss";
 import { generalQuery } from "../../../../api/Api";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { RNR_DATA, RNR_DATA_EMPL } from "../../interfaces/qcInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 const RNR = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [readyRender, setReadyRender] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

@@ -1,10 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
 import glbReducer from "./slices/globalSlice";
+import authReducer from "./slices/authSlice";
+import uiReducer from "./slices/uiSlice";
+import notificationsReducer from "./slices/notificationsSlice";
+import tabsReducer from "./slices/tabsSlice";
+import chithiReducer from "./slices/chithiSlice";
+import socketReducer from "./slices/socketSlice";
 import workflowReducer from "./slices/workflowSlice";
 
 export const store = configureStore({
   reducer: {
     totalSlice: glbReducer,
+    auth: authReducer,
+    ui: uiReducer,
+    notifications: notificationsReducer,
+    tabs: tabsReducer,
+    chithi: chithiReducer,
+    socket: socketReducer,
     workflowSlice: workflowReducer,
   },
   middleware: (getDefaultMiddleware) =>

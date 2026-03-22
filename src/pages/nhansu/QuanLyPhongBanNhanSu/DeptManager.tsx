@@ -25,13 +25,14 @@ import {
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectLang } from "../../../redux/selectors/uiSelectors";
 import { getlang } from "../../../components/String/String";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 import { checkBP } from "../../../api/GlobalFunction";
 const DeptManager = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [tableSelection, setTableSelection] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
@@ -291,9 +292,7 @@ const DeptManager = () => {
       RESIGN_DATE: "",
     });
   };
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
+  const glbLang: string | undefined = useAppSelector(selectLang);
   const mainDeptAGTable = useMemo(() => {
     return (
       <AGTable

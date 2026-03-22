@@ -9,8 +9,9 @@ import { checkBP, f_insert_Notification_Data, SaveExcel } from "../../../api/Glo
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { TbLogout } from "react-icons/tb";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -32,8 +33,8 @@ import {
 import "./InvoiceManagerManageTab.scss";
 
 const InvoiceManagerManageTab = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const theme: any = useAppSelector(selectTheme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {

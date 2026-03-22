@@ -4,8 +4,8 @@ import "./LichSu_New.scss";
 import Swal from "sweetalert2";
 import { weekdayarray } from "../../../api/GlobalFunction";
 import moment from "moment";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import {UserData } from "../../../api/GlobalInterface";
 import { DiemDanhLichSuData, DiemDanhNhomData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -30,9 +30,7 @@ import {
 
 
 const LichSu_New = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const [attendanceTimeline, setAttendanceTimeline] = useState<Array<{ date: string; label: string; hours: number }>>([]);
   const [attendanceTimelineLoading, setAttendanceTimelineLoading] = useState(false);

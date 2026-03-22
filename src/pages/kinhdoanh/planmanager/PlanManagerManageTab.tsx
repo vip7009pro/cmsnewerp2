@@ -6,8 +6,9 @@ import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
 import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
@@ -15,8 +16,8 @@ import { PlanTableData } from "../interfaces/kdInterface";
 import "./PlanManagerManageTab.scss";
 
 const PlanManagerManageTab: React.FC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const theme: any = useAppSelector(selectTheme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const podatatablefilter = useRef<Array<PlanTableData>>([]);
 

@@ -3,8 +3,6 @@ import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import "./IQC.scss";
 import DTC from "../dtc/DTC";
 import NCR_MANAGER from "./NCR_MANAGER";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import MyTabs from "../../../components/MyTab/MyTab";
 import DKDTC from "../dtc/DKDTC";
 import { getUserData } from "../../../api/Api";
@@ -13,8 +11,10 @@ import HOLDING from "./HOLDING";
 import FAILING from "./FAILING";
 import BLOCK from "./BLOCK";
 import IQC_REPORT from "./IQC_REPORT";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const IQC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   useEffect(() => {}, []);
   return (
     <div className="iqc">

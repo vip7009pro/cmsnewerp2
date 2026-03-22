@@ -17,10 +17,10 @@ import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_C
 import { IconButton, LinearProgress } from "@mui/material";
 import { BiSearch } from "react-icons/bi";
 import useWindowDimensions from "../../../api/useWindowDimensions";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
 import { ACHIVEMENT_DATA, DAILY_SX_DATA, MACHINE_COUNTING, MACHINE_LIST, MONTHLY_SX_DATA, OPERATION_TIME_DATA, SX_LOSS_TREND_DATA, TOTAL_TIME, WEEKLY_SX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectSidebarMenu } from "../../../redux/selectors/uiSelectors";
 
 const PLANRESULT = () => {
   const { height, width } = useWindowDimensions();
@@ -74,9 +74,7 @@ const PLANRESULT = () => {
     []
   );
   const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
-  const sidebarstatus: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.sidebarmenu
-  );
+  const sidebarstatus: boolean | undefined = useAppSelector(selectSidebarMenu);
   const [dayrange, setDayRange] = useState(
     getBusinessDatesCount(fromdate, todate)
   );

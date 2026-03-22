@@ -8,8 +8,8 @@ import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
 
 import "./TraAMZ.scss";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 import { AMAZON_DATA } from "../../interfaces/kdInterface";
 import { COMPONENT_DATA } from "../../../rnd/interfaces/rndInterface";
 import { renderElement } from "../../../../api/GlobalFunction";
@@ -26,7 +26,7 @@ const PrintTrigger = ({ onPrint }: { onPrint: () => void }) => {
 };
 
 const TraAMZ = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

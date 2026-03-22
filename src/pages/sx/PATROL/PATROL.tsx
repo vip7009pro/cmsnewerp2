@@ -6,13 +6,13 @@ import { generalQuery } from '../../../api/Api'
 import { Button, Checkbox, FormControlLabel } from '@mui/material'
 import moment from 'moment'
 import Swal from 'sweetalert2'
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { PATROL_HEADER_DATA } from '../../qlsx/QLSXPLAN/interfaces/khsxInterface'
 import { DTC_PATROL_DATA, INSP_PATROL_DATA, PQC3_DATA } from '../../qc/interfaces/qcInterface'
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 
 const PATROL = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
   const [fullScreen, setFullScreen] = useState(false);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);

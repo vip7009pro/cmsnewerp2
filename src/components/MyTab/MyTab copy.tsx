@@ -1,7 +1,7 @@
 import React, { useState, ReactNode } from 'react';
 import './MyTab.scss';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { useAppSelector } from '../../redux/hooks';
+import { selectTheme } from '../../redux/selectors/uiSelectors';
 
 // Định nghĩa kiểu cho props của Tab
 interface TabProps {
@@ -25,7 +25,7 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
   children,
   defaultActiveTab = 0,
 }) => {
-    const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   // State để theo dõi tab đang active
   const [activeTab, setActiveTab] = useState<number>(defaultActiveTab);
 

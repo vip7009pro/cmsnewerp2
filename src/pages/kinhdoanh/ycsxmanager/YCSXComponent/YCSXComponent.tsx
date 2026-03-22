@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
 
 import "./YCSXComponent.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-
 /* import Barcode from 'react-barcode'; */
 import Barcode from "react-barcode";
 import {
@@ -14,17 +11,16 @@ import {
 } from "../../../../api/GlobalInterface";
 import { checkHSD2 } from "../../../../api/GlobalFunction";
 import { FullBOM, TONKHOTDYCSX, TONVL, YCSXTableData } from "../../interfaces/kdInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
+import { selectCompany } from "../../../../redux/selectors/uiSelectors";
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;
 }
 const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
   const [tvl_tdycsx, setTVL_TDYCSX] = useState<Array<TONVL>>([
     {
       M_CODE: "string",

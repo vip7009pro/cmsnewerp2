@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
-import { RootState } from "../../../../redux/store";
-import { useSelector } from "react-redux";
 import "./CHECKSHEETSX.scss";
 import {UserData } from "../../../../api/GlobalInterface";
 import { QLSXPLANDATA } from "../interfaces/khsxInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
+import { selectCompany } from "../../../../redux/selectors/uiSelectors";
 const CHECKSHEETSX = ({ DATA }: { DATA: QLSXPLANDATA }) => {
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const company: string = useAppSelector(selectCompany);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [phanloai, setPhanLoai] = useState("TSP")
   const [congdoan, setCongDoan] = useState("IN")
 

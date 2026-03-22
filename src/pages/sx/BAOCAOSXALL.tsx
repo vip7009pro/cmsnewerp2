@@ -15,19 +15,19 @@ const BAOCAOFULLROLL = React.lazy(() => import("./BAOCAOTHEOROLL/BAOCAOFULLROLL"
 import { getlang } from "../../components/String/String";
 import { getCompany, getUserData } from "../../api/Api";
 import MyTabs from "../../components/MyTab/MyTab";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import TestHome from "../home/TestHome";
 import LOSS_TIME_DATA from "./LOSS_TIME_DATA/LOSS_TIME_DATA";
 import KPI_NV_NEW2 from "./KPI_NV_NEW2/KPI_NV_NEW2";
 import INNHANH_KPI from "./INNHANH_KPI/INNHANH_KPI";
+import { useAppSelector } from "../../redux/hooks";
+import { selectLang } from "../../redux/selectors/uiSelectors";
+
 const KPI_NVSX = lazy(() => import("./KPI_NV/KPI_NVSX"));
 const DATASAMPLESX = lazy(() => import("./DATASAMPLE/DATASAMPLESX"));
 const KPI_NVSX_NEW = lazy(() => import("./KPI_NV_NEW/KPI_NV_NEW"));
+
 const BAOCAOSXALL = () => {
-    const lang: string | undefined = useSelector(
-      (state: RootState) => state.totalSlice.lang
-    );
+    const lang: string | undefined = useAppSelector(selectLang);
 
   useEffect(() => { }, []);
   return (

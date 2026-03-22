@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./NavMenu.scss";
-import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../api/GlobalInterface";
 import { generalQuery } from "../../api/Api";
-import { addTab, settabIndex } from "../../redux/slices/globalSlice";
+import { addTab, setTabIndex } from "../../redux/slices/tabsSlice";
 import Swal from "sweetalert2";
 import { ELE_ARRAY } from "../../api/GlobalInterface";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import { selectTabModeSwap, selectTabs } from "../../redux/selectors/tabsSelectors";
+import { selectCompany } from "../../redux/selectors/uiSelectors";
 import * as FaIcons from "react-icons/fa";
 import * as BiIcons from "react-icons/bi";
 import * as MdIcons from "react-icons/md";
@@ -40,19 +42,11 @@ const NavMenuNew = () => {
     { name: string; library: string; IconComponent: any }[]
   >([]);
   const [menuData, setMenuData] = useState<MENUDATA[]>([]);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
-  const tabModeSwap: boolean = useSelector(
-    (state: RootState) => state.totalSlice.tabModeSwap
-  );
-  const tabs: ELE_ARRAY[] = useSelector(
-    (state: RootState) => state.totalSlice.tabs
-  );
-  const dispatch = useDispatch();
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
+  const tabModeSwap: boolean = useAppSelector(selectTabModeSwap);
+  const tabs: ELE_ARRAY[] = useAppSelector(selectTabs);
+  const dispatch = useAppDispatch();
   //get unique MenuID, MenuName, Text
   const uniqueMenuData = menuData.reduce((acc: MENUDATA[], item: MENUDATA) => {
     if (!acc.some((el: MENUDATA) => el.MenuID === item.MenuID)) {
@@ -193,7 +187,7 @@ const NavMenuNew = () => {
                                   //console.log(tab_index);
                                   if (tab_index !== -1) {
                                     //console.log('co tab roi');
-                                    dispatch(settabIndex(tab_index));
+                                    dispatch(setTabIndex(tab_index));
                                   } else {
                                     dispatch(
                                       addTab({
@@ -203,7 +197,7 @@ const NavMenuNew = () => {
                                         PAGE_ID: subMenu.PAGE_ID,
                                       })
                                     );
-                                    dispatch(settabIndex(tabs.length));
+                                    dispatch(setTabIndex(tabs.length));
                                   }
                                 }
                               }

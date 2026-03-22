@@ -10,12 +10,11 @@ import getsentence from "../../String/String";
 import { Button, Card, CardContent, CardHeader, Chip, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, Stack, TextField } from "@mui/material";
 import { AiOutlineBarChart, AiOutlineIdcard, AiOutlineTool, AiOutlineUnlock } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import {
-  changeUserData,
-  update_socket,
-} from "../../../redux/slices/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectCompany, selectLang, selectTheme } from "../../../redux/selectors/uiSelectors";
+import { setUserData } from "../../../redux/slices/authSlice";
+import { emitSocketEvent } from "../../../redux/slices/socketSlice";
 import Cookies from "universal-cookie";
 import { UserData } from "../../../api/GlobalInterface";
 import Box from "@mui/material/Box";
@@ -51,25 +50,19 @@ export function LinearProgressWithLabel(
 }
 export default function AccountInfo() {
   const cookies = new Cookies();
-  const userdata: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
+  const userdata: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
   const [currentPW, setCurrentPW] = useState("");
   const [newPW, setNewPW] = useState("");
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [server_string, setServer_String] = useState('https://cmsvina4285.com:5013');
   const [webver, setwebver] = useState(0);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [logoutID, setLogOutID] = useState("");
   const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>();
   const [showAdminTools, setShowAdminTools] = useState(false);
   const [openChangePw, setOpenChangePw] = useState(false);
-  const lang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
+  const lang: string | undefined = useAppSelector(selectLang);
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
@@ -342,7 +335,9 @@ export default function AccountInfo() {
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                dispatch(changeUserData({ ...userdata, EMPL_IMAGE: "Y" }));
+                if (userdata) {
+                  dispatch(setUserData({ ...userdata, EMPL_IMAGE: "Y" }));
+                }
                 Swal.fire("Thông báo", "Upload avatar thành công", "success");
               } else {
                 Swal.fire("Thông báo", "Upload avatar thất bại", "error");
@@ -804,7 +799,7 @@ export default function AccountInfo() {
                         variant="outlined"
                         onClick={() => {
                           dispatch(
-                            update_socket({
+                            emitSocketEvent({
                               event: "notification",
                               data: {
                                 command: "logout",

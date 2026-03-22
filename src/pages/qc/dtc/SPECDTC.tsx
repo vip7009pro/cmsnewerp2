@@ -5,12 +5,12 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./SPECDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { DTC_SPEC_DATA, TestListTable } from "../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const SPECDTC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");

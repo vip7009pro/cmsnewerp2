@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./QuotationForm.scss";
-import { RootState } from "../../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectCompany } from "../../../../redux/selectors/uiSelectors";
 import { generalQuery } from "../../../../api/Api";
 import moment from "moment";
 import Swal from "sweetalert2";
@@ -59,9 +59,7 @@ const QuotationForm = ({
 }: {
   QUOTATION_DATA?: BANGGIA_DATA2[];
 }) => {
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
+  const company: string = useAppSelector(selectCompany);
 
   const [custinfodatatable, setCUSTINFODataTable] = useState<Array<CUST_INFO>>(
     [],

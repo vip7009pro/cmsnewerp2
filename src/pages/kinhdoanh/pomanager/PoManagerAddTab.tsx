@@ -4,8 +4,9 @@ import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import "./PoManagerAddTab.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { getCompany, getSocket, getUserData } from "../../../api/Api";
 import { autoGetProdPrice, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
@@ -19,9 +20,9 @@ import {
 } from "../utils/kdUtils";
 
 const PoManagerAddTab: React.FC = () => {
-  const userData = useSelector((state: RootState) => state.totalSlice.userData);
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const company: string = useSelector((state: RootState) => state.totalSlice.company);
+  const userData = useAppSelector(selectUserData);
+  const theme: any = useAppSelector(selectTheme);
+  const company: string = useAppSelector(selectCompany);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [trigger, setTrigger] = useState(true);

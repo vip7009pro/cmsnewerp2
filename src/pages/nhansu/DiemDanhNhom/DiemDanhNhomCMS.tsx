@@ -5,8 +5,8 @@ import Swal from 'sweetalert2';
 import { f_insert_Notification_Data } from '../../../api/GlobalFunction';
 import moment from 'moment';
 import { getlang } from '../../../components/String/String';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import { useAppSelector } from '../../../redux/hooks';
+import { selectLang } from '../../../redux/selectors/uiSelectors';
 import { NotificationElement } from '../../../components/NotificationPanel/Notification';
 import AGTable from '../../../components/DataTable/AGTable';
 import { DiemDanhNhomData } from '../interfaces/nhansuInterface';
@@ -19,7 +19,7 @@ const AvatarCellElement = (params: any) => {
   return <img width={`100%`} height={80} src={'/Picture_NS/NS_' + params.data?.EMPL_NO + '.jpg'} alt={params.data?.EMPL_NO}></img>;
 }
 const DiemDanhNhomCMS = ({ option }: { option: string }) => {
-  const glbLang: string | undefined = useSelector((state: RootState) => state.totalSlice.lang);
+  const glbLang: string | undefined = useAppSelector(selectLang);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(0);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<Array<DiemDanhNhomData>>([]);
 
@@ -671,7 +671,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
         toolbar={<></>}
         columns={columns_diemdanhnhom}
         data={diemdanhnhomtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e)
           //console.log(e.column.colId)
           if (e.column.colId === 'WORK_HOUR') {
@@ -683,10 +683,10 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
             }
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

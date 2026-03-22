@@ -8,8 +8,8 @@ import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
 import { UserData } from "../../../api/GlobalInterface";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import "./FCSTManagerAddTab.scss";
 
 const FCSTManagerAddTab = () => {
@@ -17,7 +17,7 @@ const FCSTManagerAddTab = () => {
   const [isLoading, setisLoading] = useState(false);
   const [trigger, setTrigger] = useState(true);
 
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const column_excelplan2: any = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 50 },

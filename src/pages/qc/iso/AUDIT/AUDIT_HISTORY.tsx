@@ -1,8 +1,6 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./AUDIT_HISTORY.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import AGTable from "../../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import {
@@ -24,10 +22,12 @@ import { DownloadButtonAll } from "../../../../components/DownloadButton/Downloa
 import { f_getcustomerlist } from "../../../kinhdoanh/utils/kdUtils";
 import { AUDIT_HISTORY_DATA } from "../../interfaces/qcInterface";
 import { f_add_AUDIT_HISTORY_DATA, f_delete_AUDIT_HISTORY_DATA, f_load_AUDIT_HISTORY_DATA, f_update_AUDIT_HISTORY_DATA, f_updateFileInfo_AUDIT_HISTORY } from "../../utils/qcUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 
 
 const AUDIT_HISTORY = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {
     register,
     handleSubmit,

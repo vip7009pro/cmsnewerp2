@@ -19,8 +19,8 @@ import "./CODE_MANAGER.scss";
 import { BiDownload, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { CODE_FULL_INFO } from "../interfaces/rndInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_getCodeInfo, f_handleSaveLossSX, f_handleSaveQLSX, f_pdBanVe, f_resetBanVe, f_setNgoaiQuan, f_updateBEP } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
@@ -28,7 +28,7 @@ const CODE_MANAGER = () => {
   const [activeOnly, setActiveOnly] = useState(true)
   const [cndb, setCNDB] = useState(false)
   const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_FULL_INFO>>([]);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData,);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(true);

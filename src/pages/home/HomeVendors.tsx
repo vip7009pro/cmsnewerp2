@@ -6,21 +6,26 @@ import { generalQuery, getCompany, getUserData, logout } from "../../api/ApiVend
 import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import { closeTab, settabIndex } from "../../redux/slices/globalSlice";
+import { closeTab, setTabIndex } from "../../redux/slices/tabsSlice";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
 import { getlang } from "../../components/String/String";
 import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
-
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import {
+  selectCompany,
+  selectLang,
+  selectSidebarMenu,
+  selectTheme,
+} from "../../redux/selectors/uiSelectors";
+import { selectTabIndex, selectTabModeSwap, selectTabs } from "../../redux/selectors/tabsSelectors";
+import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, CAPA_MANAGER, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeamCMS, DTC, EQ_STATUS, EQ_STATUS2, FCSTManager, FileTransfer, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanhReport, LichSu_New, LICHSUINPUTLIEU, LICHSUTEMLOTSX, MACHINE, Navbar, NOCODELOWCODE, OQC, OVER_MONITOR, PermissionNotify, PheDuyetNghiCMS, PLAN_DATATB, PLAN_STATUS, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QCReport, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuanLyPhongBanNhanSu_Old, QUICKPLAN2, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, YCSXManager } from "../../api/lazyPages";
 import SqlEditor from "../nocodelowcode/components/TestBackEnd/SqlEditor";
 import NavbarVendors from "../../components/Navbar/NavbarVendors";
 import HomePageVendors from "../../components/Vendors/Home/HomeVendors";
 
 export const current_ver: number = getCompany() === "CMS" ? 2618 : 423;
-
-import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, CAPA_MANAGER, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeamCMS, DTC, EQ_STATUS, EQ_STATUS2, FCSTManager, FileTransfer, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanhReport, LichSu_New, LICHSUINPUTLIEU, LICHSUTEMLOTSX, MACHINE, Navbar, NOCODELOWCODE, OQC, OVER_MONITOR, PermissionNotify, PheDuyetNghiCMS, PLAN_DATATB, PLAN_STATUS, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QCReport, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuanLyPhongBanNhanSu_Old, QUICKPLAN2, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, YCSXManager } from "../../api/lazyPages";
 
 interface ELE_ARRAY {
   REACT_ELE: any;
@@ -36,29 +41,16 @@ export const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
 function HomeVendors() {
 
   const cookies = new Cookies();
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
-  const lang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const tabs: ELE_ARRAY[] = useSelector(
-    (state: RootState) => state.totalSlice.tabs
-  );
-  const tabIndex: number = useSelector(
-    (state: RootState) => state.totalSlice.tabIndex
-  );
-  const tabModeSwap: boolean = useSelector(
-    (state: RootState) => state.totalSlice.tabModeSwap
-  );
-  const sidebarStatus : boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.sidebarmenu,
-  );
+  const company: string = useAppSelector(selectCompany);
+  const lang: string | undefined = useAppSelector(selectLang);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const theme: any = useAppSelector(selectTheme);
+  const tabs: ELE_ARRAY[] = useAppSelector(selectTabs);
+  const tabIndex: number = useAppSelector(selectTabIndex);
+  const tabModeSwap: boolean = useAppSelector(selectTabModeSwap);
+  const sidebarStatus: boolean | undefined = useAppSelector(selectSidebarMenu);
   console.log('company', company);
+
   const menulist: MENU_LIST_DATA[] = company === 'CMS' ? [
     {
       MENU_CODE: "BL1",
@@ -872,9 +864,9 @@ function HomeVendors() {
       MENU_ITEM: <HomePageVendors />,
     },
   ];
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
-  
+
   const CustomTabLabel = styled(Typography)({
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
@@ -1011,7 +1003,7 @@ function HomeVendors() {
                       event: React.SyntheticEvent,
                       newValue: number
                     ) => {
-                      dispatch(settabIndex(newValue));
+                      dispatch(setTabIndex(newValue));
                     }}
                     variant='scrollable'
                     aria-label='ERP TABS'
@@ -1040,7 +1032,7 @@ function HomeVendors() {
                               label={
                                 <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center', padding: 0, color: "black", borderRadius: '5px', margin: '5px', cursor: 'pointer' }}
                                   onClick={() => {
-                                    dispatch(settabIndex(index));
+                                    dispatch(setTabIndex(index));
                                   }}
                                 >
                                   <CustomTabLabel style={{ fontSize: "0.7rem", display: 'flex', whiteSpace: 'nowrap', alignItems: 'center' }}>

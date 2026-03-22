@@ -1,9 +1,7 @@
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./BAOCAOFULLROLL.scss";
-import { useSelector } from "react-redux";
 import { UserData } from "../../../api/GlobalInterface";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
@@ -11,6 +9,9 @@ import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { FULL_ROLL_DATA, MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 export const f_handleLoadFullRollData = async (data: any) => {
   let kq: FULL_ROLL_DATA[] = [];
   try {
@@ -35,7 +36,7 @@ export const f_handleLoadFullRollData = async (data: any) => {
   return kq;
 }
 const BAOCAOFULLROLL = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm({
     defaultValues: {
       fromdate: moment().add(-8, "day").format("YYYY-MM-DD"),
@@ -57,9 +58,7 @@ const BAOCAOFULLROLL = () => {
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
   };
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fullRollData, setFullRollData] = useState<FULL_ROLL_DATA[]>([]); 
   const columns = [
     { field: 'PLAN_DATE', headerName: 'PLAN_DATE', width: 70 },

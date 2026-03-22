@@ -25,8 +25,6 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiShow } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import {
   UserData,
   WEB_SETTING_DATA,
@@ -36,6 +34,8 @@ import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/k
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import { f_getMachineListData, f_getRecentDMData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const QUICKPLAN2_OLD = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)
@@ -77,9 +77,7 @@ const QUICKPLAN2_OLD = () => {
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

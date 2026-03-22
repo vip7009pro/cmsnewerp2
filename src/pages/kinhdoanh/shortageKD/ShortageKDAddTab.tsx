@@ -6,13 +6,13 @@ import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { UserData } from "../../../api/GlobalInterface";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import AGTable from "../../../components/DataTable/AGTable";
 import "./ShortageKDAddTab.scss";
 
 const ShortageKDAddTab = () => {
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
 

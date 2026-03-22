@@ -19,14 +19,13 @@ import ReactFlow, {
   EdgeChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useDispatch, useSelector } from 'react-redux';
 import { MdEventRepeat, MdOutlineNotStarted } from 'react-icons/md';
 import { FaExpandArrowsAlt, FaRegStopCircle, FaRunning, FaUndo, FaRedo } from 'react-icons/fa';
 import { FcProcess } from 'react-icons/fc';
 import { HiOutlineAnnotation } from 'react-icons/hi';
-import { RootState } from '../../../redux/store';
 import { setEdges, setNodes } from '../../../redux/slices/workflowSlice';
 import { Modal, TextField, Button, Box } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 
 /* ================== HELPERS: xoay vị trí Handle theo rotation ================== */
 const normalizeRotation = (deg: number) => ((deg % 360) + 360) % 360;
@@ -344,8 +343,8 @@ const nodeTypes: NodeTypes = {
 
 /* ================== MAIN COMPONENT ================== */
 const WorkflowEditor: React.FC = () => {
-  const dispatch = useDispatch();
-  const { nodes: reduxNodes, edges: reduxEdges } = useSelector((state: RootState) => state.workflowSlice);
+  const dispatch = useAppDispatch();
+  const { nodes: reduxNodes, edges: reduxEdges } = useAppSelector((state) => state.workflowSlice);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [renderKey, setRenderKey] = useState(Date.now());
   const [openModal, setOpenModal] = useState(false);

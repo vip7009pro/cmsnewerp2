@@ -3,16 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, uploadQuery } from "../../../api/Api";
 import "./DATASAMPLESX.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
 import 'react-html5-camera-photo/build/css/index.css';
 import { Html5QrcodeScanner } from 'html5-qrcode'
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 
 const DATASAMPLESX = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [file, setFile] = useState<any>(null);
   const [file2, setFile2] = useState<any>(null);
   const [lineqc_empl, setLineqc_empl] = useState(userData?.EMPL_NO ?? "");

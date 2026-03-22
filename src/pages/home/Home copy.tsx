@@ -6,9 +6,10 @@ import { generalQuery, getCompany, getUserData, logout } from '../../api/Api';
 import Swal from 'sweetalert2';
 import { IconButton, Tab, TabProps, Tabs, Typography } from '@mui/material';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { RootState } from '../../redux/store';
-import { useSelector, useDispatch } from 'react-redux';
-import { closeTab, settabIndex } from '../../redux/slices/globalSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { closeTab, setTabIndex } from '../../redux/slices/tabsSlice';
+import { selectLang, selectCompany, selectSidebarMenu, selectTheme } from '../../redux/selectors/uiSelectors';
+import { selectTabIndex, selectTabModeSwap, selectTabs } from '../../redux/selectors/tabsSelectors';
 import styled from '@emotion/styled';
 import Cookies from 'universal-cookie';
 import { MENU_LIST_DATA } from '../../api/GlobalInterface';
@@ -59,16 +60,16 @@ export const CustomTab = styled((props: TabProps) => <Tab {...props} disableRipp
 });
 function Home() {
   const cookies = new Cookies();
-  const theme = useSelector((state: RootState) => state.totalSlice.theme);
-  const lang = useSelector((state: RootState) => state.totalSlice.lang);
-  const company = useSelector((state: RootState) => state.totalSlice.company);
-  const tabIndex = useSelector((state: RootState) => state.totalSlice.tabIndex);
-  const tabModeSwap = useSelector((state: RootState) => state.totalSlice.tabModeSwap);
-  const sidebarStatus = useSelector((state: RootState) => state.totalSlice.sidebarmenu);
-  const tabs = useSelector((state: RootState) => state.totalSlice.tabs);
+  const theme = useAppSelector(selectTheme);
+  const lang = useAppSelector(selectLang);
+  const company = useAppSelector(selectCompany);
+  const tabIndex = useAppSelector(selectTabIndex);
+  const tabModeSwap = useAppSelector(selectTabModeSwap);
+  const sidebarStatus = useAppSelector(selectSidebarMenu);
+  const tabs = useAppSelector(selectTabs);
   console.log('company', company);
   const menulist: MENU_LIST_DATA[] = useMemo(() => getMenuList(company, lang), [company, lang]);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = useCallback(() => {
     generalQuery('updatechamcongdiemdanhauto', {})
@@ -188,7 +189,7 @@ function Home() {
                 <Tabs
                   value={tabIndex}
                   onChange={(event: React.SyntheticEvent, newValue: number) => {
-                    dispatch(settabIndex(newValue));
+                    dispatch(setTabIndex(newValue));
                   }}
                   
                   variant='scrollable'
@@ -259,7 +260,7 @@ function Home() {
                                   height: '100%',
                                 }}
                                 onClick={(e) => {
-                                  dispatch(settabIndex(index));
+                                  dispatch(setTabIndex(index));
                                 }}
                               >
                                 <span

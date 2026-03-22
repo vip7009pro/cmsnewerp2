@@ -49,41 +49,31 @@ import {
 } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import { SiStatuspal } from "react-icons/si";
-import {
-  AiFillAmazonCircle,
-  AiFillAmazonSquare,
-  AiFillMinusCircle,
-  AiOutlineAudit,
-  AiOutlineCalendar,
-} from "react-icons/ai";
-import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillMinusCircle, AiOutlineAudit, AiOutlineCalendar, } from "react-icons/ai";
 import { getlang } from "../String/String";
 import { GiPriceTag } from "react-icons/gi";
 import { UserData } from "../../api/GlobalInterface";
 import { getCompany } from "../../api/Api";
-import { addTab, settabIndex } from "../../redux/slices/globalSlice";
+import { addTab, setTabIndex } from "../../redux/slices/tabsSlice";
 import Swal from "sweetalert2";
 import { ELE_ARRAY, } from "../../api/GlobalInterface";
 import { FaCodePullRequest } from "react-icons/fa6";
 import { CiShoppingCart } from "react-icons/ci";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { GrContact } from "react-icons/gr";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import { selectTabModeSwap, selectTabs } from "../../redux/selectors/tabsSelectors";
+import { selectCompany } from "../../redux/selectors/uiSelectors";
+
 const NavMenu2 = () => {
   const lang = "vi"
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
-  const tabModeSwap: boolean = useSelector(
-    (state: RootState) => state.totalSlice.tabModeSwap,
-  );
-  const tabs: ELE_ARRAY[] = useSelector(
-    (state: RootState) => state.totalSlice.tabs,
-  );
-  const dispatch = useDispatch();
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
+  const tabModeSwap: boolean = useAppSelector(selectTabModeSwap);
+  const tabs: ELE_ARRAY[] = useAppSelector(selectTabs);
+  const dispatch = useAppDispatch();
+
   const SidebarData = [
     {
       title: getlang("orders", lang),
@@ -651,7 +641,7 @@ const NavMenu2 = () => {
                                     //console.log(tab_index);
                                     if (tab_index !== -1) {
                                       //console.log('co tab roi');
-                                      dispatch(settabIndex(tab_index));
+                                      dispatch(setTabIndex(tab_index));
                                     } else {
                                       dispatch(
                                         addTab({
@@ -660,7 +650,7 @@ const NavMenu2 = () => {
                                           REACT_ELE: ""
                                         }),
                                       );
-                                      dispatch(settabIndex(tabs.length));
+                                      dispatch(setTabIndex(tabs.length - 1));
                                     }
                                   }
                                 } else {

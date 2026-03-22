@@ -5,8 +5,9 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/GlobalFunction";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import "./KHOLIEU.scss";
 import {
   UserData,
@@ -17,10 +18,8 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { MdInput, MdOutput } from "react-icons/md";
 import { NHAPLIEUDATA, TONLIEUDATA, XUATLIEUDATA } from "../interfaces/khoInterface";
 const KHOLIEU = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const theme: any = useAppSelector(selectTheme);
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

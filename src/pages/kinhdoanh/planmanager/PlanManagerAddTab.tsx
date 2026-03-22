@@ -7,14 +7,15 @@ import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import "./PlanManagerAddTab.scss";
 
 const PlanManagerAddTab = () => {
-  const userData = useSelector((state: RootState) => state.totalSlice.userData);
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const company: string = useSelector((state: RootState) => state.totalSlice.company);
+  const userData = useAppSelector(selectUserData);
+  const theme: any = useAppSelector(selectTheme);
+  const company: string = useAppSelector(selectCompany);
 
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([

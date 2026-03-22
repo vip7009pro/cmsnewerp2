@@ -17,8 +17,9 @@ import {
 } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { IconButton } from "@mui/material";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectLang } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -39,12 +40,8 @@ import ChartDiemDanhSUBDEPT from "../../../components/Chart/NHANSU/ChartDiemDanh
 import AGTable from "../../../components/DataTable/AGTable";
 import { UserData } from "../../../api/GlobalInterface";
 const BaoCaoNhanSu = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const glbLang: string | undefined = useAppSelector(selectLang);
   const [isLoading, setisLoading] = useState(false);
   const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<

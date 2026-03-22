@@ -5,8 +5,6 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_AMAZON.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   BOM_AMAZON as BOM_AMAZON_DATA,
   CODE_INFO,
@@ -15,6 +13,8 @@ import {
 } from "../interfaces/rndInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { UserData } from "../../../api/GlobalInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 const BOM_AMAZON = () => {
   const [codephoilist, setCodePhoiList] = useState<Array<CODEPHOI>>([]);
   const [listamazontable, setListBomAmazonTable] = useState<LIST_BOM_AMAZON[]>(
@@ -22,9 +22,7 @@ const BOM_AMAZON = () => {
   );
   const [bomamazontable, setBOMAMAZONTable] = useState<BOM_AMAZON_DATA[]>([]);
   const [G_CODE_MAU, setG_CODE_MAU] = useState("7A07994A");
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);

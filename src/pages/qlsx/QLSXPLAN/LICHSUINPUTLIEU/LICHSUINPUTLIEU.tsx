@@ -3,13 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./LICHSUINPUTLIEU.scss";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { useForm } from "react-hook-form";
 import { LICHSUINPUTLIEU_DATA } from "../interfaces/khsxInterface";
 import { f_lichsuinputlieu } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 const LICHSUINPUTLIEU = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm()
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]); 
   const column_lichsuinputlieusanxuat = useMemo(() => [

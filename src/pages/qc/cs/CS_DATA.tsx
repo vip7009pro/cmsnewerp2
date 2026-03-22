@@ -8,12 +8,12 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NNDSDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import { CS_CNDB_DATA, CS_RMA_DATA, CS_TAXI_DATA, CSCONFIRM_DATA } from "../interfaces/qcInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const CS_DATA_TB = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
   const [currentDS, setCurrentDS] = useState("");

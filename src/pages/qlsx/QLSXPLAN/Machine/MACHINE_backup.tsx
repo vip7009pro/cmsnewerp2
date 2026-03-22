@@ -26,9 +26,9 @@ import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 import { GiCurvyKnife } from "react-icons/gi";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import { resetChithiArray } from "../../../../redux/slices/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
+import { resetChithiArray } from "../../../../redux/slices/chithiSlice";
 import KHOAO from "../KHOAO/KHOAO";
 import { TbLogout } from "react-icons/tb";
 import {
@@ -51,10 +51,10 @@ const MACHINE_OLD = () => {
   const getRecentDM = async (G_CODE: string) => {
     setRecentDMData(await f_getRecentDMData(G_CODE));
   }
-  const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
-    (state: RootState) => state.totalSlice.multiple_chithi_array
+  const chithiarray: QLSXPLANDATA[] | undefined = useAppSelector(
+    (state) => state.chithi.multiple_chithi_array,
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -108,7 +108,7 @@ const MACHINE_OLD = () => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -2365,7 +2365,7 @@ const MACHINE_OLD = () => {
     if (event.key === "F2") {
       ////console.log('F2 pressed');
       loadQLSXPlan(selectedPlanDate);
-      dispatch(resetChithiArray(""));
+      dispatch(resetChithiArray());
     } else if (event.key === "Enter" && showplanwindow === false) {
       //console.log(temp_key);
       if (machine_array.indexOf(temp_key.toUpperCase()) < 0) {
@@ -2882,7 +2882,7 @@ const MACHINE_OLD = () => {
           className='buttonIcon'
           onClick={() => {
             loadQLSXPlan(selectedPlanDate);
-            dispatch(resetChithiArray(""));
+            dispatch(resetChithiArray());
           }}
         >
           <BiRefresh color='blue' size={20} />

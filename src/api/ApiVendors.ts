@@ -1,98 +1,68 @@
-import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
-import {
-  changeUserData,
-  login as loginSlice,
-  logout as logoutSlice,
-  update_socket,
-  vendorLogin,
-  vendorLogout,
-} from "../redux/slices/globalSlice";
-/* import axios from 'axios'; */
-import axios from "axios";
-import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
-const cookies = new Cookies();
-axios.defaults.withCredentials = true;
+import { setVendorLoginState, setUserData } from "../redux/slices/authSlice";
+import { emitSocketEvent } from "../redux/slices/socketSlice";
+import { UserData } from "./GlobalInterface";
+import { getServerIp } from "./services/apiBase";
+import * as appSelectors from "./services/appSelectors";
+import * as tokenStorage from "./services/tokenStorage";
+import * as authService from "./services/authService";
+import * as queryService from "./services/queryService";
+import * as uploadService from "./services/uploadService";
+
 export function getSever(): string {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.server_ip;
-  //return "http://localhost:3002";
+  return getServerIp();
 }
+
 export function getCompany(): string {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.company;
+  return appSelectors.getCompany();
 }
+
 export function getUserData(): UserData | undefined {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.userData;
+  return appSelectors.getUserData();
 }
+
 export function getSocket() {
-  const state = store.getState();
-  return state.totalSlice.globalSocket;
+  return appSelectors.getSocket();
 }
+
 export function getNotiCount() {
-  const state = store.getState();
-  return state.totalSlice.notificationCount;
+  return appSelectors.getNotiCount();
 }
+
 export function getGlobalLang() {
-  const state = store.getState();
-  return state.totalSlice.lang;
+  return appSelectors.getGlobalLang();
 }
+
 export function getGlobalSetting() {
-  const state = store.getState();
-  return state.totalSlice.globalSetting;
+  return appSelectors.getGlobalSetting();
 }
+
 export function getAuditMode() {
-  const auditMode: number = parseInt(
-    getGlobalSetting()?.filter(
-      (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "AUDIT_MODE"
-    )[0]?.CURRENT_VALUE ?? "0"
-  );
-  return auditMode;
+  return appSelectors.getAuditMode();
 }
+
 export function getCtrCd() {
-  const state = store.getState();
-  return state.totalSlice.ctr_cd;
+  return appSelectors.getCtrCd();
 }
-//console.log("company", getCompany());
-let API_URL = getSever() + "/apivendors";
-let UPLOAD_URL = getSever() + "/uploadfile";
-let UPLOAD_CHECKSHEET_URL = getSever() + "/uploadfilechecksheet";
-let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-if (server_ip_local !== undefined) {
-  API_URL = server_ip_local + "/apivendors";
-  UPLOAD_URL = server_ip_local + "/uploadfile";
-} else {
-}
+
 export function login(user: string, pass: string) {
-  let API_URL = getSever() + "/apivendors";
-  axios
-    .post(API_URL, {
-      command: "loginVendors",
-      user: user,
-      pass: pass,
-      ctr_cd: getCtrCd(),
-    })
-    .then((response: any) => {
-      var Jresult = response.data;      
-      if (Jresult?.tk_status?.toUpperCase() === "OK") {       
+  authService
+    .login("vendors", user, pass)
+    .then((Jresult: any) => {
+      if (Jresult?.tk_status?.toUpperCase() === "OK") {
         Swal.fire(
           "Thông báo",
           "Chúc mừng bạn, đăng nhập thành công !",
-          "success"
-        );       
-        cookies.set("token_vendors", Jresult.token_content, { path: "/" });
+          "success",
+        );
+        tokenStorage.setToken("vendors", Jresult.token_content);
         checkLogin()
           .then((data) => {
-            
-            if (data.data.tk_status.toUpperCase() === "NG") {              
-              store.dispatch(vendorLogout(false));
+            if (data.data.tk_status.toUpperCase() === "NG") {
+              store.dispatch(setVendorLoginState(false));
               store.dispatch(
-                changeUserData({
+                setUserData({
                   ADD_COMMUNE: "Đông Xuân",
                   ADD_DISTRICT: "Sóc Sơn",
                   ADD_PROVINCE: "Hà Nội",
@@ -139,27 +109,26 @@ export function login(user: string, pass: string) {
                   WORK_STATUS_NAME: "Đang làm",
                   WORK_STATUS_NAME_KR: "근무중",
                   EMPL_IMAGE: "N",
-                })
+                }),
               );
             } else {
-             
               if (data.data.data.WORK_STATUS_CODE !== 0) {
-                store.dispatch(changeUserData(data.data.data));
+                store.dispatch(setUserData(data.data.data));
                 store.dispatch(
-                  update_socket({
+                  emitSocketEvent({
                     event: "login",
                     data: data.data.data.EMPL_NO,
-                  })
-                );              
-                store.dispatch(vendorLogin(true));
-                setTimeout(() => {                  
-                  store.dispatch(vendorLogin(true));
+                  }),
+                );
+                store.dispatch(setVendorLoginState(true));
+                setTimeout(() => {
+                  store.dispatch(setVendorLoginState(true));
                 }, 1000);
               } else {
                 Swal.fire(
                   "Thông báo",
                   "Nghỉ việc rồi không truy cập được!",
-                  "error"
+                  "error",
                 );
               }
             }
@@ -168,7 +137,7 @@ export function login(user: string, pass: string) {
             console.log(err + " ");
           });
       } else {
-        Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+        Swal.fire("Thông báo", "Lỗi: " + Jresult?.message, "error");
       }
     })
     .catch((error: any) => {
@@ -176,10 +145,11 @@ export function login(user: string, pass: string) {
       console.log(error);
     });
 }
+
 export function logout() {
-  cookies.set("token_vendors", "reset", { path: "/" });
+  tokenStorage.resetToken("vendors");
   store.dispatch(
-    update_socket({
+    emitSocketEvent({
       event: "logoutVendors",
       data: getUserData()?.EMPL_NO,
     })
@@ -187,31 +157,18 @@ export function logout() {
   /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
   setTimeout(() => {
     /* window.location.href = "/"; */
-    store.dispatch(vendorLogout(false));
+    store.dispatch(setVendorLoginState(false));
   }, 1000);
 }
+
 export async function checkLogin() {
-  let API_URL = getSever() + "/apivendors";
-  let UPLOAD_URL = getSever() + "/uploadfile";
-  let data = await axios.post(API_URL, {
-    command: "checkloginVendors",
-    DATA: { CTR_CD: getCtrCd(), token_string: cookies.get("token_vendors") },
-  });
-  return data;
+  return authService.checkLogin("vendors");
 }
+
 export async function generalQuery(command: string, queryData: any) {
-  const CURRENT_API_URL = getSever() + "/apivendors";
-  // console.log('API URL', CURRENT_API_URL);
-  let data = await axios.post(CURRENT_API_URL, {
-    command: command,
-    DATA: {
-      ...queryData,
-      token_string: cookies.get("token_vendors"),
-      CTR_CD: getCtrCd(),
-    },
-  });
-  return data;
+  return queryService.generalQuery("vendors", command, queryData);
 }
+
 export async function uploadQuery(
   file: any,
   filename: string,
@@ -219,19 +176,12 @@ export async function uploadQuery(
   filenamelist?: string[],
   onUploadProgress?: (progressEvent: any) => void
 ) {
-  const formData = new FormData();
-  formData.append("uploadedfile", file);
-  formData.append("filename", filename);
-  formData.append("uploadfoldername", uploadfoldername);
-  formData.append("token_string", cookies.get("token_vendors"));
-  formData.append("CTR_CD", getCtrCd());
-  if (filenamelist)
-    formData.append("newfilenamelist", JSON.stringify(filenamelist));
-  //console.log("filenamelist", filenamelist);
-  //console.log("formData", formData);
-  //console.log("token_vendors", cookies.get("token_vendors"));
-  let data = await axios.post(UPLOAD_URL, formData, {
+  return uploadService.uploadQuery(
+    "vendors",
+    file,
+    filename,
+    uploadfoldername,
+    filenamelist,
     onUploadProgress,
-  });
-  return data;
+  );
 }

@@ -9,12 +9,12 @@ import XBAR_CHART from "../../../components/Chart/DTC/XBAR_CHART";
 import R_CHART from "../../../components/Chart/DTC/R_CHART";
 import CPK_CHART from "../../../components/Chart/DTC/CPK_CHART";
 import HISTOGRAM_CHART from "../../../components/Chart/DTC/HISTOGRAM_CHART";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, TestListTable, XBAR_DATA } from "../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const KQDTC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [readyRender, setReadyRender] = useState(false);
   const isLoading = useRef<boolean>(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

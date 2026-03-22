@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./NavBarNew.scss";
-import { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import NavMenu from "../NavMenu/NavMenu";
+import { useAppSelector } from "../../redux/hooks";
+import { selectCompany, selectCompanyInfo } from "../../redux/selectors/uiSelectors";
 const NavBarNew = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
@@ -13,12 +13,8 @@ const NavBarNew = () => {
   const toggleSubMenu = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
   };
-  const cpnInfo: any = useSelector(
-    (state: RootState) => state.totalSlice.cpnInfo
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
+  const cpnInfo: any = useAppSelector(selectCompanyInfo);
+  const company: string = useAppSelector(selectCompany);
   return (
     <div>
       <nav className="navbarnew">

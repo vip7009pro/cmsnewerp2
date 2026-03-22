@@ -7,12 +7,12 @@ import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import "./KHOTP.scss";
 
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import { f_updateBTP_M100 } from "../../../api/GlobalFunction";
 import { TONKIEMGOP_CMS, TONKIEMGOP_KD, TONKIEMTACH, WH_IN_OUT, XUATPACK_DATA } from "../interfaces/khoInterface";
 const KHOTP = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

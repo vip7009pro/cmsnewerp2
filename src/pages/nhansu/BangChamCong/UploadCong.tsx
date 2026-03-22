@@ -1,8 +1,8 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./UploadCong.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button, IconButton } from "@mui/material";
@@ -15,7 +15,7 @@ import { getUserData } from "../../../api/Api";
 import { checkBP } from "../../../api/GlobalFunction";
 
 const UploadCong = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm({
     defaultValues: {
       from_date: moment().format("YYYY-MM-01"),

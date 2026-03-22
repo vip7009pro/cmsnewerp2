@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import "./DrawComponent.scss";
 import { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 import { UserData } from "../../../../api/GlobalInterface";
 
 const DrawComponent = ({
@@ -19,9 +19,7 @@ const DrawComponent = ({
   PDBV?: string;
   PROD_REQUEST_NO?: string;
 }) => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [page, setPage] = useState(1);
   const canvasRef = useRef(null);
   let draw_path = "/banve/";

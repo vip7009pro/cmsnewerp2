@@ -17,12 +17,12 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useSelector, useDispatch } from "react-redux";
-import { toggleSidebar } from "../../redux/slices/globalSlice";
-import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
 import { UserData } from "../../api/GlobalInterface";
 import Box from "@mui/material/Box";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import { toggleSidebar } from "../../redux/slices/uiSlice";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -151,10 +151,8 @@ export default function PrimarySearchAppBar() {
       </MenuItem>
     </Menu>
   );
-  const globalUserData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const dispatch = useDispatch();
+  const globalUserData: UserData | undefined = useAppSelector(selectUserData);
+  const dispatch = useAppDispatch();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -169,7 +167,7 @@ export default function PrimarySearchAppBar() {
             aria-label="open drawer"
             sx={{ mr: 2 }}
             onClick={() => {
-              dispatch(toggleSidebar("2"));
+              dispatch(toggleSidebar());
             }}
           >
             <MenuIcon/>

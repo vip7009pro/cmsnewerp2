@@ -6,19 +6,18 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import "./DKDTC.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { UserData, } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { BiScan } from "react-icons/bi";
 import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable } from "../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const DKDTC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const theme: any = useAppSelector(selectTheme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
   const [checkNVL, setCheckNVL] = useState(
@@ -117,16 +116,16 @@ const DKDTC = () => {
         toolbar={<div></div>}
         columns={dtcdatacolumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />

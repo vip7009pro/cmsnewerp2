@@ -23,8 +23,9 @@ import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunctio
 import { AiFillFileExcel, AiFillFolderAdd } from "react-icons/ai";
 import "./CalcQuotation.scss";
 import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectCompany } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import moment from "moment";
 import { BiSave } from "react-icons/bi";
 import { GrUpdate } from "react-icons/gr";
@@ -35,12 +36,8 @@ import { BANGGIA_DATA_CALC, CODEDATA, DEFAULT_DM, GIANVL } from "../interfaces/k
 import { UserData } from "../../../api/GlobalInterface";
 import { BOM_GIA } from "../../rnd/interfaces/rndInterface";
 const CalcQuotation = () => {
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const company: string = useAppSelector(selectCompany);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [cust_nhancong, setCust_NhanCong] = useState("0");
   const [cust_vanchuyen, setCust_VanChuyen] = useState("0");
   const [cust_khauhao, setCust_KhauHao] = useState("0");

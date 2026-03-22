@@ -2,10 +2,10 @@ import React, { useContext, useRef, useState } from "react";
 import "./DocumentComponent.scss";
 import Pdf, { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
-import { useSelector } from "react-redux";
 import { UserData } from "../../api/GlobalInterface";
-import { RootState } from "../../redux/store";
 import { IconButton } from "@mui/material";
+import { useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
 
 
 const DocumentComponent = ({
@@ -17,9 +17,7 @@ const DocumentComponent = ({
   DOC_TYPE?: string;
   VER?: number;
 }) => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [page, setPage] = useState(1);
   const canvasRef = useRef(null);
   let draw_path = "/materialdocs/";

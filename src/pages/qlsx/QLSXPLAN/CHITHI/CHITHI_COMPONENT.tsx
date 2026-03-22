@@ -1,8 +1,6 @@
 import moment from "moment";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generalQuery, getCompany } from "../../../../api/Api";
-import { RootState } from "../../../../redux/store";
-import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT.scss";
 import Barcode from "react-barcode";
 import {
@@ -13,15 +11,14 @@ import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DEFECT_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../utils/khsxUtils";
 import { FSC_LIST_DATA } from "../../../muahang/interfaces/muaInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
+import { selectCompany, selectCompanyInfo } from "../../../../redux/selectors/uiSelectors";
 const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
-  const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
+  const cpnInfo: any = useAppSelector(selectCompanyInfo);
+  const company: string = useAppSelector(selectCompany);
   const [checklieuchinh, setCheckLieuChinh] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
       REMK: "20220617",

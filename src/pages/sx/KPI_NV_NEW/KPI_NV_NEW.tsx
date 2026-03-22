@@ -1,8 +1,6 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./KPI_NV_NEW.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button, IconButton } from "@mui/material";
@@ -12,8 +10,10 @@ import { SX_KPI_NEW_DETAIL_DATA, SX_KPI_NEW_SUMMARY_DATA, SX_KPI_NV_DATA } from 
 import { f_insertupdateworkhours, f_load_SX_NV_KPI_DATA_Daily, f_load_SX_NV_KPI_DATA_Monthly, f_load_SX_NV_KPI_DATA_Weekly, f_load_SX_NV_KPI_DATA_Yearly, f_loadSXKPINEW_DETAIL, f_loadSXKPINEW_SUMMARY } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import SX_KPI_NV_GRAPH from "../../../components/Chart/SX/SX_KPI_NV_GRAPH";
 import { f_readUploadFile } from "../../kinhdoanh/utils/kdUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const KPI_NVSX_NEW = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm({
     defaultValues: {
       kpi_date: moment().subtract(1, 'month').startOf('month').format("YYYY-MM-DD")

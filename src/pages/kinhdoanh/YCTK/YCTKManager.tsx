@@ -1,8 +1,8 @@
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./YCTKManager.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from "@mui/material";
@@ -62,7 +62,7 @@ const emptyYCTKData: YCTKData = {
 };
 
 const YCTKManager = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm({
     defaultValues: {
       fromdate: moment().format('YYYY-MM-DD'),

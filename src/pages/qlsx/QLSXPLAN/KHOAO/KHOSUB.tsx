@@ -5,19 +5,17 @@ import {
   checkBP,
 } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { datediff } from "../../../kinhdoanh/utils/kdUtils";
 import { LICHSUNHAPKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
 import { f_checkMlotTonKhoSub, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_isM_CODE_CHITHI, f_isNextPlanClosed, f_load_nhapkhosub, f_load_tonkhosub, f_set_YN_KHO_SUB_INPUT } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission] = useState(true);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

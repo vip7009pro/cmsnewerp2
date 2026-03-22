@@ -3,18 +3,10 @@ import { Component, useEffect, Suspense, useRef } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { checkLogin, generalQuery, getCompany, getGlobalSetting, getNotiCount, getSocket, getUserData } from "./api/ApiVendors";
 import Swal from "sweetalert2";
-import { RootState } from "./redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeUserData,
-  update_socket,
-  setTabModeSwap,
-  changeGLBSetting,
-  changeServer,
-  updateNotiCount,
-  vendorLogout,
-  vendorLogin,
-} from "./redux/slices/globalSlice";
+import { setUserData, setVendorLoginState } from "./redux/slices/authSlice";
+import { setGlobalSetting } from "./redux/slices/notificationsSlice";
+import { setTabModeSwap } from "./redux/slices/tabsSlice";
+import { emitSocketEvent } from "./redux/slices/socketSlice";
 import { animated } from "@react-spring/web";
 import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
@@ -31,6 +23,9 @@ import HomeVendors from "./pages/home/HomeVendors";
 
 import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, BulletinBoard, CAPA_MANAGER, CAPASX2, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeam, DTC, EQ_STATUS, FCSTManager, FileTransfer, Info, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTABS, KHOTOTAL, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanh, KinhDoanhReport, LichSu, LICHSUINPUTLIEU, LICHSUTEMLOTSX, Login, MUAHANG, NhanSu, NOLOWHOME, OQC, OVER_MONITOR, PheDuyetNghiCMS, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QC, QCReport, QLGN, QLSX, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, YCSXManager } from "./api/lazyPages";
 import { ProtectedRoute } from "./api/GlobalFunction";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { selectDiemDanhState, selectIsLoggedIn, selectIsVendorLoggedIn, selectUserData } from "./redux/selectors/authSelectors";
+import { useVendorSocketListeners } from "./socket/useVendorSocketListeners";
 
 function AppVendors() {
   const full_screen: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'FULL_SCREEN')[0]?.CURRENT_VALUE ?? '0');
@@ -82,28 +77,21 @@ function AppVendors() {
               }
             );
           }
-          dispatch(changeGLBSetting(loadeddata));
+          dispatch(setGlobalSetting(loadeddata));
         } else {
-          dispatch(changeGLBSetting([]));
+          dispatch(setGlobalSetting([]));
         }
       })
       .catch((error) => {
         console.log(error);
       });
   }
-  const trangthaidiemdanh: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.diemdanhstate
-  );
-  const globalLoginState: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.loginState
-  );
-  const globalVendorLoginState: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.vendorLoginState
-  );
-  const globalUserData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const dispatch = useDispatch();
+  const trangthaidiemdanh: boolean | undefined = useAppSelector(selectDiemDanhState);
+  const globalLoginState: boolean | undefined = useAppSelector(selectIsLoggedIn);
+  const globalVendorLoginState: boolean | undefined = useAppSelector(selectIsVendorLoggedIn);
+  const globalUserData: UserData | undefined = useAppSelector(selectUserData);
+  const dispatch = useAppDispatch();
+  useVendorSocketListeners();
   //console.log(userData.JOB_NAME);
   useEffect(() => {     
     checkLogin()
@@ -113,9 +101,9 @@ function AppVendors() {
           /* console.log("khong co token");
           setLoginState(false); */
           loadWebSetting();
-          dispatch(vendorLogout(false));
+          dispatch(setVendorLoginState(false));
           dispatch(
-            changeUserData({
+            setUserData({
               ADD_COMMUNE: "Đông Xuân",
               ADD_DISTRICT: "Sóc Sơn",
               ADD_PROVINCE: "Hà Nội",
@@ -167,7 +155,7 @@ function AppVendors() {
         } else {
           //console.log(data.data.data);
           /* checkERPLicense(); */         
-          dispatch(changeUserData(data.data.data));   
+          dispatch(setUserData(data.data.data));   
           //console.log('data.data.data.JOB_NAME',data.data.data.JOB_NAME)
           
           if(data.data.data.JOB_NAME ==='Worker') 
@@ -181,127 +169,18 @@ function AppVendors() {
           }
           //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
           dispatch(
-            update_socket({
+            emitSocketEvent({
               event: "login",
               data: data.data.data.EMPL_NO,
             })
           );
           /* setLoginState(true); */
-          dispatch(vendorLogin(true));
+          dispatch(setVendorLoginState(true));
         }
       })
       .catch((err) => {
         console.log(err + " ");
       });
-   
-   
-    if (!getSocket().hasListeners('setWebVer')) {
-      //console.log('vao set sever')
-      getSocket().on("setWebVer", (data: any) => {
-        console.log(data);
-        if (current_ver >= data) {
-        } else {
-          Swal.fire({
-            title: "ERP has updates?",
-            text: "Update Web",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Update",
-            cancelButtonText: "Update later",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire("Notification", "Update Web", "success");
-              window.location.reload();
-            } else {
-              Swal.fire(
-                "Notification",
-                "Press Ctrl + F5 to update the Web",
-                "info"
-              );
-            }
-          });
-        }
-      });
-    } 
-    if (!getSocket().hasListeners('changeServer')) {
-      getSocket().on("changeServer", (data: any) => {
-        console.log("Change server commnand received !");
-        console.log(data.server);
-        if (getCompany() === 'CMS' && (data.empl_no.toUpperCase() === getUserData()?.EMPL_NO?.toUpperCase() || data.empl_no.toUpperCase() === 'ALL')) {
-          dispatch(changeServer(data.server));
-          localStorage.setItem("server_ip", data.server);
-        }
-      });
-    }
-    const showNoti =  (data: NotificationElement) => {
-      dispatch(updateNotiCount((getNotiCount()??0)+1));
-      localStorage.setItem("notification_count",((getNotiCount()??0)+1).toString());
-      switch(data.NOTI_TYPE) {
-        case 'success':
-          enqueueSnackbar(data.CONTENT, {
-            variant: 'success',
-          });
-          break;
-        case 'error':
-          enqueueSnackbar(data.CONTENT, {
-            variant: 'error',
-          });
-          break;
-        case 'warning':
-          enqueueSnackbar(data.CONTENT, {
-            variant: 'warning',
-          });
-          break;
-        case 'info':
-          enqueueSnackbar(data.CONTENT, {
-            variant: 'info',
-          });
-          break;
-        default:
-          enqueueSnackbar(data.CONTENT, {
-            variant: 'success',
-          });
-          break;
-      }  
-
-    }
-    if (!getSocket().hasListeners('notification_panel')) {     
-      getSocket().on("notification_panel", (data: NotificationElement) => {    
-        //console.log(data);
-        let mainDeptArray = data.MAINDEPTNAME?.split(',');
-        //console.log('mainDeptArray',mainDeptArray);
-        //console.log('user',getUserData()?.MAINDEPTNAME);
-       /*  if(!mainDeptArray || !mainDeptArray.includes((getUserData()?.MAINDEPTNAME??'ALL')) || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
-          return;
-        } */
-        //console.log('notiCount---',getNotiCount())
-        if(getCompany() !=='CMS') return;
-        if(getUserData()?.EMPL_NO==='NHU1903') 
-        {
-          showNoti(data);
-        }
-        else {
-          if(!mainDeptArray || !mainDeptArray.includes((getUserData()?.MAINDEPTNAME??'ALL')) || (getUserData()?.JOB_NAME !== 'Leader' && getUserData()?.JOB_NAME !== 'Sub Leader' && getUserData()?.JOB_NAME !== 'Dept Staff' )){
-            return;
-          }
-          showNoti(data);
-        }
-       
-      });
-    }
-    return () => {
-      getSocket().off("setWebVer", (data: any) => {
-        //console.log(data);
-      });
-      getSocket().off("request_check_online", (data: any) => {
-        //console.log(data);
-      });
-      getSocket().off("notification_panel", (data: any) => {
-        //console.log(data);)
-      });
-    };
   }, []);
   return (
     <>

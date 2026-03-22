@@ -19,8 +19,6 @@ import {
   SaveExcel,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import {
   UserData,
 } from "../../../../api/GlobalInterface";
@@ -39,6 +37,8 @@ import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
 import { MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const PLAN_DATATB_OLD = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
@@ -48,6 +48,8 @@ const PLAN_DATATB_OLD = () => {
   const [showkhoao, setShowKhoAo] = useState(false);
   const [maxLieu, setMaxLieu] = useState(12);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
+
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const defaultPlan: QLSXPLANDATA = {
     id: 0,
     PLAN_ID: 'XXX',
@@ -1005,7 +1007,6 @@ const PLAN_DATATB_OLD = () => {
   ]
   const [columns, setColumns] = useState<Array<any>>(column_plandatatable);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

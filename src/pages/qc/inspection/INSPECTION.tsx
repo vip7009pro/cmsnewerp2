@@ -17,12 +17,13 @@ import {
   INSPECT_PATROL,
 } from "../interfaces/qcInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import { f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 import { f_loadKHKT_ADUNG, f_loadTemLotKTHistory, f_updateTrueDiemKiemTra } from "../utils/qcUtils";
+
 const INSPECTION = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
@@ -2845,16 +2846,16 @@ const INSPECTION = () => {
           }} */
         columns={columnDefinition}
         data={inspectiondatatable}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.data)
            if (e.column.colId === 'TRU_DIEM') {
              console.log(e.value);
              await f_updateTrueDiemKiemTra(e.data);
            }
 
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

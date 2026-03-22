@@ -6,8 +6,6 @@ import { generalQuery } from "../../../api/Api";
 import "./FAILING.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   UserData,
 } from "../../../api/GlobalInterface";
@@ -19,14 +17,15 @@ import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { f_isM_LOT_NO_in_P500, f_nhapkhoao } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { QC_FAIL_DATA } from "../interfaces/qcInterface";
 import { f_isM_CODE_in_M140_Main, f_isM_LOT_NO_in_IN_KHO_SX, f_isM_LOT_NO_in_O302, f_resetIN_KHO_SX_IQC1, f_resetIN_KHO_SX_IQC2, f_updateNCRIDForFailing } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const FAILING = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [onlyPending, setOnlyPending] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [testtype, setTestType] = useState("NVL");
   const [m_lot_no, setM_LOT_NO] = useState("");
   const [process_lot_no, setProcessLotNo] = useState("");

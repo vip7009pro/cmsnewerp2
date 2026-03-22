@@ -4,18 +4,17 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./HOLDING.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_updateNCRIDForHolding } from "../utils/qcUtils";
 import { HOLDING_DATA } from "../interfaces/qcInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const HOLDING = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const selectedRowsData = useRef<Array<HOLDING_DATA>>([]);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");

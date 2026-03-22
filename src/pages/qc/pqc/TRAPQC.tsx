@@ -12,10 +12,10 @@ import {
 } from "../interfaces/qcInterface";
 import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 import AGTable from "../../../components/DataTable/AGTable";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const TRAPQC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
   const [currentDS, setCurrentDS] = useState("");

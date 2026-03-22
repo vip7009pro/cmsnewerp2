@@ -4,9 +4,9 @@ import Swal from "sweetalert2";
 import "./QTR_DATA.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { f_loadQTRData } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 
 export interface QTR_DATA {
   MANAGEMENT_NUMBER: string;
@@ -46,7 +46,7 @@ export interface QTR_DATA {
 const QTR_DATA = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const theme = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme = useAppSelector(selectTheme);
 
   const columns_qtr_data = [
     { field: "MANAGEMENT_NUMBER", headerName: "MANAGEMENT_NUMBER", width: 120 },

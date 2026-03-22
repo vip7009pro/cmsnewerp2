@@ -17,9 +17,9 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./MATERIAL_MANAGER.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 interface MATERIAL_TABLE_DATA {
   M_ID: number;
   M_NAME: string;
@@ -37,10 +37,8 @@ const MATERIAL_MANAGER = () => {
   );
   const [editable, setEditTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const [isLoading, setisLoading] = useState(false);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const [isLoading, setIsLoading] = useState(false);
   const [datatable, setDataTable] = useState<any[]>([]);
   const [current_Column, setCurrent_Column] = useState<any[]>([]);
   const [material_table_data_filter, set_material_table_data_filter] = useState<
@@ -128,7 +126,7 @@ const MATERIAL_MANAGER = () => {
           setDataTable(loadeddata);
           setCurrent_Column(column_material_table);
           setReadyRender(true);
-          setisLoading(false);
+          setIsLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
@@ -213,14 +211,14 @@ const MATERIAL_MANAGER = () => {
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
-      setisLoading(true);
+      setIsLoading(true);
       setReadyRender(false);
       setCurrent_Column(column_material_table);
       load_material_table();
     }
   };
   useEffect(() => {
-    setisLoading(false);
+    setIsLoading(false);
     setReadyRender(true);
   }, []);
   return (
@@ -256,7 +254,7 @@ const MATERIAL_MANAGER = () => {
               <button
                 className="tranhatky"
                 onClick={() => {
-                  setisLoading(true);
+                  setIsLoading(true);
                   setReadyRender(false);
                   setCurrent_Column(column_material_table);
                   load_material_table();

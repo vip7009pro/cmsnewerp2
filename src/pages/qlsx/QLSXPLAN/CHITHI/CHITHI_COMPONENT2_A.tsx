@@ -1,8 +1,6 @@
 import moment from "moment";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { RootState } from "../../../../redux/store";
-import { useSelector } from "react-redux";
 import "./CHITHI_COMPONENT2.scss";
 import Barcode from "react-barcode";
 import {
@@ -10,21 +8,20 @@ import {
 } from "../../../../api/GlobalInterface";
 import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
+import { selectCompany } from "../../../../redux/selectors/uiSelectors";
 interface PLAN_COMBO {
   PLAN_LIST: QLSXPLANDATA[];
 }
 const CHITHI_COMPONENT2_A = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
+  const company: string = useAppSelector(selectCompany);
   const [checklieuchinh, setCheckLieuChinh] = useState(false);
   //console.log(PLAN_LIST);
   let main_plan: QLSXPLANDATA = PLAN_LIST.filter(
     (element, index) => element.STEP === 0,
   )[0];
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [m_code_ycsx, setM_CODE_YCSX] = useState('XXX');
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {

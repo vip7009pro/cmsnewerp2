@@ -2,14 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Login.scss";
 import { getlang } from "../../components/String/String";
 import { getCompany, login } from "../../api/Api";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
-  changeCtrCd,
-  changeGLBLanguage,
-  changeSelectedServer,
-  changeServer,
-} from "../../redux/slices/globalSlice";
+  selectCompany as selectCompanyFromState,
+  selectCompanyInfo,
+  selectCtrCd,
+  selectLang,
+  selectServerIp,
+  selectTheme,
+} from "../../redux/selectors/uiSelectors";
+import {
+  setCtrCd,
+  setLanguage,
+  setSelectedServer,
+  setServerIp,
+} from "../../redux/slices/uiSlice";
 import { isValidInput } from "../../api/GlobalFunction";
 import Swal from "sweetalert2";
 const Login = () => {
@@ -24,22 +31,12 @@ const Login = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [server_string, setServer_String] = useState("");
-  const lang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
-  const companyInfo: any = useSelector(
-    (state: RootState) => state.totalSlice.cpnInfo
-  );
-  const ctr_cd: string = useSelector(
-    (state: RootState) => state.totalSlice.ctr_cd
-  );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const cpnInfo: any = useSelector(
-    (state: RootState) => state.totalSlice.cpnInfo
-  );
+  const lang: string | undefined = useAppSelector(selectLang);
+  const company: string = useAppSelector(selectCompanyFromState);
+  const companyInfo: any = useAppSelector(selectCompanyInfo);
+  const ctr_cd: string = useAppSelector(selectCtrCd);
+  const theme: any = useAppSelector(selectTheme);
+  const cpnInfo: any = useAppSelector(selectCompanyInfo);
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
@@ -77,17 +74,15 @@ const Login = () => {
       );
     }
   };
-  const server_ip: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.server_ip
-  );
-  const dispatch = useDispatch();
+  const server_ip: string | undefined = useAppSelector(selectServerIp);
+  const dispatch = useAppDispatch();
   useEffect(() => {
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);
-      dispatch(changeServer(server_ip_local));
+      dispatch(setServerIp(server_ip_local));
       dispatch(
-        changeSelectedServer(
+        setSelectedServer(
           cpnInfo[getCompany()].apiUrlArray.find(
             (item: { apiUrl: string }) => item.apiUrl === server_ip_local
           )?.server_name
@@ -102,12 +97,12 @@ const Login = () => {
         companyInfo[getCompany() as keyof typeof companyInfo].apiUrl
       );
       dispatch(
-        changeServer(
+        setServerIp(
           companyInfo[getCompany() as keyof typeof companyInfo].apiUrl
         )
       );
       dispatch(
-        changeSelectedServer(
+        setSelectedServer(
           cpnInfo[getCompany()].apiUrlArray.find(
             (item: { apiUrl: string }) =>
               item.apiUrl ===
@@ -120,9 +115,9 @@ const Login = () => {
     }
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
-      dispatch(changeGLBLanguage(saveLang.toString()));
+      dispatch(setLanguage(saveLang.toString()));
     } else {
-      dispatch(changeGLBLanguage("en"));
+      dispatch(setLanguage("en"));
     }
   }, []);
   return (
@@ -209,16 +204,15 @@ const Login = () => {
                 console.log(e.target.value);
                 localStorage.setItem("server_ip", e.target.value);
                 setServer_String(e.target.value);
-                dispatch(changeServer(e.target.value));
+                dispatch(setServerIp(e.target.value));
                 dispatch(
-                  changeSelectedServer(
+                  setSelectedServer(
                     cpnInfo[getCompany()].apiUrlArray.find(
                       (item: { apiUrl: string }) =>
                         item.apiUrl === e.target.value
                     )?.server_name
                   )
                 );
-                ///console.log(e.target.value);
               }}
             >
               {cpnInfo[getCompany()].apiUrlArray.map((item: any) => (
@@ -235,7 +229,7 @@ const Login = () => {
                 name="select_ctr_cd"
                 value={ctr_cd}
                 onChange={(e) => {
-                  dispatch(changeCtrCd(e.target.value));
+                  dispatch(setCtrCd(e.target.value));
                 }}
               >
                 <option value="001">BR1</option>

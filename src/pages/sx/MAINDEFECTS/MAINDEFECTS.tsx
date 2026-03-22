@@ -6,12 +6,12 @@ import "./MAINDEFECTS.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { DEFECT_PROCESS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_loadDefectProcessData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const MAINDEFECTS = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const [btnGN_QL, setBtnGN_QL] = useState(true);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));

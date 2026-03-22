@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import Notification, { NotificationElement } from './Notification';
 import './NotificationPanel.scss'
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import { f_load_Notification_Data } from '../../api/GlobalFunction';
+import { useAppSelector } from '../../redux/hooks';
+import { selectTheme } from '../../redux/selectors/uiSelectors';
 
 const NotificationPanel = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
 
   const sampleNotifications: Array<NotificationElement> = [
    

@@ -10,8 +10,9 @@ import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
@@ -36,9 +37,9 @@ import {
 } from "../utils/kdUtils";
 
 const PoManagerManageTab: React.FC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
-  const company: string = useSelector((state: RootState) => state.totalSlice.company);
+  const theme: any = useAppSelector(selectTheme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
 
   const [openNewPODialog, setOpenNewPODialog] = useState(false);
   const [openNewInvoiceDialog, setOpenNewInvoiceDialog] = useState(false);

@@ -5,12 +5,12 @@ import "./KPI_NV_NEW2.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import moment from "moment";
 import { f_load_KPI_SX_THEONGUOI_NEW, f_loadDinhMucCode, f_loadDinhMucMachine, f_loadLossTimeTheoMay, f_loadLossTimeTheoMayNew_EQ_NAME, f_loadLossTimeTheoMayNew_EQ_SERIES, f_loadLossTimeTheoNguoi, f_updateDMCodePS, f_updateSXDailyKPI, f_updateSXDailyKPITheoNguoi} from "../../qlsx/QLSXPLAN/utils/khsxUtils";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import SX_EQ_KPI_GRAPH from "../../../components/Chart/SX/SX_EQ_KPI_GRAPH";
 import SX_EMPL_KPI_GRAPH2 from "../../../components/Chart/SX/SX_EMPL_KPI_GRAPH2";
 import { DM_CODE_SX_KT, DM_MACHINE, KPI_MACHINE_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import SX_EQ_KPI_GRAPH2 from "../../../components/Chart/SX/SX_EQ_KPI_GRAPH2";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 
 export interface LOSS_TIME_DATA_THEO_MAY {
     EQ_NAME: string;
@@ -78,7 +78,7 @@ const KPI_NV_NEW2 = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [option, setOption] = useState(1);
-  const theme = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme = useAppSelector(selectTheme);
   const [dmcodesxktra, setDMCodeSXKT] = useState<DM_CODE_SX_KT[]>([])
   const [dmmachine, setDMMachine] = useState<DM_MACHINE[]>([])
   const [kpi_machine_series,setKPIMachineSeries] = useState<KPI_MACHINE_DATA[]>([])
@@ -362,7 +362,7 @@ const KPI_NV_NEW2 = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.column.colId)
           if(e.column.colId === 'DAILY_KPI'){
             console.log(e.value)
@@ -377,10 +377,10 @@ const KPI_NV_NEW2 = () => {
             
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -416,7 +416,7 @@ const KPI_NV_NEW2 = () => {
         }
         columns={columns_dinhmuc_code}
         data={dmcodesxktra}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.column.colId)
           if(e.column.colId === 'DM_SX' ||e.column.colId === 'DM_KT'  ){
             console.log(e.value)
@@ -433,10 +433,10 @@ const KPI_NV_NEW2 = () => {
             
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -471,7 +471,7 @@ const KPI_NV_NEW2 = () => {
         }
         columns={columns_dinhmuc_machine}
         data={dmmachine}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.column.colId)
           if(e.column.colId === 'DM_EA'){
             console.log(e.value)
@@ -489,10 +489,10 @@ const KPI_NV_NEW2 = () => {
             
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -516,7 +516,7 @@ const KPI_NV_NEW2 = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -524,7 +524,7 @@ const KPI_NV_NEW2 = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
                <label>
@@ -532,7 +532,7 @@ const KPI_NV_NEW2 = () => {
                 <select
                   name="phanloai"
                   value={option}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setOption(Number(e.target.value));
                     setBTPData([])
                   }}
@@ -545,7 +545,7 @@ const KPI_NV_NEW2 = () => {
                           <b>Default:</b>{' '}
                           <Checkbox
                             checked={df}
-                            onChange={(e) => {
+                            onChange={(e: any) => {
                               setDf(e.target.checked);                             
                             }}
                             inputProps={{ 'aria-label': 'controlled' }}

@@ -1,11 +1,11 @@
 import { Button, FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getAuditMode } from "../../../api/Api";
 import "./DTCRESULT.scss";
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import * as XLSX from "xlsx";
 import { DTC_REG_DATA, TestListTable } from "../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
@@ -178,7 +178,7 @@ export const handletraDTCData_HangLoat = async (dtc_id: string, test_code: strin
 };
 
 const DTCRESULT = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [switchIDLOT, setSwitchIDLOT] = useState(false);
   const [dtc_id, setDTC_ID] = useState("");
   const [remark, setReMark] = useState("");
@@ -325,14 +325,14 @@ const DTCRESULT = () => {
           </div>}
         columns={dtcResultColumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />

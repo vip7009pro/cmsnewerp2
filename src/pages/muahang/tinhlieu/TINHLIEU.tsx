@@ -5,14 +5,14 @@ import Swal from "sweetalert2";
 import "./TINHLIEU.scss";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import AGTable from "../../../components/DataTable/AGTable";
 import { MaterialPOData, MaterialPOSumData, MRPDATA } from "../interfaces/muaInterface";
 import { f_loadMRPPlan } from "../utils/muaUtils";
 
 const TINHLIEU = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
   const ycsxdatatablefilter = useRef<Array<any>>([]);
   const [columns, setColumns] = useState<Array<any>>([]);

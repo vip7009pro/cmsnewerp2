@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
 import { INSPECT_STATUS_DATA } from "../../qc/interfaces/qcInterface";
 import { f_loadInspect_status_G_CODE } from "../../qc/utils/qcUtils";
 import { f_updateBTP_M100, f_updateTONKIEM_M100, f_update_Stock_M100_CMS } from "../../../api/GlobalFunction";
@@ -11,8 +11,8 @@ import { Button } from "@mui/material";
 import './PlanManagerStatusTab.scss';
 
 const PlanManagerStatusTab: React.FC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const company: string = useSelector((state: RootState) => state.totalSlice.company);
+  const theme: any = useAppSelector(selectTheme);
+  const company: string = useAppSelector(selectCompany);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [planStatus, setPlanStatus] = useState<Array<INSPECT_STATUS_DATA>>([]);
 

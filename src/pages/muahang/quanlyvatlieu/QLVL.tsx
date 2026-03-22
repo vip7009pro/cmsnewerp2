@@ -13,8 +13,8 @@ import { CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Comp
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
 import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import { BiLoaderCircle } from "react-icons/bi";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import VLDOC from "./VLDOC";
@@ -22,7 +22,7 @@ import { NotificationElement } from "../../../components/NotificationPanel/Notif
 import { FSC_LIST_DATA, MATERIAL_TABLE_DATA } from "../interfaces/muaInterface";
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 const QLVL = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showdialog, setShowDialog] = useState(false);
   const [selected_M_ID, setSelected_M_ID] = useState(0);
   const [selected_M_NAME, setSelected_M_NAME] = useState("");

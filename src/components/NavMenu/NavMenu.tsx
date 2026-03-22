@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./NavMenu.scss";
-import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../api/GlobalInterface";
 import { generalQuery } from "../../api/Api";
-import { addTab, settabIndex } from "../../redux/slices/globalSlice";
+import { addTab, setTabIndex } from "../../redux/slices/tabsSlice";
 import Swal from "sweetalert2";
 import { ELE_ARRAY } from "../../api/GlobalInterface";
 import { getNavMenu, NAVMENUDATA } from "./getNavMenu";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import { selectTabModeSwap, selectTabs } from "../../redux/selectors/tabsSelectors";
+import { selectCompany, selectLang } from "../../redux/selectors/uiSelectors";
 interface MENUDATA {
   MenuID: number;
   MenuName: string;
@@ -30,21 +32,11 @@ interface MENUDATA {
 const NavMenu = () => {
   const [menuData, setMenuData] = useState<MENUDATA[]>([]);
   const [openPVNMenus, setOpenPVNMenus] = useState<Record<string, boolean>>({});
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
-  const lang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
-  const tabModeSwap: boolean = useSelector(
-    (state: RootState) => state.totalSlice.tabModeSwap
-  );
-  const tabs: ELE_ARRAY[] = useSelector(
-    (state: RootState) => state.totalSlice.tabs
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
+  const lang: string | undefined = useAppSelector(selectLang);
+  const tabModeSwap: boolean = useAppSelector(selectTabModeSwap);
+  const tabs: ELE_ARRAY[] = useAppSelector(selectTabs);
   const handleLoadMenuData = async () => {
     try {
       // API này cần chỉnh lại theo backend thực tế
@@ -69,7 +61,7 @@ const NavMenu = () => {
   useEffect(() => {
     handleLoadMenuData();
   }, []);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const SidebarData: NAVMENUDATA[] = useMemo( () => getNavMenu(company, lang), [company, lang] );
   const isPVN = company === "PVN";
 
@@ -134,7 +126,7 @@ const NavMenu = () => {
                                     //console.log(tab_index);
                                     if (tab_index !== -1) {
                                       //console.log('co tab roi');
-                                      dispatch(settabIndex(tab_index));
+                                      dispatch(setTabIndex(tab_index));
                                     } else {
                                       dispatch(
                                         addTab({
@@ -144,7 +136,7 @@ const NavMenu = () => {
                                           PAGE_ID: -1,
                                         })
                                       );
-                                      dispatch(settabIndex(tabs.length));
+                                      dispatch(setTabIndex(tabs.length));
                                     }
                                   }
                                 } else {

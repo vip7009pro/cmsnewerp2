@@ -1,9 +1,9 @@
 import React, { useState, ReactNode, Suspense } from 'react';
 import './MyTab.scss';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import { IconButton } from '@mui/material';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { useAppSelector } from '../../redux/hooks';
+import { selectTheme } from '../../redux/selectors/uiSelectors';
 
 // Định nghĩa kiểu cho props của Tab
 interface TabProps {
@@ -30,7 +30,7 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
   children,
   defaultActiveTab = 0,
 }) => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [activeTab, setActiveTab] = useState<number>(defaultActiveTab);
   // State để theo dõi tab nào đã được render
   const [renderedTabs, setRenderedTabs] = useState<{ [key: number]: boolean }>({});

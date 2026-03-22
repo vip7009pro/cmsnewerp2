@@ -1,18 +1,16 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
-import { RootState } from "../../../../redux/store";
-import { useSelector } from "react-redux";
 import "./YCKT.scss";
 import Barcode from "react-barcode";
 import { QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { UserData } from "../../../../api/GlobalInterface";
 import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 
 const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
       REMK: "20220617",

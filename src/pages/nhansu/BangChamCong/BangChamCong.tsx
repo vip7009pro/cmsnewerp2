@@ -9,8 +9,8 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import { checkBP, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery, getCompany } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import {  
   UserData,
 } from "../../../api/GlobalInterface";
@@ -19,9 +19,7 @@ import { BANGCHAMCONG_DATA, BANGCHAMCONG_DATA2, CA_INFO, IN_OUT_DATA, IN_OUT_DAT
 import { f_setCaDiemDanh } from "../utils/nhansuUtils";
 import { calcMinutesByRate } from "./OverTimeUtils3";
 const BANGCHAMCONG = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [cainfo, setCaInfo] = useState<CA_INFO[]>([]);
   const [bangchamcong, setBangChamCong] = useState<BANGCHAMCONG_DATA[]>([]);
   const [bangchamcong2, setBangChamCong2] = useState<BANGCHAMCONG_DATA2[]>([]);
@@ -1145,7 +1143,7 @@ const BANGCHAMCONG = () => {
           data={bangchamcong2}
           columns={columns}
           toolbar={toolbar}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e: any) => {
             // Handle selection change
             selectedRows.current = e!.api.getSelectedRows();
           }}

@@ -1,8 +1,9 @@
 import React, { useMemo, useRef, useState } from "react";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { getSocket, getUserData } from "../../../api/Api";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
@@ -11,9 +12,9 @@ import { f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDa
 import "./InvoiceManagerAddTab.scss";
 
 const InvoiceManagerAddTab: React.FC = () => {
-  const userData = useSelector((state: RootState) => state.totalSlice.userData);
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const company: string = useSelector((state: RootState) => state.totalSlice.company);
+  const userData = useAppSelector(selectUserData);
+  const theme: any = useAppSelector(selectTheme);
+  const company: string = useAppSelector(selectCompany);
 
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);

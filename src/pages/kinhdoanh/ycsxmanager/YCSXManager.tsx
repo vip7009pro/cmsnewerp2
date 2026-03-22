@@ -23,8 +23,9 @@ import { FaArrowRight } from "react-icons/fa";
 import { ReactElement, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import TraAMZ from "./TraAMZ/TraAMZ";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { TbLogout } from "react-icons/tb";
 import { UserData, } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -40,7 +41,7 @@ import { useRenderLag } from "../../../api/userRenderLag";
 import { f_AddMonitoringSample } from "../../rnd/utils/rndUtils";
 const YCSXManager = () => {
   
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [tabIndex, setTabIndex] = useState(0);
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -60,9 +61,7 @@ const YCSXManager = () => {
     renderbanve: false,
     amazontab: false,
   });
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [ponolist, setPONOLIST] = useState<Array<PONOLIST>>([]);
   const [isLoading, setisLoading] = useState(false);

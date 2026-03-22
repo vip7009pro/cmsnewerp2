@@ -3,13 +3,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { checkBP } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import {UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
 import { LONGTERM_PLAN_DATA, MACHINE_LIST, PROD_PLAN_CAPA_DATA } from "../interfaces/khsxInterface";
 import { f_deleteLongtermPlan, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const LONGTERM_PLAN = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
     const [productionplancapadata, setProductionPlanCapaData] = useState<PROD_PLAN_CAPA_DATA[]>([]);
@@ -21,7 +21,7 @@ const LONGTERM_PLAN = () => {
     setProductionPlanCapaData(await f_getProductionPlanLeadTimeCapaData(PLAN_DATE));    
   }
 
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [factory, setFactory] = useState("NM1");

@@ -13,8 +13,6 @@ import {
   SaveExcel,
 } from "../../../../api/GlobalFunction";
 import { BiShow } from "react-icons/bi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import {  
   UserData,
   WEB_SETTING_DATA,
@@ -24,8 +22,11 @@ import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/k
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import { f_getMachineListData, f_getRecentDMData, f_loadDMSX, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: string, G_CODE: string, EQ_NAME: string }) => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([]);
@@ -66,9 +67,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const qlsxplandatafilter = useRef<Array<QLSXPLANDATA>>([]);
   const selectedPlan = useRef<QLSXPLANDATA>();
   const [temp_id, setTemID] = useState(0);

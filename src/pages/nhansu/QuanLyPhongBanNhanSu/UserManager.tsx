@@ -16,14 +16,14 @@ import {
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
 import moment from "moment";
 import { checkBP } from "../../../api/GlobalFunction";
 import * as faceapi from 'face-api.js';
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { selectLang, selectTheme } from "../../../redux/selectors/uiSelectors";
+import { setUserData } from "../../../redux/slices/authSlice";
 
 const UserManager = () => {
  
@@ -31,7 +31,7 @@ const UserManager = () => {
 
   
   
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -232,10 +232,9 @@ const UserManager = () => {
       RESIGN_DATE: "",
     });
   };
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
-  const dispatch = useDispatch();
+  const glbLang: string | undefined = useAppSelector(selectLang);
+
+  const dispatch = useAppDispatch();
   const [file, setFile] = useState<any>(null);
   const uploadFile2 = async (empl_no: string) => {
     if (file !== null && file !== undefined) {
@@ -250,7 +249,7 @@ const UserManager = () => {
               })
                 .then((response) => {
                   if (response.data.tk_status !== "NG") {
-                    dispatch(changeUserData({ ...getUserData(), EMPL_IMAGE: "Y" }));
+                    dispatch(setUserData({ ...(getUserData() as any), EMPL_IMAGE: "Y" }));
                     Swal.fire("Thông báo", "Upload avatar thành công", "success");
                   } else {
                     Swal.fire("Thông báo", "Upload avatar thất bại", "error");

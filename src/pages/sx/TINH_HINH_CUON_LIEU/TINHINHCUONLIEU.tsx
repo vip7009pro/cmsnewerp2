@@ -7,17 +7,17 @@ import "./TINHHINHCUONLIEU.scss";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import SXWeeklyLossRoll from "../../../components/Chart/SX/SXWeeklyLossRoll";
 import SXDailyRollLoss from "../../../components/Chart/SX/SXDailyRollLoss";
 import { useForm } from "react-hook-form";
 import { LOSS_TABLE_DATA_ROLL, MACHINE_LIST, MATERIAL_STATUS, SX_LOSS_ROLL_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData, f_loadRollLossData, f_loadRollLossDataDaily } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 
 const TINHHINHCUONLIEU = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm({   
     defaultValues: {
       fromdate: moment().format("YYYY-MM-DD"),

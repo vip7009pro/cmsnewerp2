@@ -18,15 +18,13 @@ import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel, weekdayarray } from "../../../api/GlobalFunction";
 import moment from "moment";
-import { RootState } from "../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { UserData } from "../../../api/GlobalInterface";
 import { DiemDanhLichSuData } from "../interfaces/nhansuInterface";
 
 const LichSu = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<

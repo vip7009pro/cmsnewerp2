@@ -8,15 +8,13 @@ import {
   WorkPositionTableData,
 } from "../interfaces/nhansuInterface";
 import { getlang } from "../../../components/String/String";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectLang } from "../../../redux/selectors/uiSelectors";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
 import moment from "moment";
 const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string}) => {
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
+  const glbLang: string | undefined = useAppSelector(selectLang);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(5);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhNhomData>
@@ -548,13 +546,13 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
         toolbar={<></>}
         columns={columns_diemdanhnhom}
         data={diemdanhnhomtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

@@ -5,18 +5,17 @@ import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineExport, AiOutlineSearch }
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import "./NCR_MANAGER.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { checkBP } from "../../../api/GlobalFunction";
 import { HOLDDING_BY_NCR_ID, NCR_DATA } from "../interfaces/qcInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const NCR_MANAGER = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [isNewRegister, setNewRegister] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [cmsLot, setCmsLot] = useState("");
   const [iqc_empl, setIQC_Empl] = useState(getUserData()?.EMPL_NO!);
   const [remark, setReMark] = useState("");

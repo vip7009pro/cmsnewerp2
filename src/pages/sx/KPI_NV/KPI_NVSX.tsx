@@ -1,16 +1,16 @@
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./KPI_NVSX.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { SX_KPI_NV_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_load_SX_NV_KPI_DATA_Daily, f_load_SX_NV_KPI_DATA_Monthly, f_load_SX_NV_KPI_DATA_Weekly, f_load_SX_NV_KPI_DATA_Yearly } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const KPI_NVSX = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm()
   const [kpinvsxdata, setKPI_NVSXData] = useState<SX_KPI_NV_DATA[]>([]);
   const columns_kpinvsx_daily = useMemo(() => {

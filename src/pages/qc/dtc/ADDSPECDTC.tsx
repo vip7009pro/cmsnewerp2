@@ -4,8 +4,6 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import "./ADDSPECTDTC.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   UserData,
 } from "../../../api/GlobalInterface";
@@ -13,9 +11,12 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { CheckAddedSPECDATA, DTC_ADD_SPEC_DATA, MaterialListData, TestListTable } from "../interfaces/qcInterface";
 import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 /* import { Autocomplete } from 'devextreme-react'; */
 const ADDSPECTDTC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [testList, setTestList] = useState<TestListTable[]>([]);
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
@@ -39,9 +40,7 @@ const ADDSPECTDTC = () => {
     PROD_LAST_PRICE: 0.318346,
     USE_YN: "Y",
   });
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");

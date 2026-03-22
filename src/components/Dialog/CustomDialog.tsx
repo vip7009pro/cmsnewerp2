@@ -1,7 +1,7 @@
 import React from 'react';
 import './CustomDialog.scss'; // You'll need to create this CSS file
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from '../../redux/store';
+import { useAppSelector } from '../../redux/hooks';
+import { selectTheme } from '../../redux/selectors/uiSelectors';
 
 interface CustomDialogProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface CustomDialogProps {
 
 const CustomDialog: React.FC<CustomDialogProps> = ({ isOpen, onClose, title, content, actions, dialogClassName }) => {
   if (!isOpen) return null;
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
 
   return (
     <div className="custom-dialog-overlay" onClick={onClose}>

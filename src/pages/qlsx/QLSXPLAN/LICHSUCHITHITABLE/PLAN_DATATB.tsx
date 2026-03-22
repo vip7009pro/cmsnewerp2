@@ -20,8 +20,6 @@ import {
   f_insert_Notification_Data,
 } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import {
   UserData,
 } from "../../../../api/GlobalInterface";
@@ -41,6 +39,8 @@ import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { MACHINE_LIST, PROD_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleGetChiThiTable_New, f_handleResetChiThiTable_New, f_loadProdProcessData, f_loadQLSXPLANDATA, f_loadQLSXPLANDATA2, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const PLAN_DATATB = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);
@@ -138,6 +138,8 @@ const PLAN_DATATB = () => {
   const clickedRow = useRef<any>(null);
   const [showChiThi, setShowChiThi] = useState(false);
   const [showChiThi2, setShowChiThi2] = useState(false);
+
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [showBV, setShowBV] = useState(false);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
@@ -1007,7 +1009,6 @@ const PLAN_DATATB = () => {
   ]
   const [columns, setColumns] = useState<Array<any>>(column_plandatatable);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

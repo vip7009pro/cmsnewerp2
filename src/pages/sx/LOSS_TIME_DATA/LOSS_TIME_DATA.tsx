@@ -7,10 +7,10 @@ import { BiLoader } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
 import moment from "moment";
 import { f_loadLossTimeTheoMay, f_loadLossTimeTheoNguoi, f_updateSXDailyKPI, f_updateSXDailyKPITheoNguoi } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import SX_EQ_KPI_GRAPH from "../../../components/Chart/SX/SX_EQ_KPI_GRAPH";
 import SX_EMPL_KPI_GRAPH from "../../../components/Chart/SX/SX_EMPL_KPI_GRAPH";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 
 export interface LOSS_TIME_DATA_THEO_MAY {
     EQ_NAME: string;
@@ -46,7 +46,7 @@ const LOSS_TIME_DATA = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [option, setOption] = useState(1);
-  const theme = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme = useAppSelector(selectTheme);
 
   const columns_loss_time_data_theo_may = [
     { field: "EQ_NAME", headerName: "EQ_NAME", width: 100 },

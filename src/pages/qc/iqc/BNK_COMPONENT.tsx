@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import "./BNK_COMPONENT.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { generalQuery, getCompany } from "../../../api/Api";
 import moment from "moment";
 import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectCompany, selectCompanyInfo } from "../../../redux/selectors/uiSelectors";
 const BNK_COMPONENT = ({
   data,
   dtc_data,
@@ -12,12 +12,8 @@ const BNK_COMPONENT = ({
   data: IQC_INCOMMING_DATA | null;
   dtc_data: DTC_DATA[] | null;
 }) => {
-  const cpnInfo: any = useSelector(
-    (state: RootState) => state.totalSlice.cpnInfo
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
+  const cpnInfo: any = useAppSelector(selectCompanyInfo);
+  const company: string = useAppSelector(selectCompany);
   const aqlTable = [
     { MIN_ROLL_QTY: 1, MAX_ROLL_QTY: 1, TEST_QTY: 1 },
     { MIN_ROLL_QTY: 2, MAX_ROLL_QTY: 15, TEST_QTY: 2 },

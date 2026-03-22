@@ -4,14 +4,13 @@ import "./TabDangKy.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
 import { getlang } from "../../../components/String/String";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectLang, selectTheme } from "../../../redux/selectors/uiSelectors";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 const FormXacNhanChamCong = () => {
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang, );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const glbLang: string | undefined = useAppSelector(selectLang);
+  const theme: any = useAppSelector(selectTheme);
   const [confirm_worktime, setConfirm_WorkTime] = useState("");
   const [confirm_type, setConfirm_Type] = useState("GD");
   const [confirm_date, setConfirm_Date] = useState( moment().format("YYYY-MM-DD"), );

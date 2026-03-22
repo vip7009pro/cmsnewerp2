@@ -1,112 +1,68 @@
-import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
-import {
-  changeUserData, 
-  login as loginSlice,  
-  logout as logoutSlice,
-  update_socket,
-} from "../redux/slices/globalSlice";
-/* import axios from 'axios'; */
-import axios from "axios";
-import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
-import { encryptData } from "./GlobalFunction";
+import { setLoginState, setUserData } from "../redux/slices/authSlice";
+import { emitSocketEvent } from "../redux/slices/socketSlice";
+import { UserData } from "./GlobalInterface";
+import { getServerIp } from "./services/apiBase";
+import * as appSelectors from "./services/appSelectors";
+import * as tokenStorage from "./services/tokenStorage";
+import * as authService from "./services/authService";
+import * as queryService from "./services/queryService";
+import * as uploadService from "./services/uploadService";
 
-const cookies = new Cookies();
-axios.defaults.withCredentials = true;
 export function getSever(): string {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.server_ip;
-  //return "http://localhost:3002";
+  return getServerIp();
 }
 export function getCompany(): string {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.company;
+  return appSelectors.getCompany();
 }
 export function getLagMode(): boolean {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.lag_mode;
+  return appSelectors.getLagMode();
 }
 export function getUserData(): UserData | undefined {
-  const state = store.getState();
-  //console.log(state.totalSlice.server_ip);
-  return state.totalSlice.userData;
+  return appSelectors.getUserData();
 }
 export function getSocket() {
-  const state = store.getState();
-  return state.totalSlice.globalSocket;
+  return appSelectors.getSocket();
 }
 export function getNotiCount() {
-  const state = store.getState();
-  return state.totalSlice.notificationCount;
+  return appSelectors.getNotiCount();
 }
 export function getGlobalLang() {
-  const state = store.getState();
-  return state.totalSlice.lang;
+  return appSelectors.getGlobalLang();
 }
 export function getGlobalSetting() {
-  const state = store.getState();
-  return state.totalSlice.globalSetting;
+  return appSelectors.getGlobalSetting();
 }
 export function getAuditMode() {
-  const auditMode: number = parseInt(
-    getGlobalSetting()?.filter(
-      (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "AUDIT_MODE"
-    )[0]?.CURRENT_VALUE ?? "0"
-  );
-  return auditMode;
+  return appSelectors.getAuditMode();
 }
 export function getCtrCd() {
-  const state = store.getState();
-  return state.totalSlice.ctr_cd;
+  return appSelectors.getCtrCd();
 }
 console.log("company", getCompany());
-let API_URL = getSever() + "/api";
-let UPLOAD_URL = getSever() + "/uploadfile";
-let UPLOAD_CHECKSHEET_URL = getSever() + "/uploadfilechecksheet";
-let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-if (server_ip_local !== undefined) {
-  API_URL = server_ip_local + "/api";
-  UPLOAD_URL = server_ip_local + "/uploadfile";
-} else {
-}
+
 export function login(user: string, pass: string) {
-  let API_URL = getSever() + "/api";
-  axios
-    .post(API_URL, {
-      command: "login",
-      user: user,
-      pass: pass,
-      ctr_cd: getCtrCd(),
-      DATA: {
-        CTR_CD: getCtrCd(),
-        COMPANY: getCompany(),
-        USER: user,
-        PASS: pass,
-      }
-    })
-    .then((response: any) => {
-      var Jresult = response.data;    
-      console.log("Jresult", Jresult);  
-      if (Jresult?.tk_status?.toUpperCase() === "OK") {       
+  authService
+    .login("main", user, pass)
+    .then((Jresult: any) => {
+      console.log("Jresult", Jresult);
+      if (Jresult?.tk_status?.toUpperCase() === "OK") {
         Swal.fire(
           "Thông báo",
           "Chúc mừng bạn, đăng nhập thành công !",
-          "success"
-        );       
-        cookies.set("token", Jresult.token_content, { path: "/" });        
+          "success",
+        );
+        tokenStorage.setToken("main", Jresult.token_content);
         localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {
             console.log("data", data);
-            
-            if (data.data.tk_status.toUpperCase() === "NG") {              
-              store.dispatch(loginSlice(false));
+
+            if (data.data.tk_status.toUpperCase() === "NG") {
+              store.dispatch(setLoginState(false));
               store.dispatch(
-                changeUserData({
+                setUserData({
                   ADD_COMMUNE: "Đông Xuân",
                   ADD_DISTRICT: "Sóc Sơn",
                   ADD_PROVINCE: "Hà Nội",
@@ -153,27 +109,27 @@ export function login(user: string, pass: string) {
                   WORK_STATUS_NAME: "Đang làm",
                   WORK_STATUS_NAME_KR: "근무중",
                   EMPL_IMAGE: "N",
-                })
+                }),
               );
-            } else {             
+            } else {
               if (data.data.data.WORK_STATUS_CODE !== 0) {
-                store.dispatch(changeUserData(data.data.data));
+                store.dispatch(setUserData(data.data.data));
                 store.dispatch(
-                  update_socket({
+                  emitSocketEvent({
                     event: "login",
                     data: data.data.data.EMPL_NO,
-                  })
-                );              
-                store.dispatch(loginSlice(true));
-                setTimeout(() => {                  
-                  store.dispatch(loginSlice(true));
+                  }),
+                );
+                store.dispatch(setLoginState(true));
+                setTimeout(() => {
+                  store.dispatch(setLoginState(true));
                 }, 1000);
               } else {
-                cookies.set("token", "", { path: "/" });        
-                Swal.fire(                  
+                tokenStorage.clearToken("main");
+                Swal.fire(
                   "Thông báo",
                   "Nghỉ việc rồi không truy cập được!",
-                  "error"
+                  "error",
                 );
               }
             }
@@ -182,7 +138,7 @@ export function login(user: string, pass: string) {
             console.log(err + " ");
           });
       } else {
-        Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+        Swal.fire("Thông báo", "Lỗi: " + Jresult?.message, "error");
       }
     })
     .catch((error: any) => {
@@ -191,10 +147,10 @@ export function login(user: string, pass: string) {
     });
 }
 export function logout() {
-  cookies.set("token", "reset", { path: "/" });
+  tokenStorage.resetToken("main");
   localStorage.removeItem("publicKey");
   store.dispatch(
-    update_socket({ 
+    emitSocketEvent({ 
       event: "logout",
       data: getUserData()?.EMPL_NO,
     })
@@ -202,26 +158,11 @@ export function logout() {
   /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
   setTimeout(() => {
     /* window.location.href = "/"; */
-    store.dispatch(logoutSlice(false));
+    store.dispatch(setLoginState(false));
   }, 1000);
 }
 export async function checkLogin() {
-  let API_URL = getSever() + "/api";
-  let UPLOAD_URL = getSever() + "/uploadfile";
-  let publicKey = localStorage.getItem("publicKey");
-  let datacheck = {
-    COMPANY: getCompany(),
-    CTR_CD: getCtrCd(),
-    token_string: cookies.get("token")
-  }
-//  console.log("publicKey",publicKey)
-  let encryptedData = !window.isSecureContext ? datacheck : await encryptData(publicKey??"",datacheck);
-  let data = await axios.post(API_URL, {
-    secureContext: window.isSecureContext,    
-    command: "checklogin",
-    DATA: encryptedData,
-  });
-  return data;
+  return authService.checkLogin("main");
 }
 export async function aiQuery(question: string, options?: { 
   explain?: boolean, 
@@ -229,81 +170,13 @@ export async function aiQuery(question: string, options?: {
   chat_summary?: any, 
   session_id?: any 
 }) {
-  const CURRENT_AI_URL = getSever() + "/ai/query";
-  let publicKey = localStorage.getItem("publicKey");
-
-  let DATA = {
-    question,
-    explain: Boolean(options?.explain),
-    chat_history: options?.chat_history,
-    chat_summary: options?.chat_summary,
-    session_id: options?.session_id,
-    token_string: cookies.get("token"),
-    CTR_CD: getCtrCd(),
-    COMPANY: getCompany(),
-  };
-
-  let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey ?? "", DATA);
-  let data = await axios.post(
-    CURRENT_AI_URL,
-    {
-      secureContext: window.isSecureContext,
-      DATA: encryptedData,
-    },
-    {
-      withCredentials: true,
-    },
-  );
-  return data;
+  return queryService.aiQuery(question, options);
 }
 export async function aiExecuteSql(sql: string) {
-  const CURRENT_AI_URL = getSever() + "/ai/query";
-  let publicKey = localStorage.getItem("publicKey");
-
-  let DATA = {
-    sql_override: sql,
-    token_string: cookies.get("token"),
-    CTR_CD: getCtrCd(),
-    COMPANY: getCompany(),
-  };
-
-  let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey ?? "", DATA);
-  let data = await axios.post(
-    CURRENT_AI_URL,
-    {
-      secureContext: window.isSecureContext,
-      DATA: encryptedData,
-    },
-    {
-      withCredentials: true,
-    },
-  );
-  return data;
+  return queryService.aiExecuteSql(sql);
 }
 export async function generalQuery(command: string, queryData: any) {
-  const CURRENT_API_URL = getSever() + "/api";
-  // console.log('API URL', CURRENT_API_URL);
-  let publicKey = localStorage.getItem("publicKey");
-  
-  let DATA = {
-    ...queryData,
-    token_string: cookies.get("token"),
-    CTR_CD: getCtrCd(),
-    COMPANY: getCompany(),
-  };
-  //console.log("secureContext",window.isSecureContext)
-  //console.log("publicKey",publicKey)
-  let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey??"",DATA);
-  let data = await axios.post(CURRENT_API_URL, {
-    secureContext: window.isSecureContext,
-    command: command,
-    DATA: encryptedData,
-  });
-//delay 1s
- /*  if(getCompany() === "CMS"){
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-  } */
-  return data;
+  return queryService.generalQuery("main", command, queryData);
 }
 export async function uploadQuery(
   file: any,
@@ -312,19 +185,12 @@ export async function uploadQuery(
   filenamelist?: string[],
   onUploadProgress?: (progressEvent: any) => void
 ) {
-  const formData = new FormData();
-  formData.append("uploadedfile", file);
-  formData.append("filename", filename);
-  formData.append("uploadfoldername", uploadfoldername);
-  formData.append("token_string", cookies.get("token"));
-  formData.append("CTR_CD", getCtrCd());
-  if (filenamelist)
-    formData.append("newfilenamelist", JSON.stringify(filenamelist));
-  //console.log("filenamelist", filenamelist);
-  //console.log("formData", formData);
-  //console.log("token", cookies.get("token"));
-  let data = await axios.post(UPLOAD_URL, formData, {
+  return uploadService.uploadQuery(
+    "main",
+    file,
+    filename,
+    uploadfoldername,
+    filenamelist,
     onUploadProgress,
-  });
-  return data;
+  );
 }

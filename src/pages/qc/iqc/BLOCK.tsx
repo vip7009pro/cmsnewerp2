@@ -6,8 +6,6 @@ import { generalQuery } from "../../../api/Api";
 import "./BLOCK.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   UserData,
 } from "../../../api/GlobalInterface";
@@ -19,13 +17,14 @@ import {
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { BLOCK_DATA } from "../interfaces/qcInterface";
 import { f_updateNCRIDForFailing, f_updateNCRIDForHolding } from "../utils/qcUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const BLOCK = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [onlyPending, setOnlyPending] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [testtype, setTestType] = useState("ALL");
   const [m_lot_no, setM_LOT_NO] = useState("");
   const [request_empl2, setrequest_empl2] = useState("");
@@ -651,13 +650,13 @@ const BLOCK = () => {
         }
         columns={column_blocking_table}
         data={blockingdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsDataA.current = e!.api.getSelectedRows();
         }}

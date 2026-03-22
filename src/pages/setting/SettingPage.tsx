@@ -6,11 +6,9 @@ import Swal from "sweetalert2";
 import {
   Button,
 } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux/store";
-import {
-  changeGLBSetting
-} from "../../redux/slices/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectGlobalSetting } from "../../redux/selectors/notificationsSelectors";
+import { setGlobalSetting } from "../../redux/slices/notificationsSlice";
 import CameraComponent from '../../components/Camera/Camera';
 import Scanner from '../../components/Scanner/Scanner';
 import OpenCV from '../../components/OpenCV/OpenCV';
@@ -18,14 +16,14 @@ import addNotification from 'react-push-notification';
 import WebCam from '../../components/Camera/WebCam';
 import FlowChart from '../../components/FlowChart/FlowChart';
 import { title } from 'process';
+
 const SettingPage = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const dispatch = useDispatch();
-  const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
-    (state: RootState) => state.totalSlice.globalSetting
-  );
+  const dispatch = useAppDispatch();
+  const globalSetting: WEB_SETTING_DATA[] | undefined = useAppSelector(selectGlobalSetting);
   const [settings, setSettings] = useState<Array<WEB_SETTING_DATA>>([]);
+
   const updateSettingValue = (ID: number, newValue: any) => {
     setSettings((prevSettings) =>
       prevSettings.map((setting) =>
@@ -33,6 +31,7 @@ const SettingPage = () => {
       )
     );
   };
+
   const resetSettingValue = () => {
     setSettings((prevSettings: any) => {
       return prevSettings.map((setting: WEB_SETTING_DATA, id: number) => {
@@ -42,7 +41,7 @@ const SettingPage = () => {
         }
       });
     });
-    dispatch(changeGLBSetting(settings.map((setting: WEB_SETTING_DATA, id: number) => {
+    dispatch(setGlobalSetting(settings.map((setting: WEB_SETTING_DATA, id: number) => {
       return {
         ...setting,
         CURRENT_VALUE: setting.DEFAULT_VALUE
@@ -60,6 +59,7 @@ const SettingPage = () => {
       )
     );
   };
+
   const loadWebSetting = () => {
     generalQuery("loadWebSetting", {
     })
@@ -88,7 +88,7 @@ const SettingPage = () => {
               }
             );
           }
-          dispatch(changeGLBSetting(loadeddata));
+          dispatch(setGlobalSetting(loadeddata));
           setSettings(loadeddata);
         } else {
           setSettings([]);
@@ -98,39 +98,42 @@ const SettingPage = () => {
         console.log(error);
       });
   }
-    const buttonClick = () => {
-      addNotification({
-          icon: 'favicon.ico',
-          title: 'Thông báo',
-          subtitle: 'Hàng được nhập kho',
-          message: 'Code GH68-48946A đã được nhập kho 10K vào lúc 10h30p',
-          theme: 'light',
-          native: true // when using native, your OS will handle theming.
-      });
+
+  const buttonClick = () => {
+    addNotification({
+      icon: 'favicon.ico',
+      title: 'Thông báo',
+      subtitle: 'Hàng được nhập kho',
+      message: 'Code GH68-48946A đã được nhập kho 10K vào lúc 10h30p',
+      theme: 'light',
+      native: true // when using native, your OS will handle theming.
+    });
   };
-    const sendNotification = async (title: string, body: string) => {
-      try {
-        const response = await generalQuery('sendNotificationAPI', {
-          title: title,
-          body: body,       
-        });
-        if (response.data.tk_status === "OK") {
-          console.log('Đã gửi thông báo thành công!');
-        } else {
-          console.log('Lỗi khi gửi thông báo!');
-        }
-      } catch (error) {
-        console.error('Lỗi khi gửi thông báo:', error);
+
+  const sendNotification = async (title: string, body: string) => {
+    try {
+      const response = await generalQuery('sendNotificationAPI', {
+        title: title,
+        body: body,
+      });
+      if (response.data.tk_status === "OK") {
+        console.log('Đã gửi thông báo thành công!');
+      } else {
+        console.log('Lỗi khi gửi thông báo!');
       }
-    };    
+    } catch (error) {
+      console.error('Lỗi khi gửi thông báo:', error);
+    }
+  };
+
   useEffect(() => {
     loadWebSetting();
     //getWifiInfo();
   }, [])
+
   return (
     <div className='settingpage'>
       {/* <OpenCV/> */}
-        
       <h2>Setting Page</h2>
       <div className="headerbutton">
         <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
@@ -151,7 +154,7 @@ const SettingPage = () => {
                   settings
                 )
               );
-              dispatch(changeGLBSetting(settings));
+              dispatch(setGlobalSetting(settings));
             }
           });
         }}>Save</Button>

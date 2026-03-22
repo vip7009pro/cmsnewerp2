@@ -5,15 +5,13 @@ import Swal from "sweetalert2";
 import { generalQuery, uploadQuery } from "../../../api/Api";
 import { zeroPad } from "../../../api/GlobalFunction";
 import "./PQC3.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import { ERROR_TABLE, PQC1_DATA, PQC3_DATA } from "../interfaces/qcInterface";
 import { UserData } from "../../../api/GlobalInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 const PQC3 = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [error_tb, setError_TB] = useState<ERROR_TABLE[]>([]);
   const [occurr_time, setOccurrTime] = useState(moment().format('YYYY-MM-DD HH:mm:ss'));
   const [lineqc_empl, setLineqc_empl] = useState("");

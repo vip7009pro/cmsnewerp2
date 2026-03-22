@@ -2,15 +2,15 @@ import moment from "moment";
 import React, { useContext, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import "./PostManager.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useAppSelector } from "../../redux/hooks";
+import { selectTheme } from "../../redux/selectors/uiSelectors";
 import AGTable from "../../components/DataTable/AGTable";
 import AddInfo from "./AddInfo";
 import { getUserData } from "../../api/Api";
 import { POST_DATA } from "./interfaces/infoInterface";
 import { f_deletePostData, f_fetchPostListAll, f_updatePostData } from "./utils/infoUtils";
 const PostManager = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -97,11 +97,11 @@ const PostManager = () => {
         columns={column_posts}
         suppressRowClickSelection={false}
         data={postList}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedPostList.current = e!.api.getSelectedRows();
         }}

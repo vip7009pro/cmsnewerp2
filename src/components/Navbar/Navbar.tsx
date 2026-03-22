@@ -7,17 +7,10 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import { FcList } from "react-icons/fc";
-import {
-  toggleSidebar,
-  setTabModeSwap,
-  closeTab,
-  changeGLBLanguage,
-  switchTheme,
-  updateNotiCount
-} from "../../redux/slices/globalSlice";
-import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import { addTab, settabIndex, resetTab } from "../../redux/slices/globalSlice";
+import { toggleSidebar, setLanguage } from "../../redux/slices/uiSlice";
+import { addTab, closeTab, resetTab, setTabIndex, setTabModeSwap } from "../../redux/slices/tabsSlice";
+import { switchTheme } from "../../redux/slices/uiSlice";
+import { setNotificationCount } from "../../redux/slices/notificationsSlice";
 import { current_ver } from "../../pages/home/Home";
 import { Checkbox, FormControlLabel, IconButton, createFilterOptions } from "@mui/material";
 import { getlang } from "../String/String";
@@ -30,6 +23,18 @@ import NavMenu from "../NavMenu/NavMenu";
 import { IoIosNotifications } from "react-icons/io";
 import NotificationPanel from "../NotificationPanel/NotificationPanel";
 import NavMenuNew from "../NavMenu/NavMenuNew";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { selectUserData } from "../../redux/selectors/authSelectors";
+import { selectNotificationCount } from "../../redux/selectors/notificationsSelectors";
+import { selectTabIndex, selectTabModeSwap, selectTabs } from "../../redux/selectors/tabsSelectors";
+import {
+  selectCompany,
+  selectCompanyInfo,
+  selectLang,
+  selectSelectedServer,
+  selectSidebarMenu,
+  selectTheme,
+} from "../../redux/selectors/uiSelectors";
 
 
 interface SEARCH_LIST_DATA {
@@ -49,24 +54,14 @@ export default function Navbar() {
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
   const refNotificationPanel = useRef<HTMLDivElement>(null);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
-  const lang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang,
-  );
-  const notiCount: number = useSelector(
-    (state: RootState) => (state.totalSlice.notificationCount ?? 0),
-  );
-  const sidebarStatus: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.sidebarmenu,
-  );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const selectedServer: string = useSelector((state: RootState) => state.totalSlice.selectedServer);
-  const cpnInfo: any = useSelector((state: RootState) => state.totalSlice.cpnInfo);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const company: string = useAppSelector(selectCompany);
+  const lang: string | undefined = useAppSelector(selectLang);
+  const notiCount: number = useAppSelector(selectNotificationCount);
+  const sidebarStatus: boolean | undefined = useAppSelector(selectSidebarMenu);
+  const theme: any = useAppSelector(selectTheme);
+  const selectedServer: string = useAppSelector(selectSelectedServer);
+  const cpnInfo: any = useAppSelector(selectCompanyInfo);
   useOutsideClick(
     refLang,
     () => {
@@ -92,7 +87,7 @@ export default function Navbar() {
 
   const handleShowHideNotificaionPanel = () => {
     setShowHideNotificationPanel(!showHideNotificaionPanel);
-    dispatch(updateNotiCount(0));
+    dispatch(setNotificationCount(0));
     localStorage.setItem("notification_count", '0');
   }
   const themeOptions = company === "CMS" ? [
@@ -528,16 +523,10 @@ export default function Navbar() {
     MENU_CODE: "NS2",
     MENU_NAME: getlang("diemdanhnhom", lang ?? "en"),
   });
-  const tabModeSwap: boolean = useSelector(
-    (state: RootState) => state.totalSlice.tabModeSwap,
-  );
-  const tabIndex: number = useSelector(
-    (state: RootState) => state.totalSlice.tabIndex,
-  );
-  const tabs: ELE_ARRAY[] = useSelector(
-    (state: RootState) => state.totalSlice.tabs,
-  );
-  const dispatch = useDispatch();
+  const tabModeSwap: boolean = useAppSelector(selectTabModeSwap);
+  const tabIndex: number = useAppSelector(selectTabIndex);
+  const tabs: ELE_ARRAY[] = useAppSelector(selectTabs);
+  const dispatch = useAppDispatch();
   const customItemCreating = (args: any) => {
     if (!args.text) {
       args.customItem = null;
@@ -567,7 +556,7 @@ export default function Navbar() {
           //console.log(tab_index);
           if (tab_index !== -1) {
             //console.log('co tab roi');
-            dispatch(settabIndex(tab_index));
+            dispatch(setTabIndex(tab_index));
           } else {
             //console.log('chua co tab');
             dispatch(
@@ -578,7 +567,7 @@ export default function Navbar() {
                 PAGE_ID: -1,
               }),
             );
-            dispatch(settabIndex(tabs.length));
+            dispatch(setTabIndex(tabs.length));
           }
         }
       } else {
@@ -589,9 +578,9 @@ export default function Navbar() {
   useEffect(() => {
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
-      dispatch(changeGLBLanguage(saveLang.toString()));
+      dispatch(setLanguage(saveLang.toString()));
     } else {
-      dispatch(changeGLBLanguage("en"));
+      dispatch(setLanguage("en"));
     }
     let saveTab: any = localStorage.getItem("tabs")?.toString();
 //    console.log('saveTab',saveTab);
@@ -608,7 +597,7 @@ export default function Navbar() {
             }),
           );
       }
-      dispatch(settabIndex(0));
+      dispatch(setTabIndex(0));
       localStorage.setItem(
         "tabs",
         JSON.stringify(
@@ -632,7 +621,7 @@ export default function Navbar() {
     limit: 100,
   });
   const logout_bt = () => {
-    dispatch(resetTab(0));
+    dispatch(resetTab());
     logout();
   };
   const showhideAvatarMenu = () => {
@@ -647,7 +636,7 @@ export default function Navbar() {
     //console.log(selectLang);
     setLangMenu(false);
     //setLang(selectLang);
-    dispatch(changeGLBLanguage(selectLang));
+    dispatch(setLanguage(selectLang));
     localStorage.setItem("lang", selectLang);
   };
   return (
@@ -664,7 +653,7 @@ export default function Navbar() {
         <div className="navleft">
           <FcList
             onClick={() => {
-              dispatch(toggleSidebar("2"));
+              dispatch(toggleSidebar());
             }}
             size={15}
           />
@@ -818,7 +807,7 @@ export default function Navbar() {
                           checked={tabModeSwap}
                           onChange={(e) => {
                             if (!tabModeSwap) {
-                              dispatch(resetTab(0));
+                              dispatch(resetTab());
                               dispatch(
                                 addTab({
                                   ELE_CODE: "NS0",
@@ -858,7 +847,7 @@ export default function Navbar() {
                                 "ST01",
                               );
                               if (tab_index !== -1) {
-                                dispatch(settabIndex(tab_index));
+                                dispatch(setTabIndex(tab_index));
                               } else {
                                 dispatch(
                                   addTab({
@@ -868,7 +857,7 @@ export default function Navbar() {
                                     PAGE_ID: -1,
                                   }),
                                 );
-                                dispatch(settabIndex(tabs.length));
+                                dispatch(setTabIndex(tabs.length));
                               }
                             }
                           } else {

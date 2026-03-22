@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, uploadQuery } from "../../../api/Api";
 import "./LINEQC.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 
 
 import 'react-html5-camera-photo/build/css/index.css';
@@ -15,9 +15,7 @@ import { PQC1_DATA } from "../interfaces/qcInterface";
 import { SX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const LINEQC = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [file, setFile] = useState<any>(null);
   const [inputno, setInputNo] = useState("");
   const [lineqc_empl, setLineqc_empl] = useState(userData?.EMPL_NO ?? "");

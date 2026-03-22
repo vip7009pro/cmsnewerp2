@@ -3,12 +3,12 @@ import "./HOLD_FAIL.scss";
 import HOLDING from "./HOLDING";
 import FAILING from "./FAILING";
 import INCOMMING from "./INCOMMING";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 
 const HOLD_FAIL = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
 
 
   useEffect(() => {}, []);

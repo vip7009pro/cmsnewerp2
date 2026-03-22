@@ -13,8 +13,9 @@ import "./QuanLyPhongBanNhanSu.scss";
 import Swal from "sweetalert2";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import moment from "moment";
-import { RootState } from "../../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
+import { selectLang } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { BiRefresh } from "react-icons/bi";
 import {
   UserData,
@@ -28,12 +29,8 @@ import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WorkPositionTab
 
 
 const QuanLyPhongBanNhanSu_Old = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const glbLang: string | undefined = useAppSelector(selectLang);
   const [isLoading, setisLoading] = useState(false);
   const [workpositionload, setWorkPositionLoad] = useState<
     Array<WorkPositionTableData>
@@ -87,7 +84,7 @@ const QuanLyPhongBanNhanSu_Old = () => {
   const [NV_CCID, setNV_CCID] = useState(0);
   const [resigned_check, setResignedCheck] = useState(true);
   const [file, setFile] = useState<any>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const uploadFile2 = async (empl_no: string) => {
     if (file !== null && file !== undefined) {

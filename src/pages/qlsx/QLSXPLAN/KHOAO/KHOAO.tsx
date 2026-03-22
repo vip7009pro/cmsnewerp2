@@ -2,20 +2,18 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./KHOAO.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { datediff, f_checkPlanIDExist } from "../../../kinhdoanh/utils/kdUtils";
 import { LICHSUNHAPKHOAO, LICHSUXUATKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
 import { checkPLAN_ID, f_anrackhoao, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_delete_IN_KHO_AO, f_delete_OUT_KHO_AO, f_is2MCODE_IN_KHO_AO, f_isExistM_LOT_NO_QTY_P500, f_isM_CODE_CHITHI, f_isM_LOT_NO_in_P500, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../utils/khsxUtils";
 import { checkBP } from "../../../../api/GlobalFunction";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission] = useState(true);
   const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

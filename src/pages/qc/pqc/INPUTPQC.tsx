@@ -15,12 +15,12 @@ import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INPUTPQC.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   UserData,
 } from "../../../api/GlobalInterface";
 import { CodeListData, CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 
 const INPUTPQC = () => {
   const [file, setFile] = useState<any>();
@@ -30,9 +30,7 @@ const INPUTPQC = () => {
     tab2: false,
     tab3: false,
   });
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);

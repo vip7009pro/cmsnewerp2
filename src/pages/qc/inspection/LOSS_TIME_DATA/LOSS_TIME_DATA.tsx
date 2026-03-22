@@ -4,12 +4,12 @@ import Swal from "sweetalert2";
 import "./LOSS_TIME_DATA.scss";
 import { BiLoader } from "react-icons/bi";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { f_loadLossTimeTheoMay, f_loadLossTimeTheoNguoi } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { f_insertPhanLoaiBanKiemTraAuto, f_loadLossTimeKiemTraTheoBan, f_loadLossTimeKiemTraTheoNguoi, f_updateKPIBanKiemTra } from "../../utils/qcUtils";
 import Inspect_EMPL_KPI_GRAPH from "../../../../components/Chart/INSPECTION/Inspect_EMPL_KPI_GRAPH";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 
 export interface LOSS_TIME_DATA_KIEMTRA_THEO_BAN {
     EMPL_NO: string;
@@ -41,7 +41,7 @@ const LOSS_TIME_DATA = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [option, setOption] = useState(1);
-  const theme = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme = useAppSelector(selectTheme);
 
   const columns_loss_time_data_theo_may = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },

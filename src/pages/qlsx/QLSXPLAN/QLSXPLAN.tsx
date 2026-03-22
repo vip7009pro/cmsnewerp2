@@ -1,11 +1,11 @@
 import React, { useEffect, Suspense } from "react";
 import "./QLSXPLAN.scss";
 import KHCT from "./KHCT/KHCT";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { getCompany, getUserData } from "../../../api/Api";
 import LONGTERM_PLAN from "./LICHSUCHITHITABLE/LONGTERM_PLAN";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const BTP_AUTO = React.lazy(() => import("../../sx/BTP_AUTO/BTP_AUTO"));
 const MACHINE_OLD = React.lazy(() => import("./Machine/MACHINE_backup"));
 const PLAN_DATATB_OLD = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB_backup"));
@@ -21,7 +21,7 @@ const KHOAO = React.lazy(() => import("./KHOAO/KHOAO"));
 const QUICKPLAN2 = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2"));
 const QUICKPLAN2_OLD = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2_backup"));
 const QLSXPLAN = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   useEffect(() => { }, []);
   return (
     <div className="qlsxplan">

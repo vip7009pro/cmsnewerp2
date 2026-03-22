@@ -31,8 +31,6 @@ import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";
 import { FaRegClone } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
 import { useReactToPrint } from "react-to-print";
 import {  
@@ -43,6 +41,9 @@ import BOM_DESIGN from "./BOM_DESIGN";
 import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import MyTabs from "../../../components/MyTab/MyTab";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectCompany } from "../../../redux/selectors/uiSelectors";
 import { MACHINE_LIST, PROD_PROCESS_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { CustomerListData, DEFAULT_DM } from "../../kinhdoanh/interfaces/kdInterface";
 import { f_addProcessDataTotal, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_loadProdProcessData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
@@ -57,9 +58,7 @@ const BOM_MANAGER = () => {
   const handlePrint = useReactToPrint({
     content: () => labelprintref.current,
   });
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
-  );
+  const company: string = useAppSelector(selectCompany);
   const [tempSelectedMachine, setTempSelectedMachine] = useState<string>("NA");
   const tempSelectedProcess = useRef<PROD_PROCESS_DATA>({
     G_CODE: "xxx",
@@ -226,9 +225,7 @@ const BOM_MANAGER = () => {
     them1invoice: false,
     testinvoicetable: false,
   });
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");

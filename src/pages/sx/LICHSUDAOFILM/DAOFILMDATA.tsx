@@ -7,13 +7,13 @@ import "./DAOFILMDATA.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import { BiAddToQueue, BiLogIn } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { useForm } from "react-hook-form";
 import { DAO_FILM_DATA } from "../../qc/interfaces/qcInterface";
 import { QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const DAOFILMDATA = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const {register,handleSubmit,watch, formState:{errors}} = useForm()
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
   const [btnGN_QL, setBtnGN_QL] = useState(true);

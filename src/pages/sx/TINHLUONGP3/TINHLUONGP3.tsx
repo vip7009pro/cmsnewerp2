@@ -1,9 +1,7 @@
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import "./TINHLUONGP3.scss";
-import { useSelector } from "react-redux";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
-import { RootState } from "../../../redux/store";
 
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
@@ -11,6 +9,9 @@ import Swal from "sweetalert2";
 import { Button } from "@mui/material";
 import { LUONGP3_DATA, MACHINE_LIST } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_getMachineListData } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 export const f_handleLoadluongP3Data = async (data: any) => {
   let kq: LUONGP3_DATA[] = [];
   try {
@@ -54,14 +55,12 @@ export const f_handleUpdate_M_PRICE_P500 = async () => {
   return kq;
 }
 const TINHLUONGP3 = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
     setMachine_List(await f_getMachineListData());
   };
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fromdate, setFromDate] = useState(moment().add(-8, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [factory, setFactory] = useState("ALL");

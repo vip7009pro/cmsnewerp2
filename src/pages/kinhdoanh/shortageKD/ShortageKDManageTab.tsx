@@ -8,15 +8,16 @@ import { generalQuery, getAuditMode } from "../../../api/Api";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import AGTable from "../../../components/DataTable/AGTable";
 import { ShortageData } from "../interfaces/kdInterface";
 import "./ShortageKDManageTab.scss";
 
 const ShortageKDManageTab = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
+  const theme: any = useAppSelector(selectTheme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
 
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

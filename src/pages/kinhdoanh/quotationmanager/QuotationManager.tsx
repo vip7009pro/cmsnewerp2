@@ -15,8 +15,9 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import { SaveExcel, checkBP} from "../../../api/GlobalFunction";
 import { generalQuery, getAuditMode, getCompany, getSever } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { RootState } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { BiCloudUpload } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import { TbLogout } from "react-icons/tb";
@@ -41,9 +42,7 @@ const QuotationManager = () => {
       alltime:true,
     }
   }) 
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [sh, setSH] = useState(false);
   const showhidesearchdiv = useRef(true);
   const selectedBangGiaDocRow = useRef<BANGGIA_DATA2[]>([]);
@@ -1792,7 +1791,7 @@ G_NAME_KD: getAuditMode() == 0? element.G_NAME_KD : element.G_NAME_KD?.search('C
   const handlePrint = useReactToPrint({
     content: () => quotationprintref.current,
   });
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   useEffect(() => {
     //loadBangGia();
     getcustomerlist();

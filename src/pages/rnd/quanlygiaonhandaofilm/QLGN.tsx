@@ -5,12 +5,12 @@ import Swal from "sweetalert2";
 import "./QLGN.scss";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { HANDOVER_DATA } from "../interfaces/rndInterface";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import { CodeListData, CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const QLGN = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([
     {
       CUST_CD: "6969",

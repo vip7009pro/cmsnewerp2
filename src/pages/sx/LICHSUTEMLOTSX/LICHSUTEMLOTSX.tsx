@@ -12,8 +12,6 @@ import {
   QueryFormDiv,
 } from "../../../components/StyledComponents/ComponentLib";
 import { useReactToPrint } from "react-to-print";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import AGTable from "../../../components/DataTable/AGTable";
 import { FcCancel } from "react-icons/fc";
 import { getUserData } from "../../../api/Api";
@@ -22,8 +20,10 @@ import { TEMLOTSX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_cancelProductionLot, f_LichSuTemLot } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { COMPONENT_DATA } from "../../rnd/interfaces/rndInterface";
 import { f_handleGETBOMAMAZON } from "../../rnd/utils/rndUtils";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const LICHSUTEMLOTSX = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [lichsutemlotdata, setlichsutemlotdata] = useState<Array<TEMLOTSX_DATA>>([]);
   const [filterData, setFilterData] = useState({
     FROM_DATE: moment().format("YYYY-MM-DD"),

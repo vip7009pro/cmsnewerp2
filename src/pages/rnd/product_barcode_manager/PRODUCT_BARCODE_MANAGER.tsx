@@ -9,14 +9,14 @@ import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import QRCODE from "../design_amazon/design_components/QRCODE";
 import BARCODE from "../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 import AGTable from "../../../components/DataTable/AGTable";
 import { BARCODE_DATA } from "../interfaces/rndInterface";
 import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const PRODUCT_BARCODE_MANAGER = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [barcodedatatable, setBarCodeDataTable] = useState<Array<BARCODE_DATA>>(
     [],

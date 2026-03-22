@@ -16,8 +16,6 @@ import {
 import "./INCOMMING.scss";
 import { GrClose, GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   UserData,
 } from "../../../api/GlobalInterface";
@@ -28,12 +26,15 @@ import { CustomCellRendererProps } from "ag-grid-react";
 import BNK_COMPONENT from "./BNK_COMPONENT";
 import { useReactToPrint } from "react-to-print";
 import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const INCOMMING = () => {
   const incomingChecksheetPrintRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => incomingChecksheetPrintRef.current,
   });
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [showBNK, setShowBNK] = useState(false);
   const [isNewRegister, setNewRegister] = useState(false);
   const [clickedRow, setClickedRow] = useState<IQC_INCOMMING_DATA | null>(null);
@@ -205,9 +206,7 @@ const INCOMMING = () => {
         console.log(error);
       });
   };
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [inputno, setInputNo] = useState("");
   const [request_empl, setrequest_empl] = useState(getUserData()?.EMPL_NO);
   const [remark, setReMark] = useState("");

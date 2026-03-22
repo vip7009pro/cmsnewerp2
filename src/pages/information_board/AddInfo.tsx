@@ -2,16 +2,14 @@ import { Button } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./AddInfo.scss";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../redux/hooks";
 import 'react-html5-camera-photo/build/css/index.css';
 import { UserData } from "../../api/GlobalInterface";
-import { RootState } from "../../redux/store";
+import { selectUserData } from "../../redux/selectors/authSelectors";
 import { generalQuery, getCtrCd, uploadQuery } from "../../api/Api";
 import { DEPARTMENT_DATA } from "./interfaces/infoInterface";
 const AddInfo = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [file, setFile] = useState<any>(null);
   const [deptlist, setDeptList] = useState<DEPARTMENT_DATA[]>([]);
   const [selectedDept, setSelectedDept] = useState<number>(1);

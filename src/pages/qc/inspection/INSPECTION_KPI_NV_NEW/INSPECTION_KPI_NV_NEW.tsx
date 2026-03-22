@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./INSPECTION_KPI_NV_NEW.scss";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import AGTable from "../../../../components/DataTable/AGTable";
 import {
   f_insertPhanLoaiBanKiemTraAuto,
@@ -18,6 +16,8 @@ import Inspect_EMPL_KPI_GRAPH2 from "../../../../components/Chart/INSPECTION/Ins
 import { DM_CODE_SX_KT } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_loadDinhMucCode, f_updateDMCodePS } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { columns_dinhmuc_code } from "../../../sx/KPI_NV_NEW2/KPI_NV_NEW2";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 
 export interface LOSS_TIME_DATA_KIEMTRA_THEO_BAN {
     EMPL_NO: string;
@@ -51,7 +51,7 @@ const INSPECTION_KPI_NV_NEW = () => {
   const [option, setOption] = useState(2);
   const [dmcodesxktra, setDMCodeSXKT] = useState<DM_CODE_SX_KT[]>([])
   const [dmvitrikiemtra, setDMViTriKT]=  useState<DM_VITRI_DATA[]>([])
-  const theme = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme = useAppSelector(selectTheme);
 
   const columns_loss_time_data_theo_may = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },

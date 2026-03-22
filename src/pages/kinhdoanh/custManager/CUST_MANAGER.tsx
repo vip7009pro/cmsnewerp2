@@ -9,12 +9,12 @@ import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { CUST_INFO } from "../interfaces/kdInterface";
 const CUST_MANAGER = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
     setOpenDialog(true);

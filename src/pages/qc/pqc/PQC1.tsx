@@ -6,17 +6,16 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import "./PQC1.scss";
 import { BiShow } from "react-icons/bi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { PQC1_DATA } from "../interfaces/qcInterface";
 import { SX_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
+import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const PQC1 = () => {
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
-  );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const userData: UserData | undefined = useAppSelector(selectUserData);
+  const theme: any = useAppSelector(selectTheme);
   const [inputno, setInputNo] = useState("");
   const [lineqc_empl, setLineqc_empl] = useState("");
   const [prod_leader_empl, setprod_leader_empl] = useState("");

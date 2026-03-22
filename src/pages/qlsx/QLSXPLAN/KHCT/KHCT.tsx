@@ -6,8 +6,8 @@ import MachineTimeLine from './MachineTimeLine';
 import Swal from 'sweetalert2';
 import { Button, FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, TextField } from '@mui/material';
 import { MdCreate } from 'react-icons/md';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../redux/store';
+import { useAppSelector } from '../../../../redux/hooks';
+import { selectTheme } from '../../../../redux/selectors/uiSelectors';
 import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 import CustomDialog from '../../../../components/Dialog/CustomDialog';
 import AddPlanDialog from '../QUICKPLAN/AddPlanDialog';
@@ -16,7 +16,7 @@ import { f_handle_loadEQ_STATUS, f_loadLeadtimeData } from '../utils/khsxUtils';
 import { EQ_STT, LEADTIME_DATA, ProductionPlan } from '../interfaces/khsxInterface';
 
 const KHCT = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+  const theme: any = useAppSelector(selectTheme);
   const [openDialog, setOpenDialog] = useState<boolean>(false)
   const [plans, setPlans] = useState<ProductionPlan[]>([])
   const [FRplans, setFRPlans] = useState<ProductionPlan[]>([])

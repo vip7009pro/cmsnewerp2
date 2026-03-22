@@ -16,19 +16,17 @@ import { SaveExcel, checkBP, renderElement } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import { BiMagnet, BiPrinter, BiSave, BiShow } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import {
   UserData,
 } from "../../../api/GlobalInterface";
 import { BOM_AMAZON, CODE_INFO, COMPONENT_DATA, POINT_DATA } from "../interfaces/rndInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { useAppSelector } from "../../../redux/hooks";
+import { selectUserData } from "../../../redux/selectors/authSelectors";
 
 const DESIGN_AMAZON = () => {
   const protocol = window.location.protocol.startsWith("https") ? "https" : "http";
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const labelprintref = useRef(null);
   const designRef = useRef<HTMLDivElement | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);

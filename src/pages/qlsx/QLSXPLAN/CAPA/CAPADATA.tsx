@@ -22,13 +22,13 @@ import { generalQuery } from "../../../../api/Api";
 import { SaveExcel, checkBP,} from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import { BiSearch } from "react-icons/bi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { 
   UserData,
 } from "../../../../api/GlobalInterface";
 import { f_getDataDinhMucGCode, f_getMachineListData, f_saveQLSX } from "../utils/khsxUtils";
 import { CAPA_LEADTIME_DATA, DINHMUC_QSLX, MACHINE_LIST } from "../interfaces/khsxInterface";
+import { useAppSelector } from "../../../../redux/hooks";
+import { selectUserData } from "../../../../redux/selectors/authSelectors";
 
 const CAPADATA = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
@@ -36,9 +36,7 @@ const CAPADATA = () => {
     setMachine_List(await f_getMachineListData());
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
+  const userData: UserData | undefined = useAppSelector(selectUserData);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
