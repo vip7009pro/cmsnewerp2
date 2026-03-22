@@ -46,7 +46,7 @@ export function login(user: string, pass: string) {
   authService
     .login("main", user, pass)
     .then((Jresult: any) => {
-      console.log("Jresult", Jresult);
+      //console.log("Jresult", Jresult);
       if (Jresult?.tk_status?.toUpperCase() === "OK") {
         Swal.fire(
           "Thông báo",

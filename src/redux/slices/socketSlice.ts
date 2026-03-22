@@ -2,9 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { socket } from "./totalParts/initialTotalState";
 
-export type SocketState = Record<string, never>;
+export type SocketState = {
+  globalSocket: typeof socket;
+};
 
-const initialState: SocketState = {};
+const initialState: SocketState = {
+  globalSocket: socket,
+};
 
 const socketSlice = createSlice({
   name: "socket",

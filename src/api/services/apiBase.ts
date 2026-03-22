@@ -5,7 +5,7 @@ export type ApiScope = "main" | "vendors";
 
 export function getServerIp(): string {
   const state = store.getState();
-  const serverIpFromState = state.totalSlice.server_ip;
+  const serverIpFromState = state.ui.server_ip;
   const serverIpFromLocalStorage = localStorage.getItem("server_ip")?.toString();
   return serverIpFromLocalStorage ?? serverIpFromState;
 }
