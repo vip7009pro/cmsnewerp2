@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+
+import { oqcService } from "../services/oqcService";
 import {
   DataDiv,
   DataTBDiv,
@@ -47,7 +48,7 @@ const OQC_DATA_TB = () => {
     SHIFT_CODE: ''
   });
   const load_oqc_data = () => {
-    generalQuery("traOQCData", {
+    oqcService.traOQCData({
       CUST_NAME_KD: selectedRows.CUST_NAME_KD,
       PROD_REQUEST_NO: selectedRows.PROD_REQUEST_NO,
       G_NAME: selectedRows.G_NAME,

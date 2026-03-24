@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { generalQuery } from '../../../api/Api';
+import { iqcService } from "../services/iqcService";
 import './IQC_REPORT.scss';
 
 import { Autocomplete, Checkbox, IconButton, TextField, Typography, createFilterOptions } from '@mui/material';
@@ -186,7 +186,7 @@ const IQC_REPORT = () => {
   };
 
   const getcodelist = (G_NAME: string) => {
-    generalQuery('selectcodeList', { G_NAME: G_NAME })
+    iqcService.selectcodeList({ G_NAME: G_NAME })
       .then((response) => {
         if (response.data.tk_status !== 'NG') {
           setCodeList(response.data.data);

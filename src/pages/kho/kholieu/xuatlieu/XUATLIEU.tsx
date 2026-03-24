@@ -10,7 +10,8 @@ import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { MdDelete } from "react-icons/md";
-import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
+import { getCompany, getUserData } from "../../../../api/Api";
+import { khoLieuService } from "../../services/khoLieuService";
 import { checkBP,  f_updateStockM090 } from "../../../../api/GlobalFunction";
 import './XUATLIEU.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
@@ -41,7 +42,7 @@ const XUATLIEU = () => {
   const [m_name, setM_Name] = useState("");
   const [solanout, setSoLanOut] = useState(1);
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    khoLieuService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);\
@@ -68,7 +69,7 @@ const XUATLIEU = () => {
       });
   };
   const checkPlanID = (PLAN_ID: string) => {
-    generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+    khoLieuService.checkPLAN_ID({ PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -147,7 +148,7 @@ const XUATLIEU = () => {
     }
   }
   const checkLotNVL = async (M_LOT_NO: string, PLAN_ID: string) => {
-    await generalQuery("checkMNAMEfromLotI222XuatKho", { M_LOT_NO: M_LOT_NO, PLAN_ID: PLAN_ID })
+    await khoLieuService.checkMNAMEfromLotI222XuatKho({ M_LOT_NO: M_LOT_NO, PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -239,7 +240,7 @@ const XUATLIEU = () => {
   };
   const [dangkyxuatlieutable, setDangKyXuatLieuTable] = useState<DKXL_DATA[]>([]);
   const loadDKXLTB = async (PLAN_ID: string) => {
-    await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID })
+    await khoLieuService.checkPLANID_O301({ PLAN_ID: PLAN_ID })
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
@@ -253,7 +254,7 @@ const XUATLIEU = () => {
       });
   }
   const checkSoLanOutO302 = async (PLAN_ID: string) => {
-    await generalQuery("checksolanout_O302", { PLAN_ID: PLAN_ID })
+    await khoLieuService.checksolanout_O302({ PLAN_ID: PLAN_ID })
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
@@ -356,7 +357,7 @@ const XUATLIEU = () => {
     limit: 100,
   });
   const getcustomerlist = () => {
-    generalQuery("selectCustomerAndVendorList", {})
+    khoLieuService.selectCustomerAndVendorList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);

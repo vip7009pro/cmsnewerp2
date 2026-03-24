@@ -3,7 +3,7 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
+import { shortageService } from "../services/shortageService";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { UserData } from "../../../api/GlobalInterface";
 import { useAppSelector } from "../../../redux/hooks";
@@ -101,7 +101,7 @@ const ShortageKDAddTab = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkShortageExist", {
+      await shortageService.checkShortageExist({
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
         PLAN_DATE: uploadExcelJson[i].PLAN_DATE,
@@ -119,7 +119,7 @@ const ShortageKDAddTab = () => {
       if (now < plandate) {
         err_code = 2;
       }
-      await generalQuery("checkGCodeVer", {
+      await shortageService.checkGCodeVer({
         G_CODE: uploadExcelJson[i].G_CODE,
       })
         .then((response) => {
@@ -158,7 +158,7 @@ const ShortageKDAddTab = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkShortageExist", {
+      await shortageService.checkShortageExist({
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
         PLAN_DATE: uploadExcelJson[i].PLAN_DATE,
@@ -176,7 +176,7 @@ const ShortageKDAddTab = () => {
       if (now < plandate) {
         err_code = 2;
       }
-      await generalQuery("checkGCodeVer", {
+      await shortageService.checkGCodeVer({
         G_CODE: uploadExcelJson[i].G_CODE,
       })
         .then((response) => {
@@ -194,7 +194,7 @@ const ShortageKDAddTab = () => {
         });
 
       if (err_code === 0) {
-        await generalQuery("insert_shortage", {
+        await shortageService.insert_shortage({
           REMARK: uploadExcelJson[i].REMARK,
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,

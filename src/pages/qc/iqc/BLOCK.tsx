@@ -2,7 +2,8 @@ import { IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { getCompany, getUserData, getAuditMode } from "../../../api/Api";
+import { iqcService } from "../services/iqcService";
 import "./BLOCK.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
@@ -359,7 +360,7 @@ const BLOCK = () => {
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         if (selectedRowsDataA.current[i].PL_BLOCK === "FAILING") {
-          await generalQuery("updateQCPASS_FAILING", {
+          await iqcService.updateQCPASS_FAILING({
             FAIL_ID: selectedRowsDataA.current[i].BLOCK_ID,
             M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
             PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID,
@@ -377,7 +378,7 @@ const BLOCK = () => {
               console.log(error);
             });
         } else if (selectedRowsDataA.current[i].PL_BLOCK === "HOLDING") {
-          await generalQuery("updateQCPASS_HOLDING", {
+          await iqcService.updateQCPASS_HOLDING({
             M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
             ID: selectedRowsDataA.current[i].BLOCK_ID,
             USE_YN: selectedRowsDataA.current[i].USE_YN,
@@ -388,7 +389,7 @@ const BLOCK = () => {
               console.log(response.data);
               if (response.data.tk_status !== "NG") {
                 let USE_YN_I222 = "X";
-                await generalQuery("checkM_LOT_NO", {
+                await iqcService.checkM_LOT_NO({
                   M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
                 })
                   // eslint-disable-next-line no-loop-func
@@ -407,7 +408,7 @@ const BLOCK = () => {
                   });
                   console.log('USE_YN_I222', USE_YN_I222);
                   if(USE_YN_I222 !== "X") {
-                    await generalQuery("updateQCPASSI222_M_LOT_NO", {
+                    await iqcService.updateQCPASSI222_M_LOT_NO({
                       M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
                       USE_YN: selectedRowsDataA.current[i].USE_YN,
                       VALUE: value,
@@ -459,7 +460,7 @@ const BLOCK = () => {
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
         if (selectedRowsDataA.current[i].PL_BLOCK === "FAILING") {
-          await generalQuery("updateCLOSE_FAILING", {
+          await iqcService.updateCLOSE_FAILING({
             FAIL_ID: selectedRowsDataA.current[i].BLOCK_ID,
             M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
             PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID,
@@ -477,7 +478,7 @@ const BLOCK = () => {
               console.log(error);
             });
         } else if (selectedRowsDataA.current[i].PL_BLOCK === "HOLDING") {
-          await generalQuery("updateCLOSE_HOLDING", {
+          await iqcService.updateCLOSE_HOLDING({
             HOLD_ID: selectedRowsDataA.current[i].BLOCK_ID,
             VALUE: value,
           })
@@ -664,7 +665,7 @@ const BLOCK = () => {
     );
   }, [blockingdatatable, request_empl2, onlyPending]);
   const handletraBlockingData = () => {
-    generalQuery("loadBlockingData", {
+    iqcService.loadBlockingData({
       ONLY_PENDING: onlyPending,
       LOT_VENDOR: vendorLot,
       M_LOT_NO: m_lot_no,
@@ -720,7 +721,7 @@ const BLOCK = () => {
       });
   };
   const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
+    iqcService.selectcodeList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -732,7 +733,7 @@ const BLOCK = () => {
       });
   };
   const handleAutoUpdateReasonFromIQC1 = () => {
-    generalQuery("updateReasonHoldingFromIQC1", {})
+    iqcService.updateReasonHoldingFromIQC1({})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {

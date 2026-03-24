@@ -1,5 +1,14 @@
 import moment from "moment";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { getCompany } from "../../../api/Api";
+import { qcUtilsService } from "../services/qcUtilsService";
+
+const generalQuery = async (command: string, data: any) => {
+  const serviceMethod = (qcUtilsService as any)[command];
+  if (serviceMethod) {
+    return await serviceMethod(data);
+  }
+  throw new Error(`Method ${command} not found in qcUtilsService`);
+};
 import { AUDIT_HISTORY_DATA, DM_VITRI_DATA, DTC_TEST_POINT, INSPECT_STATUS_DATA, IQC_FAIL_PENDING, IQC_FAILING_TREND_DATA, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, KHKT_DATA, KPI_NV_KIEMTRA, TEMLOTKT_DATA, TestListTable } from "../interfaces/qcInterface";
 import Swal from "sweetalert2";
 import { LOSS_TIME_DATA_KIEMTRA_THEO_BAN, LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI } from "../inspection/LOSS_TIME_DATA/LOSS_TIME_DATA";

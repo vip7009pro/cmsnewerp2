@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { csService } from "../services/csService";
 import "./CSREPORT.scss";
 import { Autocomplete, Checkbox, TextField, Typography, createFilterOptions } from "@mui/material";
 import WidgetCS from "../../../components/Widget/WidgetCS";
@@ -70,7 +70,7 @@ const CSREPORT = () => {
     limit: 100,
   });
   const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
+    csService.selectcodeList({ G_NAME: G_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCodeList(response.data.data);
@@ -84,7 +84,7 @@ const CSREPORT = () => {
   const handle_getCSDailyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csdailyconfirmdata", {
+    await csService.csdailyconfirmdata({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -118,7 +118,7 @@ const CSREPORT = () => {
   const handle_getCSWeeklyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("csweeklyconfirmdata", {
+    await csService.csweeklyconfirmdata({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -149,7 +149,7 @@ const CSREPORT = () => {
   const handle_getCSMonthlyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("csmonthlyconfirmdata", {
+    await csService.csmonthlyconfirmdata({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -180,7 +180,7 @@ const CSREPORT = () => {
   const handle_getCSYearlyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("csyearlyconfirmdata", {
+    await csService.csyearlyconfirmdata({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -211,7 +211,7 @@ const CSREPORT = () => {
   const handle_getCSConfirmDataByCustomer = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csConfirmDataByCustomer", {
+    await csService.csConfirmDataByCustomer({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -241,7 +241,7 @@ const CSREPORT = () => {
   const handle_getCSConfirmDataByPIC = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csConfirmDataByPIC", {
+    await csService.csConfirmDataByPIC({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -271,7 +271,7 @@ const CSREPORT = () => {
   const handle_getCSDailyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csdailyreduceamount", {
+    await csService.csdailyreduceamount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -302,7 +302,7 @@ const CSREPORT = () => {
   const handle_getCSWeeklyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("csweeklyreduceamount", {
+    await csService.csweeklyreduceamount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -332,7 +332,7 @@ const CSREPORT = () => {
   const handle_getCSMonthlyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("csmonthlyreduceamount", {
+    await csService.csmonthlyreduceamount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -362,7 +362,7 @@ const CSREPORT = () => {
   const handle_getCSYearlyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-1200, "day").format("YYYY-MM-DD");
-    await generalQuery("csyearlyreduceamount", {
+    await csService.csyearlyreduceamount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -392,7 +392,7 @@ const CSREPORT = () => {
   const handle_getCSDailyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csdailyRMAAmount", {
+    await csService.csdailyRMAAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -424,7 +424,7 @@ const CSREPORT = () => {
   const handle_getCSWeeklyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("csweeklyRMAAmount", {
+    await csService.csweeklyRMAAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -456,7 +456,7 @@ const CSREPORT = () => {
   const handle_getCSMonthlyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("csmonthlyRMAAmount", {
+    await csService.csmonthlyRMAAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -488,7 +488,7 @@ const CSREPORT = () => {
   const handle_getCSYearlyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("csyearlyRMAAmount", {
+    await csService.csyearlyRMAAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -521,7 +521,7 @@ const CSREPORT = () => {
   const handle_getCSDailyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csdailyTaxiAmount", {
+    await csService.csdailyTaxiAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -552,7 +552,7 @@ const CSREPORT = () => {
   const handle_getCSMonthlyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("csmonthlyTaxiAmount", {
+    await csService.csmonthlyTaxiAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -582,7 +582,7 @@ const CSREPORT = () => {
   const handle_getCSWeeklyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("csweeklyTaxiAmount", {
+    await csService.csweeklyTaxiAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -612,7 +612,7 @@ const CSREPORT = () => {
   const handle_getCSYearlyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("csyearlyTaxiAmount", {
+    await csService.csyearlyTaxiAmount({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,

@@ -6,7 +6,7 @@ import { Checkbox, IconButton } from '@mui/material';
 import { SaveExcel } from '../../../../api/GlobalFunction';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { P_STOCK_BY_MONTH_DATA, P_STOCK_BY_MONTH_DETAIL_DATA } from '../../interfaces/khoInterface';
-import { f_load_P_Stock_By_Month, f_load_P_Stock_By_Month_Detail } from '../../utils/khoUtils';
+import { khoReportService } from '../../services/khoReportService';
 import AGTable from '../../../../components/DataTable/AGTable';
 import { getUserData } from '../../../../api/Api';
 import PSTOCK_BY_MONTH_CHART from '../../../../components/Chart/WH/PSTOCK_BY_MONTH_CHART';
@@ -27,7 +27,7 @@ const KHOTP_REPORT_CMS = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setStockPopularMonth(
-      await f_load_P_Stock_By_Month({
+      await khoReportService.load_P_Stock_By_Month({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
         MOC1: moc1,
@@ -40,7 +40,7 @@ const KHOTP_REPORT_CMS = () => {
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     if (phanloai === "A") {
       setStockPopularMonthDetailA(
-        await f_load_P_Stock_By_Month_Detail({
+        await khoReportService.load_P_Stock_By_Month_Detail({
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
@@ -50,7 +50,7 @@ const KHOTP_REPORT_CMS = () => {
     );
     } else if (phanloai === "B") {
       setStockPopularMonthDetailB(
-        await f_load_P_Stock_By_Month_Detail({
+        await khoReportService.load_P_Stock_By_Month_Detail({
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
@@ -60,7 +60,7 @@ const KHOTP_REPORT_CMS = () => {
     );
     } else if (phanloai === "C") {
       setStockPopularMonthDetailC(
-        await f_load_P_Stock_By_Month_Detail({
+        await khoReportService.load_P_Stock_By_Month_Detail({
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,

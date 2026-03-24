@@ -30,7 +30,7 @@ import {
   WEB_SETTING_DATA,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import { f_getMachineListData, f_getRecentDMData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
@@ -1492,7 +1492,7 @@ const QUICKPLAN2_OLD = () => {
               .catch((error) => {
                 console.log(error);
               });
-            await f_updateDMSX_LOSS_KT();
+            await ycsxService.updateDMSX_LOSS_KT();
           } else {
             err_code +=
               "__Yc này đã chạy hệ thống cũ, chạy nốt bằng hệ thống cũ nhé";
@@ -1555,7 +1555,7 @@ const QUICKPLAN2_OLD = () => {
             "error",
           );
         } else {
-          await f_insertDMYCSX({
+          await ycsxService.insertDMYCSX({
             PROD_REQUEST_NO: selectedPlan.current?.PROD_REQUEST_NO,
             G_CODE: selectedPlan.current?.G_CODE,
             LOSS_SX1: datadinhmuc.LOSS_SX1,

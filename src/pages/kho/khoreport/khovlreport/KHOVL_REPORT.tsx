@@ -7,16 +7,7 @@ import { SaveExcel } from '../../../../api/GlobalFunction';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { RND_NEWCODE_TREND_DATA } from '../../../rnd/interfaces/rndInterface';
 import { M_INPUT_BY_POPULAR_DATA, M_INPUT_BY_POPULAR_DETAIL_DATA, M_OUTPUT_BY_POPULAR_DATA, M_OUTPUT_BY_POPULAR_DETAIL_DATA, MSTOCK_BY_POPULAR_DATA, MSTOCK_BY_POPULAR_DETAIL_DATA } from '../../interfaces/khoInterface';
-import {
-  f_load_Stock_By_Month,
-  f_load_Stock_By_Month_Detail,
-  f_loadM_INPUT_BY_POPULAR,
-  f_loadM_INPUT_BY_POPULAR_DETAIL,
-  f_loadM_OUTPUT_BY_POPULAR,
-  f_loadM_OUTPUT_BY_POPULAR_DETAIL,
-  f_loadMSTOCK_BY_POPULAR,
-  f_loadMSTOCK_BY_POPULAR_DETAIL,
-} from '../../utils/khoUtils';
+import { khoReportService } from '../../services/khoReportService';
 import MSTOCK_BY_POPULAR_CHART from '../../../../components/Chart/WH/MSTOCK_BY_POPULAR_CHART';
 import M_INPUT_BY_POPULAR_CHART from '../../../../components/Chart/WH/M_INPUT_BY_POPULAR_CHART';
 import M_OUTPUT_BY_POPULAR_CHART from '../../../../components/Chart/WH/M_OUTPUT_BY_POPULAR_CHART';
@@ -51,7 +42,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setStockPopular(
-      await f_loadMSTOCK_BY_POPULAR({
+      await khoReportService.loadMSTOCK_BY_POPULAR({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
       })
@@ -61,7 +52,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setStockPopularDetail(
-      await f_loadMSTOCK_BY_POPULAR_DETAIL({
+      await khoReportService.loadMSTOCK_BY_POPULAR_DETAIL({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
       })
@@ -71,7 +62,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setInputPopular(
-      await f_loadM_INPUT_BY_POPULAR({
+      await khoReportService.load_M_INPUT_BY_POPULAR({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
       })
@@ -81,7 +72,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setInputPopularDetail(
-      await f_loadM_INPUT_BY_POPULAR_DETAIL({
+      await khoReportService.load_M_INPUT_BY_POPULAR_DETAIL({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
       })
@@ -91,7 +82,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setOutputPopular(
-      await f_loadM_OUTPUT_BY_POPULAR({
+      await khoReportService.load_M_OUTPUT_BY_POPULAR({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
       })
@@ -101,7 +92,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setOutputPopularDetail(
-      await f_loadM_OUTPUT_BY_POPULAR_DETAIL({
+      await khoReportService.load_M_OUTPUT_BY_POPULAR_DETAIL({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
       })
@@ -111,7 +102,7 @@ const KHOVL_REPORT = () => {
     let td = moment().add(0, 'day').format('YYYY-MM-DD');
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     setStockPopularMonth(
-      await f_load_Stock_By_Month({
+      await khoReportService.load_Stock_By_Month({
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
         MOC1: moc1,
@@ -124,7 +115,7 @@ const KHOVL_REPORT = () => {
     let frd = moment().add(-14, 'day').format('YYYY-MM-DD');
     if (phanloai === "A") {
       setStockPopularMonthDetailA(
-        await f_load_Stock_By_Month_Detail({
+        await khoReportService.load_Stock_By_Month_Detail({
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
@@ -134,7 +125,7 @@ const KHOVL_REPORT = () => {
     );
     } else if (phanloai === "B") {
       setStockPopularMonthDetailB(
-        await f_load_Stock_By_Month_Detail({
+        await khoReportService.load_Stock_By_Month_Detail({
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,
@@ -144,7 +135,7 @@ const KHOVL_REPORT = () => {
     );
     } else if (phanloai === "C") {
       setStockPopularMonthDetailC(
-        await f_load_Stock_By_Month_Detail({
+        await khoReportService.load_Stock_By_Month_Detail({
           FROM_DATE: df ? frd : from_date,
           TO_DATE: df ? td : to_date,
           PHANLOAI: phanloai,

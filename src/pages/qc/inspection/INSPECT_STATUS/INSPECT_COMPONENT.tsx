@@ -2,7 +2,7 @@ import React from "react";
 import { BiUser } from "react-icons/bi";
 import "./INSPECT_COMPONENT.scss";
 import { INS_STATUS } from "../../interfaces/qcInterface";
-import { generalQuery } from "../../../../api/Api";
+import { inspectionService } from "../../services/inspectionService";
 import Swal from "sweetalert2";
 
 const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
@@ -38,7 +38,7 @@ const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
       confirmButtonText: "Yes, reset it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await generalQuery("resetStatus", {
+        await inspectionService.resetStatus({
           EQ_NAME: INS_DATA?.EQ_NAME,
         }).then((response) => {
           console.log(response);

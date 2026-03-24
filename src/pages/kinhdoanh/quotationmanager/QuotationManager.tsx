@@ -29,7 +29,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { useForm } from "react-hook-form";
 import { BANGGIA_DATA, BANGGIA_DATA2, CodeListDataUpGia, CustomerListData } from "../interfaces/kdInterface";
-import { f_getcustomerlist } from "../utils/kdUtils";
+import { poService } from "../services/poService";
 const QuotationManager = () => {
   const {register,handleSubmit,watch, formState:{errors}} = useForm( {
     defaultValues:{
@@ -74,7 +74,7 @@ const QuotationManager = () => {
     },
   ]);
   const getcustomerlist = async () => {
-    setCustomerList(await f_getcustomerlist())   
+    setCustomerList(await poService.getCustomerList())   
   };
 
   const [moq, setMOQ] = useState(1);

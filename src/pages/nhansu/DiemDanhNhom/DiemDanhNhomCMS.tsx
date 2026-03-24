@@ -10,7 +10,7 @@ import { selectLang } from '../../../redux/selectors/uiSelectors';
 import { NotificationElement } from '../../../components/NotificationPanel/Notification';
 import AGTable from '../../../components/DataTable/AGTable';
 import { DiemDanhNhomData } from '../interfaces/nhansuInterface';
-import { f_getDiemDanhNhom, f_updateWorkHour } from '../utils/nhansuUtils';
+import { attendanceService } from '../services/attendanceService';
 
 const FullNameCellElement = (params: any) => {
   return <span style={{ fontWeight: 'bold', color: params.data?.ON_OFF === 1 ? 'green' : params.data?.ON_OFF === 0 ? 'red' : '' }}> {params.data?.FULL_NAME} </span>;
@@ -655,7 +655,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
   const onselectionteamhandle = useCallback(
     async (teamnamelist: number) => {
       setWORK_SHIFT_CODE(teamnamelist);
-      let loaded_data = await f_getDiemDanhNhom(option, teamnamelist);
+      let loaded_data = await attendanceService.getDiemDanhNhom(option, teamnamelist);
       setDiemDanhNhomTable(loaded_data);
       if (loaded_data.length > 0) {
         Swal.fire('Thông báo', 'Đã load ' + loaded_data.length + ' dòng', 'success');
@@ -676,7 +676,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
           //console.log(e.column.colId)
           if (e.column.colId === 'WORK_HOUR') {
             if(e.data.ON_OFF === 1){
-              f_updateWorkHour(e.data, moment().format('YYYY-MM-DD')) 
+              attendanceService.updateWorkHour(e.data, moment().format('YYYY-MM-DD')) 
             }
             else {
               Swal.fire('Thông báo', 'Nhân viên ' + e.data.EMPL_NO + ' không đi làm, hãy điểm danh đi làm trước', 'warning')

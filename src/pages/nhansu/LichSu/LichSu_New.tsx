@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { generalQuery, getCompany, getUserData} from "../../../api/Api";
+import { getCompany, getUserData} from "../../../api/Api";
+import { attendanceService } from "../services/attendanceService";
 import "./LichSu_New.scss";
 import Swal from "sweetalert2";
 import { weekdayarray } from "../../../api/GlobalFunction";
@@ -567,7 +568,7 @@ const LichSu_New = () => {
   const handleSearch = (fromDate?: string, toDate?: string) => {
     const from = fromDate ?? watch("fromdate");
     const to = toDate ?? watch("todate");
-    generalQuery("mydiemdanhnhom", { from_date: from, to_date: to })
+    attendanceService.getMyDiemDanh(from, to)
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -734,10 +735,7 @@ const LichSu_New = () => {
         hours: 0,
       }));
 
-      const response = await generalQuery("mydiemdanhnhom", {
-        from_date: fromDate,
-        to_date: toDate,
-      });
+      const response = await attendanceService.getMyDiemDanh(fromDate, toDate);
 
       if (response.data.tk_status === "NG") {
         setAttendanceTimeline(baseData);

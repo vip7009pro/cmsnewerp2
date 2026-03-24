@@ -9,7 +9,7 @@ import { RxUpdate } from "react-icons/rx";
 import { SX_KPI_NEW_DETAIL_DATA, SX_KPI_NEW_SUMMARY_DATA, SX_KPI_NV_DATA } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_insertupdateworkhours, f_load_SX_NV_KPI_DATA_Daily, f_load_SX_NV_KPI_DATA_Monthly, f_load_SX_NV_KPI_DATA_Weekly, f_load_SX_NV_KPI_DATA_Yearly, f_loadSXKPINEW_DETAIL, f_loadSXKPINEW_SUMMARY } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import SX_KPI_NV_GRAPH from "../../../components/Chart/SX/SX_KPI_NV_GRAPH";
-import { f_readUploadFile } from "../../kinhdoanh/utils/kdUtils";
+import { readUploadFile } from "../../../api/ExcelUtils";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectTheme } from "../../../redux/selectors/uiSelectors";
 const KPI_NVSX_NEW = () => {
@@ -350,7 +350,7 @@ const KPI_NVSX_NEW = () => {
     
   }
   const loadFile = (e: any) => {
-    f_readUploadFile(e, setKPI_SummaryData, setColumnSummary);
+    readUploadFile(e, setKPI_SummaryData, setColumnSummary);
   };
   const kpi_summary_ag_table = useMemo(() => {
     return (

@@ -1,7 +1,8 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { getCompany } from "../../../api/Api";
+import { oqcService } from "../services/oqcService";
 import "./OQC_REPORT.scss";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
@@ -62,7 +63,7 @@ const OQC_REPORT = () => {
   ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("ngbyCustomerOQC", {
+    await oqcService.ngbyCustomerOQC({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -95,7 +96,7 @@ const OQC_REPORT = () => {
   ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("ngbyProTypeOQC", {
+    await oqcService.ngbyProTypeOQC({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -125,7 +126,7 @@ const OQC_REPORT = () => {
   const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyOQCTrendingData", {
+    await oqcService.dailyOQCTrendingData({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -160,7 +161,7 @@ const OQC_REPORT = () => {
   const handle_getWeeklyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("weeklyOQCTrendingData", {
+    await oqcService.weeklyOQCTrendingData({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -191,7 +192,7 @@ const OQC_REPORT = () => {
   const handle_getMonthlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("monthlyOQCTrendingData", {
+    await oqcService.monthlyOQCTrendingData({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -222,7 +223,7 @@ const OQC_REPORT = () => {
   const handle_getYearlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("yearlyOQCTrendingData", {
+    await oqcService.yearlyOQCTrendingData({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -256,7 +257,7 @@ const OQC_REPORT = () => {
   ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_daily_ppm_oqc", {
+    await oqcService.inspect_daily_ppm_oqc({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -317,7 +318,7 @@ const OQC_REPORT = () => {
   ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_weekly_ppm_oqc", {
+    await oqcService.inspect_weekly_ppm_oqc({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -374,7 +375,7 @@ const OQC_REPORT = () => {
   ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_monthly_ppm_oqc", {
+    await oqcService.inspect_monthly_ppm_oqc({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -431,7 +432,7 @@ const OQC_REPORT = () => {
   ) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_yearly_ppm_oqc", {
+    await oqcService.inspect_yearly_ppm_oqc({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,

@@ -3,7 +3,8 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./RNR.scss";
-import { generalQuery } from "../../../../api/Api";
+
+import { isoService } from "../../services/isoService";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { RNR_DATA, RNR_DATA_EMPL } from "../../interfaces/qcInterface";
 import { useAppSelector } from "../../../../redux/hooks";
@@ -246,7 +247,7 @@ const RNR = () => {
     switch (selection) {
       case 'detail':
         setColumnDefinition(column_TRA_RNR_DATA);
-        generalQuery("loadRNRchitiet", {
+        isoService.loadRNRchitiet({
           ALLTIME: alltime,
           FROM_DATE: fromdate,
           TO_DATE: todate,
@@ -289,7 +290,7 @@ const RNR = () => {
         break;
       case 'summaryByEmpl':
         setColumnDefinition(column_TRA_RNR_DATA_EMPL);
-        generalQuery("RnRtheonhanvien", {
+        isoService.RnRtheonhanvien({
           ALLTIME: alltime,
           FROM_DATE: fromdate,
           TO_DATE: todate,

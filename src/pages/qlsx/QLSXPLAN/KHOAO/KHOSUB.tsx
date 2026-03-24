@@ -2,12 +2,11 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import {
-  checkBP,
+  checkBP, dateDiff,
 } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { datediff } from "../../../kinhdoanh/utils/kdUtils";
 import { LICHSUNHAPKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
 import { f_checkMlotTonKhoSub, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_isM_CODE_CHITHI, f_isNextPlanClosed, f_load_nhapkhosub, f_load_tonkhosub, f_set_YN_KHO_SUB_INPUT } from "../utils/khsxUtils";
 import { useAppSelector } from "../../../../redux/hooks";
@@ -85,7 +84,7 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false, cellRenderer: (params: any) => {
         const date1 = moment.utc().format('YYYY-MM-DD');
         const date2 = params.data.INS_DATE;
-        var diff: number = datediff(date1, date2);
+        var diff: number = dateDiff(date1, date2);
         let ins_weekday = moment.utc(date2).weekday();
         if (ins_weekday >= 5) diff = diff - 2;
         if (diff > 1) {
@@ -237,7 +236,7 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
-          var diff: number = datediff(date1, date2);
+          var diff: number = dateDiff(date1, date2);
           let ins_weekday = moment.utc(date2).weekday();
           if (ins_weekday >= 5) diff = diff - 2;
           let isExpired: boolean = diff > 1;

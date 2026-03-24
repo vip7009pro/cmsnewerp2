@@ -1,7 +1,8 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+
+import { pqcService } from "../services/pqcService";
 import "./PQC_REPORT.scss";
 
 import {
@@ -66,7 +67,7 @@ const PQC_REPORT = () => {
   const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("pqcdailyppm", {
+    await pqcService.pqcdailyppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -107,7 +108,7 @@ const PQC_REPORT = () => {
   const handle_getWeeklyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("pqcweeklyppm", {
+    await pqcService.pqcweeklyppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -144,7 +145,7 @@ const PQC_REPORT = () => {
   const handle_getMonthlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("pqcmonthlyppm", {
+    await pqcService.pqcmonthlyppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -181,7 +182,7 @@ const PQC_REPORT = () => {
   const handle_getYearlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("pqcyearlyppm", {
+    await pqcService.pqcyearlyppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -218,7 +219,7 @@ const PQC_REPORT = () => {
   const handle_getInspectSummary = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    await generalQuery("getPQCSummary", {
+    await pqcService.getPQCSummary({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -246,7 +247,7 @@ const PQC_REPORT = () => {
   const handle_getDailyDefectTrending = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyPQCDefectTrending", {
+    await pqcService.dailyPQCDefectTrending({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -277,7 +278,7 @@ const PQC_REPORT = () => {
   const traPQC3 = (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    generalQuery("trapqc3data", {
+    pqcService.trapqc3data({
       ALLTIME: false,
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
@@ -326,7 +327,7 @@ const PQC_REPORT = () => {
   const traPQC32 = (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    generalQuery("trapqc3data", {
+    pqcService.trapqc3data({
       ALLTIME: false,
       FROM_DATE: from_date,
       TO_DATE: to_date,
@@ -373,7 +374,7 @@ const PQC_REPORT = () => {
       });
   };
   const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
+    pqcService.selectcodeList({ G_NAME: G_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCodeList(response.data.data);

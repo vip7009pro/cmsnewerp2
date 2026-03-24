@@ -2,7 +2,8 @@ import { Button, Autocomplete, TextField, createFilterOptions } from "@mui/mater
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
+import { getAuditMode, getCompany } from "../../../api/Api";
+import { dtcService } from "../services/dtcService";
 import "./ADDSPECTDTC.scss";
 import {
   UserData,
@@ -59,7 +60,7 @@ const ADDSPECTDTC = () => {
 
   const selectedRowsData = useRef<Array<DTC_ADD_SPEC_DATA>>([]);
   const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
+    dtcService.selectcodeList({ G_NAME: G_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           if (!isPending) {
@@ -75,7 +76,7 @@ const ADDSPECTDTC = () => {
       });
   };
   const getmateriallist = () => {
-    generalQuery("getMaterialList", {})
+    dtcService.getMaterialList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -88,7 +89,7 @@ const ADDSPECTDTC = () => {
       });
   };
   const handletraDTCData = (test_name: string) => {
-    generalQuery("checkSpecDTC", {
+    dtcService.checkSpecDTC({
       checkNVL: checkNVL,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -121,7 +122,7 @@ const ADDSPECTDTC = () => {
           );
           checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
         } else {
-          generalQuery("checkSpecDTC2", {
+          dtcService.checkSpecDTC2({
             checkNVL: checkNVL,
             FROM_DATE: fromdate,
             TO_DATE: todate,
@@ -193,7 +194,7 @@ const ADDSPECTDTC = () => {
       if (!checkNVL) {
         let err_code: string = "";
         for (let i = 0; i < inspectiondatatable.length; i++) {
-          await generalQuery("insertSpecDTC", {
+          await dtcService.insertSpecDTC({
             checkNVL: checkNVL,
             G_CODE: selectedCode?.G_CODE,
             M_CODE: "B0000035",
@@ -249,7 +250,7 @@ const ADDSPECTDTC = () => {
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
           for (let i = 0; i < inspectiondatatable.length; i++) {
-            await generalQuery("insertSpecDTC", {
+            await dtcService.insertSpecDTC({
               checkNVL: checkNVL,
               G_CODE: "7A07540A",
               M_CODE: mCodeList[j].M_CODE,
@@ -317,7 +318,7 @@ const ADDSPECTDTC = () => {
       if (!checkNVL) {
         let err_code: string = "";
         for (let i = 0; i < selectedRowsData.current.length; i++) {
-          await generalQuery("updateSpecDTC", {
+          await dtcService.updateSpecDTC({
             checkNVL: checkNVL,
             G_CODE: selectedCode?.G_CODE,
             M_CODE: "B0000035",
@@ -367,7 +368,7 @@ const ADDSPECTDTC = () => {
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
           for (let i = 0; i < selectedRowsData.current.length; i++) {
-            await generalQuery("updateSpecDTC", {
+            await dtcService.updateSpecDTC({
               checkNVL: checkNVL,
               G_CODE: "7A07540A",
               M_CODE: mCodeList[j].M_CODE,
@@ -415,7 +416,7 @@ const ADDSPECTDTC = () => {
     m_code: string | undefined,
     g_code: string | undefined,
   ) => {
-    generalQuery("checkAddedSpec", {
+    dtcService.checkAddedSpec({
       M_CODE: checkNVL ? m_code : "B0000035",
       G_CODE: checkNVL ? "7A07540A" : g_code,
     })
@@ -441,7 +442,7 @@ const ADDSPECTDTC = () => {
       return ele2.M_CODE;
     });
     if(!checkNVL){
-      generalQuery("copyXRFSpec", {
+      dtcService.copyXRFSpec({
         M_CODE: checkNVL ? m_code : "B0000035",
         G_CODE: checkNVL ? "7A07540A" : g_code,
       })
@@ -459,7 +460,7 @@ const ADDSPECTDTC = () => {
       
     }else{
       for(let i = 0; i < listM_CODE_SAME_M_NAME.length; i++){
-        generalQuery("copyXRFSpec", {
+        dtcService.copyXRFSpec({
           M_CODE: checkNVL ? listM_CODE_SAME_M_NAME[i] : "B0000035",
           G_CODE: checkNVL ? "7A07540A" : g_code,
         })
@@ -491,7 +492,7 @@ const ADDSPECTDTC = () => {
       return ele2.M_CODE;
     });
     if(!checkNVL){
-      generalQuery("copyXRFSpecSDI", {
+      dtcService.copyXRFSpecSDI({
         M_CODE: checkNVL ? m_code : "B0000035",
         G_CODE: checkNVL ? "7A07540A" : g_code,
       })
@@ -508,7 +509,7 @@ const ADDSPECTDTC = () => {
       });
     }else{
       for(let i = 0; i < listM_CODE_SAME_M_NAME.length; i++){
-        generalQuery("copyXRFSpecSDI", {            
+        dtcService.copyXRFSpecSDI({
           M_CODE: checkNVL ? listM_CODE_SAME_M_NAME[i] : "B0000035",
           G_CODE: checkNVL ? "7A07540A" : g_code,
 
@@ -566,14 +567,14 @@ const ADDSPECTDTC = () => {
           </div>}
         columns={dtcSpecColumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           selectedRowsData.current = e!.api.getSelectedRows()
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />

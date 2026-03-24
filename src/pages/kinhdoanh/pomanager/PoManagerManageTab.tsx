@@ -6,7 +6,7 @@ import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd, AiOutlineClose } from "re
 import Swal from "sweetalert2";
 import "./PoManagerManageTab.scss";
 import { getCompany, getGlobalSetting, getSever, getSocket, getUserData } from "../../../api/Api";
-import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { checkBP, compareDateToNow, compareTwoDate, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -19,22 +19,8 @@ import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { CodeListData, CustomerListData, POSummaryData, POTableData, PRICEWITHMOQ } from "../interfaces/kdInterface";
-import {
-  f_autogeneratePO_NO,
-  f_autopheduyetgia,
-  f_checkPOExist,
-  f_compareDateToNow,
-  f_compareTwoDate,
-  f_deletePO,
-  f_dongboGiaPO,
-  f_getcodelist,
-  f_getcustomerlist,
-  f_insertInvoice,
-  f_insertPO,
-  f_loadPoDataFull,
-  f_loadprice,
-  f_updatePO,
-} from "../utils/kdUtils";
+import { poService } from "../services/poService";
+import { invoiceService } from "../services/invoiceService";
 
 const PoManagerManageTab: React.FC = () => {
   const theme: any = useAppSelector(selectTheme);
@@ -122,7 +108,7 @@ const PoManagerManageTab: React.FC = () => {
   };
 
   const loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
-    setNewCodePrice(await f_loadprice(G_CODE, CUST_NAME));
+    setNewCodePrice(await poService.loadPrice(G_CODE, CUST_NAME));
   };
 
   const handleSearchCodeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -132,67 +118,72 @@ const PoManagerManageTab: React.FC = () => {
   };
 
   const handletraPO = async () => {
-    if (getCompany() === "CMS") {
-      f_autopheduyetgia();
-    }
-    Swal.fire({
-      title: "Tra cứu PO",
-      text: "Đang tải dữ liệu, hãy chờ chút",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    clearSelection();
-    let loadeddata: POTableData[] = [];
-    loadeddata = await f_loadPoDataFull({
-      alltime: alltime,
-      justPoBalance: justpobalance,
-      start_date: fromdate,
-      end_date: todate,
-      cust_name: cust_name,
-      codeCMS: codeCMS,
-      codeKD: codeKD,
-      prod_type: prod_type,
-      empl_name: empl_name,
-      po_no: po_no,
-      over: over,
-      id: id,
-      material: material,
-    });
-    if (loadeddata.length > 0) {
-      let po_summary_temp: POSummaryData = {
-        total_po_qty: 0,
-        total_delivered_qty: 0,
-        total_pobalance_qty: 0,
-        total_po_amount: 0,
-        total_delivered_amount: 0,
-        total_pobalance_amount: 0,
-      };
-      for (let i = 0; i < loadeddata.length; i++) {
-        po_summary_temp.total_po_qty += loadeddata[i].PO_QTY;
-        po_summary_temp.total_delivered_qty += loadeddata[i].TOTAL_DELIVERED;
-        po_summary_temp.total_pobalance_qty += loadeddata[i].PO_BALANCE;
-        po_summary_temp.total_po_amount += loadeddata[i].PO_AMOUNT;
-        po_summary_temp.total_delivered_amount += loadeddata[i].DELIVERED_AMOUNT;
-        po_summary_temp.total_pobalance_amount += loadeddata[i].BALANCE_AMOUNT;
+    try {
+      if (getCompany() === "CMS") {
+        poService.autoPheDuyetGia();
       }
-      setPoSummary(po_summary_temp);
-      setPoDataTable(loadeddata);
-      setSH(false);
-      Swal.fire("Thông báo", "Đã load " + loadeddata.length + " dòng", "success");
-    } else {
+      Swal.fire({
+        title: "Tra cứu PO",
+        text: "Đang tải dữ liệu, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      clearSelection();
+      let loadeddata: POTableData[] = await poService.loadPoDataFull({
+        alltime: alltime,
+        justPoBalance: justpobalance,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        po_no: po_no,
+        over: over,
+        id: id,
+        material: material,
+      });
+
+      if (loadeddata.length > 0) {
+        let po_summary_temp: POSummaryData = {
+          total_po_qty: 0,
+          total_delivered_qty: 0,
+          total_pobalance_qty: 0,
+          total_po_amount: 0,
+          total_delivered_amount: 0,
+          total_pobalance_amount: 0,
+        };
+        for (let i = 0; i < loadeddata.length; i++) {
+          po_summary_temp.total_po_qty += loadeddata[i].PO_QTY;
+          po_summary_temp.total_delivered_qty += loadeddata[i].TOTAL_DELIVERED;
+          po_summary_temp.total_pobalance_qty += loadeddata[i].PO_BALANCE;
+          po_summary_temp.total_po_amount += loadeddata[i].PO_AMOUNT;
+          po_summary_temp.total_delivered_amount += loadeddata[i].DELIVERED_AMOUNT;
+          po_summary_temp.total_pobalance_amount += loadeddata[i].BALANCE_AMOUNT;
+        }
+        setPoSummary(po_summary_temp);
+        setPoDataTable(loadeddata);
+        setSH(false);
+        Swal.fire("Thông báo", "Đã load " + loadeddata.length + " dòng", "success");
+      } else {
+        setPoDataTable([]);
+      }
+    } catch (error: any) {
+      Swal.fire("Thông báo", "Lỗi: " + error.message, "error");
       setPoDataTable([]);
     }
   };
 
   const getcustomerlist = async () => {
-    setCustomerList(await f_getcustomerlist());
+    setCustomerList(await poService.getCustomerList());
   };
 
   const getcodelist = async (G_NAME: string) => {
-    setCodeList(await f_getcodelist(G_NAME));
+    setCodeList(await poService.getCodeList(G_NAME));
   };
 
   const clearPOform = () => {
@@ -277,8 +268,8 @@ const PoManagerManageTab: React.FC = () => {
 
   const handle_add_1PO = async () => {
     let err_code: number = 0;
-    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 1 : 0;
-    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
+    err_code = (await poService.checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 1 : 0;
+    err_code = compareDateToNow(newpodate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (
       selectedCode?.G_CODE === "" ||
@@ -297,7 +288,7 @@ const PoManagerManageTab: React.FC = () => {
       if (recheckPrice === 0) err_code = 5;
     }
     if (err_code === 0) {
-      let kq = await f_insertPO({
+      let kq = await poService.insertPO({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -346,9 +337,9 @@ const PoManagerManageTab: React.FC = () => {
 
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
-    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
-    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
-    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate, newpodate.substring(0, 10));
+    err_code = (await poService.checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
+    err_code = compareDateToNow(newinvoicedate) ? 2 : err_code;
+    let checkCompareIVDatevsPODate: number = compareTwoDate(newinvoicedate, newpodate.substring(0, 10));
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (
@@ -366,7 +357,7 @@ const PoManagerManageTab: React.FC = () => {
       }
     }
     if (err_code === 0) {
-      let kq = await f_insertInvoice({
+      let kq = await invoiceService.insertInvoice({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -416,8 +407,8 @@ const PoManagerManageTab: React.FC = () => {
 
   const updatePO = async () => {
     let err_code: number = 0;
-    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
-    err_code = f_compareDateToNow(newpodate) ? 2 : err_code;
+    err_code = (await poService.checkPOExist(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono)) ? 0 : 1;
+    err_code = compareDateToNow(newpodate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (
       selectedCode?.G_CODE === "" ||
@@ -437,7 +428,7 @@ const PoManagerManageTab: React.FC = () => {
       }
     }
     if (err_code === 0) {
-      let kq = await f_updatePO({
+      let kq = await poService.updatePO({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -494,7 +485,7 @@ const PoManagerManageTab: React.FC = () => {
       let err_code: boolean = false;
       for (let i = 0; i < podatatablefilter.current.length; i++) {
         if (podatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          let kq = await f_deletePO(podatatablefilter.current[i].PO_ID);
+          let kq = await poService.deletePO(podatatablefilter.current[i].PO_ID);
           if (kq !== "OK") err_code = true;
         }
       }
@@ -941,8 +932,8 @@ const PoManagerManageTab: React.FC = () => {
 
   useEffect(() => {
     if (getCompany() === "CMS" && (getSever() !== "http://222.252.1.63:3007" || getSever() !== "https://erp.printvietnam.com.vn:3007")) {
-      f_autopheduyetgia();
-      f_dongboGiaPO();
+      poService.autoPheDuyetGia();
+      poService.dongboGiaPO().catch(err => console.error(err));
     }
     getcustomerlist();
     getcodelist("");
@@ -1215,7 +1206,11 @@ const PoManagerManageTab: React.FC = () => {
                     onChange={(event: any, newValue: CustomerListData | any) => {
                       (async () => {
                         if (company !== "CMS") {
-                          setNewPoNo(await f_autogeneratePO_NO(newValue.CUST_CD));
+                          try {
+                            setNewPoNo(await poService.autogeneratePONO(newValue.CUST_CD));
+                          } catch (error: any) {
+                            Swal.fire("Lỗi", error.message, "error");
+                          }
                         }
                       })();
                       loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);

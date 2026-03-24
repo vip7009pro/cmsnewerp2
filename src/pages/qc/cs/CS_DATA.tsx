@@ -3,7 +3,8 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting, uploadQuery } from "../../../api/Api";
+import { getGlobalSetting, uploadQuery } from "../../../api/Api";
+import { csService } from "../services/csService";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
@@ -748,7 +749,7 @@ const CS_DATA_TB = () => {
 
   const [columnDef, setColumnDef] = useState(columns_confirm);
   const updateNNDS = () => {
-    generalQuery("updatenndscs", {
+    csService.updatenndscs({
       CONFIRM_ID: currentDefectRow.CONFIRM_ID,
       NG_NHAN: currentNN,
       DOI_SACH: currentDS
@@ -774,7 +775,7 @@ const CS_DATA_TB = () => {
       uploadQuery(up_file, "CS_" + cs_ID + ".jpg", "cs")
         .then((response) => {
           if (response.data.tk_status !== "NG") {
-            generalQuery("updateCSImageStatus", { CONFIRM_ID: cs_ID })
+            csService.updateCSImageStatus({ CONFIRM_ID: cs_ID })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   //console.log(response.data.data);
@@ -817,7 +818,7 @@ const CS_DATA_TB = () => {
         .then((response) => {
           if (response.data.tk_status !== "NG") {
             let command = lang == 'VN' ? 'updateCSDoiSachVNStatus' : 'updateCSDoiSachKRStatus';
-            generalQuery(command, { CONFIRM_ID: cs_ID, })
+            csService.executeCSCommand(command, { CONFIRM_ID: cs_ID, })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   //console.log(response.data.data);
@@ -856,7 +857,7 @@ const CS_DATA_TB = () => {
   const load_cs_data = () => {
     switch (option) {
       case 'dataconfirm':
-        generalQuery("tracsconfirm", filterData)
+        csService.tracsconfirm(filterData)
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
@@ -895,7 +896,7 @@ const CS_DATA_TB = () => {
           });
         break;
       case 'datarma':
-        generalQuery("tracsrma", filterData)
+        csService.tracsrma(filterData)
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
@@ -936,7 +937,7 @@ const CS_DATA_TB = () => {
           });
         break;
       case 'datacndbkhachhang':
-        generalQuery("tracsCNDB", filterData)
+        csService.tracsCNDB(filterData)
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
@@ -977,7 +978,7 @@ const CS_DATA_TB = () => {
           });
         break;
       case 'datataxi':
-        generalQuery("tracsTAXI", filterData)
+        csService.tracsTAXI(filterData)
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {

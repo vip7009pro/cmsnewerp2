@@ -2,7 +2,8 @@ import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { getCompany, getUserData } from "../../../api/Api";
+import { iqcService } from "../services/iqcService";
 import "./FAILING.scss";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
@@ -233,7 +234,7 @@ const FAILING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
-        await generalQuery("updateQCPASS_FAILING", {
+        await iqcService.updateQCPASS_FAILING({
           FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
           M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
           PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID_SUDUNG,
@@ -274,7 +275,7 @@ const FAILING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
-        await generalQuery("updateCLOSE_FAILING", {
+        await iqcService.updateCLOSE_FAILING({
           FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
           M_LOT_NO: selectedRowsDataA.current[i].M_LOT_NO,
           PLAN_ID_SUDUNG: selectedRowsDataA.current[i].PLAN_ID_SUDUNG,
@@ -314,7 +315,7 @@ const FAILING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
-        await generalQuery("updateIQCConfirm_FAILING", {
+        await iqcService.updateIQCConfirm_FAILING({
           FAIL_ID: selectedRowsDataA.current[i].FAIL_ID,
           IN2_EMPL: confirmEMPL.toUpperCase(),
         })
@@ -511,11 +512,11 @@ const FAILING = () => {
             }
         columns={column_failing_table}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsDataA.current = e!.api.getSelectedRows();
         }}
@@ -523,7 +524,7 @@ const FAILING = () => {
     )
   }, [inspectiondatatable, request_empl2,onlyPending]);
   const handletraFailingData = () => {
-    generalQuery("loadQCFailData", {
+    iqcService.loadQCFailData({
       ONLY_PENDING: onlyPending
     })
       .then((response) => {
@@ -569,7 +570,7 @@ const FAILING = () => {
       });
   };
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    iqcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);\
@@ -596,7 +597,7 @@ const FAILING = () => {
       });
   };
   const checkPlanID = (PLAN_ID: string) => {
-    generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+    iqcService.checkPLAN_ID({ PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -616,7 +617,7 @@ const FAILING = () => {
       });
   };
   const checkPQC3_ID = (PLAN_ID: string) => {
-    generalQuery("checkPQC3_IDfromPLAN_ID", { PLAN_ID: PLAN_ID })
+    iqcService.checkPQC3_IDfromPLAN_ID({ PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -632,7 +633,7 @@ const FAILING = () => {
       });
   };
   const checkLotNVL = async (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
+    iqcService.checkMNAMEfromLot({ M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           console.log(response.data.data);
@@ -674,7 +675,7 @@ const FAILING = () => {
       });
   };
   const checkLotNVL_BTP = async (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
+    iqcService.checkMNAMEfromLot({ M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           console.log(response.data.data);
@@ -711,7 +712,7 @@ const FAILING = () => {
       });
   };
   const checkLotProcess = (PROCESS_LOT_NO: string) => {
-    generalQuery("checkProcessLotNoInfo", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+    iqcService.checkProcessLotNoInfo({ PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then(async (response) => {
         if (response.data.tk_status !== "NG") {
           let M_LOT_NO: string = response.data.data[0].M_LOT_NO;
@@ -803,7 +804,7 @@ const FAILING = () => {
     if (inspectiondatatable.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < inspectiondatatable.length; i++) {
-        await generalQuery("insertFailingData", {
+        await iqcService.insertFailingData({
           FACTORY: inspectiondatatable[i].FACTORY,
           PLAN_ID_SUDUNG: inspectiondatatable[i].PLAN_ID_SUDUNG,
           LIEUQL_SX: inspectiondatatable[i].LIEUQL_SX,
@@ -849,7 +850,7 @@ const FAILING = () => {
         if(await f_isM_LOT_NO_in_P500(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO)){
           await f_resetIN_KHO_SX_IQC2(inspectiondatatable[i].PLAN_ID_SUDUNG, inspectiondatatable[i].M_LOT_NO);
           if(inspectiondatatable[i].PHANLOAI ==='BTP') {
-            await generalQuery("updateLOT_SX_STATUS", { PROCESS_LOT_NO : inspectiondatatable[i].PROCESS_LOT_NO, LOT_STATUS: 'IQ' })
+            await iqcService.updateLOT_SX_STATUS({ PROCESS_LOT_NO : inspectiondatatable[i].PROCESS_LOT_NO, LOT_STATUS: 'IQ' })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 //console.log(response.data.data);
@@ -879,7 +880,7 @@ const FAILING = () => {
     }
   };
   const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
+    iqcService.selectcustomerList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -915,7 +916,7 @@ const FAILING = () => {
         } 
         else
         {
-          await generalQuery("updateQCFailTableData", {
+          await iqcService.updateQCFailTableData({
             OUT1_EMPL: request_empl,
             OUT2_EMPL: request_empl2,
             OUT_CUST_CD: cust_cd,

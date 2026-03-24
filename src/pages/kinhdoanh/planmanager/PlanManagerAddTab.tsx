@@ -3,7 +3,8 @@ import moment from "moment";
 import { useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getSocket, getUserData } from "../../../api/Api";
+import { getSocket, getUserData } from "../../../api/Api";
+import { planService } from "../services/planService";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -304,7 +305,7 @@ const PlanManagerAddTab = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkPlanExist", {
+      await planService.checkPlanExist({
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
         PLAN_DATE: uploadExcelJson[i].PLAN_DATE,
@@ -324,7 +325,7 @@ const PlanManagerAddTab = () => {
         err_code = 2;
       }
 
-      await generalQuery("checkGCodeVer", {
+      await planService.checkGCodeVer({
         G_CODE: uploadExcelJson[i].G_CODE,
       })
         .then((response) => {
@@ -363,7 +364,7 @@ const PlanManagerAddTab = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkPlanExist", {
+      await planService.checkPlanExist({
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
         PLAN_DATE: uploadExcelJson[i].PLAN_DATE,
@@ -383,7 +384,7 @@ const PlanManagerAddTab = () => {
         err_code = 2;
       }
 
-      await generalQuery("checkGCodeVer", {
+      await planService.checkGCodeVer({
         G_CODE: uploadExcelJson[i].G_CODE,
       })
         .then((response) => {
@@ -400,7 +401,7 @@ const PlanManagerAddTab = () => {
         });
 
       if (err_code === 0) {
-        await generalQuery("insert_plan", {
+        await planService.insert_plan({
           REMARK: uploadExcelJson[i].REMARK,
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,

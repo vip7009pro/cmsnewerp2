@@ -11,18 +11,18 @@ const WebCam = () => {
   const WebcamCapture = () => {
     const webcamRef = React.useRef(null);
     const [capturedImage, setCapturedImage] = useState<any>();
-    const [deviceId, setDeviceId] = React.useState({});
-    const [devices, setDevices] = React.useState([]);
-    const [selectedDevice, setSelectedDevice] = useState({});
+    const [deviceId, setDeviceId] = React.useState<any>({});
+    const [devices, setDevices] = React.useState<any[]>([]);
+    const [selectedDevice, setSelectedDevice] = useState<any>({});
     console.log(selectedDevice);
     const handleDevices = React.useCallback(
-      mediaDevices =>
-        setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
+      (mediaDevices: any[]) =>
+        setDevices(mediaDevices.filter(({ kind }: any) => kind === "videoinput") as any),
       [setDevices]
     );
     const capture = React.useCallback(
       () => {
-        const imageSrc = webcamRef.current?.getScreenshot({ width: 1920, height: 1080 });
+        const imageSrc = (webcamRef.current as any)?.getScreenshot({ width: 1920, height: 1080 });
         setCapturedImage(imageSrc);
       },
       [webcamRef]

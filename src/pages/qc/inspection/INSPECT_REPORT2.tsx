@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { inspectionService } from "../services/inspectionService";
 import InspectionDailyPPM from "../../../components/Chart/INSPECTION/InspectionDailyPPM";
 import InspectionMonthlyPPM from "../../../components/Chart/INSPECTION/InspectionMonthlyPPM";
 import InspectionWeeklyPPM from "../../../components/Chart/INSPECTION/InspectionWeeklyPPM";
@@ -82,7 +82,7 @@ const INSPECT_REPORT2 = () => {
   const getPatrolHeaderData = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("getpatrolheader", {
+    await inspectionService.getpatrolheader({
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       NG_TYPE: ng_type
@@ -111,7 +111,7 @@ const INSPECT_REPORT2 = () => {
   const handleGetInspectionWorst = async (from_date: string, to_date: string, worst_by: string, ng_type: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    generalQuery("getInspectionWorstTable", {
+    inspectionService.getInspectionWorstTable({
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
       WORSTBY: worst_by,
@@ -146,7 +146,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_daily_ppm", {
+    await inspectionService.inspect_daily_ppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -189,7 +189,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getWeeklyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_weekly_ppm", {
+    await inspectionService.inspect_weekly_ppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -228,7 +228,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getMonthlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_monthly_ppm", {
+    await inspectionService.inspect_monthly_ppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -267,7 +267,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getYearlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_yearly_ppm", {
+    await inspectionService.inspect_yearly_ppm({
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -306,7 +306,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getInspectSummary = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    await generalQuery("getInspectionSummary", {
+    await inspectionService.getInspectionSummary({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -344,7 +344,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getDailyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyFcost", {
+    await inspectionService.dailyFcost({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -387,7 +387,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getWeeklyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("weeklyFcost", {
+    await inspectionService.weeklyFcost({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -429,7 +429,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getMonthlyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("monthlyFcost", {
+    await inspectionService.monthlyFcost({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -471,7 +471,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getAnnuallyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("annuallyFcost", {
+    await inspectionService.annuallyFcost({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -513,7 +513,7 @@ const INSPECT_REPORT2 = () => {
   const handle_getDailyDefectTrending = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyDefectTrending", {
+    await inspectionService.dailyDefectTrending({
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode,
@@ -575,7 +575,7 @@ const INSPECT_REPORT2 = () => {
       });
   }
   const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
+    inspectionService.selectcodeList({ G_NAME: G_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCodeList(response.data.data);

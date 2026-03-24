@@ -19,11 +19,11 @@ import { PlusOneOutlined } from "@mui/icons-material";
 import { AiFillDelete, AiFillEdit, AiFillFileAdd } from "react-icons/ai";
 import { getCtrCd, uploadQuery } from "../../../../api/Api";
 import { DownloadButtonAll } from "../../../../components/DownloadButton/DownloadButtonAll";
-import { f_getcustomerlist } from "../../../kinhdoanh/utils/kdUtils";
 import { AUDIT_HISTORY_DATA } from "../../interfaces/qcInterface";
 import { f_add_AUDIT_HISTORY_DATA, f_delete_AUDIT_HISTORY_DATA, f_load_AUDIT_HISTORY_DATA, f_update_AUDIT_HISTORY_DATA, f_updateFileInfo_AUDIT_HISTORY } from "../../utils/qcUtils";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectTheme } from "../../../../redux/selectors/uiSelectors";
+import { poService } from "../../../kinhdoanh/services/poService";
 
 
 const AUDIT_HISTORY = () => {
@@ -124,7 +124,7 @@ const AUDIT_HISTORY = () => {
 
   useEffect(() => {
     if (openAddDialog || openEditDialog) {
-      f_getcustomerlist().then((data: any[]) => setCustomerList(data || []));
+      poService.getCustomerList().then((data: any[]) => setCustomerList(data || []));
     }
   }, [openAddDialog, openEditDialog]);
   const columns_auditHistory = useMemo(() => {

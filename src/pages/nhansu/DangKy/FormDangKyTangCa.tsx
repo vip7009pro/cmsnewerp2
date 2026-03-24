@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { generalQuery, getGlobalLang, getSocket, getUserData, } from "../../../api/Api";
+import { getGlobalLang, getSocket, getUserData, } from "../../../api/Api";
+import { registrationService } from "../services/registrationService";
 import "./TabDangKy.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
@@ -23,9 +24,9 @@ const FormDangKyTangCa = () => {
       over_finish: finishtime,
     };
     console.log(insertData);
-    generalQuery("dangkytangcacanhan", insertData)
-      .then(async (response) => {
-        if (response.data.tk_status === "OK") {
+    registrationService.dangKyTangCa(insertData)
+      .then(async (result) => {
+        if (result.success) {
           let newNotification: NotificationElement = {
             CTR_CD: '002',
             NOTI_ID: -1,
@@ -51,7 +52,7 @@ const FormDangKyTangCa = () => {
         } else {
           Swal.fire(
             "Thông báo",
-            "Đăng ký tăng ca thất bại ! Kiểm tra xem đã điểm danh chưa? " + response.data.message,
+            "Đăng ký tăng ca thất bại ! Kiểm tra xem đã điểm danh chưa? " + result.message,
             "error",
           );
         }

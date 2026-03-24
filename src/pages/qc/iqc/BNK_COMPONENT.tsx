@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./BNK_COMPONENT.scss";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { iqcService } from "../services/iqcService";
+import { getCompany } from "../../../api/Api";
 import moment from "moment";
 import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
 import { useAppSelector } from "../../../redux/hooks";
@@ -40,7 +41,7 @@ const BNK_COMPONENT = ({
 
   const getMThickness = () => {
     console.log("vao day");
-    generalQuery("checkM_THICKNESS", { M_NAME: data?.M_NAME })
+    iqcService.checkM_THICKNESS({ M_NAME: data?.M_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           if (response.data.data.length > 0) {
@@ -58,7 +59,7 @@ const BNK_COMPONENT = ({
   };
   const getMWidth = async () => {
     if(data?.IQC_TEST_RESULT ==='OK') {
-      await  generalQuery("update_M_WIDTH_AUTO_IQC1", { IQC1_ID: data?.IQC1_ID })
+      await  iqcService.update_M_WIDTH_AUTO_IQC1({ IQC1_ID: data?.IQC1_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           
@@ -71,7 +72,7 @@ const BNK_COMPONENT = ({
    
 
     console.log("vao day");
-   await  generalQuery("checkM_WIDTH", { M_NAME: data?.M_NAME })
+   await  iqcService.checkM_WIDTH({ M_NAME: data?.M_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           if (response.data.data.length > 0) {
@@ -85,7 +86,7 @@ const BNK_COMPONENT = ({
   };
   const getMWidthAnDMThicknessResult = () => {
     console.log("vao day");
-    generalQuery("getMWidthAndThicknessResult", { IQC1_ID: data?.IQC1_ID })
+    iqcService.getMWidthAndThicknessResult({ IQC1_ID: data?.IQC1_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           if (response.data.data.length > 0) {
@@ -99,7 +100,7 @@ const BNK_COMPONENT = ({
       });
   };
   const updateM_WIDTH = async () => {
-    await generalQuery("updateMWidthResult", {
+    await iqcService.updateMWidthResult({
       IQC1_ID: data?.IQC1_ID,
       M_WIDTH: m_width,
     })
@@ -115,7 +116,7 @@ const BNK_COMPONENT = ({
     getMWidthAnDMThicknessResult();
   };
   const updateThicknessResult = async () => {
-    await generalQuery("updateThickness", {
+    await iqcService.updateThickness({
       IQC1_ID: data?.IQC1_ID,
       THICKNESS: thickness_result,
     })
@@ -368,7 +369,7 @@ const BNK_COMPONENT = ({
                     />
                     <button
                       onClick={() => {
-                        generalQuery("updateMThickness", {
+                        iqcService.updateMThickness({
                           M_NAME: data?.M_NAME,
                           M_THICKNESS: m_thickness.thickness,
                           M_THICKNESS_UPPER: m_thickness.thickness_upper,

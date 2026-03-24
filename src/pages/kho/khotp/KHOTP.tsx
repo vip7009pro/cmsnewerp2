@@ -3,7 +3,8 @@ import { Button,} from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
+import { getAuditMode, getCompany } from "../../../api/Api";
+import { khoTpService } from "../services/khoTpService";
 import "./KHOTP.scss";
 
 import AGTable from "../../../components/DataTable/AGTable";
@@ -1330,7 +1331,7 @@ const KHOTP = () => {
     let inout_qty: number = 0;
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("xuatpackkhotp", {
+    khoTpService.xuatpackkhotp({
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -1383,7 +1384,7 @@ const KHOTP = () => {
     let inout_qty: number = 0;
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("trakhotpInOut", {
+    khoTpService.trakhotpInOut({
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -1436,7 +1437,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     await f_updateBTP_M100();
     setSummaryWH("");
     setisLoading(true);
-    await generalQuery(getCompany() === "CMS" ? "traSTOCKCMS_NEW" : "traSTOCKCMS", {
+    await khoTpService.traSTOCKCMS({
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -1479,7 +1480,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
     await f_updateBTP_M100();
     setSummaryWH("");
     setisLoading(true);
-    await generalQuery(getCompany() === "CMS" ? "traSTOCKKD_NEW" : "traSTOCKKD", {
+    await khoTpService.traSTOCKKD({
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,
@@ -1520,7 +1521,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search(
   const handletraWHSTOCKTACH = () => {
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("traSTOCKTACH", {
+    khoTpService.traSTOCKTACH({
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
       ALLTIME: alltime,

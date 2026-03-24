@@ -3,7 +3,8 @@ import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./CUST_MANAGER.scss";
-import { generalQuery, getSocket, getUserData } from "../../../api/Api";
+import { getSocket, getUserData } from "../../../api/Api";
+import { customerService } from "../services/customerService";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import { BiLoaderCircle } from "react-icons/bi";
@@ -87,7 +88,7 @@ const CUST_MANAGER = () => {
   };
   const autogenerateCUST_CD = async (company_type: string) => {
     let next_cust_cd: string = company_type + "001";
-    await generalQuery("checkcustcd", {
+    await customerService.checkcustcd({
       COMPANY_TYPE: company_type,
     })
       .then((response) => {
@@ -145,7 +146,7 @@ const CUST_MANAGER = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    generalQuery("get_listcustomer", {})
+    customerService.get_listcustomer({})
       .then((response) => {
         /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -188,7 +189,7 @@ const CUST_MANAGER = () => {
       });
   };
   const handle_addCustomer = () => {
-    generalQuery("add_customer", selectedRows)
+    customerService.add_customer(selectedRows)
       .then(async (response) => {
         /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -225,7 +226,7 @@ const CUST_MANAGER = () => {
       });
   };
   const handle_editCustomer = () => {
-    generalQuery("edit_customer", selectedRows)
+    customerService.edit_customer(selectedRows)
       .then(async (response) => {
         /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {

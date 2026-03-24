@@ -8,16 +8,12 @@ import { useAppSelector } from "../../../redux/hooks";
 import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
 import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { getCompany, getSocket, getUserData } from "../../../api/Api";
-import { autoGetProdPrice, f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { autoGetProdPrice, compareDateToNow, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
-import {
-  f_checkG_CODE_USE_YN,
-  f_checkPOExist,
-  f_compareDateToNow,
-  f_insertPO,
-  f_readUploadFile,
-} from "../utils/kdUtils";
+import { ycsxService } from "../services/ycsxService";
+import { readUploadFile } from "../../../api/ExcelUtils";
+import { poService } from "../services/poService";
 
 const PoManagerAddTab: React.FC = () => {
   const userData = useAppSelector(selectUserData);
@@ -30,7 +26,7 @@ const PoManagerAddTab: React.FC = () => {
   const excelSelected = useRef<any[]>([]);
 
   const loadFile = (e: any) => {
-    f_readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
+    readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
   };
 
   const handle_checkPOHangLoat = async () => {
@@ -48,15 +44,15 @@ const PoManagerAddTab: React.FC = () => {
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
         err_code =
-          (await f_checkPOExist(
+          (await poService.checkPOExist(
             uploadExcelJson[i].G_CODE,
             uploadExcelJson[i].CUST_CD,
             uploadExcelJson[i].PO_NO
           ))
             ? 1
             : 0;
-        err_code = f_compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
-        let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+        err_code = compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
+        let checkG_CODE: number = await ycsxService.checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
         err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
         let tempgia = { prod_price: 0, bep: 0 };
         if (getCompany() !== "CMS") {
@@ -99,19 +95,19 @@ const PoManagerAddTab: React.FC = () => {
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       err_code =
-        (await f_checkPOExist(
+        (await poService.checkPOExist(
           uploadExcelJson[i].G_CODE,
           uploadExcelJson[i].CUST_CD,
           uploadExcelJson[i].PO_NO
         ))
           ? 1
           : 0;
-      err_code = f_compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
-      let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+      err_code = compareDateToNow(uploadExcelJson[i].PO_DATE) ? 2 : err_code;
+      let checkG_CODE: number = await ycsxService.checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
       err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
       uploadExcelJson[i].CHECKSTATUS !== "OK" ? (err_code = 5) : (err_code = err_code);
       if (err_code === 0) {
-        tempjson[i].CHECKSTATUS = await f_insertPO({
+        tempjson[i].CHECKSTATUS = await poService.insertPO({
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           PO_NO: uploadExcelJson[i].PO_NO,

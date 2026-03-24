@@ -4,7 +4,8 @@ import DoneIcon from "@mui/icons-material/Done";
 import moment from "moment";
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
+import { getAuditMode, getUserData } from "../../../api/Api";
+import { dtcService } from "../services/dtcService";
 import "./DKDTC.scss";
 import { UserData, } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -132,7 +133,7 @@ const DKDTC = () => {
     );
   }, [inspectiondatatable]);
   const handletraDTCData = () => {
-    generalQuery("loadrecentRegisteredDTCData", {})
+    dtcService.loadrecentRegisteredDTCData({})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -173,7 +174,7 @@ const DKDTC = () => {
       });
   };
   const checkEMPL_NAME = (EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    dtcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -193,7 +194,7 @@ const DKDTC = () => {
       });
   };
   const checkYCSX = (PROD_REQUEST_NO: string) => {
-    generalQuery("ycsx_fullinfo", { PROD_REQUEST_NO: PROD_REQUEST_NO })
+    dtcService.ycsx_fullinfo({ PROD_REQUEST_NO: PROD_REQUEST_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -214,7 +215,7 @@ const DKDTC = () => {
       });
   };
   const checkLotNVL = (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLotI222", { M_LOT_NO: M_LOT_NO })
+    dtcService.checkMNAMEfromLotI222({ M_LOT_NO: M_LOT_NO })
       .then(async (response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -241,7 +242,7 @@ const DKDTC = () => {
   };
   const getLastDTC_ID = async () => {
     let nextid: number = 0;
-    await generalQuery("getLastDTCID", {})
+    await dtcService.getLastDTCID({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -255,7 +256,7 @@ const DKDTC = () => {
     return nextid;
   };
   const checkLabelID = (LABEL_ID: string) => {
-    generalQuery("checkLabelID2", { LABEL_ID2: LABEL_ID })
+    dtcService.checkLabelID2({ LABEL_ID2: LABEL_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -307,7 +308,7 @@ const DKDTC = () => {
           continue;
         }
         
-        await generalQuery("registerDTCTest", data)
+        await dtcService.registerDTCTest(data)
           // eslint-disable-next-line no-loop-func
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -362,7 +363,7 @@ const DKDTC = () => {
     m_code: string | undefined,
     g_code: string | undefined
   ) => {
-    generalQuery("checkAddedSpec", {
+    dtcService.checkAddedSpec({
       M_CODE: checkNVL ? m_code : "B0000035",
       G_CODE: checkNVL ? "7A07540A" : g_code,
     })
@@ -382,7 +383,7 @@ const DKDTC = () => {
     TEST_CODE: number
   ) => {
     let result: boolean = false;
-    await generalQuery("checkDTC_M_LOT_NO_TEST_CODE_REG", {
+    await dtcService.checkDTC_M_LOT_NO_TEST_CODE_REG({
       M_LOT_NO: M_LOT_NO,
       TEST_CODE: TEST_CODE,
     })
@@ -399,7 +400,7 @@ const DKDTC = () => {
     return result;
   };
   const getTestedCodeByM_CODE = (M_CODE: string) => {
-    generalQuery("lichSuTestM_CODE", {
+    dtcService.lichSuTestM_CODE({
       M_CODE: M_CODE,
     })
       .then(async (response) => {
@@ -455,7 +456,7 @@ const DKDTC = () => {
   };
   const getDTC_ID_by_M_LOT_NO = async (M_LOT_NO: string) => {
     let dtc_id: number = -1;
-    await generalQuery("checkDTC_ID_FROM_M_LOT_NO", {
+    await dtcService.checkDTC_ID_FROM_M_LOT_NO({
       M_LOT_NO: M_LOT_NO,
     })
       .then((response) => {
@@ -474,7 +475,7 @@ const DKDTC = () => {
   };
   const insertIncomingData = async (data: any) => {
     console.log(data);
-    await generalQuery("insertIQC1table", data)
+    await dtcService.insertIQC1table(data)
       // eslint-disable-next-line no-loop-func
       .then((response) => {
         if (response.data.tk_status !== "NG") {

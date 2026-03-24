@@ -8,7 +8,6 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import {
-  generalQuery,
   getAuditMode,
   getUserData,
   uploadQuery,
@@ -29,6 +28,7 @@ import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { selectTheme } from "../../../redux/selectors/uiSelectors";
+import { iqcService } from "../services/iqcService";
 const INCOMMING = () => {
   const incomingChecksheetPrintRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -160,7 +160,7 @@ const INCOMMING = () => {
   ];
 
   const handletraDTCData = (dtc_id: number) => {
-    generalQuery("dtcdata", {
+    iqcService.dtcdata({
       ALLTIME: true,
       FROM_DATE: "",
       TO_DATE: "",
@@ -292,7 +292,7 @@ const INCOMMING = () => {
     M_LOT_NO: string
   ) => {
     let nextID: number = 0;
-    await generalQuery("getMaxHoldingID", {})
+    await iqcService.getMaxHoldingID({})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -306,7 +306,7 @@ const INCOMMING = () => {
         console.log(error);
       });
 
-    await generalQuery("insertHoldingFromI222", {
+    await iqcService.insertHoldingFromI222({
       ID: nextID,
       REASON: REASON,
       M_CODE: M_CODE,
@@ -337,7 +337,7 @@ const INCOMMING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsData.current.length; i++) {
-        await generalQuery("updateIncomingData_web", {
+        await iqcService.updateIncomingData_web({
           IQC1_ID: selectedRowsData.current[i].IQC1_ID,
           TOTAL_RESULT: (
             selectedRowsData.current[i].TOTAL_RESULT ?? "PD"
@@ -355,7 +355,7 @@ const INCOMMING = () => {
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-              generalQuery("updateQCPASSI222", {
+              iqcService.updateQCPASSI222({
                 M_CODE: selectedRowsData.current[i].M_CODE,
                 LOT_CMS: selectedRowsData.current[i].LOT_CMS,
                 VALUE:
@@ -410,7 +410,7 @@ const INCOMMING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsData.current.length; i++) {
-        await generalQuery("updateQCPASSI222", {
+        await iqcService.updateQCPASSI222({
           M_CODE: selectedRowsData.current[i].M_CODE,
           LOT_CMS: selectedRowsData.current[i].LOT_CMS,
           VALUE: value,
@@ -433,7 +433,7 @@ const INCOMMING = () => {
           .catch((error) => {
             console.log(error);
           });
-        await generalQuery("updateIQC1Table", {
+        await iqcService.updateIQC1Table({
           M_CODE: selectedRowsData.current[i].M_CODE,
           LOT_CMS: selectedRowsData.current[i].LOT_CMS,
           VALUE: value === "Y" ? "OK" : "NG",
@@ -478,7 +478,7 @@ const INCOMMING = () => {
   };
 
   const updateIQC_INLINE = (datarow: IQC_INCOMMING_DATA) => {
-    generalQuery("updateIncomingData_web", {
+    iqcService.updateIncomingData_web({
       IQC1_ID: datarow.IQC1_ID,
       TOTAL_RESULT: (datarow.TOTAL_RESULT ?? "PD").toUpperCase(),
       NQ_CHECK_ROLL: datarow.NQ_CHECK_ROLL,
@@ -527,7 +527,7 @@ const INCOMMING = () => {
           return newData;
         });
         if (key === "TOTAL_RESULT") {
-          generalQuery("updateQCPASSI222", {
+          iqcService.updateQCPASSI222({
             M_CODE: dataToUpdate.M_CODE,
             LOT_CMS: dataToUpdate.LOT_CMS,
             VALUE: value === "OK" ? "Y" : "N",
@@ -736,7 +736,7 @@ const INCOMMING = () => {
                     confirmButtonText: "Vẫn update!",
                   }).then(async (result) => {
                     if (result.isConfirmed) {
-                      await generalQuery("updateIncomingData_web", {
+                      await iqcService.updateIncomingData_web({
                         IQC1_ID: params.data.IQC1_ID,
                         TOTAL_RESULT: (
                           params.data.TOTAL_RESULT ?? "PD"
@@ -754,7 +754,7 @@ const INCOMMING = () => {
                         .then((response) => {
                           console.log("ketqua", response.data);
                           if (response.data.tk_status !== "NG") {
-                            generalQuery("updateQCPASSI222", {
+                            iqcService.updateQCPASSI222({
                               M_CODE: params.data.M_CODE,
                               LOT_CMS: params.data.LOT_CMS,
                               VALUE:
@@ -840,7 +840,7 @@ const INCOMMING = () => {
             uploadQuery(file, params.data.IQC1_ID + ".pdf", "iqcincoming")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
-                  generalQuery("updateIncomingChecksheet", {
+                  iqcService.updateIncomingChecksheet({
                     IQC1_ID: params.data.IQC1_ID,
                     CHECKSHEET: "Y",
                   })
@@ -929,7 +929,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.TOTAL_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -970,7 +970,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.IQC_TEST_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1014,7 +1014,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.DTC_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1059,7 +1059,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.AUTO_JUDGEMENT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1103,7 +1103,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.DTC_AUTO === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1180,7 +1180,7 @@ const INCOMMING = () => {
                     confirmButtonText: "Vẫn update!",
                   }).then(async (result) => {
                     if (result.isConfirmed) {
-                      await generalQuery("updateIncomingData_web", {
+                      await iqcService.updateIncomingData_web({
                         IQC1_ID: params.data.IQC1_ID,
                         TOTAL_RESULT: (
                           params.data.TOTAL_RESULT ?? "PD"
@@ -1199,7 +1199,7 @@ const INCOMMING = () => {
                           //console.log(response.data.data);
                           if (response.data.tk_status !== "NG") {
                             if (params.data.TOTAL_RESULT === "OK") {
-                              generalQuery("updateQCPASSI222", {
+                              iqcService.updateQCPASSI222({
                                 M_CODE: params.data.M_CODE,
                                 LOT_CMS: params.data.LOT_CMS,
                                 VALUE:
@@ -1264,7 +1264,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.TOTAL_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1304,7 +1304,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.IQC_TEST_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1348,7 +1348,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.DTC_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1394,7 +1394,7 @@ const INCOMMING = () => {
             uploadQuery(file, params.data.IQC1_ID + ".jpg", "iqcincoming")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
-                  generalQuery("updateIncomingChecksheet", {
+                  iqcService.updateIncomingChecksheet({
                     IQC1_ID: params.data.IQC1_ID,
                     CHECKSHEET: "Y",
                   })
@@ -1443,7 +1443,7 @@ const INCOMMING = () => {
             <div className="uploadfile">
               <IconButton
                 className="buttonIcon"
-                onClick={(e) => {
+                onClick={(e: any) => {
                   uploadFile2(e);
                 }}
               >
@@ -1587,15 +1587,15 @@ const INCOMMING = () => {
             : column_iqcdatatable
         }
         data={iqc1datatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
           handletraDTCData(e.data.DTC_ID);
           setClickedRow(e.data);
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();
         }}
@@ -1608,13 +1608,13 @@ const INCOMMING = () => {
         toolbar={<div></div>}
         columns={column_dtc_data}
         data={dtcDataTable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -1622,7 +1622,7 @@ const INCOMMING = () => {
   }, [dtcDataTable, clickedRow]);
 
   const handletraIQC1Data = () => {
-    generalQuery("loadIQC1table", {
+    iqcService.loadIQC1table({
       M_CODE: m_code.trim(),
       M_NAME: m_name.trim(),
       LOTNCC: vendorLot.trim(),
@@ -1703,7 +1703,7 @@ const INCOMMING = () => {
       });
   };
   const checkEMPL_NAME = (EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    iqcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -1723,7 +1723,7 @@ const INCOMMING = () => {
       });
   };
   const checkLotNVL = (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLotI222", { M_LOT_NO: M_LOT_NO })
+    iqcService.checkMNAMEfromLotI222({ M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -1742,7 +1742,7 @@ const INCOMMING = () => {
           setEXP_DATE(
             moment(response.data.data[0].EXP_DATE).format("YYYY-MM-DD")
           );
-          generalQuery("checkMNAMEfromLotI222Total", {
+          iqcService.checkMNAMEfromLotI222Total({
             M_CODE: response.data.data[0].M_CODE,
             LOTCMS: M_LOT_NO.substring(0, 6),
           })
@@ -1862,7 +1862,7 @@ const INCOMMING = () => {
     if (iqc1datatable.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < iqc1datatable.length; i++) {
-        await generalQuery("insertIQC1table", iqc1datatable[i])
+        await iqcService.insertIQC1table(iqc1datatable[i])
           // eslint-disable-next-line no-loop-func
           .then((response) => {
             if (response.data.tk_status !== "NG") {
@@ -1905,7 +1905,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder="202304190123"
                       value={inputno}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         if (e.target.value.length >= 7) {
                           checkLotNVL(e.target.value);
                         }
@@ -1930,7 +1930,7 @@ const INCOMMING = () => {
                     type="text"
                     placeholder={"abcdxyz"}
                     value={vendorLot}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setVendorLot(e.target.value);
                     }}
                   ></input>
@@ -1942,7 +1942,7 @@ const INCOMMING = () => {
                   <input
                     type="date"
                     value={exp_date}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setEXP_DATE(e.target.value);
                     }}
                   ></input>
@@ -1952,7 +1952,7 @@ const INCOMMING = () => {
                     <input
                       type="text"
                       value={nq_qty}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setNQ_QTY(Number(e.target.value));
                       }}
                     ></input>
@@ -1964,7 +1964,7 @@ const INCOMMING = () => {
                     <input
                       type="text"
                       value={dtc_id}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setDtc_ID(Number(e.target.value));
                       }}
                     ></input>
@@ -1975,7 +1975,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder={"NHU1903"}
                       value={request_empl}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         if (e.target.value.length >= 7) {
                           checkEMPL_NAME(e.target.value);
                         }

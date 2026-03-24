@@ -1,7 +1,7 @@
 import { MenuItem, Select, TextField } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { generalQuery } from "../../../../api/Api";
+import { inspectionService } from "../../services/inspectionService";
 import INSPECT_COMPONENT from "./INSPECT_COMPONENT";
 import "./INSPECT_STATUS.scss";
 import {
@@ -23,7 +23,7 @@ const INSPECT_STATUS = () => {
     });
 
   const handle_getINS_STATUS = () => {
-    generalQuery("getIns_Status", {})
+    inspectionService.getIns_Status({})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {

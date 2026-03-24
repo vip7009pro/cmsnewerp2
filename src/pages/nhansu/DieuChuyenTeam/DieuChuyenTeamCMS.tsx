@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { generalQuery, getSocket, getUserData } from "../../../api/Api";
+import { getSocket, getUserData } from "../../../api/Api";
+import { teamManagementService } from "../services/teamManagementService";
 import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
@@ -23,78 +24,65 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
     Array<WorkPositionTableData>
   >([]);
   const setTeam = useCallback(async (EMPL_NO: string, value: number) => {
-    generalQuery("setteamnhom", {
-      teamvalue: value,
-      EMPL_NO: EMPL_NO,
-    }).then((response) => {
-      if (response.data.tk_status === "OK") {
-        const newProjects = diemdanhnhomtable.map((p) =>
-          p.EMPL_NO === EMPL_NO
-            ? {
-                ...p,
-                WORK_SHIF_NAME:
-                  value === 0
-                    ? "Hành Chính"
-                    : value === 1
-                    ? "TEAM 1"
-                    : "TEAM 2",
-              }
-            : p
-        );
-        setDiemDanhNhomTable(newProjects);
-      } else {
-        Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
-      }
-    });
+    const result = await teamManagementService.setTeamNhom(EMPL_NO, value);
+    if (result.success) {
+      const newProjects = diemdanhnhomtable.map((p) =>
+        p.EMPL_NO === EMPL_NO
+          ? {
+              ...p,
+              WORK_SHIF_NAME:
+                value === 0
+                  ? "Hành Chính"
+                  : value === 1
+                  ? "TEAM 1"
+                  : "TEAM 2",
+            }
+          : p
+      );
+      setDiemDanhNhomTable(newProjects);
+    } else {
+      Swal.fire("Có lỗi", "Nội dung: " + result.message, "error");
+    }
   }, [diemdanhnhomtable]);
   const setCa = useCallback(async (params: any, value: number) => {
-    generalQuery("setca", {
-      EMPL_NO: params.data?.EMPL_NO,
-      CALV: value,
-    })
-      .then(async (response) => {
-        //console.log(response.data);
-        if (response.data.tk_status === "OK") {
-          const newProjects = diemdanhnhomtable.map((p) =>
-            p.EMPL_NO === params.data?.EMPL_NO
-              ? {
-                  ...p,
-                  CALV: value,
-                }
-              : p
-          );
-          let newNotification: NotificationElement = {
-            CTR_CD: "002",
-            NOTI_ID: -1,
-            NOTI_TYPE: "success",
-            TITLE: "Thay đổi ca làm việc",
-            CONTENT: `${getUserData()?.EMPL_NO} (${
-              getUserData()?.MIDLAST_NAME
-            } ${getUserData()?.FIRST_NAME}), nhân viên ${
-              getUserData()?.WORK_POSITION_NAME
-            } đã thay ca làm việc cho ${params.data?.EMPL_NO}_ ${
-              params.data?.MIDLAST_NAME
-            } ${params.data?.FIRST_NAME} thành ${
-              value === 2 ? "Ca đêm" : value === 1 ? "Ca ngày" : "Ca HC"
-            } `,
-            SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
-            MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
-            INS_EMPL: "NHU1903",
-            INS_DATE: "2024-12-30",
-            UPD_EMPL: "NHU1903",
-            UPD_DATE: "2024-12-30",
-          };
-          if (await f_insert_Notification_Data(newNotification)) {
-            getSocket().emit("notification_panel", newNotification);
-          }
-          setDiemDanhNhomTable(newProjects);
-        } else {
-          Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
+    const result = await teamManagementService.setCa(params.data?.EMPL_NO, value);
+    if (result.success) {
+      const newProjects = diemdanhnhomtable.map((p) =>
+        p.EMPL_NO === params.data?.EMPL_NO
+          ? {
+              ...p,
+              CALV: value,
+            }
+          : p
+      );
+      let newNotification: NotificationElement = {
+        CTR_CD: "002",
+        NOTI_ID: -1,
+        NOTI_TYPE: "success",
+        TITLE: "Thay đổi ca làm việc",
+        CONTENT: `${getUserData()?.EMPL_NO} (${
+          getUserData()?.MIDLAST_NAME
+        } ${getUserData()?.FIRST_NAME}), nhân viên ${
+          getUserData()?.WORK_POSITION_NAME
+        } đã thay ca làm việc cho ${params.data?.EMPL_NO}_ ${
+          params.data?.MIDLAST_NAME
+        } ${params.data?.FIRST_NAME} thành ${
+          value === 2 ? "Ca đêm" : value === 1 ? "Ca ngày" : "Ca HC"
+        } `,
+        SUBDEPTNAME: getUserData()?.SUBDEPTNAME ?? "",
+        MAINDEPTNAME: getUserData()?.MAINDEPTNAME ?? "",
+        INS_EMPL: "NHU1903",
+        INS_DATE: "2024-12-30",
+        UPD_EMPL: "NHU1903",
+        UPD_DATE: "2024-12-30",
+      };
+      if (await f_insert_Notification_Data(newNotification)) {
+        getSocket().emit("notification_panel", newNotification);
+      }
+      setDiemDanhNhomTable(newProjects);
+    } else {
+      Swal.fire("Có lỗi", "Nội dung: " + result.message, "error");
+    }
   }, [diemdanhnhomtable]);
   const resetCa = useCallback(async (params: any) => {
     const newProjects = diemdanhnhomtable.map((p) =>
@@ -104,29 +92,20 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
     setDiemDanhNhomTable(newProjects);
   }, [diemdanhnhomtable]);
   const setFactory = useCallback(async (EMPL_NO: string, value: number) => {
-    generalQuery("setnhamay", {
-      EMPL_NO: EMPL_NO,
-      FACTORY: value,
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status === "OK") {
-          const newProjects = diemdanhnhomtable.map((p) =>
-            p.EMPL_NO === EMPL_NO
-              ? {
-                  ...p,
-                  FACTORY_NAME: value === 1 ? "Nhà máy 1" : "Nhà máy 2",
-                }
-              : p
-          );
-          setDiemDanhNhomTable(newProjects);
-        } else {
-          Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
+    const result = await teamManagementService.setFactory(EMPL_NO, value);
+    if (result.success) {
+      const newProjects = diemdanhnhomtable.map((p) =>
+        p.EMPL_NO === EMPL_NO
+          ? {
+              ...p,
+              FACTORY_NAME: value === 1 ? "Nhà máy 1" : "Nhà máy 2",
+            }
+          : p
+      );
+      setDiemDanhNhomTable(newProjects);
+    } else {
+      Swal.fire("Có lỗi", "Nội dung: " + result.message, "error");
+    }
   }, [diemdanhnhomtable]);
   const setViTri = useCallback(async (EMPL_NO: string, WORK_POSITION_CODE: number) => {
     Swal.fire({
@@ -137,40 +116,31 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn chuyển!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành chuyển vị trí", "Đang chuyển vị trí", "success");
-        generalQuery("setEMPL_WORK_POSITION", {
-          WORK_POSITION_CODE: WORK_POSITION_CODE,
-          EMPL_NO: EMPL_NO,
-        })
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status === "OK") {
-              const newProjects = diemdanhnhomtable.map((p) =>
-                p.EMPL_NO === EMPL_NO
-                  ? {
-                      ...p,
-                      WORK_POSITION_CODE: WORK_POSITION_CODE,
-                      WORK_POSITION_NAME:
-                        workpositionload.find(
-                          (w) => w.WORK_POSITION_CODE === WORK_POSITION_CODE
-                        )?.WORK_POSITION_NAME ?? "",
-                    }
-                  : p
-              );
-              setDiemDanhNhomTable(newProjects);
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Nội dung: " + response.data.message,
-                "error"
-              );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        const apiResult = await teamManagementService.setWorkPosition(EMPL_NO, WORK_POSITION_CODE);
+        if (apiResult.success) {
+          const newProjects = diemdanhnhomtable.map((p) =>
+            p.EMPL_NO === EMPL_NO
+              ? {
+                  ...p,
+                  WORK_POSITION_CODE: WORK_POSITION_CODE,
+                  WORK_POSITION_NAME:
+                    workpositionload.find(
+                      (w) => w.WORK_POSITION_CODE === WORK_POSITION_CODE
+                    )?.WORK_POSITION_NAME ?? "",
+                }
+              : p
+          );
+          setDiemDanhNhomTable(newProjects);
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Nội dung: " + apiResult.message,
+            "error"
+          );
+        }
       } else {
       }
     });
@@ -369,47 +339,28 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Vẫn chuyển!",
-          }).then((result) => {
+          }).then(async (result) => {
             if (result.isConfirmed) {
               Swal.fire("Tiến hành chuyển team", "Đang chuyển team", "success");
-              generalQuery("setEMPL_WORK_POSITION", {
-                WORK_POSITION_CODE: work_position_code,
-                EMPL_NO: params.data?.EMPL_NO,
-              })
-                .then((response) => {
-                  //console.log(response.data.data);
-                  if (response.data.tk_status === "OK") {
-                    generalQuery(option1, {
-                      team_name_list: WORK_SHIFT_CODE,
-                    })
-                      .then((response) => {
-                        //console.log(response.data.data);
-                        if (response.data.tk_status !== "NG") {
-                          setDiemDanhNhomTable(response.data.data);
-                          
-                          //Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
-                        } else {
-                          Swal.fire(
-                            "Thông báo",
-                            "Nội dung: " + response.data.message,
-                            "error"
-                          );
-                        }
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
-                  } else {
-                    Swal.fire(
-                      "Có lỗi",
-                      "Nội dung: " + response.data.message,
-                      "error"
-                    );
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
+              const apiResult = await teamManagementService.setWorkPosition(params.data?.EMPL_NO, work_position_code);
+              if (apiResult.success) {
+                const data = await teamManagementService.loadDiemDanhNhom(option1, WORK_SHIFT_CODE);
+                if (data.length > 0) {
+                  setDiemDanhNhomTable(data);
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Không có dữ liệu",
+                    "error"
+                  );
+                }
+              } else {
+                Swal.fire(
+                  "Có lỗi",
+                  "Nội dung: " + apiResult.message,
+                  "error"
+                );
+              }
             }
           });
         };
@@ -496,47 +447,12 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
     },
   ], [diemdanhnhomtable]);
   const loadDiemDanhNhomTable = useCallback(async (teamnamelist: number) => {
-    generalQuery(option1, { team_name_list: teamnamelist })
-      .then((response) => {
-        //console.log(response.data.data);
-        let loaded_data = response.data.data.map((e: any, index: number) => {
-          return {
-            ...e,
-            REQUEST_DATE:
-              e.REQUEST_DATE !== null
-                ? moment.utc(e.REQUEST_DATE).format("YYYY-MM-DD")
-                : "",
-            APPLY_DATE:
-              e.APPLY_DATE !== null
-                ? moment.utc(e.APPLY_DATE).format("YYYY-MM-DD")
-                : "",
-            FULL_NAME: e.MIDLAST_NAME + " " + e.FIRST_NAME,
-            id: index + 1,
-          };
-        });
-        setDiemDanhNhomTable(loaded_data);
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const data = await teamManagementService.loadDiemDanhNhom(option1, teamnamelist);
+    setDiemDanhNhomTable(data);
   }, []);
-  const loadWorkPositionTable = useCallback(() => {
-    generalQuery(option2, {})
-      .then((response) => {
-        //console.log(response.data.data);
-        let loaded_data = response.data.data.map((e: any, index: number) => {
-          return {
-            ...e,
-            id: index + 1,
-          };
-        });
-        setWorkPositionLoad(loaded_data);
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const loadWorkPositionTable = useCallback(async () => {
+    const data = await teamManagementService.loadWorkPositionTable(option2);
+    setWorkPositionLoad(data);
   }, []);
   const diemdanhnhomAGTable = useMemo(() => {
     return (

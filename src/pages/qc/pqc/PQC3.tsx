@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { uploadQuery } from "../../../api/Api";
+import { pqcService } from "../services/pqcService";
 import { zeroPad } from "../../../api/GlobalFunction";
 import "./PQC3.scss";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -71,7 +72,7 @@ const PQC3 = () => {
     }
   };
   const checkPlanID = (PLAN_ID: string) => {
-    generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+    pqcService.checkPLAN_ID({ PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -93,7 +94,7 @@ const PQC3 = () => {
       });
   };
   const checkProcessLotNo = (PROCESS_LOT_NO: string) => {
-    generalQuery("checkPROCESS_LOT_NO", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+    pqcService.checkPROCESS_LOT_NO({ PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -361,7 +362,7 @@ const PQC3 = () => {
     )
   }, [pqc3datatable, columns_pqc3])
   const traPQC1Data = (g_code: string) => {
-    generalQuery("trapqc1data", {
+    pqcService.trapqc1data({
       ALLTIME: true,
       FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
       TO_DATE: moment().format("YYYY-MM-DD"),
@@ -407,7 +408,7 @@ const PQC3 = () => {
       });
   };
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    pqcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);\
@@ -434,7 +435,7 @@ const PQC3 = () => {
       });
   };
   const loadErrorTable = () => {
-    generalQuery("loadErrTable", {})
+    pqcService.loadErrTable({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);\
@@ -481,10 +482,10 @@ const PQC3 = () => {
       G_CODE: g_code,
     };
     console.log('upload data', uploadData);
-    generalQuery("insert_pqc3", uploadData)
+    pqcService.insert_pqc3(uploadData)
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          generalQuery("getlastestPQC3_ID", {})
+          pqcService.getlastestPQC3_ID({})
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 console.log(response.data.data);
@@ -506,7 +507,7 @@ const PQC3 = () => {
       });
   };
   const handleTraPQC3Data = () => {
-    generalQuery("trapqc3data", {
+    pqcService.trapqc3data({
       ALLTIME: true,
       FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
       TO_DATE: moment().format("YYYY-MM-DD"),

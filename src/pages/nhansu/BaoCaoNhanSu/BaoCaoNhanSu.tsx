@@ -7,7 +7,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { useEffect, useMemo, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { reportService } from "../services/reportService";
 import "./BaoCaoNhanSu.scss";
 import Swal from "sweetalert2";
 import {
@@ -50,7 +50,7 @@ const BaoCaoNhanSu = () => {
   const [diemdanhfullsummary, setDiemDanhFullSummary] = useState<
     Array<DIEMDANHFULLSUMMARY>
   >([]);
-  const [piechartdata, setPieChartData] = useState<Array<DiemDanhNhomData>>([]);
+  const [piechartdata, setPieChartData] = useState<Array<DiemDanhNhomDataSummary>>([]);
   const [fromdate, setFromDate] = useState(
     moment().add(-8, "day").format("YYYY-MM-DD"),
   );
@@ -459,211 +459,71 @@ const BaoCaoNhanSu = () => {
   };
   const handleSearch2 = () => {
     setisLoading(true);
-    generalQuery("getmaindeptlist", { from_date: fromdate })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          setMainDeptTable(response.data.data);
-        }
+    reportService.getMainDeptList(fromdate)
+      .then((data) => {
+        setMainDeptTable(data);
       })
       .catch((error) => {
         console.log(error);
       });
-    generalQuery("diemdanhsummarynhom", { todate: todate })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          setPieChartData(response.data.data);
-          let totalAdded: DiemDanhNhomDataSummary[] = addTotal(response.data.data);
-          setDiemDanhNhomTable(totalAdded);
-          setisLoading(false);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
+    reportService.getDiemDanhSummaryNhom(todate)
+      .then((data) => {
+        setPieChartData(data);
+        let totalAdded: DiemDanhNhomDataSummary[] = addTotal(data);
+        setDiemDanhNhomTable(totalAdded);
+        setisLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: any) => {
+        Swal.fire("Thông báo", "Nội dung: " + error.message, "error");
       });
-    generalQuery("diemdanhhistorynhom", {
+    reportService.getDiemDanhHistoryNhom({
       start_date: fromdate,
       end_date: todate,
       MAINDEPTCODE: maindeptcode,
       WORK_SHIFT_CODE: ca,
       FACTORY_CODE: nhamay,
     })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const newdiemdanhtb: Array<DiemDanhHistoryData> =
-            response.data.data.map((obj: { APPLY_DATE: string | any[] }) => {
-              return { ...obj, APPLY_DATE: obj.APPLY_DATE.slice(0, 10) };
-            });
-          setDiemDanh_HistoryTable(newdiemdanhtb);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
+      .then((data) => {
+        setDiemDanh_HistoryTable(data);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: any) => {
+        Swal.fire("Thông báo", "Nội dung: " + error.message, "error");
       });
-    generalQuery("diemdanhfull", { from_date: fromdate, to_date: todate })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: DiemDanhFullData[] = response.data.data.map(
-            (element: DiemDanhFullData, index: number) => {
-              return {
-                ...element,
-                DATE_COLUMN: moment(element.DATE_COLUMN)
-                  .utc()
-                  .format("YYYY-MM-DD"),
-                APPLY_DATE:
-                  element.APPLY_DATE === null
-                    ? ""
-                    : moment(element.APPLY_DATE).utc().format("YYYY-MM-DD"),
-                WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
-                id: index,
-              };
-            },
-          );
-          setDiemDanhFullTable(loaded_data);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
+    reportService.getDiemDanhFull(fromdate, todate)
+      .then((data) => {
+        setDiemDanhFullTable(data);
+        setisLoading(false);
+        Swal.fire(
+          "Thông báo",
+          "Đã load " + data.length + " dòng",
+          "success",
+        );
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: any) => {
+        Swal.fire("Thông báo", "Nội dung: " + error.message, "error");
       });
-    generalQuery("getddmaindepttb", {
-      FROM_DATE: moment().format("YYYY-MM-DD"),
-      TO_DATE: moment().format("YYYY-MM-DD"),
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let temp_total: DIEMDANHMAINDEPT = {
-            id: 1111,
-            MAINDEPTNAME: "TOTAL",
-            COUNT_TOTAL: 0,
-            COUT_ON: 0,
-            COUT_OFF: 0,
-            COUNT_CDD: 0,
-            ON_RATE: 0,
-          };
-          let loadeddata = response.data.data.map(
-            (element: DIEMDANHMAINDEPT, index: number) => {
-              temp_total = {
-                ...temp_total,
-                COUNT_TOTAL: temp_total.COUNT_TOTAL + element.COUNT_TOTAL,
-                COUT_ON: temp_total.COUT_ON + element.COUT_ON,
-                COUT_OFF: temp_total.COUT_OFF + element.COUT_OFF,
-                COUNT_CDD: temp_total.COUNT_CDD + element.COUNT_CDD,
-              };
-              return {
-                ...element,
-                id: index,
-              };
-            },
-          );
-          temp_total = {
-            ...temp_total,
-            ON_RATE: (temp_total.COUT_ON / temp_total.COUNT_TOTAL) * 100,
-          };
-          loadeddata = [...loadeddata, temp_total];
-          //console.log(loadeddata);
-          setddmaindepttb(loadeddata);
-          setisLoading(false);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
+    reportService.getDDMainDeptTB(
+      moment().format("YYYY-MM-DD"),
+      moment().format("YYYY-MM-DD"),
+    )
+      .then((data) => {
+        setddmaindepttb(data);
+        setisLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: any) => {
+        Swal.fire("Thông báo", "Nội dung: " + error.message, "error");
       });
   };
   const loadDiemDanhFullSummaryTable = () => {
-    generalQuery("loadDiemDanhFullSummaryTable", {
-      FROM_DATE: moment().format("YYYY-MM-DD"),
-      TO_DATE: moment().format("YYYY-MM-DD"),
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: DIEMDANHFULLSUMMARY[] = response.data.data.map(
-            (element: DIEMDANHFULLSUMMARY, index: number) => {
-              return {
-                ...element,
-                id: index,
-              };
-            },
-          );
-          let totalRow: DIEMDANHFULLSUMMARY = {
-            id: -1,
-            MAINDEPTNAME: "TOTAL",
-            COUNT_TOTAL: 0,
-            COUNT_ON: 0,
-            COUNT_OFF: 0,
-            COUNT_CDD: 0,
-            T1_TOTAL: 0,
-            T1_ON: 0,
-            T1_OFF: 0,
-            T1_CDD: 0,
-            T2_TOTAL: 0,
-            T2_ON: 0,
-            T2_OFF: 0,
-            T2_CDD: 0,
-            HC_TOTAL: 0,
-            HC_ON: 0,
-            HC_OFF: 0,
-            HC_CDD: 0,
-            ON_RATE: 0,
-            TOTAL: 0,
-            PHEP_NAM: 0,
-            NUA_PHEP: 0,
-            NGHI_VIEC_RIENG: 0,
-            NGHI_OM: 0,
-            CHE_DO: 0,
-            KHONG_LY_DO: 0
-          }
-          for (let i = 0; i < loaded_data.length; i++) {
-            totalRow.T1_CDD += loaded_data[i].T1_CDD;
-            totalRow.T1_OFF += loaded_data[i].T1_OFF;
-            totalRow.T1_ON += loaded_data[i].T1_ON;
-            totalRow.T1_TOTAL += loaded_data[i].T1_TOTAL;
-            totalRow.T2_CDD += loaded_data[i].T2_CDD;
-            totalRow.T2_OFF += loaded_data[i].T2_OFF;
-            totalRow.T2_ON += loaded_data[i].T2_ON;
-            totalRow.T2_TOTAL += loaded_data[i].T2_TOTAL;
-            totalRow.HC_CDD += loaded_data[i].HC_CDD;
-            totalRow.HC_OFF += loaded_data[i].HC_OFF;
-            totalRow.HC_ON += loaded_data[i].HC_ON;
-            totalRow.HC_TOTAL += loaded_data[i].HC_TOTAL;
-            totalRow.COUNT_CDD += loaded_data[i].COUNT_CDD;
-            totalRow.COUNT_OFF += loaded_data[i].COUNT_OFF;
-            totalRow.COUNT_ON += loaded_data[i].COUNT_ON;
-            totalRow.COUNT_TOTAL += loaded_data[i].COUNT_TOTAL;
-            totalRow.TOTAL += loaded_data[i].TOTAL;
-            totalRow.PHEP_NAM += loaded_data[i].PHEP_NAM;
-            totalRow.NUA_PHEP += loaded_data[i].NUA_PHEP;
-            totalRow.NGHI_VIEC_RIENG += loaded_data[i].NGHI_VIEC_RIENG;
-            totalRow.NGHI_OM += loaded_data[i].NGHI_OM;
-            totalRow.CHE_DO += loaded_data[i].CHE_DO;
-            totalRow.KHONG_LY_DO += loaded_data[i].KHONG_LY_DO;
-          }
-          totalRow.ON_RATE = totalRow.COUNT_ON / totalRow.COUNT_TOTAL * 100;
-          setDiemDanhFullSummary([...loaded_data, totalRow]);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
+    reportService.loadDiemDanhFullSummary(
+      moment().format("YYYY-MM-DD"),
+      moment().format("YYYY-MM-DD"),
+    )
+      .then((data) => {
+        setDiemDanhFullSummary(data);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: any) => {
+        Swal.fire("Thông báo", "Nội dung: " + error.message, "error");
       });
   };
   const handleSearch = () => {

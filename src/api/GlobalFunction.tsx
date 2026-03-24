@@ -21,6 +21,37 @@ import {
 import BARCODE2 from "../pages/rnd/design_amazon/design_components/BARCODE2";
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
+
+export const compareDateToNow = (date: string): boolean => {
+  let kq: boolean = false;
+  let now = moment();
+  let comparedate = moment(date);
+  if (now < comparedate) {
+    kq = true;
+  }
+  return kq;
+};
+
+export const compareTwoDate = (date1: string, date2: string): number => {
+  let kq: number = 0;
+  let mdate1 = moment(date1);
+  let mdate2 = moment(date2);
+  if (mdate1 < mdate2) {
+    kq = -1;
+  } else if (mdate1.isSame(mdate2)) {
+    kq = 0;
+  } else {
+    kq = 1;
+  }
+  return kq;
+};
+
+export const dateDiff = (date1: string, date2: string) => {
+  var d1 = moment.utc(date1);
+  var d2 = moment.utc(date2);
+  var diff: number = d1.diff(d2, "days");
+  return diff;
+};
 export const SaveExcel = (data: any, title: string) => {
   const EXCEL_MAX_COLS = 16384;
   const EXCEL_MAX_ROWS = 1048576;

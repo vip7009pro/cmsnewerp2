@@ -34,7 +34,8 @@ import { BiDownload } from "react-icons/bi";
 import MyTabs from "../../../components/MyTab/MyTab";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
 import { CodeListData, CustomerListData, FCSTTDYCSX, POBALANCETDYCSX, PONOLIST, TONKHOTDYCSX, UploadAmazonData, YCSXTableData } from "../interfaces/kdInterface";
-import { f_batchDeleteYCSX, f_check_G_NAME_2Ver_active, f_checkDuplicateAMZ, f_checkFCST_G_CODE, f_checkG_CODE_ACTIVE, f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR, f_checkG_CODE_PO_BALANCE, f_checkStock_G_CODE, f_checkYCSX_EXIST, f_generateNextProdRequestNo, f_getcodelist, f_getcustomerlist, f_getNextP500_IN_NO, f_handleAmazonData, f_insertDMYCSX, f_insertDMYCSX_New, f_insertP500, f_insertP501, f_insertYCSX, f_isBOM_M_CODE_MATCHING, f_isBOMGIA_HAS_MAIN, f_isIDCongViecExist, f_loadPONOList, f_process_lot_no_generate, f_traYCSX, f_updateDMSX_LOSS_KT, f_updateYCSX } from "../utils/kdUtils";
+import { ycsxService } from "../services/ycsxService";
+import { poService } from "../services/poService";
 import { f_getCodeInfo, renderBanVe, renderYCSX } from "../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { useLaggy } from "../../../api/useLaggy";
 import { useRenderLag } from "../../../api/userRenderLag";
@@ -1150,7 +1151,7 @@ const YCSXManager = () => {
   const [isFirstLOT, setIsFirstLot] = useState(false);
 
   const loadPONO = async (G_CODE?: string, CUST_CD?: string) => {
-    setPONOLIST(await f_loadPONOList(G_CODE, CUST_CD));
+    setPONOLIST(await ycsxService.loadPONOList(G_CODE, CUST_CD));
   };
   const handleGoToAmazon = () => {
     console.log(ycsxdatatablefilter.current.length);
@@ -1224,7 +1225,18 @@ const YCSXManager = () => {
   const upAmazonDataSuperFast = async () => {
     let isDuplicated: boolean = false;
     if (amz_PL_HANG === 'AM' || amz_PL_HANG === 'TT') {
-      isDuplicated = await f_checkDuplicateAMZ();
+      try {
+        const result = await ycsxService.checktrungAMZ();
+        if (result) {
+          isDuplicated = true;
+          Swal.fire("Thông báo", "Data trùng: " + result.VALUE + "______ Số lặp lại: " + result.COUNT, "error");
+        } else {
+          //No duplicate found, proceed or show success? The original code had a show success in kdUtils.
+          //We'll handle it based on the context of upAmazonDataSuperFast.
+        }
+      } catch (error) {
+        console.error(error);
+      }
       Swal.fire({
         title: "Checking",
         text: "Đang upload data, hãy chờ chút",
@@ -1235,7 +1247,7 @@ const YCSXManager = () => {
         showConfirmButton: false,
       });
       if (!isDuplicated) {
-        let uploadAmazonData = await f_handleAmazonData(
+        let uploadAmazonData = await ycsxService.handleAmazonData(
           uploadExcelJson,
           cavityAmazon,
           codeCMS,
@@ -1243,7 +1255,7 @@ const YCSXManager = () => {
           id_congviec
         );
         //console.log(uploadAmazonData);        
-        let checkIDcongViecTonTai: boolean = await f_isIDCongViecExist(id_congviec, prodrequestno);
+        let checkIDcongViecTonTai: boolean = await ycsxService.isIDCongViecExist(id_congviec, prodrequestno);
         if (!checkIDcongViecTonTai) {
           let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
           for (let i = 1; i <= songuyen; i++) {
@@ -1288,7 +1300,12 @@ const YCSXManager = () => {
               console.log(error);
             });
           setUploadExcelJSon([]);
-          f_checkDuplicateAMZ();
+          const checkDuplicate = await ycsxService.checktrungAMZ();
+          if (checkDuplicate) {
+            Swal.fire("Thông báo", "Data trùng: " + checkDuplicate.VALUE + "______ Số lặp lại: " + checkDuplicate.COUNT, "error");
+          } else {
+            Swal.fire("Thông báo", "Không có dòng trùng", "success");
+          }
         } else {
           Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
         }
@@ -1356,35 +1373,41 @@ const YCSXManager = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    setYcsxDataTable(await f_traYCSX({
-      alltime: alltime,
-      start_date: fromdate,
-      end_date: todate,
-      cust_name: cust_name,
-      codeCMS: codeCMS,
-      codeKD: codeKD,
-      prod_type: prod_type,
-      empl_name: empl_name,
-      phanloai: phanloai,
-      ycsx_pending: ycsxpendingcheck,
-      inspect_inputcheck: inspectInputcheck,
-      prod_request_no: prodrequestno,
-      material: material,
-      phanloaihang: phanloaihang,
-      material_yes: materialYES,
-    }));
+    try {
+      setYcsxDataTable(await ycsxService.traYCSX({
+        alltime: alltime,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        phanloai: phanloai,
+        ycsx_pending: ycsxpendingcheck,
+        inspect_inputcheck: inspectInputcheck,
+        prod_request_no: prodrequestno,
+        material: material,
+        phanloaihang: phanloaihang,
+        material_yes: materialYES,
+      }));
+      Swal.close();
+    } catch (err: any) {
+      Swal.fire("Thông báo", "Lỗi: " + err.message, "error");
+      setYcsxDataTable([]);
+    }
   };
   const handle_checkYCSXHangLoat = async () => {
     setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
-      let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
-      let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
+      err_code = await ycsxService.checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
+      let isBOMGiaHasMain: boolean = (await ycsxService.isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
+      let checkBOM_Matching: string = await ycsxService.isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
-      let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? '');
-      let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && uploadExcelJson[i].CODE_55 !== '04') ?  (await f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(uploadExcelJson[i].G_CODE ?? "")) : true; 
+      let isTwoVersionExist: boolean = await ycsxService.check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? '');
+      let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && uploadExcelJson[i].CODE_55 !== '04') ?  (await ycsxService.checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(uploadExcelJson[i].G_CODE ?? "")) : true; 
       if (!isBOMGiaHasMain) err_code = 10;
       if (!isBOMMatching) err_code = 11;
       if (uploadExcelJson[i].CODE_50 === undefined) err_code = 5;
@@ -1439,12 +1462,12 @@ const YCSXManager = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      err_code = await f_checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
-      let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
-      let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
+      err_code = await ycsxService.checkG_CODE_ACTIVE(uploadExcelJson[i].G_CODE);
+      let isBOMGiaHasMain: boolean = (await ycsxService.isBOMGIA_HAS_MAIN(uploadExcelJson[i].G_CODE)) || (getCompany() !== 'CMS')
+      let checkBOM_Matching: string = await ycsxService.isBOM_M_CODE_MATCHING(uploadExcelJson[i].G_CODE);
       let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
-      let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? "");
-      let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && uploadExcelJson[i].CODE_55 !== '04') ?  (await f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(uploadExcelJson[i].G_CODE ?? "")) : true; 
+      let isTwoVersionExist: boolean = await ycsxService.check_G_NAME_2Ver_active(uploadExcelJson[i]?.G_CODE ?? "");
+      let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && uploadExcelJson[i].CODE_55 !== '04') ?  (await ycsxService.checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(uploadExcelJson[i].G_CODE ?? "")) : true; 
       let checkCodInfo = await f_getCodeInfo({
         G_NAME: uploadExcelJson[i].G_CODE,
         CNDB: true,
@@ -1466,13 +1489,13 @@ const YCSXManager = () => {
       }
       if (err_code === 0) {
         let err_code1: number = 0;
-        let next_prod_request_no: string = await f_generateNextProdRequestNo();
-        let pobalance_tdycsx: POBALANCETDYCSX = await f_checkG_CODE_PO_BALANCE(uploadExcelJson[i].G_CODE ?? "");
-        let tonkho_tdycsx: TONKHOTDYCSX = await f_checkStock_G_CODE(uploadExcelJson[i].G_CODE ?? "");
-        let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(uploadExcelJson[i].G_CODE ?? "");
+        let next_prod_request_no: string = await ycsxService.generateNextProdRequestNo();
+        let pobalance_tdycsx: POBALANCETDYCSX = await ycsxService.checkG_CODE_PO_BALANCE(uploadExcelJson[i].G_CODE ?? "");
+        let tonkho_tdycsx: TONKHOTDYCSX = await ycsxService.checkStock_G_CODE(uploadExcelJson[i].G_CODE ?? "");
+        let fcst_tdycsx: FCSTTDYCSX = await ycsxService.checkFCST_G_CODE(uploadExcelJson[i].G_CODE ?? "");
         
         
-        //console.log(await f_process_lot_no_generate(phanloai));
+        //console.log(await ycsxService.process_lot_no_generate(phanloai));
         if (
           uploadExcelJson[i].G_CODE === "" ||
           uploadExcelJson[i].CUST_CD === "" ||
@@ -1484,16 +1507,16 @@ const YCSXManager = () => {
         console.log("err_Code1 = " + err_code1);
         if (err_code1 === 0) {
           if (uploadExcelJson[i].PHANLOAI === "TT" || uploadExcelJson[i].PHANLOAI === "AM") {
-            await f_insertDMYCSX({
+            await ycsxService.insertDMYCSX({
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
             });
-            await f_insertDMYCSX_New({
+            await ycsxService.insertDMYCSX_New({
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
             });
             let isFL: boolean = await isG_CODE_FL(uploadExcelJson[i].G_CODE);
-            let kq: string = await f_insertYCSX({
+            let kq: string = await ycsxService.insertYCSX({
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -1562,9 +1585,9 @@ const YCSXManager = () => {
               tempjson[i].CHECKSTATUS = "NG: Thêm YCSX mới thất bại" + kq;
             }
           } else {
-            let next_process_lot_no_p501: string = await f_process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
+            let next_process_lot_no_p501: string = await ycsxService.process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
             let isFL: boolean = await isG_CODE_FL(uploadExcelJson[i].G_CODE);
-            let kq: string = await f_insertYCSX({
+            let kq: string = await ycsxService.insertYCSX({
               PHANLOAI: uploadExcelJson[i].PHANLOAI === 'GD' ? 'TT' : uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -1617,10 +1640,10 @@ const YCSXManager = () => {
             else {
               tempjson[i].CHECKSTATUS = "NG: Thêm YCSX mới thất bại" + kq;
             }
-            let next_p500_in_no: string = await f_getNextP500_IN_NO();
+            let next_p500_in_no: string = await ycsxService.getNextP500_IN_NO();
             if (uploadExcelJson[i].PHANLOAI !== 'GD') {
               // them P500
-            await f_insertP500({
+            await ycsxService.insertP500({
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
@@ -1632,7 +1655,7 @@ const YCSXManager = () => {
               PR_NB: 0,
             });
             // them P501
-            await f_insertP501({
+            await ycsxService.insertP501({
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
               EMPL_NO: userData?.EMPL_NO,
@@ -1700,7 +1723,7 @@ const YCSXManager = () => {
       getSocket().emit("notification_panel", newNotification);
     }
     Swal.fire("Thông báo", "Đã hoàn thành Up YCSX hàng loạt", "success");
-    await f_updateDMSX_LOSS_KT();
+    await ycsxService.updateDMSX_LOSS_KT();
     setUploadExcelJSon(tempjson);
   };
   const confirmUpYcsxHangLoat = () => {
@@ -1736,10 +1759,10 @@ const YCSXManager = () => {
     });
   };
   const getcustomerlist = async () => {
-    setCustomerList(await f_getcustomerlist());
+    setCustomerList(await poService.getCustomerList());
   };
   const getcodelist = async (G_NAME: string) => {
-    setCodeList(await f_getcodelist(G_NAME));
+    setCodeList(await poService.getCodeList(G_NAME));
   };
   const setNav = (choose: number) => {
     if (choose === 1) {
@@ -1795,16 +1818,16 @@ const YCSXManager = () => {
   };
   const handle_add_1YCSX = async () => {
     let err_code: number = 0;
-    let next_prod_request_no: string = await f_generateNextProdRequestNo();
-    let pobalance_tdycsx: POBALANCETDYCSX = await f_checkG_CODE_PO_BALANCE(selectedCode?.G_CODE ?? "");
-    let tonkho_tdycsx: TONKHOTDYCSX = await f_checkStock_G_CODE(selectedCode?.G_CODE ?? "");
-    let fcst_tdycsx: FCSTTDYCSX = await f_checkFCST_G_CODE(selectedCode?.G_CODE ?? "");
-    let isBOMGiaHasMain: boolean = (await f_isBOMGIA_HAS_MAIN(selectedCode?.G_CODE ?? "")) || (getCompany() !== 'CMS')
-    let checkBOM_Matching: string = await f_isBOM_M_CODE_MATCHING(selectedCode?.G_CODE ?? "");
+    let next_prod_request_no: string = await ycsxService.generateNextProdRequestNo();
+    let pobalance_tdycsx: POBALANCETDYCSX = await ycsxService.checkG_CODE_PO_BALANCE(selectedCode?.G_CODE ?? "");
+    let tonkho_tdycsx: TONKHOTDYCSX = await ycsxService.checkStock_G_CODE(selectedCode?.G_CODE ?? "");
+    let fcst_tdycsx: FCSTTDYCSX = await ycsxService.checkFCST_G_CODE(selectedCode?.G_CODE ?? "");
+    let isBOMGiaHasMain: boolean = (await ycsxService.isBOMGIA_HAS_MAIN(selectedCode?.G_CODE ?? "")) || (getCompany() !== 'CMS')
+    let checkBOM_Matching: string = await ycsxService.isBOM_M_CODE_MATCHING(selectedCode?.G_CODE ?? "");
     let isBOMMatching: boolean = (checkBOM_Matching === 'OK') || (getCompany() !== 'CMS');
-    let isTwoVersionExist: boolean = await f_check_G_NAME_2Ver_active(selectedCode?.G_CODE ?? "");
-    let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && loaisx !== '04') ?  (await f_checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(selectedCode?.G_CODE ?? "")) : true; 
-    //console.log(await f_process_lot_no_generate(phanloai));
+    let isTwoVersionExist: boolean = await ycsxService.check_G_NAME_2Ver_active(selectedCode?.G_CODE ?? "");
+    let isApprovedSampleMonitor: boolean = (getCompany()==='PVN' && loaisx !== '04') ?  (await ycsxService.checkG_CODE_EXISTS_AND_APPROVED_SAMPLE_MONITOR(selectedCode?.G_CODE ?? "")) : true; 
+    //console.log(await ycsxService.process_lot_no_generate(phanloai));
     let checkCodInfo = await f_getCodeInfo({
         G_NAME: selectedCode?.G_CODE,
         CNDB: true,
@@ -1837,16 +1860,16 @@ const YCSXManager = () => {
 
     if (err_code === 0) {
       if (newphanloai === "TT" || newphanloai === "AM") {
-        await f_insertDMYCSX({
+        await ycsxService.insertDMYCSX({
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,
         });
-        await f_insertDMYCSX_New({
+        await ycsxService.insertDMYCSX_New({
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,
         });
         let isFL: boolean = await isG_CODE_FL(selectedCode?.G_CODE ?? "");
-        let kq: string = await f_insertYCSX({
+        let kq: string = await ycsxService.insertYCSX({
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
@@ -1894,7 +1917,7 @@ const YCSXManager = () => {
           FL_YN: isFirstLOT ? "Y" : "N",
         });
         if (kq === 'OK') {
-          await f_updateDMSX_LOSS_KT();
+          await ycsxService.updateDMSX_LOSS_KT();
           let newNotification: NotificationElement = {
             CTR_CD: '002',
             NOTI_ID: -1,
@@ -1928,9 +1951,9 @@ const YCSXManager = () => {
           );
         }
       } else {
-        let next_process_lot_no_p501: string = await f_process_lot_no_generate(newphanloai);
+        let next_process_lot_no_p501: string = await ycsxService.process_lot_no_generate(newphanloai);
         let isFL: boolean = await isG_CODE_FL(selectedCode?.G_CODE ?? "");
-        let kq: string = await f_insertYCSX({
+        let kq: string = await ycsxService.insertYCSX({
           PHANLOAI: newphanloai === 'GD' ? 'TT' : newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
@@ -2001,10 +2024,10 @@ const YCSXManager = () => {
           );
         }
         //get process_in_no P500
-        let next_p500_in_no: string = await f_getNextP500_IN_NO();
+        let next_p500_in_no: string = await ycsxService.getNextP500_IN_NO();
         if (newphanloai !== 'GD') {
            // them P500
-        await f_insertP500({
+        await ycsxService.insertP500({
           in_date: moment().format("YYYYMMDD"),
           next_process_in_no: next_p500_in_no,
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
@@ -2016,7 +2039,7 @@ const YCSXManager = () => {
           PR_NB: 0,
         });
         // them P501
-        await f_insertP501({
+        await ycsxService.insertP501({
           in_date: moment().format("YYYYMMDD"),
           next_process_in_no: next_p500_in_no,
           EMPL_NO: userData?.EMPL_NO,
@@ -2102,7 +2125,7 @@ const YCSXManager = () => {
   const updateYCSX = async () => {
     if (userData?.EMPL_NO?.toUpperCase() === "LVT1906" || userData?.EMPL_NO?.toUpperCase() === "NHU1903") {
       let err_code: number = 0;
-      err_code = (await f_checkYCSX_EXIST(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO)) ? 0 : 1;
+      err_code = (await ycsxService.checkYCSX_EXIST(ycsxdatatablefilter.current[ycsxdatatablefilter.current.length - 1].PROD_REQUEST_NO)) ? 0 : 1;
       if (
         selectedCode?.G_CODE === "" ||
         selectedCust_CD?.CUST_CD === "" ||
@@ -2111,7 +2134,7 @@ const YCSXManager = () => {
         err_code = 4;
       }
       if (err_code === 0) {
-        await f_updateYCSX({
+        await ycsxService.updateYCSX({
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
           PROD_REQUEST_NO: selectedID,
@@ -2132,7 +2155,60 @@ const YCSXManager = () => {
     }
   };
   const deleteYCSX = async () => {
-    await f_batchDeleteYCSX(ycsxdatatablefilter.current);
+    const ycsxList = ycsxdatatablefilter.current;
+    if (ycsxList.length >= 1) {
+      let err_code: boolean = false;
+      for (let i = 0; i < ycsxList.length; i++) {
+        if (ycsxList[i].EMPL_NO === userData?.EMPL_NO) {
+          const checkO300: boolean = await ycsxService.checkYCSX_DKXL(ycsxList[i].PROD_REQUEST_NO);
+          const checkPlanIDExist: boolean = await ycsxService.checkPlanIDExist(ycsxList[i].PROD_REQUEST_NO);
+
+          if (checkO300) {
+            err_code = true;
+            Swal.fire("Thông báo", "Xóa YCSX thất bại, ycsx đã được xuất liệu: " + ycsxList[i].PROD_REQUEST_NO, "error");
+          } else if (checkPlanIDExist) {
+            err_code = true;
+            Swal.fire("Thông báo", "Xóa YCSX thất bại, ycsx đã được tạo chỉ thị sản xuất: " + ycsxList[i].PROD_REQUEST_NO, "error");
+          } else {
+            const result = await ycsxService.deleteYCSX(ycsxList[i].PROD_REQUEST_NO);
+            if (result === "OK") {
+              await ycsxService.deleteP500_YCSX(ycsxList[i].PROD_REQUEST_NO, ycsxList[i].EMPL_NO);
+              await ycsxService.deleteP501_YCSX(ycsxList[i].PROD_REQUEST_NO + "A", ycsxList[i].EMPL_NO);
+              const hasInLai = await ycsxService.isHasInLaiCountAMZ(ycsxList[i].PROD_REQUEST_NO);
+              if (!hasInLai) {
+                await ycsxService.deleteDataAMZ(ycsxList[i].PROD_REQUEST_NO);
+              }
+            } else {
+              err_code = true;
+              Swal.fire("Thông báo", "Xóa YCSX thất bại: " + result, "error");
+            }
+          }
+        }
+      }
+      if (!err_code) {
+        let newNotification: NotificationElement = {
+          CTR_CD: "002",
+          NOTI_ID: -1,
+          NOTI_TYPE: "warning",
+          TITLE: "Xóa YCSX",
+          CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã xóa YCSX: ${ycsxList[0].PROD_REQUEST_NO}, CODE: ${ycsxList[0]?.G_CODE}, CUST_CD: ${ycsxList[0]?.CUST_CD}, QTY: ${ycsxList[0]?.PROD_REQUEST_QTY}, DELIVERY DATE: ${ycsxList[0]?.DELIVERY_DT?.toString()}, và có thể nhiều ycsx khác`,
+          SUBDEPTNAME: "KD,QLSX",
+          MAINDEPTNAME: "KD,QLSX",
+          INS_EMPL: "NHU1903",
+          INS_DATE: moment().format("YYYY-MM-DD"),
+          UPD_EMPL: "NHU1903",
+          UPD_DATE: moment().format("YYYY-MM-DD"),
+        };
+        const insertNoti = await f_insert_Notification_Data(newNotification);
+        if (insertNoti) {
+          getSocket().emit("notification_panel", newNotification);
+        }
+        Swal.fire("Thông báo", "Xóa YCSX thành công (chỉ YCSX của người đăng nhập)!", "success");
+        handletraYCSX();
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để xóa !", "error");
+    }
   };
   const setPDuyetYCSX = async (pduyet_value: number) => {
     if (userData?.EMPL_NO?.toUpperCase() === "LVT1906" || empl_name === "pd") {
@@ -3874,8 +3950,13 @@ const YCSXManager = () => {
                       variant='contained'
                       size='small'
                       sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }}
-                      onClick={() => {
-                        f_checkDuplicateAMZ();
+                      onClick={async () => {
+                        const checkDuplicate = await ycsxService.checktrungAMZ();
+                        if (checkDuplicate) {
+                          Swal.fire("Thông báo", "Data trùng: " + checkDuplicate.VALUE + "______ Số lặp lại: " + checkDuplicate.COUNT, "error");
+                        } else {
+                          Swal.fire("Thông báo", "Không có dòng trùng", "success");
+                        }
                       }}
                     >
                       Check

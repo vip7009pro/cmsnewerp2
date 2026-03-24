@@ -59,7 +59,7 @@ import {
   WEB_SETTING_DATA,
 } from "../../../../api/GlobalInterface";
 import { checkBP, zeroPad } from "../../../../api/GlobalFunction";
-import { f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { BOMSX_DATA, CODE_FULL_INFO } from "../../../rnd/interfaces/rndInterface";
 import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, CNT_GAP_DATA2, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TREND_NGUOI_HANG_DATA, TRUOCHAN_BACK_DATA, TRUOCHAN_BACK_DATA2 } from "../../../qc/interfaces/qcInterface";
 import { LOSS_TIME_DATA_THEO_MAY, LOSS_TIME_DATA_THEO_NGUOI } from "../../../sx/KPI_NV_NEW2/KPI_NV_NEW2";
@@ -2487,7 +2487,7 @@ export const f_addQLSXPLAN = async (
           "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này | ";
       }
     }
-    await f_updateDMSX_LOSS_KT();
+    await ycsxService.updateDMSX_LOSS_KT();
   } else {
     err_code = "Chọn ít nhất 1 YCSX để Add !";
   }

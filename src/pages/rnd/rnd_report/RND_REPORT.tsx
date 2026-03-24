@@ -18,10 +18,10 @@ import RNDDailyNewCode from "../../../components/Chart/RND/RNDDailyNewCode";
 import RNDWeeklyNewCode from "../../../components/Chart/RND/RNDWeeklyNewCode";
 import RNDMonthlyNewCode from "../../../components/Chart/RND/RNDMonthlyNewCode";
 import RNDYearlyNewCode from "../../../components/Chart/RND/RNDYearlyNewCode";
-import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";
+import RNDNewCodeByCustomer from "../../../components/Chart/RND/RNDNewCodeByCustomer";  
 import RNDNewCodeByProdType from "../../../components/Chart/RND/RNDNewCodeByProdType";
 import { YCTK_TREND_DATA } from "../../kinhdoanh/interfaces/kdInterface";
-import { f_load_film_saving_daily, f_load_film_saving_monthly, f_load_film_saving_weekly, f_load_film_saving_yearly, f_load_tilefilmbanBackData, f_load_YCTK_TREND_DAILY, f_load_YCTK_TREND_MONTHLY, f_load_YCTK_TREND_WEEKLY, f_load_YCTK_TREND_YEARLY } from "../../kinhdoanh/utils/kdUtils";
+import { ycsxService } from "../../kinhdoanh/services/ycsxService";
 import RNDDailyDesignRequest from "../../../components/Chart/RND/RNDDailyDesignRequest";
 import RNDWeeklyDesignRequest from "../../../components/Chart/RND/RNDWeeklyDesignRequest";
 import RNDMonthlyDesignRequest from "../../../components/Chart/RND/RNDMonthlyDesignRequest";
@@ -242,7 +242,7 @@ const RND_REPORT = () => {
   const handle_getYCTKDataDaily = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    setYCTKDailyNewCode(await f_load_YCTK_TREND_DAILY(
+    setYCTKDailyNewCode(await ycsxService.load_YCTK_TREND_DAILY(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -252,7 +252,7 @@ const RND_REPORT = () => {
   const handle_getYCTKDataWeekly = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    setYCTKWeeklyNewCode(await f_load_YCTK_TREND_WEEKLY(
+    setYCTKWeeklyNewCode(await ycsxService.load_YCTK_TREND_WEEKLY(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -262,7 +262,7 @@ const RND_REPORT = () => {
   const handle_getYCTKDataMonthly = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    setYCTKMonthlyNewCode(await f_load_YCTK_TREND_MONTHLY(
+    setYCTKMonthlyNewCode(await ycsxService.load_YCTK_TREND_MONTHLY(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -272,7 +272,7 @@ const RND_REPORT = () => {
   const handle_getYCTKDataYearly = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    setYCTKYearlyNewCode(await f_load_YCTK_TREND_YEARLY(
+    setYCTKYearlyNewCode(await ycsxService.load_YCTK_TREND_YEARLY(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -282,7 +282,7 @@ const RND_REPORT = () => {
   const handle_getFilmSavingDaily = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    setFilmSavingDaily(await f_load_film_saving_daily(
+    setFilmSavingDaily(await ycsxService.load_film_saving_daily(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -292,7 +292,7 @@ const RND_REPORT = () => {
   const handle_getFilmSavingWeekly = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    setFilmSavingWeekly(await f_load_film_saving_weekly(
+    setFilmSavingWeekly(await ycsxService.load_film_saving_weekly(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -302,7 +302,7 @@ const RND_REPORT = () => {
   const handle_getFilmSavingMonthly = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    setFilmSavingMonthly(await f_load_film_saving_monthly(
+    setFilmSavingMonthly(await ycsxService.load_film_saving_monthly(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -312,7 +312,7 @@ const RND_REPORT = () => {
   const handle_getFilmSavingYearly = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    setFilmSavingYearly(await f_load_film_saving_yearly(
+    setFilmSavingYearly(await ycsxService.load_film_saving_yearly(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,
@@ -322,7 +322,7 @@ const RND_REPORT = () => {
   const handle_getTileFilmBanBackData = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    setTileFilmBanBackData(await f_load_tilefilmbanBackData(
+    setTileFilmBanBackData(await ycsxService.load_tilefilmbanBackData(
       {
         FROM_DATE: df ? frd : from_date,
         TO_DATE: df ? td : to_date,

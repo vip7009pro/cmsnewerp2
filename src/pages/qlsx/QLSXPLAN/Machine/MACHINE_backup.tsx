@@ -39,7 +39,7 @@ import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { getSettingUPHUnitLoss } from "../../../../components/JSONData/DinhMuc";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
-import { f_insertDMYCSX } from "../../../kinhdoanh/utils/kdUtils";
+import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { f_addQLSXPLAN, f_deleteChiThiMaterialLine, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_handletraYCSXQLSX, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
 import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import useLocalStorageArray from "./LoadSelectedMachineHook";
@@ -1573,7 +1573,7 @@ const MACHINE_OLD = () => {
         ) {
           Swal.fire("Thông báo", "Lưu thất bại, hãy nhập đủ thông tin", "error");
         } else {
-          await f_insertDMYCSX({
+          await ycsxService.insertDMYCSX({
             PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
             G_CODE: selectedPlan?.G_CODE,
             LOSS_SX1: datadinhmuc.LOSS_SX1,

@@ -5,10 +5,13 @@ import { useAppSelector } from "../../../redux/hooks";
 import { selectTheme, selectCompany } from "../../../redux/selectors/uiSelectors";
 import { selectUserData } from "../../../redux/selectors/authSelectors";
 import { getSocket, getUserData } from "../../../api/Api";
-import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { compareDateToNow, compareTwoDate, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
-import { f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_insertInvoice, f_readUploadFile } from "../utils/kdUtils";
+import { ycsxService } from "../services/ycsxService";
+import { readUploadFile } from "../../../api/ExcelUtils";
+import { invoiceService } from "../services/invoiceService";
+import { poService } from "../services/poService";
 import "./InvoiceManagerAddTab.scss";
 
 const InvoiceManagerAddTab: React.FC = () => {
@@ -22,7 +25,7 @@ const InvoiceManagerAddTab: React.FC = () => {
   const excelSelected = useRef<any[]>([]);
 
   const loadFile = (e: any) => {
-    f_readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
+    readUploadFile(e, setUploadExcelJSon, setColumnsExcel);
   };
 
   const handle_checkInvoiceHangLoat = async () => {
@@ -30,16 +33,16 @@ const InvoiceManagerAddTab: React.FC = () => {
       let tempjson = uploadExcelJson;
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
-        let po_info: Array<any> = await f_checkPOInfo(
+        let po_info: Array<any> = await poService.checkPOInfo(
           uploadExcelJson[i].G_CODE ?? "",
           uploadExcelJson[i].CUST_CD ?? "",
           uploadExcelJson[i].PO_NO
         );
         err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE ? 5 : err_code) : 1;
-        let checkCompareIVDatevsPODate: number = po_info.length > 0 ? f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0]?.PO_DATE.substring(0, 10)) : err_code;
+        let checkCompareIVDatevsPODate: number = po_info.length > 0 ? compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0]?.PO_DATE.substring(0, 10)) : err_code;
         err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
-        err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
-        let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+        err_code = compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
+        let checkG_CODE: number = await ycsxService.checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
         err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
         if (err_code === 0) {
           tempjson[i].CHECKSTATUS = "OK";
@@ -69,19 +72,19 @@ const InvoiceManagerAddTab: React.FC = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      let po_info: Array<any> = await f_checkPOInfo(
+      let po_info: Array<any> = await poService.checkPOInfo(
         uploadExcelJson[i].G_CODE ?? "",
         uploadExcelJson[i].CUST_CD ?? "",
         uploadExcelJson[i].PO_NO
       );
       err_code = po_info.length > 0 ? (uploadExcelJson[i].DELIVERY_QTY > po_info[0].PO_BALANCE ? 5 : err_code) : 1;
-      let checkCompareIVDatevsPODate: number = po_info.length > 0 ? f_compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0].PO_DATE.substring(0, 10)) : err_code;
+      let checkCompareIVDatevsPODate: number = po_info.length > 0 ? compareTwoDate(uploadExcelJson[i].DELIVERY_DATE, po_info[0].PO_DATE.substring(0, 10)) : err_code;
       err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
-      err_code = f_compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
-      let checkG_CODE: number = await f_checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
+      err_code = compareDateToNow(uploadExcelJson[i].DELIVERY_DATE) ? 2 : err_code;
+      let checkG_CODE: number = await ycsxService.checkG_CODE_USE_YN(uploadExcelJson[i].G_CODE);
       err_code = checkG_CODE == 1 ? 3 : checkG_CODE === 2 ? 4 : err_code;
       if (err_code === 0) {
-        tempjson[i].CHECKSTATUS = await f_insertInvoice({
+        tempjson[i].CHECKSTATUS = await invoiceService.insertInvoice({
           DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
           DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
           REMARK: uploadExcelJson[i]?.REMARK ?? "",

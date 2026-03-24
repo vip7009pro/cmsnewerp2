@@ -3,7 +3,8 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineExport, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
+import { getAuditMode, getCompany, getUserData, uploadQuery } from "../../../api/Api";
+import { iqcService } from "../services/iqcService";
 import "./NCR_MANAGER.scss";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -68,7 +69,7 @@ const NCR_MANAGER = () => {
           uploadQuery(file, "NCR_" + params.data.NCR_ID + ".png", "ncrimage")
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                generalQuery("update_ncr_image", {
+                iqcService.update_ncr_image({
                   NCR_ID: params.data.NCR_ID,
                   imagevalue: "Y",
                 })
@@ -226,13 +227,13 @@ const NCR_MANAGER = () => {
           </div>}
         columns={column_ncrdatatable}
         data={ncr_data_table}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           clickedrow.current = e.data;
           handletraHoldingData(e.data);          
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();         
         }}
@@ -248,12 +249,12 @@ const NCR_MANAGER = () => {
           </div>}
         columns={column_holdingbyncridtable}
         data={holdingdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
              
         }}
@@ -262,7 +263,7 @@ const NCR_MANAGER = () => {
   }, [holdingdatatable]);
 
   const handletraNCRData = () => {
-    generalQuery("loadNCRData", {
+    iqcService.loadNCRData({
       M_CODE: m_code.trim(),
       M_NAME: m_name.trim(),
       LOTNCC: vendorLot.trim(),
@@ -300,7 +301,7 @@ const NCR_MANAGER = () => {
       });
   };
   const handletraHoldingData = (ncrDataRow: NCR_DATA) => {
-    generalQuery("loadHoldingMaterialByNCR_ID", {
+    iqcService.loadHoldingMaterialByNCR_ID({
       NCR_ID: ncrDataRow.NCR_ID,
     })
       .then((response) => {
@@ -321,7 +322,7 @@ const NCR_MANAGER = () => {
       });
   };
   const checkEMPL_NAME = (EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    iqcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -339,7 +340,7 @@ const NCR_MANAGER = () => {
       });
   };
   const checkLotNVL = (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLotI222", { M_LOT_NO: M_LOT_NO })
+    iqcService.checkMNAMEfromLotI222({ M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -353,7 +354,7 @@ const NCR_MANAGER = () => {
           setCust_Name_KD(response.data.data[0].CUST_NAME_KD);
           setVendorLot(response.data.data[0].LOTNCC);
           setEXP_DATE(moment(response.data.data[0].EXP_DATE).format("YYYY-MM-DD"));
-          generalQuery("checkMNAMEfromLotI222Total", {
+          iqcService.checkMNAMEfromLotI222Total({
             M_CODE: response.data.data[0].M_CODE,
             LOTCMS: M_LOT_NO.substring(0, 6),
           })
@@ -438,7 +439,7 @@ const NCR_MANAGER = () => {
     if (ncr_data_table.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < ncr_data_table.length; i++) {
-        await generalQuery("insertNCRData", ncr_data_table[i])
+        await iqcService.insertNCRData(ncr_data_table[i])
           // eslint-disable-next-line no-loop-func
           .then((response) => {
             if (response.data.tk_status !== "NG") {

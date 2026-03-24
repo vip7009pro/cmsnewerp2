@@ -1,0 +1,26 @@
+import { generalQuery } from "../../../api/Api";
+
+export const isoService = {
+  loadRNRchitiet: async (data: any) => await generalQuery("loadRNRchitiet", data),
+  RnRtheonhanvien: async (data: any) => await generalQuery("RnRtheonhanvien", data),
+  loadDocCategory1: async (data: any) => await generalQuery("loadDocCategory1", data),
+  loadDocCategory2: async (data: any) => await generalQuery("loadDocCategory2", data),
+  loadDocList: async (data: any) => await generalQuery("loadDocList", data),
+  loadDocuments: async (data: any) => await generalQuery("loadDocuments", data),
+  checkLastFileID: async (data: any) => await generalQuery("checkLastFileID", data),
+  insertFileData: async (data: any) => await generalQuery("insertFileData", data),
+  selectCustomerAndVendorList: async (data: any) => await generalQuery("selectCustomerAndVendorList", data),
+  checklastAuditID: async (data: any) => await generalQuery("checklastAuditID", data),
+  insertCheckSheetData: async (data: any) => await generalQuery("insertCheckSheetData", data),
+  checkAuditNamebyCustomer: async (data: any) => await generalQuery("checkAuditNamebyCustomer", data),
+  insertNewAuditInfo: async (data: any) => await generalQuery("insertNewAuditInfo", data),
+  auditlistcheck: async (data: any) => await generalQuery("auditlistcheck", data),
+  loadAuditResultList: async (data: any) => await generalQuery("loadAuditResultList", data),
+  loadAuditResultCheckList: async (data: any) => await generalQuery("loadAuditResultCheckList", data),
+  checkAuditResultCheckListExist: async (data: any) => await generalQuery("checkAuditResultCheckListExist", data),
+  insertResultIDtoCheckList: async (data: any) => await generalQuery("insertResultIDtoCheckList", data),
+  createNewAudit: async (data: any) => await generalQuery("createNewAudit", data),
+  updateEvident: async (data: any) => await generalQuery("updateEvident", data),
+  resetEvident: async (data: any) => await generalQuery("resetEvident", data),
+  updatechecksheetResultRow: async (data: any) => await generalQuery("updatechecksheetResultRow", data),
+};

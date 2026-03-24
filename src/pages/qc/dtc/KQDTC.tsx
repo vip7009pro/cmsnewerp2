@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { getAuditMode } from "../../../api/Api";
+import { dtcService } from "../services/dtcService";
 import "./KQDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import XBAR_CHART from "../../../components/Chart/DTC/XBAR_CHART";
@@ -168,7 +169,7 @@ const KQDTC = () => {
     }, []);
   const [selectedData, setSelectedData] = useState<any>(null);
   const getXbar = async (DATA: any) => {
-    await generalQuery("loadXbarData", {
+    await dtcService.loadXbarData({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -218,7 +219,7 @@ const KQDTC = () => {
       });
   }
   const getCPK = async (DATA: any) => {
-    await generalQuery("loadCPKTrend", {
+    await dtcService.loadCPKTrend({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -256,7 +257,7 @@ const KQDTC = () => {
       });
   }
   const getHistogram = async (DATA: any) => {
-    await generalQuery("loadHistogram", {
+    await dtcService.loadHistogram({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -292,7 +293,7 @@ const KQDTC = () => {
       });
   }
   const handletraDTCData = () => {
-    generalQuery("dtcdata", {
+    dtcService.dtcdata({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -350,9 +351,9 @@ const KQDTC = () => {
           </div>}
         columns={columnDefinition}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           /* setSelectedData(e.data)
           if (isLoading.current === false) {
             isLoading.current = true;
@@ -364,10 +365,10 @@ const KQDTC = () => {
             Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
           } */
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           Swal.fire({
             title: "Loading data",
             text: "Đang tải dữ liệu, hãy chờ chút",
@@ -482,7 +483,7 @@ const KQDTC = () => {
               <select
                 name='hangmuctest'
                 value={testname}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setTestName(e.target.value);
                 }}
               >

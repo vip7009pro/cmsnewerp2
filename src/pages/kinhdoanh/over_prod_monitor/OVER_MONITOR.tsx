@@ -12,7 +12,7 @@ import { CustomCellRendererProps } from "ag-grid-react";
 import { checkBP, f_insert_Notification_Data} from "../../../api/GlobalFunction";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
-import { f_loadProdOverData, f_updateProdOverData } from "../utils/kdUtils";
+import { ycsxService } from "../services/ycsxService";
 import { PROD_OVER_DATA } from "../interfaces/kdInterface";
 import {
   Bar,
@@ -102,11 +102,11 @@ const OVER_MONITOR = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    setTableData(await f_loadProdOverData(only_pending));
+    setTableData(await ycsxService.load_ProdOverData(only_pending));
   }
 
   const loadChartData = async () => {
-    setChartData(await f_loadProdOverData(false));
+    setChartData(await ycsxService.load_ProdOverData(false));
   }
 
   const loadAllData = async () => {
@@ -135,7 +135,7 @@ const OVER_MONITOR = () => {
       if (result.isConfirmed) {
         switch (getUserData()?.MAINDEPTNAME) {
           case 'KD':
-            await f_updateProdOverData(prod_over_data, updateValue)
+            await ycsxService.update_ProdOverData(prod_over_data, updateValue)
             let newNotification: NotificationElement = {
               CTR_CD: '002',
               NOTI_ID: -1,
@@ -175,7 +175,7 @@ const OVER_MONITOR = () => {
         switch (getUserData()?.MAINDEPTNAME) {
           case 'KD':
             for (let i = 0; i < selectedRows.length; i++) {
-              if(selectedRows[i].HANDLE_STATUS !=='C') await f_updateProdOverData(selectedRows[i], updatevalue)
+              if(selectedRows[i].HANDLE_STATUS !=='C') await ycsxService.update_ProdOverData(selectedRows[i], updatevalue)
             }
             let newNotification: NotificationElement = {
               CTR_CD: '002',

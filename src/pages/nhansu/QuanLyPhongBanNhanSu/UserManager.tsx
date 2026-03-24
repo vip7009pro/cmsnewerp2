@@ -5,14 +5,7 @@ import "./UserManager.scss";
 import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import { EmployeeTableData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import {
-  f_addEmployee,
-  f_getEmployeeList,
-  f_loadWorkPositionList,
-  f_recognizeFaceID,
-  f_updateEmployee,
-  f_updateFaceID,
-} from "../utils/nhansuUtils";
+import { employeeService } from "../services/employeeService";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
@@ -44,13 +37,13 @@ const UserManager = () => {
   const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
   const loadWorkPosition = async () => {
     let kq: any[] = [];
-    kq = await f_loadWorkPositionList();
+    kq = await employeeService.loadWorkPositionList();
 //    console.log(kq);
     setWorkPositionLoad(kq);
   }
   const loadEmplInfo = async () => {
     let kq: EmployeeTableData[] = [];
-    kq = await f_getEmployeeList();
+    kq = await employeeService.getEmployeeList();
     setEmplInfo(kq);
     if (kq.length > 0) {
       Swal.fire('Thông báo', 'Có ' + kq.length + ' nhân viên', 'success');
@@ -388,7 +381,7 @@ const UserManager = () => {
       embedding.forEach((val, i) => floatArray[i] = val);
       const byteArray = new Uint8Array(buffer);
       console.log('byteArray',byteArray);
-      let kq: boolean = await f_updateFaceID({EMPL_NO: selectedRows.EMPL_NO, FACE_ID: byteArray});
+      let kq: boolean = await employeeService.updateFaceID({EMPL_NO: selectedRows.EMPL_NO, FACE_ID: byteArray});
       if (kq) {
         Swal.fire('Thông báo', 'Lưu embedding thành công!', 'success');
       } else {
@@ -439,7 +432,7 @@ const UserManager = () => {
       const embedding = Array.from(detections.descriptor); // Chuyển Float32Array thành array thường
       console.log('Embedding:', embedding);
       Swal.fire('Embedding', embedding.join(','));
-      let kq: any = await f_recognizeFaceID({FACE_ID: embedding});
+      let kq: any = await employeeService.recognizeFaceID({FACE_ID: embedding});
       console.log('kq',kq.data.EMPL_NO);
       if (kq.tk_status !== "NG") {
         Swal.fire('Thông báo','Xin chào ' + kq.data.EMPL_NO, 'success');
@@ -709,11 +702,11 @@ const UserManager = () => {
                   ["ALL"],
                   ["ALL"],
                   async () => {
-                    await f_addEmployee(selectedRows);
+                    await employeeService.addEmployee(selectedRows);
                   }
                 );
               } else {
-                await f_addEmployee(selectedRows);
+                await employeeService.addEmployee(selectedRows);
               }
               loadEmplInfo();
             }}>Add</Button>
@@ -725,11 +718,11 @@ const UserManager = () => {
                   ["ALL"],
                   ["ALL"],
                   async () => {
-                    await f_updateEmployee(selectedRows);
+                    await employeeService.updateEmployee(selectedRows);
                   }
                 );
               } else {
-                await f_updateEmployee(selectedRows);
+                await employeeService.updateEmployee(selectedRows);
               }
               loadEmplInfo();
             }}>Update</Button>

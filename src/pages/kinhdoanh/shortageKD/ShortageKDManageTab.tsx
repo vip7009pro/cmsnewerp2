@@ -4,7 +4,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { getAuditMode } from "../../../api/Api";
+import { shortageService } from "../services/shortageService";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
@@ -265,7 +266,7 @@ const ShortageKDManageTab = () => {
   );
 
   const handletraShortage = () => {
-    generalQuery("traShortageKD", {
+    shortageService.traShortageKD({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -305,7 +306,7 @@ const ShortageKDManageTab = () => {
     if (shortagedatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
       for (let i = 0; i < shortagedatatablefilter.current.length; i++) {
-        await generalQuery("delete_shortage", {
+        await shortageService.delete_shortage({
           ST_ID: shortagedatatablefilter.current[i].ST_ID,
         })
           .then((response) => {

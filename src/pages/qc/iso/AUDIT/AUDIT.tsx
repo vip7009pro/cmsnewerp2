@@ -9,7 +9,8 @@ import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getUserData, uploadQuery } from "../../../../api/Api";
+import { getUserData, uploadQuery } from "../../../../api/Api";
+import { isoService } from "../../services/isoService";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import './AUDIT.scss'
 import { HiSave } from "react-icons/hi";
@@ -106,7 +107,7 @@ const AUDIT = () => {
     }
   };
   const getcustomerlist = () => {
-    generalQuery("selectCustomerAndVendorList", {})
+    isoService.selectCustomerAndVendorList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -120,7 +121,7 @@ const AUDIT = () => {
   const insertCheckSheetList = async () => {
     let err_code: number = 0;
     let lastAudit_ID: number = 1;
-    await generalQuery("checklastAuditID", {})
+    await isoService.checklastAuditID({})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -132,7 +133,7 @@ const AUDIT = () => {
         console.log(error);
       });
     for (let i = 0; i < uploadExcelJson.length; i++) {
-      await generalQuery("insertCheckSheetData", {
+      await isoService.insertCheckSheetData({
         AUDIT_ID: lastAudit_ID,
         MAIN_ITEM_NO: uploadExcelJson[i].MAIN_ITEM_NO,
         MAIN_ITEM_CONTENT: uploadExcelJson[i].MAIN_ITEM_CONTENT,
@@ -168,7 +169,7 @@ const AUDIT = () => {
     //check if auditname exist
     let auditnameExist: boolean = false;
     if (auditname !== '') {
-      await generalQuery("checkAuditNamebyCustomer", {
+      await isoService.checkAuditNamebyCustomer({
         AUDIT_NAME: auditname,
         CUST_CD: selectedCust_CD?.CUST_CD,
       })
@@ -184,7 +185,7 @@ const AUDIT = () => {
         });
       if (!auditnameExist) {
         if (uploadExcelJson.length > 0) {
-          await generalQuery("insertNewAuditInfo", {
+          await isoService.insertNewAuditInfo({
             AUDIT_NAME: auditname,
             CUST_CD: selectedCust_CD?.CUST_CD,
             PASS_SCORE: passScore
@@ -309,7 +310,7 @@ const AUDIT = () => {
     />
     , [uploadExcelJson]);  
   const loadAuditList = () => {
-    generalQuery("auditlistcheck", filterData)
+    isoService.auditlistcheck(filterData)
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -334,7 +335,7 @@ const AUDIT = () => {
       });
   }
   const loadAuditResultList = (audit_id: number) => {
-    generalQuery("loadAuditResultList", {
+    isoService.loadAuditResultList({
       AUDIT_ID: audit_id
     })
       .then((response) => {
@@ -360,7 +361,7 @@ const AUDIT = () => {
       });
   }
   const loadAuditResultCheckList = (auditResultID: number) => {
-    generalQuery("loadAuditResultCheckList", {
+    isoService.loadAuditResultCheckList({
       AUDIT_RESULT_ID: auditResultID
     })
       .then((response) => {
@@ -388,7 +389,7 @@ const AUDIT = () => {
   }
   const checkAuditResultCheckListExist = async (auditResultID: number) => {
     let kq: boolean = false;
-    await generalQuery("checkAuditResultCheckListExist", {
+    await isoService.checkAuditResultCheckListExist({
       AUDIT_RESULT_ID: auditResultID
     })
       .then((response) => {
@@ -406,7 +407,7 @@ const AUDIT = () => {
     return kq;
   }
   const insertNewResultCheckList = (auditResultID: number, auditID: number) => {
-    generalQuery("insertResultIDtoCheckList", {
+    isoService.insertResultIDtoCheckList({
       AUDIT_RESULT_ID: auditResultID,
       AUDIT_ID: auditID
     })
@@ -423,7 +424,7 @@ const AUDIT = () => {
       });
   }
   const createNewAudit = () => {
-    generalQuery("createNewAudit", {
+    isoService.createNewAudit({
       AUDIT_ID: selectedAuditID,
       AUDIT_NAME: auditList.filter((ele: AUDIT_LIST, index: number) => ele.AUDIT_ID === selectedAuditID)[0].AUDIT_NAME
     })
@@ -465,7 +466,7 @@ const AUDIT = () => {
         if (isUploaded) {
           filenamelist = filenamelist.substring(0, filenamelist.length - 1);
           console.log(filenamelist);
-          generalQuery("updateEvident", { AUDIT_RESULT_DETAIL_ID: auditresultdetailid, AUDIT_EVIDENT: filenamelist })
+          isoService.updateEvident({ AUDIT_RESULT_DETAIL_ID: auditresultdetailid, AUDIT_EVIDENT: filenamelist })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 Swal.fire(
@@ -521,7 +522,7 @@ const AUDIT = () => {
   const resetEvident = () => {
     if (selectedauditResultCheckListRows.current.length > 0) {
       for (let i = 0; i < selectedauditResultCheckListRows.current.length; i++) {
-        generalQuery("resetEvident", {
+        isoService.resetEvident({
           AUDIT_RESULT_DETAIL_ID: selectedauditResultCheckListRows.current[i].AUDIT_RESULT_DETAIL_ID,
         })
           .then((response) => {
@@ -574,7 +575,7 @@ const AUDIT = () => {
   const saveCheckSheet = () => {
     if (selectedauditResultCheckListRows.current.length > 0) {
       for (let i = 0; i < selectedauditResultCheckListRows.current.length; i++) {
-        generalQuery("updatechecksheetResultRow", {
+        isoService.updatechecksheetResultRow({
           AUDIT_RESULT_DETAIL_ID: selectedauditResultCheckListRows.current[i].AUDIT_RESULT_DETAIL_ID,
           REMARK: selectedauditResultCheckListRows.current[i].REMARK,
           AUDIT_SCORE: selectedauditResultCheckListRows.current[i].AUDIT_SCORE,

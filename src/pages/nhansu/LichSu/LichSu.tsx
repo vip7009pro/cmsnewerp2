@@ -12,7 +12,8 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { getCompany } from "../../../api/Api";
+import { attendanceService } from "../services/attendanceService";
 import "./LichSu.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -526,9 +527,8 @@ const LichSu = () => {
     );
   }
   const handleSearch = () => {
-    generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })
+    attendanceService.getMyDiemDanh(fromdate, todate)
       .then((response) => {
-        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: DiemDanhLichSuData[] = response.data.data.map(
             (element: DiemDanhLichSuData, index: number) => {
@@ -562,7 +562,6 @@ const LichSu = () => {
               };
             }
           );
-          //console.log(loaded_data )
           setDiemDanhNhomTable(loaded_data);
           setisLoading(false);
           Swal.fire(

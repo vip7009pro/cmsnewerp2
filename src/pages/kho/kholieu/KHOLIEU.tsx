@@ -3,7 +3,8 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
+import { getAuditMode, getCompany } from "../../../api/Api";
+import { khoLieuService } from "../services/khoLieuService";
 import { checkBP } from "../../../api/GlobalFunction";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectTheme } from "../../../redux/selectors/uiSelectors";
@@ -240,7 +241,7 @@ const KHOLIEU = () => {
     setSummaryWH("");
     setisLoading(true);
     let roll_no_array = rollNo.trim().split("-");
-    generalQuery("tranhaplieu", {
+    khoLieuService.tranhaplieu({
       M_NAME: m_name,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -302,7 +303,7 @@ const KHOLIEU = () => {
       showConfirmButton: false,
     });
     setisLoading(true);
-    generalQuery("traxuatlieu", {
+    khoLieuService.traxuatlieu({
       G_NAME: codeKD,
       ALLTIME: alltime,
       JUSTBALANCE: justbalancecode,
@@ -359,7 +360,7 @@ const KHOLIEU = () => {
     });
     setSummaryWH("");
     setisLoading(true);
-    generalQuery("tratonlieu", {
+    khoLieuService.tratonlieu({
       M_CODE: m_code,
       M_NAME: m_name,
       JUSTBALANCE: justbalancecode,
@@ -398,7 +399,7 @@ const KHOLIEU = () => {
       if (inputlieufilter.length > 0) {
         let err_code: string = "";
         for (let i = 0; i < inputlieufilter.length; i++) {
-          generalQuery("updatelieuncc", {
+          khoLieuService.updatelieuncc({
             M_LOT_NO: inputlieufilter[i].M_LOT_NO,
             LOTNCC: lotncc,
           })

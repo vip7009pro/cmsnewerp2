@@ -3,7 +3,8 @@ import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+
+import { pqcService } from "../services/pqcService";
 import "./PQC1.scss";
 import { BiShow } from "react-icons/bi";
 import {UserData } from "../../../api/GlobalInterface";
@@ -57,7 +58,7 @@ const PQC1 = () => {
     }
   };
   const checkKTDTC = (PROCESS_LOT_NO: string) => {
-    generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+    pqcService.checkktdtc({ PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -75,7 +76,7 @@ const PQC1 = () => {
       });
   };
   const checkDataSX = (PLAN_ID: string) => {
-    generalQuery("loadDataSX", {
+    pqcService.loadDataSX({
       ALLTIME: true,
       FROM_DATE: "",
       TO_DATE: "",
@@ -350,7 +351,7 @@ const PQC1 = () => {
     , [pqc1datatable]);
 
   const traPQC1Data = () => {
-    generalQuery("trapqc1data", {
+    pqcService.trapqc1data({
       ALLTIME: false,
       FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
       TO_DATE: moment().format("YYYY-MM-DD"),
@@ -396,7 +397,7 @@ const PQC1 = () => {
       });
   };
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    pqcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);\
@@ -423,7 +424,7 @@ const PQC1 = () => {
       });
   };
   const checkPlanID = (PLAN_ID: string) => {
-    generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+    pqcService.checkPLAN_ID({ PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -444,7 +445,7 @@ const PQC1 = () => {
       });
   };
   const checkProcessLotNo = (PROCESS_LOT_NO: string) => {
-    generalQuery("checkPROCESS_LOT_NO", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+    pqcService.checkPROCESS_LOT_NO({ PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -459,7 +460,7 @@ const PQC1 = () => {
       });
   };
   const checkPlanIDP501 = (SXDATA: SX_DATA[]) => {
-    generalQuery("checkPlanIdP501", { PLAN_ID: SXDATA[0].PLAN_ID })
+    pqcService.checkPlanIdP501({ PLAN_ID: SXDATA[0].PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -472,7 +473,7 @@ const PQC1 = () => {
             setInputNo("");
             setProcessLotNo("");
           } else {
-            generalQuery("checkProcessLotNo_Prod_Req_No", {
+            pqcService.checkProcessLotNo_Prod_Req_No({
               PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO,
             })
               .then((response) => {
@@ -498,7 +499,7 @@ const PQC1 = () => {
       });
   };
   const checkLotNVL = (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
+    pqcService.checkMNAMEfromLot({ M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -532,7 +533,7 @@ const PQC1 = () => {
       });
   };
   const inputDataPqc1 = () => {
-    generalQuery("insert_pqc1", {
+    pqcService.insert_pqc1({
       PROCESS_LOT_NO: process_lot_no.toUpperCase(),
       LINEQC_PIC: lineqc_empl.toUpperCase(),
       PROD_PIC: sx_data[0].INS_EMPL.toUpperCase(),
@@ -582,7 +583,7 @@ const PQC1 = () => {
     if (selectedRowsDataA.current.length > 0) {
       let err_code: string = '';
       for (let i = 0; i < selectedRowsDataA.current.length; i++) {
-        await generalQuery("updatepqc1sampleqty", {
+        await pqcService.updatepqc1sampleqty({
           PQC1_ID: selectedRowsDataA.current[i].PQC1_ID,
           INSPECT_SAMPLE_QTY: selectedRowsDataA.current[i].INSPECT_SAMPLE_QTY
         })

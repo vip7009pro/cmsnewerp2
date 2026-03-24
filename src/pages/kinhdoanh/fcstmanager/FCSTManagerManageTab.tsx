@@ -3,7 +3,8 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
+import { getAuditMode, getGlobalSetting } from "../../../api/Api";
+import { fcstService } from "../services/fcstService";
 import { checkBP } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
@@ -712,7 +713,7 @@ const FCSTManagerManageTab = () => {
 
   const handletraFcst = () => {
     setisLoading(true);
-    generalQuery("traFcstDataFull", {
+    fcstService.traFcstDataFull({
       alltime: alltime,
       justPoBalance: justpobalance,
       start_date: fromdate,
@@ -765,7 +766,7 @@ const FCSTManagerManageTab = () => {
       let err_code: boolean = false;
       for (let i = 0; i < fcstdatatablefilter.current.length; i++) {
         if (fcstdatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          await generalQuery("delete_fcst", {
+          await fcstService.delete_fcst({
             FCST_ID: fcstdatatablefilter.current[i].FCST_ID,
           })
             .then((response) => {

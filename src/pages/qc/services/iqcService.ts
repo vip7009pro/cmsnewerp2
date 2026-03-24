@@ -1,0 +1,53 @@
+import { generalQuery } from "../../../api/Api";
+
+export const iqcService = {
+  update_ncr_image: async (data: any) => await generalQuery("update_ncr_image", data),
+  loadNCRData: async (data: any) => await generalQuery("loadNCRData", data),
+  loadHoldingMaterialByNCR_ID: async (data: any) => await generalQuery("loadHoldingMaterialByNCR_ID", data),
+  checkMNAMEfromLotI222Total: async (data: any) => await generalQuery("checkMNAMEfromLotI222Total", data),
+  insertNCRData: async (data: any) => await generalQuery("insertNCRData", data),
+  
+  getMaxHoldingID: async (data: any = {}) => await generalQuery("getMaxHoldingID", data),
+  insertHoldingFromI222: async (data: any) => await generalQuery("insertHoldingFromI222", data),
+  updateIncomingData_web: async (data: any) => await generalQuery("updateIncomingData_web", data),
+  updateQCPASSI222: async (data: any) => await generalQuery("updateQCPASSI222", data),
+  updateIQC1Table: async (data: any) => await generalQuery("updateIQC1Table", data),
+  updateIncomingChecksheet: async (data: any) => await generalQuery("updateIncomingChecksheet", data),
+  loadIQC1table: async (data: any) => await generalQuery("loadIQC1table", data),
+  
+  updateQCPASS_HOLDING: async (data: any) => await generalQuery("updateQCPASS_HOLDING", data),
+  checkM_LOT_NO: async (data: any) => await generalQuery("checkM_LOT_NO", data),
+  updateQCPASSI222_M_LOT_NO: async (data: any) => await generalQuery("updateQCPASSI222_M_LOT_NO", data),
+  updateMaterialHoldingReason: async (data: any) => await generalQuery("updateMaterialHoldingReason", data),
+  traholdingmaterial: async (data: any) => await generalQuery("traholdingmaterial", data),
+  updateReasonHoldingFromIQC1: async (data: any = {}) => await generalQuery("updateReasonHoldingFromIQC1", data),
+  
+  updateQCPASS_FAILING: async (data: any) => await generalQuery("updateQCPASS_FAILING", data),
+  updateCLOSE_FAILING: async (data: any) => await generalQuery("updateCLOSE_FAILING", data),
+  updateIQCConfirm_FAILING: async (data: any) => await generalQuery("updateIQCConfirm_FAILING", data),
+  loadQCFailData: async (data: any) => await generalQuery("loadQCFailData", data),
+  
+  checkPLAN_ID: async (data: any) => await generalQuery("checkPLAN_ID", data),
+  checkPQC3_IDfromPLAN_ID: async (data: any) => await generalQuery("checkPQC3_IDfromPLAN_ID", data),
+  checkMNAMEfromLot: async (data: any) => await generalQuery("checkMNAMEfromLot", data),
+  checkProcessLotNoInfo: async (data: any) => await generalQuery("checkProcessLotNoInfo", data),
+  insertFailingData: async (data: any) => await generalQuery("insertFailingData", data),
+  
+  selectcodeList: async (data: any) => await generalQuery("selectcodeList", data),
+  checkEMPL_NO_mobile: async (data: any) => await generalQuery("checkEMPL_NO_mobile", data),
+  checkMNAMEfromLotI222: async (data: any) => await generalQuery("checkMNAMEfromLotI222", data),
+  dtcdata: async (data: any) => await generalQuery("dtcdata", data),
+  insertIQC1table: async (data: any) => await generalQuery("insertIQC1table", data),
+  updateLOT_SX_STATUS: async (data: any) => await generalQuery("updateLOT_SX_STATUS", data),
+  selectcustomerList: async (data: any) => await generalQuery("customerList", data),
+  updateQCFailTableData: async (data: any) => await generalQuery("updateQCFailTableData", data),
+  update_M_WIDTH_AUTO_IQC1: async (data: any) => await generalQuery("update_M_WIDTH_AUTO_IQC1", data),
+  checkM_WIDTH: async (data: any) => await generalQuery("checkM_WIDTH", data),
+  getMWidthAndThicknessResult: async (data: any) => await generalQuery("getMWidthAndThicknessResult", data),
+  updateMWidthResult: async (data: any) => await generalQuery("updateMWidthResult", data),
+  updateThickness: async (data: any) => await generalQuery("updateThickness", data),
+  updateMThickness: async (data: any) => await generalQuery("updateMThickness", data),
+  checkM_THICKNESS: async (data: any) => await generalQuery("checkM_THICKNESS", data),
+  loadBlockingData: async (data: any) => await generalQuery("loadBlockingData", data),
+  updateCLOSE_HOLDING: async (data: any) => await generalQuery("updateCLOSE_HOLDING", data),
+};

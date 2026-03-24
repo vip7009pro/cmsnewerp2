@@ -2,7 +2,8 @@ import { Button, Autocomplete, TextField, createFilterOptions, Typography, IconB
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
+import { getCompany, getUserData } from "../../../../api/Api";
+import { khoLieuService } from "../../services/khoLieuService";
 import { checkBP, f_getI221NextIN_NO, f_getI222Next_M_LOT_NO, f_Insert_I221, f_Insert_I222, f_updateStockM090, zeroPad } from "../../../../api/GlobalFunction";
 import './NHAPLIEU.scss';
 import { useAppSelector } from "../../../../redux/hooks";
@@ -202,7 +203,7 @@ const NHAPLIEU = () => {
     limit: 100,
   });
   const getcustomerlist = () => {
-    generalQuery("selectVendorList", {})
+    khoLieuService.selectVendorList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -214,7 +215,7 @@ const NHAPLIEU = () => {
       });
   };
   const getmateriallist = () => {
-    generalQuery("getMaterialList", {})
+    khoLieuService.getMaterialList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           ////console.log(response.data.data);

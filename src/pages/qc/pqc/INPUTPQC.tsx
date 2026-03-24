@@ -12,7 +12,8 @@ import moment from "moment";
 import React, { useEffect, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
+
+import { pqcService } from "../services/pqcService";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INPUTPQC.scss";
 import {
@@ -202,7 +203,7 @@ const INPUTPQC = () => {
     });
   };
   const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
+    pqcService.selectcustomerList({})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -214,7 +215,7 @@ const INPUTPQC = () => {
       });
   };
   const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
+    pqcService.selectcodeList({ G_NAME: G_NAME })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           if (!isPending) {

@@ -29,7 +29,7 @@ import KDWeeklyOverdue from "../../../components/Chart/KD/KDWeeklyOverdue";
 import KDMonthlyOverdue from "../../../components/Chart/KD/KDMonthlyOverdue";
 import KDYearlyOverdue from "../../../components/Chart/KD/KDYearlyOverdue";
 import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, OVERDUE_DATA, PIC_REVENUE_DATA, PO_BALANCE_CUSTOMER, PO_BALANCE_CUSTOMER_BY_YEAR, PO_BALANCE_DETAIL, PO_BALANCE_SUMMARY, RunningPOData, WeekLyPOData } from "../interfaces/kdInterface";
-import { f_load_PO_BALANCE_CUSTOMER, f_load_PO_BALANCE_CUSTOMER_BY_YEAR, f_load_PO_BALANCE_DETAIL, f_load_PO_BALANCE_SUMMARY } from "../utils/kdUtils";
+import { ycsxService } from "../services/ycsxService";
 import KDPOBalanceSummaryByYear from "../../../components/Chart/KD/KDPOBalanceSummaryByYear";
 import KDPOBalanceSummaryByWeek from "../../../components/Chart/KD/KDPOBalanceSummaryByWeek";
 import KDPOBalanceSummaryByCustomer from "../../../components/Chart/KD/KDPOBalanceSummaryByCustomer";
@@ -1228,7 +1228,7 @@ const KinhDoanhReport = () => {
   }, [df, fromdate, todate, in_nhanh]);
   const loadPOBalanceSummary = useCallback(async () => {
     let kq: PO_BALANCE_SUMMARY[] = [];
-    kq = await f_load_PO_BALANCE_SUMMARY({
+    kq = await ycsxService.load_PO_BALANCE_SUMMARY({
       FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
       IN_NHANH: in_nhanh,
@@ -1237,7 +1237,7 @@ const KinhDoanhReport = () => {
   }, [df, fromdate, todate, in_nhanh]);
   const loadPOBalanceDetail = useCallback(async () => {
     let kq: PO_BALANCE_DETAIL[] = [];
-    kq = await f_load_PO_BALANCE_DETAIL({
+    kq = await ycsxService.load_PO_BALANCE_DETAIL({
       FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
       IN_NHANH: in_nhanh,
@@ -1247,7 +1247,7 @@ const KinhDoanhReport = () => {
 
   const loadPOBalanceCustomer = useCallback(async () => {
     let kq: PO_BALANCE_CUSTOMER[] = [];
-    kq = await f_load_PO_BALANCE_CUSTOMER({
+    kq = await ycsxService.load_PO_BALANCE_CUSTOMER({
       FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
       IN_NHANH: in_nhanh,
@@ -1257,7 +1257,7 @@ const KinhDoanhReport = () => {
 
   const loadPOBalanceCustomerByYear = useCallback(async () => {
     let kq: PO_BALANCE_CUSTOMER[] = [];
-    kq = await f_load_PO_BALANCE_CUSTOMER_BY_YEAR({
+    kq = await ycsxService.load_PO_BALANCE_CUSTOMER_BY_YEAR({
       FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
       TO_DATE: df ? moment.utc().format("YYYY-MM-DD") : todate,
       IN_NHANH: in_nhanh,
@@ -2239,12 +2239,12 @@ const KinhDoanhReport = () => {
                 const PO_YEAR= e.activePayload[0].payload.PO_YEAR
                 setSelectedYW('Y'+PO_YEAR)
                 setPoBalanceDetail(
-                  await f_load_PO_BALANCE_DETAIL({
+                  await ycsxService.load_PO_BALANCE_DETAIL({
                     PO_YEAR: PO_YEAR,
                   })
                 );
                 setPoBalanceCustomer(
-                  await f_load_PO_BALANCE_CUSTOMER_BY_YEAR({
+                  await ycsxService.load_PO_BALANCE_CUSTOMER_BY_YEAR({
                     PO_YEAR: PO_YEAR,
                   })
                 );
@@ -2286,7 +2286,7 @@ const KinhDoanhReport = () => {
                 const PO_WEEK= e.activePayload[0].payload.PO_WEEK
                 setSelectedYW('Y'+PO_YEAR +'-W'+PO_WEEK)
                 setPoBalanceCustomer(
-                  await f_load_PO_BALANCE_CUSTOMER({
+                  await ycsxService.load_PO_BALANCE_CUSTOMER({
                     PO_YEAR: PO_YEAR,
                     PO_WEEK: PO_WEEK,
                   })

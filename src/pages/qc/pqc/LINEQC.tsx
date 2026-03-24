@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { uploadQuery } from "../../../api/Api";
+import { pqcService } from "../services/pqcService";
 import "./LINEQC.scss";
 import { UserData } from "../../../api/GlobalInterface";
 import { useAppSelector } from "../../../redux/hooks";
@@ -51,7 +52,7 @@ const LINEQC = () => {
     }
   };
   const checkKTDTC = (PROCESS_LOT_NO: string) => {
-    generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+    pqcService.checkktdtc({ PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -69,7 +70,7 @@ const LINEQC = () => {
       });
   };
   const checkDataSX = (PLAN_ID: string) => {
-    generalQuery("loadDataSX", {
+    pqcService.loadDataSX({
       ALLTIME: true,
       FROM_DATE: "",
       TO_DATE: "",
@@ -130,7 +131,7 @@ const LINEQC = () => {
   };
   const checkPLAN_ID_Checksheet = async (plan_id: string) => {
     let STT: number = 1;
-    await generalQuery("checkPlanIdChecksheet", { PLAN_ID: plan_id })
+    await pqcService.checkPlanIdChecksheet({ PLAN_ID: plan_id })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -176,7 +177,7 @@ const LINEQC = () => {
       });
   };
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
-    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+    pqcService.checkEMPL_NO_mobile({ EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);\
@@ -203,7 +204,7 @@ const LINEQC = () => {
       });
   };
   const checkPlanID = (PLAN_ID: string) => {
-    generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+    pqcService.checkPLAN_ID({ PLAN_ID: PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -224,7 +225,7 @@ const LINEQC = () => {
       });
   };
   const checkPlanIDP501 = (SXDATA: SX_DATA[]) => {
-    generalQuery("checkPlanIdP501", { PLAN_ID: SXDATA[0].PLAN_ID })
+    pqcService.checkPlanIdP501({ PLAN_ID: SXDATA[0].PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -236,7 +237,7 @@ const LINEQC = () => {
             setInputNo("");
             setProcessLotNo("");
           } else {
-            generalQuery("checkProcessLotNo_Prod_Req_No", {
+            pqcService.checkProcessLotNo_Prod_Req_No({
               PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO,
             })
               .then((response) => {
@@ -260,7 +261,7 @@ const LINEQC = () => {
       });
   };
   const checkLotNVL = (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
+    pqcService.checkMNAMEfromLot({ M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -297,7 +298,7 @@ const LINEQC = () => {
     let checkplid: number = await checkPLAN_ID_Checksheet(planId)
     if (sx_data[0].EQ_NAME_TT !== null) {
       if (checkplid === 1) {
-        await generalQuery("insert_pqc1", {
+        await pqcService.insert_pqc1({
           PROCESS_LOT_NO: process_lot_no?.toUpperCase(),
           LINEQC_PIC: lineqc_empl?.toUpperCase(),
           PROD_PIC: sx_data[0].INS_EMPL?.toUpperCase(),
@@ -340,7 +341,7 @@ const LINEQC = () => {
   const updateIMGPQC1 = async (PLAN_ID: string) => {
     let stt: number = await checkPLAN_ID_Checksheet(PLAN_ID);
     if (stt < 4) {
-      await generalQuery("update_checksheet_image_status", {
+      await pqcService.update_checksheet_image_status({
         PLAN_ID: planId.toUpperCase(),
         STT: stt,
       })

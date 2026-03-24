@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './YCTK.scss';
 import { CodeListData, CustomerListData, YCTKData } from '../interfaces/kdInterface';
-import { f_getcodelist, f_getcustomerlist, f_insert_YCTK, f_update_YCTK } from '../utils/kdUtils';
+import { ycsxService } from '../services/ycsxService';
+import { poService } from '../services/poService';
 import DropdownSearch from '../../../components/MyDropDownSearch/DropdownSearch';
 import Swal from 'sweetalert2';
 import moment from 'moment';
@@ -63,7 +64,7 @@ export default function YCTK({ data}: YCTKProps) {
     const [codeList, setCodeList] = useState<CodeListData[]>([]);
     const handleInsertYCTK = async () => {
       let kq: string = "NG";
-      kq = await f_insert_YCTK(formData);
+      kq = await ycsxService.insert_YCTK(formData);
       if (kq === "OK") {
         Swal.fire("Thông báo", "Đã thêm mới", "success");          
       } else {
@@ -72,7 +73,7 @@ export default function YCTK({ data}: YCTKProps) {
     };
     const handleUpdateYCTK = async () => {
       let kq: string = "NG";
-      kq = await f_update_YCTK(formData);
+      kq = await ycsxService.update_YCTK(formData);
       if (kq === "OK") {
         Swal.fire("Thông báo", "Đã cập nhật", "success");
       } else {
@@ -80,10 +81,10 @@ export default function YCTK({ data}: YCTKProps) {
       }
     };
     const getcustomerlist = async () => {
-      setCustomerList(await f_getcustomerlist());
+      setCustomerList(await poService.getCustomerList());
     };
     const getcodeList = async () => {
-      setCodeList(await f_getcodelist(''));
+      setCodeList(await poService.getCodeList(''));
     };
     useEffect(() => {
       getcustomerlist();

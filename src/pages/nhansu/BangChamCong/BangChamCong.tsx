@@ -16,7 +16,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from '../../../components/DataTable/AGTable';
 import { BANGCHAMCONG_DATA, BANGCHAMCONG_DATA2, CA_INFO, IN_OUT_DATA, IN_OUT_DATA2, IN_OUT_DATA22, IN_OUT_DATA3 } from "../interfaces/nhansuInterface";
-import { f_setCaDiemDanh } from "../utils/nhansuUtils";
+import { attendanceService } from "../services/attendanceService";
 import { calcMinutesByRate } from "./OverTimeUtils3";
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useAppSelector(selectUserData);
@@ -2724,7 +2724,7 @@ const BANGCHAMCONG = () => {
       if (result.isConfirmed) {
         for (let i = 0; i < selectedRows.current.length; i++) {
           const row = selectedRows.current[i];
-          await f_setCaDiemDanh({
+          await attendanceService.setCaDiemDanh({
             EMPL_NO: row.EMPL_NO,
             APPLY_DATE: row.DATE_COLUMN,
             CALV: CALV

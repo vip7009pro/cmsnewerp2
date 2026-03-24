@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
+import { getAuditMode, getCompany } from "../../../api/Api";
+import { poService } from "../services/poService";
 import { f_updateBTP_M100, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
@@ -772,8 +773,7 @@ const POandStockFull = () => {
     setColumnDefinition(
       getCompany() === "CMS" ? column_codeCMS2 : column_codeERP_PVN2
     );
-    generalQuery(
-      getCompany() === "CMS" ? "traPOFullCMS_New" : "traPOFullCMS2",
+    poService.loadPOFullCMS(
       {
         allcode: alltime,
         codeSearch: codeCMS,
@@ -853,7 +853,7 @@ const POandStockFull = () => {
     setisLoading(true);
     setColumnDefinition(column_codeKD2);
     //traPOFullKD2_NEW
-    generalQuery(getCompany() === "CMS" ? "traPOFullKD_NEW" : "traPOFullKD2", {
+    poService.loadPOFullKD({
       allcode: alltime,
       codeSearch: codeCMS,
     })

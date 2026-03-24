@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { getAuditMode } from "../../../api/Api";
+import { dtcService } from "../services/dtcService";
 import "./SPECDTC.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import { DTC_SPEC_DATA, TestListTable } from "../interfaces/qcInterface";
@@ -59,14 +60,14 @@ const SPECDTC = () => {
           </div>}
         columns={dtcSpecColumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />
@@ -89,7 +90,7 @@ const SPECDTC = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    generalQuery("dtcspec", {
+    dtcService.dtcspec({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,

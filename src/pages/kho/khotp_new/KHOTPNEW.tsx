@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
-import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
+import { getAuditMode, getUserData } from "../../../api/Api";
+import { khoTpService } from "../services/khoTpService";
 import { checkBP } from "../../../api/GlobalFunction";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -920,7 +921,7 @@ const KHOTPNEW = () => {
     }
   };
   const loadKTP_IN = () => {
-    generalQuery("loadKTP_IN", {
+    khoTpService.loadKTP_IN({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -969,7 +970,7 @@ const KHOTPNEW = () => {
       });
   };
   const loadKTP_OUT = () => {
-    generalQuery("loadKTP_OUT", {
+    khoTpService.loadKTP_OUT({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -1018,7 +1019,7 @@ const KHOTPNEW = () => {
       });
   };
   const loadSTOCKFULL = () => {
-    generalQuery("loadStockFull", {
+    khoTpService.loadStockFull({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -1067,7 +1068,7 @@ const KHOTPNEW = () => {
       });
   };
   const loadSTOCK_G_CODE = () => {
-    generalQuery("loadSTOCKG_CODE", {
+    khoTpService.loadSTOCKG_CODE({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -1112,7 +1113,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
   };
   const loadSTOCK_G_NAME_KD = () => {
-    generalQuery("loadSTOCKG_NAME_KD", {
+    khoTpService.loadSTOCKG_NAME_KD({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -1156,7 +1157,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search(
       });
   };
   const loadSTOCK_YCSX = () => {
-    generalQuery("loadSTOCK_YCSX", {
+    khoTpService.loadSTOCK_YCSX({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -1206,7 +1207,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       for(let i=0;i<selectedOUTRow.current.length;i++)
       {
         //chuyen P -> X, them remark Xuat Huy  O660
-        await generalQuery("updatePheDuyetHuyO660", {
+        await khoTpService.updatePheDuyetHuyO660({
           AUTO_ID: selectedOUTRow.current[i].AUTO_ID,
           AUTO_ID_IN: selectedOUTRow.current[i].AUTO_ID_IN
         })
@@ -1233,7 +1234,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       for(let i=0;i<selectedOUTRow.current.length;i++)
       {
         //chuyen P -> X, them remark Xuat Huy  O660
-        await generalQuery("cancelPheDuyetHuyO660", {
+        await khoTpService.cancelPheDuyetHuyO660({
           AUTO_ID: selectedOUTRow.current[i].AUTO_ID,
           AUTO_ID_IN: selectedOUTRow.current[i].AUTO_ID_IN
         })

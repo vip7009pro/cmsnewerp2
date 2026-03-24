@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { getUserData } from "../../../api/Api";
+import { iqcService } from "../services/iqcService";
 import "./HOLDING.scss";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -168,7 +169,7 @@ const HOLDING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsData.current.length; i++) {
-        await generalQuery("updateQCPASS_HOLDING", {
+        await iqcService.updateQCPASS_HOLDING({
           M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
           ID: selectedRowsData.current[i].HOLD_ID,
           VALUE: value,
@@ -179,7 +180,7 @@ const HOLDING = () => {
             console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
               let USE_YN_I222 = "X";
-              await generalQuery("checkM_LOT_NO", {
+              await iqcService.checkM_LOT_NO({
                 M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
               })
                 // eslint-disable-next-line no-loop-func
@@ -198,7 +199,7 @@ const HOLDING = () => {
                 });
               console.log("USE_YN_I222", USE_YN_I222);
               if (USE_YN_I222 !== "X") {
-                generalQuery("updateQCPASSI222_M_LOT_NO", {
+                iqcService.updateQCPASSI222_M_LOT_NO({
                   M_LOT_NO: selectedRowsData.current[i].M_LOT_NO,
                   VALUE: value,
                   USE_YN: selectedRowsData.current[i].USE_YN,
@@ -245,7 +246,7 @@ const HOLDING = () => {
       });
       let err_code: string = "";
       for (let i = 0; i < selectedRowsData.current.length; i++) {
-        await generalQuery("updateMaterialHoldingReason", {
+        await iqcService.updateMaterialHoldingReason({
           HOLD_ID: selectedRowsData.current[i].HOLD_ID,
           REASON: selectedRowsData.current[0].REASON,
         })
@@ -276,13 +277,13 @@ const HOLDING = () => {
         toolbar={<div></div>}
         columns={column_holding_table}
         data={holdingdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();
         }}
@@ -306,7 +307,7 @@ const HOLDING = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    generalQuery("traholdingmaterial", {
+    iqcService.traholdingmaterial({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -356,7 +357,7 @@ const HOLDING = () => {
       });
   };
   const handleAutoUpdateReasonFromIQC1 = () => {
-    generalQuery("updateReasonHoldingFromIQC1", {})
+    iqcService.updateReasonHoldingFromIQC1({})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {

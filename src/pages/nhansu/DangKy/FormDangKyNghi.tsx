@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { generalQuery, getGlobalLang, getSocket, getUserData, } from "../../../api/Api";
+import { getGlobalLang, getSocket, getUserData, } from "../../../api/Api";
+import { registrationService } from "../services/registrationService";
 import "./TabDangKy.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
@@ -32,9 +33,9 @@ const FormDangKyNghi = () => {
       ngayketthuc: todate,
     };
     console.log(insertData);
-    generalQuery("dangkynghi2", insertData)
-      .then(async (response) => {
-        if (response.data.tk_status === "OK") {
+    registrationService.dangKyNghi(insertData)
+      .then(async (result) => {
+        if (result.success) {
           let newNotification: NotificationElement = {
             CTR_CD: '002',
             NOTI_ID: -1,
@@ -60,7 +61,7 @@ const FormDangKyNghi = () => {
         } else {
           Swal.fire(
             "Lỗi",
-            "Đăng ký nghỉ thất bại thất bại ! " + response.data.message,
+            "Đăng ký nghỉ thất bại thất bại ! " + result.message,
             "error",
           );
         }

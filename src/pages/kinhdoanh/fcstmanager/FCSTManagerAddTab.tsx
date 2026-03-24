@@ -3,7 +3,8 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getSocket, getUserData } from "../../../api/Api";
+import { getSocket, getUserData } from "../../../api/Api";
+import { fcstService } from "../services/fcstService";
 import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -103,7 +104,7 @@ const FCSTManagerAddTab = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkFcstExist", {
+      await fcstService.checkFcstExist({
         FCSTYEAR: uploadExcelJson[i].YEAR,
         FCSTWEEKNO: uploadExcelJson[i].WEEKNO,
         G_CODE: uploadExcelJson[i].G_CODE,
@@ -118,7 +119,7 @@ const FCSTManagerAddTab = () => {
           console.log(error);
         });
 
-      await generalQuery("checkGCodeVer", {
+      await fcstService.checkGCodeVer({
         G_CODE: uploadExcelJson[i].G_CODE,
       })
         .then((response) => {
@@ -160,7 +161,7 @@ const FCSTManagerAddTab = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
-      await generalQuery("checkFcstExist", {
+      await fcstService.checkFcstExist({
         FCSTYEAR: uploadExcelJson[i].YEAR,
         FCSTWEEKNO: uploadExcelJson[i].WEEKNO,
         G_CODE: uploadExcelJson[i].G_CODE,
@@ -175,7 +176,7 @@ const FCSTManagerAddTab = () => {
           console.log(error);
         });
 
-      await generalQuery("checkGCodeVer", {
+      await fcstService.checkGCodeVer({
         G_CODE: uploadExcelJson[i].G_CODE,
       })
         .then((response) => {
@@ -193,7 +194,7 @@ const FCSTManagerAddTab = () => {
         });
 
       if (err_code === 0) {
-        await generalQuery("insert_fcst", {
+        await fcstService.insert_fcst({
           EMPL_NO: uploadExcelJson[i].EMPL_NO,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           G_CODE: uploadExcelJson[i].G_CODE,

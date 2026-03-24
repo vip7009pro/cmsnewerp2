@@ -5,7 +5,7 @@ import { FcSearch } from "react-icons/fc";
 import { AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting, getSocket, getUserData } from "../../../api/Api";
-import { checkBP, f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, compareDateToNow, compareTwoDate, f_insert_Notification_Data, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -18,19 +18,9 @@ import AGTable from "../../../components/DataTable/AGTable";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { CodeListData, CustomerListData, InvoiceSummaryData, InvoiceTableData, XUATKHOPODATA } from "../interfaces/kdInterface";
-import {
-  f_checkPOInfo,
-  f_compareDateToNow,
-  f_compareTwoDate,
-  f_deleteInvoice,
-  f_getcodelist,
-  f_getcustomerlist,
-  f_insertInvoice,
-  f_loadInvoiceDataFull,
-  f_updateInvoice,
-  f_updateInvoiceNo,
-} from "../utils/kdUtils";
 import "./InvoiceManagerManageTab.scss";
+import { poService } from "../services/poService";
+import { invoiceService } from "../services/invoiceService";
 
 const InvoiceManagerManageTab = () => {
   const theme: any = useAppSelector(selectTheme);
@@ -112,22 +102,27 @@ const InvoiceManagerManageTab = () => {
     });
     invoicedatatablefilter.current = [];
     let loadeddata: InvoiceTableData[] = [];
-    loadeddata = await f_loadInvoiceDataFull({
-      alltime: alltime,
-      justPoBalance: justpobalance,
-      start_date: fromdate,
-      end_date: todate,
-      cust_name: cust_name,
-      codeCMS: codeCMS,
-      codeKD: codeKD,
-      prod_type: prod_type,
-      empl_name: empl_name,
-      po_no: po_no,
-      over: over,
-      id: id,
-      material: material,
-      invoice_no: invoice_no,
-    });
+    try {
+      loadeddata = await invoiceService.loadInvoiceDataFull({
+        alltime: alltime,
+        justPoBalance: justpobalance,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        po_no: po_no,
+        over: over,
+        id: id,
+        material: material,
+        invoice_no: invoice_no,
+      });
+    } catch (err: any) {
+      Swal.fire("Thông báo", "Lỗi: " + err.message, "error");
+      loadeddata = [];
+    }
     if (loadeddata.length > 0) {
       let invoice_summary_temp: InvoiceSummaryData = {
         total_po_qty: 0,
@@ -154,7 +149,7 @@ const InvoiceManagerManageTab = () => {
       let err_code: number = 0;
       for (let i = 0; i < selectedxuatkhopo.current.length; i++) {
         if (selectedxuatkhopo.current[i].CHECKSTATUS.substring(0, 2) === "OK") {
-          let kq = await f_insertInvoice({
+          let kq = await invoiceService.insertInvoice({
             DELIVERY_QTY: selectedxuatkhopo.current[i].THISDAY_OUT_QTY,
             DELIVERY_DATE: selectedxuatkhopo.current[i].OUT_DATE,
             REMARK: "",
@@ -243,10 +238,10 @@ const InvoiceManagerManageTab = () => {
   };
 
   const getcustomerlist = async () => {
-    setCustomerList(await f_getcustomerlist());
+    setCustomerList(await poService.getCustomerList());
   };
   const getcodelist = async (G_NAME: string) => {
-    setCodeList(await f_getcodelist(G_NAME));
+    setCodeList(await poService.getCodeList(G_NAME));
   };
 
   const filterOptions1 = createFilterOptions({
@@ -265,17 +260,17 @@ const InvoiceManagerManageTab = () => {
 
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
-    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
+    let po_info: Array<any> = await poService.checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
     err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE ? 5 : err_code) : 1;
-    let checkCompareIVDatevsPODate: number = po_info.length > 0 ? f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10)) : err_code;
+    let checkCompareIVDatevsPODate: number = po_info.length > 0 ? compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10)) : err_code;
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
-    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
+    err_code = compareDateToNow(newinvoicedate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newinvoicedate === "" || userData?.EMPL_NO === "" || newinvoiceQTY === 0) {
       err_code = 4;
     }
     if (err_code === 0) {
-      let kq = await f_insertInvoice({
+      let kq = await invoiceService.insertInvoice({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -351,17 +346,17 @@ const InvoiceManagerManageTab = () => {
 
   const updateInvoice = async () => {
     let err_code: number = 0;
-    let po_info: Array<any> = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
+    let po_info: Array<any> = await poService.checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust_CD?.CUST_CD ?? "", newpono);
     err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE + old_invoice_qty ? 5 : err_code) : 1;
-    let checkCompareIVDatevsPODate: number = f_compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10));
+    let checkCompareIVDatevsPODate: number = compareTwoDate(newinvoicedate, po_info[0].PO_DATE.substring(0, 10));
     err_code = checkCompareIVDatevsPODate === -1 ? 6 : err_code;
-    err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
+    err_code = compareDateToNow(newinvoicedate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (selectedCode?.G_CODE === "" || selectedCust_CD?.CUST_CD === "" || newinvoicedate === "" || userData?.EMPL_NO === "" || newinvoiceQTY === 0) {
       err_code = 4;
     }
     if (err_code === 0) {
-      let kq = await f_updateInvoice({
+      let kq = await invoiceService.updateInvoice({
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
@@ -398,7 +393,7 @@ const InvoiceManagerManageTab = () => {
       let err_code: boolean = false;
       for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          if ((await f_deleteInvoice(invoicedatatablefilter.current[i].DELIVERY_ID)) !== "OK") {
+          if ((await invoiceService.deleteInvoice(invoicedatatablefilter.current[i].DELIVERY_ID)) !== "OK") {
             err_code = true;
           }
         }
@@ -451,7 +446,7 @@ const InvoiceManagerManageTab = () => {
       let err_code: boolean = false;
       for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          if ((await f_updateInvoiceNo(invoicedatatablefilter.current[i].DELIVERY_ID, invoice_no_update)) !== "OK") {
+          if ((await invoiceService.updateInvoiceNo(invoicedatatablefilter.current[i].DELIVERY_ID, invoice_no_update)) !== "OK") {
             err_code = true;
           }
         }

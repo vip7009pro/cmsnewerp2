@@ -7,7 +7,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import Swal from "sweetalert2";
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { f_insert_YCTK, f_load_YCTK, f_update_YCTK } from "../utils/kdUtils";
+import { ycsxService } from "../services/ycsxService";
 import { YCTKData } from "../interfaces/kdInterface";
 import YCTK from "./YCTK";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
@@ -183,7 +183,7 @@ const YCTKManager = () => {
   };
   const handle_loaddatasx = async () => {
     let kq: YCTKData[] = [];    
-        kq = await f_load_YCTK({
+        kq = await ycsxService.load_YCTK({
         FROM_DATE: watch("fromdate"),
         TO_DATE: watch("todate"),
         ALL_TIME: watch("alltime"),

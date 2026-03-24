@@ -3,7 +3,8 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { getAuditMode } from "../../../api/Api";
+import { inspectionService } from "../services/inspectionService";
 import "./INSPECTION.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
@@ -526,7 +527,7 @@ const INSPECTION = () => {
       showConfirmButton: false,
     });
     let summaryInput: number = 0;
-    generalQuery("get_inspection", {
+    inspectionService.get_inspection({
       OPTIONS: "Nhập Kiểm (LOT)",
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -598,7 +599,7 @@ const INSPECTION = () => {
     });
     let summaryOutput: number = 0;
     setisLoading(true);
-    generalQuery("get_inspection", {
+    inspectionService.get_inspection({
       OPTIONS: "Xuất Kiểm (LOT)",
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -671,7 +672,7 @@ const INSPECTION = () => {
     });
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("get_inspection", {
+    inspectionService.get_inspection({
       OPTIONS: "Nhật Ký Kiểm Tra",
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -742,7 +743,7 @@ const INSPECTION = () => {
     });
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("get_inspection", {
+    inspectionService.get_inspection({
       OPTIONS: "Nhập Xuất Kiểm (YCSX)",
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -805,7 +806,7 @@ const INSPECTION = () => {
     setSummaryInspect("");
     setisLoading(true);
     await f_updateTONKIEM_M100();
-    await generalQuery("loadChoKiemGop_NEW", {
+    await inspectionService.loadChoKiemGop_NEW({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -867,7 +868,7 @@ const INSPECTION = () => {
     });
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("loadInspectionPatrol", {
+    inspectionService.loadInspectionPatrol({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,

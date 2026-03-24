@@ -32,7 +32,7 @@ import {
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
-import { f_insertDMYCSX, f_insertDMYCSX_New, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
+import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, PROD_PROCESS_DATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import { f_addProcessDataTotalQLSX, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_getRecentDMData, f_loadProdProcessData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
@@ -1595,7 +1595,7 @@ const QUICKPLAN2 = () => {
               .catch((error) => {
                 console.log(error);
               });
-            await f_updateDMSX_LOSS_KT();
+            await ycsxService.updateDMSX_LOSS_KT();
           } else {
             err_code +=
               "__Yc này đã chạy hệ thống cũ, chạy nốt bằng hệ thống cũ nhé";
@@ -1675,7 +1675,7 @@ const QUICKPLAN2 = () => {
             "error",
           );
         } else {
-          await f_insertDMYCSX({
+          await ycsxService.insertDMYCSX({
             PROD_REQUEST_NO: selectedPlan.current?.PROD_REQUEST_NO,
             G_CODE: selectedPlan.current?.G_CODE,
             LOSS_SX1: datadinhmuc.LOSS_SX1,
@@ -2427,7 +2427,7 @@ const QUICKPLAN2 = () => {
                   loadProcessList(selectedPlan.current.G_CODE);
                 }
                 await f_addProcessDataTotalQLSX(currentProcessList);
-                await f_insertDMYCSX_New({
+                await ycsxService.insertDMYCSX_New({
                   PROD_REQUEST_NO: selectedPlan.current.PROD_REQUEST_NO,
                   G_CODE: selectedPlan.current.G_CODE,
                 });

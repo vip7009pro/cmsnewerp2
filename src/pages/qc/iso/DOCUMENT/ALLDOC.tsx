@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import moment from "moment";
-import { generalQuery, getCtrCd, getUserData, uploadQuery } from "../../../../api/Api";
+import { getCtrCd, getUserData, uploadQuery } from "../../../../api/Api";
+import { isoService } from "../../services/isoService";
 import { checkBP } from "../../../../api/GlobalFunction";
 import './ALLDOC.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
@@ -17,7 +18,7 @@ import { f_autoUpdateDocUSE_YN, f_updateMaterialDocData } from "../../../muahang
 export const f_getDocCategory1 = async () => {
   let kq: DOC_CATEGORY1_DATA[] = [];
   try {
-    let res = await generalQuery('loadDocCategory1', {});
+    let res = await isoService.loadDocCategory1({});
     if (res.data.tk_status !== 'NG') {
       let loaded_data: DOC_CATEGORY1_DATA[] = res.data.data.map((element: DOC_CATEGORY1_DATA, index: number) => {
         return {
@@ -37,7 +38,7 @@ export const f_getDocCategory1 = async () => {
 export const f_getDocCategory2 = async () => {
   let kq: DOC_CATEGORY2_DATA[] = [];
   try {
-    let res = await generalQuery('loadDocCategory2', {});
+    let res = await isoService.loadDocCategory2({});
     if (res.data.tk_status !== 'NG') {
       let loaded_data: DOC_CATEGORY2_DATA[] = res.data.data.map((element: DOC_CATEGORY2_DATA, index: number) => {
         return {
@@ -58,7 +59,7 @@ export const f_getDocCategory2 = async () => {
 export const f_getDocList = async () => {
   let kq: DOC_LIST_DATA[] = [];
   try {
-    let res = await generalQuery('loadDocList', {});
+    let res = await isoService.loadDocList({});
     if (res.data.tk_status !== 'NG') {
       let loaded_data: DOC_LIST_DATA[] = res.data.data.map((element: DOC_LIST_DATA, index: number) => {
         return {
@@ -254,7 +255,7 @@ const SearchForm = ({
 export const f_loadAllDoc = async (filteredData: any) => {
  let kq: DOCUMENT_DATA[] = [];
    try {
-     let res = await generalQuery('loadDocuments', filteredData);
+     let res = await isoService.loadDocuments(filteredData);
      //console.log(res);
      if (res.data.tk_status !== 'NG') {
        //console.log(res.data.data);
@@ -282,12 +283,9 @@ export const f_loadAllDoc = async (filteredData: any) => {
 export const f_checkLastFileID = async () => {  
   let kq: number = 1;
   try {
-    let res = await generalQuery('checkLastFileID', {
-      
-    });
-    console.log(res);
+    let res = await isoService.checkLastFileID({});
+    // console.log(res);
     if (res.data.tk_status !== 'NG') {
-      //console.log(res.data.data);
       let kq: number = res.data.data[0].FILE_ID;
       
     } else {
@@ -302,7 +300,7 @@ export const f_checkLastFileID = async () => {
 export const f_insertFileData = async (data: any) => {
   let kq: string = '';
   try {
-    let res = await generalQuery('insertFileData', {
+    let res = await isoService.insertFileData({
       ...data
     });
     console.log(res);
@@ -587,7 +585,7 @@ const ALLDOC = () => {
           columns={columns}
           toolbar={<></>}
           ref={gridRef}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e: any) => {
             setFilteredMatDocData(e!.api.getSelectedRows());
           }}
         />  
@@ -599,7 +597,7 @@ const ALLDOC = () => {
           columns={columns_all_file}
           toolbar={<></>}
           ref={gridRef}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e: any) => {
             setFilteredMatDocData(e!.api.getSelectedRows());
           }}
         />  

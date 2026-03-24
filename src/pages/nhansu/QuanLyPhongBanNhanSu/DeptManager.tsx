@@ -5,23 +5,7 @@ import "./DeptManager.scss";
 import { getCompany, getUserData } from "../../../api/Api";
 import { EmployeeTableData, MainDeptTableData, SubDeptTableData, WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { 
-  f_addEmployee,
-  f_addMainDept,
-  f_addSubDept,
-  f_addWorkPosition,
-  f_deleteMainDept,
-  f_deleteSubDept,
-  f_deleteWorkPosition,
-  f_getEmployeeList,
-  f_loadMainDepList,
-  f_loadSubDepList,
-  f_loadWorkPositionList,
-  f_updateEmployee,
-  f_updateMainDept,
-  f_updateSubDept,
-  f_updateWorkPosition,
-} from "../utils/nhansuUtils";
+import { employeeService } from "../services/employeeService";
 import { BiLoaderCircle } from "react-icons/bi";
 import { MdAdd } from "react-icons/md";
 import CustomDialog from "../../../components/Dialog/CustomDialog";
@@ -48,18 +32,18 @@ const DeptManager = () => {
   const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>([]);
   const handleLoadMainDept = async () => {
     let kq: MainDeptTableData[] = [];
-    kq = await f_loadMainDepList();
+    kq = await employeeService.loadMainDeptList();
     setMainDeptTable(kq);
   }
   const handleLoadsubDept = async (MAINDEPTCODE?: number) => {    
     let kq: SubDeptTableData[] = [];
-    kq = await f_loadSubDepList(MAINDEPTCODE);
+    kq = await employeeService.loadSubDeptList(MAINDEPTCODE);
     //console.log('subdept',kq)
     setSubDeptTable(kq);
   }
   const loadWorkPosition = async (SUBDEPTCODE?: number) => {
     let kq: any[] = [];
-    kq = await f_loadWorkPositionList(SUBDEPTCODE);
+    kq = await employeeService.loadWorkPositionList(SUBDEPTCODE);
     //console.log(kq);
     setWorkPositionLoad(kq);
   }
@@ -426,7 +410,7 @@ const DeptManager = () => {
   }
   const handleAddInfo = async () => {
     if (tableSelection === 1) {
-      let kq: string = await f_addMainDept(selectedMainDept);
+      let kq: string = await employeeService.addMainDept(selectedMainDept);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -434,7 +418,7 @@ const DeptManager = () => {
         Swal.fire("Thông báo", "Lỗi, " + kq, "error");
       }      
     } else if (tableSelection === 2) {
-      let kq: string = await f_addSubDept(selectedSubDept);
+      let kq: string = await employeeService.addSubDept(selectedSubDept);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -442,7 +426,7 @@ const DeptManager = () => {
         Swal.fire("Thông báo", "Lỗi, " + kq, "error");
       }
     } else if (tableSelection === 3) {
-      let kq: string = await f_addWorkPosition(selectedWorkPosition);
+      let kq: string = await employeeService.addWorkPosition(selectedWorkPosition);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -454,7 +438,7 @@ const DeptManager = () => {
   };
   const handleUpdateInfo = async () => {
     if (tableSelection === 1) {
-      let kq: string = await f_updateMainDept(selectedMainDept);
+      let kq: string = await employeeService.updateMainDept(selectedMainDept);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -462,7 +446,7 @@ const DeptManager = () => {
         Swal.fire("Thông báo", "Lỗi, " + kq, "error");
       }      
     } else if (tableSelection === 2) {
-      let kq: string = await f_updateSubDept(selectedSubDept);
+      let kq: string = await employeeService.updateSubDept(selectedSubDept);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -470,7 +454,7 @@ const DeptManager = () => {
         Swal.fire("Thông báo", "Lỗi, " + kq, "error");
       }
     } else if (tableSelection === 3) {
-      let kq: string = await f_updateWorkPosition(selectedWorkPosition);
+      let kq: string = await employeeService.updateWorkPosition(selectedWorkPosition);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -482,7 +466,7 @@ const DeptManager = () => {
   };
   const handleDeleteInfo = async () => {
     if (tableSelection === 1) {
-      let kq: string = await f_deleteMainDept(selectedMainDept);
+      let kq: string = await employeeService.deleteMainDept(selectedMainDept);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -490,7 +474,7 @@ const DeptManager = () => {
         Swal.fire("Thông báo", "Lỗi, " + kq, "error");
       }      
     } else if (tableSelection === 2) {
-      let kq: string = await f_deleteSubDept(selectedSubDept);
+      let kq: string = await employeeService.deleteSubDept(selectedSubDept);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }
@@ -498,7 +482,7 @@ const DeptManager = () => {
         Swal.fire("Thông báo", "Lỗi, " + kq, "error");
       }
     } else if (tableSelection === 3) {
-      let kq: string = await f_deleteWorkPosition(selectedWorkPosition);
+      let kq: string = await employeeService.deleteWorkPosition(selectedWorkPosition);
       if (kq === '') {
         Swal.fire("Thông báo", "Chúc mừng bạn, thêm thành công !", "success");
       }

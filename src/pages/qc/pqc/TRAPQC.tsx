@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { getAuditMode } from "../../../api/Api";
+import { pqcService } from "../services/pqcService";
 import "./TRAPQC.scss";
 import {
   CNDB_DATA,
@@ -442,7 +443,7 @@ const TRAPQC = () => {
   const handletraInspectionInput = () => {
     setisLoading(true);
     let summaryInput: number = 0;
-    generalQuery("trapqc1data", {
+    pqcService.trapqc1data({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -510,7 +511,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraInspectionOutput = () => {
     let summaryOutput: number = 0;
     setisLoading(true);
-    generalQuery("trapqc3data", {
+    pqcService.trapqc3data({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -563,7 +564,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraInspectionNG = () => {
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("traCNDB", {
+    pqcService.traCNDB({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -608,7 +609,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
   const handletraInspectionInOut = () => {
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("tradaofilm", {
+    pqcService.tradaofilm({
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -646,7 +647,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       });
   };
   const updateNNDS =()=> {    
-    generalQuery("updatenndspqc", {
+    pqcService.updatenndspqc({
       PQC3_ID: currentDefectRow.PQC3_ID,
       NG_NHAN: currentNN,
       DOI_SACH: currentDS
@@ -676,11 +677,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>}
         columns={columnDefinition}
         data={pqcdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

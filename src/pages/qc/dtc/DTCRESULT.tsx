@@ -1,7 +1,8 @@
 import { Button, FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../api/Api";
+import { getAuditMode } from "../../../api/Api";
+import { dtcService } from "../services/dtcService";
 import "./DTCRESULT.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useAppSelector } from "../../../redux/hooks";
@@ -151,7 +152,7 @@ export const unpivotJsonArray = async (uphangloat: boolean,DTC_ID: number, TEST_
 
 export const handletraDTCData_HangLoat = async (dtc_id: string, test_code: string) => {
   let kq: DTC_RESULT_INPUT[] = [];
-  await generalQuery("getinputdtcspec", {
+  await dtcService.getinputdtcspec({
     DTC_ID: dtc_id,
     TEST_CODE: test_code, 
   })
@@ -197,7 +198,7 @@ const DTCRESULT = () => {
     setTestList(tempList);
   }
     const checkLotNVL = (M_LOT_NO: string) => {
-      generalQuery("checkM_NAME_IQC", { M_LOT_NO: M_LOT_NO })
+      dtcService.checkM_NAME_IQC({ M_LOT_NO: M_LOT_NO })
         .then((response) => {
           if (response.data.tk_status !== "NG") {
             //console.log(response.data.data);
@@ -340,7 +341,7 @@ const DTCRESULT = () => {
   }, [inspectiondatatable,])
 
 const getIDFromLot = (dtc_id_t: string) => {
-  generalQuery("getidDTCfromlotNVL", {
+  dtcService.getidDTCfromlotNVL({
     M_LOT_NO: dtc_id_t,
   })
     .then((response) => {
@@ -364,7 +365,7 @@ const getIDFromLot = (dtc_id_t: string) => {
 }
 
   const handletraDTCData = (dtc_id: string, test_code: string) => {
-    generalQuery("getinputdtcspec", {
+    dtcService.getinputdtcspec({
       DTC_ID: dtc_id,
       TEST_CODE: test_code,
     })
@@ -411,7 +412,7 @@ const getIDFromLot = (dtc_id_t: string) => {
     }
   };
   const checkRegisteredTest = (dtc_id: string) => {
-    generalQuery("checkRegisterdDTCTEST", {
+    dtcService.checkRegisterdDTCTEST({
       DTC_ID: dtc_id,
     })
       .then((response) => {
@@ -440,7 +441,7 @@ const getIDFromLot = (dtc_id_t: string) => {
     if (inspectiondatatable.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < inspectiondatatable.length; i++) {
-        await generalQuery("insert_dtc_result", {
+        await dtcService.insert_dtc_result({
           DTC_ID: uphangloat ? inspectiondatatable[i].DTC_ID : dtc_id,
           G_CODE: inspectiondatatable[i].G_CODE,
           M_CODE: inspectiondatatable[i].M_CODE,
@@ -480,7 +481,7 @@ const getIDFromLot = (dtc_id_t: string) => {
     }
   };
   const updateDTCTESEMPL = (dtc_id: number, test_code: number) => {
-    generalQuery("updateDTC_TEST_EMPL", {
+    dtcService.updateDTC_TEST_EMPL({
       DTC_ID: dtc_id,
       TEST_CODE: test_code,
     })

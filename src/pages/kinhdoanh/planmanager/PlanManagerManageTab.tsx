@@ -4,7 +4,8 @@ import React, { useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
+import { getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
+import { planService } from "../services/planService";
 import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
 import { useAppSelector } from "../../../redux/hooks";
 import { selectTheme } from "../../../redux/selectors/uiSelectors";
@@ -82,7 +83,7 @@ const PlanManagerManageTab: React.FC = () => {
   const [planColums, setPlanColums] = useState<Array<any>>(column_plantable);
 
   const handletraPlan = () => {
-    generalQuery("traPlanDataFull", {
+    planService.traPlanDataFull({
       alltime: alltime,
       justPoBalance: justpobalance,
       start_date: fromdate,
@@ -210,7 +211,7 @@ const PlanManagerManageTab: React.FC = () => {
       let err_code: boolean = false;
       for (let i = 0; i < podatatablefilter.current.length; i++) {
         if (podatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
-          await generalQuery("delete_plan", {
+          await planService.delete_plan({
             PLAN_ID: podatatablefilter.current[i].PLAN_ID,
           })
             .then((response) => {

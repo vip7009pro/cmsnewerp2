@@ -8,9 +8,9 @@ import Swal from "sweetalert2";
 import { Button, IconButton } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { RxUpdate, RxUpload } from "react-icons/rx";
-import { f_readUploadFile } from "../../kinhdoanh/utils/kdUtils";
+import { readUploadFile } from "../../../api/ExcelUtils";
 import { BANG_CONG_DATA, BANG_CONG_THANG_DATA } from "../interfaces/nhansuInterface";
-import { f_checkDoubleNV_CCID, f_checkNV, f_insertBangCong, f_loadBangCong, f_syncBangCong, f_updateBangCong, loadBangCongTheoThang } from "../utils/nhansuUtils";
+import { attendanceService } from "../services/attendanceService";
 import { getUserData } from "../../../api/Api";
 import { checkBP } from "../../../api/GlobalFunction";
 
@@ -313,13 +313,13 @@ const UploadCong = () => {
   const [columnDetail, setcolumnDetail] = useState<any>(columns_bangcongdetail);
 
   const loadFile = (e: any) => {
-    f_readUploadFile(e, setBangCongData, setcolumnDetail);
+    readUploadFile(e, setBangCongData, setcolumnDetail);
   };
 
   const checkNV = async ()=> {
     let listNV_CCID = [...new Set(bangcongdata.map((item: BANG_CONG_DATA) =>  parseInt(item.NV_CCID.toString())))].join(',');
 
-    let ketqua = await f_checkNV({
+    let ketqua = await attendanceService.checkNV({
       LIST_NV_CCID: listNV_CCID
     });
     if(ketqua.length > 0){
@@ -334,7 +334,7 @@ const UploadCong = () => {
   }
 
   const checkDoubleNV = async ()=> {    
-    let ketqua = await f_checkDoubleNV_CCID({});
+    let ketqua = await attendanceService.checkDoubleNV_CCID({});
     if(ketqua.length > 0){
       Swal.fire({
         title: 'Trùng mã chấm công',
@@ -420,7 +420,7 @@ const UploadCong = () => {
           if(bangcongdata?.length> 0){
             for(let i = 0; i < bangcongdata.length; i++){
               let ketqua : string = '';
-              ketqua = await f_insertBangCong(bangcongdata[i]);
+              ketqua = await attendanceService.insertBangCong(bangcongdata[i]);
               if(ketqua !== ''){
                 kq += ketqua;
                  temp_bangcongdata[i].CHECKSTATUS = 'OK';
@@ -431,7 +431,7 @@ const UploadCong = () => {
             console.log(temp_bangcongdata)
             setBangCongData(temp_bangcongdata);
             if(kq === ''){
-              await f_syncBangCong({
+              await attendanceService.syncBangCong({
                 FROM_DATE: watch("from_date"),
                 TO_DATE: watch("to_date"),
               });
@@ -454,7 +454,7 @@ const UploadCong = () => {
     }
     let ketqua : string = '';
     for(let i = 0; i < selectedBangCongDetailData.current.length; i++){      
-      let kq: string = await f_updateBangCong(selectedBangCongDetailData.current[i]);
+      let kq: string = await attendanceService.updateBangCong(selectedBangCongDetailData.current[i]);
       if(kq !== ''){
         ketqua += kq+ "\n";
       }
@@ -464,7 +464,7 @@ const UploadCong = () => {
       return;
     }
     Swal.fire("Thông báo", "Update thành công", "success");
-    await f_syncBangCong({
+    await attendanceService.syncBangCong({
       FROM_DATE: watch('from_date'),
       TO_DATE: watch('to_date'),
     });
@@ -495,12 +495,12 @@ const UploadCong = () => {
   }, [bangcongthangdata,columns_bangcongthang, loadFile]);
   const handle_loaddatasx = async () => {
     let kq: BANG_CONG_DATA[] = [];
-    kq = await f_loadBangCong({
+    kq = await attendanceService.loadBangCong({
       FROM_DATE: watch("from_date"),
       TO_DATE: watch("to_date"),
     });
     let kq_summary: BANG_CONG_THANG_DATA[] = [];
-    kq_summary = await loadBangCongTheoThang({
+    kq_summary = await attendanceService.loadBangCongTheoThang({
       FROM_DATE: watch("from_date"),
       TO_DATE: watch("to_date"),
     });
@@ -513,7 +513,7 @@ const UploadCong = () => {
     setcolumnDetail(columns_bangcongdetail);
   };
   const handleSyncBangCong = async () => {
-    await f_syncBangCong({
+    await attendanceService.syncBangCong({
       FROM_DATE: watch('from_date'),
       TO_DATE: watch('to_date'),
     });
