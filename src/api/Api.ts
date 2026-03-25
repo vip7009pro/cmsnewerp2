@@ -33,6 +33,7 @@ export function getLagMode(): boolean {
 export function getUserData(): UserData | undefined {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
+  //console.log("getUserData", state.totalSlice.userData);
   return state.totalSlice.userData;
 }
 export function getSocket() {

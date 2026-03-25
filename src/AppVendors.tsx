@@ -18,7 +18,7 @@ import {
 import { animated } from "@react-spring/web";
 import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
-import { UserData, userDataInterface, WEB_SETTING_DATA } from "./api/GlobalInterface";
+import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
 

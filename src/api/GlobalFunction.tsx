@@ -2,7 +2,7 @@ import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany, getUserData } from "./Api";
-import { UserData, userDataInterface } from "./GlobalInterface";
+import { UserData} from "./GlobalInterface";
 import moment from "moment";
 import TEXT from "../pages/rnd/design_amazon/design_components/TEXT";
 import RECTANGLE from "../pages/rnd/design_amazon/design_components/RECTANGLE";
@@ -945,7 +945,7 @@ export const ProtectedRoute: any = ({
   jobname,
   children,
 }: {
-  user: userDataInterface;
+  user: UserData;
   maindeptname: string;
   jobname: string;
   children: Component;
