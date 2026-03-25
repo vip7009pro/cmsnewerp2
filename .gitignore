@@ -23,6 +23,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/.claude
 
 # Flutter (mobile_flutter monorepo)
 /mobile_flutter/.dart_tool/
