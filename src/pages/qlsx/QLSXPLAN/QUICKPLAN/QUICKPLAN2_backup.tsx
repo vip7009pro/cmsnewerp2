@@ -33,7 +33,9 @@ import AGTable from "../../../../components/DataTable/AGTable";
 import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
-import { f_getMachineListData, f_getRecentDMData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { PLAN_ID_ARRAY } from "../utils/khsxConstants";
+import { capaService } from "../services/capaService";
+import { machineProcessService } from "../services/machineProcessService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const QUICKPLAN2_OLD = () => {
@@ -111,7 +113,7 @@ const QUICKPLAN2_OLD = () => {
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -1087,7 +1089,7 @@ const QUICKPLAN2_OLD = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Xóa!",
-    }).then((result) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         Swal.fire(
           "Tiến hành SET PENDING",
@@ -1107,7 +1109,7 @@ const QUICKPLAN2_OLD = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Xóa!",
-    }).then((result) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         Swal.fire(
           "Tiến hành SET CLOSED",
@@ -1127,7 +1129,7 @@ const QUICKPLAN2_OLD = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Xóa!",
-    }).then((result) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Xóa Plan", "Đang xóa Plan", "success");
         handle_DeleteLinePLAN();
@@ -1143,7 +1145,7 @@ const QUICKPLAN2_OLD = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Lưu!",
-    }).then((result) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu PLAN", "Đang Lưu PLAN hàng loạt", "success");
         handle_SavePlan();
@@ -1535,7 +1537,7 @@ const QUICKPLAN2_OLD = () => {
     }
   };
   const handleSaveQLSX = async () => {
-    if (selectedPlan.current?.G_CODE !== '') {
+    if ((selectedPlan.current?.G_CODE ?? "") !== "") {
       checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         console.log(datadinhmuc)
         let err_code: string = "0";
@@ -1566,10 +1568,11 @@ const QUICKPLAN2_OLD = () => {
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-            LOSS_KT: datadinhmuc.LOSS_KT
+            LOSS_KT: datadinhmuc.LOSS_KT,
+            NOTE: datadinhmuc.NOTE,
           });
-          err_code = (await f_saveQLSX({
-            G_CODE: selectedPlan.current?.G_CODE,
+          err_code = (await capaService.saveQLSX({
+            G_CODE: selectedPlan.current?.G_CODE ?? "",
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
             EQ2: datadinhmuc.EQ2,
@@ -1609,7 +1612,7 @@ const QUICKPLAN2_OLD = () => {
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }
-      })
+      });
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 Code để SET !", "error");
     }
@@ -2189,7 +2192,7 @@ const QUICKPLAN2_OLD = () => {
             LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
             NOTE: rowData.NOTE ?? "",
           });
-          setRecentDMData(await f_getRecentDMData(rowData.G_CODE));
+          setRecentDMData(await machineProcessService.getRecentDMData(rowData.G_CODE));
         }}
         onSelectionChange={(params: any) => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()

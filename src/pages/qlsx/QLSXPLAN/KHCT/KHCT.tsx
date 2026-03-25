@@ -12,7 +12,8 @@ import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 import CustomDialog from '../../../../components/Dialog/CustomDialog';
 import AddPlanDialog from '../QUICKPLAN/AddPlanDialog';
 import { BiSave } from 'react-icons/bi';
-import { f_handle_loadEQ_STATUS, f_loadLeadtimeData } from '../utils/khsxUtils';
+import { eqStatusService } from '../services/eqStatusService';
+import { leadtimeService } from '../services/leadtimeService';
 import { EQ_STT, LEADTIME_DATA, ProductionPlan } from '../interfaces/khsxInterface';
 
 const KHCT = () => {
@@ -1095,7 +1096,7 @@ const KHCT = () => {
     setOpenDialog(false)
   }
   const handleLoadEQ_STATUS = async () => {
-    const data = await f_handle_loadEQ_STATUS()
+    const data = await eqStatusService.loadEQStatus()
     setEqSeries(data.EQ_SERIES)
     setEqStatus(data.EQ_STATUS.filter(item => item.FACTORY === 'NM1' && item.EQ_ACTIVE==='OK'))
     return {
@@ -1113,7 +1114,7 @@ const KHCT = () => {
         Swal.showLoading()
       }
     })
-    const data = await f_loadLeadtimeData();
+    const data = await leadtimeService.loadLeadtimeData();
     const {FReq_status, SReq_status, DCeq_status, EDeq_status} = await handleLoadEQ_STATUS()
     const FRdata = data.filter(item => item.MACHINE === 'FR' && item.LEADTIME>0)
     const SRdata = data.filter(item => item.MACHINE === 'SR' && item.LEADTIME>0)
@@ -1715,7 +1716,11 @@ function createProductionPlan6(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
 
     for (const materialGroup of groupedByMaterial.values()) {
       for (const order of materialGroup) {
-        const { eqName, availableTime } = machineQueue.dequeue();
+        const dequeued = machineQueue.dequeue();
+        if (!dequeued) {
+          break;
+        }
+        const { eqName, availableTime } = dequeued;
 
         // Điều chỉnh thời gian nếu không trong giờ làm việc
         let currentDate = availableTime;

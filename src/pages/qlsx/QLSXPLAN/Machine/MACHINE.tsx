@@ -44,7 +44,7 @@ import { selectUserData } from "../../../../redux/selectors/authSelectors";
 import { resetChithiArray } from "../../../../redux/slices/chithiSlice";
 import KHOAO from "../KHOAO/KHOAO";
 import { TbLogout } from "react-icons/tb";
-import { 
+import {
   UserData,
 } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
@@ -52,14 +52,22 @@ import { AgGridReact } from "ag-grid-react";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
-import { f_addProcessDataTotalQLSX, f_addQLSXPLAN, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteChiThiMaterialLine, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleGetChiThiTable_New, f_handleResetChiThiTable, f_handleResetChiThiTable_New, f_handletraYCSXQLSX, f_handletraYCSXQLSX_New, f_loadProdProcessData, f_loadQLSXPLANDATA, f_loadQLSXPLANDATA2, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
+import { renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/renderUtils";
+import { machineProcessService } from "../services/machineProcessService";
+import { eqStatusService } from "../services/eqStatusService";
+import { chiThiService } from "../services/chiThiService";
+import { qlsxYcsxService } from "../services/qlsxYcsxService";
+import { chiThiMaterialService } from "../services/chiThiMaterialService";
+import { batchPlanService } from "../services/batchPlanService";
+import { planService } from "../services/planService";
+import { xuatLieuService } from "../services/xuatLieuService";
 import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, PROD_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 const MACHINE = () => {
   console.log("vao machine");
   const myComponentRef = useRef();
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([]);
   const getRecentDM = async (G_CODE: string) => {
-    setRecentDMData(await f_getRecentDMData(G_CODE));
+    setRecentDMData(await machineProcessService.getRecentDMData(G_CODE));
   };
   const chithiarray: QLSXPLANDATA[] | undefined = useAppSelector(
     (state) => state.chithi.multiple_chithi_array,
@@ -253,7 +261,7 @@ const MACHINE = () => {
   const [trigger, setTrigger] = useState(true);
   const ycsxprintref = useRef(null);
   const loadProcessList = async (G_CODE: string) => {
-    let loadeddata = await f_loadProdProcessData(G_CODE);
+    let loadeddata = await machineProcessService.loadProdProcessData(G_CODE);
     setCurrentProcessList(loadeddata);
   };
   const handlePrint = useReactToPrint({
@@ -271,8 +279,9 @@ const MACHINE = () => {
     }
   };
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
-    setTempSelectedMachine((await f_getMachineListData())[0].EQ_NAME);
+    const list = await machineProcessService.getMachineListData();
+    setMachine_List(list);
+    setTempSelectedMachine(list[0].EQ_NAME);
   };
   const column_ycsxtable =
     getCompany() === "CMS"
@@ -1754,7 +1763,7 @@ const MACHINE = () => {
     { field: "FACTORY", headerName: "FACTORY", flex: 1, editable: true },
   ];
   const handle_loadEQ_STATUS = async () => {
-    let eq_data = await f_handle_loadEQ_STATUS();
+    let eq_data = await eqStatusService.loadEQStatus();
     setEQ_STATUS(eq_data.EQ_STATUS);
     setEQ_SERIES(eq_data.EQ_SERIES);
   };
@@ -1773,7 +1782,7 @@ const MACHINE = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     }); */
-    setPlanDataTable(await f_loadQLSXPLANDATA2(plan_date, "ALL", "ALL"));
+    setPlanDataTable(await planService.loadQLSXPlanData2(plan_date, "ALL", "ALL"));
   };
   const handletraYCSX = async () => {
     Swal.fire({
@@ -1787,7 +1796,7 @@ const MACHINE = () => {
     });
     let ycsxData: YCSXTableData[] = [];
     if (getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903") {
-      ycsxData = await f_handletraYCSXQLSX_New({
+      ycsxData = await qlsxYcsxService.traYCSXQLSX_New({
         alltime: alltime,
         start_date: fromdate,
         end_date: todate,
@@ -1803,7 +1812,7 @@ const MACHINE = () => {
         material: material,
       });
     } else {
-      ycsxData = await f_handletraYCSXQLSX({
+      ycsxData = await qlsxYcsxService.traYCSXQLSX({
         alltime: alltime,
         start_date: fromdate,
         end_date: todate,
@@ -1834,7 +1843,7 @@ const MACHINE = () => {
     }
   };
   const setPendingYCSX = async (pending_value: number) => {
-    let err_code: string = await f_setPendingYCSX(
+    let err_code: string = await qlsxYcsxService.setPendingYCSX(
       ycsxdatatablefilter.current,
       pending_value
     );
@@ -1920,7 +1929,7 @@ const MACHINE = () => {
           );
         if (thisProcessList) {
           setChiThiDataTable(
-            await f_handleResetChiThiTable_New(selectedPlan, thisProcessList)
+            await chiThiService.resetChiThiTable_New(selectedPlan, thisProcessList)
           );
         } else {
           Swal.fire(
@@ -1953,7 +1962,7 @@ const MACHINE = () => {
             confirmButtonText: "OK",
             showConfirmButton: false,
           });
-          await f_saveChiThiMaterialTable(
+          await chiThiMaterialService.saveChiThiMaterialTable(
             selectedPlan,
             getCompany() === "CMS"
               ? qlsxchithidatafilter.current
@@ -1994,7 +2003,7 @@ const MACHINE = () => {
           }
           clearSelectedMaterialRows();
           let thisProcessList: PROD_PROCESS_DATA[] = [];
-          thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
+          thisProcessList = await machineProcessService.loadProdProcessData(selectedPlan.G_CODE);
           let selectedProcessData: PROD_PROCESS_DATA | undefined =
             thisProcessList.find(
               (element: PROD_PROCESS_DATA, index: number) =>
@@ -2003,10 +2012,7 @@ const MACHINE = () => {
             );
           if (selectedProcessData) {
             setChiThiDataTable(
-              await f_handleGetChiThiTable_New(
-                selectedPlan,
-                selectedProcessData
-              )
+              await chiThiService.getChiThiTable_New(selectedPlan, selectedProcessData)
             );
           } else {
             Swal.fire(
@@ -2016,7 +2022,7 @@ const MACHINE = () => {
             );
           }
           setPlanDataTable(
-            await f_loadQLSXPLANDATA2(selectedPlanDate, "ALL", "ALL")
+            await planService.loadQLSXPlanData2(selectedPlanDate, "ALL", "ALL")
           );
         } else {
           Swal.fire(
@@ -2054,7 +2060,7 @@ const MACHINE = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    let err_code: string = await f_deleteQLSXPlan(qlsxplandatafilter.current);
+    let err_code: string = await planService.deleteQLSXPlan(qlsxplandatafilter.current);
     if (err_code === "0") {
       Swal.fire("Thông báo", "Xóa hoàn thành", "success");
     } else {
@@ -2064,14 +2070,18 @@ const MACHINE = () => {
     loadQLSXPlan(selectedPlanDate);
   };
   const handle_DeleteLineCHITHI = async () => {
-    let kq = await f_deleteChiThiMaterialLine(
+    const { data, deletedCount } = chiThiMaterialService.deleteChiThiMaterialLines(
       qlsxchithidatafilter.current,
       chithidatatable
     );
-    setChiThiDataTable(kq);
+    if (deletedCount === 0) {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+      return;
+    }
+    setChiThiDataTable(data);
   };
   const handle_AddPlan = async () => {
-    let err_code: string = await f_addQLSXPLAN(
+    let err_code: string = await planService.addQLSXPLAN(
       ycsxdatatablefilter.current,
       selectedPlanDate,
       selectedMachine,
@@ -2108,7 +2118,7 @@ const MACHINE = () => {
     }
   };
   const handle_AddPlan2 = async (data: YCSXTableData[]) => {
-    let err_code: string = await f_addQLSXPLAN(
+    let err_code: string = await planService.addQLSXPLAN(
       data,
       selectedPlanDate,
       selectedMachine,
@@ -2139,8 +2149,8 @@ const MACHINE = () => {
       }
     );
     let err_code: string = "0";
-    err_code = await f_updateBatchPlan(selectedPlanTable);
-    await f_updateLossKT_ZTB_DM_HISTORY();
+    err_code = await batchPlanService.updateBatchPlan(selectedPlanTable);
+    await planService.updateLossKT_ZTB_DM_HISTORY();
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
@@ -2280,7 +2290,7 @@ const MACHINE = () => {
     );
   }
   const handle_xuatlieu_sample = async () => {
-    let err_code: string = await f_handle_xuatlieu_sample(selectedPlan);
+    let err_code: string = await xuatLieuService.handleXuatLieuSample(selectedPlan);
     if (err_code === "0") {
       Swal.fire("Thông báo", "Xuất liệu ảo thành công", "success");
     } else {
@@ -2288,7 +2298,7 @@ const MACHINE = () => {
     }
   };
   const handle_xuatdao_sample = async () => {
-    let err_code: string = await f_handle_xuatdao_sample(selectedPlan);
+    let err_code: string = await xuatLieuService.handleXuatDaoSample(selectedPlan);
     if (err_code === "0") {
       Swal.fire("Thông báo", "Xuất dao ảo thành công", "success");
     } else {
@@ -2296,7 +2306,7 @@ const MACHINE = () => {
     }
   };
   const handleDangKyXuatLieu = async () => {
-    let err_code: string = await f_handleDangKyXuatLieu(
+    let err_code: string = await xuatLieuService.registerXuatLieu(
       selectedPlan,
       selectedFactory,
       getCompany() === "CMS" ? qlsxchithidatafilter.current : chithidatatable
@@ -2703,9 +2713,9 @@ const MACHINE = () => {
                 NOTE: rowData.NOTE ?? "",
               });
               let thisProcessList: PROD_PROCESS_DATA[] = [];
-              thisProcessList = await f_loadProdProcessData(rowData.G_CODE);
+              thisProcessList = await machineProcessService.loadProdProcessData(rowData.G_CODE);
               let recentDMData: RecentDM[] = [];
-              recentDMData = await f_getRecentDMData(rowData.G_CODE);
+              recentDMData = await machineProcessService.getRecentDMData(rowData.G_CODE);
               let updatedThisProcessList: PROD_PROCESS_DATA[] = [];
               updatedThisProcessList = thisProcessList.map(
                 (element: PROD_PROCESS_DATA, index: number) => {
@@ -2734,7 +2744,7 @@ const MACHINE = () => {
                   );
                 if (selectedProcessData) {
                   setChiThiDataTable(
-                    await f_handleGetChiThiTable_New(
+                    await chiThiService.getChiThiTable_New(
                       rowData,
                       selectedProcessData
                     )
@@ -2905,7 +2915,7 @@ const MACHINE = () => {
             <IconButton
               className="buttonIcon"
               onClick={async () => {
-                setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+                setChiThiDataTable(await chiThiService.getChiThiTable(selectedPlan));
               }}
             >
               <BiRefresh color="yellow" size={20} />
@@ -3717,7 +3727,7 @@ const MACHINE = () => {
                             return;
                           }
                           if (
-                            !(await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(
+                            !(await machineProcessService.checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(
                               currentProcessList,
                               machine_list
                             ))
@@ -3730,7 +3740,7 @@ const MACHINE = () => {
                             return;
                           }
                           if (
-                            await f_checkProcessNumberContinuos(
+                            await machineProcessService.checkProcessNumberContinuous(
                               currentProcessList
                             )
                           ) {
@@ -3744,17 +3754,26 @@ const MACHINE = () => {
                             return;
                           }
                           if (currentProcessList.length > 0) {
-                            await f_deleteProcessNotInCurrentListFromDataBase(
+                            await machineProcessService.deleteProcessNotInCurrentListFromDataBase(
                               currentProcessList
                             );
                             loadProcessList(selectedPlan.G_CODE);
                           } else {
-                            await f_deleteProdProcessData({
+                            await machineProcessService.deleteProdProcessData({
                               G_CODE: selectedPlan.G_CODE,
                             });
                             loadProcessList(selectedPlan.G_CODE);
                           }
-                          await f_addProcessDataTotalQLSX(currentProcessList);
+                          await machineProcessService.addProcessDataTotalQLSX(currentProcessList);
+                          if (currentProcessList.length > 0) {
+                            Swal.fire(
+                              "Thông báo",
+                              "Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!",
+                              "success"
+                            );
+                          } else {
+                            Swal.fire("Thông báo", "Không có dữ liệu cập nhật", "error");
+                          }
                           await ycsxService.insertDMYCSX_New({
                             PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
                             G_CODE: selectedPlan.G_CODE,
@@ -3850,7 +3869,7 @@ const MACHINE = () => {
                           }
                           onBlur={async (e) => {
                             setChiThiDataTable(
-                              await f_handleGetChiThiTable(selectedPlan)
+                              await chiThiService.getChiThiTable(selectedPlan)
                             );
                           }}
                         ></input>
@@ -3933,7 +3952,7 @@ const MACHINE = () => {
                               };
                             });
                             setChiThiDataTable(
-                              await f_handleGetChiThiTable({
+                              await chiThiService.getChiThiTable({
                                 ...selectedPlan,
                                 IS_SETTING: e.target.checked ? "Y" : "N",
                               })
@@ -3961,7 +3980,7 @@ const MACHINE = () => {
                               ["ALL"],
                               ["ALL"],
                               async () => {
-                                await f_saveSinglePlan(selectedPlan);
+                                await planService.saveSinglePlan(selectedPlan);
                                 let newNotification: NotificationElement = {
                                   CTR_CD: "002",
                                   NOTI_ID: -1,
@@ -3995,7 +4014,7 @@ const MACHINE = () => {
                                 }
                                 await loadQLSXPlan(selectedPlanDate);
                                 setChiThiDataTable(
-                                  await f_handleGetChiThiTable({
+                                  await chiThiService.getChiThiTable({
                                     ...selectedPlan,
                                   })
                                 );

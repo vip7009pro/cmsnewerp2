@@ -35,7 +35,10 @@ import { NotificationElement } from "../../../../components/NotificationPanel/No
 import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, PROD_PROCESS_DATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
-import { f_addProcessDataTotalQLSX, f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST, f_checkProcessNumberContinuos, f_deleteProcessNotInCurrentListFromDataBase, f_deleteProdProcessData, f_getMachineListData, f_getRecentDMData, f_loadProdProcessData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { PLAN_ID_ARRAY } from "../utils/khsxConstants";
+import { capaService } from "../services/capaService";
+import { quickPlanService } from "../services/quickPlanService";
+import { machineProcessService } from "../services/machineProcessService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const QUICKPLAN2 = () => {
@@ -211,11 +214,11 @@ const QUICKPLAN2 = () => {
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const loadProcessList = async (G_CODE: string) => {
-    let loadeddata = await f_loadProdProcessData(G_CODE);
+    let loadeddata = await machineProcessService.loadProdProcessData(G_CODE);
     setCurrentProcessList(loadeddata);
   }
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -1688,7 +1691,7 @@ const QUICKPLAN2 = () => {
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
             LOSS_KT: datadinhmuc.LOSS_KT
           });
-          err_code = (await f_saveQLSX({
+          err_code = (await capaService.saveQLSX({
             G_CODE: selectedPlan.current?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -2246,9 +2249,9 @@ const QUICKPLAN2 = () => {
             NOTE: rowData.NOTE ?? "",
           });
           let thisProcessList: PROD_PROCESS_DATA[] = [];
-          thisProcessList = await f_loadProdProcessData(rowData.G_CODE);
+          thisProcessList = await machineProcessService.loadProdProcessData(rowData.G_CODE);
           let recentDMData: RecentDM[] = [];
-          recentDMData = await f_getRecentDMData(rowData.G_CODE);
+          recentDMData = await machineProcessService.getRecentDMData(rowData.G_CODE);
           let updatedThisProcessList: PROD_PROCESS_DATA[] = [];
           updatedThisProcessList = thisProcessList.map((element: PROD_PROCESS_DATA, index: number) => {
             return {
@@ -2407,29 +2410,39 @@ const QUICKPLAN2 = () => {
                   Swal.fire('Thông báo', 'Vui lòng chọn plan', 'error');
                   return;
                 }
-                if (!await f_checkEQ_SERIES_Exist_In_EQ_SERIES_LIST(currentProcessList, machine_list)) {
+                if (!await quickPlanService.checkEQSeriesExistInMachineList(currentProcessList, machine_list)) {
                   Swal.fire('Thông báo', 'Máy không tồn tại, vui lòng sửa lại', 'error');
                   return;
                 }
-                if (await f_checkProcessNumberContinuos(currentProcessList)) {
+                if (await quickPlanService.checkProcessNumberContinuos(currentProcessList)) {
                   //Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất liên tục', 'success');
                 } else {
                   Swal.fire('Thông báo', 'Số thứ tự các công đoạn sản xuất không liên tục, vui lòng sửa lại', 'error');
                   return;
                 }
                 if (currentProcessList.length > 0) {
-                  await f_deleteProcessNotInCurrentListFromDataBase(currentProcessList);
+                  await quickPlanService.deleteProcessNotInCurrentListFromDataBase(currentProcessList);
                   loadProcessList(selectedPlan.current.G_CODE);
                 } else {
-                  await f_deleteProdProcessData({
+                  await quickPlanService.deleteProdProcessData({
                     G_CODE: selectedPlan.current.G_CODE
                   });
                   loadProcessList(selectedPlan.current.G_CODE);
                 }
-                await f_addProcessDataTotalQLSX(currentProcessList);
+                const result = await quickPlanService.addProcessDataTotalQLSX(currentProcessList);
+                if (result.total > 0) {
+                  Swal.fire(
+                    'Thông báo',
+                    'Cập nhật thành công, HÃY KIỂM TRA LẠI ĐỊNH MỨC CỦA TỪNG CÔNG ĐOẠN  !!!',
+                    'success'
+                  );
+                } else {
+                  Swal.fire('Thông báo', 'Không có dữ liệu cập nhật', 'error');
+                }
                 await ycsxService.insertDMYCSX_New({
                   PROD_REQUEST_NO: selectedPlan.current.PROD_REQUEST_NO,
                   G_CODE: selectedPlan.current.G_CODE,
+                  FACTORY: selectedPlan.current.FACTORY,
                 });
                 loadProcessList(selectedPlan.current.G_CODE);
               }}

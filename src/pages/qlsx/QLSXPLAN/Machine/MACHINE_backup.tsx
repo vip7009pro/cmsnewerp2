@@ -1,6 +1,8 @@
 /* eslint-disable no-loop-func */
 import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
+import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
+import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../../api/Api";
@@ -40,7 +42,17 @@ import { NotificationElement } from "../../../../components/NotificationPanel/No
 import { getSettingUPHUnitLoss } from "../../../../components/JSONData/DinhMuc";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
-import { f_addQLSXPLAN, f_deleteChiThiMaterialLine, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_handletraYCSXQLSX, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
+import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
+import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
+import { machineProcessService } from "../services/machineProcessService";
+import { eqStatusService } from "../services/eqStatusService";
+import { planService } from "../services/planService";
+import { chiThiMaterialService } from "../services/chiThiMaterialService";
+import { chiThiService } from "../services/chiThiService";
+import { qlsxYcsxService } from "../services/qlsxYcsxService";
+import { batchPlanService } from "../services/batchPlanService";
+import { xuatLieuService } from "../services/xuatLieuService";
+import { legacyDMService } from "../services/legacyDMService";
 import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import useLocalStorageArray from "./LoadSelectedMachineHook";
 const MACHINE_OLD = () => {
@@ -49,7 +61,7 @@ const MACHINE_OLD = () => {
 
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
   const getRecentDM = async (G_CODE: string) => {
-    setRecentDMData(await f_getRecentDMData(G_CODE));
+    setRecentDMData(await machineProcessService.getRecentDMData(G_CODE));
   }
   const chithiarray: QLSXPLANDATA[] | undefined = useAppSelector(
     (state) => state.chithi.multiple_chithi_array,
@@ -239,7 +251,7 @@ const MACHINE_OLD = () => {
     }
   };
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const column_ycsxtable = getCompany() === 'CMS' ? [
     {
@@ -1549,7 +1561,7 @@ const MACHINE_OLD = () => {
     },
   ]
   const handle_loadEQ_STATUS = async () => {
-    let eq_data = await f_handle_loadEQ_STATUS();
+    let eq_data = await eqStatusService.loadEQStatus();
     setEQ_STATUS(eq_data.EQ_STATUS);
     setEQ_SERIES(["ALL", ...eq_data.EQ_SERIES]);
   };
@@ -1586,7 +1598,7 @@ const MACHINE_OLD = () => {
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,   
             LOSS_KT: datadinhmuc.LOSS_KT         
           });
-          err_code = (await f_saveQLSX({
+          err_code = (await legacyDMService.saveQLSX({
             G_CODE: selectedPlan?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -1650,7 +1662,7 @@ const MACHINE_OLD = () => {
     ));
   };
   const loadQLSXPlan = async (plan_date: string) => {
-    setPlanDataTable(await f_loadQLSXPLANDATA(plan_date, 'ALL', 'ALL'));
+    setPlanDataTable(await planService.loadQLSXPlanData(plan_date, 'ALL', 'ALL'));
   };
   const handletraYCSX = async () => {
     console.log('materialYES',materialYES);
@@ -1664,7 +1676,7 @@ const MACHINE_OLD = () => {
       showConfirmButton: false,
     });
     let ycsxData: YCSXTableData[] = [];
-    ycsxData = await f_handletraYCSXQLSX({
+    ycsxData = await legacyDMService.handletraYCSXQLSX({
       alltime: alltime,
       start_date: fromdate,
       end_date: todate,
@@ -1696,7 +1708,7 @@ const MACHINE_OLD = () => {
     }
   };
   const setPendingYCSX = async (pending_value: number) => {
-    let err_code: string = await f_setPendingYCSX(ycsxdatatablefilter.current, pending_value);
+    let err_code: string = await legacyDMService.setPendingYCSX(ycsxdatatablefilter.current, pending_value);
     if (err_code === '0') {
       Swal.fire(
         "Thông báo",
@@ -1776,7 +1788,7 @@ const MACHINE_OLD = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành RESET liệu", "Đang RESET liệu", "success");
-        setChiThiDataTable(await f_handleResetChiThiTable(selectedPlan, datadinhmuc, tempDM));
+        setChiThiDataTable(await legacyDMService.handleResetChiThiTable(selectedPlan, datadinhmuc, tempDM));
       }
     });
   };
@@ -1802,7 +1814,7 @@ const MACHINE_OLD = () => {
             confirmButtonText: "OK",
             showConfirmButton: false,
           }); 
-            await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+            await chiThiMaterialService.saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
             //await hanlde_SaveChiThi();
             Swal.fire({
               title: "Đang đăng ký xuất liệu",
@@ -1833,8 +1845,8 @@ const MACHINE_OLD = () => {
             }
 
             clearSelectedMaterialRows();
-            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
-            setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
+            setChiThiDataTable(await legacyDMService.handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
+            setPlanDataTable(await planService.loadQLSXPlanData(selectedPlanDate, 'ALL', 'ALL'));
         } else {
           Swal.fire(
             "Thông báo",
@@ -1871,7 +1883,7 @@ const MACHINE_OLD = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    let err_code: string = await f_deleteQLSXPlan(qlsxplandatafilter.current);
+    let err_code: string = await legacyDMService.deleteQLSXPlan(qlsxplandatafilter.current);
     if (err_code === '0') {
       Swal.fire('Thông báo', 'Xóa hoàn thành', 'success')
     }
@@ -1882,13 +1894,19 @@ const MACHINE_OLD = () => {
     loadQLSXPlan(selectedPlanDate);
   }
   const handle_DeleteLineCHITHI = async () => {
-    let kq = await f_deleteChiThiMaterialLine(qlsxchithidatafilter.current, chithidatatable);
-    setChiThiDataTable(kq);
+    let kq = await legacyDMService.deleteChiThiMaterialLine(qlsxchithidatafilter.current, chithidatatable);
+    if (kq === "0") {
+      // Reload chi thi data after successful deletion
+      setPlanDataTable(await planService.loadQLSXPlanData(selectedPlanDate, 'ALL', 'ALL'));
+      Swal.fire('Thông báo', 'Xóa dòng chi thi thành công', 'success');
+    } else {
+      Swal.fire("Thông báo", "Xóa dòng chi thi thất bại", "error");
+    }
   };
   const handle_AddPlan = async () => {
     console.log('handle_AddPlan', tempDM);
     console.log(ycsxdatatablefilter.current);
-    let err_code: string = await f_addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory, tempDM);
+    let err_code: string = await legacyDMService.addQLSXPLAN(ycsxdatatablefilter.current, selectedPlanDate, selectedMachine, selectedFactory, tempDM);
     if (err_code !== '0') {
       Swal.fire("Thông báo", err_code, "error");
     }
@@ -1914,7 +1932,7 @@ const MACHINE_OLD = () => {
     }
   };
   const handle_AddPlan2 = async (data: YCSXTableData[],tempDM: boolean) => {
-    let err_code: string = await f_addQLSXPLAN(data, selectedPlanDate, selectedMachine, selectedFactory,tempDM);
+    let err_code: string = await legacyDMService.addQLSXPLAN(data, selectedPlanDate, selectedMachine, selectedFactory,tempDM);
     if (err_code !== '0') {
       Swal.fire("Thông báo", err_code, "error");
     }
@@ -1941,8 +1959,8 @@ const MACHINE_OLD = () => {
       }
     );
     let err_code: string = "0";
-    err_code = await f_updateBatchPlan(selectedPlanTable);
-    await f_updateLossKT_ZTB_DM_HISTORY();
+    err_code = await legacyDMService.updateBatchPlan(selectedPlanTable);
+    await legacyDMService.updateLossKT_ZTB_DM_HISTORY();
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
@@ -1951,7 +1969,7 @@ const MACHINE_OLD = () => {
     }
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await chiThiMaterialService.saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -1964,8 +1982,8 @@ const MACHINE_OLD = () => {
     } else {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
-    setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
-    setPlanDataTable(await f_loadQLSXPLANDATA(selectedPlanDate, 'ALL', 'ALL'));
+    setChiThiDataTable(await legacyDMService.handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
+    setPlanDataTable(await planService.loadQLSXPlanData(selectedPlanDate, 'ALL', 'ALL'));
   };
   const setDMMD = () => {
     if(selectedPlan.PLAN_ID ==='XXX') 
@@ -2099,7 +2117,7 @@ const MACHINE_OLD = () => {
                 );
               }
               setShowChiThi(true);
-              setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
+              setChiThiListRender(qlsxplandatafilter.current.map((element, index) => <CHITHI_COMPONENT ref={myComponentRef} key={index} DATA={element} />));
               //console.log(ycsxdatatablefilter.current);
             } else {
               setShowChiThi(false);
@@ -2217,7 +2235,7 @@ const MACHINE_OLD = () => {
     )
   }
   const handle_xuatlieu_sample = async () => {
-    let err_code: string = await f_handle_xuatlieu_sample(selectedPlan);
+    let err_code: string = await legacyDMService.handle_xuatlieu_sample(selectedPlan);
     if (err_code === '0') {
       Swal.fire('Thông báo', 'Xuất liệu ảo thành công', 'success');
     }
@@ -2226,7 +2244,7 @@ const MACHINE_OLD = () => {
     }
   };
   const handle_xuatdao_sample = async () => {
-    let err_code: string = await f_handle_xuatdao_sample(selectedPlan);
+    let err_code: string = await legacyDMService.handle_xuatdao_sample(selectedPlan);
     if (err_code === '0') {
       Swal.fire('Thông báo', 'Xuất dao ảo thành công', 'success');
     }
@@ -2235,7 +2253,7 @@ const MACHINE_OLD = () => {
     }
   };
   const handleDangKyXuatLieu = async () => {
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await legacyDMService.handleDangKyXuatLieu(selectedPlan, selectedFactory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -2495,7 +2513,7 @@ const MACHINE_OLD = () => {
                     tabycsx: ycsxdatatablefilter.current.length > 0,
                   });
                   console.log(ycsxdatatablefilter.current);
-                  setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
+                  setYCSXListRender(ycsxdatatablefilter.current.map((element, index) => <YCSXComponent key={index} DATA={element} />));
                 } else {
                   Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
                 }
@@ -2512,7 +2530,20 @@ const MACHINE_OLD = () => {
                     ...selection,
                     tabbanve: ycsxdatatablefilter.current.length > 0,
                   });
-                  setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
+                  setYCSXListRender(ycsxdatatablefilter.current.map((element, index) =>
+                    element.BANVE === "Y" ? (
+                      <DrawComponent
+                        key={index}
+                        G_CODE={element.G_CODE}
+                        PDBV={element.PDBV}
+                        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
+                        PDBV_EMPL={element.PDBV_EMPL}
+                        PDBV_DATE={element.PDBV_DATE}
+                      />
+                    ) : (
+                      <div>Code: {element.G_NAME} : Không có bản vẽ</div>
+                    )
+                  ));
                 } else {
                   Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
                 }
@@ -2637,7 +2668,7 @@ const MACHINE_OLD = () => {
               getRecentDM(rowData.G_CODE);
               if (params.column.colId !== 'IS_SETTING') {
                 clearSelectedMaterialRows();
-                setChiThiDataTable(await f_handleGetChiThiTable(rowData,datadinhmuc,tempDM));
+                setChiThiDataTable(await legacyDMService.handleGetChiThiTable(rowData,datadinhmuc,tempDM));
                 
                 //await selectMaterialRow();
               }
@@ -2791,7 +2822,7 @@ const MACHINE_OLD = () => {
           <IconButton
             className='buttonIcon'
             onClick={async () => {
-              setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
+              setChiThiDataTable(await legacyDMService.handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
             }}
           >
             <BiRefresh color='yellow' size={20} />
@@ -4021,7 +4052,7 @@ const MACHINE_OLD = () => {
                             })
                           }
                           onBlur={async (e) => {
-                            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
+                            setChiThiDataTable(await legacyDMService.handleGetChiThiTable(selectedPlan,datadinhmuc,tempDM));
                           }}
                         ></input>
                       </label>
@@ -4102,7 +4133,7 @@ const MACHINE_OLD = () => {
                                 IS_SETTING: e.target.checked ? 'Y' : 'N'
                               }
                             });
-                            setChiThiDataTable(await f_handleGetChiThiTable({
+                            setChiThiDataTable(await legacyDMService.handleGetChiThiTable({
                               ...selectedPlan,
                               IS_SETTING: e.target.checked ? 'Y' : 'N'
                             },datadinhmuc,tempDM));
@@ -4117,7 +4148,7 @@ const MACHINE_OLD = () => {
                       <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.8rem', padding: '3px', backgroundColor: '#0f20db' }} onClick={() => {
                         if (selectedPlan.PLAN_ID !== 'XXX') {
                           checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
-                            await f_saveSinglePlan(selectedPlan);
+                            await legacyDMService.saveSinglePlan(selectedPlan);
                             let newNotification: NotificationElement = {
                               CTR_CD: '002',
                               NOTI_ID: -1,
@@ -4136,7 +4167,7 @@ const MACHINE_OLD = () => {
                               getSocket().emit("notification_panel", newNotification);
                             }
                             await loadQLSXPlan(selectedPlanDate);
-                            setChiThiDataTable(await f_handleGetChiThiTable({
+                            setChiThiDataTable(await legacyDMService.handleGetChiThiTable({
                               ...selectedPlan,
                             },datadinhmuc,tempDM));
                           });
@@ -4157,7 +4188,7 @@ const MACHINE_OLD = () => {
                   <div className='buttongroup'>
                     <Button
                       onClick={() => {
-                        setYCSXListRender(renderYCSX(ycsxdatatablefilter.current));
+                        setYCSXListRender(ycsxdatatablefilter.current.map((element, index) => <YCSXComponent key={index} DATA={element} />));
                       }}
                     >
                       Render YCSX
@@ -4181,7 +4212,20 @@ const MACHINE_OLD = () => {
                   <div className='buttongroup'>
                     <Button
                       onClick={() => {
-                        setYCSXListRender(renderBanVe(ycsxdatatablefilter.current));
+                        setYCSXListRender(ycsxdatatablefilter.current.map((element, index) =>
+                          element.BANVE === "Y" ? (
+                            <DrawComponent
+                              key={index}
+                              G_CODE={element.G_CODE}
+                              PDBV={element.PDBV}
+                              PROD_REQUEST_NO={element.PROD_REQUEST_NO}
+                              PDBV_EMPL={element.PDBV_EMPL}
+                              PDBV_DATE={element.PDBV_DATE}
+                            />
+                          ) : (
+                            <div>Code: {element.G_NAME} : Không có bản vẽ</div>
+                          )
+                        ));
                       }}
                     >
                       Render Bản Vẽ
@@ -4236,7 +4280,7 @@ const MACHINE_OLD = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
+                        setChiThiListRender(qlsxplandatafilter.current.map((element, index) => <CHITHI_COMPONENT ref={myComponentRef} key={index} DATA={element} />));
                       }}
                     >
                       Render Chỉ Thị
@@ -4283,9 +4327,7 @@ const MACHINE_OLD = () => {
                     <button
                       onClick={() => {
                         setChiThiListRender2(
-                          renderChiThi2(
-                            chithiarray !== undefined ? chithiarray : [], myComponentRef
-                          )
+                          <CHITHI_COMPONENT2 PLAN_LIST={chithiarray !== undefined ? chithiarray : []} ref={myComponentRef} />
                         );
                       }}
                     >

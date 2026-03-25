@@ -8,7 +8,7 @@ import "./KHOAO.scss";
 import { UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { LICHSUNHAPKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
-import { f_checkMlotTonKhoSub, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_isM_CODE_CHITHI, f_isNextPlanClosed, f_load_nhapkhosub, f_load_tonkhosub, f_set_YN_KHO_SUB_INPUT } from "../utils/khsxUtils";
+import { khoAoService } from "../services/khoAoService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
@@ -180,7 +180,7 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 100, editable: false },
   ];
   const load_nhapkhoao = async () => {
-    let lsnhapkhoao: LICHSUNHAPKHOAO[] = await f_load_nhapkhosub({
+    let lsnhapkhoao: LICHSUNHAPKHOAO[] = await khoAoService.loadNhapKhoSub({
       FROM_DATE: fromdate,
       TO_DATE: todate,
       FACTORY: factory,
@@ -202,7 +202,7 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     }
   };
   const handle_loadKhoAo = async (shownotification: boolean) => {
-    let tonkhoao: TONLIEUXUONG[] = await f_load_tonkhosub({
+    let tonkhoao: TONLIEUXUONG[] = await khoAoService.loadTonKhoSub({
       FACTORY: factory,
     });
     setDataTable(tonkhoao);
@@ -228,19 +228,19 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       if (tonkhoaodatafilter.current.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-          let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
-          let checktontaikhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
-          let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
-          let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoSub(tonkhoaodatafilter.current[i].M_LOT_NO)
-          let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
-          let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
+          let checkYCSX_USE_YN: string = await khoAoService.checkNhapKhoTPDuHayChua(nextPlan);
+          let checktontaikhoao: boolean = await khoAoService.checkTonTaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
+          let checklieuchithi: boolean = await khoAoService.isMCodeChiThi(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
+          let isTonKhoAoMLOTNO: boolean = await khoAoService.checkMlotTonKhoSub(tonkhoaodatafilter.current[i].M_LOT_NO)
+          let checkNextPlanClosed = await khoAoService.isNextPlanClosed(nextPlan);
+          let checkFSC: string = (await khoAoService.checkNextPlanFSC(nextPlan)).FSC;
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
           var diff: number = dateDiff(date1, date2);
           let ins_weekday = moment.utc(date2).weekday();
           if (ins_weekday >= 5) diff = diff - 2;
           let isExpired: boolean = diff > 1;
-          let checkFSC_CODE: string = (await f_checkNextPlanFSC(nextPlan)).FSC_CODE;
+          let checkFSC_CODE: string = (await khoAoService.checkNextPlanFSC(nextPlan)).FSC_CODE;
           if (
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
@@ -252,7 +252,7 @@ const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             !isExpired
           ) {
 
-            if (!(await f_set_YN_KHO_SUB_INPUT({
+            if (!(await khoAoService.setYNKhoSubInput({
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
               PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
               PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,

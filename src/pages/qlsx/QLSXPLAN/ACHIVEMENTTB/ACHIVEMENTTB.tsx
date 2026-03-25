@@ -4,14 +4,15 @@ import Swal from "sweetalert2";
 import "./ACHIVEMENTTB.scss";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { MACHINE_LIST, SX_ACHIVE_DATE } from "../interfaces/khsxInterface";
-import { f_getMachineListData, f_loadTiLeDat } from "../utils/khsxUtils";
+import { dataSxService } from "../services/dataSxService";
+import { machineProcessService } from "../services/machineProcessService";
 
 const ACHIVEMENTTB = () => {
   const datatbTotalRow = useRef(0);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]); 
 
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());    
+    setMachine_List(await machineProcessService.getMachineListData());    
   }; 
 
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -36,7 +37,7 @@ const ACHIVEMENTTB = () => {
   });
   const loadTiLeDat = async (plan_date: string) => {
     //console.log(todate);
-    let { summaryData, planDataTable } = await f_loadTiLeDat(plan_date, machine, factory);  
+    let { summaryData, planDataTable } = await dataSxService.loadTiLeDat(plan_date, machine, factory);  
     setSummaryData(summaryData);  
     setPlanDataTable(planDataTable);  
     datatbTotalRow.current = planDataTable.length;   

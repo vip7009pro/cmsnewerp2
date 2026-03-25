@@ -9,40 +9,47 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { 
+import {
+  checkBP,
+  dateDiff,
   f_update_btp_p400,
   f_update_tonkiem_p400,
+  SaveExcel,
 } from "../../../../api/GlobalFunction";
 import { useForm } from "react-hook-form";
 import { DAILY_YCSX_RESULT, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, SX_DATA, YCSX_SX_DATA } from "../interfaces/khsxInterface";
-import { f_getMachineListData, f_lichsuinputlieu, f_load_nhapkhoao, f_loadDataSX_YCSX, f_loadDataSXChiThi, f_YCSXDailyChiThiData } from "../utils/khsxUtils";
+import { machineProcessService } from "../services/machineProcessService";
+import { dataSxService } from "../services/dataSxService";
+import { inputLieuService } from "../services/inputLieuService";
+import { khoAoService } from "../services/khoAoService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectTheme } from "../../../../redux/selectors/uiSelectors";
+
 const DATASX = () => {
   const theme: any = useAppSelector(selectTheme);
-  const {register,handleSubmit,watch, formState:{errors}, reset, setValue} = useForm({
-    defaultValues:{
-      fromdate:moment().format("YYYY-MM-DD"),
-      todate:moment().format("YYYY-MM-DD"),
-      prodrequestno:"",
-      plan_id:"",
-      m_name:"",
-      m_code:"",
-      codeKD:"",
-      codeCMS:"",
-      factory:"ALL",
-      machine:"ALL",
-      truSample:true,
-      onlyClose:false,
-      fullSummary:false,
-      alltime:false,      
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm({
+    defaultValues: {
+      fromdate: moment().format("YYYY-MM-DD"),
+      todate: moment().format("YYYY-MM-DD"),
+      prodrequestno: "",
+      plan_id: "",
+      m_name: "",
+      m_code: "",
+      codeKD: "",
+      codeCMS: "",
+      factory: "ALL",
+      machine: "ALL",
+      truSample: true,
+      onlyClose: false,
+      fullSummary: false,
+      alltime: false,
     }
   });
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = useCallback(async () => {
-    let machine_list = await f_getMachineListData()   
+    let machine_list = await machineProcessService.getMachineListData()
     setMachine_List(machine_list)
-    setValue("machine","ALL")
+    setValue("machine", "ALL")
   }, []);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [showhideDailyYCSX, setShowHideDailyYCSX] = useState(false);
@@ -2819,11 +2826,11 @@ const DATASX = () => {
           </div>}
         columns={column_daily_datasx_ycsx}
         data={dailyycsx}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2847,14 +2854,14 @@ const DATASX = () => {
           </div>}
         columns={column_datasx_chithi}
         data={datasxtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           if (e.data.PLAN_ID !== undefined) {
             handle_loadlichsuinputlieu(e.data.PLAN_ID);
           }
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2879,14 +2886,14 @@ const DATASX = () => {
           </div>}
         columns={column_datasx_ycsx}
         data={datasxtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           selectedYCSX.current = e.data;         
           handle_loaddailyYCSX(e.data.PROD_REQUEST_NO)
           
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2894,7 +2901,7 @@ const DATASX = () => {
     [datasxtable],
   );
   const load_nhapkhoao = useCallback(async (M_LOT_NO: string) => {
-    setKhoAoData(await f_load_nhapkhoao({
+    setKhoAoData(await khoAoService.loadNhapKhoAo({
       FROM_DATE: '2022-01-01',
       TO_DATE: moment().format("YYYY-MM-DD"),
       FACTORY: 'ALL',
@@ -2909,12 +2916,12 @@ const DATASX = () => {
           </div>}
         columns={column_inputlieudatatable}
         data={inputlieudatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           load_nhapkhoao(e.data.M_LOT_NO)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2942,7 +2949,7 @@ const DATASX = () => {
     [khoaodata],
   );
   const handle_loadlichsuinputlieu = useCallback(async (PLAN_ID: string) => {
-    setInputLieuDataTable(await f_lichsuinputlieu({
+    setInputLieuDataTable(await inputLieuService.getLichSuInputLieu({
       ALLTIME: true,
       FROM_DATE: watch("fromdate"),
       TO_DATE: watch("todate"),
@@ -3007,7 +3014,7 @@ const DATASX = () => {
         SCANNED_MET4: 0,
       }
     }
-    kq = await f_loadDataSXChiThi({
+    kq = await dataSxService.loadDataSXChiThi({
       ALLTIME: watch("alltime"),
       FROM_DATE: watch("fromdate"),
       TO_DATE: watch("todate"),
@@ -3089,7 +3096,7 @@ const DATASX = () => {
         SCANNED_MET4: 0,
       }
     }
-    kq = await f_loadDataSX_YCSX({
+    kq = await dataSxService.loadDataSX_YCSX({
       ALLTIME: watch("alltime"),
       FROM_DATE: watch("fromdate"),
       TO_DATE: watch("todate"),
@@ -3148,7 +3155,7 @@ const DATASX = () => {
         LOSS_KT: 0
       }
     }
-    kq = await f_YCSXDailyChiThiData(PROD_REQUEST_NO);
+    kq = await dataSxService.getYCSXDailyChiThiData(PROD_REQUEST_NO);
     setTotalDailyYCSX(kq.summary);
     setDailyYCSX(kq.datasx);
   }, []);

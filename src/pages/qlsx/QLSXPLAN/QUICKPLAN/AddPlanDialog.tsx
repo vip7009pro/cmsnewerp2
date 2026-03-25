@@ -21,7 +21,10 @@ import AGTable from "../../../../components/DataTable/AGTable";
 import { ycsxService } from "../../../kinhdoanh/services/ycsxService";
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
-import { f_getMachineListData, f_getRecentDMData, f_loadDMSX, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { PLAN_ID_ARRAY } from "../utils/khsxConstants";
+import { capaService } from "../services/capaService";
+import { quickPlanService } from "../services/quickPlanService";
+import { machineProcessService } from "../services/machineProcessService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
 import { selectTheme } from "../../../../redux/selectors/uiSelectors";
@@ -86,7 +89,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
   const [temp_TON_CD, setTempTON_CD] = useState<number>(0);
   const [temp_CD, setTempCD] = useState<number>(0);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const column_plandatatable = [
     {
@@ -812,11 +815,11 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
             LOSS_SETTING3: datadinhmuc?.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc?.LOSS_SETTING4,
           });
-          err_code = (await f_saveQLSX({
-            G_CODE: G_CODE,
-            FACTORY: datadinhmuc?.FACTORY,
-            EQ1: datadinhmuc?.EQ1,
-            EQ2: datadinhmuc?.EQ2,
+          err_code = (await capaService.saveQLSX({
+            G_CODE: selectedPlan.current?.G_CODE ?? "",
+            FACTORY: datadinhmuc.FACTORY,
+            EQ1: datadinhmuc.EQ1,
+            EQ2: datadinhmuc.EQ2,
             EQ3: datadinhmuc?.EQ3,
             EQ4: datadinhmuc?.EQ4,
             Setting1: datadinhmuc?.Setting1,
@@ -839,9 +842,10 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
             LOSS_SETTING2: datadinhmuc?.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc?.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc?.LOSS_SETTING4,
+            LOSS_KT: datadinhmuc?.LOSS_KT,
             NOTE: datadinhmuc?.NOTE,
-          })) ? "0" : "1";
-          if (err_code === "1") {
+          })) ? "" : "Lỗi save QLSX";
+          if (err_code === "Lỗi save QLSX") {
             Swal.fire(
               "Thông báo",
               "Lưu thất bại, không được để trống ô cần thiết",
@@ -865,12 +869,12 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
         Swal.showLoading()
       }
     })
-    let temp_dmsx = await f_loadDMSX(G_CODE);
+    let temp_dmsx = await quickPlanService.loadDMSX(G_CODE);
     console.log(temp_dmsx)
     if (temp_dmsx.length > 0) {
       setDataDinhMuc(temp_dmsx[0]);
     }
-    setRecentDMData(await f_getRecentDMData(G_CODE));
+    setRecentDMData(await machineProcessService.getRecentDMData(G_CODE));
     let temp_data: YCSXTableData[] = await get1YCSXDATA(PROD_REQUEST_NO);
     setTempYCSX(temp_data);
     if (temp_data.length > 0) {
@@ -1380,7 +1384,7 @@ const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: 
             LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
             NOTE: rowData.NOTE ?? "",
           });
-          setRecentDMData(await f_getRecentDMData(rowData.G_CODE));
+          setRecentDMData(await machineProcessService.getRecentDMData(rowData.G_CODE));
         }}
         onSelectionChange={(params: any) => {
           qlsxplandatafilter.current = params!.api.getSelectedRows()

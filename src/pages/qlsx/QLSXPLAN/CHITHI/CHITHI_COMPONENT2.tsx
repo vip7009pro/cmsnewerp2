@@ -10,7 +10,7 @@ import { FaStar } from "react-icons/fa";
 import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DEFECT_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { FSC_LIST_DATA } from "../../../muahang/interfaces/muaInterface";
-import { f_loadDefectProcessData } from "../utils/khsxUtils";
+import { chiThiService } from "../services/chiThiService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
 import { selectCompany } from "../../../../redux/selectors/uiSelectors";
@@ -311,7 +311,7 @@ const CHITHI_COMPONENT2 = forwardRef(({ PLAN_LIST }: PLAN_COMBO, ref) => {
     }
   }
   const handleLoadDefectProcessData = async () => {
-    setDefectProcessData(await f_loadDefectProcessData(main_plan.G_CODE, main_plan.PROCESS_NUMBER));
+    setDefectProcessData(await chiThiService.loadDefectProcessData(main_plan.G_CODE, main_plan.PROCESS_NUMBER));
   }
   useImperativeHandle(ref, () => ({
     handleInternalClick,

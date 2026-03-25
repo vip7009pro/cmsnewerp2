@@ -5,7 +5,7 @@ import "./LICHSUINPUTLIEU.scss";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { useForm } from "react-hook-form";
 import { LICHSUINPUTLIEU_DATA } from "../interfaces/khsxInterface";
-import { f_lichsuinputlieu } from "../utils/khsxUtils";
+import { inputLieuService } from "../services/inputLieuService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 const LICHSUINPUTLIEU = () => {
@@ -34,7 +34,7 @@ const LICHSUINPUTLIEU = () => {
   );
   const handle_loadlichsuinputlieu = async () => {
     let kq: LICHSUINPUTLIEU_DATA[] = [];
-    kq = await f_lichsuinputlieu({
+    kq = await inputLieuService.getLichSuInputLieu({
       ALLTIME: watch("alltime"),
       FROM_DATE: watch("fromdate"),
       TO_DATE: watch("todate"),
@@ -71,11 +71,11 @@ const LICHSUINPUTLIEU = () => {
           </div>}
         columns={columnDefinition}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

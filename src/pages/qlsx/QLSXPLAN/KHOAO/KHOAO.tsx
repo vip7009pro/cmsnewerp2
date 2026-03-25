@@ -5,10 +5,11 @@ import "./KHOAO.scss";
 import { UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { LICHSUNHAPKHOAO, LICHSUXUATKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
-import { checkPLAN_ID, f_anrackhoao, f_checkMlotTonKhoAo, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_delete_IN_KHO_AO, f_delete_OUT_KHO_AO, f_is2MCODE_IN_KHO_AO, f_isExistM_LOT_NO_QTY_P500, f_isM_CODE_CHITHI, f_isM_LOT_NO_in_P500, f_isNextPlanClosed, f_load_nhapkhoao, f_load_tonkhoao, f_load_xuatkhoao, f_set_YN_KHO_AO_INPUT, f_xuatkhoao } from "../utils/khsxUtils";
+import { khoAoService } from "../services/khoAoService";
 import { checkBP, dateDiff } from "../../../../api/GlobalFunction";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
+
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission] = useState(true);
   const [readyRender, setReadyRender] = useState(false);
@@ -196,7 +197,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "P500_X", headerName: "P500_X", width: 100, editable: false },
   ];
   const load_nhapkhoao = async () => {
-    let lsnhapkhoao: LICHSUNHAPKHOAO[] = await f_load_nhapkhoao({
+    let lsnhapkhoao: LICHSUNHAPKHOAO[] = await khoAoService.loadNhapKhoAo({
       FROM_DATE: fromdate,
       TO_DATE: todate,
       FACTORY: factory,
@@ -218,7 +219,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     }
   };
   const load_xuatkhoao = async () => {
-    let lsxuatkhoao: LICHSUXUATKHOAO[] = await f_load_xuatkhoao({
+    let lsxuatkhoao: LICHSUXUATKHOAO[] = await khoAoService.loadXuatKhoAo({
       FROM_DATE: fromdate,
       TO_DATE: todate,
       FACTORY: factory,
@@ -239,7 +240,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     }
   };
   const handle_loadKhoAo = async (shownotification: boolean) => {
-    let tonkhoao: TONLIEUXUONG[] = await f_load_tonkhoao({
+    let tonkhoao: TONLIEUXUONG[] = await khoAoService.loadTonKhoAo({
       FACTORY: factory,
     });
     setDataTable(tonkhoao);
@@ -262,7 +263,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
-      let checkPlanID = await checkPLAN_ID(nextPlan);    
+      let checkPlanID = await khoAoService.checkPLAN_ID(nextPlan);    
       console.log(checkPlanID);
       if (checkPlanID.length === 0) {
         Swal.fire('Thông báo', 'Không tìm thấy plan ID', 'error');
@@ -272,20 +273,20 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
           let isFactoryMatched: boolean = checkPlanID[0].PLAN_FACTORY === tonkhoaodatafilter.current[i].FACTORY;
-          let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
-          let checktontaixuatkhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
-          let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
-          let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
-          let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
-          let isMLOTNO_INPUT_QTY_P500 = await f_isExistM_LOT_NO_QTY_P500(tonkhoaodatafilter.current[i].M_LOT_NO, tonkhoaodatafilter.current[i].TOTAL_IN_QTY);
-          let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
+          let checkYCSX_USE_YN: string = await khoAoService.checkNhapKhoTPDuHayChua(nextPlan);
+          let checktontaixuatkhoao: boolean = await khoAoService.checkTonTaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
+          let checklieuchithi: boolean = await khoAoService.isMCodeChiThi(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
+          let isTonKhoAoMLOTNO: boolean = await khoAoService.checkMlotTonKhoAo(tonkhoaodatafilter.current[i].M_LOT_NO)
+          let checkNextPlanClosed = await khoAoService.isNextPlanClosed(nextPlan);
+          let isMLOTNO_INPUT_QTY_P500 = await khoAoService.isExistMLotNoQtyP500(tonkhoaodatafilter.current[i].M_LOT_NO, tonkhoaodatafilter.current[i].TOTAL_IN_QTY);
+          let checkFSC: string = (await khoAoService.checkNextPlanFSC(nextPlan)).FSC;
           var date1 = moment.utc().format('YYYY-MM-DD');
           var date2 = tonkhoaodatafilter.current[i].INS_DATE;
           var diff: number = dateDiff(date1, date2);
           let ins_weekday = moment.utc(date2).weekday();
           if (ins_weekday >= 5) diff = diff - 2;
           let isExpired: boolean = diff > 1;
-          let checkFSC_CODE: string = (await f_checkNextPlanFSC(nextPlan)).FSC_CODE;
+          let checkFSC_CODE: string = (await khoAoService.checkNextPlanFSC(nextPlan)).FSC_CODE;
           if (
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
@@ -298,7 +299,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             !isMLOTNO_INPUT_QTY_P500 && 
             isFactoryMatched
           ) {
-            if (await f_xuatkhoao({
+            if (await khoAoService.xuatKhoAo({
               FACTORY: tonkhoaodatafilter.current[i].FACTORY,
               PHANLOAI: "N",
               PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
@@ -311,7 +312,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               USE_YN: "O",
               REMARK: "WEB_OUT"
             })) {
-              let kq: string = await f_set_YN_KHO_AO_INPUT({
+              let kq: string = await khoAoService.setYNKhoAoInput({
                 FACTORY: tonkhoaodatafilter.current[i].FACTORY,
                 PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
                 PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT.toUpperCase(),
@@ -460,11 +461,11 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     if (tonkhoaodatafilter.current.length > 0) {
       let err_code: string = "0";
       for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-        let check_2_m_code_in_kho_ao: boolean = await f_is2MCODE_IN_KHO_AO(tonkhoaodatafilter.current[i].PLAN_ID_INPUT);
-        let check_m_lot_exist_p500: boolean = await f_isM_LOT_NO_in_P500(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
+        let check_2_m_code_in_kho_ao: boolean = await khoAoService.is2MCodeInKhoAo(tonkhoaodatafilter.current[i].PLAN_ID_INPUT);
+        let check_m_lot_exist_p500: boolean = await khoAoService.isMLotNoInP500(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
         if (check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) {
-          await f_delete_IN_KHO_AO(tonkhoaodatafilter.current[i].IN_KHO_ID);
-          await f_delete_OUT_KHO_AO(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
+          await khoAoService.deleteInKhoAo(tonkhoaodatafilter.current[i].IN_KHO_ID);
+          await khoAoService.deleteOutKhoAo(tonkhoaodatafilter.current[i].PLAN_ID_INPUT, tonkhoaodatafilter.current[i].M_LOT_NO);
           Swal.fire("Thông báo", "Xóa Kho SX Main thành công", "success");
         } else {
           if (!check_2_m_code_in_kho_ao) {
@@ -483,7 +484,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     }
   };
   const handle_an_rac = async () => {
-    f_anrackhoao(tonkhoaodatafilter.current);
+    const kq = await khoAoService.hideRacKhoAo(tonkhoaodatafilter.current);
+    if (kq === "NO_SELECTION") {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để ẩn", "error");
+    } else if (kq !== "0") {
+      Swal.fire("Thông báo", "Có lỗi: " + kq, "error");
+    }
   };
   useEffect(() => {
     if (NEXT_PLAN === undefined) setNextPlan("");

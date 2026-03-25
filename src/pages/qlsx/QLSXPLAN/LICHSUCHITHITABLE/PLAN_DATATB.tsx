@@ -38,7 +38,14 @@ import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { MACHINE_LIST, PROD_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
-import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleGetChiThiTable_New, f_handleResetChiThiTable_New, f_loadProdProcessData, f_loadQLSXPLANDATA, f_loadQLSXPLANDATA2, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
+import { renderChiThi, renderChiThi2 } from "../utils/renderUtils";
+import { machineProcessService } from "../services/machineProcessService";
+import { planService } from "../services/planService";
+import { planMovementService } from "../services/planMovementService";
+import { batchPlanService } from "../services/batchPlanService";
+import { chiThiMaterialService } from "../services/chiThiMaterialService";
+import { chiThiService } from "../services/chiThiService";
+import { xuatLieuService } from "../services/xuatLieuService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const PLAN_DATATB = () => {
@@ -221,7 +228,7 @@ const PLAN_DATATB = () => {
     ));
   };
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const column_plandatatable = [
     {
@@ -1088,11 +1095,21 @@ const PLAN_DATATB = () => {
   const qlsxplandatafilter = useRef<QLSXPLANDATA[]>([]);
   const qlsxchithidatafilter = useRef<QLSXCHITHIDATA[]>([]);
   const handle_DeleteLineCHITHI = async () => {
-    let kq = await f_deleteChiThiMaterialLine(qlsxchithidatafilter.current, chithidatatable);
-    setChiThiDataTable(kq);
+    const { data, deletedCount } = chiThiMaterialService.deleteChiThiMaterialLines(
+      qlsxchithidatafilter.current,
+      chithidatatable
+    );
+    if (deletedCount === 0) {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+      return;
+    }
+    setChiThiDataTable(data);
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await chiThiMaterialService.saveChiThiMaterialTable(
+      selectedPlan,
+      getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable
+    );
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -1110,7 +1127,11 @@ const PLAN_DATATB = () => {
   const handleDangKyXuatLieu = async () => {
     console.log(qlsxchithidatafilter.current);
     console.log(getCompany());
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await xuatLieuService.registerXuatLieu(
+      selectedPlan,
+      factory,
+      getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable
+    );
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -1171,28 +1192,19 @@ const PLAN_DATATB = () => {
 
           clearSelectedMaterialRows();
           let thisProcessList: PROD_PROCESS_DATA[] = [];  
-          thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
+          thisProcessList = await machineProcessService.loadProdProcessData(selectedPlan.G_CODE);
           let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
           if (selectedProcessData) {
-            setChiThiDataTable(await f_handleGetChiThiTable_New(selectedPlan, selectedProcessData));
+            setChiThiDataTable(await chiThiService.resetChiThiTable_New(selectedPlan, selectedProcessData));
+          } else {
           }
-          else {
-            Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
-          }
-          setPlanDataTable(await f_loadQLSXPLANDATA2(fromdate, machine, factory));
-        } else {
-          Swal.fire(
-            "Thông báo",
-            "Chọn ít nhất 1 chỉ thị để đăng ký xuất liệu",
-            "error"
-          );
         }
       }
     });
   };
   const loadQLSXPlan = async (plan_date: string) => {
     let loadeddata: QLSXPLANDATA[] = [];
-    loadeddata = await f_loadQLSXPLANDATA(plan_date, machine, factory);
+    loadeddata = await planService.loadQLSXPlanData(plan_date, machine, factory);
     let temp_plan_data: QLSXPLANDATA = {
       id: -1,
       PLAN_ID: "",
@@ -1283,10 +1295,10 @@ const PLAN_DATATB = () => {
     clearSelectedRows();
     if (!showhideM)
       Swal.fire("Thông báo", "Đã load: " + loadeddata.length + " dòng", "success");
-    f_updatePlanOrder(fromdate);
+    await planService.updatePlanOrder(fromdate);
   };
   const handle_movePlan = async () => {
-    let err_code: string = await f_handle_movePlan(qlsxplandatafilter.current, todate);
+    let err_code: string = await planMovementService.movePlans(qlsxplandatafilter.current, todate);
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
     }
@@ -1424,10 +1436,10 @@ const PLAN_DATATB = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành RESET liệu", "Đang RESET liệu", "success");
         let thisProcessList: PROD_PROCESS_DATA[] = [];
-        thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
+        thisProcessList = await machineProcessService.loadProdProcessData(selectedPlan.G_CODE);
         let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
         if (selectedProcessData) {    
-          setChiThiDataTable(await f_handleResetChiThiTable_New(selectedPlan, selectedProcessData));
+          setChiThiDataTable(await chiThiService.resetChiThiTable_New(selectedPlan, selectedProcessData));
         }
         else {
           Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
@@ -1436,7 +1448,7 @@ const PLAN_DATATB = () => {
     });
   };
   const handle_xuatdao_sample = async () => {
-    let err_code: string = await f_handle_xuatdao_sample(selectedPlan);
+    let err_code: string = await xuatLieuService.handleXuatDaoSample(selectedPlan);
     if (err_code === '0') {
       Swal.fire('Thông báo', 'Xuất dao ảo thành công', 'success');
     }
@@ -1445,7 +1457,7 @@ const PLAN_DATATB = () => {
     }
   };
   const handle_xuatlieu_sample = async () => {
-    let err_code: string = await f_handle_xuatlieu_sample(selectedPlan);
+    let err_code: string = await xuatLieuService.handleXuatLieuSample(selectedPlan);
     if (err_code === '0') {
       Swal.fire('Thông báo', 'Xuất liệu ảo thành công', 'success');
     }
@@ -1464,8 +1476,8 @@ const PLAN_DATATB = () => {
       showConfirmButton: false,
     });
     let err_code: string = "0";
-    err_code = await f_updateBatchPlan(qlsxplandatafilter.current);
-    await f_updateLossKT_ZTB_DM_HISTORY();
+    err_code = await batchPlanService.updateBatchPlan(qlsxplandatafilter.current);
+    await planService.updateLossKT_ZTB_DM_HISTORY();
     if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
@@ -1595,7 +1607,7 @@ const PLAN_DATATB = () => {
           <IconButton
             className='buttonIcon'
             onClick={async () => {
-              setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+              setChiThiDataTable(await chiThiService.getChiThiTable(selectedPlan));
             }}
           >
             <BiRefresh color='yellow' size={20} />
@@ -1690,10 +1702,10 @@ const PLAN_DATATB = () => {
             clickedRow.current = params.data;
             setSelectedPlan(params.data);
             let thisProcessList: PROD_PROCESS_DATA[] = [];
-            thisProcessList = await f_loadProdProcessData(params.data.G_CODE);
+            thisProcessList = await machineProcessService.loadProdProcessData(params.data.G_CODE);
             let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === params.data.G_CODE && element.PROCESS_NUMBER === params.data.PROCESS_NUMBER);
             if (selectedProcessData) {
-              setChiThiDataTable(await f_handleGetChiThiTable_New(params.data, selectedProcessData));
+              setChiThiDataTable(await chiThiService.getChiThiTable_New(params.data, selectedProcessData));
             }
             else {
               Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");

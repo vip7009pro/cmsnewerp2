@@ -3,12 +3,13 @@ import { useEffect, useState, useTransition } from "react";
 import { generalQuery } from "../../../../api/Api";
 import "./PLAN_STATUS.scss";
 import PLAN_STATUS_COMPONENTS from "./PLAN_STATUS_COMPONENTS";
-import { f_getMachineListData } from "../utils/khsxUtils";
+import { machineProcessService } from "../services/machineProcessService";
 import { MACHINE_LIST, SX_DATA } from "../interfaces/khsxInterface";
+
 const PLAN_STATUS = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);

@@ -9,7 +9,7 @@ import {
 import { FaStar } from "react-icons/fa";
 import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DEFECT_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
-import { f_checkEQvsPROCESS, f_loadDefectProcessData } from "../utils/khsxUtils";
+import { chiThiService } from "../services/chiThiService";
 import { FSC_LIST_DATA } from "../../../muahang/interfaces/muaInterface";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
@@ -174,7 +174,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
             }
           }
           setRequest_CodeInfo(response.data.data);
-          let checkpr: number = f_checkEQvsPROCESS(
+          let checkpr: number = chiThiService.checkEQvsPROCESS(
             response.data.data[0].EQ1,
             response.data.data[0].EQ2,
             response.data.data[0].EQ3,
@@ -380,7 +380,7 @@ const CHITHI_COMPONENT = forwardRef(({ DATA}: { DATA: QLSXPLANDATA}, ref) => {
   }));
 
   const handleLoadDefectProcessData = async () => {
-    setDefectProcessData(await f_loadDefectProcessData(DATA.G_CODE, DATA.PROCESS_NUMBER));
+    setDefectProcessData(await chiThiService.loadDefectProcessData(DATA.G_CODE, DATA.PROCESS_NUMBER));
   } 
   const handleInternalClick = () => {
     console.log("so chi thi:"+ DATA.PLAN_ID)

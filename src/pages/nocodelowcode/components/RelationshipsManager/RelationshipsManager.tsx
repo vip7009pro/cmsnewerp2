@@ -193,17 +193,17 @@ const RelationshipsManager: React.FC = () => {
         }
         data={relationships}
         columns={columns}
-        onRowClick={(params) => {
+        onRowClick={(params: any) => {
           setSelectedRelationship(params.data);
         }}
-        onRowDoubleClick={(params) => {
+        onRowDoubleClick={(params: any) => {
           setSelectedRelationship(params.data);
           setParentTableId(Number(params.data.ParentTableID));
           setChildTableId(Number(params.data.ChildTableID));
           loadTwoTableRelationship(Number(params.data.ParentTableID), Number(params.data.ChildTableID));
           setOpen(true);
         }}
-        onSelectionChange={(params) => {
+        onSelectionChange={(params: any) => {
           //setSelectedRelationship(params.data);
         }}  
       />

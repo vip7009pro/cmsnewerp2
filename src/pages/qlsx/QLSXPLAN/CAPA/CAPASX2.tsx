@@ -18,7 +18,8 @@ import CIRCLE_COMPONENT from "./CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { DELIVERY_PLAN_CAPA, EQ_STT, SX_CAPA_DATA } from "../interfaces/khsxInterface";
-import { f_handle_loadEQ_STATUS, f_loadcapabydeliveryplan } from "../utils/khsxUtils";
+import { eqStatusService } from "../services/eqStatusService";
+import { capaService } from "../services/capaService";
 import moment from "moment";
 const CAPASX2 = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
@@ -127,7 +128,7 @@ const CAPASX2 = () => {
   }
   const getDailyDeliveryPlanCapa = async (PLAN_DATE: string, EQ: string, FACTORY: string) => {
     let kq: DELIVERY_PLAN_CAPA[] = [];
-    kq = await f_loadcapabydeliveryplan({
+    kq = await capaService.loadCapaByDeliveryPlan({
       PLAN_DATE: PLAN_DATE,
       EQ: EQ, 
       FACTORY: FACTORY,
@@ -143,7 +144,7 @@ const CAPASX2 = () => {
     setDlLeadTime(kq)
   }
     const handle_loadEQ_STATUS = async () => {
-      let eq_data = await f_handle_loadEQ_STATUS();
+      let eq_data = await eqStatusService.loadEQStatus();
       setEQ_STATUS(eq_data.EQ_STATUS);
       setEQ_SERIES(eq_data.EQ_SERIES);   
     };

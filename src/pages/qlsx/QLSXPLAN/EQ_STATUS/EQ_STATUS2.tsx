@@ -11,7 +11,7 @@ import { AiFillCloseCircle, AiFillDelete, AiFillFileAdd, AiFillPlusCircle, AiOut
 import AGTable from "../../../../components/DataTable/AGTable";
 import CustomDialog from "../../../../components/Dialog/CustomDialog";
 import { EQ_STT, MachineInterface2 } from "../interfaces/khsxInterface";
-import { f_addMachine, f_deleteMachine, f_handle_loadEQ_STATUS, f_handle_toggleMachineActiveStatus } from "../utils/khsxUtils";
+import { eqStatusService } from "../services/eqStatusService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectTheme } from "../../../../redux/selectors/uiSelectors";
 const EQ_STATUS2 = () => {
@@ -26,7 +26,7 @@ const EQ_STATUS2 = () => {
   const selectedMachine = useRef<EQ_STT | null>(null);
 
   const handleAddMachine = async () => {
-    let kq = await f_addMachine({
+    let kq = await eqStatusService.addMachine({
       FACTORY: factory,
       EQ_CODE: eqCode,
       EQ_NAME: eqName,
@@ -48,9 +48,15 @@ const EQ_STATUS2 = () => {
   const handleDeleteMachine = async () => {
     console.log(selectedMachine.current)
     if (selectedMachine.current) {
-    let kq = await f_deleteMachine({
-      EQ_CODE: selectedMachine.current?.EQ_CODE,
-    });
+    const eqCodeToDelete = selectedMachine.current.EQ_CODE;
+    if (!eqCodeToDelete) {
+      Swal.fire({
+        icon: "error",
+        title: "No machine selected",
+      });
+      return;
+    }
+    let kq = await eqStatusService.deleteMachine(eqCodeToDelete);
     if (kq) {
       Swal.fire({
         icon: "success",
@@ -86,12 +92,12 @@ const EQ_STATUS2 = () => {
   const [eq_status_manager_data, setEQ_STATUS_MANAGER_DATA] = useState<EQ_STT[]>([]);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const handle_loadEQ_STATUS = async () => {
-    let eq_data = await f_handle_loadEQ_STATUS();
+    let eq_data = await eqStatusService.loadEQStatus();
     setEQ_STATUS(eq_data.EQ_STATUS);
     setEQ_SERIES(eq_data.EQ_SERIES);
   };
   const handleToggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACTIVE: string) => {
-    let kq = await f_handle_toggleMachineActiveStatus(EQ_CODE, EQ_ACTIVE);
+    let kq = await eqStatusService.toggleMachineActiveStatus(EQ_CODE, EQ_ACTIVE);
     if (kq) {
       Swal.fire({
         icon: "success",
@@ -177,10 +183,10 @@ const EQ_STATUS2 = () => {
         }
         data={eq_status_manager_data}
         columns={column_eq_status}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           
         }}  
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           console.log(e)
           selectedMachine.current = e.data;
         }}

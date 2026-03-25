@@ -5,7 +5,7 @@ import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
 import { Checkbox } from "@mui/material";
 import { useSpring, animated } from "@react-spring/web";
 import { EQ_STT } from "../interfaces/khsxInterface";
-import { f_handle_loadEQ_STATUS } from "../utils/khsxUtils";
+import { eqStatusService } from "../services/eqStatusService";
 
 const EQ_STATUS = () => {
   const [time, setTime] = useState(5);
@@ -23,7 +23,7 @@ const EQ_STATUS = () => {
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const [totalmachine, setTotalMachine] = useState(39);
   const handle_loadEQ_STATUS = async () => {
-    let eq_data = await f_handle_loadEQ_STATUS();
+    let eq_data = await eqStatusService.loadEQStatus();
     setEQ_STATUS(eq_data.EQ_STATUS);
     setEQ_SERIES(eq_data.EQ_SERIES);   
   };

@@ -24,7 +24,8 @@ import {
 
 import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
 import { DATA_DIEM_DANH, DELIVERY_PLAN_CAPA, EQ_STT, MACHINE_COUNTING, PROD_PLAN_CAPA_DATA, YCSX_BALANCE_CAPA_DATA } from "../interfaces/khsxInterface";
-import { f_getProductionPlanLeadTimeCapaData, f_handle_loadEQ_STATUS } from "../utils/khsxUtils";
+import { capaService } from "../services/capaService";
+import { eqStatusService } from "../services/eqStatusService";
 const CAPASX = () => {
   const dailytime: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '900');
   const dailytime2: number = dailytime+300;
@@ -454,7 +455,7 @@ const CAPASX = () => {
       });
   };
   const getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
-    setProductionPlanCapaData(await f_getProductionPlanLeadTimeCapaData(PLAN_DATE));    
+    setProductionPlanCapaData(await capaService.getProductionPlanLeadTimeCapaData(PLAN_DATE));    
   }
   function customizeTooltip(pointInfo: any) {
     return {
@@ -672,7 +673,7 @@ const CAPASX = () => {
     )[0]?.EQ_QTY;
   };
   const handle_loadEQ_STATUS = async () => {
-    let eq_data = await f_handle_loadEQ_STATUS();
+    let eq_data = await eqStatusService.loadEQStatus();
     setEQ_STATUS(eq_data.EQ_STATUS);    
   };
   const getrunningFR = () => {

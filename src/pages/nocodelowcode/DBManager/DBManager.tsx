@@ -1009,7 +1009,7 @@ const clearAllData = async () => {
         data={tables}
         columns={tableColumns}
         toolbar={tableToolbar}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           setSelectedTable(e.data.TABLE_NAME);
           fetchFields(e.data.TABLE_NAME);
           handleLoadData(e.data.TABLE_NAME);
@@ -1026,7 +1026,7 @@ const clearAllData = async () => {
         columns={fieldColumns}
         toolbar={fieldToolbar}
         onSelectionChange={() => {}}
-        onCellClick={(e) => {
+        onCellClick={(e: any) => {
           let tempEditField: NewField = {
             name: e.data.name,
             dataType: e.data.dataType,
@@ -1038,7 +1038,7 @@ const clearAllData = async () => {
           };
           setEditField(tempEditField);
         }}
-        onRowDoubleClick={(e) => {
+        onRowDoubleClick={(e: any) => {
           let tempEditField: NewField = {
             name: e.data.name,
             dataType: e.data.dataType,
@@ -1063,7 +1063,7 @@ const clearAllData = async () => {
         data={data}        
         toolbar={dataToolbar}
         onSelectionChange={() => {}}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           setSelectedData(e.data);
         }}
         columnWidth={70}

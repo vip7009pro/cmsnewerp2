@@ -202,7 +202,7 @@ const LOSS_TIME_DATA = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.column.colId)
           if(e.column.colId === 'DAILY_KPI'){
             console.log(e.value)
@@ -217,10 +217,10 @@ const LOSS_TIME_DATA = () => {
             
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

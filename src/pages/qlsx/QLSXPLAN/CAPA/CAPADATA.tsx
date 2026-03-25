@@ -22,10 +22,11 @@ import { generalQuery } from "../../../../api/Api";
 import { SaveExcel, checkBP,} from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import { BiSearch } from "react-icons/bi";
-import { 
+import {
   UserData,
 } from "../../../../api/GlobalInterface";
-import { f_getDataDinhMucGCode, f_getMachineListData, f_saveQLSX } from "../utils/khsxUtils";
+import { capaService } from "../services/capaService";
+import { machineProcessService } from "../services/machineProcessService";
 import { CAPA_LEADTIME_DATA, DINHMUC_QSLX, MACHINE_LIST } from "../interfaces/khsxInterface";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
@@ -33,7 +34,7 @@ import { selectUserData } from "../../../../redux/selectors/authSelectors";
 const CAPADATA = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const userData: UserData | undefined = useAppSelector(selectUserData);
@@ -85,7 +86,7 @@ const CAPADATA = () => {
     NOTE: "",
   });
   const getDataDinhMucGCode = async (G_CODE: string) => {
-    setDataDinhMuc(await f_getDataDinhMucGCode(G_CODE));
+    setDataDinhMuc(await capaService.getDataDinhMucGCode(G_CODE));
   };
   const handle_loaddatasx = () => {
     Swal.fire({
@@ -458,7 +459,7 @@ const CAPADATA = () => {
             "error",
           );
         } else {
-          err_code = (await f_saveQLSX({
+          const isOk = await capaService.saveQLSX({
             G_CODE: selectedG_Code,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
@@ -485,16 +486,14 @@ const CAPADATA = () => {
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+            LOSS_KT: datadinhmuc.LOSS_KT,
             NOTE: datadinhmuc.NOTE,
-          })) ? "0" : "1";
-          if (err_code === "1") {
-            Swal.fire(
-              "Thông báo",
-              "Lưu thất bại, không được để trống ô cần thiết",
-              "error",
-            );
-          } else {
+          });
+          err_code = isOk ? "" : "Lỗi save QLSX";
+          if (err_code === "") {
             Swal.fire("Thông báo", "Lưu thành công", "success");
+          } else {
+            Swal.fire("Thông báo", "Lưu thất bại", "error");
           }
         }
       })

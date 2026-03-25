@@ -184,8 +184,8 @@ const DefaultEdge = ({ id, sourceX, sourceY, targetX, targetY, markerEnd, style 
 
 const BOM_DESIGN: React.FC<BOMDesignProps> = ({ initialNodes, initialEdges }) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState<CustomNode>(initialNodes as CustomNode[]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<CustomEdge>(initialEdges as CustomEdge[]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<CustomNodeData>(initialNodes ?? []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<CustomEdge>(initialEdges ?? []);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [selectedNodes, setSelectedNodes] = useState<CustomNode[]>([]);
   const [selectedEdges, setSelectedEdges] = useState<CustomEdge[]>([]);

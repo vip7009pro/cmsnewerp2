@@ -7,18 +7,21 @@ import {UserData } from "../../../../api/GlobalInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
 import ProductionPlanCapaChart from "../../../../components/Chart/KHSX/ProductionPlanCapa";
 import { LONGTERM_PLAN_DATA, MACHINE_LIST, PROD_PLAN_CAPA_DATA } from "../interfaces/khsxInterface";
-import { f_deleteLongtermPlan, f_getMachineListData, f_getProductionPlanLeadTimeCapaData, f_insertLongTermPlan, f_loadLongTermPlan, f_moveLongTermPlan } from "../utils/khsxUtils";
+import { capaService } from "../services/capaService";
+import { longTermPlanService } from "../services/longTermPlanService";
+import { machineProcessService } from "../services/machineProcessService";
 import { useAppSelector } from "../../../../redux/hooks";
 import { selectUserData } from "../../../../redux/selectors/authSelectors";
+
 const LONGTERM_PLAN = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-    const [productionplancapadata, setProductionPlanCapaData] = useState<PROD_PLAN_CAPA_DATA[]>([]);
+  const [productionplancapadata, setProductionPlanCapaData] = useState<PROD_PLAN_CAPA_DATA[]>([]);
   const getMachineList = async () => {
-    setMachine_List(await f_getMachineListData());
+    setMachine_List(await machineProcessService.getMachineListData());
   };
 
   const getProductionPlanLeadTimeCapaData = async (PLAN_DATE: string) => {
-    setProductionPlanCapaData(await f_getProductionPlanLeadTimeCapaData(PLAN_DATE));    
+    setProductionPlanCapaData(await capaService.getProductionPlanLeadTimeCapaData(PLAN_DATE));    
   }
 
   const userData: UserData | undefined = useAppSelector(selectUserData);
@@ -348,7 +351,11 @@ const LONGTERM_PLAN = () => {
   ], [longterm_plan]);
  
   const loadQLSXPlan = async (plan_date: string) => {
-    setLongterm_plan(await f_loadLongTermPlan(plan_date));   
+    const data = await longTermPlanService.loadLongTermPlan(plan_date);
+    if (data.length === 0) {
+      Swal.fire("Thông báo", "Không có dòng nào", "error");
+    }
+    setLongterm_plan(data);
   };
   const handleConfirmMovePlan = () => {
     Swal.fire({
@@ -389,17 +396,17 @@ const LONGTERM_PLAN = () => {
   
   const handleDeletePlan = async (longTermPlanList: LONGTERM_PLAN_DATA[]) => {
     if(longTermPlanList.length ===0) {
-      Swal.fire('Thông báo', 'Chọn ít nhất 1 dòng để xóa', 'error');
+      Swal.fire('Thông báo', 'Chọn ít nhất 1 dòng để xóa', 'error');
       return;
     }
     for (let index = 0; index < longTermPlanList.length; index++) {
       const element = longTermPlanList[index];
-      await f_deleteLongtermPlan(element);
+      await longTermPlanService.deleteLongtermPlan(element);
     }
     await loadQLSXPlan(fromdate);
   }
   const handleMovePlan = async (FROM_DATE: string, TO_DATE: string) => {
-    await f_moveLongTermPlan(FROM_DATE, TO_DATE);
+    await longTermPlanService.moveLongTermPlan(FROM_DATE, TO_DATE);
   }
   const chartCapaFR = useMemo(() => {
     return (
@@ -439,26 +446,26 @@ const LONGTERM_PLAN = () => {
           suppressRowClickSelection={false}
         columns={columns_longterm_plan}
         data={longterm_plan}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.data)
           //console.log(fromdate);
-          await f_insertLongTermPlan(e.data, fromdate);
+          await longTermPlanService.insertLongTermPlan(e.data, fromdate);
           let kq: PROD_PLAN_CAPA_DATA[] = [];
-          kq = (await f_getProductionPlanLeadTimeCapaData(fromdate));
+          kq = (await capaService.getProductionPlanLeadTimeCapaData(fromdate));
           let filteredkq: PROD_PLAN_CAPA_DATA[] = [];
           filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
           //console.log(kq);
           setProductionPlanCapaData(kq);   
           await loadQLSXPlan(fromdate);
-        }} onRowClick={async (e) => {
+        }} onRowClick={async (e: any) => {
           //console.log(e.data)
           let kq: PROD_PLAN_CAPA_DATA[] = [];
-          kq = (await f_getProductionPlanLeadTimeCapaData(fromdate));
+          kq = (await capaService.getProductionPlanLeadTimeCapaData(fromdate));
           let filteredkq: PROD_PLAN_CAPA_DATA[] = [];
           filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
           //console.log(kq);
           setProductionPlanCapaData(kq);   
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedLongTermPlan.current = e!.api.getSelectedRows();
         }}
