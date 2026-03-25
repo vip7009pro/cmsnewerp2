@@ -1,4 +1,13 @@
-// sw.ts
+export {};
+
+interface ServiceWorkerGlobalScope extends EventTarget {
+  readonly registration: {
+    showNotification(title: string, options?: any): Promise<void>;
+  };
+}
+
+declare const self: ServiceWorkerGlobalScope;
+
 
 self.addEventListener('push', (event: any) => {
   const options = {
@@ -9,3 +18,4 @@ self.addEventListener('push', (event: any) => {
     self.registration.showNotification('Notification Title', options)
   );
 });
+

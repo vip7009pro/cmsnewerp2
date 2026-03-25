@@ -1715,7 +1715,9 @@ function createProductionPlan6(orders: LEADTIME_DATA[], equipments: EQ_STT[]): P
 
     for (const materialGroup of groupedByMaterial.values()) {
       for (const order of materialGroup) {
-        const { eqName, availableTime } = machineQueue.dequeue();
+        const machineInfo = machineQueue.dequeue();
+        if (!machineInfo) continue;
+        const { eqName, availableTime } = machineInfo;
 
         // Điều chỉnh thời gian nếu không trong giờ làm việc
         let currentDate = availableTime;
