@@ -367,12 +367,17 @@ export function removeVietnameseTones(str: string) {
   );
   return str;
 }
-export function deBounce(func: any, delay: number) {
-  let timer: any;
-  clearTimeout(timer);
-  timer = setTimeout(() => {
-    func();
-  }, delay);
+const _debounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+export function deBounce(func: any, delay: number, key: string = 'default') {
+  const existing = _debounceTimers.get(key);
+  if (existing) clearTimeout(existing);
+  _debounceTimers.set(
+    key,
+    setTimeout(() => {
+      func();
+      _debounceTimers.delete(key);
+    }, delay)
+  );
 }
 export const COLORS = [
   "#cc0000",
