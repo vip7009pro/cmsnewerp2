@@ -746,7 +746,7 @@ export const f_downloadFile2 = async (
       }
     }
     // Gộp các chunk thành blob
-    const blob = new Blob(chunks);
+    const blob = new Blob(chunks as BlobPart[]);
     const tempUrl = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = tempUrl;
