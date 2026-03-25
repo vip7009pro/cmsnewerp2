@@ -9,15 +9,15 @@ const WebCam = () => {
     facingMode: "environment"
   };
   const WebcamCapture = () => {
-    const webcamRef = React.useRef(null);
+    const webcamRef = React.useRef<Webcam>(null);
     const [capturedImage, setCapturedImage] = useState<any>();
     const [deviceId, setDeviceId] = React.useState({});
-    const [devices, setDevices] = React.useState([]);
-    const [selectedDevice, setSelectedDevice] = useState({});
+    const [devices, setDevices] = React.useState<MediaDeviceInfo[]>([]);
+    const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | {}>({});
     console.log(selectedDevice);
     const handleDevices = React.useCallback(
-      mediaDevices =>
-        setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
+      (mediaDevices: MediaDeviceInfo[]) =>
+        setDevices(mediaDevices.filter(({ kind }: MediaDeviceInfo) => kind === "videoinput")),
       [setDevices]
     );
     const capture = React.useCallback(
@@ -37,8 +37,7 @@ const WebCam = () => {
         document.body.removeChild(link);
       }
     };
-    let kk = devices[0]?.getCapabilities();
-    console.log(kk);
+    // Removed: let kk = devices[0]?.getCapabilities(); - MediaDeviceInfo doesn't have getCapabilities
     useEffect(() => {
       navigator.mediaDevices.enumerateDevices().then(handleDevices);
     }, [])
@@ -46,7 +45,7 @@ const WebCam = () => {
       <div className="webcam">
         <select
           name="camera"
-          value={selectedDevice.deviceId}
+          value={(selectedDevice as any).deviceId || ''}
           onChange={(e) => {
             setSelectedDevice(devices.filter((ele: any, index: number) => {
               // Swal.fire('Tb',ele.deviceId);
@@ -73,8 +72,8 @@ const WebCam = () => {
                 width: 3840,
                 height: 2160,
                 facingMode: "environment",
-                deviceId: selectedDevice.deviceId,
-                groupId: selectedDevice.groupId,
+                deviceId: (selectedDevice as any).deviceId,
+                groupId: (selectedDevice as any).groupId,
               }
             }
             imageSmoothing={true}

@@ -2833,7 +2833,7 @@ const INSPECTION = () => {
             </IconButton>
             {sumaryINSPECT}
           </div>}
-         /*  getRowStyle={(e)=> {
+         /*  getRowStyle={(e: any) => {
             //console.log(e.data.INS_STATUS)
             if(e.data.INS_STATUS==='S' && columnDefinition === column_lothistory)
             {
@@ -2845,16 +2845,16 @@ const INSPECTION = () => {
           }} */
         columns={columnDefinition}
         data={inspectiondatatable}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.data)
            if (e.column.colId === 'TRU_DIEM') {
              console.log(e.value);
              await f_updateTrueDiemKiemTra(e.data);
            }
 
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2874,7 +2874,7 @@ const INSPECTION = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -2882,7 +2882,7 @@ const INSPECTION = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -2893,7 +2893,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="GH63-xxxxxx"
                   value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
+                  onChange={(e: any) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -2902,7 +2902,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="7C123xxx"
                   value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
+                  onChange={(e: any) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -2913,7 +2913,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="Trang"
                   value={empl_name}
-                  onChange={(e) => setEmpl_Name(e.target.value)}
+                  onChange={(e: any) => setEmpl_Name(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -2922,7 +2922,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="SEVT"
                   value={cust_name}
-                  onChange={(e) => setCustName(e.target.value)}
+                  onChange={(e: any) => setCustName(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -2933,7 +2933,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="TSP"
                   value={prod_type}
-                  onChange={(e) => setProdType(e.target.value)}
+                  onChange={(e: any) => setProdType(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -2942,7 +2942,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="1H23456"
                   value={prodrequestno}
-                  onChange={(e) => setProdRequestNo(e.target.value)}
+                  onChange={(e: any) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -2953,7 +2953,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="ED2H3076"
                   value={process_lot_no}
-                  onChange={(e) => setProcess_Lot_No(e.target.value)}
+                  onChange={(e: any) => setProcess_Lot_No(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -2962,7 +2962,7 @@ const INSPECTION = () => {
                   type="text"
                   placeholder="12345"
                   value={id}
-                  onChange={(e) => setID(e.target.value)}
+                  onChange={(e: any) => setID(e.target.value)}
                 ></input>
               </label>
             </div>

@@ -113,7 +113,7 @@ const SearchForm = ({
         size="small"
         label="Document Name"
         value={filterValues.DOC_NAME}
-        onChange={(e) =>
+        onChange={(e: any) =>
           setFilterValues({ ...filterValues, DOC_NAME: e.target.value, CAT_ID: filterValues.CAT_ID, DOC_CAT_ID: filterValues.DOC_CAT_ID })
         }
         sx={{
@@ -129,7 +129,7 @@ const SearchForm = ({
       <Select
         size="small"
         value={filterValues.CAT_ID}
-        onChange={(e) =>
+        onChange={(e: any) =>
           setFilterValues({ ...filterValues, DOC_NAME: filterValues.DOC_NAME, CAT_ID: Number(e.target.value), DOC_CAT_ID: filterValues.DOC_CAT_ID })
         }
         displayEmpty
@@ -153,7 +153,7 @@ const SearchForm = ({
       <Select
         size="small"
         value={filterValues.DOC_CAT_ID}
-        onChange={(e) =>
+        onChange={(e: any) =>
           setFilterValues({ ...filterValues, DOC_NAME: filterValues.DOC_NAME, CAT_ID: filterValues.CAT_ID, DOC_CAT_ID: Number(e.target.value) })
         }
         displayEmpty
@@ -180,7 +180,7 @@ const SearchForm = ({
       <Select
         size="small"
         value={filterValues.DOC_ID}
-        onChange={(e) =>
+        onChange={(e: any) =>
           setFilterValues({ ...filterValues, DOC_NAME: filterValues.DOC_NAME, CAT_ID: filterValues.CAT_ID, DOC_ID: Number(e.target.value) })
         }
         displayEmpty
@@ -587,7 +587,7 @@ const ALLDOC = () => {
           columns={columns}
           toolbar={<></>}
           ref={gridRef}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e: any) => {
             setFilteredMatDocData(e!.api.getSelectedRows());
           }}
         />  
@@ -599,7 +599,7 @@ const ALLDOC = () => {
           columns={columns_all_file}
           toolbar={<></>}
           ref={gridRef}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e: any) => {
             setFilteredMatDocData(e!.api.getSelectedRows());
           }}
         />  

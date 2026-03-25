@@ -119,11 +119,11 @@ const MAINDEFECTS = () => {
           </div>}
         columns={column_defect_data}
         data={defectProcessData}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -143,7 +143,7 @@ const MAINDEFECTS = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -151,7 +151,7 @@ const MAINDEFECTS = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -162,7 +162,7 @@ const MAINDEFECTS = () => {
                   type="text"
                   placeholder="GH63-xxxxxx"
                   value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
+                  onChange={(e: any) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -171,7 +171,7 @@ const MAINDEFECTS = () => {
                   type="text"
                   placeholder="7C123xxx"
                   value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
+                  onChange={(e: any) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -181,7 +181,7 @@ const MAINDEFECTS = () => {
                 <select
                   name="phanloai"
                   value={type}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setType(e.target.value);
                   }}
                 >
@@ -197,7 +197,7 @@ const MAINDEFECTS = () => {
                 <select
                   name="phanloai"
                   value={factory}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setFactory(e.target.value);
                   }}
                 >
@@ -214,7 +214,7 @@ const MAINDEFECTS = () => {
                   type="text"
                   placeholder="1F80008A"
                   value={planId}
-                  onChange={(e) => setPlanId(e.target.value)}
+                  onChange={(e: any) => setPlanId(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -223,7 +223,7 @@ const MAINDEFECTS = () => {
                   type="text"
                   placeholder="12345"
                   value={id}
-                  onChange={(e) => setID(e.target.value)}
+                  onChange={(e: any) => setID(e.target.value)}
                 ></input>
               </label>
             </div>

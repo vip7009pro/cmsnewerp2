@@ -2819,11 +2819,11 @@ const DATASX = () => {
           </div>}
         columns={column_daily_datasx_ycsx}
         data={dailyycsx}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2847,14 +2847,14 @@ const DATASX = () => {
           </div>}
         columns={column_datasx_chithi}
         data={datasxtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           if (e.data.PLAN_ID !== undefined) {
             handle_loadlichsuinputlieu(e.data.PLAN_ID);
           }
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2879,14 +2879,14 @@ const DATASX = () => {
           </div>}
         columns={column_datasx_ycsx}
         data={datasxtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           selectedYCSX.current = e.data;         
           handle_loaddailyYCSX(e.data.PROD_REQUEST_NO)
           
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -2909,12 +2909,12 @@ const DATASX = () => {
           </div>}
         columns={column_inputlieudatatable}
         data={inputlieudatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           load_nhapkhoao(e.data.M_LOT_NO)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />

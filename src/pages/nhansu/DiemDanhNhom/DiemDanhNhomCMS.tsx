@@ -671,7 +671,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
         toolbar={<></>}
         columns={columns_diemdanhnhom}
         data={diemdanhnhomtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e)
           //console.log(e.column.colId)
           if (e.column.colId === 'WORK_HOUR') {
@@ -683,10 +683,10 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
             }
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -703,7 +703,7 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
           <select
             name='calamviec'
             value={WORK_SHIFT_CODE}
-            onChange={(e) => {
+            onChange={(e: any) => {
               onselectionteamhandle(Number(e.target.value));
             }}
           >

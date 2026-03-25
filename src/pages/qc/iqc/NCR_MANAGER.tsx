@@ -126,7 +126,7 @@ const NCR_MANAGER = () => {
           <div className="uploadfile">
             <IconButton
               className="buttonIcon"
-              onClick={(e) => {
+              onClick={(e: any) => {
                 uploadFile2(e);
               }}
             >
@@ -227,13 +227,13 @@ const NCR_MANAGER = () => {
           </div>}
         columns={column_ncrdatatable}
         data={ncr_data_table}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           clickedrow.current = e.data;
           handletraHoldingData(e.data);          
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();         
         }}
@@ -249,12 +249,12 @@ const NCR_MANAGER = () => {
           </div>}
         columns={column_holdingbyncridtable}
         data={holdingdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
           
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
              
         }}
@@ -479,7 +479,7 @@ const NCR_MANAGER = () => {
                     type="text"
                     placeholder="2304190123"
                     value={cmsLot}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkLotNVL(e.target.value);
                       }
@@ -504,7 +504,7 @@ const NCR_MANAGER = () => {
                     type="text"
                     placeholder={"abcdxyz"}
                     value={vendorLot}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setVendorLot(e.target.value);
                     }}
                   ></input>
@@ -516,7 +516,7 @@ const NCR_MANAGER = () => {
                   <input
                     type="date"
                     value={ncr_date}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setNCR_DATE(e.target.value);
                     }}
                   ></input>
@@ -526,7 +526,7 @@ const NCR_MANAGER = () => {
                   <input
                     type="date"
                     value={response_date}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setRESPONSE_DATE(e.target.value);
                     }}
                   ></input>
@@ -538,7 +538,7 @@ const NCR_MANAGER = () => {
                   <input
                     type="text"
                     value={defect_title}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setDefect_Title(e.target.value);
                     }}
                   ></input>
@@ -548,7 +548,7 @@ const NCR_MANAGER = () => {
                   <input
                     type="text"
                     value={defect_detail}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setDefect_Detail(e.target.value);
                     }}
                   ></input>
@@ -561,7 +561,7 @@ const NCR_MANAGER = () => {
                     type="text"
                     placeholder={"NHU1903"}
                     value={iqc_empl}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkEMPL_NAME(e.target.value);
                       }
@@ -586,7 +586,7 @@ const NCR_MANAGER = () => {
                     type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setReMark(e.target.value);
                     }}
                   ></input>
@@ -627,7 +627,7 @@ const NCR_MANAGER = () => {
               <input
                 type="date"
                 value={fromdate.slice(0, 10)}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e: any) => setFromDate(e.target.value)}
               ></input>
             </label>
             <label>
@@ -635,7 +635,7 @@ const NCR_MANAGER = () => {
               <input
                 type="date"
                 value={todate.slice(0, 10)}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e: any) => setToDate(e.target.value)}
               ></input>
             </label>
           </div>
@@ -646,7 +646,7 @@ const NCR_MANAGER = () => {
                 type="text"
                 placeholder="SJ-203020HC"
                 value={m_name}
-                onChange={(e) => setM_Name(e.target.value)}
+                onChange={(e: any) => setM_Name(e.target.value)}
               ></input>
             </label>
             <label>
@@ -655,7 +655,7 @@ const NCR_MANAGER = () => {
                 type="text"
                 placeholder="A123456"
                 value={m_code}
-                onChange={(e) => setM_Code(e.target.value)}
+                onChange={(e: any) => setM_Code(e.target.value)}
               ></input>
             </label>
           </div>
@@ -666,7 +666,7 @@ const NCR_MANAGER = () => {
                 type="text"
                 placeholder="SSJ"
                 value={vendor}
-                onChange={(e) => setVendor(e.target.value)}
+                onChange={(e: any) => setVendor(e.target.value)}
               ></input>
             </label>           
             <label>
@@ -675,7 +675,7 @@ const NCR_MANAGER = () => {
                 type="text"
                 placeholder="2409040001"
                 value={cmsLOT}
-                onChange={(e) => setCMSLOT(e.target.value)}
+                onChange={(e: any) => setCMSLOT(e.target.value)}
               ></input>
             </label>           
             <label>
@@ -684,7 +684,7 @@ const NCR_MANAGER = () => {
                 type="text"
                 placeholder="abcxyz123"
                 value={vendorLot}
-                onChange={(e) => setVendorLot(e.target.value)}
+                onChange={(e: any) => setVendorLot(e.target.value)}
               ></input>
             </label>           
           </div>

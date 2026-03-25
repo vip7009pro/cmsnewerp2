@@ -305,13 +305,13 @@ const PheDuyetNghiCMS = ({ option }: { option: string }) => {
         toolbar={<></>}
         columns={columns_diemdanhnhom}
         data={diemdanhnhomtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -367,7 +367,7 @@ const PheDuyetNghiCMS = ({ option }: { option: string }) => {
           <input
             type="date"
             value={fromdate.slice(0, 10)}
-            onChange={(e) => setFromDate(e.target.value)}
+            onChange={(e: any) => setFromDate(e.target.value)}
           ></input>
         </label>
         <label>
@@ -375,14 +375,14 @@ const PheDuyetNghiCMS = ({ option }: { option: string }) => {
           <input
             type="date"
             value={todate.slice(0, 10)}
-            onChange={(e) => setToDate(e.target.value)}
+            onChange={(e: any) => setToDate(e.target.value)}
           ></input>
         </label>
         <b>Only Pending:</b>
         <input
           type="checkbox"
           checked={onlyPending}
-          onChange={(e) => setOnlyPending(e.target.checked)}
+          onChange={(e: any) => setOnlyPending(e.target.checked)}
         ></input>
         <button
           className="searchbutton"

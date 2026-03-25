@@ -1145,7 +1145,7 @@ const BANGCHAMCONG = () => {
           data={bangchamcong2}
           columns={columns}
           toolbar={toolbar}
-          onSelectionChange={(e) => {
+          onSelectionChange={(e: any) => {
             // Handle selection change
             selectedRows.current = e!.api.getSelectedRows();
           }}
@@ -2752,7 +2752,7 @@ const BANGCHAMCONG = () => {
                 <input
                   type='date'
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -2760,7 +2760,7 @@ const BANGCHAMCONG = () => {
                 <input
                   type='date'
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>

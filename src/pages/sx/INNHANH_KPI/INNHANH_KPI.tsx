@@ -220,7 +220,7 @@ const INNHANH_KPI = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.column.colId)
           if(['KPI_MUC_TIEU', 'SO_LUONG', 'SO_GIO','TRU_DIEM','GHI_CHU'].includes(e.column.colId)){
             await f_updateInNhanhData(e.data)
@@ -228,10 +228,10 @@ const INNHANH_KPI = () => {
            
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -247,7 +247,7 @@ const INNHANH_KPI = () => {
         }
         columns={columns_innhanhkpi}
         data={innhanhkpidata}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.column.colId)
           if(e.column.colId === 'DM_SX' ||e.column.colId === 'DM_KT'  ){
             console.log(e.value)
@@ -256,10 +256,10 @@ const INNHANH_KPI = () => {
             
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -281,7 +281,7 @@ const INNHANH_KPI = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -289,7 +289,7 @@ const INNHANH_KPI = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
              {/*   <label>
@@ -297,7 +297,7 @@ const INNHANH_KPI = () => {
                 <select
                   name="phanloai"
                   value={option}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setOption(Number(e.target.value));
                     setBTPData([])
                   }}
@@ -310,7 +310,7 @@ const INNHANH_KPI = () => {
                           <b>Default:</b>{' '}
                           <Checkbox
                             checked={df}
-                            onChange={(e) => {
+                            onChange={(e: any) => {
                               setDf(e.target.checked);                             
                             }}
                             inputProps={{ 'aria-label': 'controlled' }}

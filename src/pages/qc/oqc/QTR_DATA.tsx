@@ -151,13 +151,13 @@ const QTR_DATA = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -178,7 +178,7 @@ const QTR_DATA = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -186,7 +186,7 @@ const QTR_DATA = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>             
             </div>  

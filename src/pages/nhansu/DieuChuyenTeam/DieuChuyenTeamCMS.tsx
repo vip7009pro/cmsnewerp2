@@ -421,7 +421,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
               <select
                 name="vitrilamviec"
                 value={params.data?.WORK_POSITION_CODE}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setViTri(params.data?.EMPL_NO, Number(e.target.value));
                 }}
               >
@@ -548,13 +548,13 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
         toolbar={<></>}
         columns={columns_diemdanhnhom}
         data={diemdanhnhomtable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -572,7 +572,7 @@ const DieuChuyenTeamCMS = ({option1, option2}: {option1: string, option2: string
           <select
             name="calamviec"
             value={WORK_SHIFT_CODE}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setWORK_SHIFT_CODE(Number(e.target.value));
               loadDiemDanhNhomTable(Number(e.target.value));
             }}

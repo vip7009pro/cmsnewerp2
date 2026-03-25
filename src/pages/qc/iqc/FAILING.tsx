@@ -512,11 +512,11 @@ const FAILING = () => {
             }
         columns={column_failing_table}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsDataA.current = e!.api.getSelectedRows();
         }}
@@ -989,7 +989,7 @@ const FAILING = () => {
                     disabled={cmsvcheck}
                     name="khachhang"
                     value={cust_cd}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCust_Cd(e.target.value);
                     }}
                   >
@@ -1005,7 +1005,7 @@ const FAILING = () => {
                   <select
                     name="phanloaihang"
                     value={testtype}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setTestType(e.target.value);
                     }}
                   >
@@ -1021,7 +1021,7 @@ const FAILING = () => {
                     type="text"
                     placeholder="1F80008A"
                     value={planId}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkPlanID(e.target.value);
                         checkPQC3_ID(e.target.value);
@@ -1050,10 +1050,10 @@ const FAILING = () => {
                     type="text"
                     placeholder={testtype==='NVL' ? '202304190123':'1E75DC03'}
                     value={testtype==='NVL' ? m_lot_no : process_lot_no}
-                    onKeyDown={(e) => {
+                    onKeyDown={(e: any) => {
                       handleKeyDown(e);
                     }}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       //console.log(e.target.value.length);
                       if (e.target.value.length >= 7) {
                         //console.log(e.target.value);
@@ -1091,7 +1091,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"54951949844984"}
                     value={vendorLot}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setVendorLot(e.target.value);
                     }}
                   ></input>
@@ -1102,7 +1102,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"Defect content"}
                     value={defect_phenomenon}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setDefectPhenomenon(e.target.value);
                     }}
                   ></input>
@@ -1113,7 +1113,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"NHU1903"}
                     value={request_empl}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkEMPL_NAME(1, e.target.value);
                       }
@@ -1140,7 +1140,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"NHU1903"}
                     value={request_empl2}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkEMPL_NAME(2, e.target.value);
                       }
@@ -1165,7 +1165,7 @@ const FAILING = () => {
                     type="checkbox"
                     name="alltimecheckbox"
                     defaultChecked={onlyPending}
-                    onChange={(e) => {                      
+                    onChange={(e: any) => {                      
                       setOnlyPending(prev => !prev);
                     }}
                   ></input>
@@ -1176,7 +1176,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setReMark(e.target.value);
                     }}
                   ></input>
@@ -1187,7 +1187,7 @@ const FAILING = () => {
                     type="number"
                     placeholder={"NCR_ID"}
                     value={ncrId}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setNCRID(parseInt(e.target.value));
                     }}
                   ></input>
@@ -1200,7 +1200,7 @@ const FAILING = () => {
                     type="checkbox"
                     name="alltimecheckbox"
                     defaultChecked={cmsvcheck}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (cmsvcheck === false) setCust_Cd("6969");
                       setCMSVCheck(!cmsvcheck);
                     }}
@@ -1272,7 +1272,7 @@ const FAILING = () => {
                     disabled={cmsvcheck}
                     name="khachhang"
                     value={cust_cd}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCust_Cd(e.target.value);
                     }}
                   >
@@ -1289,7 +1289,7 @@ const FAILING = () => {
                     type="checkbox"
                     name="alltimecheckbox"
                     defaultChecked={cmsvcheck}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (cmsvcheck === false) setCust_Cd("6969");
                       setCMSVCheck(!cmsvcheck);
                     }}
@@ -1303,7 +1303,7 @@ const FAILING = () => {
                     type="text"
                     placeholder="1F80008A"
                     value={planId}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkPlanID(e.target.value);
                       }
@@ -1333,7 +1333,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"NHU1903"}
                     value={request_empl}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkEMPL_NAME(1, e.target.value);
                       }
@@ -1358,7 +1358,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"NHU1903"}
                     value={request_empl2}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkEMPL_NAME(2, e.target.value);
                       }
@@ -1385,7 +1385,7 @@ const FAILING = () => {
                     type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setReMark(e.target.value);
                     }}
                   ></input>

@@ -117,16 +117,16 @@ const DKDTC = () => {
         toolbar={<div></div>}
         columns={dtcdatacolumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />
@@ -589,7 +589,7 @@ const DKDTC = () => {
                   <select
                     name="phanloaihang"
                     value={testtype}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setTestType(e.target.value);
                     }}
                   >
@@ -613,7 +613,7 @@ const DKDTC = () => {
                     type="text"
                     placeholder={checkNVL ? "202304190123" : "1F80008/13AB19S5"}
                     value={inputno}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         if (checkNVL) {
                           console.log(e.target.value);
@@ -667,7 +667,7 @@ const DKDTC = () => {
                     type="text"
                     placeholder={checkNVL ? "abcxyz123" : ""}
                     value={lotncc}
-                    onChange={(e) => {                      
+                    onChange={(e: any) => {                      
                       setLotNCC(e.target.value);
                     }}
                   ></input>
@@ -704,7 +704,7 @@ const DKDTC = () => {
                     type="text"
                     placeholder={"NHU1903"}
                     value={request_empl}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       if (e.target.value.length >= 7) {
                         checkEMPL_NAME(e.target.value);
                       }
@@ -845,7 +845,7 @@ const DKDTC = () => {
                       type="text"
                       placeholder={"Ghi chú"}
                       value={oldDTC_ID}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setOldDTC_ID(Number(e.target.value));
                       }}
                     ></input>
@@ -870,7 +870,7 @@ const DKDTC = () => {
                     type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setReMark(e.target.value);
                     }}
                   ></input>
@@ -890,7 +890,7 @@ const DKDTC = () => {
                 ></input>
               </label>
               {/* <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3db55', color: 'black' }} onClick={() => {
-                let temp_testList = testList.map((e) => {
+                let temp_testList = testList.map((e: any) => {
                   return {
                     ...e,
                     SELECTED: false,

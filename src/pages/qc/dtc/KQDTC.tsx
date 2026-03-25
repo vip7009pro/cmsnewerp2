@@ -350,9 +350,9 @@ const KQDTC = () => {
           </div>}
         columns={columnDefinition}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           /* setSelectedData(e.data)
           if (isLoading.current === false) {
             isLoading.current = true;
@@ -364,10 +364,10 @@ const KQDTC = () => {
             Swal.fire('Thông báo', 'Data chưa load xong, bấm từ từ thôi', 'error')
           } */
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           Swal.fire({
             title: "Loading data",
             text: "Đang tải dữ liệu, hãy chờ chút",
@@ -404,23 +404,23 @@ const KQDTC = () => {
             <label>
               <b>Từ ngày:</b>
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='date'
                 value={fromdate.slice(0, 10)}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e: any) => setFromDate(e.target.value)}
               ></input>
             </label>
             <label>
               <b>Tới ngày:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='date'
                 value={todate.slice(0, 10)}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e: any) => setToDate(e.target.value)}
               ></input>
             </label>
           </div>
@@ -428,25 +428,25 @@ const KQDTC = () => {
             <label>
               <b>Code KD:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='text'
                 placeholder='GH63-xxxxxx'
                 value={codeKD}
-                onChange={(e) => setCodeKD(e.target.value)}
+                onChange={(e: any) => setCodeKD(e.target.value)}
               ></input>
             </label>
             <label>
               <b>Code ERP:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='text'
                 placeholder='7C123xxx'
                 value={codeCMS}
-                onChange={(e) => setCodeCMS(e.target.value)}
+                onChange={(e: any) => setCodeCMS(e.target.value)}
               ></input>
             </label>
           </div>
@@ -454,25 +454,25 @@ const KQDTC = () => {
             <label>
               <b>Tên Liệu:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='text'
                 placeholder='SJ-203020HC'
                 value={m_name}
-                onChange={(e) => setM_Name(e.target.value)}
+                onChange={(e: any) => setM_Name(e.target.value)}
               ></input>
             </label>
             <label>
               <b>Mã Liệu CMS:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='text'
                 placeholder='A123456'
                 value={m_code}
-                onChange={(e) => setM_Code(e.target.value)}
+                onChange={(e: any) => setM_Code(e.target.value)}
               ></input>
             </label>
           </div>
@@ -482,7 +482,7 @@ const KQDTC = () => {
               <select
                 name='hangmuctest'
                 value={testname}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setTestName(e.target.value);
                 }}
               >
@@ -497,13 +497,13 @@ const KQDTC = () => {
             <label>
               <b>Số YCSX:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='text'
                 placeholder='1H23456'
                 value={prodrequestno}
-                onChange={(e) => setProdRequestNo(e.target.value)}
+                onChange={(e: any) => setProdRequestNo(e.target.value)}
               ></input>
             </label>
           </div>
@@ -513,7 +513,7 @@ const KQDTC = () => {
               <select
                 name='phanloaihang'
                 value={testtype}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setTestType(e.target.value);
                 }}
               >
@@ -527,13 +527,13 @@ const KQDTC = () => {
             <label>
               <b>DTC ID:</b>{" "}
               <input
-                onKeyDown={(e) => {
+                onKeyDown={(e: any) => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='text'
                 placeholder='12345'
                 value={id}
-                onChange={(e) => setID(e.target.value)}
+                onChange={(e: any) => setID(e.target.value)}
               ></input>
             </label>
           </div>
@@ -542,7 +542,7 @@ const KQDTC = () => {
           <label>
             <b>All Time:</b>
             <input
-              onKeyDown={(e) => {
+              onKeyDown={(e: any) => {
                 handleSearchCodeKeyDown(e);
               }}
               type='checkbox'

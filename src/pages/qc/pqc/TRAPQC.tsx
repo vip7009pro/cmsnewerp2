@@ -676,11 +676,11 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
           </div>}
         columns={columnDefinition}
         data={pqcdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -701,7 +701,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -709,7 +709,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -720,7 +720,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="GH63-xxxxxx"
                   value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
+                  onChange={(e: any) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -729,7 +729,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="7C123xxx"
                   value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
+                  onChange={(e: any) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -740,7 +740,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="Ten Line QC"
                   value={empl_name}
-                  onChange={(e) => setEmpl_Name(e.target.value)}
+                  onChange={(e: any) => setEmpl_Name(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -748,7 +748,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 <select
                   name="phanloai"
                   value={factory}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setFactory(e.target.value);
                   }}
                 >
@@ -765,7 +765,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="TSP"
                   value={prod_type}
-                  onChange={(e) => setProdType(e.target.value)}
+                  onChange={(e: any) => setProdType(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -774,7 +774,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="1H23456"
                   value={prodrequestno}
-                  onChange={(e) => setProdRequestNo(e.target.value)}
+                  onChange={(e: any) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -785,7 +785,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="ED2H3076"
                   value={process_lot_no}
-                  onChange={(e) => setProcess_Lot_No(e.target.value)}
+                  onChange={(e: any) => setProcess_Lot_No(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -794,7 +794,7 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                   type="text"
                   placeholder="12345"
                   value={id}
-                  onChange={(e) => setID(e.target.value)}
+                  onChange={(e: any) => setID(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -879,9 +879,9 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
             EMPL_NO: currentDefectRow.LINEQC_PIC
           }} />
           2. Nguyên nhân (원인)
-          <textarea rows={8} style={{ width: '100%' }} value={currentNN} onChange={(e)=> {setCurrentNN(e.target.value)}}></textarea>
+          <textarea rows={8} style={{ width: '100%' }} value={currentNN} onChange={(e: any) => {setCurrentNN(e.target.value)}}></textarea>
           3. Đối sách (대책)
-          <textarea rows={8} style={{ width: '100%' }} value={currentDS} onChange={(e)=> {setCurrentDS(e.target.value)}}></textarea>
+          <textarea rows={8} style={{ width: '100%' }} value={currentDS} onChange={(e: any) => {setCurrentDS(e.target.value)}}></textarea>
         </div>
         <div className="buttondiv">
           <button onClick={() => {

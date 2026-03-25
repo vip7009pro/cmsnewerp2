@@ -97,11 +97,11 @@ const PostManager = () => {
         columns={column_posts}
         suppressRowClickSelection={false}
         data={postList}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedPostList.current = e!.api.getSelectedRows();
         }}
@@ -122,7 +122,7 @@ const PostManager = () => {
                 <input
                   type='date'
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -130,7 +130,7 @@ const PostManager = () => {
                 <input
                   type='date'
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -141,7 +141,7 @@ const PostManager = () => {
                   type='text'
                   placeholder='GH63-xxxxxx'
                   value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
+                  onChange={(e: any) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -150,7 +150,7 @@ const PostManager = () => {
                   type='text'
                   placeholder='7C123xxx'
                   value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
+                  onChange={(e: any) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -161,7 +161,7 @@ const PostManager = () => {
                   type='text'
                   placeholder='SJ-203020HC'
                   value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
+                  onChange={(e: any) => setM_Name(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -170,7 +170,7 @@ const PostManager = () => {
                   type='text'
                   placeholder='A123456'
                   value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
+                  onChange={(e: any) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -181,7 +181,7 @@ const PostManager = () => {
                   type='text'
                   placeholder='1F80008'
                   value={prodrequestno}
-                  onChange={(e) => setProdRequestNo(e.target.value)}
+                  onChange={(e: any) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -190,7 +190,7 @@ const PostManager = () => {
                   type='text'
                   placeholder='A123456'
                   value={plan_id}
-                  onChange={(e) => setPlanID(e.target.value)}
+                  onChange={(e: any) => setPlanID(e.target.value)}
                 ></input>
               </label>
               <label>

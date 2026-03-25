@@ -439,7 +439,7 @@ const LONGTERM_PLAN = () => {
           suppressRowClickSelection={false}
         columns={columns_longterm_plan}
         data={longterm_plan}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.data)
           //console.log(fromdate);
           await f_insertLongTermPlan(e.data, fromdate);
@@ -450,7 +450,7 @@ const LONGTERM_PLAN = () => {
           //console.log(kq);
           setProductionPlanCapaData(kq);   
           await loadQLSXPlan(fromdate);
-        }} onRowClick={async (e) => {
+        }} onRowClick={async (e: any) => {
           //console.log(e.data)
           let kq: PROD_PLAN_CAPA_DATA[] = [];
           kq = (await f_getProductionPlanLeadTimeCapaData(fromdate));
@@ -458,7 +458,7 @@ const LONGTERM_PLAN = () => {
           filteredkq = kq.filter((element:PROD_PLAN_CAPA_DATA, index: number) => element.EQ_SERIES === e.data.EQ_NAME);
           //console.log(kq);
           setProductionPlanCapaData(kq);   
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedLongTermPlan.current = e!.api.getSelectedRows();
         }}
@@ -487,7 +487,7 @@ const LONGTERM_PLAN = () => {
                     <input
                       type='date'
                       value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
+                      onChange={(e: any) => setFromDate(e.target.value)}
                     ></input>
                   </label>
                   <label>
@@ -495,7 +495,7 @@ const LONGTERM_PLAN = () => {
                     <select
                       name='phanloai'
                       value={factory}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setFactory(e.target.value);
                       }}
                     >
@@ -510,7 +510,7 @@ const LONGTERM_PLAN = () => {
                     <select
                       name='machine2'
                       value={machine}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setMachine(e.target.value);
                       }}
                     >
@@ -528,7 +528,7 @@ const LONGTERM_PLAN = () => {
                     <input
                       type='date'
                       value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
+                      onChange={(e: any) => setToDate(e.target.value)}
                     ></input>
                   </label>
                 </div>

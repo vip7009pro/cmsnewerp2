@@ -190,7 +190,7 @@ const LOSS_TIME_DATA = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.data)
           if(e.column.colId === 'HOUR_KPI'){
             console.log(e.value)
@@ -200,10 +200,10 @@ const LOSS_TIME_DATA = () => {
             }
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -225,7 +225,7 @@ const LOSS_TIME_DATA = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -233,7 +233,7 @@ const LOSS_TIME_DATA = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
                <label>
@@ -241,7 +241,7 @@ const LOSS_TIME_DATA = () => {
                 <select
                   name="phanloai"
                   value={option}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setOption(Number(e.target.value));
                   }}
                 >

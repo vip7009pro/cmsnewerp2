@@ -725,7 +725,7 @@ const INCOMMING = () => {
           >
             <IconButton
               className="buttonIcon"
-              onClick={async (e) => {
+              onClick={async (e: any) => {
                 if (getUserData()?.SUBDEPTNAME?.includes("IQC")) {
                   Swal.fire({
                     title: "Chắc chắn muốn update Data ?",
@@ -930,7 +930,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.TOTAL_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -971,7 +971,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.IQC_TEST_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1015,7 +1015,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.DTC_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1060,7 +1060,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.AUTO_JUDGEMENT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1104,7 +1104,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.DTC_AUTO === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1169,7 +1169,7 @@ const INCOMMING = () => {
           >
             <IconButton
               className="buttonIcon"
-              onClick={async (e) => {
+              onClick={async (e: any) => {
                 if (getUserData()?.SUBDEPTNAME?.includes("IQC")) {
                   Swal.fire({
                     title: "Chắc chắn muốn update Data ?",
@@ -1265,7 +1265,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.TOTAL_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1305,7 +1305,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.IQC_TEST_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1349,7 +1349,7 @@ const INCOMMING = () => {
             <input
               type="checkbox"
               checked={params.data.DTC_RESULT === "OK"}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setIQC1DataTable((prev) => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
@@ -1444,7 +1444,7 @@ const INCOMMING = () => {
             <div className="uploadfile">
               <IconButton
                 className="buttonIcon"
-                onClick={(e) => {
+                onClick={(e: any) => {
                   uploadFile2(e);
                 }}
               >
@@ -1588,15 +1588,15 @@ const INCOMMING = () => {
             : column_iqcdatatable
         }
         data={iqc1datatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
           handletraDTCData(e.data.DTC_ID);
           setClickedRow(e.data);
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();
         }}
@@ -1609,13 +1609,13 @@ const INCOMMING = () => {
         toolbar={<div></div>}
         columns={column_dtc_data}
         data={dtcDataTable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -1906,7 +1906,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder="202304190123"
                       value={inputno}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         if (e.target.value.length >= 7) {
                           checkLotNVL(e.target.value);
                         }
@@ -1931,7 +1931,7 @@ const INCOMMING = () => {
                     type="text"
                     placeholder={"abcdxyz"}
                     value={vendorLot}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setVendorLot(e.target.value);
                     }}
                   ></input>
@@ -1943,7 +1943,7 @@ const INCOMMING = () => {
                   <input
                     type="date"
                     value={exp_date}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setEXP_DATE(e.target.value);
                     }}
                   ></input>
@@ -1953,7 +1953,7 @@ const INCOMMING = () => {
                     <input
                       type="text"
                       value={nq_qty}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setNQ_QTY(Number(e.target.value));
                       }}
                     ></input>
@@ -1965,7 +1965,7 @@ const INCOMMING = () => {
                     <input
                       type="text"
                       value={dtc_id}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setDtc_ID(Number(e.target.value));
                       }}
                     ></input>
@@ -1976,7 +1976,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder={"NHU1903"}
                       value={request_empl}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         if (e.target.value.length >= 7) {
                           checkEMPL_NAME(e.target.value);
                         }
@@ -2003,7 +2003,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         setReMark(e.target.value);
                       }}
                     ></input>
@@ -2084,7 +2084,7 @@ const INCOMMING = () => {
                     <input
                       type="date"
                       value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
+                      onChange={(e: any) => setFromDate(e.target.value)}
                     ></input>
                   </label>
                   <label>
@@ -2092,7 +2092,7 @@ const INCOMMING = () => {
                     <input
                       type="date"
                       value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
+                      onChange={(e: any) => setToDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
@@ -2103,7 +2103,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder="SJ-203020HC"
                       value={m_name}
-                      onChange={(e) => setM_Name(e.target.value)}
+                      onChange={(e: any) => setM_Name(e.target.value)}
                     ></input>
                   </label>
                   <label>
@@ -2112,7 +2112,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder="A123456"
                       value={m_code}
-                      onChange={(e) => setM_Code(e.target.value)}
+                      onChange={(e: any) => setM_Code(e.target.value)}
                     ></input>
                   </label>
                 </div>
@@ -2123,7 +2123,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder="SSJ"
                       value={vendor}
-                      onChange={(e) => setVendor(e.target.value)}
+                      onChange={(e: any) => setVendor(e.target.value)}
                     ></input>
                   </label>
                   <label>
@@ -2132,7 +2132,7 @@ const INCOMMING = () => {
                       type="text"
                       placeholder="abcxyz123"
                       value={vendorLot}
-                      onChange={(e) => setVendorLot(e.target.value)}
+                      onChange={(e: any) => setVendorLot(e.target.value)}
                     ></input>
                   </label>
                 </div>

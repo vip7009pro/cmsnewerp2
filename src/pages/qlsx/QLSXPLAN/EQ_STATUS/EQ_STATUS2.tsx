@@ -177,10 +177,10 @@ const EQ_STATUS2 = () => {
         }
         data={eq_status_manager_data}
         columns={column_eq_status}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           
         }}  
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           console.log(e)
           selectedMachine.current = e.data;
         }}
@@ -295,7 +295,7 @@ const EQ_STATUS2 = () => {
             size="small"
             label="Search plan / G-name"
             value={searchString}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setSearchString(e.target.value);
             }}
           />
@@ -322,7 +322,7 @@ const EQ_STATUS2 = () => {
       </div>
       {showHideEQManager &&
         <div className="eq_manager_overlay" onMouseDown={closeDialogEQManager}>
-          <div className="eq_manager" onMouseDown={(e) => e.stopPropagation()}>
+          <div className="eq_manager" onMouseDown={(e: any) => e.stopPropagation()}>
             <div className="eq_manager_title">
               <span>EQ Manager</span>
               <IconButton
@@ -348,7 +348,7 @@ const EQ_STATUS2 = () => {
                 id="factory"
                 name="factory"
                 value={factory}
-                onChange={(e) => setFactory(e.target.value)}
+                onChange={(e: any) => setFactory(e.target.value)}
                 style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
               >
                 <option value="NM1">NM1</option>
@@ -362,7 +362,7 @@ const EQ_STATUS2 = () => {
                 id="eq_code"
                 name="eq_code"
                 value={eqCode}
-                onChange={(e) => setEqCode(e.target.value)}
+                onChange={(e: any) => setEqCode(e.target.value)}
                 style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
               />
             </div>
@@ -373,7 +373,7 @@ const EQ_STATUS2 = () => {
                 id="eq_name"
                 name="eq_name"
                 value={eqName}
-                onChange={(e) => setEqName(e.target.value)}
+                onChange={(e: any) => setEqName(e.target.value)}
                 style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
               />
             </div>
@@ -384,7 +384,7 @@ const EQ_STATUS2 = () => {
                 id="eq_op"
                 name="eq_op"
                 value={eqOp}
-                onChange={(e) => setEqOp(parseInt(e.target.value))}
+                onChange={(e: any) => setEqOp(parseInt(e.target.value))}
                 style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
               />
             </div>
@@ -394,7 +394,7 @@ const EQ_STATUS2 = () => {
                 id="eq_active"
                 name="eq_active"
                 value={eqActive}
-                onChange={(e) => setEqActive(e.target.value)}
+                onChange={(e: any) => setEqActive(e.target.value)}
                 style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
               >
                 <option value="OK">OK</option>

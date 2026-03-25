@@ -193,17 +193,17 @@ const RelationshipsManager: React.FC = () => {
         }
         data={relationships}
         columns={columns}
-        onRowClick={(params) => {
+        onRowClick={(params: any) => {
           setSelectedRelationship(params.data);
         }}
-        onRowDoubleClick={(params) => {
+        onRowDoubleClick={(params: any) => {
           setSelectedRelationship(params.data);
           setParentTableId(Number(params.data.ParentTableID));
           setChildTableId(Number(params.data.ChildTableID));
           loadTwoTableRelationship(Number(params.data.ParentTableID), Number(params.data.ChildTableID));
           setOpen(true);
         }}
-        onSelectionChange={(params) => {
+        onSelectionChange={(params: any) => {
           //setSelectedRelationship(params.data);
         }}  
       />
@@ -228,7 +228,7 @@ const RelationshipsManager: React.FC = () => {
                 <InputLabel>Bảng chính</InputLabel>
                 <Select
                   value={parentTableId || ''}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setParentTableId(Number(e.target.value));
                     loadTwoTableRelationship(Number(e.target.value), childTableId || 0);
                   }}
@@ -250,7 +250,7 @@ const RelationshipsManager: React.FC = () => {
                       <Select
                         disabled={!parentTableId}
                         value={selectedParentField}
-                        onChange={(e) => {
+                        onChange={(e: any) => {
                           setSelectedParentField(e.target.value as string);
                         }}
                         label='Field bảng chính'
@@ -271,7 +271,7 @@ const RelationshipsManager: React.FC = () => {
                 <InputLabel>Bảng ngoại</InputLabel>
                 <Select
                   value={childTableId || ''}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setChildTableId(Number(e.target.value));
                     loadTwoTableRelationship(parentTableId || 0, Number(e.target.value));
                   }}
@@ -292,7 +292,7 @@ const RelationshipsManager: React.FC = () => {
                       <InputLabel>Field bảng ngoại</InputLabel>
                       <Select
                         value={selectedChildField}
-                        onChange={(e) => {
+                        onChange={(e: any) => {
                           setSelectedChildField(e.target.value as string);
                         }}
                         label='Field bảng ngoại'
@@ -313,7 +313,7 @@ const RelationshipsManager: React.FC = () => {
             <Grid item xs={12}>
               <FormControl fullWidth margin='normal'>
                 <InputLabel>Loại Relationship</InputLabel>
-                <Select value={relationshipType} onChange={(e) => setRelationshipType(e.target.value as string)} label='Loại Relationship'>
+                <Select value={relationshipType} onChange={(e: any) => setRelationshipType(e.target.value as string)} label='Loại Relationship'>
                   {RELATIONSHIP_TYPES.map((type) => (
                     <MenuItem value={type.value} key={type.value}>
                       {type.label}

@@ -567,14 +567,14 @@ const ADDSPECTDTC = () => {
           </div>}
         columns={dtcSpecColumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           selectedRowsData.current = e!.api.getSelectedRows()
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />
@@ -617,7 +617,7 @@ const ADDSPECTDTC = () => {
                     getOptionLabel={(option: any) =>
                       `${option.G_CODE}: ${option.G_NAME}`
                     }
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params: any) => <TextField {...params} />}
                     onChange={(event: any, newValue: any) => {
                       //console.log(newValue);
                       //checkAddedSpec(undefined, selectedCode?.G_CODE);
@@ -643,7 +643,7 @@ const ADDSPECTDTC = () => {
                     getOptionLabel={(option: any) =>
                       `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
                     }
-                    renderInput={(params) => (
+                    renderInput={(params: any) => (
                       <TextField {...params} label="Chọn NVL" />
                     )}
                     defaultValue={{
@@ -670,7 +670,7 @@ const ADDSPECTDTC = () => {
                 <select
                   name="hangmuctest"
                   value={testname}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setTestName(e.target.value);
                     handletraDTCData(e.target.value);
                     checkAddedSpec(

@@ -277,13 +277,13 @@ const HOLDING = () => {
         toolbar={<div></div>}
         columns={column_holding_table}
         data={holdingdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsData.current = e!.api.getSelectedRows();
         }}
@@ -384,23 +384,23 @@ const HOLDING = () => {
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: any) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: any) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -408,25 +408,25 @@ const HOLDING = () => {
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: any) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
                   placeholder="SJ-203020HC"
                   value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
+                  onChange={(e: any) => setM_Name(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
                 <input
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: any) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
                   placeholder="A123456"
                   value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
+                  onChange={(e: any) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
@@ -434,13 +434,13 @@ const HOLDING = () => {
               <label>
                 <b>LOT CMS:</b>{" "}
                 <input
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: any) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="text"
                   placeholder="2204280689"
                   value={mLotNo}
-                  onChange={(e) => setMLotNo(e.target.value)}
+                  onChange={(e: any) => setMLotNo(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -448,7 +448,7 @@ const HOLDING = () => {
                 <select
                   name="hangmuctest"
                   value={mStatus}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setMStatus(e.target.value);
                   }}
                 >
@@ -462,7 +462,7 @@ const HOLDING = () => {
                 <input
                   type="number"
                   value={ncrId}
-                  onChange={(e) => setNCRID(parseInt(e.target.value))}
+                  onChange={(e: any) => setNCRID(parseInt(e.target.value))}
                 ></input>
               </label>
             </div>
@@ -579,7 +579,7 @@ const HOLDING = () => {
               <label>
                 <b>All Time:</b>
                 <input
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: any) => {
                     handleSearchCodeKeyDown(e);
                   }}
                   type="checkbox"

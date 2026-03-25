@@ -325,14 +325,14 @@ const DTCRESULT = () => {
           </div>}
         columns={dtcResultColumn}
         data={inspectiondatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
-        }} onRowClick={(e) => {
+        }} onRowClick={(e: any) => {
           //console.log(e.data)
-        }} onSelectionChange={(e) => {
+        }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
-        onRowDoubleClick={async (e) => {
+        onRowDoubleClick={async (e: any) => {
           //console.log(e.data)
         }}
       />
@@ -523,7 +523,7 @@ const getIDFromLot = (dtc_id_t: string) => {
                     type="text"
                     placeholder={"123456"}
                     value={dtc_id}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setDTC_ID(e.target.value);
                       if(switchIDLOT){
                         if(e.target.value.length === 10){
@@ -549,7 +549,7 @@ const getIDFromLot = (dtc_id_t: string) => {
                       aria-labelledby="demo-controlled-radio-buttons-group"
                       name="controlled-radio-buttons-group"
                       value={testname}                     
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         //console.log(e.target.value);
                         setTestName(e.target.value);
                         setTestCode_tenthat(
@@ -600,7 +600,7 @@ const getIDFromLot = (dtc_id_t: string) => {
                                     </Typography>
                                   }
                                   sx={{ fontSize: 5, padding: 0, margin: 0 }}
-                                  control={<Radio onClick={(e)=> console.log(e.target)}/>}
+                                  control={<Radio onClick={(e: any) => console.log(e.target)}/>}
                                 />
                               </div>
                             );
@@ -618,7 +618,7 @@ const getIDFromLot = (dtc_id_t: string) => {
                     type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setReMark(e.target.value);
                     }}
                   ></input>

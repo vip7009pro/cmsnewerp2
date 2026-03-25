@@ -651,13 +651,13 @@ const BLOCK = () => {
         }
         columns={column_blocking_table}
         data={blockingdatatable}
-        onCellEditingStopped={(e) => {
+        onCellEditingStopped={(e: any) => {
           //console.log(e.data)
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
           selectedRowsDataA.current = e!.api.getSelectedRows();
         }}
@@ -764,7 +764,7 @@ const BLOCK = () => {
                   <select
                     name="phanloaihang"
                     value={testtype}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setTestType(e.target.value);
                     }}
                   >
@@ -782,7 +782,7 @@ const BLOCK = () => {
                     type="text"
                     placeholder={"54951949844984"}
                     value={vendorLot}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setVendorLot(e.target.value);
                     }}
                   ></input>
@@ -793,7 +793,7 @@ const BLOCK = () => {
                     type="text"
                     placeholder={"Defect content"}
                     value={defect_phenomenon}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setDefectPhenomenon(e.target.value);
                     }}
                   ></input>
@@ -806,7 +806,7 @@ const BLOCK = () => {
                     type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setReMark(e.target.value);
                     }}
                   ></input>
@@ -817,7 +817,7 @@ const BLOCK = () => {
                     type="number"
                     placeholder={"NCR_ID"}
                     value={ncrId}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setNCRID(parseInt(e.target.value));
                     }}
                   ></input>
@@ -830,7 +830,7 @@ const BLOCK = () => {
                     type="checkbox"
                     name="alltimecheckbox"
                     defaultChecked={onlyPending}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setOnlyPending((prev) => !prev);
                     }}
                   ></input>

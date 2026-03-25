@@ -1009,7 +1009,7 @@ const clearAllData = async () => {
         data={tables}
         columns={tableColumns}
         toolbar={tableToolbar}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           setSelectedTable(e.data.TABLE_NAME);
           fetchFields(e.data.TABLE_NAME);
           handleLoadData(e.data.TABLE_NAME);
@@ -1026,7 +1026,7 @@ const clearAllData = async () => {
         columns={fieldColumns}
         toolbar={fieldToolbar}
         onSelectionChange={() => {}}
-        onCellClick={(e) => {
+        onCellClick={(e: any) => {
           let tempEditField: NewField = {
             name: e.data.name,
             dataType: e.data.dataType,
@@ -1038,7 +1038,7 @@ const clearAllData = async () => {
           };
           setEditField(tempEditField);
         }}
-        onRowDoubleClick={(e) => {
+        onRowDoubleClick={(e: any) => {
           let tempEditField: NewField = {
             name: e.data.name,
             dataType: e.data.dataType,
@@ -1063,7 +1063,7 @@ const clearAllData = async () => {
         data={data}        
         toolbar={dataToolbar}
         onSelectionChange={() => {}}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           setSelectedData(e.data);
         }}
         columnWidth={70}
@@ -1105,7 +1105,7 @@ const clearAllData = async () => {
           <TextField
             label="Table Name"
             value={newTableName}
-            onChange={(e) => setNewTableName(e.target.value)}
+            onChange={(e: any) => setNewTableName(e.target.value)}
             fullWidth
             margin="normal"
             style={{ fontSize: 13 }}
@@ -1115,7 +1115,7 @@ const clearAllData = async () => {
               <TextField
                 label="Field Name"
                 value={field.name}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].name = e.target.value;
                   setNewFields(updatedFields);
@@ -1127,7 +1127,7 @@ const clearAllData = async () => {
                 select
                 label="Data Type"
                 value={field.dataType}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].dataType = e.target.value;
                   setNewFields(updatedFields);
@@ -1145,7 +1145,7 @@ const clearAllData = async () => {
                 label="Length"
                 type="number"
                 value={field.length || ""}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].length = e.target.value
                     ? parseInt(e.target.value)
@@ -1164,7 +1164,7 @@ const clearAllData = async () => {
                 select
                 label="Nullable"
                 value={field.isNullable ? "YES" : "NO"}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].isNullable = e.target.value === "YES";
                   setNewFields(updatedFields);
@@ -1183,7 +1183,7 @@ const clearAllData = async () => {
                 select
                 label="Primary Key"
                 value={field.isPrimaryKey ? "YES" : "NO"}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].isPrimaryKey = e.target.value === "YES";
                   updatedFields[index].isNullable = e.target.value === "YES" ? false : true;
@@ -1203,7 +1203,7 @@ const clearAllData = async () => {
                 select
                 label="Identity"
                 value={field.isIdentity ? "YES" : "NO"}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].isIdentity = e.target.value === "YES";
                   setNewFields(updatedFields);
@@ -1226,7 +1226,7 @@ const clearAllData = async () => {
               <TextField
                 label="Default Value"
                 value={field.defaultValue || ""}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   const updatedFields = [...newFields];
                   updatedFields[index].defaultValue =
                     e.target.value || undefined;
@@ -1300,7 +1300,7 @@ const clearAllData = async () => {
           <TextField
             label="Field Name"
             value={editField?.name || ""}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setEditField({ ...editField!, name: e.target.value })
             }
             fullWidth
@@ -1311,7 +1311,7 @@ const clearAllData = async () => {
             select
             label="Data Type"
             value={editField?.dataType || "VARCHAR"}
-            onChange={(e) => {
+            onChange={(e: any) => {
               if (
                 e.target.value === "VARCHAR" ||
                 e.target.value === "NVARCHAR"
@@ -1338,7 +1338,7 @@ const clearAllData = async () => {
             label="Length"
             type="number"
             value={editField?.length || ""}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setEditField({
                 ...editField!,
                 length: e.target.value ? parseInt(e.target.value) : undefined,
@@ -1356,7 +1356,7 @@ const clearAllData = async () => {
             select
             label="Nullable"
             value={editField?.isNullable ? "YES" : "NO"}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setEditField({
                 ...editField!,
                 isNullable: e.target.value === "YES",
@@ -1372,7 +1372,7 @@ const clearAllData = async () => {
             select
             label="Primary Key"
             value={editField?.isPrimaryKey ? "YES" : "NO"}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setEditField({
                 ...editField!,
                 isPrimaryKey: e.target.value === "YES",
@@ -1388,7 +1388,7 @@ const clearAllData = async () => {
             select
             label="Identity"
             value={editField?.isIdentity ? "YES" : "NO"}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setEditField({
                 ...editField!,
                 isIdentity: e.target.value === "YES",
@@ -1408,7 +1408,7 @@ const clearAllData = async () => {
           <TextField
             label="Default Value"
             value={editField?.defaultValue || ""}
-            onChange={(e) =>
+            onChange={(e: any) =>
               setEditField({
                 ...editField!,
                 defaultValue: e.target.value || undefined,
@@ -1447,7 +1447,7 @@ const clearAllData = async () => {
           <TextField
             label="New Table Name"
             value={editTableName}
-            onChange={(e) => setEditTableName(e.target.value)}
+            onChange={(e: any) => setEditTableName(e.target.value)}
             fullWidth
             margin="normal"
           />

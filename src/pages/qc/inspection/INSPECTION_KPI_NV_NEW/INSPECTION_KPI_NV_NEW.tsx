@@ -291,7 +291,7 @@ const INSPECTION_KPI_NV_NEW = () => {
         }
         columns={columnDefinition}
         data={btpData}
-        onCellEditingStopped={async (e) => {
+        onCellEditingStopped={async (e: any) => {
           //console.log(e.data)
           if(e.column.colId === 'HOUR_KPI'){
             console.log(e.value)
@@ -301,10 +301,10 @@ const INSPECTION_KPI_NV_NEW = () => {
             }
           }
         }}
-        onRowClick={(e) => {
+        onRowClick={(e: any) => {
           //console.log(e.data)
         }}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
         }}
       />
@@ -320,7 +320,7 @@ const INSPECTION_KPI_NV_NEW = () => {
       }
       columns={columns_dinhmuc_code}
       data={dmcodesxktra}
-      onCellEditingStopped={async (e) => {
+      onCellEditingStopped={async (e: any) => {
         //console.log(e.column.colId)
         if(e.column.colId === 'DM_SX' ||e.column.colId === 'DM_KT'  )
         {
@@ -330,10 +330,10 @@ const INSPECTION_KPI_NV_NEW = () => {
             handleLoadLossTimeTheoNguoi(false)
         }
       }}
-      onRowClick={(e) => {
+      onRowClick={(e: any) => {
         //console.log(e.data)
       }}
-      onSelectionChange={(e) => {
+      onSelectionChange={(e: any) => {
         //console.log(e!.api.getSelectedRows())
       }}
     />
@@ -348,7 +348,7 @@ const INSPECTION_KPI_NV_NEW = () => {
       }
       columns={colulmns_dinhmuc_vitri}
       data={dmvitrikiemtra}
-      onCellEditingStopped={async (e) => {
+      onCellEditingStopped={async (e: any) => {
         //console.log(e.column.colId)
         if(e.column.colId === 'KPI_VALUE'){
           console.log(e.value)        
@@ -358,10 +358,10 @@ const INSPECTION_KPI_NV_NEW = () => {
           handleLoadLossTimeTheoNguoi(false)
         }
       }}
-      onRowClick={(e) => {
+      onRowClick={(e: any) => {
         //console.log(e.data)
       }}
-      onSelectionChange={(e) => {
+      onSelectionChange={(e: any) => {
         //console.log(e!.api.getSelectedRows())
       }}
     />
@@ -392,7 +392,7 @@ const INSPECTION_KPI_NV_NEW = () => {
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
+                  onChange={(e: any) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
@@ -400,7 +400,7 @@ const INSPECTION_KPI_NV_NEW = () => {
                 <input
                   type="date"
                   value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
+                  onChange={(e: any) => setToDate(e.target.value)}
                 ></input>
               </label>
               {/*  <label>
@@ -408,7 +408,7 @@ const INSPECTION_KPI_NV_NEW = () => {
                 <select
                   name="phanloai"
                   value={option}
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setOption(Number(e.target.value));
                   }}
                 >
