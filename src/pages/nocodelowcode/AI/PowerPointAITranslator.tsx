@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
-import { Button, TextField } from '@mui/material';
+import { Button, MenuItem, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
 
 type TextBoxTextItem = {
@@ -31,6 +31,14 @@ const getTxBodiesInDocumentOrder = (doc: Document) => {
   });
 };
 
+const PROMPT_PRESETS = [
+  { label: 'Mặc định', value: 'default', instruction: '' },
+  { label: 'Báo cáo đối sách cải tiến', value: 'countermeasure', instruction: 'Dịch theo phong cách báo cáo kỹ thuật, cải tiến đối sách. Sử dụng thuật ngữ chuyên môn chính xác.' },
+  { label: 'Thông báo, công văn', value: 'official', instruction: 'Dịch theo phong cách trang trọng của thông báo, công văn hành chính.' },
+  { label: 'Quy trình chất lượng', value: 'quality', instruction: 'Dịch theo phong cách quy trình hệ thống chất lượng (ISO/IATF), đảm bảo rõ ràng, mạch lạc.' },
+  { label: 'Văn bản pháp luật', value: 'legal', instruction: 'Dịch theo thuật ngữ pháp lý, hành văn trang trọng của văn bản luật, hợp đồng.' },
+];
+
 const PowerPointAITranslator = () => {
   const [fileName, setFileName] = useState<string>('');
   const [fromLang, setFromLang] = useState<string>('vi');
@@ -38,6 +46,8 @@ const PowerPointAITranslator = () => {
   const [backendModel, setBackendModel] = useState<string>('gemini-2.5-flash');
   const [backendTemperature, setBackendTemperature] = useState<number>(0.2);
   const [backendTranslating, setBackendTranslating] = useState<boolean>(false);
+  const [promptPreset, setPromptPreset] = useState<string>('default');
+  const [isBilingual, setIsBilingual] = useState<boolean>(false);
 
   const [textboxTexts, setTextboxTexts] = useState<TextBoxTextItem[]>([]);
   const [promptText, setPromptText] = useState<string>('');
@@ -95,6 +105,12 @@ const PowerPointAITranslator = () => {
       textboxTexts: [{ path: 'ppt/slides/slide1.xml', box: 0, text: 'translated text (use \\n for line breaks)' }],
     };
 
+    const presetObj = PROMPT_PRESETS.find(p => p.value === promptPreset);
+    const presetInstruction = presetObj?.instruction ? `\n- Style: ${presetObj.instruction}` : '';
+    const bilingualInstruction = isBilingual 
+      ? `\n- Bilingual mode: Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên. Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang} và trình bày dưới dạng: [Ngôn ngữ gốc] / [Ngôn ngữ đích].`
+      : `Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên, Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang}`;
+
     return [
       `You are an expert translator. Translate from ${from} to ${to}.`,
       `Return ONLY valid JSON matching this schema (no markdown, no extra keys):`,
@@ -106,10 +122,12 @@ const PowerPointAITranslator = () => {
       `- Preserve placeholders like {0}, {name}, %s.`,
       `- Do not reorder items.`,
       `- Keep line breaks (\\n) to preserve slide paragraph breaks as much as possible.`,
+      presetInstruction,
+      bilingualInstruction,
       `Input JSON:`,
       JSON.stringify(payload, null, 2),
-    ].join('\n');
-  }, []);
+    ].filter(Boolean).join('\n');
+  }, [promptPreset, isBilingual, fromLang, toLang]);
 
   const onUpload = useCallback(
     async (file: File) => {
@@ -304,6 +322,28 @@ const PowerPointAITranslator = () => {
     promptText,
     textboxTexts,
     toLang,
+    promptPreset,
+    isBilingual,
+  ]);
+
+  useEffect(() => {
+    if (!textboxTexts.length) return;
+    if (backendTranslating) return;
+
+    const t = setTimeout(() => {
+      setPromptText(buildPrompt(textboxTexts, fileName || 'slides.pptx', fromLang, toLang));
+    }, 250);
+
+    return () => clearTimeout(t);
+  }, [
+    textboxTexts,
+    fileName,
+    fromLang,
+    toLang,
+    promptPreset,
+    isBilingual,
+    buildPrompt,
+    backendTranslating,
   ]);
 
   const stats = useMemo(() => {
@@ -372,6 +412,33 @@ const PowerPointAITranslator = () => {
           onChange={(e) => setBackendTemperature(Number(e.target.value))}
           style={{ width: 140 }}
         />
+
+        <TextField
+          select
+          label="Prompt Preset"
+          size="small"
+          value={promptPreset}
+          onChange={(e) => setPromptPreset(e.target.value)}
+          style={{ width: 200 }}
+        >
+          {PROMPT_PRESETS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          label="Bilingual"
+          size="small"
+          value={isBilingual ? 'yes' : 'no'}
+          onChange={(e) => setIsBilingual(e.target.value === 'yes')}
+          style={{ width: 140 }}
+        >
+          <MenuItem value="no">Không (Chỉ dịch)</MenuItem>
+          <MenuItem value="yes">Có (Song ngữ)</MenuItem>
+        </TextField>
 
         <div style={{ fontSize: 13 }}>
           <b>File:</b> {fileName || '(none)'} &nbsp; | &nbsp;<b>texts:</b> {stats.nonEmpty}/{stats.total}

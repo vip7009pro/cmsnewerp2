@@ -55,6 +55,14 @@ type FilteredTranslationData = {
 
 type OutputMode = 'replace_in_original' | 'only_selected_sheets';
 
+const PROMPT_PRESETS = [
+  { label: 'Mặc định', value: 'default', instruction: '' },
+  { label: 'Báo cáo đối sách cải tiến', value: 'countermeasure', instruction: 'Dịch theo phong cách báo cáo kỹ thuật, cải tiến đối sách. Sử dụng thuật ngữ chuyên môn chính xác.' },
+  { label: 'Thông báo, công văn', value: 'official', instruction: 'Dịch theo phong cách trang trọng của thông báo, công văn hành chính.' },
+  { label: 'Quy trình chất lượng', value: 'quality', instruction: 'Dịch theo phong cách quy trình hệ thống chất lượng (ISO/IATF), đảm bảo rõ ràng, mạch lạc.' },
+  { label: 'Văn bản pháp luật', value: 'legal', instruction: 'Dịch theo thuật ngữ pháp lý, hành văn trang trọng của văn bản luật, hợp đồng.' },
+];
+
 const ExcelAITranslator = () => {
   const [fileName, setFileName] = useState<string>('');
   const [fromLang, setFromLang] = useState<string>(() => localStorage.getItem('excel_ai_translator_from') || 'vi');
@@ -66,6 +74,8 @@ const ExcelAITranslator = () => {
   const [backendModel, setBackendModel] = useState<string>('gemini-2.5-flash');
   const [backendTemperature, setBackendTemperature] = useState<number>(0.2);
   const [backendTranslating, setBackendTranslating] = useState<boolean>(false);
+  const [promptPreset, setPromptPreset] = useState<string>('default');
+  const [isBilingual, setIsBilingual] = useState<boolean>(false);
 
   const [sharedStrings, setSharedStrings] = useState<SharedStringItem[]>([]);
   const [inlineStrings, setInlineStrings] = useState<InlineStringItem[]>([]);
@@ -415,6 +425,12 @@ const ExcelAITranslator = () => {
         schema.inlineStrings = [{ sheet: 'xl/worksheets/sheet1.xml', cell: 'A1', i: 0, text: 'translated text' }];
       }
 
+      const presetObj = PROMPT_PRESETS.find((p) => p.value === promptPreset);
+      const presetInstruction = presetObj?.instruction ? `\n- Style: ${presetObj.instruction}` : '';
+      const bilingualInstruction = isBilingual
+        ? `\n- Bilingual mode: Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên. Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang} và trình bày dưới dạng: [Ngôn ngữ gốc] / [Ngôn ngữ đích].`
+        : `Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên, Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang}`;
+
       return [
         `You are an expert translator. Translate from ${from} to ${to}.`,
         `Return ONLY valid JSON matching this schema (no markdown, no extra keys):`,
@@ -424,11 +440,15 @@ const ExcelAITranslator = () => {
         `- Keep each i exactly the same. (i is the sharedStrings index in sharedStrings.xml)`,
         `- Preserve placeholders like {0}, {name}, %s, and Excel-like tokens.`,
         `- Do not reorder items.`,
+        presetInstruction,
+        bilingualInstruction,
         `Input JSON:`,
         JSON.stringify(payload, null, 2),
-      ].join('\n');
+      ]
+        .filter(Boolean)
+        .join('\n');
     },
-    [],
+    [promptPreset, isBilingual, fromLang, toLang],
   );
 
   const onUpload = useCallback(
@@ -807,6 +827,8 @@ const ExcelAITranslator = () => {
     selectedSheetPaths,
     sharedStrings.length,
     toLang,
+    promptPreset,
+    isBilingual,
   ]);
 
   return (
@@ -935,6 +957,33 @@ const ExcelAITranslator = () => {
           onChange={(e) => setBackendTemperature(Number(e.target.value))}
           style={{ width: 140 }}
         />
+
+        <TextField
+          select
+          label="Prompt Preset"
+          size="small"
+          value={promptPreset}
+          onChange={(e) => setPromptPreset(e.target.value)}
+          style={{ width: 200 }}
+        >
+          {PROMPT_PRESETS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          label="Bilingual"
+          size="small"
+          value={isBilingual ? 'yes' : 'no'}
+          onChange={(e) => setIsBilingual(e.target.value === 'yes')}
+          style={{ width: 140 }}
+        >
+          <MenuItem value="no">Không (Chỉ dịch)</MenuItem>
+          <MenuItem value="yes">Có (Song ngữ)</MenuItem>
+        </TextField>
 
         <div style={{ fontSize: 13 }}>
           <b>File:</b> {fileName || '(none)'} &nbsp; | &nbsp;

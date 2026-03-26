@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
-import { Button, TextField } from '@mui/material';
+import { Button, MenuItem, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
 
 type ParagraphTextItem = {
@@ -31,6 +31,14 @@ const getParagraphsInDocumentOrder = (doc: Document) => {
   });
 };
 
+const PROMPT_PRESETS = [
+  { label: 'Mặc định', value: 'default', instruction: '' },
+  { label: 'Báo cáo đối sách cải tiến', value: 'countermeasure', instruction: 'Dịch theo phong cách báo cáo kỹ thuật, cải tiến đối sách. Sử dụng thuật ngữ chuyên môn chính xác.' },
+  { label: 'Thông báo, công văn', value: 'official', instruction: 'Dịch theo phong cách trang trọng của thông báo, công văn hành chính.' },
+  { label: 'Quy trình chất lượng', value: 'quality', instruction: 'Dịch theo phong cách quy trình hệ thống chất lượng (ISO/IATF), đảm bảo rõ ràng, mạch lạc.' },
+  { label: 'Văn bản pháp luật', value: 'legal', instruction: 'Dịch theo thuật ngữ pháp lý, hành văn trang trọng của văn bản luật, hợp đồng.' },
+];
+
 const WordAITranslator = () => {
   const [fileName, setFileName] = useState<string>('');
   const [fromLang, setFromLang] = useState<string>(() => localStorage.getItem('word_ai_translator_from') || 'korean');
@@ -40,6 +48,8 @@ const WordAITranslator = () => {
   const [backendTranslating, setBackendTranslating] = useState<boolean>(false);
   const [chunkSize, setChunkSize] = useState<number>(120);
   const [maxPromptChars, setMaxPromptChars] = useState<number>(28000);
+  const [promptPreset, setPromptPreset] = useState<string>('default');
+  const [isBilingual, setIsBilingual] = useState<boolean>(false);
 
   useEffect(() => {
     localStorage.setItem('word_ai_translator_from', fromLang);
@@ -99,6 +109,12 @@ const WordAITranslator = () => {
       paragraphs: [{ path: 'word/document.xml', p: 0, text: 'translated text (use \\n for line breaks if needed)' }],
     };
 
+    const presetObj = PROMPT_PRESETS.find(p => p.value === promptPreset);
+    const presetInstruction = presetObj?.instruction ? `\n- Style: ${presetObj.instruction}` : '';
+    const bilingualInstruction = isBilingual 
+      ? `\n- Bilingual mode: Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên. Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang} và trình bày dưới dạng: [Ngôn ngữ gốc] / [Ngôn ngữ đích].`
+      : `'Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên, Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang}'`;
+
     return [
       `You are an expert translator. Translate from ${from} to ${to}.`,
       `Return ONLY valid JSON matching this schema (no markdown, no extra keys):`,
@@ -110,10 +126,12 @@ const WordAITranslator = () => {
       `- Preserve placeholders like {0}, {name}, %s.`,
       `- Do not reorder items.`,
       `- Translate each item independently; do not rely on missing context outside the provided items.`,
+      presetInstruction,
+      bilingualInstruction,
       `Input JSON:`,
       JSON.stringify(payload, null, 2),
-    ].join('\n');
-  }, []);
+    ].filter(Boolean).join('\n');
+  }, [promptPreset, isBilingual, fromLang, toLang]);
 
   const chunkParagraphsForBackend = useCallback(
     (items: ParagraphTextItem[], maxItems: number, maxChars: number) => {
@@ -369,6 +387,28 @@ const WordAITranslator = () => {
     maxPromptChars,
     paragraphs,
     toLang,
+    promptPreset,
+    isBilingual,
+  ]);
+
+  useEffect(() => {
+    if (!paragraphs.length) return;
+    if (backendTranslating) return;
+
+    const t = setTimeout(() => {
+      setPromptText(buildPrompt(paragraphs, fileName || 'document.docx', fromLang, toLang));
+    }, 250);
+
+    return () => clearTimeout(t);
+  }, [
+    paragraphs,
+    fileName,
+    fromLang,
+    toLang,
+    promptPreset,
+    isBilingual,
+    buildPrompt,
+    backendTranslating,
   ]);
 
   const stats = useMemo(() => {
@@ -453,6 +493,33 @@ const WordAITranslator = () => {
           onChange={(e) => setMaxPromptChars(Number(e.target.value))}
           style={{ width: 160 }}
         />
+
+        <TextField
+          select
+          label="Prompt Preset"
+          size="small"
+          value={promptPreset}
+          onChange={(e) => setPromptPreset(e.target.value)}
+          style={{ width: 200 }}
+        >
+          {PROMPT_PRESETS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          label="Bilingual"
+          size="small"
+          value={isBilingual ? 'yes' : 'no'}
+          onChange={(e) => setIsBilingual(e.target.value === 'yes')}
+          style={{ width: 140 }}
+        >
+          <MenuItem value="no">Không (Chỉ dịch)</MenuItem>
+          <MenuItem value="yes">Có (Song ngữ)</MenuItem>
+        </TextField>
 
         <div style={{ fontSize: 13 }}>
           <b>File:</b> {fileName || '(none)'} &nbsp; | &nbsp;<b>paragraphs:</b> {stats.nonEmpty}/{stats.total}
