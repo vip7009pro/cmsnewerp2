@@ -37,6 +37,8 @@ import { Login } from "./api/lazyPages";
 import { requestFullScreen } from "./api/GlobalFunction";
 import AppRoutes from "./AppRoutes";
 import { useRenderLag } from "./api/userRenderLag";
+import { useSocketEvents } from "./hooks/useSocketEvents";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 function App() {
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(
@@ -291,37 +293,21 @@ function App() {
     }
   };
 
+  useSocketEvents({
+    onWebVersionUpdate: handleSetWebVer,
+    onCheckOnline: () => {},
+    changeServer: handleChangeServerCommand,
+    notification_panel: handleNotification as any,
+  });
+
   useEffect(() => {
     checkLoginCallback();
     checkDiemDanh();
-    const socket = getSocket();
-    if (!socket.hasListeners("setWebVer")) {
-      socket.on("setWebVer", handleSetWebVer);
-    }
-    if (!socket.hasListeners("request_check_online2")) {
-      //console.log('kich hoat nhan thogn tin check online');
-      socket.on("request_check_online2", (data: any) => {
-        //console.log('co request check online', data);
-        //Swal.fire('Thông báo','Có yêu cầu check online từ server','info');
-        socket.emit("respond_check_online", getUserData());
-      });
-    }
-    if (!socket.hasListeners("changeServer")) {
-      socket.on("changeServer", handleChangeServerCommand);
-    }
-    if (!socket.hasListeners("notification_panel")) {
-      socket.on("notification_panel", handleNotification);
-    }
     if(getCompany() === 'CMS') {
       handleEnableNotifications();
     }
     getIPAddress();
-    return () => {
-      socket.off("setWebVer", (data: any) => {});
-      socket.off("request_check_online", (data: any) => {});
-      socket.off("notification_panel", (data: any) => {});
-    };
-  }, [globalLoginState]);
+  }, [globalLoginState, checkLoginCallback, checkDiemDanh]);
 
   useEffect(() => {
     let timer: any = null;
@@ -352,7 +338,9 @@ function App() {
           onClick={() => requestFullScreen(elementRef, full_screen)}
         >
           <Suspense fallback={<FallBackComponent />}>
-            <AppRoutes globalUserData={globalUserData} />
+            <ErrorBoundary>
+              <AppRoutes globalUserData={globalUserData} />
+            </ErrorBoundary>
           </Suspense>
         </div>
       )}
