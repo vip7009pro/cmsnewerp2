@@ -23,14 +23,14 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[extname]',
-        /* manualChunks(id) {
+        manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('@mui')) return 'vendor-mui';
             if (id.includes('ag-grid')) return 'vendor-ag-grid';
             if (id.includes('devextreme')) return 'vendor-dx';
             if (id.includes('xlsx') || id.includes('exceljs')) return 'vendor-excel';
             if (id.includes('moment')) return 'vendor-moment';
-            if (id.match(/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom)[\\/]/)) return 'vendor-react';
+            // Do not manual split react core
             if (id.includes('face-api.js')) return 'vendor-faceapi';
             if (id.includes('opencv-js')) return 'vendor-opencv';
             if (id.includes('recharts')) return 'vendor-recharts';
@@ -38,7 +38,7 @@ export default defineConfig({
             if (id.includes('jszip')) return 'vendor-jszip';
             return 'vendor';
           }
-        } */
+        }
       },
     },
   },
