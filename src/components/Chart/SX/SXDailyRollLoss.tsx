@@ -11,11 +11,8 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import {
-  CustomResponsiveContainer,
-  nFormatter,
-} from "../../../api/GlobalFunction";
 import { SX_LOSS_ROLL_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 
 const SXDailyRollLoss = ({
   dldata,

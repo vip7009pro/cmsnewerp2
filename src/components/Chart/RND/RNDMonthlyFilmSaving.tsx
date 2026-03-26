@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { YCTK_TREND_DATA } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 import { RND_FILM_SAVING_TREND_DATA } from "../../../pages/rnd/interfaces/rndInterface";
 

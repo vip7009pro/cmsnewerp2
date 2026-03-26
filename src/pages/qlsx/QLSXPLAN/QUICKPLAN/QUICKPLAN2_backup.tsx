@@ -15,10 +15,6 @@ import {
 import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
-import {
-  checkBP,
-  SaveExcel,
-} from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
@@ -36,6 +32,8 @@ import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/k
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import { f_getMachineListData, f_getRecentDMData, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { checkBP } from "../../../../api/services/permissionService";
+import { SaveExcel } from "../../../../api/services/excelService";
 const QUICKPLAN2_OLD = () => {
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;
   //console.log(qtyFactor)

@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/GlobalFunction";
+import {
+  generateMultiGradientColors,
+  CustomResponsiveContainer,
+  nFormatter,
+} from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { CNT_GAP_DATA } from "../../../pages/qc/interfaces/qcInterface";
 import { DAOFILM_ERR_DATA } from "../../../pages/rnd/interfaces/rndInterface";

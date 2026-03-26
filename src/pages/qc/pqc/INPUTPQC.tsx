@@ -13,7 +13,7 @@ import React, { useEffect, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import "./INPUTPQC.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

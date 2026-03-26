@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { AMAZON_DATA } from "../../interfaces/kdInterface";
 import { COMPONENT_DATA } from "../../../rnd/interfaces/rndInterface";
-import { renderElement } from "../../../../api/GlobalFunction";
+import { renderElement } from "../../../../api/services/utilService";
 import { createPortal } from "react-dom";
 
 const PrintTrigger = ({ onPrint }: { onPrint: () => void }) => {

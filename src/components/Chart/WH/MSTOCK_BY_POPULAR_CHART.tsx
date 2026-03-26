@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { MSTOCK_BY_POPULAR_DATA } from "../../../pages/kho/interfaces/khoInterface";
 const MSTOCK_BY_POPULAR_CHART = ({ data }: { data: MSTOCK_BY_POPULAR_DATA[] }) => {

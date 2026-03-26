@@ -23,7 +23,8 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { MdDocumentScanner, MdUpdate } from "react-icons/md";
-import { checkBP, f_updateStockM090 } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { f_updateStockM090 } from "../../../api/services/inventoryService";
 import { CustomCellRendererProps } from "ag-grid-react";
 import BNK_COMPONENT from "./BNK_COMPONENT";
 import { useReactToPrint } from "react-to-print";

@@ -3,7 +3,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, Lin
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { CPK_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const CPK_CHART = ({
   dldata

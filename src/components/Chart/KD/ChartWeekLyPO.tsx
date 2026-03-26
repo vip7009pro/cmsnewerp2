@@ -15,7 +15,7 @@ import {
 } from "recharts";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { WeekLyPOData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 

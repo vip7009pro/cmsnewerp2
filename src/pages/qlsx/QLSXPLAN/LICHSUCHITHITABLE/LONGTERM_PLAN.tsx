@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { checkBP } from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";

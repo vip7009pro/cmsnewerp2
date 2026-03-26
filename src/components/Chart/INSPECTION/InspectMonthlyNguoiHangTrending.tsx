@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, LabelList, Line, } from "recharts";
-import { CustomResponsiveContainer, nFormatter, } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter, } from "../../../api/services/utilService";
 import { NguoiHangData, } from "../../../pages/qc/interfaces/qcInterface";
 const InspectMonthlyNguoiHangTrending = ({
   dldata,

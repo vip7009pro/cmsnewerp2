@@ -11,11 +11,8 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import {
-  CustomResponsiveContainer,
-  nFormatter,
-} from "../../../api/GlobalFunction";
 import { CS_CONFIRM_TRENDING_DATA } from "../../../pages/qc/interfaces/qcInterface";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 
 const CSDailyConfirm = ({
   dldata,

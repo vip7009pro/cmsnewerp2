@@ -19,7 +19,7 @@ import {
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
+import { f_updateTONKIEM_M100 } from "../../../api/services/inventoryService";
 import { f_loadKHKT_ADUNG, f_loadTemLotKTHistory, f_updateTrueDiemKiemTra } from "../utils/qcUtils";
 const INSPECTION = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

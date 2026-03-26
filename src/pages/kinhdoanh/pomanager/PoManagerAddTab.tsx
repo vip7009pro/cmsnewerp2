@@ -7,7 +7,8 @@ import "./PoManagerAddTab.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getCompany, getSocket, getUserData } from "../../../api/Api";
-import { autoGetProdPrice, f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { autoGetProdPrice } from "../../../api/services/utilService";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
 import {

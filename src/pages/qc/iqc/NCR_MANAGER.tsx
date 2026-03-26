@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import { HOLDDING_BY_NCR_ID, NCR_DATA } from "../interfaces/qcInterface";
 const NCR_MANAGER = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

@@ -58,7 +58,8 @@ import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComp
 import {  
   WEB_SETTING_DATA,
 } from "../../../../api/GlobalInterface";
-import { checkBP, zeroPad } from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
+import { zeroPad } from "../../../../api/services/utilService";
 import { f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/kdUtils";
 import { BOMSX_DATA, CODE_FULL_INFO } from "../../../rnd/interfaces/rndInterface";
 import { ALL_GAP_RATE_BACK_DATA, CNT_GAP_DATA, CNT_GAP_DATA2, KD_YC_GAP_RATE_BACK_DATA, KT_GAP_RATE_BACK_DATA, SX_GAP_RATE_BACK_DATA, TREND_NGUOI_HANG_DATA, TRUOCHAN_BACK_DATA, TRUOCHAN_BACK_DATA2 } from "../../../qc/interfaces/qcInterface";

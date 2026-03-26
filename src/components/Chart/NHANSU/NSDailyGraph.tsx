@@ -3,7 +3,7 @@ import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { DiemDanhHistoryData} from "../../../pages/nhansu/interfaces/nhansuInterface";
 
 const NSDailyGraph = ({

@@ -10,7 +10,7 @@ import {
   changeSelectedServer,
   changeServer,
 } from "../../redux/slices/globalSlice";
-import { isValidInput } from "../../api/GlobalFunction";
+import { isValidInput } from "../../api/services/utilService";
 import Swal from "sweetalert2";
 const Login = () => {
   const protocol = window.location.protocol.startsWith("https")

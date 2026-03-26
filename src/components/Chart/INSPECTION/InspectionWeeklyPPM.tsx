@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { WeeklyData } from "../../../pages/qc/interfaces/qcInterface";
 
 const InspectionWeeklyPPM = ({

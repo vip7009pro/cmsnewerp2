@@ -9,7 +9,8 @@ import moment from "moment";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { checkBP, f_insert_Notification_Data} from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { f_loadProdOverData, f_updateProdOverData } from "../utils/kdUtils";

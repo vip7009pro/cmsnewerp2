@@ -3,7 +3,7 @@ import { XAxis, YAxis, Tooltip, Legend, ComposedChart, Label, Line, Area, Bar } 
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import {SX_KPI_NEW_SUMMARY_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const SX_KPI_NV_GRAPH = ({

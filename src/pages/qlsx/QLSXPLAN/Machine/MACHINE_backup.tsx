@@ -18,10 +18,6 @@ import {
 import { MdOutlinePendingActions, MdResetTv } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
-import {
-  checkBP,  
-  f_insert_Notification_Data,
-} from "../../../../api/GlobalFunction";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
@@ -43,6 +39,8 @@ import { f_insertDMYCSX } from "../../../kinhdoanh/utils/kdUtils";
 import { f_addQLSXPLAN, f_deleteChiThiMaterialLine, f_deleteQLSXPlan, f_getMachineListData, f_getRecentDMData, f_handle_loadEQ_STATUS, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_handletraYCSXQLSX, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_saveQLSX, f_saveSinglePlan, f_setPendingYCSX, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, renderBanVe, renderChiThi, renderChiThi2, renderYCSX } from "../utils/khsxUtils";
 import { DINHMUC_QSLX, EQ_STT, MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import useLocalStorageArray from "./LoadSelectedMachineHook";
+import { checkBP } from "../../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../../api/services/notificationService";
 const MACHINE_OLD = () => {
   const myComponentRef = useRef();
   const [selected_eq, setSelected_eq] = useLocalStorageArray('selected_eq');

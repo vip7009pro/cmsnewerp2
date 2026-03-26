@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { RND_NEWCODE_TREND_DATA } from "../../../pages/rnd/interfaces/rndInterface";
 
 const RNDYearlyNewCode = ({

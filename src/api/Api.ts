@@ -10,7 +10,7 @@ import {
 /* import axios from 'axios'; */
 import axios from "axios";
 import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
-import { encryptData } from "./GlobalFunction";
+import { encryptData } from "./services/utilService";
 import { DEFAULT_USER_DATA } from "./defaultUserData";
 
 const cookies = new Cookies();

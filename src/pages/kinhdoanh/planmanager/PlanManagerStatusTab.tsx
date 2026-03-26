@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { INSPECT_STATUS_DATA } from "../../qc/interfaces/qcInterface";
 import { f_loadInspect_status_G_CODE } from "../../qc/utils/qcUtils";
-import { f_updateBTP_M100, f_updateTONKIEM_M100, f_update_Stock_M100_CMS } from "../../../api/GlobalFunction";
+import { f_updateBTP_M100, f_updateTONKIEM_M100, f_update_Stock_M100_CMS } from "../../../api/services/inventoryService";
 import AGTable from "../../../components/DataTable/AGTable";
 import { Button } from "@mui/material";
 import './PlanManagerStatusTab.scss';

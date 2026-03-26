@@ -11,7 +11,7 @@ import {
   Label,
 } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { PO_BALANCE_DETAIL } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const KDPOBalanceSummaryByWeek = ({ data, onClick }: { data: Array<PO_BALANCE_DETAIL>, onClick: (e: any) => void }) => {

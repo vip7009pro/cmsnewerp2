@@ -22,11 +22,9 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
-import {
-  checkBP,
-  f_insert_Notification_Data,
-  renderElement,
-} from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
+import { renderElement } from "../../../api/services/utilService";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineUpdate, MdUpgrade } from "react-icons/md";

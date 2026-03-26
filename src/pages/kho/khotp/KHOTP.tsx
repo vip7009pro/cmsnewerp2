@@ -9,7 +9,7 @@ import "./KHOTP.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { f_updateBTP_M100 } from "../../../api/GlobalFunction";
+import { f_updateBTP_M100 } from "../../../api/services/inventoryService";
 import { TONKIEMGOP_CMS, TONKIEMGOP_KD, TONKIEMTACH, WH_IN_OUT, XUATPACK_DATA } from "../interfaces/khoInterface";
 const KHOTP = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

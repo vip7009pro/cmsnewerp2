@@ -3,13 +3,13 @@ import { useEffect, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
 import './KHOTP_REPORT.scss';
 import { Checkbox, IconButton } from '@mui/material';
-import { SaveExcel } from '../../../../api/GlobalFunction';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { P_STOCK_BY_MONTH_DATA, P_STOCK_BY_MONTH_DETAIL_DATA } from '../../interfaces/khoInterface';
 import { f_load_P_Stock_By_Month, f_load_P_Stock_By_Month_Detail } from '../../utils/khoUtils';
 import AGTable from '../../../../components/DataTable/AGTable';
 import { getUserData } from '../../../../api/Api';
 import PSTOCK_BY_MONTH_CHART from '../../../../components/Chart/WH/PSTOCK_BY_MONTH_CHART';
+import { SaveExcel } from '../../../../api/services/excelService';
 const KHOTP_REPORT = () => {
   const [stockpopularmonth, setStockPopularMonth] = useState<P_STOCK_BY_MONTH_DATA[]>([]);
   const [stockpopularmonthdetailA, setStockPopularMonthDetailA] = useState<P_STOCK_BY_MONTH_DETAIL_DATA[]>([]);

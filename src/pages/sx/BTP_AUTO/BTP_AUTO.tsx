@@ -5,9 +5,7 @@ import "./BTP_AUTO.scss";
 import AGTable from "../../../components/DataTable/AGTable";
 import { BiLoader } from "react-icons/bi";
 import QLGN from "../../rnd/quanlygiaonhandaofilm/QLGN";
-import {
-  f_updateBTP_M100,
-} from "../../../api/GlobalFunction";
+import { f_updateBTP_M100 } from "../../../api/services/inventoryService";
 import moment from "moment";
 import { BTP_AUTO_DATA2, BTP_AUTO_DATA_SUMMARY } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_load_BTP_Auto, f_load_BTP_Summary_Auto } from "../../qlsx/QLSXPLAN/utils/khsxUtils";

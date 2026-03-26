@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
-import { SaveExcel } from "../../api/GlobalFunction";
+import { SaveExcel } from "../../api/services/excelService";
 import "./CustomerPOBalanceByType.scss";
 
 interface CustomerPOBalanceByTypeData {

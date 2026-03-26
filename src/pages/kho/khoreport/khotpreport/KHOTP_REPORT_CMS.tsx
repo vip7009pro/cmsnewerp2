@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
 import './KHOTP_REPORT.scss';
 import { Checkbox, IconButton } from '@mui/material';
-import { SaveExcel } from '../../../../api/GlobalFunction';
+import { SaveExcel } from '../../../../api/services/excelService';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { P_STOCK_BY_MONTH_DATA, P_STOCK_BY_MONTH_DETAIL_DATA } from '../../interfaces/khoInterface';
 import { f_load_P_Stock_By_Month, f_load_P_Stock_By_Month_Detail } from '../../utils/khoUtils';

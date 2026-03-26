@@ -14,11 +14,9 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getSocket, getUserData } from "../../../../api/Api";
-import {
-  checkBP,  
-  SaveExcel,
-  f_insert_Notification_Data,
-} from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../../api/services/notificationService";
+import { SaveExcel } from "../../../../api/services/excelService";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";

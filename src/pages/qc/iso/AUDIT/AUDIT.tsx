@@ -10,7 +10,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getUserData, uploadQuery } from "../../../../api/Api";
-import { SaveExcel } from "../../../../api/GlobalFunction";
+import { SaveExcel } from "../../../../api/services/excelService";
 import './AUDIT.scss'
 import { HiSave } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";

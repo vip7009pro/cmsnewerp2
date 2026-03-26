@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, PieChart, Pie } from "recharts";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { getGlobalSetting } from "../../../api/Api";
 import { DiemDanhNhomDataSummary } from "../../../pages/nhansu/interfaces/nhansuInterface";
 

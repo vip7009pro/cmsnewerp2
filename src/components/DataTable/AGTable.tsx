@@ -13,13 +13,13 @@ import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
 import { AiFillCloseCircle, AiFillFileExcel } from 'react-icons/ai';
-import { SaveExcel } from '../../api/GlobalFunction';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ColDef, GridApi } from 'ag-grid-community';
 import PivotTable from '../PivotChart/PivotChart';
 import PivotGridDataSource, { PivotGridDataType } from 'devextreme/ui/pivot_grid/data_source';
 import { MdOutlinePivotTableChart } from 'react-icons/md';
+import { SaveExcel } from '../../api/services/excelService';
 
 interface AGInterface {
   data: Array<any>,

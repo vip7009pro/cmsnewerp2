@@ -34,11 +34,11 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
 import { Login } from "./api/lazyPages";
-import { requestFullScreen } from "./api/GlobalFunction";
 import AppRoutes from "./AppRoutes";
 import { useRenderLag } from "./api/userRenderLag";
 import { useSocketEvents } from "./hooks/useSocketEvents";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
+import { requestFullScreen } from "./api/services/utilService";
 function App() {
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(

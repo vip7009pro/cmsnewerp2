@@ -13,9 +13,8 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiOutlineSearch } from "react-icons/ai";
-import {
-  f_updateStockM090,
-} from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { f_updateStockM090 } from "../../../api/services/inventoryService";
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { BLOCK_DATA } from "../interfaces/qcInterface";
 import { f_updateNCRIDForFailing, f_updateNCRIDForHolding } from "../utils/qcUtils";

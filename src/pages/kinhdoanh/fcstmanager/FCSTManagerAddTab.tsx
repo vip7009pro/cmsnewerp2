@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
-import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
 import { UserData } from "../../../api/GlobalInterface";

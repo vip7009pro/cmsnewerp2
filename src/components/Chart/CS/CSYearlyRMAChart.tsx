@@ -13,7 +13,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { CS_RMA_AMOUNT_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const CSYearlyRMAChart = ({

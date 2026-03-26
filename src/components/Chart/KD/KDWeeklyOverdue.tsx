@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { OVERDUE_DATA } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const KDWeeklyOverdue = ({

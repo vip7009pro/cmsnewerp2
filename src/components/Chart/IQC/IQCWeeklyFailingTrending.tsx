@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { IQC_FAILING_TREND_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const IQCWeeklyFailingTrending = ({

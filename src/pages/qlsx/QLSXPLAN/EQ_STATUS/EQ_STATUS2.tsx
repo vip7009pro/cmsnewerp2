@@ -5,7 +5,7 @@ import MACHINE_COMPONENT3 from "../Machine/MACHINE_COMPONENT3";
 import EQ_SUMMARY from "./EQ_SUMMARY";
 import { IconButton, TextField } from "@mui/material";
 import "./EQ_STATUS2.scss";
-import { checkBP} from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import Swal from "sweetalert2";

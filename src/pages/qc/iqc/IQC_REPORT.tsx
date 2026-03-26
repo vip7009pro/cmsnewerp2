@@ -7,7 +7,6 @@ import './IQC_REPORT.scss';
 import { Autocomplete, Checkbox, IconButton, TextField, Typography, createFilterOptions } from '@mui/material';
 import PQCMonthlyFcost from '../../../components/Chart/PQC/PQCMonthlyFcost';
 import PQCYearlyFcost from '../../../components/Chart/PQC/PQCYearlyFcost';
-import { SaveExcel } from '../../../api/GlobalFunction';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { DEFECT_TRENDING_DATA, IQC_FAILING_TREND_DATA, IQC_FAIL_PENDING, IQC_TREND_DATA, IQC_VENDOR_NGRATE_DATA, PQC3_DATA, PQCSummary, PQC_PPM_DATA } from '../interfaces/qcInterface';
 import { CodeListData } from '../../kinhdoanh/interfaces/kdInterface';
@@ -21,6 +20,7 @@ import IQcWeeklyVendorNGRateTrending from '../../../components/Chart/IQC/IQcWeek
 import IQcMonthlyVendorNGRateTrending from '../../../components/Chart/IQC/IQcMonthlyVendorNGRateTrending';
 import IQCWeeklyFailingTrending from '../../../components/Chart/IQC/IQCWeeklyFailingTrending';
 import IQC_FAILING_PENDING from '../../../components/Chart/IQC/IQC_FAILING_PENDING';
+import { SaveExcel } from '../../../api/services/excelService';
 const IQC_REPORT = () => {
   const [dailyppm, setDailyPPM] = useState<IQC_TREND_DATA[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<IQC_TREND_DATA[]>([]);

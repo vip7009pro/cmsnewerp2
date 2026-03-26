@@ -1,7 +1,7 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { renderElement } from "../../../api/GlobalFunction";
+import { renderElement } from "../../../api/services/utilService";
 import { MdPrint } from "react-icons/md";
 import {
   DataDiv,

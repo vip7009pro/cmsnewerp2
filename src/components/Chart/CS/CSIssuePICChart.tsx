@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { CS_CONFIRM_BY_CUSTOMER_DATA } from "../../../pages/qc/interfaces/qcInterface";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 

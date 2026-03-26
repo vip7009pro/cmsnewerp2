@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { PROD_PLAN_CAPA_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 

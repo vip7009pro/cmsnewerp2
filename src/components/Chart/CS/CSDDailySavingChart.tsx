@@ -10,11 +10,8 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import {
-  CustomResponsiveContainer,
-  nFormatter,
-} from "../../../api/GlobalFunction";
 import { CS_REDUCE_AMOUNT_DATA } from "../../../pages/qc/interfaces/qcInterface";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 
 const CSDDailySavingChart = ({
   dldata,

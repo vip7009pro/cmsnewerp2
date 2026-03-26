@@ -9,15 +9,12 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { 
-  f_update_btp_p400,
-  f_update_tonkiem_p400,
-} from "../../../../api/GlobalFunction";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { useForm } from "react-hook-form";
 import { DAILY_YCSX_RESULT, LICHSUINPUTLIEU_DATA, LICHSUNHAPKHOAO, LOSS_TABLE_DATA, MACHINE_LIST, SX_DATA, YCSX_SX_DATA } from "../interfaces/khsxInterface";
 import { f_getMachineListData, f_lichsuinputlieu, f_load_nhapkhoao, f_loadDataSX_YCSX, f_loadDataSXChiThi, f_YCSXDailyChiThiData } from "../utils/khsxUtils";
+import { f_update_btp_p400, f_update_tonkiem_p400 } from "../../../../api/services/inventoryService";
 const DATASX = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const {register,handleSubmit,watch, formState:{errors}, reset, setValue} = useForm({

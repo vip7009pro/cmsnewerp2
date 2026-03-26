@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { CS_CONFIRM_TRENDING_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const CSWeeklyConfirm = ({

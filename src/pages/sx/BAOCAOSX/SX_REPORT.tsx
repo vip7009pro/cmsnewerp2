@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { getCompany } from "../../../api/Api";
 import "./SX_REPORT.scss";
 import { Checkbox, IconButton } from "@mui/material";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import { AiFillFileExcel } from "react-icons/ai";
 import SX_DailyLossTrend from "../../../components/Chart/SX/SX_DailyLossTrend";
 import SX_WeeklyLossTrend from "../../../components/Chart/SX/SX_WeeklyLossTrend";

@@ -16,15 +16,11 @@ import {
 } from "recharts";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
-import {
-  CustomResponsiveContainer,
-  getWorkingDaysInMonth,
-  nFormatter,
-} from "../../../api/GlobalFunction";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { DailyClosingData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 import { f_loadKPI } from "../../../pages/KPI/utils/kpiUtils";
 import { KPI_DATA } from "../../../pages/KPI/interfaces/kpiInterface";
+import { CustomResponsiveContainer, getWorkingDaysInMonth, nFormatter } from "../../../api/services/utilService";
 const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
   const [dailyClosingData, setDailyClosingData] = useState<Array<DailyClosingData>>([]);
   const digit: number = getCompany()==='CMS' ? 0: 2;

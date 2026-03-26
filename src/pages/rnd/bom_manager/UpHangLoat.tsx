@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./UpHangLoat.scss";
 import { generalQuery, getCompany, getUserData } from "../../../api/Api";
-import { zeroPad } from "../../../api/GlobalFunction";
+import { zeroPad } from "../../../api/services/utilService";
 import * as XLSX from "xlsx";
 import AGTable from "../../../components/DataTable/AGTable";
 import { CODE_FULL_INFO } from "../interfaces/rndInterface";

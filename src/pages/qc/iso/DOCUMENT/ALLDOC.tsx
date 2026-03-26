@@ -3,7 +3,7 @@ import { Button, MenuItem, Select, TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import moment from "moment";
 import { generalQuery, getCtrCd, getUserData, uploadQuery } from "../../../../api/Api";
-import { checkBP } from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
 import './ALLDOC.scss';
 import AGTable from "../../../../components/DataTable/AGTable";
 import DocumentComponent from "../../../../components/DocumentComponent/DocumentComponent";

@@ -18,7 +18,7 @@ import {
   WorstData,
   YearlyPPMData,
 } from "../interfaces/qcInterface";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import {
   Autocomplete,
   Checkbox,

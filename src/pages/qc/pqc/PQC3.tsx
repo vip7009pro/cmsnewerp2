@@ -3,7 +3,7 @@ import moment from "moment";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, uploadQuery } from "../../../api/Api";
-import { zeroPad } from "../../../api/GlobalFunction";
+import { zeroPad } from "../../../api/services/utilService";
 import "./PQC3.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

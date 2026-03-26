@@ -12,9 +12,13 @@ import "./BaoCaoNhanSu.scss";
 import Swal from "sweetalert2";
 import {
   CustomResponsiveContainer,
+} from "../../../api/services/utilService";
+import {
   SaveExcel,
+} from "../../../api/services/excelService";
+import {
   weekdayarray,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import moment from "moment";
 import { IconButton } from "@mui/material";
 import { RootState } from "../../../redux/store";

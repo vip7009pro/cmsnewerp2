@@ -15,11 +15,9 @@ import {
 import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
-import {
-  checkBP, 
-  f_insert_Notification_Data,
-  SaveExcel,
-} from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../../api/services/notificationService";
+import { SaveExcel } from "../../../../api/services/excelService";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";

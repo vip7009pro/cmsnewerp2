@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
-import { checkBP, f_downloadFile} from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { f_downloadFile } from "../../../api/services/fileService";
 import AGTable from "../../../components/DataTable/AGTable";
 import { getUserData, uploadQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
@@ -187,7 +188,7 @@ const VLDOC = ({ M_ID, M_NAME }: { M_ID: number, M_NAME: string }) => {
         <IconButton
           className="buttonIcon"
           onClick={(e) => {
-            let hreftlink = `/materialdocs/${params.data.FILE_NAME}`;
+            let hreftlink = "/materialdocs/" + params.data.FILE_NAME;
             f_downloadFile(hreftlink, params.data.FILE_NAME + "_" + params.data.M_NAME + ".pdf");
           }}>
           <BiDownload color="green" size={10} />

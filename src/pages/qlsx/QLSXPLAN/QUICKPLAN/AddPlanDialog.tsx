@@ -8,10 +8,6 @@ import { AiFillFileExcel, AiFillFolderAdd, AiFillSave } from "react-icons/ai";
 import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import { FcDeleteRow } from "react-icons/fc";
-import {
-  checkBP,
-  SaveExcel,
-} from "../../../../api/GlobalFunction";
 import { BiShow } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -24,6 +20,8 @@ import { f_insertDMYCSX, f_updateDMSX_LOSS_KT } from "../../../kinhdoanh/utils/k
 import { YCSXTableData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { DINHMUC_QSLX, MACHINE_LIST, QLSXPLANDATA, RecentDM } from "../interfaces/khsxInterface";
 import { f_getMachineListData, f_getRecentDMData, f_loadDMSX, f_saveQLSX, PLAN_ID_ARRAY } from "../utils/khsxUtils";
+import { checkBP } from "../../../../api/services/permissionService";
+import { SaveExcel } from "../../../../api/services/excelService";
 const AddPlanDialog = ({ PROD_REQUEST_NO, G_CODE, EQ_NAME }: { PROD_REQUEST_NO: string, G_CODE: string, EQ_NAME: string }) => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const qtyFactor: number = parseInt(getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'DAILY_TIME')[0]?.CURRENT_VALUE ?? '840') / 2 / 60;

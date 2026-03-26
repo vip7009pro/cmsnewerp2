@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
 import './KHOVL_REPORT.scss';
 import { Checkbox, IconButton } from '@mui/material';
-import { SaveExcel } from '../../../../api/GlobalFunction';
+import { SaveExcel } from '../../../../api/services/excelService';
 import { AiFillFileExcel } from 'react-icons/ai';
 import { RND_NEWCODE_TREND_DATA } from '../../../rnd/interfaces/rndInterface';
 import { M_INPUT_BY_POPULAR_DATA, M_INPUT_BY_POPULAR_DETAIL_DATA, M_OUTPUT_BY_POPULAR_DATA, M_OUTPUT_BY_POPULAR_DETAIL_DATA, MSTOCK_BY_POPULAR_DATA, MSTOCK_BY_POPULAR_DETAIL_DATA } from '../../interfaces/khoInterface';

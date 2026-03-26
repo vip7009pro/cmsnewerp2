@@ -15,7 +15,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { CNT_GAP_DATA2, PQC_PPM_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const YCSX_GAP_RATE2 = ({

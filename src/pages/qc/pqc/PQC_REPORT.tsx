@@ -24,7 +24,7 @@ import PQCWeeklyFcost from "../../../components/Chart/PQC/PQCWeeklyFcost";
 import PQCMonthlyFcost from "../../../components/Chart/PQC/PQCMonthlyFcost";
 import PQCYearlyFcost from "../../../components/Chart/PQC/PQCYearlyFcost";
 import PATROL_COMPONENT2 from "../../sx/PATROL/PATROL_COMPONENT2";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import { AiFillFileExcel } from "react-icons/ai";
 import { DEFECT_TRENDING_DATA, PQC3_DATA, PQCSummary, PQC_PPM_DATA } from "../interfaces/qcInterface";
 import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";

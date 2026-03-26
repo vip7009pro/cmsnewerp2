@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { RND_NEWCODE_BY_CUSTOMER } from "../../../pages/rnd/interfaces/rndInterface";
 const RNDNewCodeByCustomer = ({ data }: { data: RND_NEWCODE_BY_CUSTOMER[] }) => {

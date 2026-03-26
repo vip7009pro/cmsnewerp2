@@ -14,10 +14,6 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
-import {
-  checkBP, 
-  SaveExcel,
-} from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -39,6 +35,8 @@ import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
 import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
 import { MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
+import { checkBP } from "../../../../api/services/permissionService";
+import { SaveExcel } from "../../../../api/services/excelService";
 const PLAN_DATATB_OLD = () => {
   const myComponentRef = useRef();
   const dataGridRef = useRef<any>(null);

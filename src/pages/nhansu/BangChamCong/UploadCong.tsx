@@ -12,7 +12,7 @@ import { f_readUploadFile } from "../../kinhdoanh/utils/kdUtils";
 import { BANG_CONG_DATA, BANG_CONG_THANG_DATA } from "../interfaces/nhansuInterface";
 import { f_checkDoubleNV_CCID, f_checkNV, f_insertBangCong, f_loadBangCong, f_syncBangCong, f_updateBangCong, loadBangCongTheoThang } from "../utils/nhansuUtils";
 import { getUserData } from "../../../api/Api";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 
 const UploadCong = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

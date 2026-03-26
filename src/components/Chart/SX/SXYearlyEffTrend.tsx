@@ -3,7 +3,7 @@ import { XAxis, YAxis, Tooltip, Legend, ComposedChart, Label, Line, Area } from 
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { PRODUCTION_EFFICIENCY_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const SXYearlyEffTrend = ({

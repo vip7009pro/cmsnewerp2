@@ -11,7 +11,7 @@ import {
   RND_NEWCODE_TREND_DATA,
 } from "../interfaces/rndInterface";
 import { Checkbox, IconButton } from "@mui/material";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import { AiFillFileExcel } from "react-icons/ai";
 import WidgetRND from "../../../components/Widget/WidgetRND";
 import RNDDailyNewCode from "../../../components/Chart/RND/RNDDailyNewCode";

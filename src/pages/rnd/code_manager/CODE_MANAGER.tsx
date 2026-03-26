@@ -9,12 +9,10 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, uploadQuery } from "../../../api/Api";
-import {
-  SaveExcel,
-  checkBP,
-  f_downloadFile,
-  f_updateLossKT,
-} from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { SaveExcel } from "../../../api/services/excelService";
+import { f_downloadFile } from "../../../api/services/fileService";
+import { f_updateLossKT } from "../../../api/services/inventoryService";
 import "./CODE_MANAGER.scss";
 import { BiDownload, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";

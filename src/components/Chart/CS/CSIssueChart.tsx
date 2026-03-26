@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
-import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/services/utilService";
 import { CS_CONFIRM_BY_CUSTOMER_DATA } from "../../../pages/qc/interfaces/qcInterface";
 import { getGlobalSetting } from "../../../api/Api";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";

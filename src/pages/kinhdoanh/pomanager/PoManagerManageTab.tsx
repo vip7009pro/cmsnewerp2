@@ -6,7 +6,8 @@ import { AiFillCloseCircle, AiFillEdit, AiFillFileAdd, AiOutlineClose } from "re
 import Swal from "sweetalert2";
 import "./PoManagerManageTab.scss";
 import { getCompany, getGlobalSetting, getSever, getSocket, getUserData } from "../../../api/Api";
-import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";

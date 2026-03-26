@@ -5,7 +5,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import AGTable from "../../../components/DataTable/AGTable";

@@ -13,7 +13,7 @@ import {
 } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import { AiFillFileAdd, AiOutlineSearch } from "react-icons/ai";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import { GiConfirmed } from "react-icons/gi";
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { f_isM_LOT_NO_in_P500, f_nhapkhoao } from "../../qlsx/QLSXPLAN/utils/khsxUtils";

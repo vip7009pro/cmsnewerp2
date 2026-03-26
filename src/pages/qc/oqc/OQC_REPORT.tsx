@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getCompany } from "../../../api/Api";
 import "./OQC_REPORT.scss";
 import { Checkbox, IconButton } from "@mui/material";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import { AiFillFileExcel } from "react-icons/ai";
 import OQCDailyNGRate from "../../../components/Chart/OQC/OQCDailyNGRate";
 import OQCWeeklyNGRate from "../../../components/Chart/OQC/OQCWeeklyNGRate";

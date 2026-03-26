@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getSocket, getUserData } from "../../../api/Api";
-import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import AGTable from "../../../components/DataTable/AGTable";
 import { f_checkG_CODE_USE_YN, f_checkPOInfo, f_compareDateToNow, f_compareTwoDate, f_insertInvoice, f_readUploadFile } from "../utils/kdUtils";

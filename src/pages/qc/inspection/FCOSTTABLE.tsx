@@ -1,7 +1,7 @@
 import './FCOSTTABLE.scss'
 import {WEB_SETTING_DATA } from '../../../api/GlobalInterface';
 import { getGlobalSetting } from '../../../api/Api'
-import { nFormatter } from '../../../api/GlobalFunction'
+import { nFormatter } from '../../../api/services/utilService'
 import { InspectSummary } from '../interfaces/qcInterface';
 const FCOSTTABLE = ({ data }: { data: InspectSummary[] }) => {
   return (

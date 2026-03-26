@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
-import { f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import {
   DiemDanhNhomData,
   WorkPositionTableData,

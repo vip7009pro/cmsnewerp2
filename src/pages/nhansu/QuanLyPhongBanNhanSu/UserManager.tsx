@@ -22,7 +22,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
 import moment from "moment";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import * as faceapi from 'face-api.js';
 
 const UserManager = () => {

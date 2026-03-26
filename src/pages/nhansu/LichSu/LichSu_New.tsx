@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { generalQuery, getCompany, getUserData} from "../../../api/Api";
 import "./LichSu_New.scss";
 import Swal from "sweetalert2";
-import { weekdayarray } from "../../../api/GlobalFunction";
+import { weekdayarray } from "../../../api/services/utilService";
 import moment from "moment";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";

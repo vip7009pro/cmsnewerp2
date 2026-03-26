@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { PO_BALANCE_CUSTOMER } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 

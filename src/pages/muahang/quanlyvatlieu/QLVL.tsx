@@ -12,7 +12,8 @@ import { CustomCellRendererProps } from 'ag-grid-react'; // React Data Grid Comp
 /* import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
-import { checkBP, f_insert_Notification_Data } from "../../../api/GlobalFunction";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
+import { checkBP } from "../../../api/services/permissionService";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { BiLoaderCircle } from "react-icons/bi";

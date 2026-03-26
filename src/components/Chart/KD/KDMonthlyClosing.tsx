@@ -19,7 +19,7 @@ import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { MonthlyClosingData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {

@@ -2,7 +2,7 @@ import moment from "moment";
 import { generalQuery, getUserData } from "../../../api/Api";
 import { BANG_CONG_DATA, BANG_CONG_THANG_DATA, DiemDanhNhomData, EmployeeTableData, MainDeptTableData, SubDeptTableData } from "../interfaces/nhansuInterface";
 import { WORK_POSITION_DATA } from "../interfaces/nhansuInterface";
-import { weekdayarray } from "../../../api/GlobalFunction";
+import { weekdayarray } from "../../../api/services/utilService";
 
 export const f_getEmployeeList = async () => {
   let kq: EmployeeTableData[] = [];

@@ -10,13 +10,7 @@ import {
   LabelList,
   Line,
 } from "recharts";
-import {
-  COLORS,
-  CustomResponsiveContainer,
-  ERR_TABLE,
-  dynamicSort,
-  nFormatter,
-} from "../../../api/GlobalFunction";
+import { COLORS, CustomResponsiveContainer, dynamicSort, ERR_TABLE, nFormatter } from "../../../api/services/utilService";
 import { IQC_VENDOR_NGRATE_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const IQcWeeklyVendorNGRateTrending = ({ dldata, onClick }: { dldata: IQC_VENDOR_NGRATE_DATA[], onClick: (e: any) => void }) => {
   const formatCash = (n: number) => {

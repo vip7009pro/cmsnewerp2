@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { MonthlyData } from "../../../pages/qc/interfaces/qcInterface";
 
 const InspectionMonthlyPPM = ({

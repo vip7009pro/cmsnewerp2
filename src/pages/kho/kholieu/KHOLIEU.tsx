@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import "./KHOLIEU.scss";

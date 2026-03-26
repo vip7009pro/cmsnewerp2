@@ -1,6 +1,6 @@
 import './FCOSTTABLE.scss'
 import { PQCSummary } from '../interfaces/qcInterface';
-import { nFormatter } from '../../../api/GlobalFunction'
+import { nFormatter } from '../../../api/services/utilService'
 const PQCFCOSTTABLE = ({ data }: { data: PQCSummary[] }) => {
   return (
     <div className='fcosttable'>

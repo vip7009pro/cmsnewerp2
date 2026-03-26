@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import { f_updateBTP_M100, f_updateTONKIEM_M100 } from "../../../api/GlobalFunction";
+import { f_updateBTP_M100, f_updateTONKIEM_M100 } from "../../../api/services/inventoryService";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
 import KHOTP from "../../kho/khotp/KHOTP";

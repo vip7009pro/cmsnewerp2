@@ -29,7 +29,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getlang } from "../../../components/String/String";
 import DropdownSearch from "../../../components/MyDropDownSearch/DropdownSearch";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 const DeptManager = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [tableSelection, setTableSelection] = useState(1);

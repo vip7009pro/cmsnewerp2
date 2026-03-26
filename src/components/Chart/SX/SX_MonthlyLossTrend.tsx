@@ -3,7 +3,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, Lin
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { SX_TREND_LOSS_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 const SX_MonthlyLossTrend = ({
   dldata,

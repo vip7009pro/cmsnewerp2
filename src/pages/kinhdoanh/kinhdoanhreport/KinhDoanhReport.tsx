@@ -21,7 +21,7 @@ import {
   WeeklyClosingData,
 } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import { AiFillFileExcel } from "react-icons/ai";
 import CustomerMonthlyClosing from "../../../components/DataTable/CustomerMonthlyClosing";
 import KDDailyOverdue from "../../../components/Chart/KD/KDDailyOverdue";

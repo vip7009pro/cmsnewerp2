@@ -3,7 +3,7 @@ import Notification, { NotificationElement } from './Notification';
 import './NotificationPanel.scss'
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { f_load_Notification_Data } from '../../api/GlobalFunction';
+import { f_load_Notification_Data } from '../../api/services/notificationService';
 
 const NotificationPanel = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

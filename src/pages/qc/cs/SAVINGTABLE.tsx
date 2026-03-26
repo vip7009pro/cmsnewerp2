@@ -1,8 +1,8 @@
 import './CSFCOSTTABLE.scss'
 import { getGlobalSetting } from '../../../api/Api'
-import { nFormatter } from '../../../api/GlobalFunction'
 import { CS_REDUCE_AMOUNT_DATA } from '../interfaces/qcInterface'
 import { WEB_SETTING_DATA } from '../../../api/GlobalInterface'
+import { nFormatter } from '../../../api/services/utilService'
 const SAVINGTABLE = ({ data }: { data: CS_REDUCE_AMOUNT_DATA[] }) => {
   let totalSavingAmount: number = 0;
  

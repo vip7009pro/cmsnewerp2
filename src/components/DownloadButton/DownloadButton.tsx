@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getCtrCd } from "../../api/Api";
-import { f_downloadFile2 } from "../../api/GlobalFunction";
+import { f_downloadFile2 } from "../../api/services/fileService";
 
 export const DownloadButton = ({ filename}:{filename:string}) => {
   const protocol = window.location.protocol.startsWith("https") ? "https" : "http";

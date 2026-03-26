@@ -15,7 +15,7 @@ import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { WEB_SETTING_DATA} from "../../../api/GlobalInterface";
 import { YearlyClosingData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 const ChartYearly = ({data}: {data: YearlyClosingData[]}) => {

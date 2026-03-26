@@ -13,7 +13,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { HISTOGRAM_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const HISTOGRAM_CHART = ({
   dldata

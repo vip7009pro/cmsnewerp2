@@ -5,7 +5,7 @@ import { generalQuery } from "../../../api/Api";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/INSPECTION/ChartInspectionWorst";
-import {SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel } from "../../../api/services/excelService";
 import {
   Autocomplete,
   Checkbox,

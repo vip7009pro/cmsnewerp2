@@ -12,11 +12,6 @@ import {
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
-import {
-  checkBP,
-  f_downloadFile,
-  f_insert_Notification_Data,
-} from "../../../api/GlobalFunction";
 import { MdLock, MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import "./YCSXManager.scss";
 import { FaArrowRight } from "react-icons/fa";
@@ -38,6 +33,9 @@ import { f_getCodeInfo, renderBanVe, renderYCSX } from "../../qlsx/QLSXPLAN/util
 import { useLaggy } from "../../../api/useLaggy";
 import { useRenderLag } from "../../../api/userRenderLag";
 import { f_AddMonitoringSample } from "../../rnd/utils/rndUtils";
+import { f_downloadFile } from "../../../api/services/fileService";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
+import { checkBP } from "../../../api/services/permissionService";
 const YCSXManager = () => {
   
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);

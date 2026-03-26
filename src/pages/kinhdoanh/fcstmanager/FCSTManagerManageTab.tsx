@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FcSearch } from "react-icons/fc";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getGlobalSetting } from "../../../api/Api";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";

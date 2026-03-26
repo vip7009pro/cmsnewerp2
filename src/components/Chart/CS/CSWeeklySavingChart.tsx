@@ -13,7 +13,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { CS_REDUCE_AMOUNT_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 const CSWeeklySavingChart = ({

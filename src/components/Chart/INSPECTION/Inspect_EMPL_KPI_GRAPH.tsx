@@ -3,7 +3,7 @@ import { XAxis, YAxis, Tooltip, Legend, ComposedChart, Label, Line, Area, Bar } 
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { LOSS_TIME_DATA_THEO_MAY, LOSS_TIME_DATA_THEO_NGUOI } from "../../../pages/sx/LOSS_TIME_DATA/LOSS_TIME_DATA";
 import { LOSS_TIME_DATA_KIEMTRA_THEO_BAN, LOSS_TIME_DATA_KIEMTRA_THEO_NGUOI } from "../../../pages/qc/inspection/LOSS_TIME_DATA/LOSS_TIME_DATA";
 

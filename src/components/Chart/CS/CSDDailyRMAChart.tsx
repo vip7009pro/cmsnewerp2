@@ -10,11 +10,8 @@ import {
   Label,
   Line,
 } from "recharts";
-import {
-  CustomResponsiveContainer,
-  nFormatter,
-} from "../../../api/GlobalFunction";
 import { CS_RMA_AMOUNT_DATA } from "../../../pages/qc/interfaces/qcInterface";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 const CSDDailyRMAChart = ({
   dldata,
   HT,

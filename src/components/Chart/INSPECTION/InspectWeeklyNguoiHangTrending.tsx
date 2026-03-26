@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { NguoiHangData } from "../../../pages/qc/interfaces/qcInterface";
 const InspectWeeklyNguoiHangTrending = ({
   dldata,

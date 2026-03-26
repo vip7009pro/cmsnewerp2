@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { SX_ACHIVE_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const SXWeeklyAchiveTrend = ({

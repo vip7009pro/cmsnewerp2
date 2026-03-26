@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { PLAN_LOSS_DATA } from "../../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const SXPlanLossTrend = ({

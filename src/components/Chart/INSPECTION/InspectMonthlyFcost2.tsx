@@ -14,7 +14,7 @@ import {
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { FcostData } from "../../../pages/qc/interfaces/qcInterface";
 
 const InspectionMonthlyFcost2 = ({

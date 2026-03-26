@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Cell, Tooltip, Legend, PieChart, Pie } from "recharts";
 import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, generateMultiGradientColors, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter, generateMultiGradientColors } from "../../../api/services/utilService";
 import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { M_INPUT_BY_POPULAR_DATA } from "../../../pages/kho/interfaces/khoInterface";
 const M_INPUT_BY_POPULAR_CHART = ({ data }: { data: M_INPUT_BY_POPULAR_DATA[] }) => {

@@ -4,7 +4,7 @@ import { Cell, Tooltip, PieChart, Pie } from "recharts";
 
 import Swal from "sweetalert2";
 import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { DiemDanhMainDeptData } from "../../../pages/nhansu/interfaces/nhansuInterface";
 

@@ -3,7 +3,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, Lin
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { XBAR_DATA } from "../../../pages/qc/interfaces/qcInterface";
 const XBAR_CHART = ({
   dldata

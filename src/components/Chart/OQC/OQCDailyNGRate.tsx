@@ -3,7 +3,7 @@ import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { OQC_TREND_DATA } from "../../../pages/qc/interfaces/qcInterface";
 
 

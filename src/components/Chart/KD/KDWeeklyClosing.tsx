@@ -19,7 +19,7 @@ import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
-} from "../../../api/GlobalFunction";
+} from "../../../api/services/utilService";
 import { WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
 const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
   const digit: number = getCompany()==='CMS' ? 0: 2;

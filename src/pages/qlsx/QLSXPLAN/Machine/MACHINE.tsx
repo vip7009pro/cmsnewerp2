@@ -31,10 +31,8 @@ import {
 import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcDeleteRow, FcSearch } from "react-icons/fc";
-import {
-  checkBP,
-  f_insert_Notification_Data,
-} from "../../../../api/GlobalFunction";
+import { checkBP } from "../../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../../api/services/notificationService";
 import { useReactToPrint } from "react-to-print";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";

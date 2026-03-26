@@ -1,13 +1,8 @@
 import { useEffect } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Label, Line } from "recharts";
-import {
-  COLORS,
-  CustomResponsiveContainer,
-  ERR_TABLE,
-  dynamicSort,
-  nFormatter,
-} from "../../../api/GlobalFunction";
+
 import { DEFECT_TRENDING_DATA } from "../../../pages/qc/interfaces/qcInterface";
+import { COLORS, CustomResponsiveContainer, dynamicSort, ERR_TABLE, nFormatter } from "../../../api/services/utilService";
 
 const InspectDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => {
   const formatCash = (n: number) => {

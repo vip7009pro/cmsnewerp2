@@ -9,7 +9,7 @@ import { SAMPLE_MONITOR_DATA } from "../interfaces/rndInterface";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */ // Optional Theme applied to the grid
 import AGTable from "../../../components/DataTable/AGTable";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { checkBP } from "../../../api/GlobalFunction";
+import { checkBP } from "../../../api/services/permissionService";
 import moment from "moment";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { FullBOM } from "../../kinhdoanh/interfaces/kdInterface";

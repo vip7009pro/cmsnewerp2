@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getCtrCd } from "../../api/Api";
-import { f_downloadFile2 } from "../../api/GlobalFunction";
+import { f_downloadFile2 } from "../../api/services/fileService";
 
 export const DownloadButtonAll = ({ fullUrl,filename}:{fullUrl: string, filename:string}) => {
   const [downloadProgress, setDownloadProgress] = useState(0);

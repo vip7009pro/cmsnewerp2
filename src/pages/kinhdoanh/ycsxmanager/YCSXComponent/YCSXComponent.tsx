@@ -12,7 +12,7 @@ import {
   UserData,
  
 } from "../../../../api/GlobalInterface";
-import { checkHSD2 } from "../../../../api/GlobalFunction";
+import { checkHSD2 } from "../../../../api/services/utilService";
 import { FullBOM, TONKHOTDYCSX, TONVL, YCSXTableData } from "../../interfaces/kdInterface";
 interface POBALANCETDYCSX {
   G_CODE: string;
