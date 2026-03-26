@@ -23,7 +23,7 @@ import { changeUserData } from "../../../redux/slices/globalSlice";
 import { getlang } from "../../../components/String/String";
 import moment from "moment";
 import { checkBP } from "../../../api/services/permissionService";
-import * as faceapi from 'face-api.js';
+// import * as faceapi from 'face-api.js'; // Removed for dynamic import
 
 const UserManager = () => {
  
@@ -335,6 +335,7 @@ const UserManager = () => {
   }, []);
 
    const loadModels = async () => {
+      const faceapi = await import('face-api.js');
       try {
         await Promise.all([
           faceapi.nets.ssdMobilenetv1.loadFromUri('/models'), // Model detect mặt
@@ -357,6 +358,7 @@ const UserManager = () => {
 
   // Hàm trích xuất face embedding từ URL ảnh
   const extractEmbedding = async (imageUrl: string) => {
+    const faceapi = await import('face-api.js');
     console.log("imageUrl",imageUrl);
     if (!imageUrl) {
       //message.error('Vui lòng nhập URL ảnh!');
@@ -413,6 +415,7 @@ const UserManager = () => {
     }
   };
   const checkEmbedding = async (imageUrl: string) => {
+    const faceapi = await import('face-api.js');
     console.log("imageUrl",imageUrl);
     if (!imageUrl) {
       //message.error('Vui lòng nhập URL ảnh!');

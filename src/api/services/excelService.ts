@@ -1,10 +1,11 @@
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx"; // Removed for dynamic import
 import moment from "moment";
 
 /**
  * Excel export service - extracted from GlobalFunction.tsx
  */
-export const SaveExcel = (data: any, title: string) => {
+export const SaveExcel = async (data: any, title: string) => {
+  const XLSX = await import("xlsx");
   const EXCEL_MAX_COLS = 16384;
   const EXCEL_MAX_ROWS = 1048576;
   const MAX_CELLS_PER_SHEET = 12_200_000;

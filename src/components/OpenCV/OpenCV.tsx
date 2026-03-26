@@ -1,11 +1,22 @@
-import cv, { Mat } from "@techstark/opencv-js";
+import type { Mat, Point } from "@techstark/opencv-js";
+// import cv, { Mat } from "@techstark/opencv-js"; // Removed for dynamic import
 import React, { useEffect, useRef, useState } from "react";
 import './OpenCV.scss'
 interface ROI_POINT {
-  p1: cv.Point,
-  p2: cv.Point
+  p1: Point,
+  p2: Point
 }
 const OpenCV = () => {
+  const [cv, setCv] = useState<any>(null);
+  const [loadingCV, setLoadingCV] = useState(true);
+
+  useEffect(() => {
+    import("@techstark/opencv-js").then((module) => {
+      setCv(module.default);
+      setLoadingCV(false);
+    });
+  }, []);
+
   const wait = useRef(false);
   const timesPerSecond = 1000000;
   const orgMat = useRef<any>();
@@ -14,7 +25,7 @@ const OpenCV = () => {
   const grayImgRef = useRef<any>();
   const cannyEdgeRef = useRef<any>();
   const canvasRefs = useRef<Array<React.RefObject<HTMLCanvasElement>>>([]);
-  const [templates, setTemplates] = useState<cv.Mat[]>([]);
+  const [templates, setTemplates] = useState<Mat[]>([]);
   const [imgUrl, setImgUrl] = useState("/Picture_NS/NS_NHU1903.jpg");
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
@@ -85,7 +96,7 @@ const OpenCV = () => {
     setStartPosition({ x: 0, y: 0 });
     setEndPosition({ x: 0, y: 0 });
   }
-  const drawMatsToCanvas = async (templates: cv.Mat[]) => {
+  const drawMatsToCanvas = async (templates: Mat[]) => {
     console.log('inputtemp', templates)
     canvasRefs.current = Array(templates.length)
       .fill(null)
@@ -101,7 +112,7 @@ const OpenCV = () => {
       // Draw the canvas image      
     }));
   };
-  const saveImage = ({ mat }: { mat: cv.Mat }) => {
+  const saveImage = ({ mat }: { mat: Mat }) => {
     console.log('mat', mat);
     cv.imshow(tempRef.current!, mat);
     const canvas = tempRef.current;
@@ -110,7 +121,7 @@ const OpenCV = () => {
     link.href = canvas?.toDataURL()!;
     link.click();
   };
-  const MatToCanvas = ({ mat }: { mat: cv.Mat }) => {
+  const MatToCanvas = ({ mat }: { mat: Mat }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     useEffect(() => {
       const drawMatToCanvas = async () => {
@@ -173,7 +184,7 @@ const OpenCV = () => {
       cv.matchTemplate(img, templates[i], dstMat, cv.TM_CCOEFF_NORMED, mask);
       const result = cv.minMaxLoc(dstMat, mask);
       const maxPoint = result.maxLoc;
-      let addMaxPoint: cv.Point = {
+      let addMaxPoint: Point = {
         x: maxPoint.x + templates[i].cols,
         y: maxPoint.y + templates[i].rows
       }
@@ -207,6 +218,8 @@ const OpenCV = () => {
   }
   useEffect(() => {
   }, [])
+  if (loadingCV) return <div>Loading OpenCV...</div>;
+
   return (
     <div className="opencvdiv">
       <canvas ref={tempRef} style={{ display: 'none' }} />

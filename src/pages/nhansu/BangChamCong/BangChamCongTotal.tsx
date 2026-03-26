@@ -1,8 +1,8 @@
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import "./BangChamCongTotal.scss";
 import MyTabs from "../../../components/MyTab/MyTab";
 import UploadCong from "./UploadCong";
-import BANGCHAMCONG from "./BangChamCong";
+const BANGCHAMCONG = lazy(() => import("./BangChamCong"));
 import { getCompany } from "../../../api/Api";
 
 

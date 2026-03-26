@@ -15,25 +15,30 @@ export default defineConfig({
     }),  
   ],
   build: {
-    chunkSizeWarningLimit: 500,
+    chunkSizeWarningLimit: 1000,
+    sourcemap: false,
     rollupOptions: {
       output: {
         // Tùy chỉnh tên file, chỉ lấy id mà không có tên file gốc
-        entryFileNames: 'assets/[hash].js',
-        chunkFileNames: 'assets/[hash].js',
-        assetFileNames: 'assets/[hash][extname]',
-        manualChunks(id) {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[extname]',
+        /* manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('@mui')) return 'vendor-mui';
             if (id.includes('ag-grid')) return 'vendor-ag-grid';
             if (id.includes('devextreme')) return 'vendor-dx';
             if (id.includes('xlsx') || id.includes('exceljs')) return 'vendor-excel';
             if (id.includes('moment')) return 'vendor-moment';
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) return 'vendor-react';
+            if (id.match(/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom)[\\/]/)) return 'vendor-react';
+            if (id.includes('face-api.js')) return 'vendor-faceapi';
+            if (id.includes('opencv-js')) return 'vendor-opencv';
+            if (id.includes('recharts')) return 'vendor-recharts';
+            if (id.includes('reactflow')) return 'vendor-reactflow';
+            if (id.includes('jszip')) return 'vendor-jszip';
             return 'vendor';
           }
-        }
-
+        } */
       },
     },
   },
