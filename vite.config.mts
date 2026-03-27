@@ -14,6 +14,15 @@ export default defineConfig({
       algorithm: 'gzip', // Use 'brotli' for Brotli compression
     }),  
   ],
+  optimizeDeps: {
+    include: [
+      '@mui/material',
+      '@mui/material/styles',
+      '@mui/icons-material',
+      '@emotion/react',
+      '@emotion/styled',
+    ],
+  },
   build: {
     chunkSizeWarningLimit: 1000,
     sourcemap: false,

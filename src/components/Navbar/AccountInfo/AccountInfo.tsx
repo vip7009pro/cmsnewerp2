@@ -407,7 +407,7 @@ export default function AccountInfo() {
         <Card className="aiCard aiHeaderCard">
           <CardContent>
             <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <div className="aiAvatarBlock">
                   <div
                     className="aiAvatarFrame aiAvatarFrame--click"
@@ -444,7 +444,7 @@ export default function AccountInfo() {
                 </div>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Stack spacing={0.75}>
                   <div className="aiName">
                     {/*  Họ và tên */}
@@ -471,7 +471,7 @@ export default function AccountInfo() {
                 </Stack>
               </Grid>
 
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <div className="aiCheckinCard">
                   <div className='chamcongtitle' style={{ fontSize: "15px" }}>
                     IN/OUT: {moment().format("YYYY-MM-DD")}
@@ -500,9 +500,9 @@ export default function AccountInfo() {
           </CardContent>
         </Card>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Card className="aiCard">
+        <Grid container spacing={2} alignItems="stretch">
+          <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex' }}>
+            <Card className="aiCard" sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <CardHeader
                 title={
                   <div className="aiCardTitle">
@@ -580,8 +580,8 @@ export default function AccountInfo() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <Card className="aiCard">
+          <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex' }}>
+            <Card className="aiCard" sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <CardHeader
                 title={
                   <div className="aiCardTitle">
@@ -664,7 +664,7 @@ export default function AccountInfo() {
             </Card>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Card className="aiCard">
               <CardHeader
                 title={
@@ -770,7 +770,7 @@ export default function AccountInfo() {
           </Dialog>
 
           {isAdmin && (
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card className="aiCard aiAdminCard">
                 <CardHeader
                   title={
