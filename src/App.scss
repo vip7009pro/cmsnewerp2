@@ -1,167 +1,132 @@
+/* ==========================================================================
+   GLOBAL RESET & BASE STYLES
+   ========================================================================== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  scrollbar-width: none; /* Hide scrollbar for standard body */
+}
+
+.App {
+  margin: 0;
+  background-color: white;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   SCROLLBAR CUSTOMIZATION
+   ========================================================================== */
+/* Hide scrollbars by default for webkit */
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track:horizontal {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background: rgb(149, 145, 245);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover:horizontal {
+  background: #b30000;
+}
+
+/* Show scrollbars when .is-scrolling is active */
+.is-scrolling {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(149, 145, 245) rgba(0, 0, 0, 0);
+  scrollbar-gutter: stable both-edges;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar:horizontal {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(149, 145, 245);
+    border-radius: 10px;
+
+    &:hover {
+      background: #b30000;
+    }
+  }
+}
+
+/* ==========================================================================
+   COMMON UI UTILITIES (Legacy Support for Global Classes)
+   ========================================================================== */
 .tabs {
-  //font-size: 0.6rem !important;
-  width: 100% !important;    
+  width: 100% !important;
   overflow: hidden !important;
+
   .tablist {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    justify-content: left !important;
-    color: gray !important;   
+    justify-content: flex-start !important;
+    color: gray !important;
     overflow: hidden !important;
+
     .mininavtext {
       font-size: 0.6rem !important;
       color: black !important;
     }
   }
 }
+
+.mininavbar {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  margin: 2px 0 !important;
+  gap: 2px !important;
+
+  .mininavitem {
+    padding: 3px !important;
+    margin-left: 5px !important;
+    border-radius: 2px !important;
+    font-size: 0.6rem !important;
+    color: white !important;
+    box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27) !important;
+  }
+}
+
 .buttonIcon {
   font-size: 0.7rem !important;
   color: rgb(59, 45, 182) !important;
 }
 
-  /* width */
-  ::-webkit-scrollbar {
-    width: 0px;
-  }
-
-  ::-webkit-scrollbar:horizontal {
-    height: 8px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 0px transparent; 
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-track:horizontal {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: transparent; 
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb:horizontal {
-    background: rgb(149, 145, 245);
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: transparent; 
-  }
-
-  ::-webkit-scrollbar-thumb:hover:horizontal {
-    background: #b30000;
-  }
-  
-  body {
-    scrollbar-width: none;
-  }
-
-  .is-scrolling {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(149, 145, 245) rgba(0, 0, 0, 0.0);
-    scrollbar-gutter: stable both-edges;
-    padding-bottom: 8px;
-    box-sizing: border-box;
-  }
-
-  .is-scrolling::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .is-scrolling::-webkit-scrollbar:horizontal {
-    height: 8px;
-  }
-  
-  .is-scrolling::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
-    border-radius: 10px;
-  }
-   
-  .is-scrolling::-webkit-scrollbar-thumb {
-    background: rgb(149, 145, 245); 
-    border-radius: 10px;
-  }
-  
-  .is-scrolling::-webkit-scrollbar-thumb:hover {
-    background: #b30000; 
-  }
-  
-.mininavbar {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  margin-bottom: 2px !important;
-  margin-top: 2px !important;
-  gap: 2px !important;
-
-  .mininavitem {
-    padding: 3px !important; 
-    margin-left: 5px !important;
-    border-radius: 2px !important;
-    font-size: 0.6rem !important;   
-    color: white !important;
-    -webkit-box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.27) !important;
-    box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27) !important;
-  
-  }
-}
-
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
-}
-.custom-file-input::before {
-  content: 'Select some files';
-  display: inline-block;
-  background: linear-gradient(top, #f9f9f9, #e3e3e3);
-  border: 1px solid #999;
-  border-radius: 3px;
-  padding: 5px 8px;
-  outline: none;
-  white-space: nowrap;
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  text-shadow: 1px 1px #fff;
-  font-weight: 700;
-  font-size: 10pt;
-}
-.custom-file-input:hover::before {
-  border-color: black;
-}
-.custom-file-input:active::before {
-  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-}
-
-
-@media only screen and (max-width: 5000px) {
-  .App {
-    margin-left: 0px;
-    margin-right: 0px;   
-    background-color: white;
-  }
-}
-@media only screen and (max-width: 768px) {
-  .App {
-    margin-left: 0px;
-    margin-right: 0px;
-    background-color: white;
-  }
-}
-
-
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
+/* ==========================================================================
+   THIRD-PARTY OVERRIDES
+   ========================================================================== */
 .swal2-container {
-  z-index: 10000 !important; /* Hoặc số lớn hơn 1300 */
+  z-index: 10000 !important;
 }

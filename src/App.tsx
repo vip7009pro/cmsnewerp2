@@ -42,10 +42,6 @@ function App() {
     )[0]?.CURRENT_VALUE ?? "0"
   );
   const elementRef = useRef(null);
-  const swalContainer = document.querySelector(".swal2-container");
-  if (swalContainer instanceof HTMLElement) {
-    swalContainer.style.zIndex = "9999";
-  }
   const globalLoginState: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.loginState
   );
