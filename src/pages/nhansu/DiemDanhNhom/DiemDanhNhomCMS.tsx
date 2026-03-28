@@ -164,12 +164,12 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
             onChange={(e) => loadData(Number(e.target.value))}
             sx={{ height: '28px', fontSize: '0.75rem' }}
           >
-            <MenuItem value={0}>TEAM 1 + Hành chính</MenuItem>
-            <MenuItem value={1}>TEAM 2 + Hành chính</MenuItem>
-            <MenuItem value={2}>TEAM 1</MenuItem>
-            <MenuItem value={3}>TEAM 2</MenuItem>
-            <MenuItem value={4}>Hành chính</MenuItem>
-            <MenuItem value={5}>Tất cả</MenuItem>
+            <MenuItem value={0} sx={{ fontSize: '0.7rem' }}>TEAM 1 + Hành chính</MenuItem>
+            <MenuItem value={1} sx={{ fontSize: '0.7rem' }}>TEAM 2 + Hành chính</MenuItem>
+            <MenuItem value={2} sx={{ fontSize: '0.7rem' }}>TEAM 1</MenuItem>
+            <MenuItem value={3} sx={{ fontSize: '0.7rem' }}>TEAM 2</MenuItem>
+            <MenuItem value={4} sx={{ fontSize: '0.7rem' }}>Hành chính</MenuItem>
+            <MenuItem value={5} sx={{ fontSize: '0.7rem' }}>Tất cả</MenuItem>
           </Select>
         </FormControl>
       </Box>
