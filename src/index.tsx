@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
@@ -25,7 +26,9 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <SnackbarProvider maxSnack={5} autoHideDuration={5000} preventDuplicate>
-          <App />
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <App />
+          </BrowserRouter>
         </SnackbarProvider>
       </Provider>
     </QueryClientProvider>

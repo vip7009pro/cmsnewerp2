@@ -147,7 +147,7 @@ const Suppliers = () => {
 
   
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Header>
         <Navbar>
           <Logo><img src={'./companylogo.png'} alt="CMS VINA" width={100} height={25}/>Supplier Hub</Logo>                   

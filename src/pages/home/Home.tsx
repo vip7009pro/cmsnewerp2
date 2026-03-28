@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { addTab, changeGLBLanguage, closeTab, resetTab, setTabModeSwap, settabIndex, toggleSidebar } from "../../redux/slices/globalSlice";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
@@ -102,7 +102,20 @@ function Home() {
       selectedServer: state.totalSlice.selectedServer,
       userData: state.totalSlice.userData,
       tabs: state.totalSlice.tabs,
-    }));
+    }), shallowEqual);
+
+  const prevState = useRef<any>(null);
+  useEffect(() => {
+    if (prevState.current) {
+      const allProps: any = { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData };
+      const diff = Object.keys(allProps).filter(k => allProps[k] !== prevState.current[k]);
+      if (diff.length > 0) {
+        console.log("⚠️ Home re-render caused by changes in: ", diff);
+      }
+    }
+    prevState.current = { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData };
+  });
+
   console.log("company", company);
   const menulist: MENU_LIST_DATA[] = useMemo( () => getMenuList(company, lang), [company, lang] );
   const dispatch = useDispatch();
@@ -546,4 +559,4 @@ function Home() {
     </div>
   );
 }
-export default Home;
+export default React.memo(Home);

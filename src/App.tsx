@@ -51,7 +51,7 @@ function App() {
     swalContainer.style.zIndex = "9999";
   }
   const loadWebSetting = useCallback(() => {
-    generalQuery("loadWebSetting", {})
+    return generalQuery("loadWebSetting", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           let crST_string: any = localStorage.getItem("setting") ?? "";
@@ -109,35 +109,26 @@ function App() {
         console.log(error);
       });
   }, []);
-  const checkLoginCallback = useCallback(() => {
-    checkLogin()
-      .then((data: any) => {
-//        console.log('data check login', data);
-        if (data.data.tk_status === "ng") {
-          loadWebSetting();
-          dispatch(logout(false));
-          dispatch(changeUserData(DEFAULT_USER_DATA));
-        } else {
-          dispatch(changeUserData(data.data.data));
-          if (data.data.data.JOB_NAME === "Worker") {
-            dispatch(setTabModeSwap(false));
-          }
-          if (data.data.data.POSITION_CODE === 4) {
-            dispatch(setTabModeSwap(false));
-          }
-          dispatch(
-            update_socket({
-              event: "login",
-              data: data.data.data.EMPL_NO,
-            })
-          );
-          dispatch(login(true));
+  const checkLoginCallback = useCallback(async () => {
+    try {
+      const data = await checkLogin();
+      if (data.data.tk_status === "ng") {
+        await loadWebSetting();
+        dispatch(logout(false));
+        dispatch(changeUserData(DEFAULT_USER_DATA));
+      } else {
+        await loadWebSetting();
+        dispatch(changeUserData(data.data.data));
+        if (data.data.data.JOB_NAME === "Worker" || data.data.data.POSITION_CODE === 4) {
+          dispatch(setTabModeSwap(false));
         }
-      })
-      .catch((err: any) => {
-        console.log(err + " ");
-      });
-  }, []);
+        dispatch(update_socket({ event: "login", data: data.data.data.EMPL_NO }));
+        dispatch(login(true));
+      }
+    } catch (err) {
+      console.error("Login check failed:", err);
+    }
+  }, [dispatch, loadWebSetting]);
   const showNoti = useCallback((data: NotificationElement) => {
     dispatch(updateNotiCount((getNotiCount() ?? 0) + 1));
     localStorage.setItem(
@@ -293,12 +284,14 @@ function App() {
     }
   };
 
-  useSocketEvents({
+  const socketHandlers = useMemo(() => ({
     onWebVersionUpdate: handleSetWebVer,
     onCheckOnline: () => {},
     changeServer: handleChangeServerCommand,
     notification_panel: handleNotification as any,
-  });
+  }), [handleSetWebVer, handleChangeServerCommand, handleNotification]);
+
+  useSocketEvents(socketHandlers);
 
   useEffect(() => {
     checkLoginCallback();
@@ -307,7 +300,7 @@ function App() {
       handleEnableNotifications();
     }
     getIPAddress();
-  }, [globalLoginState, checkLoginCallback, checkDiemDanh]);
+  }, [checkLoginCallback, checkDiemDanh]);
 
   useEffect(() => {
     let timer: any = null;

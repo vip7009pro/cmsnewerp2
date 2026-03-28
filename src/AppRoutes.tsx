@@ -1,12 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import { AccountInfo, AddInfo, BANGCHAMCONG, BaoCaoNhanSu, BAOCAOSXALL, BAOCAOTHEOROLL, BCSX, Blank, BOM_AMAZON, BOM_MANAGER, BulletinBoard, CAPA_MANAGER, CAPASX2, CODE_MANAGER, CSTOTAL, CUST_MANAGER, DESIGN_AMAZON, DiemDanhNhomCMS, DieuChuyenTeam, DTC, EQ_STATUS, FCSTManager, FileTransfer, Info, Information, INSPECT_STATUS, InvoiceManager, IQC, ISO, KHOAO, KHOLIEU, KHOSUB, KHOSX, KHOTABS, KHOTOTAL, KHOTP, KHOTPNEW, KIEMTRA, KinhDoanh, KinhDoanhReport, LichSu_New, LICHSUINPUTLIEU, LICHSUTEMLOTSX, MUAHANG, NhanSu, NOLOWHOME, OQC, OVER_MONITOR, PheDuyetNghi, PlanManager, PLANRESULT, POandStockFull, PoManager, PostManager, PQC, PRODUCT_BARCODE_MANAGER, QC, QCReport, QLGN, QLSX, QLSXPLAN, QLVL, QuanLyCapCao, QuanLyCapCao_NS, QuanLyPhongBanNhanSu, QuotationTotal, RND_REPORT, SAMPLE_MONITOR, SettingPage, ShortageKD, TabDangKy, TINHHINHCUONLIEU, TINHLIEU, TINHLUONGP3, TRANGTHAICHITHI, WH_REPORT, YCSXManager,  YCTKManager, } from "./api/lazyPages";
 import Home from './pages/home/Home';
 import { getCompany } from './api/Api';
 import { animated } from '@react-spring/web';
 import { ProtectedRoute } from "./api/services/permissionService";
-const AppRoutes = ({ globalUserData }: { globalUserData: any }) => {
+const AppRoutes = React.memo(({ globalUserData }: { globalUserData: any }) => {
   return (
-    <BrowserRouter>
     <Routes>
       <Route
         path="/"
@@ -715,8 +715,7 @@ const AppRoutes = ({ globalUserData }: { globalUserData: any }) => {
         </Route>
       </Route>
     </Routes>
-  </BrowserRouter>
   )
-}
+});
 
-export default AppRoutes
+export default AppRoutes;
