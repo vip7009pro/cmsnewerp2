@@ -92,7 +92,7 @@ export function login(user: string, pass: string) {
     })
     .then((response: any) => {
       var Jresult = response.data;    
-      console.log("Jresult", Jresult);  
+      //console.log("Jresult", Jresult);  
       if (Jresult?.tk_status?.toUpperCase() === "OK") {       
         Swal.fire(
           "Thông báo",
@@ -103,7 +103,7 @@ export function login(user: string, pass: string) {
         localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {
-            console.log("data", data);
+            //console.log("data", data);
             
             if (data.data.tk_status.toUpperCase() === "NG") {              
               store.dispatch(loginSlice(false));

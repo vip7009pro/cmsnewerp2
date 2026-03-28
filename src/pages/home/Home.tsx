@@ -4,7 +4,13 @@ import { animated } from "@react-spring/web";
 import React, { useEffect, useState, Suspense, useMemo, useCallback, useRef, } from "react";
 import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
-import { IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
+import {
+  IconButton,
+  IconButtonProps,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
@@ -27,16 +33,14 @@ interface ELE_ARRAY {
   PAGE_ID?: number;
 }
 
-export const CustomTab = styled((props: TabProps) => <Tab disableRipple {...props} />)(
-  {
-    minHeight: 28,
-    padding: 0,
-    textTransform: "none",
-    color: "rgba(0,0,0,0.65)",
-    fontWeight: 500,
-    minWidth: 0,
-  }
-);
+export const CustomTab = styled(Tab)({
+  minHeight: 28,
+  padding: 0,
+  textTransform: "none",
+  color: "rgba(0,0,0,0.65)",
+  fontWeight: 500,
+  minWidth: 0,
+});
 
 const CustomTabs = styled(Tabs)({
   minHeight: 28,
@@ -83,7 +87,7 @@ const TabTitle = styled("span")({
   lineHeight: 1,
 });
 
-const CloseIconButton = styled(IconButton)({
+const CloseIconButton = styled(IconButton)<IconButtonProps>({
   padding: 1,
   marginLeft: 0,
 });
@@ -117,7 +121,7 @@ function Home() {
   });
 
   console.log("company", company);
-  const menulist: MENU_LIST_DATA[] = useMemo( () => getMenuList(company, lang), [company, lang] );
+  const menulist: MENU_LIST_DATA[] = useMemo(() => getMenuList(company, lang), [company, lang]);
   const dispatch = useDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = useCallback(() => {
@@ -171,7 +175,7 @@ function Home() {
     generalQuery("checkWebVer", {})
       .then((response) => {
         if (response?.data?.tk_status !== "NG") {
-          console.log('webver',response.data.data[0].VERWEB);
+          console.log('webver', response.data.data[0].VERWEB);
           if (current_ver >= response.data.data[0].VERWEB) {
           } else {
             if (intervalID) {
@@ -426,7 +430,7 @@ function Home() {
           <animated.div
             className="animated_div"
             style={{
-              width: "100%",              
+              width: "100%",
               borderRadius: 8,
             }}
           >
@@ -450,11 +454,10 @@ function Home() {
                     allowScrollButtonsMobile
                     className="tabs"
                     style={{
-                      backgroundImage: `${
-                        company === "CMS"
-                          ? theme.CMS.backgroundImage
-                          : theme.PVN.backgroundImage
-                      }`,
+                      backgroundImage: `${company === "CMS"
+                        ? theme.CMS.backgroundImage
+                        : theme.PVN.backgroundImage
+                        }`,
                       border: "none",
                       boxSizing: "border-box",
                       overflow: "hidden",
@@ -465,6 +468,7 @@ function Home() {
                         return (
                           <div key={index}>
                             <CustomTab
+                              disableRipple
                               key={index}
                               label={
                                 <TabLabelRoot
@@ -485,6 +489,7 @@ function Home() {
                                     </TabTitle>
                                   </CustomTabLabel>
                                   <CloseIconButton
+                                    component="span"
                                     key={index + "A"}
                                     className="erpTabClose"
                                     onClick={(e) => {
@@ -521,15 +526,15 @@ function Home() {
                         width: sidebarStatus ? "100%" : "100%",
                       }}
                     >
-                      <Suspense fallback={<div>Loading...</div>}>   
-                      {/* <PageShow pageId={ele.PAGE_ID ?? 0} /> */}                     
+                      <Suspense fallback={<div>Loading...</div>}>
+                        {/* <PageShow pageId={ele.PAGE_ID ?? 0} /> */}
                         {
-                          ele.PAGE_ID !== -1 ?  <PageTabs PageGroupID={ele.PAGE_ID ?? 0} />
-                        
-                        : 
-                        menulist.find(
-                          (menu) => menu.MENU_CODE === ele.ELE_CODE
-                        )?.MENU_ITEM}
+                          ele.PAGE_ID !== -1 ? <PageTabs PageGroupID={ele.PAGE_ID ?? 0} />
+
+                            :
+                            menulist.find(
+                              (menu) => menu.MENU_CODE === ele.ELE_CODE
+                            )?.MENU_ITEM}
                       </Suspense>
                     </div>
                   );

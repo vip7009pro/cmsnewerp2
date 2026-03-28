@@ -1,32 +1,22 @@
 import "devextreme/dist/css/dx.light.css";
 import { useEffect, Suspense, useRef, useMemo, useCallback } from "react";
 import {
-  checkLogin,
   generalQuery,
   getCompany,
   getGlobalSetting,
   getNotiCount,
-  getSocket,
   getUserData,
 } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  changeDiemDanhState,
-  changeUserData,
-  update_socket,
-  logout,
-  login,
-  setTabModeSwap,
-  changeGLBSetting,
   changeServer,
   updateNotiCount,
 } from "./redux/slices/globalSlice";
 import "./App.scss";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
-import { DEFAULT_USER_DATA } from "./api/defaultUserData";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from "react-push-notification";
 import "ag-grid-community/styles/ag-grid.css";
@@ -35,11 +25,17 @@ import { NotificationElement } from "./components/NotificationPanel/Notification
 import { enqueueSnackbar } from "notistack";
 import { Login } from "./api/lazyPages";
 import AppRoutes from "./AppRoutes";
-import { useRenderLag } from "./api/userRenderLag";
 import { useSocketEvents } from "./hooks/useSocketEvents";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import { requestFullScreen } from "./api/services/utilService";
+import { useAppBootstrap } from "./hooks/useAppBootstrap";
+import { useDocumentScrollIdleClass } from "./hooks/useDocumentScrollIdleClass";
+import AppBootScreen from "./components/AppBootScreen/AppBootScreen";
+
 function App() {
+  const isBootstrapping = useAppBootstrap();
+  useDocumentScrollIdleClass();
+
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(
       (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "FULL_SCREEN"
@@ -50,45 +46,6 @@ function App() {
   if (swalContainer instanceof HTMLElement) {
     swalContainer.style.zIndex = "9999";
   }
-  const loadWebSetting = useCallback(() => {
-    return generalQuery("loadWebSetting", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          let crST_string: any = localStorage.getItem("setting") ?? "";
-          let loadeddata: WEB_SETTING_DATA[] = [];
-          if (crST_string !== "") {
-            let crST: WEB_SETTING_DATA[] = JSON.parse(crST_string);
-            loadeddata = response.data.data.map(
-              (element: WEB_SETTING_DATA, index: number) => {
-                return {
-                  ...element,
-                  CURRENT_VALUE:
-                    crST.filter(
-                      (ele: WEB_SETTING_DATA, id: number) =>
-                        ele.ID === element.ID
-                    )[0]?.CURRENT_VALUE ?? element.DEFAULT_VALUE,
-                };
-              }
-            );
-          } else {
-            loadeddata = response.data.data.map(
-              (element: WEB_SETTING_DATA, index: number) => {
-                return {
-                  ...element,
-                  CURRENT_VALUE: element.DEFAULT_VALUE,
-                };
-              }
-            );
-          }
-          dispatch(changeGLBSetting(loadeddata));
-        } else {
-          dispatch(changeGLBSetting([]));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
   const globalLoginState: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.loginState
   );
@@ -96,39 +53,7 @@ function App() {
     (state: RootState) => state.totalSlice.userData
   );
   const dispatch = useDispatch();
-  const checkDiemDanh = useCallback(() => {
-    generalQuery("checkdiemdanh", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          dispatch(changeDiemDanhState(true));
-        } else {
-          dispatch(changeDiemDanhState(false));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-  const checkLoginCallback = useCallback(async () => {
-    try {
-      const data = await checkLogin();
-      if (data.data.tk_status === "ng") {
-        await loadWebSetting();
-        dispatch(logout(false));
-        dispatch(changeUserData(DEFAULT_USER_DATA));
-      } else {
-        await loadWebSetting();
-        dispatch(changeUserData(data.data.data));
-        if (data.data.data.JOB_NAME === "Worker" || data.data.data.POSITION_CODE === 4) {
-          dispatch(setTabModeSwap(false));
-        }
-        dispatch(update_socket({ event: "login", data: data.data.data.EMPL_NO }));
-        dispatch(login(true));
-      }
-    } catch (err) {
-      console.error("Login check failed:", err);
-    }
-  }, [dispatch, loadWebSetting]);
+
   const showNoti = useCallback((data: NotificationElement) => {
     dispatch(updateNotiCount((getNotiCount() ?? 0) + 1));
     localStorage.setItem(
@@ -162,7 +87,8 @@ function App() {
         });
         break;
     }
-  }, []);
+  }, [dispatch]);
+
   const handleSetWebVer = useCallback((data: any) => {
     console.log("co data web ver", data);
     if (current_ver >= data) {
@@ -191,6 +117,7 @@ function App() {
       });
     }
   }, []);
+
   const handleChangeServerCommand = useCallback((data: any) => {
     console.log("Change server commnand received !");
     console.log(data.server);
@@ -202,9 +129,9 @@ function App() {
       dispatch(changeServer(data.server));
       localStorage.setItem("server_ip", data.server);
     }
-  }, []);
+  }, [dispatch]);
+
   const handleNotification = useCallback((data: NotificationElement) => {
-    //console.log(data);
     let mainDeptArray = data.MAINDEPTNAME?.split(",");
     if (getCompany() !== "CMS") return;
     if (getUserData()?.EMPL_NO === "NHU1903") {
@@ -220,8 +147,8 @@ function App() {
         showNoti(data);
       }
     }
-  }, []);
-  // Hàm chuyển đổi VAPID key
+  }, [showNoti]);
+
   const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding)
@@ -230,35 +157,28 @@ function App() {
     const rawData = window.atob(base64);
     return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
   };
-  // Hàm yêu cầu quyền và đăng ký push
-  const handleEnableNotifications = async (): Promise<void> => {
-//    console.log("handleEnableNotifications");
+
+  const handleEnableNotifications = useCallback(async (): Promise<void> => {
     try {
-//      console.log("vao day");
-      // Kiểm tra hỗ trợ
       if (!("Notification" in window) || !("serviceWorker" in navigator)) {
         console.log("Trình duyệt không hỗ trợ thông báo đẩy!");
         return;
       }
-      // Yêu cầu quyền thông báo
       const permission: NotificationPermission =
         await Notification.requestPermission();
       if (permission !== "granted") {
         console.log("Người dùng không cho phép thông báo!");
         return;
       }
-      // Lấy Service Worker registration
-      const registration: ServiceWorkerRegistration = await navigator
-        .serviceWorker.ready;
-      // Đăng ký push subscription
+      const registration: ServiceWorkerRegistration =
+        await navigator.serviceWorker.ready;
       const subscription: PushSubscription =
         await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(
-            "BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE" // Thay bằng public VAPID key của đại ca
-          ) as any,
+            "BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE"
+          ) as BufferSource,
         });
-      // Gửi subscription đến server
       const response = await generalQuery("addSubscription", {
         subscription: JSON.stringify(subscription),
       });
@@ -271,8 +191,9 @@ function App() {
       console.error("Lỗi:", error);
       console.log(`Có lỗi xảy ra: ${(error as Error).message}`);
     }
-  };
-  const getIPAddress = async () => {
+  }, []);
+
+  const getIPAddress = useCallback(async () => {
     try {
       const response = await fetch("https://api.ipify.org?format=json");
       const data = await response.json();
@@ -282,49 +203,32 @@ function App() {
       console.error("Lỗi khi lấy IP:", error);
       return null;
     }
-  };
+  }, []);
 
-  const socketHandlers = useMemo(() => ({
-    onWebVersionUpdate: handleSetWebVer,
-    onCheckOnline: () => {},
-    changeServer: handleChangeServerCommand,
-    notification_panel: handleNotification as any,
-  }), [handleSetWebVer, handleChangeServerCommand, handleNotification]);
+  const socketHandlers = useMemo(
+    () => ({
+      onWebVersionUpdate: handleSetWebVer,
+      onCheckOnline: () => {},
+      changeServer: handleChangeServerCommand,
+      notification_panel: handleNotification as any,
+    }),
+    [handleSetWebVer, handleChangeServerCommand, handleNotification]
+  );
 
   useSocketEvents(socketHandlers);
 
   useEffect(() => {
-    checkLoginCallback();
-    checkDiemDanh();
-    if(getCompany() === 'CMS') {
-      handleEnableNotifications();
+    if (isBootstrapping) return;
+    void getIPAddress();
+    if (getCompany() === "CMS") {
+      void handleEnableNotifications();
     }
-    getIPAddress();
-  }, [checkLoginCallback, checkDiemDanh]);
+  }, [isBootstrapping, getIPAddress, handleEnableNotifications]);
 
-  useEffect(() => {
-    let timer: any = null;
-
-    const onScroll = (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (target && target.scrollHeight > target.clientHeight) {
-        target.classList.add("is-scrolling");
-        if (timer) window.clearTimeout(timer);
-        timer = window.setTimeout(() => {
-          target.classList.remove("is-scrolling");
-        }, 900);
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true, capture: true } as any);
-    return () => {
-      if (timer) window.clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll, { capture: true } as any);
-    };
-  }, []);
   return (
     <>
-      {globalLoginState && (
+      {isBootstrapping && <AppBootScreen />}
+      {!isBootstrapping && globalLoginState && (
         <div
           className="App"
           ref={elementRef}
@@ -337,7 +241,7 @@ function App() {
           </Suspense>
         </div>
       )}
-      {!globalLoginState && <Login />}
+      {!isBootstrapping && !globalLoginState && <Login />}
       <Notifications />
     </>
   );
