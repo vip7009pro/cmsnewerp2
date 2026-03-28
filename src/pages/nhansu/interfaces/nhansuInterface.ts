@@ -289,6 +289,7 @@ export interface BANGCHAMCONG_DATA {
   }
   //diem danh nhom
   export interface DiemDanhNhomData {
+    WORK_POSITION_CODE: number;
     id: string;
     APPLY_DATE: string;
     APPROVAL_STATUS: number;
@@ -314,6 +315,7 @@ export interface BANGCHAMCONG_DATA {
     WORK_SHIF_NAME: string;
     WORK_STATUS_NAME: string;
     REMARK?: string;
+    CALV?:number | null;
   }
   export interface WorkPositionTableData {
     id: number;

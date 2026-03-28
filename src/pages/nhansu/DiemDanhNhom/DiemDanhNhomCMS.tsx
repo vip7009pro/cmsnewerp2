@@ -153,11 +153,11 @@ const DiemDanhNhomCMS = ({ option }: { option: string }) => {
      Main Render
      ========================================================================== */
   return (
-    <Box className="diemdanhnhom" sx={{ p: 0.2 }}>
+    <Box className="diemdanhnhom">
       {/* Search Header */}
-      <Box className="filterform" sx={{ p: 0.2, mb: 0.2, borderRadius: 1, display: 'flex', alignItems: 'center', height: '32px' }}>
-        <FormControl variant="outlined" size="small" sx={{ minWidth: 200, bgcolor: 'white', borderRadius: 1, height: '28px' }}>
-          <InputLabel sx={{ fontSize: '0.75rem', top: '-4px' }}>{getlang('calamviec', glbLang!)}</InputLabel>
+      <Box className="filterform" sx={{ p: 0.2, borderRadius: 1, display: 'flex', alignItems: 'center', height: 'fit-content' }}>
+        <FormControl variant="outlined" size="small" sx={{ minWidth: 200, bgcolor: 'white', borderRadius: 1, height: '25px' }}>
+          <InputLabel sx={{ fontSize: '0.75rem', top: '2px' }}>{getlang('calamviec', glbLang!)}</InputLabel>
           <Select
             label={getlang('calamviec', glbLang!)}
             value={WORK_SHIFT_CODE}
