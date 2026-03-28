@@ -1,154 +1,120 @@
+/* ==========================================================================
+   DiemDanhNhom Layout
+   ========================================================================== */
 .diemdanhnhom {
   display: flex;
   flex-direction: column;
   align-items: center;
-  align-content: center;
-  align-self: center;
-
-  justify-items: center;
-  justify-content: center;
-  justify-self: center;
   width: 100%;
+  gap: 0px;
 
-  gap: 2px;
   .filterform {
     display: flex;
     justify-content: center;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    width: 100%;   
+    padding: 2px 0;
+    width: 100%;
     background-image: linear-gradient(0deg, #afd3d1, #a4ec51);
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
   }
+
   .maindept_table {
-    align-items: center;
-    justify-content: center;
-    justify-self: center;
-    align-self: center;
-    
     width: 100%;
     border-radius: 5px;
     height: calc(100vh - 85px);
     background-image: linear-gradient(0deg, #afd3d1, #f18de1);
 
+    .ag-cell {
+      border-right: 1px solid #1f1f1f3b !important;
+      padding: 0;
+    }
+
+    .flex-center-vertical {
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .flex-center-end-cell {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+    }
+
+    /* ==========================================================================
+       On/Off Cell Styles
+       ========================================================================== */
     .onoffdiv {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      margin: 2px;
+      height: 100%;
+      padding: 4px;
       width: 100%;
       flex-wrap: wrap;
-      font-size: 0.8rem;
+      gap: 4px;
 
-      .onoffshowtext {
-        font-weight: bold;
-        &.A0 {
-          color: #ff140b;
-        }
-        &.A1 {
-          color: #058b27;
-        }
-      }
-      &.onbt {
-        background-color: #59c0fc;
-      }
-      &.offbt {
-        background-color: #131010;
-      }
-      gap: 2px;
-      .tcbutton {
-        background-image: linear-gradient(0deg, #afd3d1, #8248df);
-        /* Green */
-        border: none;
-        color: white;
-        padding: 8px 8px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 0.7rem;
-        border-radius: 5px;
-        outline: none;
-        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      // Button Mixin for shared styles
+      @mixin base-btn($bg-color: #329cff, $text-color: white) {
+        min-width: 60px !important;
+        height: 24px !important;
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+        text-transform: none !important;
+        border-radius: 4px !important;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.18) !important;
+        color: $text-color !important;
+        background: $bg-color !important;
+
         &:hover {
-          background-color: #1deedd;
+          opacity: 0.8 !important;
+
+          // Only attempt to darken if it's not a gradient string
+          @if type-of($bg-color)==color {
+            background: darken($bg-color, 10%) !important;
+          }
+
+          @else {
+            filter: brightness(0.9);
+          }
         }
+      }
+
+      .tcbutton {
+        @include base-btn(linear-gradient(0deg, #afd3d1, #8248df));
+        min-width: 45px !important;
       }
 
       .onbutton {
-        background-color: #21a73e;
-        /* Green */
-        border: none;
-        color: white;
-        padding: 8px 8px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 0.7rem;
-        border-radius: 5px;
-        outline: none;
-        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        &:hover {
-          background-color: #22fd7e;
-        }
+        @include base-btn(#21a73e);
       }
+
       .offbutton {
-        background-color: #ff140b;
-        /* Green */
-        border: none;
-        color: white;
-        padding: 8px 8px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 0.7rem;
-        border-radius: 5px;
-        outline: none;
-        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        &:hover {
-          background-color: #fde722;
-        }
+        @include base-btn(#ff140b);
       }
+
       .off50button {
-        background-color: #d0f13b;
-        /* Green */
-        border: none;
-        color: rgb(0, 0, 0);
-        padding: 8px 8px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 0.7rem;
-        border-radius: 5px;
-        outline: none;
-        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        &:hover {
-          background-color: #fde722;
-        }
+        @include base-btn(#d0f13b, #000);
       }
+
       .resetbutton {
-        background-color: #329cff;
-        /* Green */
-        border: none;
-        color: white;
-        padding: 8px 8px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 0.7rem;
-        border-radius: 5px;
-        outline: none;
-        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        &:hover {
-          background-color: #1deedd;
+        @include base-btn(#329cff);
+      }
+
+      .onoffshowtext {
+        font-weight: bold;
+
+        &.A0 {
+          color: #ff140b;
+        }
+
+        &.A1 {
+          color: #058b27;
         }
       }
     }
