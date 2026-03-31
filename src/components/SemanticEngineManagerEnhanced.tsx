@@ -1545,7 +1545,18 @@ export default function SemanticEngineManager() {
             onChange={(e) => setBulkTableJson(e.target.value)}
             multiline
             rows={8}
-            placeholder={`[{"table_name": "customers", "schema": "dbo", "business_name": "Khách hàng"}]`}
+            placeholder={`{
+  "tables": [
+    {
+      "table_name": "TABLE_NAME",
+      "business_name": "Business Name",
+      "description": "Table Description",
+      "synonyms": [],
+      "is_fact": true,
+      "created_from_db_sync": true
+    }
+  ]
+}`}
             sx={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
           />
           <Alert severity="info" sx={{ mt: 1 }}>
@@ -1574,7 +1585,22 @@ export default function SemanticEngineManager() {
             onChange={(e) => setBulkColumnJson(e.target.value)}
             multiline
             rows={8}
-            placeholder={`[{"table_name": "customers", "column_name": "customer_id", "business_name": "Mã khách"}]`}
+            placeholder={`{
+  "columns": [
+    {
+      "table_name": "TABLE_NAME",
+      "column_name": "COLUMN_NAME",
+      "business_name": "Business Name",
+      "description": "Column Description",
+      "data_type": "nvarchar",
+      "nullable": true,
+      "synonyms": [],
+      "is_measure": false,
+      "format_hint": "string",
+      "created_from_db_sync": true
+    }
+  ]
+}`}
             sx={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
           />
           <Alert severity="info" sx={{ mt: 1 }}>
@@ -1603,7 +1629,21 @@ export default function SemanticEngineManager() {
             onChange={(e) => setBulkRelationshipJson(e.target.value)}
             multiline
             rows={8}
-            placeholder={`[{"from_table": "orders", "from_column": "cust_id", "to_table": "customers", "to_column": "id"}]`}
+            placeholder={`{
+  "relationships": [
+    {
+      "name": "RELATIONSHIP_NAME",
+      "source_table": "SOURCE_TABLE",
+      "source_column": "SOURCE_COLUMN",
+      "target_table": "TARGET_TABLE",
+      "target_column": "TARGET_COLUMN",
+      "cardinality": "N:1",
+      "business_meaning": "SOURCE_TABLE.SOURCE_COLUMN \u2192 TARGET_TABLE.TARGET_COLUMN",
+      "is_hidden": false,
+      "created_from_db_sync": true
+    }
+  ]
+}`}
             sx={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
           />
           <Alert severity="info" sx={{ mt: 1 }}>
