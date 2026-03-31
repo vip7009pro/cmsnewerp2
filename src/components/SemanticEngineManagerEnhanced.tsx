@@ -612,6 +612,47 @@ export default function SemanticEngineManager() {
     ],
     [],
   );
+  // ─────────────────────────────────────────────────────────────────────────
+  // Memoized stable props for Relationships AGTable.
+  // Normalizes BOTH schema variants (from_table vs source_table) so IDs are
+  // always valid, and adds an index fallback to guarantee uniqueness even if
+  // table/column names are empty.
+  // ─────────────────────────────────────────────────────────────────────────
+  const relationshipsAGData = useMemo(
+    () =>
+      relationships.map((rel, idx) => {
+        const fromTable  = rel.from_table  || rel.source_table  || '';
+        const fromColumn = rel.from_column || rel.source_column || '';
+        const toTable    = rel.to_table    || rel.target_table  || '';
+        const toColumn   = rel.to_column   || rel.target_column || '';
+        // Include index to guarantee uniqueness even if some fields are empty
+        const id = `${fromTable}_${fromColumn}_to_${toTable}_${toColumn}_${idx}`;
+        return {
+          id,
+          from_table:  fromTable,
+          from_column: fromColumn,
+          to_table:    toTable,
+          to_column:   toColumn,
+          type:        rel.type || (rel.created_from_db_sync ? 'fk' : 'business'),
+          cardinality: rel.cardinality || 'N:1',
+          weight:      rel.weight ?? 1,
+        };
+      }),
+    [relationships],
+  );
+
+  const relationshipsAGColumns = useMemo(
+    () => [
+      { field: 'from_table',  headerName: 'From Table',  width: 110, minWidth: 80 },
+      { field: 'from_column', headerName: 'From Column', width: 100, minWidth: 80 },
+      { field: 'to_table',    headerName: 'To Table',    width: 110, minWidth: 80 },
+      { field: 'to_column',   headerName: 'To Column',   width: 100, minWidth: 80 },
+      { field: 'type',        headerName: 'Type',        width: 65,  minWidth: 55 },
+      { field: 'cardinality', headerName: 'Card',        width: 60,  minWidth: 50 },
+      { field: 'weight',      headerName: 'W',           width: 45,  minWidth: 40 },
+    ],
+    [],
+  );
 
   return (
     <Container maxWidth="xl" sx={{ py: 1.5 }}>
@@ -831,44 +872,27 @@ export default function SemanticEngineManager() {
 
                 <Box sx={{ height: '300px', width: '100%' }}>
                   <AGTable
-                    data={relationships.map((rel) => ({
-                      id: `${rel.from_table}_${rel.from_column}_to_${rel.to_table}_${rel.to_column}`,
-                      from_table: rel.from_table || rel.source_table || '',
-                      from_column: rel.from_column || rel.source_column || '',
-                      to_table: rel.to_table || rel.target_table || '',
-                      to_column: rel.to_column || rel.target_column || '',
-                      type: rel.type || 'fk',
-                      cardinality: rel.cardinality || 'N:1',
-                      weight: rel.weight || 1,
-                    }))}
-                    columns={[
-                      { field: 'from_table', headerName: 'From', width: 80, minWidth: 80 },
-                      { field: 'from_column', headerName: 'Column', width: 80, minWidth: 80 },
-                      { field: 'to_table', headerName: 'To', width: 80, minWidth: 80 },
-                      { field: 'to_column', headerName: 'Column', width: 80, minWidth: 80 },
-                      { field: 'type', headerName: 'Type', width: 60, minWidth: 60 },
-                      { field: 'cardinality', headerName: 'Card', width: 60, minWidth: 60 },
-                      { field: 'weight', headerName: 'W', width: 45, minWidth: 45 },
-                    ]}
+                    data={relationshipsAGData}
+                    columns={relationshipsAGColumns}
                     columnWidth={95}
                     rowHeight={22}
                     showFilter={true}
                     onSelectionChange={() => { }}
                     onRowDoubleClick={(e: any) => {
-                      const relData = relationships.find(
-                        (rel) => `${rel.from_table || rel.source_table}_${rel.from_column || rel.source_column}_to_${rel.to_table || rel.target_table}_${rel.to_column || rel.target_column}` === e.data?.id
-                      );
+                      // Find original rel matching the normalised row id
+                      const idx = Number(String(e.data?.id || '').split('_').pop());
+                      const relData = relationships[idx];
                       if (relData) {
                         setRelatedColumns([]);
                         setRelationshipForm({
-                          from_table: relData.from_table || relData.source_table,
-                          from_column: relData.from_column || relData.source_column,
-                          to_table: relData.to_table || relData.target_table,
-                          to_column: relData.to_column || relData.target_column,
-                          type: relData.type || 'fk',
-                          cardinality: relData.cardinality,
-                          weight: relData.weight || 1,
-                          description: relData.description || '',
+                          from_table:  relData.from_table  || relData.source_table  || '',
+                          from_column: relData.from_column || relData.source_column || '',
+                          to_table:    relData.to_table    || relData.target_table  || '',
+                          to_column:   relData.to_column   || relData.target_column || '',
+                          type:        relData.type || 'fk',
+                          cardinality: relData.cardinality || 'N:1',
+                          weight:      relData.weight || 1,
+                          description: relData.description || relData.business_meaning || '',
                         });
                         setRelationshipDialogOpen(true);
                       }
@@ -982,17 +1006,26 @@ export default function SemanticEngineManager() {
             <FormControl fullWidth margin="dense" size="small">
               <InputLabel>Data Type</InputLabel>
               <Select
-                value={columnForm.data_type}
+                value={String(columnForm.data_type || '').toUpperCase()}
                 label="Data Type"
                 onChange={(e) => setColumnForm({ ...columnForm, data_type: e.target.value })}
               >
-                <MenuItem value="INT">Integer</MenuItem>
-                <MenuItem value="VARCHAR">Varchar</MenuItem>
-                <MenuItem value="NVARCHAR">NVarchar</MenuItem>
-                <MenuItem value="DECIMAL">Decimal</MenuItem>
-                <MenuItem value="DATETIME">DateTime</MenuItem>
-                <MenuItem value="BIT">Boolean</MenuItem>
-                <MenuItem value="FLOAT">Float</MenuItem>
+                {[
+                  'INT', 'BIGINT', 'SMALLINT', 'TINYINT', 'BIT', 'DECIMAL', 'NUMERIC', 
+                  'FLOAT', 'REAL', 'MONEY', 'SMALLMONEY', 'DATE', 'DATETIME', 'DATETIME2', 
+                  'SMALLDATETIME', 'TIME', 'VARCHAR', 'NVARCHAR', 'CHAR', 'NCHAR', 
+                  'TEXT', 'NTEXT', 'BINARY', 'VARBINARY', 'UNIQUEIDENTIFIER', 'XML'
+                ].map(type => (
+                  <MenuItem key={type} value={type}>{type}</MenuItem>
+                ))}
+                {columnForm.data_type && ![
+                  'INT', 'BIGINT', 'SMALLINT', 'TINYINT', 'BIT', 'DECIMAL', 'NUMERIC', 
+                  'FLOAT', 'REAL', 'MONEY', 'SMALLMONEY', 'DATE', 'DATETIME', 'DATETIME2', 
+                  'SMALLDATETIME', 'TIME', 'VARCHAR', 'NVARCHAR', 'CHAR', 'NCHAR', 
+                  'TEXT', 'NTEXT', 'BINARY', 'VARBINARY', 'UNIQUEIDENTIFIER', 'XML'
+                ].includes(columnForm.data_type.toUpperCase()) && (
+                  <MenuItem value={columnForm.data_type.toUpperCase()}>{columnForm.data_type.toUpperCase()} (Custom)</MenuItem>
+                )}
               </Select>
             </FormControl>
             <TextField
