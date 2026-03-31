@@ -335,7 +335,14 @@ export default function SemanticEngineManager() {
   const handleSaveTable = async () => {
     try {
       setLoading(true);
-      const res = await api.saveTableMetadata(tableForm);
+      // Clean up use_cases and synonyms before saving
+      const cleanedTableForm = {
+        ...tableForm,
+        use_cases: (tableForm.use_cases || []).filter(s => s.trim()),
+        synonyms: (tableForm.synonyms || []).filter(s => s.trim()),
+      };
+      
+      const res = await api.saveTableMetadata(cleanedTableForm);
 
       if (res.tk_status === 'OK') {
         showMessage('success', 'Table metadata saved successfully');
@@ -957,7 +964,7 @@ export default function SemanticEngineManager() {
               fullWidth
               label="Use Cases (one per line)"
               value={Array.isArray(tableForm.use_cases) ? tableForm.use_cases.join('\n') : ''}
-              onChange={(e) => setTableForm({ ...tableForm, use_cases: e.target.value.split('\n').filter(s => s.trim()) })}
+              onChange={(e) => setTableForm({ ...tableForm, use_cases: e.target.value.split('\n') })}
               multiline
               rows={3}
               margin="dense"
