@@ -15,7 +15,9 @@ import ExcelAITranslator from "./AI/ExcelAITranslator";
 import PowerPointAITranslator from "./AI/PowerPointAITranslator";
 import WordAITranslator from "./AI/WordAITranslator";
 import ERPChat from "./AI/ERPChat";
+import ERPChatV2 from "./AI/ERPChatV2";
 import ColumnComments from "./DBComments/ColumnComments";
+import SemanticEngineManager from "../../components/SemanticEngineManagerEnhanced";
 
 const  NOCODELOWCODE = () => {
   useEffect(() => { }, []);
@@ -61,10 +63,15 @@ const  NOCODELOWCODE = () => {
         <MyTabs.Tab title={"ERP Chat"}>
           <ERPChat/>
         </MyTabs.Tab>
+        <MyTabs.Tab title={"ERP Chat V2"}>
+          <ERPChatV2/>
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"Semantic Engine Manager"}>
+          <SemanticEngineManager/>
+        </MyTabs.Tab>
         <MyTabs.Tab title={"DB Column Comments"}>
           <ColumnComments/>
-        </MyTabs.Tab>
-        
+        </MyTabs.Tab>        
       </MyTabs>
     </div>
   );
